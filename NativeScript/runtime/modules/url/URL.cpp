@@ -7,6 +7,33 @@ using namespace ada;
 using namespace nativescript;
 
 namespace {
+struct CoercedUtf8String {
+  std::vector<char> storage;
+  size_t length = 0;
+
+  std::string_view view() const { return {storage.data(), length}; }
+};
+
+bool CoerceToUtf8String(napi_env env, napi_value value,
+                        CoercedUtf8String& out) {
+  NAPI_PREAMBLE
+  napi_value coerced;
+  NAPI_GUARD(napi_coerce_to_string(env, value, &coerced)) { return false; }
+
+  NAPI_GUARD(
+      napi_get_value_string_utf8(env, coerced, nullptr, 0, &out.length)) {
+    return false;
+  }
+
+  out.storage.resize(out.length + 1);
+  NAPI_GUARD(napi_get_value_string_utf8(env, coerced, out.storage.data(),
+                                        out.storage.size(), nullptr)) {
+    return false;
+  }
+
+  return true;
+}
+
 URL* GetInstance(napi_env env, napi_callback_info info) {
   NAPI_PREAMBLE
   napi_value jsThis;
@@ -51,23 +78,15 @@ napi_value SetUrlProperty(napi_env env, napi_callback_info info,
 
   if (argc < 1) return nullptr;
 
-  size_t str_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_size)) {
-    return nullptr;
-  }
+  CoercedUtf8String value;
+  if (!CoerceToUtf8String(env, argv[0], value)) return nullptr;
 
-  std::vector<char> buffer(str_size + 1);
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], buffer.data(),
-                                        str_size + 1, nullptr)) {
-    return nullptr;
-  }
-
-  (instance->GetURL()->*setter)(buffer.data());
+  (instance->GetURL()->*setter)(value.view());
   return napi_util::get_true(env);
 }
 }  // namespace
 
-URL::URL(url_aggregator url) : url_(url) {}
+URL::URL(url_aggregator url) : url_(std::move(url)) {}
 
 url_aggregator* URL::GetURL() { return &url_; }
 
@@ -126,7 +145,8 @@ napi_value URL::GetSearchParams(napi_env env, napi_callback_info info) {
 
   // Create URLSearchParams from the search string
   url_search_params params(search_string);
-  URLSearchParams* searchParams = new URLSearchParams(params, instance->GetURL());
+  URLSearchParams* searchParams =
+      new URLSearchParams(params, instance->GetURL());
 
   // Get the URLSearchParams constructor
   napi_value global;
@@ -229,60 +249,31 @@ napi_value URL::New(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  size_t str_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_size)) {
+  CoercedUtf8String url_input;
+  if (!CoerceToUtf8String(env, argv[0], url_input)) return nullptr;
+
+  auto parse_result =
+      ada::parse<ada::url_aggregator>(url_input.view(), nullptr);
+
+  // If the input is not absolute, retry with the provided base if available.
+  if (!parse_result && argc > 1) {
+    CoercedUtf8String base_input;
+    if (!CoerceToUtf8String(env, argv[1], base_input)) return nullptr;
+
+    auto base_result =
+        ada::parse<ada::url_aggregator>(base_input.view(), nullptr);
+    if (base_result) {
+      parse_result = ada::parse<ada::url_aggregator>(url_input.view(),
+                                                     &base_result.value());
+    }
+  }
+
+  if (!parse_result) {
+    napi_throw_type_error(env, nullptr, "Invalid URL");
     return nullptr;
   }
 
-  std::vector<char> url_buffer(str_size + 1);
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], url_buffer.data(),
-                                        str_size + 1, nullptr)) {
-    return nullptr;
-  }
-
-  url_aggregator url;
-  std::string_view url_string_view(url_buffer.data(), url_buffer.size());
-
-  if (argc > 1) {
-    // Handle base URL
-    size_t base_str_size;
-    NAPI_GUARD(
-        napi_get_value_string_utf8(env, argv[1], nullptr, 0, &base_str_size)) {
-      return nullptr;
-    }
-
-    std::vector<char> base_buffer(base_str_size + 1);
-    NAPI_GUARD(napi_get_value_string_utf8(env, argv[1], base_buffer.data(),
-                                          base_str_size + 1, nullptr)) {
-      return nullptr;
-    }
-
-    std::string_view base_string_view(base_buffer.data(), base_buffer.size());
-
-    if (!can_parse(url_string_view, &base_string_view)) {
-      napi_throw_type_error(env, nullptr, "Invalid URL");
-      return nullptr;
-    }
-
-    auto base_url = ada::parse<ada::url_aggregator>(base_string_view, nullptr);
-    auto result =
-        ada::parse<ada::url_aggregator>(url_string_view, &base_url.value());
-
-    if (!result) {
-      napi_throw_type_error(env, nullptr, "Invalid URL");
-      return nullptr;
-    }
-    url = result.value();
-  } else {
-    auto result = ada::parse<ada::url_aggregator>(url_string_view, nullptr);
-    if (!result) {
-      napi_throw_type_error(env, nullptr, "Invalid URL");
-      return nullptr;
-    }
-    url = result.value();
-  }
-
-  URL* urlImpl = new URL(url);
+  URL* urlImpl = new URL(std::move(parse_result.value()));
   napi_wrap(env, jsThis, urlImpl, URL::Destructor, urlImpl, nullptr);
 
   return jsThis;
@@ -298,35 +289,22 @@ napi_value URL::CanParse(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  size_t str_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_size)) {
-    return nullptr;
-  }
+  CoercedUtf8String input;
+  if (!CoerceToUtf8String(env, argv[0], input)) return nullptr;
 
-  std::vector<char> buffer(str_size + 1);
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], buffer.data(),
-                                        str_size + 1, nullptr)) {
-    return nullptr;
-  }
+  bool result =
+      static_cast<bool>(ada::parse<ada::url_aggregator>(input.view(), nullptr));
 
-  bool result;
-  if (argc > 1) {
-    size_t base_str_size;
-    NAPI_GUARD(
-        napi_get_value_string_utf8(env, argv[1], nullptr, 0, &base_str_size)) {
-      return nullptr;
+  if (!result && argc > 1) {
+    CoercedUtf8String base_input;
+    if (!CoerceToUtf8String(env, argv[1], base_input)) return nullptr;
+
+    auto base_result =
+        ada::parse<ada::url_aggregator>(base_input.view(), nullptr);
+    if (base_result) {
+      result = static_cast<bool>(
+          ada::parse<ada::url_aggregator>(input.view(), &base_result.value()));
     }
-
-    std::vector<char> base_buffer(base_str_size + 1);
-    NAPI_GUARD(napi_get_value_string_utf8(env, argv[1], base_buffer.data(),
-                                          base_str_size + 1, nullptr)) {
-      return nullptr;
-    }
-
-    std::string_view base_string_view(base_buffer.data());
-    result = can_parse(buffer.data(), &base_string_view);
-  } else {
-    result = can_parse(buffer.data(), nullptr);
   }
 
   napi_value returnValue;
