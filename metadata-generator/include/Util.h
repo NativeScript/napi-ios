@@ -3,10 +3,101 @@
 #include <clang-c/Index.h>
 #include <algorithm>
 #include <cctype>
+#include <cstdlib>
 #include <string>
 #include <vector>
 
 namespace metagen {
+
+enum class AvailabilityPlatform {
+  Unknown,
+  IOS,
+  MacOS,
+  TvOS,
+  WatchOS,
+  XROS,
+};
+
+inline AvailabilityPlatform gAvailabilityPlatform = AvailabilityPlatform::Unknown;
+inline int gAvailabilityTargetMajor = -1;
+inline int gAvailabilityTargetMinor = -1;
+
+inline AvailabilityPlatform platformFromTargetTriple(const std::string& targetTriple) {
+  if (targetTriple.find("macosx") != std::string::npos) return AvailabilityPlatform::MacOS;
+  if (targetTriple.find("ios") != std::string::npos) return AvailabilityPlatform::IOS;
+  if (targetTriple.find("tvos") != std::string::npos) return AvailabilityPlatform::TvOS;
+  if (targetTriple.find("watchos") != std::string::npos) return AvailabilityPlatform::WatchOS;
+  if (targetTriple.find("xros") != std::string::npos) return AvailabilityPlatform::XROS;
+  return AvailabilityPlatform::Unknown;
+}
+
+inline bool parsePlatformVersionFromTargetTriple(const std::string& targetTriple, int& major,
+                                                 int& minor) {
+  size_t pos = std::string::npos;
+  if ((pos = targetTriple.find("macosx")) != std::string::npos) {
+    pos += 6;
+  } else if ((pos = targetTriple.find("watchos")) != std::string::npos) {
+    pos += 7;
+  } else if ((pos = targetTriple.find("tvos")) != std::string::npos) {
+    pos += 4;
+  } else if ((pos = targetTriple.find("xros")) != std::string::npos) {
+    pos += 4;
+  } else if ((pos = targetTriple.find("ios")) != std::string::npos) {
+    pos += 3;
+  } else {
+    return false;
+  }
+
+  if (pos >= targetTriple.size() || !std::isdigit(targetTriple[pos])) {
+    return false;
+  }
+
+  size_t start = pos;
+  while (pos < targetTriple.size() && std::isdigit(targetTriple[pos])) pos++;
+  major = std::atoi(targetTriple.substr(start, pos - start).c_str());
+  minor = 0;
+
+  if (pos < targetTriple.size() && targetTriple[pos] == '.') {
+    pos++;
+    size_t minorStart = pos;
+    while (pos < targetTriple.size() && std::isdigit(targetTriple[pos])) pos++;
+    if (minorStart < pos) {
+      minor = std::atoi(targetTriple.substr(minorStart, pos - minorStart).c_str());
+    }
+  }
+
+  return true;
+}
+
+inline void setAvailabilityTargetTriple(const std::string& targetTriple) {
+  gAvailabilityPlatform = platformFromTargetTriple(targetTriple);
+  gAvailabilityTargetMajor = -1;
+  gAvailabilityTargetMinor = -1;
+
+  int major = -1;
+  int minor = -1;
+  if (parsePlatformVersionFromTargetTriple(targetTriple, major, minor)) {
+    gAvailabilityTargetMajor = major;
+    gAvailabilityTargetMinor = minor;
+  }
+}
+
+inline const char* platformNameForAvailability(AvailabilityPlatform platform) {
+  switch (platform) {
+    case AvailabilityPlatform::IOS:
+      return "ios";
+    case AvailabilityPlatform::MacOS:
+      return "macos";
+    case AvailabilityPlatform::TvOS:
+      return "tvos";
+    case AvailabilityPlatform::WatchOS:
+      return "watchos";
+    case AvailabilityPlatform::XROS:
+      return "xros";
+    default:
+      return nullptr;
+  }
+}
 
 inline std::string jsifySelector(const std::string& selector) {
   std::string jsifiedSelector;
@@ -118,9 +209,70 @@ inline std::string getFrameworkName(CXCursor cursor) {
 }
 
 inline bool isAvailable(CXCursor cursor) {
-  // Keep all declarations in metadata, except those that clang marks as
-  // inaccessible.
-  return clang_getCursorAvailability(cursor) != CXAvailability_NotAccessible;
+  auto availability = clang_getCursorAvailability(cursor);
+  if (availability != CXAvailability_Available &&
+      availability != CXAvailability_Deprecated) {
+    return false;
+  }
+
+  if (gAvailabilityPlatform == AvailabilityPlatform::Unknown ||
+      gAvailabilityTargetMajor < 0) {
+    return true;
+  }
+
+  int alwaysDeprecated = 0;
+  int alwaysUnavailable = 0;
+  CXString deprecatedMessage;
+  CXString unavailableMessage;
+  int availabilityCount = clang_getCursorPlatformAvailability(
+      cursor, &alwaysDeprecated, &deprecatedMessage, &alwaysUnavailable,
+      &unavailableMessage, nullptr, 0);
+  clang_disposeString(deprecatedMessage);
+  clang_disposeString(unavailableMessage);
+  if (alwaysUnavailable) {
+    return false;
+  }
+
+  if (availabilityCount <= 0) {
+    return true;
+  }
+
+  std::vector<CXPlatformAvailability> platformAvailability(
+      static_cast<size_t>(availabilityCount));
+  clang_getCursorPlatformAvailability(
+      cursor, &alwaysDeprecated, &deprecatedMessage, &alwaysUnavailable,
+      &unavailableMessage, platformAvailability.data(), availabilityCount);
+  clang_disposeString(deprecatedMessage);
+  clang_disposeString(unavailableMessage);
+
+  const char* wantedPlatform = platformNameForAvailability(gAvailabilityPlatform);
+  bool isCursorAvailableForTarget = true;
+  for (auto& item : platformAvailability) {
+    const char* platform = clang_getCString(item.Platform);
+    if (wantedPlatform != nullptr && platform != nullptr &&
+        std::string(platform) == wantedPlatform) {
+      if (item.Unavailable) {
+        continue;
+      }
+
+      const int introducedMajor = item.Introduced.Major;
+      const int introducedMinor =
+          item.Introduced.Minor >= 0 ? item.Introduced.Minor : 0;
+      if (introducedMajor >= 0 &&
+          (introducedMajor > gAvailabilityTargetMajor ||
+           (introducedMajor == gAvailabilityTargetMajor &&
+            introducedMinor > gAvailabilityTargetMinor))) {
+        isCursorAvailableForTarget = false;
+        break;
+      }
+    }
+  }
+
+  for (auto& item : platformAvailability) {
+    clang_disposeCXPlatformAvailability(&item);
+  }
+
+  return isCursorAvailableForTarget;
 }
 
 inline bool isSelectorOwned(const std::string& selectorName) {

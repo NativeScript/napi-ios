@@ -88,17 +88,18 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
         offset += sizeof(MDSectionOffset);  // setterSignature
       }
 
-      if (memberMap.contains(name)) {
-        memberMap.erase(name);
+      auto updatedMember = ObjCClassMember(
+          bridgeState, sel_registerName(getterSelector),
+          !readonly ? sel_registerName(setterSelector) : nullptr,
+          getterSignature + bridgeState->metadata->signaturesOffset,
+          !readonly ? setterSignature + bridgeState->metadata->signaturesOffset : 0, flags);
+      auto memberIt = memberMap.find(name);
+      if (memberIt != memberMap.end()) {
+        memberIt->second = updatedMember;
+      } else {
+        const auto& inserted = memberMap.emplace(name, updatedMember);
+        memberIt = inserted.first;
       }
-
-      const auto& kv = memberMap.emplace(
-          name,
-          ObjCClassMember(bridgeState, sel_registerName(getterSelector),
-                          !readonly ? sel_registerName(setterSelector) : nullptr,
-                          getterSignature + bridgeState->metadata->signaturesOffset,
-                          !readonly ? setterSignature + bridgeState->metadata->signaturesOffset : 0,
-                          flags));
 
       napi_property_descriptor property = {
           .utf8name = name,
@@ -108,7 +109,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
           .setter = readonly ? nil : jsSetter,
           .value = nil,
           .attributes = (napi_property_attributes)(napi_configurable | napi_enumerable),
-          .data = &kv.first->second,
+          .data = &memberIt->second,
       };
 
       napi_define_properties(env, jsObject, 1, &property);

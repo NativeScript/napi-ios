@@ -3,10 +3,10 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <unordered_set>
 #include <vector>
-#include <sstream>
 
 #include "IR.h"
 #include "Metadata.h"
@@ -158,7 +158,15 @@ int main(int argc, char** argv) {
       std::exit(1);
     }
   }
-  
+
+  for (size_t i = 0; i + 1 < args.size(); ++i) {
+    if (args[i] == "-target") {
+      setAvailabilityTargetTriple(args[i + 1]);
+      std::cerr << "Availability target triple: " << args[i + 1] << std::endl;
+      break;
+    }
+  }
+
   // Use automatic umbrella header generation if manual one is empty
   if (code.empty()) {
     std::vector<std::string> includePathsInner, frameworksInner;

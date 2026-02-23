@@ -6,7 +6,7 @@ BUILD_CATALYST=$(to_bool ${BUILD_CATALYST:=false}) # disable by default for now
 BUILD_IPHONE=$(to_bool ${BUILD_IPHONE:=true})
 BUILD_SIMULATOR=$(to_bool ${BUILD_SIMULATOR:=true})
 BUILD_VISION=$(to_bool ${BUILD_VISION:=false}) # disable by default for now
-BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false}) # disable by default for now
+BUILD_MACOS=$(to_bool ${BUILD_MACOS:=true})
 VERBOSE=$(to_bool ${VERBOSE:=false})
 BUILD_MACOS_CLI=$(to_bool ${BUILD_MACOS_CLI:=false})
 BUILD_MACOS_NODE_API=$(to_bool ${BUILD_MACOS_NODE_API:=false})
