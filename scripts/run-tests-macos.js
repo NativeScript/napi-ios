@@ -4,6 +4,7 @@
 //
 // Env:
 //  - MACOS_TEST_SKIP_BUILD=1 skips xcodebuild app build.
+//  - MACOS_TEST_CLEAN_BUILD=1 deletes derived data before build.
 //  - MACOS_COMMAND_TIMEOUT_MS overrides timeout for build commands (default: 10 minutes).
 //  - MACOS_TEST_TIMEOUT_MS overrides max test runtime after launch (default: 2 minutes).
 //  - MACOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval after launch (default: 45 seconds).
@@ -13,11 +14,26 @@
 const fs = require("fs");
 const path = require("path");
 const cp = require("child_process");
+const crypto = require("crypto");
 
 const projectPath = path.join(__dirname, "../napi-ios.xcodeproj");
 const scheme = "TestRunner";
 const configuration = "Debug";
 const derivedDataPath = path.join(__dirname, "../build", "derived-data", "macos-tests");
+const testRunnerAppSourcePath = path.join(__dirname, "../TestRunner", "app");
+const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
+const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
+const buildStatePath = path.join(derivedDataPath, ".macos-test-build-state.json");
+const macosBuildInputs = [
+    path.join(__dirname, "../napi-ios.xcodeproj", "project.pbxproj"),
+    path.join(__dirname, "../TestRunner", "Source Files"),
+    path.join(__dirname, "../TestRunner", "Info.plist"),
+    path.join(__dirname, "../TestFixtures"),
+    path.join(__dirname, "../TKLiveSync"),
+    path.join(__dirname, "../metadata"),
+    nativeScriptXCFramework,
+    tkLiveSyncXCFramework
+];
 
 const resultsDir = path.join(__dirname, "../build", "test-results");
 const defaultJunitPath = path.join(resultsDir, "macos-junit.xml");
@@ -40,6 +56,7 @@ const requestedTests = (process.env.MACOS_TESTS || "").trim();
 const launchedMarker = "Application Start!";
 const junitPrefix = "TKUnit: ";
 const junitEndTag = "</testsuites>";
+const consoleLogMarker = "CONSOLE LOG:";
 
 function parseArgs() {
     const args = process.argv.slice(2).filter(Boolean);
@@ -69,43 +86,165 @@ function run(command, args, options = {}) {
     return result;
 }
 
-function runAndRequireSuccess(command, args, timeoutMs = commandTimeoutMs) {
-    const result = cp.spawnSync(command, args, { stdio: "inherit", timeout: timeoutMs });
+function getPathStats(targetPath) {
+    if (!fs.existsSync(targetPath)) {
+        return { files: 0, bytes: 0, maxMtimeMs: 0 };
+    }
+
+    const queue = [targetPath];
+    let files = 0;
+    let bytes = 0;
+    let maxMtimeMs = 0;
+
+    while (queue.length > 0) {
+        const currentPath = queue.pop();
+        let stats;
+        try {
+            stats = fs.lstatSync(currentPath);
+        } catch (_) {
+            continue;
+        }
+
+        if (stats.mtimeMs > maxMtimeMs) {
+            maxMtimeMs = stats.mtimeMs;
+        }
+
+        if (stats.isDirectory()) {
+            const entries = fs.readdirSync(currentPath);
+            for (const entry of entries) {
+                queue.push(path.join(currentPath, entry));
+            }
+            continue;
+        }
+
+        if (stats.isFile() || stats.isSymbolicLink()) {
+            files += 1;
+            bytes += stats.size;
+        }
+    }
+
+    return { files, bytes, maxMtimeMs };
+}
+
+function createBuildFingerprint(inputs) {
+    const snapshot = inputs.map((inputPath) => ({
+        path: inputPath,
+        ...getPathStats(inputPath)
+    }));
+
+    return crypto.createHash("sha1").update(JSON.stringify(snapshot)).digest("hex");
+}
+
+function readBuildState() {
+    if (!fs.existsSync(buildStatePath)) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(fs.readFileSync(buildStatePath, "utf8"));
+    } catch (_) {
+        return null;
+    }
+}
+
+function writeBuildState(nativeFingerprint) {
+    fs.mkdirSync(path.dirname(buildStatePath), { recursive: true });
+    fs.writeFileSync(buildStatePath, JSON.stringify({ nativeFingerprint, createdAt: Date.now() }));
+}
+
+function syncAppResources(destinationAppResourcesPath) {
+    fs.mkdirSync(destinationAppResourcesPath, { recursive: true });
+    const result = run("rsync", [
+        "-a",
+        "--delete",
+        `${testRunnerAppSourcePath}/`,
+        `${destinationAppResourcesPath}/`
+    ]);
+
+    if (result.status !== 0) {
+        throw new Error(`Failed to sync TestRunner app resources: ${result.stderr || result.stdout || "unknown rsync error"}`);
+    }
+}
+
+function stripConsoleLogPrefix(line) {
+    const markerIndex = line.indexOf(consoleLogMarker);
+    if (markerIndex < 0) {
+        return line;
+    }
+
+    return line.slice(markerIndex + consoleLogMarker.length).trimStart();
+}
+
+function runBuildAndRequireSuccess(command, args, timeoutMs = commandTimeoutMs) {
+    const result = cp.spawnSync(command, args, {
+        encoding: "utf8",
+        timeout: timeoutMs
+    });
+
     if (result.error && result.error.code === "ETIMEDOUT") {
         console.error(`ERROR: Command timed out after ${timeoutMs}ms: ${command} ${args.join(" ")}`);
+        if (result.stdout && result.stdout.trim().length > 0) {
+            console.error(result.stdout.trimEnd());
+        }
+        if (result.stderr && result.stderr.trim().length > 0) {
+            console.error(result.stderr.trimEnd());
+        }
         process.exit(1);
     }
 
+    if (result.error) {
+        throw result.error;
+    }
+
     if (result.status !== 0) {
-        process.exit(result.status || 1);
+        console.error(`ERROR: Build command failed: ${command} ${args.join(" ")}`);
+        if (result.stdout && result.stdout.trim().length > 0) {
+            console.error(result.stdout.trimEnd());
+        }
+        if (result.stderr && result.stderr.trim().length > 0) {
+            console.error(result.stderr.trimEnd());
+        }
+        process.exit(1);
     }
 }
 
 function buildTestRunnerApp() {
-    fs.rmSync(derivedDataPath, { recursive: true, force: true });
-
-    const args = [
-        "-project", projectPath,
-        "-scheme", scheme,
-        "-configuration", configuration,
-        "-destination", "platform=macOS,arch=arm64",
-        "-derivedDataPath", derivedDataPath,
-        "build"
-    ];
-
-    console.log(`Building TestRunner app: xcodebuild ${args.join(" ")}`);
-    runAndRequireSuccess("xcodebuild", args, commandTimeoutMs);
-
-    const appPath = path.join(
+    const appBundlePath = path.join(
         derivedDataPath,
         "Build",
         "Products",
         configuration,
-        "TestRunner.app",
-        "Contents",
-        "MacOS",
-        "TestRunner"
+        "TestRunner.app"
     );
+    const appResourcesPath = path.join(appBundlePath, "Contents", "Resources", "app");
+    const appPath = path.join(appBundlePath, "Contents", "MacOS", "TestRunner");
+
+    if (process.env.MACOS_TEST_CLEAN_BUILD === "1") {
+        fs.rmSync(derivedDataPath, { recursive: true, force: true });
+    }
+
+    const nativeFingerprint = createBuildFingerprint(macosBuildInputs);
+    const existingBuildState = readBuildState();
+    const canReuseBuild = process.env.MACOS_TEST_CLEAN_BUILD !== "1" &&
+        fs.existsSync(appPath) &&
+        existingBuildState &&
+        existingBuildState.nativeFingerprint === nativeFingerprint;
+
+    console.log("Building...");
+    if (!canReuseBuild) {
+        const args = [
+            "-project", projectPath,
+            "-scheme", scheme,
+            "-configuration", configuration,
+            "-destination", "platform=macOS,arch=arm64",
+            "-derivedDataPath", derivedDataPath,
+            "build"
+        ];
+        runBuildAndRequireSuccess("xcodebuild", args, commandTimeoutMs);
+    }
+
+    syncAppResources(appResourcesPath);
+    writeBuildState(nativeFingerprint);
 
     if (!fs.existsSync(appPath)) {
         console.error(`ERROR: Built app executable not found at expected path: ${appPath}`);
@@ -210,17 +349,16 @@ function main() {
 
         return function handleChunk(chunk) {
             const text = chunk.toString();
-            process.stdout.write(text);
-
-            if (appLaunched) {
-                scheduleInactivityTimeout(child);
-            }
-
             const chunks = leftover + text;
             const lines = chunks.split(/\r?\n/);
 
             for (let i = 0; i < lines.length - 1; i++) {
                 const line = lines[i];
+                process.stdout.write(`${stripConsoleLogPrefix(line)}\n`);
+
+                if (appLaunched) {
+                    scheduleInactivityTimeout(child);
+                }
 
                 if (!appLaunched && line.indexOf(launchedMarker) !== -1) {
                     appLaunched = true;

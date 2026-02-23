@@ -8,13 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		221E26BE2EDCF1D90095699D /* libTestFixtures.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 221E266E2EDCF1B40095699D /* libTestFixtures.a */; };
-		228CA3712EB9365C00A4EC63 /* NativeScript.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */; platformFilter = ios; };
-		228CA3722EB9365C00A4EC63 /* NativeScript.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */; platformFilter = ios; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		228CA3712EB9365C00A4EC63 /* NativeScript.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */; };
+		228CA3722EB9365C00A4EC63 /* NativeScript.xcframework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		228CA3752EB9377E00A4EC63 /* TKLiveSync.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 221E26C62EDCF22B0095699D /* TKLiveSync.framework */; };
 		228CA3762EB9377E00A4EC63 /* TKLiveSync.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 221E26C62EDCF22B0095699D /* TKLiveSync.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		228CA7A52EB9387900A4EC63 /* app in Resources */ = {isa = PBXBuildFile; fileRef = 228CA7A42EB9387900A4EC63 /* app */; };
-		22F0A0042F00000300A4EC63 /* NativeScript.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 22F0A0062F00000300A4EC63 /* NativeScript.framework */; };
-		22F0A0052F00000300A4EC63 /* NativeScript.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = 22F0A0062F00000300A4EC63 /* NativeScript.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,7 +64,6 @@
 			files = (
 				228CA3722EB9365C00A4EC63 /* NativeScript.xcframework in Embed Frameworks */,
 				228CA3762EB9377E00A4EC63 /* TKLiveSync.framework in Embed Frameworks */,
-				22F0A0052F00000300A4EC63 /* NativeScript.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -82,7 +79,6 @@
 		228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NativeScript.xcframework; path = dist/NativeScript.xcframework; sourceTree = "<group>"; };
 		228CA3742EB9377D00A4EC63 /* TKLiveSync.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = TKLiveSync.xcframework; path = dist/TKLiveSync.xcframework; sourceTree = "<group>"; };
 		228CA7A42EB9387900A4EC63 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; name = app; path = TestRunner/app; sourceTree = "<group>"; };
-		22F0A0062F00000300A4EC63 /* NativeScript.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NativeScript.framework; path = dist/intermediates/macos/RelWithDebInfo/NativeScript.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -378,7 +374,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				228CA3712EB9365C00A4EC63 /* NativeScript.xcframework in Frameworks */,
-				22F0A0042F00000300A4EC63 /* NativeScript.framework in Frameworks */,
 				228CA3752EB9377E00A4EC63 /* TKLiveSync.framework in Frameworks */,
 				221E26BE2EDCF1D90095699D /* libTestFixtures.a in Frameworks */,
 			);
@@ -406,7 +401,6 @@
 			children = (
 				228CA3742EB9377D00A4EC63 /* TKLiveSync.xcframework */,
 				228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */,
-				22F0A0062F00000300A4EC63 /* NativeScript.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -1139,10 +1133,7 @@
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXPORTED_SYMBOLS_FILE = "$(PROJECT_DIR)/TestFixtures/exported-symbols.txt";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/dist/intermediates/macos/RelWithDebInfo",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1255,10 +1246,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				EXPORTED_SYMBOLS_FILE = "$(PROJECT_DIR)/TestFixtures/exported-symbols.txt";
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(SRCROOT)/dist/intermediates/macos/RelWithDebInfo",
-				);
+				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

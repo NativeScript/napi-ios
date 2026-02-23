@@ -8,6 +8,7 @@
 // Env:
 //  - IOS_DESTINATION overrides destination argument.
 //  - IOS_TEST_SKIP_BUILD=1 skips auto-build of iOS simulator runtime artifacts.
+//  - IOS_TEST_CLEAN_BUILD=1 deletes derived data before building TestRunner.app.
 //  - IOS_SWIFT_VERSION overrides default Swift version (default: 5.0).
 //  - IOS_COMMAND_TIMEOUT_MS overrides timeout for build/install/simctl commands (default: 3 minutes).
 //  - IOS_BUILD_TIMEOUT_MS overrides timeout for xcodebuild app build (default: IOS_COMMAND_TIMEOUT_MS).
@@ -15,10 +16,12 @@
 //  - IOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
 //  - IOS_TESTS filters test modules (comma-separated substrings passed to app as -tests).
 //  - IOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval (default: 45 seconds).
+//  - IOS_TEST_LOG_STREAM=0 disables parallel simulator log stream (enabled by default).
 
 const fs = require("fs");
 const path = require("path");
 const cp = require("child_process");
+const crypto = require("crypto");
 
 const projectPath = path.join(__dirname, "../napi-ios.xcodeproj");
 const scheme = "TestRunner";
@@ -27,9 +30,21 @@ const bundleId = "com.descendra.TestRunner";
 const resultsDir = path.join(__dirname, "../build", "test-results");
 const defaultJunitPath = path.join(resultsDir, "ios-junit.xml");
 const derivedDataPath = path.join(__dirname, "../build", "derived-data", "ios-tests");
+const testRunnerAppSourcePath = path.join(__dirname, "../TestRunner", "app");
+const buildStatePath = path.join(derivedDataPath, ".ios-test-build-state.json");
 
 const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
 const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
+const iosBuildInputs = [
+    path.join(__dirname, "../napi-ios.xcodeproj", "project.pbxproj"),
+    path.join(__dirname, "../TestRunner", "Source Files"),
+    path.join(__dirname, "../TestRunner", "Info.plist"),
+    path.join(__dirname, "../TestFixtures"),
+    path.join(__dirname, "../TKLiveSync"),
+    path.join(__dirname, "../metadata"),
+    nativeScriptXCFramework,
+    tkLiveSyncXCFramework
+];
 
 function parseTimeoutMs(name, fallback) {
     const value = Number(process.env[name] || fallback);
@@ -46,6 +61,8 @@ const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 2 * 60 * 1000);
 const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 45 * 1000);
 const emitJunitLogs = process.env.IOS_LOG_JUNIT !== "0";
 const requestedTests = (process.env.IOS_TESTS || "").trim();
+const enableLiveLogStream = process.env.IOS_TEST_LOG_STREAM !== "0";
+const consoleLogMarker = "CONSOLE LOG:";
 
 function looksLikeDestination(value) {
     return value.includes("platform=iOS Simulator") || /^[0-9A-Fa-f-]{36}$/.test(value) || value.includes("id=");
@@ -96,6 +113,103 @@ function runAndRequireSuccess(command, args, timeoutMs = commandTimeoutMs) {
     if (result.status !== 0) {
         process.exit(result.status || 1);
     }
+}
+
+function getPathStats(targetPath) {
+    if (!fs.existsSync(targetPath)) {
+        return { files: 0, bytes: 0, maxMtimeMs: 0 };
+    }
+
+    const queue = [targetPath];
+    let files = 0;
+    let bytes = 0;
+    let maxMtimeMs = 0;
+
+    while (queue.length > 0) {
+        const currentPath = queue.pop();
+        let stats;
+        try {
+            stats = fs.lstatSync(currentPath);
+        } catch (_) {
+            continue;
+        }
+
+        if (stats.mtimeMs > maxMtimeMs) {
+            maxMtimeMs = stats.mtimeMs;
+        }
+
+        if (stats.isDirectory()) {
+            const entries = fs.readdirSync(currentPath);
+            for (const entry of entries) {
+                queue.push(path.join(currentPath, entry));
+            }
+            continue;
+        }
+
+        if (stats.isFile() || stats.isSymbolicLink()) {
+            files += 1;
+            bytes += stats.size;
+        }
+    }
+
+    return { files, bytes, maxMtimeMs };
+}
+
+function createBuildFingerprint(inputs) {
+    const snapshot = inputs.map((inputPath) => ({
+        path: inputPath,
+        ...getPathStats(inputPath)
+    }));
+
+    return crypto.createHash("sha1").update(JSON.stringify(snapshot)).digest("hex");
+}
+
+function readBuildState() {
+    if (!fs.existsSync(buildStatePath)) {
+        return null;
+    }
+
+    try {
+        return JSON.parse(fs.readFileSync(buildStatePath, "utf8"));
+    } catch (_) {
+        return null;
+    }
+}
+
+function writeBuildState(nativeFingerprint, swiftVersion) {
+    fs.mkdirSync(path.dirname(buildStatePath), { recursive: true });
+    fs.writeFileSync(buildStatePath, JSON.stringify({
+        nativeFingerprint,
+        swiftVersion,
+        createdAt: Date.now()
+    }));
+}
+
+function syncAppResources(destinationAppResourcesPath) {
+    fs.mkdirSync(destinationAppResourcesPath, { recursive: true });
+    const result = run("rsync", [
+        "-a",
+        "--delete",
+        `${testRunnerAppSourcePath}/`,
+        `${destinationAppResourcesPath}/`
+    ]);
+
+    if (result.status !== 0) {
+        throw new Error(`Failed to sync TestRunner app resources: ${result.stderr || result.stdout || "unknown rsync error"}`);
+    }
+}
+
+function stripConsoleLogPrefix(line) {
+    const markerIndex = line.indexOf(consoleLogMarker);
+    if (markerIndex < 0) {
+        return line;
+    }
+
+    return line.slice(markerIndex + consoleLogMarker.length).trimStart();
+}
+
+function stripConsoleLogPrefixes(text) {
+    return text.replace(/^.*CONSOLE LOG:\s?/gm, "");
 }
 
 function parseRuntimeKey(runtimeKey) {
@@ -342,47 +456,87 @@ function ensureIOSSimulatorArtifacts() {
 }
 
 function buildTestRunnerApp(destination, swiftVersion) {
-    fs.rmSync(derivedDataPath, { recursive: true, force: true });
-
-    const args = [
-        "-project", projectPath,
-        "-scheme", scheme,
-        "-configuration", "Debug",
-        "-quiet",
-        "-destination", destination,
-        "-destination-timeout", "120",
-        "-derivedDataPath", derivedDataPath,
-        `SWIFT_VERSION=${swiftVersion}`,
-        "EXCLUDED_SOURCE_FILE_NAMES=Info.plist",
-        "build"
-    ];
-
-    console.log(`Building TestRunner app: xcodebuild -project ${projectPath} -scheme ${scheme} build`);
-    const result = cp.spawnSync("xcodebuild", args, { stdio: "ignore", timeout: buildTimeoutMs });
-    if (result.error && result.error.code === "ETIMEDOUT") {
-        throw new Error(`xcodebuild timed out after ${buildTimeoutMs}ms while building TestRunner.`);
-    }
-    if (result.status !== 0) {
-        console.error("xcodebuild failed. Re-running with full logs...");
-        runAndRequireSuccess("xcodebuild", args, buildTimeoutMs);
-    }
-
     const appPath = path.join(derivedDataPath, "Build", "Products", "Debug-iphonesimulator", "TestRunner.app");
+    const appResourcesPath = path.join(appPath, "app");
+
+    if (process.env.IOS_TEST_CLEAN_BUILD === "1") {
+        fs.rmSync(derivedDataPath, { recursive: true, force: true });
+    }
+
+    const nativeFingerprint = createBuildFingerprint(iosBuildInputs);
+    const existingBuildState = readBuildState();
+    const canReuseBuild = process.env.IOS_TEST_CLEAN_BUILD !== "1" &&
+        fs.existsSync(appPath) &&
+        existingBuildState &&
+        existingBuildState.nativeFingerprint === nativeFingerprint &&
+        existingBuildState.swiftVersion === swiftVersion;
+
+    console.log("Building...");
+    if (!canReuseBuild) {
+        const args = [
+            "-project", projectPath,
+            "-scheme", scheme,
+            "-configuration", "Debug",
+            "-quiet",
+            "-destination", destination,
+            "-destination-timeout", "120",
+            "-derivedDataPath", derivedDataPath,
+            `SWIFT_VERSION=${swiftVersion}`,
+            "build"
+        ];
+        const result = cp.spawnSync("xcodebuild", args, {
+            encoding: "utf8",
+            timeout: buildTimeoutMs
+        });
+        if (result.error && result.error.code === "ETIMEDOUT") {
+            if (result.stdout && result.stdout.trim().length > 0) {
+                console.error(result.stdout.trimEnd());
+            }
+            if (result.stderr && result.stderr.trim().length > 0) {
+                console.error(result.stderr.trimEnd());
+            }
+            throw new Error(`xcodebuild timed out after ${buildTimeoutMs}ms while building TestRunner.`);
+        }
+        if (result.error) {
+            throw result.error;
+        }
+        if (result.status !== 0) {
+            if (result.stdout && result.stdout.trim().length > 0) {
+                console.error(result.stdout.trimEnd());
+            }
+            if (result.stderr && result.stderr.trim().length > 0) {
+                console.error(result.stderr.trimEnd());
+            }
+            throw new Error(`xcodebuild failed while building TestRunner (exit ${result.status}).`);
+        }
+    }
+
+    syncAppResources(appResourcesPath);
+    writeBuildState(nativeFingerprint, swiftVersion);
+
     if (!fs.existsSync(appPath)) {
         throw new Error(`Built app not found at expected path: ${appPath}`);
     }
 
-    return appPath;
+    return { appPath, reusedBuild: canReuseBuild };
 }
 
-function getAppDataContainerPath(udid) {
-    const result = run("xcrun", ["simctl", "get_app_container", udid, bundleId, "data"]);
+function getAppContainerPath(udid, containerType) {
+    const result = run("xcrun", ["simctl", "get_app_container", udid, bundleId, containerType]);
     if (result.status !== 0) {
         return null;
     }
 
     const out = (result.stdout || "").trim();
     return out || null;
+}
+
+function getAppDataContainerPath(udid) {
+    return getAppContainerPath(udid, "data");
+}
+
+function getInstalledAppPath(udid) {
+    return getAppContainerPath(udid, "app");
 }
 
 function removeOldJunitFile(udid) {
@@ -397,22 +551,24 @@ function removeOldJunitFile(udid) {
     }
 }
 
-function startLaunchWithConsole(udid, appArgs = []) {
+function startLaunchWithConsole(udid, appArgs = [], useConsolePty = true, captureOutput = true) {
     const args = [
         "simctl",
         "launch",
-        "--console-pty",
         "--terminate-running-process",
         udid,
         bundleId
     ];
+    if (useConsolePty) {
+        args.splice(2, 0, "--console-pty");
+    }
     if (appArgs.length > 0) {
         args.push("--args", ...appArgs);
     }
 
     console.log(`Launching app and streaming logs: xcrun ${args.join(" ")}`);
     return cp.spawn("xcrun", args, {
-        stdio: ["ignore", "pipe", "pipe"]
+        stdio: captureOutput ? ["ignore", "pipe", "pipe"] : "ignore"
     });
 }
 
@@ -424,7 +580,7 @@ function wireOutput(launchProcess, state) {
         if (state.logs.length > 4 * 1024 * 1024) {
             state.logs = state.logs.slice(state.logs.length - 2 * 1024 * 1024);
         }
-        process.stdout.write(text);
+        process.stdout.write(stripConsoleLogPrefixes(text));
     };
 
     const onStderr = (chunk) => {
@@ -434,7 +590,7 @@ function wireOutput(launchProcess, state) {
         if (state.logs.length > 4 * 1024 * 1024) {
             state.logs = state.logs.slice(state.logs.length - 2 * 1024 * 1024);
         }
-        process.stderr.write(text);
+        process.stderr.write(stripConsoleLogPrefixes(text));
     };
 
     launchProcess.stdout.on("data", onStdout);
@@ -508,10 +664,11 @@ function wireLogStreamOutput(logStreamProcess, state) {
             state.fatalDetected = true;
         }
 
+        const displayLine = stripConsoleLogPrefix(line);
         if (streamName === "stderr") {
-            process.stderr.write(line + "\n");
+            process.stderr.write(displayLine + "\n");
         } else {
-            process.stdout.write(line + "\n");
+            process.stdout.write(displayLine + "\n");
         }
     };
 
@@ -736,12 +893,30 @@ async function main() {
     console.log(`Using destination: ${destination} (${resolved.simulator.name})`);
     bootSimulator(udid);
 
-    const appPath = buildTestRunnerApp(destination, swiftVersion);
+    const builtApp = buildTestRunnerApp(destination, swiftVersion);
+    const appPath = builtApp.appPath;
 
     removeOldJunitFile(udid);
 
-    console.log(`Installing app: ${appPath}`);
-    runAndRequireSuccess("xcrun", ["simctl", "install", udid, appPath]);
+    let shouldInstallApp = true;
+    if (builtApp.reusedBuild && process.env.IOS_TEST_FORCE_INSTALL !== "1") {
+        const installedAppPath = getInstalledAppPath(udid);
+        if (installedAppPath && fs.existsSync(installedAppPath)) {
+            try {
+                syncAppResources(path.join(installedAppPath, "app"));
+                shouldInstallApp = false;
+            } catch (error) {
+                console.log(`Installed app sync failed (${error.message}); reinstalling app.`);
+            }
+        }
+    }
+
+    if (shouldInstallApp) {
+        console.log(`Installing app: ${appPath}`);
+        runAndRequireSuccess("xcrun", ["simctl", "install", udid, appPath]);
+    } else {
+        console.log("Installing app: skipped (reusing installed TestRunner).");
+    }
 
     // Ensure stale result does not get picked up if a previous run already created the container after install.
     removeOldJunitFile(udid);
@@ -752,19 +927,25 @@ async function main() {
     const launchState = { logs: "", jasmineSummary: null, fatalDetected: false, lastActivityAt: Date.now() };
 
     try {
-        logStreamProcess = startSimulatorLogStream(udid);
-        wireLogStreamOutput(logStreamProcess, launchState);
+        if (enableLiveLogStream) {
+            logStreamProcess = startSimulatorLogStream(udid);
+            wireLogStreamOutput(logStreamProcess, launchState);
 
-        logStreamProcess.on("error", (error) => {
-            console.error(`ERROR: Failed to start simulator log stream: ${error.message}`);
-        });
+            logStreamProcess.on("error", (error) => {
+                console.error(`ERROR: Failed to start simulator log stream: ${error.message}`);
+            });
+        }
 
         const launchArgs = emitJunitLogs ? ["-logjunit"] : [];
         if (requestedTests.length > 0) {
             launchArgs.push("-tests", requestedTests);
         }
-        launchProcess = startLaunchWithConsole(udid, launchArgs);
-        wireOutput(launchProcess, launchState);
+        const useConsolePty = !enableLiveLogStream;
+        const captureLaunchOutput = !enableLiveLogStream;
+        launchProcess = startLaunchWithConsole(udid, launchArgs, useConsolePty, captureLaunchOutput);
+        if (captureLaunchOutput) {
+            wireOutput(launchProcess, launchState);
+        }
 
         launchProcess.on("error", (error) => {
             console.error(`ERROR: Failed to launch app via simctl: ${error.message}`);
