@@ -16,6 +16,7 @@ typedef enum ConvertToJSFlags : uint32_t {
   kReturnOwned = 1 << 0,
   kBlockParam = 1 << 1,
   kStructZeroCopy = 1 << 2,
+  kCStringAsReference = 1 << 3,
 } ConvertToJSFlags;
 
 class TypeConv {
@@ -36,6 +37,8 @@ class TypeConv {
                         bool* shouldFree, bool* shouldFreeAny) {}
 
   virtual void free(napi_env env, void* value) {}
+
+  virtual ffi_type* ffiTypeForArgument() { return type; }
 
   virtual void encode(std::string* encoding) {}
 };

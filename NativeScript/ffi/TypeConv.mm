@@ -595,7 +595,12 @@ class SInt64TypeConv : public TypeConv {
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
     int64_t val = *(int64_t*)value;
-    napi_create_int64(env, val, &result);
+    constexpr int64_t kMaxSafeInteger = 9007199254740991LL;
+    if (val > kMaxSafeInteger || val < -kMaxSafeInteger) {
+      napi_create_bigint_int64(env, val, &result);
+    } else {
+      napi_create_int64(env, val, &result);
+    }
     return result;
   }
 
@@ -641,7 +646,12 @@ class UInt64TypeConv : public TypeConv {
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
     uint64_t val = *(uint64_t*)value;
-    napi_create_int64(env, (int64_t)val, &result);
+    constexpr uint64_t kMaxSafeInteger = 9007199254740991ULL;
+    if (val > kMaxSafeInteger) {
+      napi_create_bigint_uint64(env, val, &result);
+    } else {
+      napi_create_int64(env, static_cast<int64_t>(val), &result);
+    }
     return result;
   }
 
@@ -934,7 +944,7 @@ class PointerTypeConv : public TypeConv {
       }
     }
 
-    if (pointeeType != nullptr && pointeeType->kind == mdTypeStruct) {
+    if (pointeeType != nullptr && pointeeType->kind != mdTypeVoid) {
       napi_value referenceValue = Reference::create(env, pointeeType, raw, false);
       if (referenceValue != nullptr) {
         return referenceValue;
@@ -1654,6 +1664,11 @@ class StringTypeConv : public TypeConv {
       napi_get_null(env, &null);
       return null;
     }
+
+    if ((flags & kCStringAsReference) != 0) {
+      return Reference::create(env, scharTypeConv, value, false);
+    }
+
     napi_value result;
     napi_create_string_utf8(env, (char*)value, NAPI_AUTO_LENGTH, &result);
     return result;
@@ -1685,6 +1700,45 @@ class StringTypeConv : public TypeConv {
       if (Reference::isInstance(env, value)) {
         Reference* ref = Reference::unwrap(env, value);
         *(char**)result = (char*)ref->data;
+        *shouldFree = false;
+        *shouldFreeAny = false;
+        return;
+      }
+
+      bool isTypedArray = false;
+      napi_is_typedarray(env, value, &isTypedArray);
+      if (isTypedArray) {
+        void* data = nullptr;
+        size_t length = 0;
+        napi_typedarray_type typedArrayType;
+        napi_get_typedarray_info(env, value, &typedArrayType, &length, &data, nullptr, nullptr);
+        *(char**)result = static_cast<char*>(data);
+        *shouldFree = false;
+        *shouldFreeAny = false;
+        return;
+      }
+
+      bool isArrayBuffer = false;
+      napi_is_arraybuffer(env, value, &isArrayBuffer);
+      if (isArrayBuffer) {
+        void* data = nullptr;
+        size_t byteLength = 0;
+        napi_get_arraybuffer_info(env, value, &data, &byteLength);
+        *(char**)result = static_cast<char*>(data);
+        *shouldFree = false;
+        *shouldFreeAny = false;
+        return;
+      }
+
+      bool isDataView = false;
+      napi_is_dataview(env, value, &isDataView);
+      if (isDataView) {
+        void* data = nullptr;
+        size_t byteLength = 0;
+        napi_value arrayBuffer = nullptr;
+        size_t byteOffset = 0;
+        napi_get_dataview_info(env, value, &byteLength, &data, &arrayBuffer, &byteOffset);
+        *(char**)result = static_cast<char*>(data);
         *shouldFree = false;
         *shouldFreeAny = false;
         return;
@@ -2544,6 +2598,7 @@ class ArrayTypeConv : public TypeConv {
  public:
   int arraySize;
   std::shared_ptr<TypeConv> elementType;
+  bool decayToPointerForArguments = false;
 
   ArrayTypeConv(int arraySize, std::shared_ptr<TypeConv> elementType)
       : arraySize(arraySize), elementType(elementType) {
@@ -2560,15 +2615,26 @@ class ArrayTypeConv : public TypeConv {
     kind = mdTypeArray;
   }
 
+  ffi_type* ffiTypeForArgument() override {
+    decayToPointerForArguments = true;
+    return &ffi_type_pointer;
+  }
+
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    if (decayToPointerForArguments) {
+      void* raw = *((void**)value);
+      if (raw == nullptr) {
+        napi_value nullValue;
+        napi_get_null(env, &nullValue);
+        return nullValue;
+      }
+      return Pointer::create(env, raw);
+    }
+
     napi_value result;
     napi_create_array_with_length(env, arraySize, &result);
 
-    size_t elementSize =
-        elementType != nullptr && elementType->type != nullptr ? elementType->type->size : 0;
-    if (elementSize == 0) {
-      elementSize = sizeof(void*);
-    }
+    size_t elementSize = getElementSize();
 
     auto base = static_cast<uint8_t*>(value);
     for (int i = 0; i < arraySize; i++) {
@@ -2590,16 +2656,111 @@ class ArrayTypeConv : public TypeConv {
                 bool* shouldFreeAny) override {
     NAPI_PREAMBLE
 
+    if (decayToPointerForArguments) {
+      void** pointerResult = static_cast<void**>(result);
+      *pointerResult = nullptr;
+
+      napi_valuetype valueType = napi_undefined;
+      napi_typeof(env, value, &valueType);
+      if (valueType == napi_null || valueType == napi_undefined) {
+        return;
+      }
+
+      if (Pointer::isInstance(env, value)) {
+        Pointer* ptr = Pointer::unwrap(env, value);
+        *pointerResult = ptr != nullptr ? ptr->data : nullptr;
+        return;
+      }
+
+      if (Reference::isInstance(env, value)) {
+        Reference* ref = Reference::unwrap(env, value);
+        *pointerResult = ref != nullptr ? ref->data : nullptr;
+        return;
+      }
+
+      if (StructObject::isInstance(env, value)) {
+        StructObject* structObject = StructObject::unwrap(env, value);
+        *pointerResult = structObject != nullptr ? structObject->data : nullptr;
+        return;
+      }
+
+      size_t arrayByteSize = getArrayByteSize();
+      if (arrayByteSize == 0) {
+        return;
+      }
+      void* copiedBuffer = malloc(arrayByteSize);
+      if (copiedBuffer == nullptr) {
+        napi_throw_error(env, nullptr, "Out of memory while converting C array argument");
+        return;
+      }
+
+      copyToInlineArrayStorage(env, value, copiedBuffer, shouldFree, shouldFreeAny);
+
+      bool hasPendingException = false;
+      napi_is_exception_pending(env, &hasPendingException);
+      if (hasPendingException) {
+        ::free(copiedBuffer);
+        return;
+      }
+
+      *pointerResult = copiedBuffer;
+      if (shouldFree != nullptr) {
+        *shouldFree = true;
+      }
+      if (shouldFreeAny != nullptr) {
+        *shouldFreeAny = true;
+      }
+      return;
+    }
+
+    copyToInlineArrayStorage(env, value, result, shouldFree, shouldFreeAny);
+  }
+
+  void free(napi_env env, void* value) override {
+    if (value != nullptr) {
+      ::free(value);
+    }
+  }
+
+  void encode(std::string* encoding) override {
+    *encoding += "[";
+    *encoding += std::to_string(arraySize);
+    elementType->encode(encoding);
+    *encoding += "]";
+  }
+
+ private:
+  size_t getElementSize() const {
     size_t elementSize =
         elementType != nullptr && elementType->type != nullptr ? elementType->type->size : 0;
+    if (elementSize == 0 && type != nullptr && arraySize > 0 && type->size >= (size_t)arraySize) {
+      elementSize = type->size / static_cast<size_t>(arraySize);
+    }
     if (elementSize == 0) {
       elementSize = sizeof(void*);
     }
-    size_t arrayByteSize = elementSize * static_cast<size_t>(arraySize);
+    return elementSize;
+  }
+
+  size_t getArrayByteSize() const { return getElementSize() * static_cast<size_t>(arraySize); }
+
+  void copyToInlineArrayStorage(napi_env env, napi_value value, void* result, bool* shouldFree,
+                                bool* shouldFreeAny) {
+    size_t elementSize = getElementSize();
+    size_t arrayByteSize = getArrayByteSize();
     memset(result, 0, arrayByteSize);
+
+    napi_valuetype valueType = napi_undefined;
+    napi_typeof(env, value, &valueType);
+    if (valueType == napi_null || valueType == napi_undefined) {
+      return;
+    }
 
     if (Pointer::isInstance(env, value)) {
       Pointer* ptr = Pointer::unwrap(env, value);
+      if (ptr == nullptr || ptr->data == nullptr) {
+        return;
+      }
       memcpy(result, ptr->data, arrayByteSize);
       return;
     }
@@ -2635,21 +2796,15 @@ class ArrayTypeConv : public TypeConv {
     void* data;
     size_t length = 0;
     napi_typedarray_type typedArrayType;
-    NAPI_GUARD(
-        napi_get_typedarray_info(env, value, &typedArrayType, &length, &data, nullptr, nullptr)) {
+    napi_status typedArrayStatus =
+        napi_get_typedarray_info(env, value, &typedArrayType, &length, &data, nullptr, nullptr);
+    if (typedArrayStatus != napi_ok) {
       NAPI_THROW_LAST_ERROR
       return;
     }
 
     size_t copyLength = length * getTypedArrayUnitLength(typedArrayType);
     memcpy(result, data, std::min(copyLength, arrayByteSize));
-  }
-
-  void encode(std::string* encoding) override {
-    *encoding += "[";
-    *encoding += std::to_string(arraySize);
-    elementType->encode(encoding);
-    *encoding += "]";
   }
 };
 

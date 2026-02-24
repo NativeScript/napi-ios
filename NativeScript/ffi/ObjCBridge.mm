@@ -13,15 +13,19 @@
 #include "ObjectRef.h"
 #include "Struct.h"
 #include "TypeConv.h"
+#include "Util.h"
 #include "Variable.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
+#include <TargetConditionals.h>
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
 #include <objc/runtime.h>
+#include <cstring>
+#include <initializer_list>
 
 #ifdef EMBED_METADATA_SIZE
 const unsigned char __attribute__((section("__objc_metadata,__objc_metadata")))
@@ -58,6 +62,400 @@ MDMetadataReader* loadMetadataFromFile(const char* metadata_path) {
   return new MDMetadataReader(buffer);
 }
 
+inline bool hasNamedProperty(napi_env env, napi_value object, const char* name) {
+  bool hasProperty = false;
+  napi_has_named_property(env, object, name, &hasProperty);
+  return hasProperty;
+}
+
+inline bool isFunctionValue(napi_env env, napi_value value) {
+  if (value == nullptr) {
+    return false;
+  }
+  napi_valuetype valueType = napi_undefined;
+  if (napi_typeof(env, value, &valueType) != napi_ok) {
+    return false;
+  }
+  return valueType == napi_function;
+}
+
+inline void clearPendingException(napi_env env) {
+  bool hasPendingException = false;
+  if (napi_is_exception_pending(env, &hasPendingException) == napi_ok && hasPendingException) {
+    napi_value exception = nullptr;
+    napi_get_and_clear_last_exception(env, &exception);
+  }
+}
+
+inline bool isConstructableValue(napi_env env, napi_value value) {
+  if (!isFunctionValue(env, value)) {
+    return false;
+  }
+
+  napi_value instance = nullptr;
+  napi_status status = napi_new_instance(env, value, 0, nullptr, &instance);
+  if (status == napi_ok) {
+    return true;
+  }
+
+  clearPendingException(env);
+  return false;
+}
+
+inline bool hasConstructableNamedProperty(napi_env env, napi_value global, const char* name) {
+  if (!hasNamedProperty(env, global, name)) {
+    return false;
+  }
+
+  napi_value value = nullptr;
+  if (napi_get_named_property(env, global, name, &value) != napi_ok || value == nullptr) {
+    clearPendingException(env);
+    return false;
+  }
+
+  return isConstructableValue(env, value);
+}
+
+inline void defineGlobalValue(napi_env env, napi_value global, const char* name, napi_value value) {
+  if (name == nullptr || value == nullptr) {
+    return;
+  }
+
+  if (napi_set_named_property(env, global, name, value) == napi_ok) {
+    return;
+  }
+  clearPendingException(env);
+
+  napi_property_descriptor prop = {
+      .utf8name = name,
+      .method = nullptr,
+      .getter = nullptr,
+      .setter = nullptr,
+      .value = value,
+      .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+      .data = nullptr,
+  };
+  if (napi_define_properties(env, global, 1, &prop) != napi_ok) {
+    clearPendingException(env);
+  }
+}
+
+inline bool defineConstructableGlobalValue(napi_env env, napi_value global, const char* name,
+                                           napi_value value) {
+  if (!isConstructableValue(env, value)) {
+    return false;
+  }
+
+  if (napi_set_named_property(env, global, name, value) == napi_ok &&
+      hasConstructableNamedProperty(env, global, name)) {
+    return true;
+  }
+  clearPendingException(env);
+
+  napi_property_descriptor prop = {
+      .utf8name = name,
+      .method = nullptr,
+      .getter = nullptr,
+      .setter = nullptr,
+      .value = value,
+      .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+      .data = nullptr,
+  };
+  if (napi_define_properties(env, global, 1, &prop) == napi_ok &&
+      hasConstructableNamedProperty(env, global, name)) {
+    return true;
+  }
+  clearPendingException(env);
+
+  napi_value key = nullptr;
+  napi_create_string_utf8(env, name, NAPI_AUTO_LENGTH, &key);
+  if (key != nullptr) {
+    bool deleted = false;
+    if (napi_delete_property(env, global, key, &deleted) == napi_ok && deleted) {
+      if (napi_define_properties(env, global, 1, &prop) == napi_ok &&
+          hasConstructableNamedProperty(env, global, name)) {
+        return true;
+      }
+      clearPendingException(env);
+      if (napi_set_named_property(env, global, name, value) == napi_ok &&
+          hasConstructableNamedProperty(env, global, name)) {
+        return true;
+      }
+      clearPendingException(env);
+    } else {
+      clearPendingException(env);
+    }
+  }
+
+  return hasConstructableNamedProperty(env, global, name);
+}
+
+inline std::string buildStructEncoding(StructInfo* info) {
+  if (info == nullptr || info->name == nullptr) {
+    return "";
+  }
+
+  std::string encoding = "{";
+  encoding += info->name;
+  encoding += "=";
+  for (const auto& field : info->fields) {
+    if (field.type == nullptr) {
+      return "";
+    }
+    field.type->encode(&encoding);
+  }
+  encoding += "}";
+  return encoding;
+}
+
+inline void setTypeEncodingSymbol(napi_env env, napi_value value, const std::string& encoding) {
+  if (value == nullptr || encoding.empty()) {
+    return;
+  }
+
+  napi_value typeSymbol = jsSymbolFor(env, "type");
+  napi_value encodedValue = nullptr;
+  napi_create_string_utf8(env, encoding.c_str(), NAPI_AUTO_LENGTH, &encodedValue);
+  if (typeSymbol != nullptr && encodedValue != nullptr) {
+    napi_set_property(env, value, typeSymbol, encodedValue);
+  }
+}
+
+inline void registerStructAlias(napi_env env, napi_value global, ObjCBridgeState* bridgeState,
+                                const char* aliasName,
+                                std::initializer_list<const char*> candidates) {
+  if (bridgeState == nullptr || aliasName == nullptr) {
+    return;
+  }
+
+  if (hasNamedProperty(env, global, aliasName)) {
+    napi_value existing = nullptr;
+    if (napi_get_named_property(env, global, aliasName, &existing) == napi_ok &&
+        isFunctionValue(env, existing)) {
+      return;
+    }
+  }
+
+  for (const char* candidate : candidates) {
+    if (candidate == nullptr || candidate[0] == '\0') {
+      continue;
+    }
+
+    auto structIt = bridgeState->structOffsets.find(candidate);
+    if (structIt != bridgeState->structOffsets.end()) {
+      StructInfo* info = bridgeState->getStructInfo(env, structIt->second);
+      if (info != nullptr) {
+        napi_value cls = StructObject::getJSClass(env, info);
+        if (isFunctionValue(env, cls)) {
+          setTypeEncodingSymbol(env, cls, buildStructEncoding(info));
+          defineGlobalValue(env, global, aliasName, cls);
+          return;
+        }
+      }
+    }
+
+    if (hasNamedProperty(env, global, candidate)) {
+      napi_value source = nullptr;
+      if (napi_get_named_property(env, global, candidate, &source) == napi_ok &&
+          isFunctionValue(env, source)) {
+        defineGlobalValue(env, global, aliasName, source);
+        return;
+      }
+    }
+  }
+}
+
+inline void ensureSyntheticCGPoint(napi_env env, napi_value global) {
+  if (hasConstructableNamedProperty(env, global, "CGPoint")) {
+    return;
+  }
+
+  static StructInfo* syntheticInfo = nullptr;
+  if (syntheticInfo == nullptr) {
+    syntheticInfo = new StructInfo();
+    syntheticInfo->name = strdup("CGPoint");
+    syntheticInfo->size = sizeof(double) * 2;
+    syntheticInfo->jsClass = nullptr;
+
+    const char* doubleEncodingX = "d";
+    const char* doubleEncodingY = "d";
+
+    StructFieldInfo fieldX;
+    fieldX.name = strdup("x");
+    fieldX.offset = 0;
+    fieldX.type = TypeConv::Make(env, &doubleEncodingX);
+    syntheticInfo->fields.push_back(fieldX);
+
+    StructFieldInfo fieldY;
+    fieldY.name = strdup("y");
+    fieldY.offset = sizeof(double);
+    fieldY.type = TypeConv::Make(env, &doubleEncodingY);
+    syntheticInfo->fields.push_back(fieldY);
+  }
+
+  napi_value cls = StructObject::getJSClass(env, syntheticInfo);
+  if (!isFunctionValue(env, cls)) {
+    return;
+  }
+
+  setTypeEncodingSymbol(env, cls, "{CGPoint=dd}");
+  defineConstructableGlobalValue(env, global, "CGPoint", cls);
+}
+
+inline void ensureConstructableStructAlias(napi_env env, napi_value global,
+                                           ObjCBridgeState* bridgeState, const char* aliasName,
+                                           std::initializer_list<const char*> candidates) {
+  if (bridgeState == nullptr || aliasName == nullptr) {
+    return;
+  }
+
+  if (hasConstructableNamedProperty(env, global, aliasName)) {
+    return;
+  }
+
+  for (const char* candidate : candidates) {
+    if (candidate == nullptr || candidate[0] == '\0') {
+      continue;
+    }
+
+    if (hasNamedProperty(env, global, candidate)) {
+      napi_value value = nullptr;
+      if (napi_get_named_property(env, global, candidate, &value) == napi_ok &&
+          defineConstructableGlobalValue(env, global, aliasName, value)) {
+        return;
+      }
+      clearPendingException(env);
+    }
+
+    auto structIt = bridgeState->structOffsets.find(candidate);
+    if (structIt != bridgeState->structOffsets.end()) {
+      StructInfo* info = bridgeState->getStructInfo(env, structIt->second);
+      if (info != nullptr) {
+        napi_value cls = StructObject::getJSClass(env, info);
+        if (defineConstructableGlobalValue(env, global, aliasName, cls)) {
+          setTypeEncodingSymbol(env, cls, buildStructEncoding(info));
+          return;
+        }
+      }
+    }
+  }
+}
+
+inline void installMacUIColorCompatShim(napi_env env) {
+  const char* script = R"(
+    (function (globalObject) {
+      if (typeof globalObject.UIColor === "undefined" &&
+          typeof globalObject.NSColor === "function") {
+        globalObject.UIColor = globalObject.NSColor;
+      }
+
+      const colorCtor = globalObject.UIColor || globalObject.NSColor;
+      if (typeof colorCtor !== "function" || !colorCtor.prototype) {
+        return;
+      }
+
+      if (typeof colorCtor.prototype.initWithRedGreenBlueAlpha === "function") {
+        return;
+      }
+
+      colorCtor.prototype.initWithRedGreenBlueAlpha = function (red, green, blue, alpha) {
+        if (typeof this.initWithSRGBRedGreenBlueAlpha === "function") {
+          return this.initWithSRGBRedGreenBlueAlpha(red, green, blue, alpha);
+        }
+        if (typeof this.initWithCalibratedRedGreenBlueAlpha === "function") {
+          return this.initWithCalibratedRedGreenBlueAlpha(red, green, blue, alpha);
+        }
+        if (typeof colorCtor.colorWithSRGBRedGreenBlueAlpha === "function") {
+          return colorCtor.colorWithSRGBRedGreenBlueAlpha(red, green, blue, alpha);
+        }
+        if (typeof colorCtor.colorWithCalibratedRedGreenBlueAlpha === "function") {
+          return colorCtor.colorWithCalibratedRedGreenBlueAlpha(red, green, blue, alpha);
+        }
+        return this;
+      };
+    })(globalThis);
+  )";
+
+  napi_value shim = nullptr;
+  napi_create_string_utf8(env, script, NAPI_AUTO_LENGTH, &shim);
+  if (shim != nullptr) {
+    napi_value result = nullptr;
+    napi_run_script(env, shim, &result);
+  }
+}
+
+inline void* resolveSymbolPointer(ObjCBridgeState* bridgeState, const char* symbolName) {
+  if (bridgeState == nullptr || symbolName == nullptr || symbolName[0] == '\0') {
+    return nullptr;
+  }
+
+  void* symbol = dlsym(bridgeState->self_dl, symbolName);
+  if (symbol == nullptr) {
+    symbol = dlsym(RTLD_DEFAULT, symbolName);
+  }
+  if (symbol == nullptr) {
+    std::string underscored = "_";
+    underscored += symbolName;
+    symbol = dlsym(bridgeState->self_dl, underscored.c_str());
+    if (symbol == nullptr) {
+      symbol = dlsym(RTLD_DEFAULT, underscored.c_str());
+    }
+  }
+
+  return symbol;
+}
+
+inline void registerCompatFunctionIfMissing(napi_env env, napi_value global,
+                                            ObjCBridgeState* bridgeState, const char* functionName,
+                                            const char* encoding) {
+  if (hasNamedProperty(env, global, functionName)) {
+    return;
+  }
+
+  void* fn = resolveSymbolPointer(bridgeState, functionName);
+  if (fn == nullptr && strcmp(functionName, "CC_SHA256") == 0) {
+    void* commonCrypto = dlopen("/usr/lib/system/libcommonCrypto.dylib", RTLD_NOW | RTLD_LOCAL);
+    if (commonCrypto != nullptr) {
+      fn = dlsym(commonCrypto, functionName);
+      if (fn == nullptr) {
+        fn = dlsym(commonCrypto, "_CC_SHA256");
+      }
+    }
+  }
+
+  if (fn == nullptr) {
+    return;
+  }
+
+  napi_value wrapper = FunctionPointer::wrapWithEncoding(env, fn, encoding, false);
+  if (wrapper != nullptr) {
+    napi_set_named_property(env, global, functionName, wrapper);
+  }
+}
+
+void registerLegacyCompatGlobals(napi_env env, napi_value global, ObjCBridgeState* bridgeState) {
+#if TARGET_OS_OSX
+  registerStructAlias(env, global, bridgeState, "CGPoint",
+                      {"CGPoint", "_CGPoint", "NSPoint", "_NSPoint"});
+  registerStructAlias(env, global, bridgeState, "CGSize",
+                      {"CGSize", "_CGSize", "NSSize", "_NSSize"});
+  registerStructAlias(env, global, bridgeState, "CGRect",
+                      {"CGRect", "_CGRect", "NSRect", "_NSRect"});
+  ensureSyntheticCGPoint(env, global);
+  ensureConstructableStructAlias(
+      env, global, bridgeState, "CGPoint",
+      {"CGPointStruct", "NSPoint", "NSPointStruct", "_CGPoint", "_NSPoint", "CGPoint"});
+  installMacUIColorCompatShim(env);
+#endif
+
+  // CommonCrypto compatibility used by historical runtime tests and apps.
+  registerCompatFunctionIfMissing(env, global, bridgeState, "CC_SHA256", "^C^vQ^C");
+  registerCompatFunctionIfMissing(env, global, bridgeState, "CGColorGetComponents", "^d^v");
+
+  // Backward compatibility for legacy metadata sets missing libdispatch entries.
+  registerCompatFunctionIfMissing(env, global, bridgeState, "dispatch_get_global_queue", "^vqQ");
+}
+
 ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
                                  const void* metadata_ptr) {
   napi_set_instance_data(env, this, finalize_bridge_data, nil);
@@ -65,13 +463,13 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
   self_dl = dlopen(nullptr, RTLD_NOW);
 
   if (metadata_ptr && *((const char*)metadata_ptr) != '\0') {
-    #ifdef EMBED_METADATA_SIZE
+#ifdef EMBED_METADATA_SIZE
     NSLog(@"Ignoring metadata pointer due to embedded metadata");
     metadata = new MDMetadataReader((void*)embedded_metadata);
-    #else
+#else
     NSLog(@"Using metadata from pointer: %p", metadata_ptr);
     metadata = new MDMetadataReader((void*)metadata_ptr);
-    #endif
+#endif
   } else {
 #ifdef EMBED_METADATA_SIZE
     if (metadata_path != nullptr) {
@@ -278,4 +676,5 @@ NAPI_EXPORT void nativescript_init(void* _env, const char* metadata_path,
   bridgeState->registerFunctionGlobals(env, global);
   bridgeState->registerClassGlobals(env, global);
   bridgeState->registerProtocolGlobals(env, global);
+  registerLegacyCompatGlobals(env, global, bridgeState);
 }

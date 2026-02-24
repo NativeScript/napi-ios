@@ -10,8 +10,10 @@
 #import <Foundation/Foundation.h>
 #include <dlfcn.h>
 #include <objc/runtime.h>
+#include <cctype>
 #include <cmath>
 #include <cstdint>
+#include <cstdlib>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -25,6 +27,227 @@ constexpr const char* kFunctionReferenceMarker = "__ns_function_reference";
 constexpr const char* kFunctionReferenceDataProperty = "__ns_function_reference_data";
 
 inline uintptr_t pointerKey(void* data) { return reinterpret_cast<uintptr_t>(data); }
+
+inline bool isInteropTypeCode(int32_t value) {
+  switch (value) {
+    case mdTypeVoid:
+    case mdTypeBool:
+    case mdTypeChar:
+    case mdTypeUInt8:
+    case mdTypeSShort:
+    case mdTypeUShort:
+    case mdTypeSInt:
+    case mdTypeUInt:
+    case mdTypeSInt64:
+    case mdTypeUInt64:
+    case mdTypeFloat:
+    case mdTypeDouble:
+    case mdTypeString:
+    case mdTypeAnyObject:
+    case mdTypePointer:
+    case mdTypeSelector:
+      return true;
+    default:
+      return false;
+  }
+}
+
+inline size_t referenceElementSize(Reference* ref) {
+  if (ref == nullptr || ref->type == nullptr || ref->type->type == nullptr ||
+      ref->type->type->size == 0) {
+    return sizeof(void*);
+  }
+
+  return ref->type->type->size;
+}
+
+inline bool isArrayIndexProperty(napi_env env, napi_value property, uint32_t* index) {
+  if (index == nullptr) {
+    return false;
+  }
+
+  napi_valuetype propertyType = napi_undefined;
+  napi_typeof(env, property, &propertyType);
+
+  if (propertyType == napi_number) {
+    double number = 0;
+    if (napi_get_value_double(env, property, &number) != napi_ok) {
+      return false;
+    }
+
+    if (!std::isfinite(number) || number < 0 || floor(number) != number ||
+        number > static_cast<double>(UINT32_MAX)) {
+      return false;
+    }
+
+    *index = static_cast<uint32_t>(number);
+    return true;
+  }
+
+  if (propertyType != napi_string) {
+    return false;
+  }
+
+  char chars[32];
+  size_t length = 0;
+  if (napi_get_value_string_utf8(env, property, chars, sizeof(chars), &length) != napi_ok ||
+      length == 0 || length >= sizeof(chars)) {
+    return false;
+  }
+
+  for (size_t i = 0; i < length; i++) {
+    if (!std::isdigit(static_cast<unsigned char>(chars[i]))) {
+      return false;
+    }
+  }
+
+  char* end = nullptr;
+  unsigned long long parsed = std::strtoull(chars, &end, 10);
+  if (end == nullptr || *end != '\0' || parsed > static_cast<unsigned long long>(UINT32_MAX)) {
+    return false;
+  }
+
+  *index = static_cast<uint32_t>(parsed);
+  return true;
+}
+
+inline napi_value referenceValueAtIndex(napi_env env, Reference* ref, uint32_t index) {
+  napi_value undefined;
+  napi_get_undefined(env, &undefined);
+
+  if (ref == nullptr || ref->type == nullptr || ref->data == nullptr) {
+    return undefined;
+  }
+
+  auto slot =
+      static_cast<uint8_t*>(ref->data) + (static_cast<size_t>(index) * referenceElementSize(ref));
+  napi_value value = ref->type->toJS(env, slot);
+  napi_valuetype valueType = napi_undefined;
+  napi_typeof(env, value, &valueType);
+  if (valueType == napi_boolean) {
+    bool boolValue = false;
+    napi_get_value_bool(env, value, &boolValue);
+    napi_create_uint32(env, boolValue ? 1 : 0, &value);
+  }
+  return value;
+}
+
+inline bool referenceSetValueAtIndex(napi_env env, Reference* ref, uint32_t index,
+                                     napi_value value) {
+  if (ref == nullptr || ref->type == nullptr || ref->data == nullptr) {
+    napi_throw_error(env, nullptr, "Reference is not initialized");
+    return false;
+  }
+
+  auto slot =
+      static_cast<uint8_t*>(ref->data) + (static_cast<size_t>(index) * referenceElementSize(ref));
+  bool shouldFree = false;
+  ref->type->toNative(env, value, slot, &shouldFree, &shouldFree);
+
+  bool hasPendingException = false;
+  napi_is_exception_pending(env, &hasPendingException);
+  return !hasPendingException;
+}
+
+napi_value referenceProxyGetter(napi_env env, napi_callback_info info) {
+  size_t argc = 3;
+  napi_value argv[3] = {nullptr, nullptr, nullptr};
+  napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+
+  napi_value target = argc > 0 ? argv[0] : nullptr;
+  napi_value property = argc > 1 ? argv[1] : nullptr;
+
+  uint32_t index = 0;
+  if (property != nullptr && isArrayIndexProperty(env, property, &index)) {
+    return referenceValueAtIndex(env, Reference::unwrap(env, target), index);
+  }
+
+  napi_value result;
+  if (napi_get_property(env, target, property, &result) != napi_ok) {
+    return nullptr;
+  }
+
+  napi_valuetype resultType = napi_undefined;
+  napi_typeof(env, result, &resultType);
+  if (resultType == napi_function) {
+    napi_value bind;
+    if (napi_get_named_property(env, result, "bind", &bind) == napi_ok) {
+      napi_value bound;
+      napi_value bindArgs[1] = {target};
+      if (napi_call_function(env, result, bind, 1, bindArgs, &bound) == napi_ok) {
+        return bound;
+      }
+    }
+  }
+
+  return result;
+}
+
+napi_value referenceProxySetter(napi_env env, napi_callback_info info) {
+  size_t argc = 4;
+  napi_value argv[4] = {nullptr, nullptr, nullptr, nullptr};
+  napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+
+  napi_value target = argc > 0 ? argv[0] : nullptr;
+  napi_value property = argc > 1 ? argv[1] : nullptr;
+  napi_value value = argc > 2 ? argv[2] : nullptr;
+
+  uint32_t index = 0;
+  bool ok = true;
+  if (property != nullptr && isArrayIndexProperty(env, property, &index)) {
+    ok = referenceSetValueAtIndex(env, Reference::unwrap(env, target), index, value);
+  } else {
+    ok = napi_set_property(env, target, property, value) == napi_ok;
+  }
+
+  napi_value result;
+  napi_get_boolean(env, ok, &result);
+  return result;
+}
+
+inline napi_value createReferenceProxy(napi_env env, napi_value target, Reference* reference) {
+  napi_value global;
+  napi_get_global(env, &global);
+
+  napi_value proxyCtor;
+  if (napi_get_named_property(env, global, "Proxy", &proxyCtor) != napi_ok) {
+    return target;
+  }
+
+  napi_value handler;
+  napi_create_object(env, &handler);
+  const napi_property_descriptor handlerProperties[] = {
+      {
+          .utf8name = "get",
+          .method = referenceProxyGetter,
+          .getter = nullptr,
+          .setter = nullptr,
+          .value = nullptr,
+          .attributes = napi_default,
+          .data = nullptr,
+      },
+      {
+          .utf8name = "set",
+          .method = referenceProxySetter,
+          .getter = nullptr,
+          .setter = nullptr,
+          .value = nullptr,
+          .attributes = napi_default,
+          .data = nullptr,
+      },
+  };
+  napi_define_properties(env, handler, 2, handlerProperties);
+
+  napi_value proxyArgs[2] = {target, handler};
+  napi_value proxy;
+  if (napi_new_instance(env, proxyCtor, 2, proxyArgs, &proxy) != napi_ok) {
+    return target;
+  }
+
+  napi_wrap(env, proxy, reference, nullptr, nullptr, nullptr);
+
+  return proxy;
+}
 
 inline bool getCachedPointer(napi_env env, void* data, napi_value* value) {
   auto it = g_pointerCache.find(pointerKey(data));
@@ -345,7 +568,7 @@ void registerInterop(napi_env env, napi_value global) {
   napi_set_named_property(env, types, "float", createJSNumber(env, mdTypeFloat));
   napi_set_named_property(env, types, "double", createJSNumber(env, mdTypeDouble));
   napi_set_named_property(env, types, "UTF8CString", createJSNumber(env, mdTypeString));
-  napi_set_named_property(env, types, "unichar", createJSNumber(env, mdTypeString));
+  napi_set_named_property(env, types, "unichar", createJSNumber(env, mdTypeUShort));
   napi_set_named_property(env, types, "id", createJSNumber(env, mdTypeAnyObject));
   napi_set_named_property(env, types, "protocol", createJSNumber(env, mdTypePointer));
   napi_set_named_property(env, types, "class", createJSNumber(env, mdTypeAnyObject));
@@ -584,9 +807,11 @@ napi_value interop_free(napi_env env, napi_callback_info info) {
 }
 
 napi_value interop_stringFromCString(napi_env env, napi_callback_info info) {
-  napi_value arg;
-  size_t argc = 1;
-  napi_get_cb_info(env, info, &argc, &arg, nullptr, nullptr);
+  size_t argc = 2;
+  napi_value argv[2] = {nullptr, nullptr};
+  napi_get_cb_info(env, info, &argc, argv, nullptr, nullptr);
+
+  napi_value arg = argv[0];
 
   napi_valuetype type;
   napi_typeof(env, arg, &type);
@@ -617,7 +842,20 @@ napi_value interop_stringFromCString(napi_env env, napi_callback_info info) {
   if (data == nullptr) {
     napi_get_null(env, &result);
   } else {
-    napi_create_string_utf8(env, (const char*)data, NAPI_AUTO_LENGTH, &result);
+    size_t length = NAPI_AUTO_LENGTH;
+    if (argc >= 2 && argv[1] != nullptr) {
+      napi_valuetype lengthType = napi_undefined;
+      napi_typeof(env, argv[1], &lengthType);
+      if (lengthType != napi_undefined && lengthType != napi_null) {
+        int64_t explicitLength = 0;
+        napi_get_value_int64(env, argv[1], &explicitLength);
+        if (explicitLength < 0) {
+          explicitLength = 0;
+        }
+        length = static_cast<size_t>(explicitLength);
+      }
+    }
+    napi_create_string_utf8(env, (const char*)data, length, &result);
   }
 
   return result;
@@ -1197,10 +1435,19 @@ napi_value Reference::defineJSClass(napi_env env) {
           .attributes = napi_enumerable,
           .data = nullptr,
       },
+      {
+          .utf8name = "toString",
+          .method = Reference::customInspect,
+          .getter = nullptr,
+          .setter = nullptr,
+          .value = nullptr,
+          .attributes = napi_enumerable,
+          .data = nullptr,
+      },
   };
 
   napi_value constructor;
-  napi_define_class(env, "Reference", NAPI_AUTO_LENGTH, Reference::constructor, nullptr, 2,
+  napi_define_class(env, "Reference", NAPI_AUTO_LENGTH, Reference::constructor, nullptr, 3,
                     properties, &constructor);
 
   napi_value symbolSizeof = jsSymbolFor(env, "sizeof");
@@ -1247,7 +1494,9 @@ napi_value Reference::create(napi_env env, std::shared_ptr<TypeConv> type, void*
 
 Reference* Reference::unwrap(napi_env env, napi_value value) {
   Reference* ref = nullptr;
-  napi_unwrap(env, value, (void**)&ref);
+  if (napi_unwrap(env, value, (void**)&ref) != napi_ok) {
+    return nullptr;
+  }
   return ref;
 }
 
@@ -1260,8 +1509,42 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
   Reference* reference = new Reference();
   reference->env = env;
 
-  if (argc == 1) {
-    reference->initValue = make_ref(env, argv[0]);
+  if (argc == 0) {
+    // Leave it uninitialized. It can be materialized later by pointer marshalling.
+  } else if (argc == 1) {
+    napi_valuetype argType = napi_undefined;
+    napi_typeof(env, argv[0], &argType);
+
+    bool isTypeArg = false;
+    if (argType == napi_function) {
+      isTypeArg = true;
+    } else if (argType == napi_number) {
+      double numericValue = 0;
+      if (napi_get_value_double(env, argv[0], &numericValue) == napi_ok &&
+          std::isfinite(numericValue) && floor(numericValue) == numericValue &&
+          numericValue >= static_cast<double>(INT32_MIN) &&
+          numericValue <= static_cast<double>(INT32_MAX)) {
+        int32_t typeCode = static_cast<int32_t>(numericValue);
+        if (isInteropTypeCode(typeCode)) {
+          isTypeArg = true;
+        }
+      }
+    }
+
+    if (isTypeArg) {
+      std::string typeEncoding = getEncodedType(env, argv[0]);
+      const char* typestr = typeEncoding.c_str();
+      reference->type = TypeConv::Make(env, &typestr);
+
+      size_t size = reference->type != nullptr && reference->type->type != nullptr &&
+                            reference->type->type->size > 0
+                        ? reference->type->type->size
+                        : sizeof(void*);
+      reference->data = calloc(1, size);
+      reference->ownsData = true;
+    } else {
+      reference->initValue = make_ref(env, argv[0]);
+    }
   } else if (argc == 2) {
     std::string type = getEncodedType(env, argv[0]);
     const char* typestr = type.c_str();
@@ -1273,17 +1556,32 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
     if (argtype == napi_object && Pointer::isInstance(env, argv[1])) {
       reference->data = Pointer::unwrap(env, argv[1])->data;
       reference->ownsData = false;
+    } else if (argtype == napi_object && Reference::isInstance(env, argv[1])) {
+      Reference* other = Reference::unwrap(env, argv[1]);
+      if (other != nullptr && other->data != nullptr) {
+        reference->data = other->data;
+        reference->ownsData = false;
+      } else if (other != nullptr && other->initValue != nullptr) {
+        size_t size = reference->type != nullptr && reference->type->type != nullptr &&
+                              reference->type->type->size > 0
+                          ? reference->type->type->size
+                          : sizeof(void*);
+        reference->data = calloc(1, size);
+        reference->ownsData = true;
+        bool shouldFree = false;
+        napi_value initValue = get_ref_value(env, other->initValue);
+        reference->type->toNative(env, initValue, reference->data, &shouldFree, &shouldFree);
+      }
     } else {
-      reference->data = malloc(reference->type->type->size);
+      size_t size = reference->type != nullptr && reference->type->type != nullptr &&
+                            reference->type->type->size > 0
+                        ? reference->type->type->size
+                        : sizeof(void*);
+      reference->data = malloc(size);
       reference->ownsData = true;
       bool shouldFree;
       reference->type->toNative(env, argv[1], reference->data, &shouldFree, &shouldFree);
     }
-  } else if (argc == 0) {
-    // reference->data = malloc(sizeof(void*));
-    // const char * typestr = "@";
-    // reference->type = TypeConv::Make(env, &typestr);
-    // reference->initValue = nullptr;
   } else {
     napi_throw_error(env, nullptr, "Invalid number of arguments");
     return nullptr;
@@ -1291,7 +1589,7 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
 
   napi_wrap(env, jsThis, reference, Reference::finalize, nullptr, nullptr);
 
-  return jsThis;
+  return createReferenceProxy(env, jsThis, reference);
 }
 
 napi_value Reference::get_value(napi_env env, napi_callback_info info) {
@@ -1300,15 +1598,23 @@ napi_value Reference::get_value(napi_env env, napi_callback_info info) {
 
   Reference* ref = Reference::unwrap(env, jsThis);
 
-  napi_value result;
-
-  if (ref->data == nullptr) {
-    napi_get_undefined(env, &result);
-  } else {
-    result = ref->type->toJS(env, ref->data);
+  if (ref == nullptr) {
+    napi_value undefined;
+    napi_get_undefined(env, &undefined);
+    return undefined;
   }
 
-  return result;
+  if (ref->data == nullptr) {
+    if (ref->initValue != nullptr) {
+      return get_ref_value(env, ref->initValue);
+    }
+
+    napi_value undefined;
+    napi_get_undefined(env, &undefined);
+    return undefined;
+  }
+
+  return ref->type->toJS(env, ref->data);
 }
 
 napi_value Reference::set_value(napi_env env, napi_callback_info info) {
@@ -1319,9 +1625,30 @@ napi_value Reference::set_value(napi_env env, napi_callback_info info) {
 
   Reference* ref = Reference::unwrap(env, jsThis);
 
-  if (ref->data != nullptr) {
-    bool shouldFree;
-    ref->type->toNative(env, arg, ref->data, &shouldFree, &shouldFree);
+  if (ref == nullptr) {
+    return nullptr;
+  }
+
+  if (ref->data == nullptr) {
+    if (ref->type == nullptr) {
+      if (ref->initValue != nullptr) {
+        napi_delete_reference(env, ref->initValue);
+      }
+      ref->initValue = make_ref(env, arg);
+      return nullptr;
+    }
+
+    size_t size = ref->type->type != nullptr && ref->type->type->size > 0 ? ref->type->type->size
+                                                                          : sizeof(void*);
+    ref->data = calloc(1, size);
+    ref->ownsData = true;
+  }
+
+  bool shouldFree = false;
+  ref->type->toNative(env, arg, ref->data, &shouldFree, &shouldFree);
+  if (ref->initValue != nullptr) {
+    napi_delete_reference(env, ref->initValue);
+    ref->initValue = nullptr;
   }
 
   return nullptr;
@@ -1334,10 +1661,11 @@ napi_value Reference::customInspect(napi_env env, napi_callback_info info) {
   Reference* ref = Reference::unwrap(env, jsThis);
 
   napi_value result;
-  char* hex = (char*)malloc(17);
-  snprintf(hex, 17, "%0016llx", (uint64_t)ref->data);
-  std::string str = "<Reference: 0x" + std::string(hex) + ">";
-  free(hex);
+  if (ref == nullptr) {
+    napi_create_string_utf8(env, "<Reference: 0x0>", NAPI_AUTO_LENGTH, &result);
+    return result;
+  }
+  std::string str = "<Reference: " + pointerHexString(ref->data) + ">";
   napi_create_string_utf8(env, str.c_str(), NAPI_AUTO_LENGTH, &result);
 
   return result;

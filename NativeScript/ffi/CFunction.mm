@@ -81,14 +81,14 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
 
 #ifdef ENABLE_JS_RUNTIME
   if (strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0) {
-    void **avaluesPtr = new void*[cif->argc];
+    void** avaluesPtr = new void*[cif->argc];
     memcpy(avaluesPtr, avalues, cif->argc * sizeof(void*));
 
     Tasks::Register([env, cif, func, rvalue, avaluesPtr]() {
-      void * avalues[cif->argc];
+      void* avalues[cif->argc];
       memcpy(avalues, avaluesPtr, cif->argc * sizeof(void*));
       delete[] avaluesPtr;
-      
+
       @try {
         ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
       } @catch (NSException* exception) {
@@ -99,7 +99,7 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
         nativeScriptException.ReThrowToJS(env);
       }
     });
-    
+
     return nullptr;
   }
 #endif
@@ -115,14 +115,26 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   }
 
   if (shouldFreeAny) {
+    void* returnPointerValue = nullptr;
+    bool returnIsPointer = cif->returnType != nullptr && cif->returnType->type == &ffi_type_pointer;
+    if (returnIsPointer && rvalue != nullptr) {
+      returnPointerValue = *((void**)rvalue);
+    }
+
     for (unsigned int i = 0; i < cif->argc; i++) {
       if (shouldFree[i]) {
+        if (returnPointerValue != nullptr && avalues[i] != nullptr) {
+          void* argPointerValue = *((void**)avalues[i]);
+          if (argPointerValue == returnPointerValue) {
+            continue;
+          }
+        }
         cif->argTypes[i]->free(env, *((void**)avalues[i]));
       }
     }
   }
 
-  return cif->returnType->toJS(env, rvalue);
+  return cif->returnType->toJS(env, rvalue, kCStringAsReference);
 }
 
 CFunction::~CFunction() { cif = nullptr; }

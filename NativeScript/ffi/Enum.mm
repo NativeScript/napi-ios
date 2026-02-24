@@ -1,16 +1,17 @@
 #include "Enum.h"
 #import <Foundation/Foundation.h>
-#include "ObjCBridge.h"
 #include <algorithm>
 #include <cstring>
 #include <unordered_set>
 #include <vector>
+#include "ObjCBridge.h"
 
 namespace nativescript {
 
 namespace {
 inline void defineConstantIfMissing(napi_env env, napi_value object, const std::string& name,
-                                    napi_value value) {
+                                    napi_value value,
+                                    napi_property_attributes attributes = napi_enumerable) {
   bool hasProperty = false;
   napi_has_named_property(env, object, name.c_str(), &hasProperty);
   if (hasProperty) {
@@ -23,7 +24,7 @@ inline void defineConstantIfMissing(napi_env env, napi_value object, const std::
       .getter = nullptr,
       .setter = nullptr,
       .value = value,
-      .attributes = napi_enumerable,
+      .attributes = attributes,
       .data = nullptr,
   };
   napi_define_properties(env, object, 1, &prop);
@@ -35,8 +36,8 @@ inline bool startsWith(const std::string& value, const std::string& prefix) {
 
 inline std::string stripEnumSuffix(const std::string& enumName) {
   static const std::vector<std::string> suffixes = {
-      "Options", "Option", "Enums", "Enum", "Result", "Direction", "Orientation", "Style",
-      "Mask",    "Type",   "Status", "Modes", "Mode", "s"};
+      "Options", "Option", "Enums", "Enum",   "Result", "Direction", "Orientation",
+      "Style",   "Mask",   "Type",  "Status", "Modes",  "Mode",      "s"};
 
   for (const auto& suffix : suffixes) {
     if (enumName.size() > suffix.size() &&
@@ -48,7 +49,8 @@ inline std::string stripEnumSuffix(const std::string& enumName) {
   return enumName;
 }
 
-inline bool isNSComparisonResultOrderingName(const std::string& enumName, const std::string& member) {
+inline bool isNSComparisonResultOrderingName(const std::string& enumName,
+                                             const std::string& member) {
   if (enumName != "NSComparisonResult") {
     return false;
   }
@@ -75,7 +77,8 @@ void ObjCBridgeState::registerEnumGlobals(napi_env env, napi_value global) {
 
       napi_value member;
       napi_create_int64(env, value, &member);
-      defineConstantIfMissing(env, global, memberName, member);
+      defineConstantIfMissing(env, global, memberName, member,
+                              (napi_property_attributes)(napi_enumerable | napi_configurable));
     }
 
     napi_property_descriptor prop = {
@@ -169,7 +172,8 @@ NAPI_FUNCTION(enumGetter) {
 
     for (const auto& alias : uniqueAliases) {
       defineConstantIfMissing(env, result, alias, member);
-      defineConstantIfMissing(env, global, alias, member);
+      defineConstantIfMissing(env, global, alias, member,
+                              (napi_property_attributes)(napi_enumerable | napi_configurable));
     }
 
     std::string reverseCanonical = uniqueAliases.size() > 1 ? uniqueAliases[1] : memberName;

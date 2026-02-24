@@ -189,7 +189,7 @@ loadTest("./Marshalling/RecordTests");
 loadTest("./Marshalling/NSStringTests");
 //import "./Marshalling/TypesTests";
 loadTest("./Marshalling/PointerTests");
-// require("./Marshalling/ReferenceTests");
+require("./Marshalling/ReferenceTests");
 loadTest("./Marshalling/FunctionPointerTests");
 loadTest("./Marshalling/EnumTests");
 loadTest("./Marshalling/ProtocolTests");

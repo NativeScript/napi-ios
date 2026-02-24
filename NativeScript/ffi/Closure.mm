@@ -214,7 +214,7 @@ Closure::Closure(std::string encoding, bool isBlock, bool isMethod) {
   for (int i = 0; i < argc; i++) {
     const char* argenc = [signature getArgumentTypeAtIndex:i];
     auto argTypeInfo = TypeConv::Make(env, &argenc);
-    this->atypes[i + skipArgs] = argTypeInfo->type;
+    this->atypes[i + skipArgs] = argTypeInfo->ffiTypeForArgument();
     this->argTypes.push_back(argTypeInfo);
   }
 
@@ -228,10 +228,9 @@ Closure::Closure(std::string encoding, bool isBlock, bool isMethod) {
 
   closure = (ffi_closure*)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
 
-  ffi_prep_closure_loc(closure, &cif,
-                       isBlock ? JSBlockCallback
-                               : (isMethod ? JSMethodCallback : JSFunctionCallback),
-                       this, fnptr);
+  ffi_prep_closure_loc(
+      closure, &cif, isBlock ? JSBlockCallback : (isMethod ? JSMethodCallback : JSFunctionCallback),
+      this, fnptr);
 }
 
 Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
@@ -273,7 +272,7 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
       this->atypes[0] = &ffi_type_pointer;
     }
     for (int i = 0; i < argTypes.size(); i++) {
-      this->atypes[i + skipArgs] = argTypes[i]->type;
+      this->atypes[i + skipArgs] = argTypes[i]->ffiTypeForArgument();
     }
   }
 
@@ -286,10 +285,9 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
 
   closure = (ffi_closure*)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
 
-  ffi_prep_closure_loc(closure, &cif,
-                       isBlock ? JSBlockCallback
-                               : (isMethod ? JSMethodCallback : JSFunctionCallback),
-                       this, fnptr);
+  ffi_prep_closure_loc(
+      closure, &cif, isBlock ? JSBlockCallback : (isMethod ? JSMethodCallback : JSFunctionCallback),
+      this, fnptr);
 }
 
 Closure::~Closure() {

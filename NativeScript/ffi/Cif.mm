@@ -100,7 +100,7 @@ Cif::Cif(napi_env env, std::string encoding, unsigned int implicitArgc) {
     const char* argenc = [signature getArgumentTypeAtIndex:i];
 
     auto argTypeInfo = TypeConv::Make(env, &argenc);
-    this->atypes[i] = argTypeInfo->type;
+    this->atypes[i] = argTypeInfo->ffiTypeForArgument();
 
     if (i >= skippedArgs) {
       this->argTypes.push_back(argTypeInfo);
@@ -162,7 +162,7 @@ Cif::Cif(napi_env env, Method method) {
       free(argEnc);
     }
 
-    this->atypes[i] = argTypeInfo->type;
+    this->atypes[i] = argTypeInfo->ffiTypeForArgument();
     if (i >= 2) {
       this->argTypes.push_back(argTypeInfo);
     }
@@ -226,7 +226,7 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
     }
 
     for (int i = 0; i < argc; i++) {
-      atypes[i + implicitArgs] = argTypes[i]->type;
+      atypes[i + implicitArgs] = argTypes[i]->ffiTypeForArgument();
       shouldFree[i] = false;
     }
   } else {

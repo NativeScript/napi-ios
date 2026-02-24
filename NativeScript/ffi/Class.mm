@@ -1,6 +1,7 @@
 #include "Class.h"
 #include "ClassBuilder.h"
 #include "ClassMember.h"
+#include "Interop.h"
 #include "Metadata.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
@@ -17,6 +18,49 @@
 namespace nativescript {
 
 napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo);
+
+inline bool tryGetInteropPointerArg(napi_env env, napi_value value, void** out) {
+  if (out == nullptr || value == nullptr) {
+    return false;
+  }
+
+  *out = nullptr;
+
+  napi_valuetype argType = napi_undefined;
+  napi_typeof(env, value, &argType);
+
+  if (argType == napi_external) {
+    return napi_get_value_external(env, value, out) == napi_ok && *out != nullptr;
+  }
+
+  if (argType == napi_bigint) {
+    uint64_t raw = 0;
+    bool lossless = false;
+    if (napi_get_value_bigint_uint64(env, value, &raw, &lossless) != napi_ok) {
+      return false;
+    }
+    *out = reinterpret_cast<void*>(raw);
+    return *out != nullptr;
+  }
+
+  if (argType != napi_object) {
+    return false;
+  }
+
+  if (Pointer::isInstance(env, value)) {
+    Pointer* ptr = Pointer::unwrap(env, value);
+    *out = ptr != nullptr ? ptr->data : nullptr;
+    return *out != nullptr;
+  }
+
+  if (Reference::isInstance(env, value)) {
+    Reference* ref = Reference::unwrap(env, value);
+    *out = ref != nullptr ? ref->data : nullptr;
+    return *out != nullptr;
+  }
+
+  return false;
+}
 
 void ObjCBridgeState::registerClassGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->classesOffset;
@@ -255,6 +299,27 @@ NAPI_FUNCTION(BridgedConstructor) {
   if (jsType == napi_external) {
     return jsThis;
   } else {
+    // Backward compatibility: allow `new Class(pointer)` to wrap an existing
+    // native instance instead of running initializer resolution.
+    if (argc == 1 && argv[0] != nullptr) {
+      void* rawPointer = nullptr;
+      if (tryGetInteropPointerArg(env, argv[0], &rawPointer) && rawPointer != nullptr) {
+        object = (id)rawPointer;
+        napi_value constructor = nullptr;
+        if (napi_get_named_property(env, jsThis, "constructor", &constructor) == napi_ok &&
+            constructor != nullptr) {
+          napi_value existing = bridgeState->getObject(env, object, constructor, kUnownedObject);
+          if (existing != nullptr) {
+            return existing;
+          }
+        }
+
+        jsThis = bridgeState->proxyNativeObject(env, jsThis, object);
+        napi_wrap(env, jsThis, object, nullptr, nullptr, nullptr);
+        return jsThis;
+      }
+    }
+
     bool supercall = class_conformsToProtocol(cls, @protocol(ObjCBridgeClassBuilderProtocol));
 
     if (supercall) {
