@@ -4,8 +4,71 @@
 #ifdef __APPLE__
 
 #import <Foundation/Foundation.h>
+#include <dispatch/dispatch.h>
 #include <objc/runtime.h>
+#include <cmath>
 #include "Timers.h"
+
+@interface NSTimerHandle : NSObject {
+ @public
+  NSTimer* timer;
+  napi_env env;
+  napi_ref callback;
+}
+@end
+
+@implementation NSTimerHandle
+- (void)dealloc {
+  if (timer != nil) {
+    [timer release];
+    timer = nil;
+  }
+  [super dealloc];
+}
+@end
+
+namespace {
+const void* kTimerHandleAssociationKey = &kTimerHandleAssociationKey;
+
+void AddTimerToMainRunLoop(NSTimer* timer) {
+  if (timer == nil) {
+    return;
+  }
+
+  auto addTimer = ^{
+    if ([timer isValid]) {
+      [[NSRunLoop mainRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+    }
+  };
+
+  if ([NSThread isMainThread]) {
+    addTimer();
+    return;
+  }
+
+  dispatch_sync(dispatch_get_main_queue(), addTimer);
+}
+
+void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle) {
+  if (handle == nil) {
+    return;
+  }
+
+  if (handle->timer != nil) {
+    NSTimer* rawTimer = handle->timer;
+    objc_setAssociatedObject(rawTimer, kTimerHandleAssociationKey, nil, OBJC_ASSOCIATION_ASSIGN);
+    [rawTimer invalidate];
+    [rawTimer release];
+    handle->timer = nil;
+  }
+
+  napi_env cleanupEnv = callEnv != nullptr ? callEnv : handle->env;
+  if (cleanupEnv != nullptr && handle->callback != nullptr) {
+    napi_delete_reference(cleanupEnv, handle->callback);
+    handle->callback = nullptr;
+  }
+}
+}  // namespace
 
 namespace nativescript {
 
@@ -29,33 +92,65 @@ JS_METHOD(Timers::SetTimeout) {
   napi_value argv[2];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
 
-  double ms;
-  napi_get_value_double(env, argv[1], &ms);
+  double ms = 0;
+  if (argc > 1) {
+    napi_get_value_double(env, argv[1], &ms);
+  }
+  if (ms < 0 || !std::isfinite(ms)) {
+    ms = 0;
+  }
 
   NSTimeInterval interval = ms / 1000;
 
   napi_ref callback;
   napi_create_reference(env, argv[0], 1, &callback);
 
+  NSTimerHandle* handle = [[NSTimerHandle alloc] init];
+  handle->env = env;
+  handle->callback = callback;
+
   NSTimer* timer = [NSTimer
       timerWithTimeInterval:interval
                     repeats:NO
                       block:^(NSTimer* timer) {
-                        NapiScope scope(env);
+                        NSTimerHandle* handle = (NSTimerHandle*)objc_getAssociatedObject(
+                            timer, kTimerHandleAssociationKey);
+                        if (handle == nil || handle->callback == nullptr) {
+                          return;
+                        }
+                        [handle retain];
+
+                        NapiScope scope(handle->env);
                         napi_value global, callbackValue;
-                        napi_get_global(env, &global);
-                        napi_get_reference_value(env, callback, &callbackValue);
-                        napi_call_function(env, global, callbackValue, 0, nullptr, nullptr);
-                        napi_reference_unref(env, callback, nullptr);
-                        objc_setAssociatedObject(timer, "callback", nil, OBJC_ASSOCIATION_ASSIGN);
+                        napi_get_global(handle->env, &global);
+                        napi_get_reference_value(handle->env, handle->callback, &callbackValue);
+                        napi_call_function(handle->env, global, callbackValue, 0, nullptr, nullptr);
+
+                        napi_delete_reference(handle->env, handle->callback);
+                        handle->callback = nullptr;
+                        objc_setAssociatedObject(timer, kTimerHandleAssociationKey, nil,
+                                                 OBJC_ASSOCIATION_ASSIGN);
+                        if (handle->timer != nil) {
+                          [handle->timer release];
+                          handle->timer = nil;
+                        }
+                        [handle release];
                       }];
 
-  objc_setAssociatedObject(timer, "callback", (id)callback, OBJC_ASSOCIATION_ASSIGN);
+  handle->timer = [timer retain];
+  objc_setAssociatedObject(timer, kTimerHandleAssociationKey, handle,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
   napi_value result;
-  napi_create_external(env, timer, nullptr, nullptr, &result);
+  napi_create_external(
+      env, handle,
+      [](napi_env env, void* data, void* /*hint*/) {
+        NSTimerHandle* handle = (NSTimerHandle*)data;
+        [handle release];
+      },
+      nullptr, &result);
 
-  [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+  AddTimerToMainRunLoop(timer);
 
   return result;
 }
@@ -65,31 +160,56 @@ JS_METHOD(Timers::SetInterval) {
   napi_value argv[2];
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
 
-  double ms;
-  napi_get_value_double(env, argv[1], &ms);
+  double ms = 0;
+  if (argc > 1) {
+    napi_get_value_double(env, argv[1], &ms);
+  }
+  if (ms < 0 || !std::isfinite(ms)) {
+    ms = 0;
+  }
 
   NSTimeInterval interval = ms / 1000;
 
   napi_ref callback;
   napi_create_reference(env, argv[0], 1, &callback);
 
+  NSTimerHandle* handle = [[NSTimerHandle alloc] init];
+  handle->env = env;
+  handle->callback = callback;
+
   NSTimer* timer = [NSTimer
       timerWithTimeInterval:interval
                     repeats:YES
                       block:^(NSTimer* timer) {
-                        NapiScope scope(env);
+                        NSTimerHandle* handle = (NSTimerHandle*)objc_getAssociatedObject(
+                            timer, kTimerHandleAssociationKey);
+                        if (handle == nil || handle->callback == nullptr) {
+                          return;
+                        }
+                        [handle retain];
+
+                        NapiScope scope(handle->env);
                         napi_value global, callbackValue;
-                        napi_get_global(env, &global);
-                        napi_get_reference_value(env, callback, &callbackValue);
-                        napi_call_function(env, global, callbackValue, 0, nullptr, nullptr);
+                        napi_get_global(handle->env, &global);
+                        napi_get_reference_value(handle->env, handle->callback, &callbackValue);
+                        napi_call_function(handle->env, global, callbackValue, 0, nullptr, nullptr);
+                        [handle release];
                       }];
 
-  objc_setAssociatedObject(timer, "callback", (id)callback, OBJC_ASSOCIATION_ASSIGN);
+  handle->timer = [timer retain];
+  objc_setAssociatedObject(timer, kTimerHandleAssociationKey, handle,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
   napi_value result;
-  napi_create_external(env, timer, nullptr, nullptr, &result);
+  napi_create_external(
+      env, handle,
+      [](napi_env env, void* data, void* /*hint*/) {
+        NSTimerHandle* handle = (NSTimerHandle*)data;
+        [handle release];
+      },
+      nullptr, &result);
 
-  [[NSRunLoop currentRunLoop] addTimer:timer forMode:NSDefaultRunLoopMode];
+  AddTimerToMainRunLoop(timer);
 
   return result;
 }
@@ -105,17 +225,10 @@ JS_METHOD(Timers::ClearTimer) {
     return nullptr;
   }
 
-  NSTimer* t = nullptr;
-  napi_get_value_external(env, argv[0], (void**)&t);
-
-  if (t != nullptr) {
-    [t invalidate];
-  }
-
-  napi_ref callback = (napi_ref)objc_getAssociatedObject(t, "callback");
-  if (callback != nil) {
-    napi_delete_reference(env, callback);
-  }
+  void* rawHandle = nullptr;
+  napi_get_value_external(env, argv[0], &rawHandle);
+  NSTimerHandle* handle = (NSTimerHandle*)rawHandle;
+  DisposeTimerHandle(env, handle);
 
   return nullptr;
 }

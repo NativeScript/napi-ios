@@ -214,7 +214,7 @@ loadTest("./Modules");
 //
 loadTest("./RuntimeImplementedAPIs");
 
-// require("./Timers");
+require("./Timers");
 
 require("./URL");
 loadTest("./URLSearchParams");

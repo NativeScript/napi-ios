@@ -148,16 +148,18 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
     return std::error_code();
   }
 
-  // On macOS SDKs, keep only objc runtime headers from usr/include so we keep
-  // symbols like class_getName while avoiding broad private header parsing.
+  // On macOS SDKs, keep only selected public runtime headers from usr/include
+  // so we avoid broad private header parsing while preserving compatibility.
   if (dir.find("/MacOSX.platform/Developer/SDKs/") != std::string::npos &&
       dir.ends_with("/usr/include")) {
-    std::filesystem::path objcHeadersPath = std::filesystem::path(dir) / "objc";
-    if (std::filesystem::exists(objcHeadersPath)) {
-      if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
-              objcHeadersPath.string(), false, umbrellaHeaders, includePaths,
-              frameworks, umbrellaHeaderSet, includePathSet, frameworkSet)) {
-        return code;
+    for (const char* subdir : {"objc", "dispatch"}) {
+      std::filesystem::path headersPath = std::filesystem::path(dir) / subdir;
+      if (std::filesystem::exists(headersPath)) {
+        if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
+                headersPath.string(), false, umbrellaHeaders, includePaths,
+                frameworks, umbrellaHeaderSet, includePathSet, frameworkSet)) {
+          return code;
+        }
       }
     }
     return std::error_code();
@@ -165,7 +167,8 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
 
   if (dir.find("/MacOSX.platform/Developer/SDKs/") != std::string::npos &&
       dir.find("/usr/include/") != std::string::npos &&
-      dir.find("/usr/include/objc") == std::string::npos) {
+      dir.find("/usr/include/objc") == std::string::npos &&
+      dir.find("/usr/include/dispatch") == std::string::npos) {
     return std::error_code();
   }
 
