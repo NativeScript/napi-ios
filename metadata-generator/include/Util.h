@@ -294,10 +294,44 @@ inline bool cursorPrettyTextContains(CXCursor cursor, const char* needle) {
   return contains;
 }
 
+inline bool cursorTokensContain(CXCursor cursor, const char* tokenText) {
+  if (tokenText == nullptr || tokenText[0] == '\0') {
+    return false;
+  }
+
+  CXTranslationUnit tu = clang_Cursor_getTranslationUnit(cursor);
+  if (tu == nullptr) {
+    return false;
+  }
+
+  CXToken* tokens = nullptr;
+  unsigned tokenCount = 0;
+  clang_tokenize(tu, clang_getCursorExtent(cursor), &tokens, &tokenCount);
+
+  bool found = false;
+  for (unsigned i = 0; i < tokenCount; i++) {
+    CXString cxToken = clang_getTokenSpelling(tu, tokens[i]);
+    const char* spelling = clang_getCString(cxToken);
+    if (spelling != nullptr && std::strcmp(spelling, tokenText) == 0) {
+      found = true;
+      clang_disposeString(cxToken);
+      break;
+    }
+    clang_disposeString(cxToken);
+  }
+
+  if (tokens != nullptr) {
+    clang_disposeTokens(tu, tokens, tokenCount);
+  }
+
+  return found;
+}
+
 inline bool cursorHasReturnsRetainedAttribute(CXCursor cursor) {
   struct ReturnsRetainedSearch {
     bool hasAttribute = false;
-  } search;
+    CXCursor cursor;
+  } search = {false, cursor};
 
   clang_visitChildren(
       cursor,
@@ -309,7 +343,8 @@ inline bool cursorHasReturnsRetainedAttribute(CXCursor cursor) {
         }
 
         if (child.kind == CXCursor_UnexposedAttr &&
-            cursorPrettyTextContains(child, "cf_returns_retained")) {
+            (cursorTokensContain(search->cursor, "CF_RETURNS_RETAINED") ||
+             cursorPrettyTextContains(search->cursor, "cf_returns_retained"))) {
           search->hasAttribute = true;
           return CXChildVisit_Break;
         }
@@ -318,14 +353,7 @@ inline bool cursorHasReturnsRetainedAttribute(CXCursor cursor) {
       },
       &search);
 
-  if (search.hasAttribute) {
-    return true;
-  }
-
-  // Some libclang builds expose `CF_RETURNS_RETAINED` only through declaration
-  // pretty-print text.
-  return cursorPrettyTextContains(cursor, "cf_returns_retained") ||
-         cursorPrettyTextContains(cursor, "CF_RETURNS_RETAINED");
+  return search.hasAttribute;
 }
 
 } // namespace metagen

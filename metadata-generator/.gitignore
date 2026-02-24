@@ -1,2 +1,5 @@
 metagen_out
 dist/
+metadata/
+build*/
+__pycache__/

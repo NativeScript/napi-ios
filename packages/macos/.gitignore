@@ -1,1 +1,4 @@
-!build
+*.d.ts
+vecLib.d.ts
+vmnet.d.ts
+!index.d.ts
