@@ -16,7 +16,13 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 #include <objc/runtime.h>
+#if defined(__has_include)
+#if __has_include(<ptrauth.h>)
+#include <ptrauth.h>
+#endif
+#endif
 #include <stdbool.h>
+#include <algorithm>
 #include <cstring>
 #include <functional>
 #include <limits>
@@ -30,6 +36,29 @@ namespace nativescript {
 
 namespace {
 constexpr const char* kProtocolSuffix = "Protocol";
+
+inline size_t alignUp(size_t value, size_t alignment) {
+  if (alignment == 0) {
+    return value;
+  }
+  return ((value + alignment - 1) / alignment) * alignment;
+}
+
+inline uintptr_t normalizeRuntimePointer(uintptr_t ptr) {
+#if INTPTR_MAX == INT64_MAX
+  return ptr & 0x0000FFFFFFFFFFFFULL;
+#else
+  return ptr;
+#endif
+}
+
+inline bool isKindOfClassFast(id obj, Class expectedClass) {
+  if (obj == nil || expectedClass == Nil) {
+    return false;
+  }
+
+  return [obj isKindOfClass:expectedClass];
+}
 
 bool stripProtocolSuffix(const char* name, std::string* out) {
   if (name == nullptr || out == nullptr) {
@@ -1808,22 +1837,53 @@ class ObjCObjectTypeConv : public TypeConv {
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    id obj = *((id*)value);
+    void* rawPtr = *((void**)value);
+    id obj = (__bridge id)rawPtr;
+
     if (obj == nil) {
       napi_value null;
       napi_get_null(env, &null);
       return null;
     }
 
+    auto bridgeState = ObjCBridgeState::InstanceData(env);
+
+    if (bridgeState != nullptr) {
+      auto normalizePtr = [](void* ptr) -> uintptr_t {
+        return normalizeRuntimePointer(reinterpret_cast<uintptr_t>(ptr));
+      };
+
+      auto protocolIt = bridgeState->mdProtocolsByPointer.find((Protocol*)obj);
+      if (protocolIt != bridgeState->mdProtocolsByPointer.end()) {
+        auto proto = bridgeState->getProtocol(env, protocolIt->second);
+        if (proto != nullptr) {
+          return get_ref_value(env, proto->constructor);
+        }
+      } else {
+        const uintptr_t objNormalized = normalizePtr((void*)obj);
+        for (const auto& entry : bridgeState->mdProtocolsByPointer) {
+          if (normalizePtr((void*)entry.first) != objNormalized) {
+            continue;
+          }
+
+          auto proto = bridgeState->getProtocol(env, entry.second);
+          if (proto != nullptr) {
+            return get_ref_value(env, proto->constructor);
+          }
+        }
+      }
+    }
+
     // Always unbox NSNull and CFBoolean/NSNumber values (except NSDecimalNumber),
     // so primitive round-trips match historical runtime behavior.
-    if ([obj isKindOfClass:[NSNull class]]) {
+    if (isKindOfClassFast(obj, [NSNull class])) {
       napi_value null;
       napi_get_null(env, &null);
       return null;
     }
 
-    if ([obj isKindOfClass:[NSNumber class]] && ![obj isKindOfClass:[NSDecimalNumber class]]) {
+    if (isKindOfClassFast(obj, [NSNumber class]) &&
+        !isKindOfClassFast(obj, [NSDecimalNumber class])) {
       if (CFGetTypeID((CFTypeRef)obj) == CFBooleanGetTypeID()) {
         napi_value result;
         napi_get_boolean(env, [obj boolValue], &result);
@@ -1851,7 +1911,7 @@ class ObjCObjectTypeConv : public TypeConv {
 
     // Auto-unbox plain id string values.
     const bool isUntypedObject = classOffset == 0 && protocolOffsets.empty();
-    if (isUntypedObject && [obj isKindOfClass:[NSString class]]) {
+    if (isUntypedObject && isKindOfClassFast(obj, [NSString class])) {
       NSUInteger length = [obj length];
       std::vector<char16_t> chars(length > 0 ? length : 1);
       if (length > 0) {
@@ -1862,36 +1922,8 @@ class ObjCObjectTypeConv : public TypeConv {
       return result;
     }
 
-    auto bridgeState = ObjCBridgeState::InstanceData(env);
-
-    auto normalizePtr = [](void* ptr) -> uintptr_t {
-#if INTPTR_MAX == INT64_MAX
-      return reinterpret_cast<uintptr_t>(ptr) & 0x0000FFFFFFFFFFFFULL;
-#else
-      return reinterpret_cast<uintptr_t>(ptr);
-#endif
-    };
-
-    if (bridgeState != nullptr) {
-      auto protocolIt = bridgeState->mdProtocolsByPointer.find((Protocol*)obj);
-      if (protocolIt != bridgeState->mdProtocolsByPointer.end()) {
-        auto proto = bridgeState->getProtocol(env, protocolIt->second);
-        if (proto != nullptr) {
-          return get_ref_value(env, proto->constructor);
-        }
-      } else {
-        const uintptr_t objNormalized = normalizePtr((void*)obj);
-        for (const auto& entry : bridgeState->mdProtocolsByPointer) {
-          if (normalizePtr((void*)entry.first) != objNormalized) {
-            continue;
-          }
-
-          auto proto = bridgeState->getProtocol(env, entry.second);
-          if (proto != nullptr) {
-            return get_ref_value(env, proto->constructor);
-          }
-        }
-      }
+    if (bridgeState == nullptr) {
+      return Pointer::create(env, (void*)obj);
     }
 
     auto roundTrip = bridgeState->getRoundTripObject(env, obj);
@@ -2810,24 +2842,185 @@ class ArrayTypeConv : public TypeConv {
 
 class VectorTypeConv : public TypeConv {
  public:
-  // TypeConv elementType;
+  uint16_t vectorSize;
+  std::shared_ptr<TypeConv> elementType;
+  MDTypeKind vectorKind;
 
-  VectorTypeConv() {
-    // TODO
-    type = &ffi_type_pointer;
-    kind = mdTypeVector;
+  VectorTypeConv(MDTypeKind vectorKind, uint16_t vectorSize,
+                 std::shared_ptr<TypeConv> elementType)
+      : vectorSize(vectorSize), elementType(elementType), vectorKind(vectorKind) {
+    auto vectorType = new ffi_type();
+#if defined(FFI_TYPE_EXT_VECTOR)
+    vectorType->type = vectorKind == mdTypeComplex ? FFI_TYPE_COMPLEX : FFI_TYPE_EXT_VECTOR;
+#else
+    vectorType->type = vectorKind == mdTypeComplex ? FFI_TYPE_COMPLEX : FFI_TYPE_STRUCT;
+#endif
+    size_t lanes = std::max<size_t>(vectorSize, 1);
+    // 3-lane vectors are ABI-lowered to 4-lane storage on Apple platforms.
+    size_t abiLanes = lanes == 3 ? 4 : lanes;
+    vectorType->elements = (ffi_type**)malloc(sizeof(ffi_type*) * (abiLanes + 1));
+
+    ffi_type* elementFfiType =
+        elementType != nullptr && elementType->type != nullptr ? elementType->type : &ffi_type_float;
+    const size_t elementSize = std::max<size_t>(elementFfiType->size, sizeof(float));
+    const size_t elementAlignment = std::max<size_t>(elementFfiType->alignment, static_cast<size_t>(1));
+
+    for (size_t i = 0; i < abiLanes; i++) {
+      vectorType->elements[i] = elementFfiType;
+    }
+    vectorType->elements[abiLanes] = nullptr;
+
+    size_t vectorAlignment = elementAlignment;
+    if (vectorKind != mdTypeComplex) {
+      size_t packedSize = abiLanes * elementSize;
+      size_t preferredAlignment = packedSize >= 16 ? 16 : packedSize;
+      vectorAlignment = std::max(vectorAlignment, preferredAlignment);
+    }
+    vectorAlignment = std::min<size_t>(vectorAlignment, 16);
+    vectorType->alignment = static_cast<unsigned short>(vectorAlignment);
+    vectorType->size = alignUp(abiLanes * elementSize, vectorAlignment);
+
+    type = vectorType;
+    kind = vectorKind;
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    NSLog(@"VectorTypeConv toJS: TODO");
     napi_value result;
-    napi_get_null(env, &result);
+    napi_create_array_with_length(env, vectorSize, &result);
+
+    size_t elementSize = getElementSize();
+    auto base = static_cast<uint8_t*>(value);
+    for (uint16_t i = 0; i < vectorSize; i++) {
+      void* slot = base + (static_cast<size_t>(i) * elementSize);
+      napi_value elementValue = elementType->toJS(env, slot, flags);
+      napi_valuetype elementValueType = napi_undefined;
+      napi_typeof(env, elementValue, &elementValueType);
+      if (elementValueType == napi_boolean) {
+        bool boolValue = false;
+        napi_get_value_bool(env, elementValue, &boolValue);
+        napi_create_uint32(env, boolValue ? 1 : 0, &elementValue);
+      }
+      napi_set_element(env, result, i, elementValue);
+    }
     return result;
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NSLog(@"VectorTypeConv toNative: TODO");
+    NAPI_PREAMBLE
+
+    memset(result, 0, getVectorByteSize());
+
+    napi_valuetype valueType = napi_undefined;
+    napi_typeof(env, value, &valueType);
+    if (valueType == napi_null || valueType == napi_undefined) {
+      return;
+    }
+
+    if (Pointer::isInstance(env, value)) {
+      Pointer* ptr = Pointer::unwrap(env, value);
+      if (ptr != nullptr && ptr->data != nullptr) {
+        copyFromContiguousBuffer(ptr->data, getVectorByteSize(), result);
+      }
+      return;
+    }
+
+    if (Reference::isInstance(env, value)) {
+      Reference* ref = Reference::unwrap(env, value);
+      if (ref != nullptr && ref->data != nullptr) {
+        copyFromContiguousBuffer(ref->data, getVectorByteSize(), result);
+      }
+      return;
+    }
+
+    if (StructObject::isInstance(env, value)) {
+      StructObject* structObject = StructObject::unwrap(env, value);
+      if (structObject != nullptr && structObject->data != nullptr) {
+        copyFromContiguousBuffer(structObject->data, structObject->info->size, result);
+      }
+      return;
+    }
+
+    bool isArray = false;
+    napi_is_array(env, value, &isArray);
+    if (isArray) {
+      writeFromArrayElements(env, value, result, shouldFree, shouldFreeAny);
+      return;
+    }
+
+    bool isArrayBuffer = false;
+    napi_is_arraybuffer(env, value, &isArrayBuffer);
+    if (isArrayBuffer) {
+      void* data = nullptr;
+      size_t byteLength = 0;
+      napi_get_arraybuffer_info(env, value, &data, &byteLength);
+      copyFromContiguousBuffer(data, byteLength, result);
+      return;
+    }
+
+    void* data = nullptr;
+    size_t length = 0;
+    napi_typedarray_type typedArrayType = napi_int8_array;
+    napi_status typedArrayStatus =
+        napi_get_typedarray_info(env, value, &typedArrayType, &length, &data, nullptr, nullptr);
+    if (typedArrayStatus == napi_ok) {
+      size_t copyLength = length * getTypedArrayUnitLength(typedArrayType);
+      copyFromContiguousBuffer(data, copyLength, result);
+      return;
+    }
+
+    napi_throw_type_error(
+        env, "TypeError",
+        "Invalid vector type, expected array, typed array, array buffer, pointer or reference.");
+  }
+
+  void encode(std::string* encoding) override {
+    *encoding += "V";
+    *encoding += std::to_string(vectorSize);
+    if (elementType != nullptr) {
+      elementType->encode(encoding);
+    }
+  }
+
+ private:
+  inline size_t getElementSize() const {
+    size_t elementSize =
+        elementType != nullptr && elementType->type != nullptr ? elementType->type->size : 0;
+    if (elementSize == 0) {
+      elementSize = sizeof(float);
+    }
+    return elementSize;
+  }
+
+  inline size_t getVectorByteSize() const {
+    size_t expectedSize = static_cast<size_t>(vectorSize) * getElementSize();
+    if (type != nullptr && type->size > expectedSize) {
+      expectedSize = type->size;
+    }
+    return expectedSize;
+  }
+
+  inline void copyFromContiguousBuffer(void* source, size_t sourceLength, void* destination) const {
+    memcpy(destination, source, std::min(sourceLength, getVectorByteSize()));
+  }
+
+  void writeFromArrayElements(napi_env env, napi_value value, void* result, bool* shouldFree,
+                              bool* shouldFreeAny) {
+    size_t elementSize = getElementSize();
+    auto base = static_cast<uint8_t*>(result);
+
+    for (uint16_t i = 0; i < vectorSize; i++) {
+      bool hasElement = false;
+      napi_has_element(env, value, i, &hasElement);
+      if (!hasElement) {
+        continue;
+      }
+
+      napi_value elementValue;
+      napi_get_element(env, value, i, &elementValue);
+      void* slot = base + (static_cast<size_t>(i) * elementSize);
+      elementType->toNative(env, elementValue, slot, shouldFree, shouldFreeAny);
+    }
   }
 };
 
@@ -3136,8 +3329,10 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
     }
 
     case mdTypeVector: {
-      // TODO
-      return std::make_shared<VectorTypeConv>();
+      auto vectorSize = reader->getArraySize(*offset);
+      *offset += sizeof(uint16_t);
+      auto elementType = TypeConv::Make(env, reader, offset, opaquePointers);
+      return std::make_shared<VectorTypeConv>(kind, vectorSize, elementType);
     }
 
     case mdTypeBlock: {
@@ -3157,13 +3352,17 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
     }
 
     case mdTypeExtVector: {
-      // TODO
-      return std::make_shared<VectorTypeConv>();
+      auto vectorSize = reader->getArraySize(*offset);
+      *offset += sizeof(uint16_t);
+      auto elementType = TypeConv::Make(env, reader, offset, opaquePointers);
+      return std::make_shared<VectorTypeConv>(kind, vectorSize, elementType);
     }
 
     case mdTypeComplex: {
-      // TODO
-      return std::make_shared<VectorTypeConv>();
+      auto vectorSize = reader->getArraySize(*offset);
+      *offset += sizeof(uint16_t);
+      auto elementType = TypeConv::Make(env, reader, offset, opaquePointers);
+      return std::make_shared<VectorTypeConv>(kind, vectorSize, elementType);
     }
 
     default:

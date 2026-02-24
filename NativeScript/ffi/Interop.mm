@@ -379,6 +379,7 @@ inline bool resolveNativePointerFromRegisteredFunction(napi_env env, napi_value 
     const char* functionName = bridgeState->metadata->getString(offset);
     offset += sizeof(MDSectionOffset);
     offset += sizeof(MDSectionOffset);
+    offset += sizeof(MDFunctionFlag);
 
     napi_value globalFn;
     if (napi_get_named_property(env, global, functionName, &globalFn) != napi_ok) {

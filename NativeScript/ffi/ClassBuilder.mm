@@ -523,6 +523,7 @@ void ClassBuilder::addMethod(std::string& name, MethodDescriptor* desc, napi_val
         closure->func = make_ref(env, func);
       else
         closure->propertyName = name;
+      closure->selector = desc->selector;
       closure->thisConstructor = constructor;
       class_replaceMethod(nativeClass, desc->selector, (IMP)closure->fnptr, encoding);
       break;
@@ -537,6 +538,7 @@ void ClassBuilder::addMethod(std::string& name, MethodDescriptor* desc, napi_val
         closure->func = make_ref(env, func);
       else
         closure->propertyName = name;
+      closure->selector = desc->selector;
       closure->thisConstructor = constructor;
       class_replaceMethod(nativeClass, desc->selector, (IMP)closure->fnptr, encoding.c_str());
       break;

@@ -32,6 +32,21 @@ const defaultJunitPath = path.join(resultsDir, "ios-junit.xml");
 const derivedDataPath = path.join(__dirname, "../build", "derived-data", "ios-tests");
 const testRunnerAppSourcePath = path.join(__dirname, "../TestRunner", "app");
 const buildStatePath = path.join(derivedDataPath, ".ios-test-build-state.json");
+const metadataGeneratorRoot = path.join(__dirname, "../metadata-generator");
+const metadataGeneratorBinary = path.join(
+    metadataGeneratorRoot,
+    "dist",
+    "arm64",
+    "bin",
+    "objc-metadata-generator"
+);
+const metadataGeneratorBuildStepScript = path.join(
+    metadataGeneratorRoot,
+    "dist",
+    "arm64",
+    "bin",
+    "build-step-metadata-generator.py"
+);
 
 const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
 const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
@@ -41,7 +56,12 @@ const iosBuildInputs = [
     path.join(__dirname, "../TestRunner", "Info.plist"),
     path.join(__dirname, "../TestFixtures"),
     path.join(__dirname, "../TKLiveSync"),
-    path.join(__dirname, "../metadata"),
+    path.join(metadataGeneratorRoot, "src"),
+    path.join(metadataGeneratorRoot, "include"),
+    path.join(metadataGeneratorRoot, "CMakeLists.txt"),
+    path.join(__dirname, "../build_metadata_generator.sh"),
+    metadataGeneratorBinary,
+    metadataGeneratorBuildStepScript,
     nativeScriptXCFramework,
     tkLiveSyncXCFramework
 ];
@@ -113,6 +133,27 @@ function runAndRequireSuccess(command, args, timeoutMs = commandTimeoutMs) {
     if (result.status !== 0) {
         process.exit(result.status || 1);
     }
+}
+
+function ensureMetadataGeneratorBuilt() {
+    const sourceInputs = [
+        path.join(metadataGeneratorRoot, "src"),
+        path.join(metadataGeneratorRoot, "include"),
+        path.join(metadataGeneratorRoot, "CMakeLists.txt")
+    ];
+
+    const sourceMtime = sourceInputs.reduce(
+        (latest, inputPath) => Math.max(latest, getPathStats(inputPath).maxMtimeMs),
+        0
+    );
+    const binaryMtime = getPathStats(metadataGeneratorBinary).maxMtimeMs;
+
+    if (binaryMtime > 0 && binaryMtime >= sourceMtime) {
+        return;
+    }
+
+    console.log("Metadata generator is missing or stale; running build-metagen...");
+    runAndRequireSuccess("npm", ["run", "build-metagen"], buildTimeoutMs);
 }
 
 function getPathStats(targetPath) {
@@ -462,6 +503,8 @@ function buildTestRunnerApp(destination, swiftVersion) {
     if (process.env.IOS_TEST_CLEAN_BUILD === "1") {
         fs.rmSync(derivedDataPath, { recursive: true, force: true });
     }
+
+    ensureMetadataGeneratorBuilt();
 
     const nativeFingerprint = createBuildFingerprint(iosBuildInputs);
     const existingBuildState = readBuildState();

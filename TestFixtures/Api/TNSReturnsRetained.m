@@ -7,7 +7,11 @@ id functionReturnsCFRetained() {
     return [[NSObject alloc] init];
 }
 CFTypeRef functionImplicitCreate() {
-    return (__bridge CFTypeRef) [[NSObject alloc] init];
+#if __has_feature(objc_arc)
+    return CFBridgingRetain([[NSObject alloc] init]);
+#else
+    return (CFTypeRef)[[NSObject alloc] init];
+#endif
 }
 id functionExplicitCreateNSObject() {
     return [[NSObject alloc] init];

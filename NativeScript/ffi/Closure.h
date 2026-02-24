@@ -30,6 +30,7 @@ class Closure {
   bool isGetter = false;
   bool isSetter = false;
   std::string propertyName;
+  SEL selector = nullptr;
   napi_threadsafe_function tsfn;
 
   std::thread::id jsThreadId = std::this_thread::get_id();

@@ -3,6 +3,7 @@
 #include "ObjCBridge.h"
 #include "ffi/NativeScriptException.h"
 #include "ffi/Tasks.h"
+#include <cstring>
 #ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"
 #endif
@@ -15,8 +16,8 @@ void ObjCBridgeState::registerFunctionGlobals(napi_env env, napi_value global) {
     MDSectionOffset originalOffset = offset;
     auto name = metadata->getString(offset);
     offset += sizeof(MDSectionOffset);
-    auto signature = metadata->getOffset(offset);
     offset += sizeof(MDSectionOffset);
+    offset += sizeof(MDFunctionFlag);
 
     napi_property_descriptor prop = {
         .utf8name = name,
@@ -134,7 +135,14 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  return cif->returnType->toJS(env, rvalue, kCStringAsReference);
+  MDFunctionFlag functionFlags = bridgeState->metadata->getFunctionFlag(
+      offset + sizeof(MDSectionOffset) * 2);
+  uint32_t toJSFlags = kCStringAsReference;
+  if ((functionFlags & mdFunctionReturnOwned) != 0) {
+    toJSFlags |= kReturnOwned;
+  }
+
+  return cif->returnType->toJS(env, rvalue, toJSFlags);
 }
 
 CFunction::~CFunction() { cif = nullptr; }

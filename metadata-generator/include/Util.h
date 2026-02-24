@@ -3,6 +3,7 @@
 #include <clang-c/Index.h>
 #include <algorithm>
 #include <cctype>
+#include <cstring>
 #include <cstdlib>
 #include <string>
 #include <vector>
@@ -279,6 +280,52 @@ inline bool isSelectorOwned(const std::string& selectorName) {
   return selectorName.find("copy") == 0 ||
          selectorName.find("mutableCopy") == 0 ||
          selectorName.find("new") == 0 || selectorName.find("alloc") == 0;
+}
+
+inline bool cursorPrettyTextContains(CXCursor cursor, const char* needle) {
+  if (needle == nullptr || needle[0] == '\0') {
+    return false;
+  }
+
+  CXString cxText = clang_getCursorPrettyPrinted(cursor, nullptr);
+  const char* text = clang_getCString(cxText);
+  const bool contains = text != nullptr && std::strstr(text, needle) != nullptr;
+  clang_disposeString(cxText);
+  return contains;
+}
+
+inline bool cursorHasReturnsRetainedAttribute(CXCursor cursor) {
+  struct ReturnsRetainedSearch {
+    bool hasAttribute = false;
+  } search;
+
+  clang_visitChildren(
+      cursor,
+      [](CXCursor child, CXCursor, CXClientData clientData) {
+        auto* search = static_cast<ReturnsRetainedSearch*>(clientData);
+        if (child.kind == CXCursor_NSReturnsRetained) {
+          search->hasAttribute = true;
+          return CXChildVisit_Break;
+        }
+
+        if (child.kind == CXCursor_UnexposedAttr &&
+            cursorPrettyTextContains(child, "cf_returns_retained")) {
+          search->hasAttribute = true;
+          return CXChildVisit_Break;
+        }
+
+        return CXChildVisit_Continue;
+      },
+      &search);
+
+  if (search.hasAttribute) {
+    return true;
+  }
+
+  // Some libclang builds expose `CF_RETURNS_RETAINED` only through declaration
+  // pretty-print text.
+  return cursorPrettyTextContains(cursor, "cf_returns_retained") ||
+         cursorPrettyTextContains(cursor, "CF_RETURNS_RETAINED");
 }
 
 } // namespace metagen

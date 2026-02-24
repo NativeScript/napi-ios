@@ -187,6 +187,7 @@ class FunctionDecl {
   TypeSpec returnType;
   std::vector<ParameterDecl> parameters;
   bool isVariadic;
+  bool returnOwned = false;
 };
 
 enum MemberKind {

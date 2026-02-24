@@ -17,6 +17,7 @@ typedef enum ConvertToJSFlags : uint32_t {
   kBlockParam = 1 << 1,
   kStructZeroCopy = 1 << 2,
   kCStringAsReference = 1 << 3,
+  kCFunctionObjectReturn = 1 << 4,
 } ConvertToJSFlags;
 
 class TypeConv {

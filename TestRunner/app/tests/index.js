@@ -181,32 +181,30 @@ loadTest("./Marshalling/Primitives/Derived");
 loadTest("./Marshalling/ObjCTypesTests");
 loadTest("./Marshalling/ConstantsTests");
 loadTest("./Marshalling/RecordTests");
-// TODO(napi-v8): Vector marshalling currently corrupts heap in simulator runs.
-// Keep this disabled until ffi vector conversion is stabilized.
-// require("./Marshalling/VectorTests");
+loadTest("./Marshalling/VectorTests");
 // todo: figure out why this test is failing with a EXC_BAD_ACCESS on TNSRecords.m matrix initialization
 // require("./Marshalling/MatrixTests");
 loadTest("./Marshalling/NSStringTests");
 //import "./Marshalling/TypesTests";
 loadTest("./Marshalling/PointerTests");
-require("./Marshalling/ReferenceTests");
+loadTest("./Marshalling/ReferenceTests");
 loadTest("./Marshalling/FunctionPointerTests");
 loadTest("./Marshalling/EnumTests");
 loadTest("./Marshalling/ProtocolTests");
 //
 // import "./Inheritance/ConstructorResolutionTests";
-require("./Inheritance/InheritanceTests");
+loadTest("./Inheritance/InheritanceTests");
 loadTest("./Inheritance/ProtocolImplementationTests");
 loadTest("./Inheritance/TypeScriptTests");
 //
-require("./MethodCallsTests");
+loadTest("./MethodCallsTests");
 //import "./FunctionsTests";
 loadTest("./VersionDiffTests");
 loadTest("./ObjCConstructors");
 //
 loadTest("./MetadataTests");
 //
-// require("./ApiTests");
+loadTest("./ApiTests");
 loadTest("./DeclarationConflicts");
 //
 loadTest("./Promises");
@@ -214,9 +212,9 @@ loadTest("./Modules");
 //
 loadTest("./RuntimeImplementedAPIs");
 
-require("./Timers");
+loadTest("./Timers");
 
-require("./URL");
+loadTest("./URL");
 loadTest("./URLSearchParams");
 loadTest("./URLPattern");
 

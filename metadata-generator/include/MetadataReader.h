@@ -99,6 +99,10 @@ class MDMetadataReader {
     return *(MDMemberFlag*)((char*)data + offset);
   }
 
+  inline MDFunctionFlag getFunctionFlag(MDSectionOffset offset) {
+    return *(MDFunctionFlag*)((char*)data + offset);
+  }
+
   inline MDVariableEvalKind getVariableEvalKind(MDSectionOffset offset) {
     return *(MDVariableEvalKind*)((char*)data + offset);
   }

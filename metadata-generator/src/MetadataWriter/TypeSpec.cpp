@@ -168,14 +168,26 @@ MDTypeInfo* MDMetadataWriter::getTypeInfo(const TypeSpec& type) {
 
     case kTypeVector:
       info->kind = mdTypeVector;
+      info->arraySize = type.constArraySize;
+      if (type.arrayElement != nullptr) {
+        info->elementType = getTypeInfo(*type.arrayElement);
+      }
       break;
 
     case kTypeExtVector:
       info->kind = mdTypeExtVector;
+      info->arraySize = type.constArraySize;
+      if (type.arrayElement != nullptr) {
+        info->elementType = getTypeInfo(*type.arrayElement);
+      }
       break;
 
     case kTypeComplex:
       info->kind = mdTypeComplex;
+      info->arraySize = type.constArraySize;
+      if (type.arrayElement != nullptr) {
+        info->elementType = getTypeInfo(*type.arrayElement);
+      }
       break;
 
     case kTypeSelector:
@@ -206,7 +218,10 @@ size_t MDTypeInfoSerde::size(MDTypeInfo* value) {
   addsize(value->kind);
 
   switch (value->kind) {
-    case mdTypeArray: {
+    case mdTypeArray:
+    case mdTypeVector:
+    case mdTypeExtVector:
+    case mdTypeComplex: {
       // Array size
       addsize(value->arraySize);
       // Element type
@@ -253,7 +268,10 @@ void MDTypeInfoSerde::serialize(MDTypeInfo* value, void* data) {
   binwrite(value->kind);
 
   switch (value->kind) {
-    case mdTypeArray: {
+    case mdTypeArray:
+    case mdTypeVector:
+    case mdTypeExtVector:
+    case mdTypeComplex: {
       // Array size
       binwrite(value->arraySize);
       // Element type
@@ -445,13 +463,16 @@ std::string MDTypeInfoSerde::encode(MDTypeInfo* type) {
       result = "longdouble";
       break;
     case mdTypeVector:
-      result = "vector";
+      result = "vector<" + std::to_string(type->arraySize) + "," +
+               (type->elementType != nullptr ? encode(type->elementType) : "?") + ">";
       break;
     case mdTypeExtVector:
-      result = "extvector";
+      result = "extvector<" + std::to_string(type->arraySize) + "," +
+               (type->elementType != nullptr ? encode(type->elementType) : "?") + ">";
       break;
     case mdTypeComplex:
-      result = "complex";
+      result = "complex<" + std::to_string(type->arraySize) + "," +
+               (type->elementType != nullptr ? encode(type->elementType) : "?") + ">";
       break;
   }
   return result;

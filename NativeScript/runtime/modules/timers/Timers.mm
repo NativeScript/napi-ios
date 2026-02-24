@@ -32,10 +32,7 @@ NSTimerHandle* RetainActiveTimerHandle(void* rawHandle);
     ActiveTimerHandles().erase(self);
   }
 
-  if (timer != nil) {
-    [timer release];
-    timer = nil;
-  }
+  timer = nil;
   [super dealloc];
 }
 @end
@@ -99,7 +96,6 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle) {
         objc_setAssociatedObject(rawTimer, kTimerHandleAssociationKey, nil,
                                  OBJC_ASSOCIATION_ASSIGN);
         [rawTimer invalidate];
-        [rawTimer release];
         handle->timer = nil;
       }
     }
@@ -200,7 +196,7 @@ JS_METHOD(Timers::SetTimeout) {
                         [handle release];
                       }];
 
-  handle->timer = [timer retain];
+  handle->timer = timer;
   objc_setAssociatedObject(timer, kTimerHandleAssociationKey, handle,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
@@ -279,7 +275,7 @@ JS_METHOD(Timers::SetInterval) {
                         [handle release];
                       }];
 
-  handle->timer = [timer retain];
+  handle->timer = timer;
   objc_setAssociatedObject(timer, kTimerHandleAssociationKey, handle,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 

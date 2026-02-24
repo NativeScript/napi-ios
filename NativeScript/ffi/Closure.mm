@@ -16,10 +16,53 @@
 
 #include <Foundation/Foundation.h>
 #include <cassert>
+#include <cstring>
 #include <condition_variable>
 #include <mutex>
+#include <vector>
 
 namespace nativescript {
+
+inline bool selectorEndsWithErrorParam(SEL selector) {
+  if (selector == nullptr) {
+    return false;
+  }
+
+  const char* selectorName = sel_getName(selector);
+  if (selectorName == nullptr) {
+    return false;
+  }
+
+  size_t selectorLength = strlen(selectorName);
+  const char* suffix = "error:";
+  size_t suffixLength = strlen(suffix);
+  if (selectorLength < suffixLength) {
+    return false;
+  }
+
+  return strcmp(selectorName + selectorLength - suffixLength, suffix) == 0;
+}
+
+inline bool isNSErrorMethodCallback(Closure* closure, ffi_cif* cif) {
+  if (closure == nullptr || cif == nullptr || cif->nargs < 3 || closure->returnType == nullptr) {
+    return false;
+  }
+
+  if (closure->returnType->kind != mdTypeBool) {
+    return false;
+  }
+
+  if (closure->argTypes.size() != cif->nargs) {
+    return false;
+  }
+
+  auto lastArgType = closure->argTypes[cif->nargs - 1];
+  if (lastArgType == nullptr || lastArgType->kind != mdTypePointer) {
+    return false;
+  }
+
+  return selectorEndsWithErrorParam(closure->selector);
+}
 
 inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisArg, napi_value* argv,
                             size_t argc, bool* done, void* ret) {
@@ -101,7 +144,76 @@ void JSMethodCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
     argv[i - 2] = closure->argTypes[i]->toJS(env, args[i], 0);
   }
 
-  JSCallbackInner(closure, func, thisArg, argv, cif->nargs - 2, nullptr, ret);
+  napi_value result;
+  napi_get_and_clear_last_exception(env, &result);
+
+  napi_status status = napi_call_function(env, thisArg, func, cif->nargs - 2, argv, &result);
+  if (status != napi_ok) {
+    napi_get_and_clear_last_exception(env, &result);
+
+    if (isNSErrorMethodCallback(closure, cif)) {
+      if (ret != nullptr && cif->rtype != nullptr && cif->rtype->size > 0) {
+        memset(ret, 0, cif->rtype->size);
+      }
+
+      void* outArgValue = args[cif->nargs - 1];
+      NSError** outError = outArgValue != nullptr ? *((NSError***)outArgValue) : nullptr;
+      if (outError != nullptr) {
+        std::string message = "JS error";
+        napi_valuetype resultType = napi_undefined;
+        if (result != nullptr && napi_typeof(env, result, &resultType) == napi_ok) {
+          if (resultType == napi_object) {
+            napi_value messageValue = nullptr;
+            bool hasMessage = false;
+            if (napi_has_named_property(env, result, "message", &hasMessage) == napi_ok &&
+                hasMessage &&
+                napi_get_named_property(env, result, "message", &messageValue) == napi_ok) {
+              napi_valuetype messageType = napi_undefined;
+              if (napi_typeof(env, messageValue, &messageType) == napi_ok &&
+                  messageType == napi_string) {
+                size_t messageLength = 0;
+                napi_get_value_string_utf8(env, messageValue, nullptr, 0, &messageLength);
+                std::vector<char> messageBuffer(messageLength + 1);
+                napi_get_value_string_utf8(env, messageValue, messageBuffer.data(),
+                                           messageBuffer.size(), &messageLength);
+                message.assign(messageBuffer.data(), messageLength);
+              }
+            }
+          } else if (resultType == napi_string) {
+            size_t messageLength = 0;
+            napi_get_value_string_utf8(env, result, nullptr, 0, &messageLength);
+            std::vector<char> messageBuffer(messageLength + 1);
+            napi_get_value_string_utf8(env, result, messageBuffer.data(), messageBuffer.size(),
+                                       &messageLength);
+            message.assign(messageBuffer.data(), messageLength);
+          }
+        }
+
+        NSString* nsMessage = [NSString stringWithUTF8String:message.c_str()];
+        NSDictionary* userInfo = nsMessage != nil ? @{NSLocalizedDescriptionKey : nsMessage} : nil;
+        *outError = [NSError errorWithDomain:@"TNSErrorDomain" code:1 userInfo:userInfo];
+      }
+
+      return;
+    }
+
+    napi_valuetype resultType = napi_undefined;
+    napi_typeof(env, result, &resultType);
+
+    if (resultType != napi_object) {
+      napi_value code, msg;
+      napi_create_string_utf8(env, "NativeScriptException", NAPI_AUTO_LENGTH, &code);
+      napi_create_string_utf8(env,
+                              "Unable to obtain the error thrown by the JS implemented closure",
+                              NAPI_AUTO_LENGTH, &msg);
+      napi_create_error(env, code, msg, &result);
+    }
+
+    NativeScriptException::OnUncaughtError(env, result);
+  }
+
+  bool shouldFree;
+  closure->returnType->toNative(env, result, ret, &shouldFree, &shouldFree);
 }
 
 void JSFunctionCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
