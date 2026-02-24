@@ -16,6 +16,8 @@
 
 namespace nativescript {
 
+napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo);
+
 void ObjCBridgeState::registerClassGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->classesOffset;
   while (offset < metadata->structsOffset) {
@@ -193,6 +195,36 @@ NAPI_FUNCTION(classGetter) {
   }
 
   return get_ref_value(env, cls->constructor);
+}
+
+NAPI_FUNCTION(classSuperclassFallback) {
+  napi_value jsThis;
+  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
+
+  Class currentClass = nil;
+  napi_unwrap(env, jsThis, (void**)&currentClass);
+  if (currentClass == nil) {
+    return nullptr;
+  }
+
+  Class superClass = class_getSuperclass(currentClass);
+  if (superClass == nil) {
+    return nullptr;
+  }
+
+  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  auto find = bridgeState->classesByPointer.find(superClass);
+  if (find != bridgeState->classesByPointer.end()) {
+    return get_ref_value(env, find->second->constructor);
+  }
+
+  auto mdClass = bridgeState->mdClassesByPointer.find(superClass);
+  if (mdClass != bridgeState->mdClassesByPointer.end()) {
+    auto bridgedClass = bridgeState->getClass(env, mdClass->second);
+    return get_ref_value(env, bridgedClass->constructor);
+  }
+
+  return bridgeState->getObject(env, (id)superClass, kUnownedObject, 0, nullptr);
 }
 
 NAPI_FUNCTION(BridgedConstructor) {
@@ -446,10 +478,10 @@ std::string NativeObjectName = "NativeObject";
 // Every Bridged Class extends the NativeObject class.
 
 void defineProtocolMembers(napi_env env, ObjCClassMemberMap& members, napi_value constructor,
-                           ObjCProtocol* protocol) {
-  ObjCClassMember::defineMembers(env, members, protocol->membersOffset, constructor);
+                           ObjCProtocol* protocol, ObjCClass* cls) {
+  ObjCClassMember::defineMembers(env, members, protocol->membersOffset, constructor, cls);
   for (auto protocol : protocol->protocols) {
-    defineProtocolMembers(env, members, constructor, protocol);
+    defineProtocolMembers(env, members, constructor, protocol, cls);
   }
 }
 
@@ -521,13 +553,6 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
   // class extends - we need to find the super class and inherit from it, if it
   // exists.
   if (!isNativeObject) {
-    for (auto protocolOffset : protocolOffsets) {
-      auto protocol =
-          bridgeState->getProtocol(env, protocolOffset + bridgeState->metadata->protocolsOffset);
-      if (protocol == nil) continue;
-      defineProtocolMembers(env, members, constructor, protocol);
-    }
-
     if (superClassOffset != MD_SECTION_OFFSET_NULL) {
       superClassOffset += bridgeState->metadata->classesOffset;
     }
@@ -539,6 +564,13 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
       superConstructor = get_ref_value(env, superclass->constructor);
       superPrototype = get_ref_value(env, superclass->prototype);
       napi_inherits(env, constructor, superConstructor);
+    }
+
+    for (auto protocolOffset : protocolOffsets) {
+      auto protocol =
+          bridgeState->getProtocol(env, protocolOffset + bridgeState->metadata->protocolsOffset);
+      if (protocol == nil) continue;
+      defineProtocolMembers(env, members, constructor, protocol, this);
     }
   } else {
     superclass = nullptr;
@@ -605,6 +637,25 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 
     napi_define_properties(env, constructor, 1, &properties[2]);
 
+    bool hasSuperclass = false;
+    napi_value superclassKey = nullptr;
+    napi_create_string_utf8(env, "superclass", NAPI_AUTO_LENGTH, &superclassKey);
+    napi_has_own_property(env, constructor, superclassKey, &hasSuperclass);
+    if (!hasSuperclass) {
+      napi_property_descriptor superclassProperty = {
+          .utf8name = "superclass",
+          .name = nil,
+          .method = JS_classSuperclassFallback,
+          .getter = nil,
+          .setter = nil,
+          .value = nil,
+          .attributes =
+              (napi_property_attributes)(napi_configurable | napi_writable | napi_enumerable),
+          .data = nil,
+      };
+      napi_define_properties(env, constructor, 1, &superclassProperty);
+    }
+
     if (type == napi_symbol) {
       properties[0].name = SymbolDispose;
       properties[0].method = JS_releaseObject;
@@ -626,6 +677,73 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
   if (!hasMembers) return;
 
   ObjCClassMember::defineMembers(env, members, offset, constructor, this);
+
+  auto hasOwnNamedProperty = [&](napi_value object, const char* propertyName) {
+    napi_value key = nullptr;
+    napi_create_string_utf8(env, propertyName, NAPI_AUTO_LENGTH, &key);
+    bool hasOwn = false;
+    napi_has_own_property(env, object, key, &hasOwn);
+    return hasOwn;
+  };
+
+  if (!hasOwnNamedProperty(constructor, "alloc")) {
+    napi_property_descriptor allocProperty = {
+        .utf8name = "alloc",
+        .name = nil,
+        .method = JS_NSObject_alloc,
+        .getter = nil,
+        .setter = nil,
+        .value = nil,
+        .attributes =
+            (napi_property_attributes)(napi_configurable | napi_writable | napi_enumerable),
+        .data = nil,
+    };
+    napi_define_properties(env, constructor, 1, &allocProperty);
+  }
+
+  if (!hasOwnNamedProperty(constructor, "arguments") ||
+      !hasOwnNamedProperty(constructor, "caller")) {
+    napi_value undefinedValue = nullptr;
+    napi_get_undefined(env, &undefinedValue);
+    napi_property_descriptor slots[] = {
+        {
+            .utf8name = "arguments",
+            .name = nil,
+            .method = nil,
+            .getter = nil,
+            .setter = nil,
+            .value = undefinedValue,
+            .attributes = (napi_property_attributes)(napi_configurable | napi_writable),
+            .data = nil,
+        },
+        {
+            .utf8name = "caller",
+            .name = nil,
+            .method = nil,
+            .getter = nil,
+            .setter = nil,
+            .value = undefinedValue,
+            .attributes = (napi_property_attributes)(napi_configurable | napi_writable),
+            .data = nil,
+        },
+    };
+    napi_define_properties(env, constructor, 2, slots);
+  }
+
+  if (!hasOwnNamedProperty(prototype, "toString")) {
+    napi_property_descriptor toStringProperty = {
+        .utf8name = "toString",
+        .name = nil,
+        .method = JS_CustomInspect,
+        .getter = nil,
+        .setter = nil,
+        .value = nil,
+        .attributes =
+            (napi_property_attributes)(napi_configurable | napi_writable | napi_enumerable),
+        .data = nil,
+    };
+    napi_define_properties(env, prototype, 1, &toStringProperty);
+  }
 }
 
 ObjCClass::~ObjCClass() {

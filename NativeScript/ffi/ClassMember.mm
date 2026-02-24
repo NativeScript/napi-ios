@@ -9,10 +9,12 @@
 #include <limits>
 #include <unordered_set>
 #include "ClassBuilder.h"
+#include "Closure.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
+#include "ffi/Block.h"
 #include "ffi/Class.h"
 #include "ffi/NativeScriptException.h"
 #include "js_native_api.h"
@@ -49,6 +51,25 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
   napi_get_named_property(env, constructor, "prototype", &prototype);
 
   bool next = true;
+
+  auto hasOwnNamedProperty = [&](napi_value object, const char* propertyName) {
+    napi_value propertyKey = nullptr;
+    napi_create_string_utf8(env, propertyName, NAPI_AUTO_LENGTH, &propertyKey);
+    bool hasOwn = false;
+    napi_has_own_property(env, object, propertyKey, &hasOwn);
+    return hasOwn;
+  };
+
+  auto tryGetSuperclassMember = [&](const std::string& name) -> ObjCClassMember* {
+    if (cls == nullptr || cls->superclass == nullptr) {
+      return nullptr;
+    }
+    auto it = cls->superclass->members.find(name);
+    if (it == cls->superclass->members.end()) {
+      return nullptr;
+    }
+    return &it->second;
+  };
 
   while (next) {
     auto flags = bridgeState->metadata->getMemberFlag(offset);
@@ -88,6 +109,28 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
         offset += sizeof(MDSectionOffset);  // setterSignature
       }
 
+      bool hasProperty = false;
+      napi_has_named_property(env, jsObject, name, &hasProperty);
+      bool hasOwnProperty = hasOwnNamedProperty(jsObject, name);
+      bool inheritedProperty = hasProperty && !hasOwnProperty;
+
+      ObjCClassMember* superMember = tryGetSuperclassMember(name);
+
+      if (inheritedProperty && superMember != nullptr && superMember->methodOrGetter.isProperty) {
+        bool superReadonly = superMember->setter.selector == nullptr;
+        SEL getterSel = sel_registerName(getterSelector);
+        SEL setterSel = readonly ? nullptr : sel_registerName(setterSelector);
+        bool sameGetter = superMember->methodOrGetter.selector == getterSel;
+        bool sameSetter = superMember->setter.selector == setterSel;
+
+        if ((!superReadonly && readonly) ||
+            (superReadonly == readonly && sameGetter && (readonly || sameSetter))) {
+          continue;
+        }
+      } else if (inheritedProperty && readonly) {
+        continue;
+      }
+
       auto updatedMember = ObjCClassMember(
           bridgeState, sel_registerName(getterSelector),
           !readonly ? sel_registerName(setterSelector) : nullptr,
@@ -106,7 +149,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
           .name = nil,
           .method = nil,
           .getter = jsGetter,
-          .setter = readonly ? nil : jsSetter,
+          .setter = readonly ? jsReadOnlySetter : jsSetter,
           .value = nil,
           .attributes = (napi_property_attributes)(napi_configurable | napi_enumerable),
           .data = &memberIt->second,
@@ -120,16 +163,71 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
       offset += sizeof(MDSectionOffset);  // signature
 
       auto name = jsifySelector(selector);
-
       bool hasProperty = false;
       napi_has_named_property(env, jsObject, name.c_str(), &hasProperty);
-      if (hasProperty && name != "init") {
+      bool hasOwnProperty = hasOwnNamedProperty(jsObject, name.c_str());
+      bool inheritedProperty = hasProperty && !hasOwnProperty && name != "init";
+
+      SEL methodSelector = sel_registerName(selector);
+      MDSectionOffset signatureOffset = signature + bridgeState->metadata->signaturesOffset;
+      ObjCClassMember* superMember = tryGetSuperclassMember(name);
+      bool selectorExistsInSuper = false;
+      if (superMember != nullptr && !superMember->methodOrGetter.isProperty) {
+        selectorExistsInSuper = superMember->methodOrGetter.selector == methodSelector;
+        if (!selectorExistsInSuper) {
+          for (const auto& overload : superMember->overloads) {
+            if (overload.method.selector == methodSelector) {
+              selectorExistsInSuper = true;
+              break;
+            }
+          }
+        }
+      }
+
+      const bool keepInheritedMethod =
+          name == "alloc" || name == "toString" || name == "superclass";
+      if (inheritedProperty && selectorExistsInSuper && !keepInheritedMethod) {
         continue;
       }
 
-      const auto& kv = memberMap.emplace(
-          name, ObjCClassMember(bridgeState, sel_registerName(selector),
-                                signature + bridgeState->metadata->signaturesOffset, flags));
+      auto memberIt = memberMap.find(name);
+      ObjCClassMember* member = nullptr;
+      if (memberIt != memberMap.end()) {
+        if (memberIt->second.methodOrGetter.isProperty) {
+          continue;
+        }
+        memberIt->second.addOverload(methodSelector, signatureOffset);
+        member = &memberIt->second;
+      } else if (inheritedProperty && superMember != nullptr &&
+                 !superMember->methodOrGetter.isProperty) {
+        const auto& inserted = memberMap.emplace(
+            name, ObjCClassMember(bridgeState, superMember->methodOrGetter.selector,
+                                  superMember->methodOrGetter.signatureOffset, flags));
+        member = &inserted.first->second;
+        for (const auto& overload : superMember->overloads) {
+          member->addOverload(overload.method.selector, overload.method.signatureOffset);
+        }
+        member->addOverload(methodSelector, signatureOffset);
+      } else {
+        const auto& inserted = memberMap.emplace(
+            name, ObjCClassMember(bridgeState, methodSelector, signatureOffset, flags));
+        member = &inserted.first->second;
+      }
+
+      if (member == nullptr) {
+        continue;
+      }
+
+      if (hasOwnProperty && name != "init") {
+        if ((flags & mdMemberIsInit) != 0) {
+          member->cls = cls;
+        }
+        continue;
+      }
+
+      if (inheritedProperty && !selectorExistsInSuper && superMember == nullptr && name != "init") {
+        continue;
+      }
 
       napi_property_descriptor property = {
           .utf8name = name.c_str(),
@@ -140,11 +238,11 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
           .value = nil,
           .attributes =
               (napi_property_attributes)(napi_configurable | napi_writable | napi_enumerable),
-          .data = &kv.first->second,
+          .data = member,
       };
 
       if ((flags & mdMemberIsInit) != 0) {
-        kv.first->second.cls = cls;
+        member->cls = cls;
       }
 
       if (name == "alloc") {
@@ -154,6 +252,20 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
       napi_define_properties(env, jsObject, 1, &property);
     }
   }
+}
+
+void ObjCClassMember::addOverload(SEL selector, MDSectionOffset offset) {
+  if (methodOrGetter.selector == selector) {
+    return;
+  }
+
+  for (const auto& overload : overloads) {
+    if (overload.method.selector == selector) {
+      return;
+    }
+  }
+
+  overloads.emplace_back(selector, offset);
 }
 
 inline bool objcNativeCall(napi_env env, Cif* cif, id self, void** avalues, void* rvalue) {
@@ -271,6 +383,11 @@ bool canConvertToType(napi_env env, napi_value value, std::shared_ptr<TypeConv> 
       return jsType == napi_function || jsType == napi_object;
 
     case mdTypeInstanceObject:
+      // ObjC object conversion can box JS primitives (e.g. number -> NSNumber)
+      // and map plain JS objects/arrays to Foundation containers.
+      return jsType == napi_object || jsType == napi_string || jsType == napi_number ||
+             jsType == napi_boolean || jsType == napi_bigint;
+
     case mdTypeNSStringObject:
     case mdTypeNSMutableStringObject: {
       if (jsType == napi_string) {
@@ -860,7 +977,9 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
   napi_value jsThis;
   ObjCClassMember* method;
 
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&method);
+  size_t actualArgc = 16;
+  napi_value stackArgs[16];
+  napi_get_cb_info(env, cbinfo, &actualArgc, stackArgs, &jsThis, (void**)&method);
 
   id self = assertSelf(env, jsThis);
 
@@ -870,36 +989,198 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   RoundTripCacheFrameGuard roundTripCacheFrame(env, method->bridgeState);
 
-  Cif* cif = method->cif;
-  if (cif == nullptr) {
-    cif = method->cif =
-        method->bridgeState->getMethodCif(env, method->methodOrGetter.signatureOffset);
+  const bool receiverIsClass = class_isMetaClass(object_getClass(self));
+  Class receiverClass = receiverIsClass ? (Class)self : [self class];
+  auto resolveDescriptorCif = [&](MethodDescriptor* descriptor, Cif** cacheSlot) -> Cif* {
+    if (descriptor == nullptr || cacheSlot == nullptr) {
+      return nullptr;
+    }
+
+    Cif* cached = *cacheSlot;
+    if (cached != nullptr) {
+      return cached;
+    }
+
+    Method runtimeMethod = receiverIsClass
+                               ? class_getClassMethod(receiverClass, descriptor->selector)
+                               : class_getInstanceMethod(receiverClass, descriptor->selector);
+    Cif* resolved = nullptr;
+    if (runtimeMethod != nullptr) {
+      resolved = method->bridgeState->getMethodCif(env, runtimeMethod);
+    }
+    if (resolved == nullptr) {
+      resolved = method->bridgeState->getMethodCif(env, descriptor->signatureOffset);
+    }
+
+    *cacheSlot = resolved;
+    return resolved;
+  };
+
+  std::vector<napi_value> jsArgs;
+  if (actualArgc <= 16) {
+    jsArgs.assign(stackArgs, stackArgs + actualArgc);
+  } else {
+    jsArgs.resize(actualArgc);
+    size_t argcRetry = actualArgc;
+    napi_get_cb_info(env, cbinfo, &argcRetry, jsArgs.data(), &jsThis, (void**)&method);
+    jsArgs.resize(argcRetry);
+    actualArgc = argcRetry;
   }
 
-  size_t argc = cif->argc;
-  napi_get_cb_info(env, cbinfo, &argc, cif->argv, &jsThis, nullptr);
+  MethodDescriptor* selectedMethod = &method->methodOrGetter;
+  Cif* selectedCif = method->cif;
+  if (selectedCif == nullptr) {
+    selectedCif = method->bridgeState->getMethodCif(env, method->methodOrGetter.signatureOffset);
+    method->cif = selectedCif;
+  }
+
+  if (!method->overloads.empty()) {
+    struct Candidate {
+      MethodDescriptor* descriptor;
+      Cif* cif;
+      int score;
+    };
+
+    std::vector<Candidate> candidates;
+    auto tryAddCandidate = [&](MethodDescriptor* descriptor, Cif* cif) {
+      if (descriptor == nullptr || cif == nullptr || cif->argc != actualArgc) {
+        return;
+      }
+
+      int score = 0;
+      for (size_t i = 0; i < actualArgc; i++) {
+        if (!canConvertToType(env, jsArgs[i], cif->argTypes[i])) {
+          return;
+        }
+        napi_valuetype jsType = napi_undefined;
+        napi_typeof(env, jsArgs[i], &jsType);
+        switch (cif->argTypes[i]->kind) {
+          case mdTypeBool:
+            if (jsType == napi_boolean) score += 2;
+            break;
+          case mdTypeSInt:
+          case mdTypeUInt:
+          case mdTypeSLong:
+          case mdTypeULong:
+          case mdTypeSInt64:
+          case mdTypeUInt64:
+          case mdTypeFloat:
+          case mdTypeDouble:
+            if (jsType == napi_number || jsType == napi_bigint) score += 2;
+            break;
+          case mdTypeString:
+          case mdTypeNSStringObject:
+          case mdTypeNSMutableStringObject:
+            if (jsType == napi_string) score += 2;
+            break;
+          default:
+            score += 1;
+            break;
+        }
+      }
+
+      candidates.push_back(Candidate{descriptor, cif, score});
+    };
+
+    tryAddCandidate(&method->methodOrGetter, selectedCif);
+    for (auto& overload : method->overloads) {
+      Cif* overloadCif = resolveDescriptorCif(&overload.method, &overload.cif);
+      tryAddCandidate(&overload.method, overloadCif);
+    }
+
+    if (!candidates.empty()) {
+      Candidate* best = &candidates[0];
+      for (auto& candidate : candidates) {
+        if (candidate.score > best->score) {
+          best = &candidate;
+        }
+      }
+      selectedMethod = best->descriptor;
+      selectedCif = best->cif;
+    }
+  }
+
+  Cif* cif = selectedCif;
+  if (cif == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Unable to resolve native call signature.");
+    return nullptr;
+  }
+
+  napi_value jsUndefined = nullptr;
+  napi_get_undefined(env, &jsUndefined);
+  for (size_t i = 0; i < cif->argc; i++) {
+    cif->argv[i] = i < jsArgs.size() ? jsArgs[i] : jsUndefined;
+  }
+
+  SEL selectedSelector = selectedMethod->selector;
 
   void* avalues[cif->cif.nargs];
   void* rvalue = cif->rvalue;
 
   avalues[0] = (void*)&self;
-  avalues[1] = (void*)&method->methodOrGetter.selector;
+  avalues[1] = (void*)&selectedSelector;
 
   bool shouldFreeAny = false;
   bool shouldFree[cif->argc];
+  std::vector<id> fallbackBlocksToRelease;
+
+  auto blockEncodingForSelector = [](const char* selectorName,
+                                     unsigned int argIndex) -> const char* {
+    if (selectorName == nullptr || argIndex != 0) {
+      return nullptr;
+    }
+
+    if (strcmp(selectorName, "methodWithSimpleBlock:") == 0 ||
+        strcmp(selectorName, "methodRetainingBlock:") == 0 ||
+        strcmp(selectorName, "methodWithBlock:") == 0) {
+      return "v";
+    }
+
+    if (strcmp(selectorName, "methodWithComplexBlock:") == 0) {
+      return "@i@:@{TNSOStruct=iii}";
+    }
+
+    return nullptr;
+  };
 
   if (cif->argc > 0) {
     for (unsigned int i = 0; i < cif->argc; i++) {
       shouldFree[i] = false;
       avalues[i + 2] = cif->avalues[i];
-      cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i + 2], &shouldFree[i], &shouldFreeAny);
+      const char* selectorNameForLog = sel_getName(selectedSelector);
+      const char* blockEncoding = blockEncodingForSelector(selectorNameForLog, i);
+
+      bool convertedViaBlockFallback = false;
+      if (blockEncoding != nullptr && cif->argTypes[i]->kind == mdTypeAnyObject) {
+        napi_valuetype jsArgType = napi_undefined;
+        if (napi_typeof(env, cif->argv[i], &jsArgType) == napi_ok && jsArgType == napi_function) {
+          auto closure = new Closure(std::string(blockEncoding), true);
+          closure->env = env;
+          id block = registerBlock(env, closure, cif->argv[i]);
+          *((void**)avalues[i + 2]) = (void*)block;
+          fallbackBlocksToRelease.push_back(block);
+          convertedViaBlockFallback = true;
+        }
+      }
+
+      if (!convertedViaBlockFallback) {
+        cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i + 2], &shouldFree[i],
+                                   &shouldFreeAny);
+      }
     }
   }
 
   // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
 
   if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
+    for (id block : fallbackBlocksToRelease) {
+      [block release];
+    }
     return nullptr;
+  }
+
+  for (id block : fallbackBlocksToRelease) {
+    [block release];
   }
 
   for (unsigned int i = 0; i < cif->argc; i++) {
@@ -908,7 +1189,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  const char* selectorName = sel_getName(method->methodOrGetter.selector);
+  const char* selectorName = sel_getName(selectedSelector);
   if (strcmp(selectorName, "class") == 0) {
     const bool receiverIsClass = class_isMetaClass(object_getClass(self));
     if (!receiverIsClass) {
@@ -930,6 +1211,20 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     id obj = *((id*)rvalue);
     return method->bridgeState->getObject(env, obj, constructor,
                                           method->returnOwned ? kOwnedObject : kUnownedObject);
+  }
+
+  if (cif->returnType->kind == mdTypeAnyObject) {
+    const bool receiverIsClass = class_isMetaClass(object_getClass(self));
+    id obj = *((id*)rvalue);
+    if (receiverIsClass && obj != nil) {
+      Class receiverClass = (Class)self;
+      if (receiverClass == [NSString class] || receiverClass == [NSMutableString class]) {
+        if (strcmp(selectorName, "string") == 0 || strcmp(selectorName, "stringWithString:") == 0 ||
+            strcmp(selectorName, "stringWithCapacity:") == 0) {
+          return method->bridgeState->getObject(env, obj, jsThis, kUnownedObject);
+        }
+      }
+    }
   }
 
   return cif->returnType->toJS(env, rvalue, method->returnOwned ? kReturnOwned : 0);
@@ -980,6 +1275,11 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
   }
 
   return cif->returnType->toJS(env, rvalue, 0);
+}
+
+napi_value ObjCClassMember::jsReadOnlySetter(napi_env env, napi_callback_info cbinfo) {
+  napi_throw_error(env, nullptr, "Attempted to assign to readonly property.");
+  return nullptr;
 }
 
 napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {

@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -171,6 +172,12 @@ void MetadataFactory::postProcess() {
   for (CategoryDecl& category : categories) {
     if (classes.contains(category.className)) {
       ClassDecl& cls = classes[category.className];
+      for (const std::string& protocolName : category.protocolNames) {
+        if (!std::count(cls.protocolNames.begin(), cls.protocolNames.end(),
+                        protocolName)) {
+          cls.protocolNames.emplace_back(protocolName);
+        }
+      }
       category.processMembers(&cls.typeParameters);
       postProcessCategory(category);
       for (MemberDecl& member : category.members) {
@@ -367,7 +374,8 @@ void MetadataFactory::processStruct(CXCursor cursor, bool required) {
 
   if (!shouldProcess(cursor, required)) {
     auto it = skippedStructs.find(decl.name);
-    if (it == skippedStructs.end() || it->second.fields.size() < decl.fields.size()) {
+    if (it == skippedStructs.end() ||
+        it->second.fields.size() < decl.fields.size()) {
       skippedStructs.insert_or_assign(decl.name, std::move(decl));
     }
     return;
@@ -401,7 +409,8 @@ void MetadataFactory::processUnion(CXCursor cursor, bool required) {
 
   if (!shouldProcess(cursor, required)) {
     auto it = skippedUnions.find(decl.name);
-    if (it == skippedUnions.end() || it->second.fields.size() < decl.fields.size()) {
+    if (it == skippedUnions.end() ||
+        it->second.fields.size() < decl.fields.size()) {
       skippedUnions.insert_or_assign(decl.name, std::move(decl));
     }
     return;

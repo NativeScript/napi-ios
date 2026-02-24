@@ -2,8 +2,10 @@
 #import <Foundation/Foundation.h>
 #include <objc/runtime.h>
 #include "Closure.h"
+#include "Interop.h"
 #include "Metadata.h"
 #include "ObjCBridge.h"
+#include "Protocol.h"
 #include "Util.h"
 #include "js_native_api.h"
 #include "node_api_util.h"
@@ -11,10 +13,337 @@
 namespace nativescript {
 namespace {
 std::unordered_map<std::string, MethodDescriptor> gKnownExposedMethods;
+napi_env gClassBuilderEnv = nullptr;
+
+const char* kInstallSuperAccessorSource = R"(
+  (function (prototype, basePrototype) {
+    const superCacheKey = Symbol.for("__ns_super_proxy__");
+    Object.defineProperty(prototype, "super", {
+      configurable: true,
+      enumerable: false,
+      get: function () {
+        const self = this;
+        if (self == null) {
+          return undefined;
+        }
+
+        const existing = self[superCacheKey];
+        if (existing && existing.base === basePrototype) {
+          return existing.proxy;
+        }
+
+        const proxy = new Proxy(basePrototype, {
+          get(target, key) {
+            let current = target;
+            while (current != null) {
+              const descriptor = Object.getOwnPropertyDescriptor(current, key);
+              if (descriptor) {
+                if (typeof descriptor.get === "function") {
+                  return descriptor.get.call(self);
+                }
+                const value = descriptor.value;
+                if (typeof value === "function") {
+                  return value.bind(self);
+                }
+                return value;
+              }
+              current = Object.getPrototypeOf(current);
+            }
+            return undefined;
+          },
+          set(target, key, value) {
+            let current = target;
+            while (current != null) {
+              const descriptor = Object.getOwnPropertyDescriptor(current, key);
+              if (descriptor) {
+                if (typeof descriptor.set === "function") {
+                  descriptor.set.call(self, value);
+                  return true;
+                }
+                if ("value" in descriptor && descriptor.writable) {
+                  self[key] = value;
+                  return true;
+                }
+                return false;
+              }
+              current = Object.getPrototypeOf(current);
+            }
+            self[key] = value;
+            return true;
+          }
+        });
+
+        Object.defineProperty(self, superCacheKey, {
+          configurable: true,
+          enumerable: false,
+          writable: true,
+          value: { base: basePrototype, proxy }
+        });
+
+        return proxy;
+      }
+    });
+  })
+	)";
+
+const char* NSFastEnumerationMethodEncoding() {
+  static const char* encoding = nullptr;
+  if (encoding == nullptr) {
+    struct objc_method_description desc = protocol_getMethodDescription(
+        @protocol(NSFastEnumeration), @selector(countByEnumeratingWithState:objects:count:), YES,
+        YES);
+    encoding = desc.types;
+  }
+  return encoding;
 }
+
+void clearPendingException(napi_env env) {
+  napi_value ignored = nullptr;
+  napi_get_and_clear_last_exception(env, &ignored);
+}
+
+Protocol* resolveRuntimeProtocol(napi_env env, napi_value protocolValue) {
+  if (protocolValue == nullptr) {
+    return nullptr;
+  }
+
+  ObjCProtocol* wrappedProtocol = nullptr;
+  if (napi_unwrap(env, protocolValue, (void**)&wrappedProtocol) == napi_ok &&
+      wrappedProtocol != nullptr) {
+    Protocol* runtimeProtocol = objc_getProtocol(wrappedProtocol->name.c_str());
+    if (runtimeProtocol != nullptr) {
+      return runtimeProtocol;
+    }
+  }
+
+  if (Pointer::isInstance(env, protocolValue)) {
+    Pointer* pointer = Pointer::unwrap(env, protocolValue);
+    if (pointer != nullptr && pointer->data != nullptr) {
+      Protocol* runtimeProtocol = (Protocol*)pointer->data;
+      if (protocol_getName(runtimeProtocol) != nullptr) {
+        return runtimeProtocol;
+      }
+    }
+  }
+
+  auto protocolFromName = [](const std::string& protocolName) -> Protocol* {
+    if (protocolName.empty()) {
+      return nullptr;
+    }
+
+    Protocol* runtimeProtocol = objc_getProtocol(protocolName.c_str());
+    if (runtimeProtocol != nullptr) {
+      return runtimeProtocol;
+    }
+
+    const std::string suffix = "Protocol";
+    if (protocolName.length() > suffix.length() &&
+        protocolName.rfind(suffix) == protocolName.length() - suffix.length()) {
+      std::string strippedName = protocolName.substr(0, protocolName.length() - suffix.length());
+      return objc_getProtocol(strippedName.c_str());
+    }
+
+    return nullptr;
+  };
+
+  napi_valuetype valueType = napi_undefined;
+  napi_typeof(env, protocolValue, &valueType);
+  if (valueType == napi_string) {
+    char protocolNameBuffer[512];
+    size_t protocolNameLength = 0;
+    napi_get_value_string_utf8(env, protocolValue, protocolNameBuffer, sizeof(protocolNameBuffer),
+                               &protocolNameLength);
+    return protocolFromName(std::string(protocolNameBuffer, protocolNameLength));
+  }
+
+  if (valueType == napi_object || valueType == napi_function) {
+    bool hasName = false;
+    napi_has_named_property(env, protocolValue, "name", &hasName);
+    if (hasName) {
+      napi_value protocolNameValue = nullptr;
+      napi_get_named_property(env, protocolValue, "name", &protocolNameValue);
+      napi_valuetype protocolNameType = napi_undefined;
+      napi_typeof(env, protocolNameValue, &protocolNameType);
+      if (protocolNameType == napi_string) {
+        char protocolNameBuffer[512];
+        size_t protocolNameLength = 0;
+        napi_get_value_string_utf8(env, protocolNameValue, protocolNameBuffer,
+                                   sizeof(protocolNameBuffer), &protocolNameLength);
+        return protocolFromName(std::string(protocolNameBuffer, protocolNameLength));
+      }
+    }
+  }
+
+  return nullptr;
+}
+
+napi_value JS_classConformsToProtocolSafe(napi_env env, napi_callback_info info) {
+  size_t argc = 1;
+  napi_value argv[1] = {nullptr};
+  napi_value jsThis = nullptr;
+  napi_get_cb_info(env, info, &argc, argv, &jsThis, nullptr);
+
+  Class nativeClass = nullptr;
+  napi_unwrap(env, jsThis, (void**)&nativeClass);
+
+  bool conforms = false;
+  if (nativeClass != nullptr && argc > 0) {
+    Protocol* runtimeProtocol = resolveRuntimeProtocol(env, argv[0]);
+    if (runtimeProtocol != nullptr) {
+      conforms = class_conformsToProtocol(nativeClass, runtimeProtocol);
+    }
+  }
+
+  napi_value result = nullptr;
+  napi_get_boolean(env, conforms, &result);
+  return result;
+}
+
+NSUInteger JS_SymbolIteratorCountByEnumerating(id self, SEL _cmd, NSFastEnumerationState* state,
+                                               id __unsafe_unretained stackbuf[], NSUInteger len) {
+  if (len == 0 || gClassBuilderEnv == nullptr) {
+    return 0;
+  }
+
+  napi_env env = gClassBuilderEnv;
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr) {
+    return 0;
+  }
+
+  napi_value jsSelf = bridgeState->getObject(env, self, kUnownedObject);
+  if (jsSelf == nullptr) {
+    return 0;
+  }
+
+  napi_value global = nullptr;
+  napi_value symbolCtor = nullptr;
+  napi_value symbolIterator = nullptr;
+  if (napi_get_global(env, &global) != napi_ok ||
+      napi_get_named_property(env, global, "Symbol", &symbolCtor) != napi_ok ||
+      napi_get_named_property(env, symbolCtor, "iterator", &symbolIterator) != napi_ok) {
+    clearPendingException(env);
+    return 0;
+  }
+
+  napi_value iteratorMethod = nullptr;
+  if (napi_get_property(env, jsSelf, symbolIterator, &iteratorMethod) != napi_ok) {
+    clearPendingException(env);
+    return 0;
+  }
+
+  napi_valuetype iteratorMethodType = napi_undefined;
+  if (napi_typeof(env, iteratorMethod, &iteratorMethodType) != napi_ok ||
+      iteratorMethodType != napi_function) {
+    return 0;
+  }
+
+  napi_value iterator = nullptr;
+  if (napi_call_function(env, jsSelf, iteratorMethod, 0, nullptr, &iterator) != napi_ok) {
+    clearPendingException(env);
+    return 0;
+  }
+
+  napi_valuetype iteratorType = napi_undefined;
+  if (napi_typeof(env, iterator, &iteratorType) != napi_ok ||
+      (iteratorType != napi_object && iteratorType != napi_function)) {
+    return 0;
+  }
+
+  napi_value nextMethod = nullptr;
+  if (napi_get_named_property(env, iterator, "next", &nextMethod) != napi_ok) {
+    clearPendingException(env);
+    return 0;
+  }
+
+  napi_valuetype nextType = napi_undefined;
+  if (napi_typeof(env, nextMethod, &nextType) != napi_ok || nextType != napi_function) {
+    return 0;
+  }
+
+  auto callNext = [&](napi_value* nextResult) -> bool {
+    if (napi_call_function(env, iterator, nextMethod, 0, nullptr, nextResult) != napi_ok) {
+      clearPendingException(env);
+      return false;
+    }
+    return true;
+  };
+
+  auto readDoneFlag = [&](napi_value nextResult, bool* done) -> bool {
+    napi_value doneValue = nullptr;
+    if (napi_get_named_property(env, nextResult, "done", &doneValue) != napi_ok) {
+      clearPendingException(env);
+      return false;
+    }
+
+    bool isDone = false;
+    if (napi_get_value_bool(env, doneValue, &isDone) != napi_ok) {
+      clearPendingException(env);
+      return false;
+    }
+
+    *done = isDone;
+    return true;
+  };
+
+  // Rebuild the iterator from the beginning and skip already yielded values.
+  // This keeps state handling simple and avoids retaining JS iterators in ObjC.
+  for (unsigned long skipped = 0; skipped < state->state; skipped++) {
+    napi_value skippedResult = nullptr;
+    if (!callNext(&skippedResult)) {
+      return 0;
+    }
+
+    bool done = false;
+    if (!readDoneFlag(skippedResult, &done) || done) {
+      return 0;
+    }
+  }
+
+  const char* objectEncoding = "@";
+  auto objectConverter = TypeConv::Make(env, &objectEncoding);
+
+  NSUInteger count = 0;
+  while (count < len) {
+    napi_value nextResult = nullptr;
+    if (!callNext(&nextResult)) {
+      break;
+    }
+
+    bool done = false;
+    if (!readDoneFlag(nextResult, &done)) {
+      break;
+    }
+
+    if (done) {
+      break;
+    }
+
+    napi_value value = nullptr;
+    if (napi_get_named_property(env, nextResult, "value", &value) != napi_ok) {
+      clearPendingException(env);
+      break;
+    }
+
+    id nativeValue = nil;
+    bool shouldFree = false;
+    bool shouldFreeAny = false;
+    objectConverter->toNative(env, value, &nativeValue, &shouldFree, &shouldFreeAny);
+    stackbuf[count++] = nativeValue;
+  }
+
+  state->itemsPtr = stackbuf;
+  state->mutationsPtr = &state->extra[0];
+  state->extra[0] = 0;
+  state->state += count;
+
+  return count;
+}
+}  // namespace
 
 ClassBuilder::ClassBuilder(napi_env env, napi_value constructor) {
   this->env = env;
+  gClassBuilderEnv = env;
   bridgeState = ObjCBridgeState::InstanceData(env);
 
   metadataOffset = MD_SECTION_OFFSET_NULL;
@@ -42,18 +371,24 @@ ClassBuilder::ClassBuilder(napi_env env, napi_value constructor) {
     }
   }
 
-
   napi_value className;
-  napi_get_named_property(env, constructor, "name", &className);
+  bool hasNativeClassName = false;
+  napi_has_named_property(env, constructor, "ObjCClassName", &hasNativeClassName);
+  if (hasNativeClassName) {
+    napi_get_named_property(env, constructor, "ObjCClassName", &className);
+  } else {
+    napi_get_named_property(env, constructor, "name", &className);
+  }
   static char classNameBuf[512];
   napi_get_value_string_utf8(env, className, classNameBuf, 512, nullptr);
 
   name = classNameBuf;
-  if (objc_getClass(name.c_str()) != nullptr) {
-    name += "_";
-    name += std::to_string(rand());
+  if (objc_lookUpClass(name.c_str()) != nullptr) {
+    std::string baseName = name;
+    do {
+      name = baseName + "_" + std::to_string(rand());
+    } while (objc_lookUpClass(name.c_str()) != nullptr);
   }
-
   nativeClass = objc_allocateClassPair(superClassNative, name.c_str(), 0);
 
   if (nativeClass == nullptr) {
@@ -96,30 +431,49 @@ void ClassBuilder::addProtocol(ObjCProtocol* protocol) {
   }
 }
 
-MethodDescriptor* ClassBuilder::lookupMethodDescriptor(std::string& name, bool setter) {
+std::vector<MethodDescriptor*> ClassBuilder::lookupMethodDescriptors(std::string& name,
+                                                                     bool setter) {
+  std::vector<MethodDescriptor*> descriptors;
+  std::unordered_set<SEL> selectors;
+
+  auto appendDescriptor = [&](MethodDescriptor* descriptor) {
+    if (descriptor == nullptr || descriptor->selector == nullptr) {
+      return;
+    }
+    if (!selectors.insert(descriptor->selector).second) {
+      return;
+    }
+    descriptors.emplace_back(descriptor);
+  };
+
   // 1. First we look up if there was a custom definition for the method
   // in ObjCExposedMethods static of the custom class.
   if (!setter) {
     auto findExposedMethod = exposedMethods.find(name);
     if (findExposedMethod != exposedMethods.end()) {
-      return &findExposedMethod->second;
+      appendDescriptor(&findExposedMethod->second);
+      return descriptors;
     }
 
     auto findKnownExposedMethod = gKnownExposedMethods.find(name);
     if (findKnownExposedMethod != gKnownExposedMethods.end()) {
-      return &findKnownExposedMethod->second;
+      appendDescriptor(&findKnownExposedMethod->second);
+      return descriptors;
     }
   }
 
-  auto getMemberDescriptor = [&](ObjCClassMember& member) -> MethodDescriptor* {
+  auto appendMemberDescriptors = [&](ObjCClassMember& member) {
     if (setter) {
       if (member.methodOrGetter.isProperty && member.setter.selector != nullptr) {
-        return &member.setter;
+        appendDescriptor(&member.setter);
       }
-      return nullptr;
+      return;
     }
 
-    return &member.methodOrGetter;
+    appendDescriptor(&member.methodOrGetter);
+    for (auto& overload : member.overloads) {
+      appendDescriptor(&overload.method);
+    }
   };
 
   // 2. Then walk through the class hierarchy and see if we can find the
@@ -128,9 +482,9 @@ MethodDescriptor* ClassBuilder::lookupMethodDescriptor(std::string& name, bool s
   while (currentClass != nullptr) {
     auto findMethod = currentClass->members.find(name);
     if (findMethod != currentClass->members.end()) {
-      MethodDescriptor* descriptor = getMemberDescriptor(findMethod->second);
-      if (descriptor != nullptr) {
-        return descriptor;
+      appendMemberDescriptors(findMethod->second);
+      if (!descriptors.empty()) {
+        return descriptors;
       }
     }
     currentClass = currentClass->superclass;
@@ -138,23 +492,24 @@ MethodDescriptor* ClassBuilder::lookupMethodDescriptor(std::string& name, bool s
 
   // 3. And finally, look into all protocols implemented (directly or
   // indirectly) and try to find the method there.
-  std::function<MethodDescriptor*(std::unordered_set<ObjCProtocol*> & protocols)> processProtocols =
-      [&](std::unordered_set<ObjCProtocol*>& protocols) -> MethodDescriptor* {
-    for (auto protocol : protocols) {
-      auto findMethod = protocol->members.find(name);
-      if (findMethod != protocol->members.end()) {
-        MethodDescriptor* descriptor = getMemberDescriptor(findMethod->second);
-        if (descriptor != nullptr) {
-          return descriptor;
+  std::function<void(std::unordered_set<ObjCProtocol*>&)> processProtocols =
+      [&](std::unordered_set<ObjCProtocol*>& protocols) {
+        for (auto protocol : protocols) {
+          auto findMethod = protocol->members.find(name);
+          if (findMethod != protocol->members.end()) {
+            appendMemberDescriptors(findMethod->second);
+          }
+          processProtocols(protocol->protocols);
         }
-      }
-      MethodDescriptor* desc = processProtocols(protocol->protocols);
-      if (desc != nullptr) return desc;
-    }
-    return (MethodDescriptor*)nullptr;
-  };
+      };
 
-  return processProtocols(protocols);
+  processProtocols(protocols);
+  return descriptors;
+}
+
+MethodDescriptor* ClassBuilder::lookupMethodDescriptor(std::string& name, bool setter) {
+  auto descriptors = lookupMethodDescriptors(name, setter);
+  return descriptors.empty() ? nullptr : descriptors.front();
 }
 
 void ClassBuilder::addMethod(std::string& name, MethodDescriptor* desc, napi_value key,
@@ -288,26 +643,24 @@ void ClassBuilder::build() {
   napi_value global, objectCtor, getOwnPropertyDescriptor;
   napi_get_global(env, &global);
   napi_get_named_property(env, global, "Object", &objectCtor);
-  napi_get_named_property(env, objectCtor, "getOwnPropertyDescriptor",
-                          &getOwnPropertyDescriptor);
+  napi_get_named_property(env, objectCtor, "getOwnPropertyDescriptor", &getOwnPropertyDescriptor);
 
-  uint32_t i = 0;
-  const bool traceDecoratedObject = this->name.find("TSDecoratedObject") != std::string::npos;
-  if (traceDecoratedObject) {
-    const char* superName =
-        (superclass != nullptr && superclass->nativeClass != nil) ? class_getName(superclass->nativeClass)
-                                                                   : "(null)";
-    const unsigned long superMembers =
-        superclass != nullptr ? (unsigned long)superclass->members.size() : 0;
-    NSLog(@"[ClassBuilder build] class=%s superObj=%p superName=%s superMembers=%lu", this->name.c_str(),
-          superclass, superName, superMembers);
-    if (superclass != nullptr) {
-      bool hasVoid = superclass->members.find("voidSelector") != superclass->members.end();
-      bool hasVariadic = superclass->members.find("variadicSelectorX") != superclass->members.end();
-      NSLog(@"[ClassBuilder build] class=%s superHas voidSelector=%d variadicSelectorX=%d",
-            this->name.c_str(), hasVoid, hasVariadic);
+  bool hasIteratorMethod = false;
+  napi_value symbolCtor = nullptr;
+  napi_value symbolIterator = nullptr;
+  napi_get_named_property(env, global, "Symbol", &symbolCtor);
+  napi_get_named_property(env, symbolCtor, "iterator", &symbolIterator);
+  napi_has_own_property(env, prototype, symbolIterator, &hasIteratorMethod);
+  if (hasIteratorMethod) {
+    class_addProtocol(nativeClass, @protocol(NSFastEnumeration));
+    const char* fastEnumerationEncoding = NSFastEnumerationMethodEncoding();
+    if (fastEnumerationEncoding != nullptr) {
+      class_replaceMethod(nativeClass, @selector(countByEnumeratingWithState:objects:count:),
+                          (IMP)JS_SymbolIteratorCountByEnumerating, fastEnumerationEncoding);
     }
   }
+
+  uint32_t i = 0;
   while (i < propertyCount) {
     napi_value property;
     napi_get_element(env, properties, i, &property);
@@ -334,16 +687,11 @@ void ClassBuilder::build() {
       napi_valuetype funcType = napi_undefined;
       napi_typeof(env, methodFunc, &funcType);
       if (funcType == napi_function) {
-        MethodDescriptor* desc = lookupMethodDescriptor(name);
-        if (traceDecoratedObject) {
-          NSLog(@"[ClassBuilder build] class=%s method=%s value desc=%p", this->name.c_str(),
-                name.c_str(), desc);
-        }
-        if (desc != nullptr) {
-          if (traceDecoratedObject) {
-            NSLog(@"[ClassBuilder build] add method selector=%s", sel_getName(desc->selector));
+        auto descriptors = lookupMethodDescriptors(name);
+        for (MethodDescriptor* descriptor : descriptors) {
+          if (descriptor != nullptr) {
+            addMethod(name, descriptor, property, methodFunc);
           }
-          addMethod(name, desc, property, methodFunc);
         }
       }
     }
@@ -356,13 +704,11 @@ void ClassBuilder::build() {
       napi_valuetype getterType = napi_undefined;
       napi_typeof(env, getterFunc, &getterType);
       if (getterType == napi_function) {
-        MethodDescriptor* getterDesc = lookupMethodDescriptor(name);
-        if (traceDecoratedObject) {
-          NSLog(@"[ClassBuilder build] class=%s getter=%s desc=%p", this->name.c_str(),
-                name.c_str(), getterDesc);
-        }
-        if (getterDesc != nullptr) {
-          addMethod(name, getterDesc, property, getterFunc);
+        auto getterDescs = lookupMethodDescriptors(name);
+        for (MethodDescriptor* getterDesc : getterDescs) {
+          if (getterDesc != nullptr) {
+            addMethod(name, getterDesc, property, getterFunc);
+          }
         }
       }
     }
@@ -375,13 +721,11 @@ void ClassBuilder::build() {
       napi_valuetype setterType = napi_undefined;
       napi_typeof(env, setterFunc, &setterType);
       if (setterType == napi_function) {
-        MethodDescriptor* setterDesc = lookupMethodDescriptor(name, true);
-        if (traceDecoratedObject) {
-          NSLog(@"[ClassBuilder build] class=%s setter=%s desc=%p", this->name.c_str(),
-                name.c_str(), setterDesc);
-        }
-        if (setterDesc != nullptr) {
-          addMethod(name, setterDesc, property, setterFunc);
+        auto setterDescs = lookupMethodDescriptors(name, true);
+        for (MethodDescriptor* setterDesc : setterDescs) {
+          if (setterDesc != nullptr) {
+            addMethod(name, setterDesc, property, setterFunc);
+          }
         }
       }
     }
@@ -420,16 +764,90 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  // Create a unique class name
+  if (class_conformsToProtocol(baseNativeClass, @protocol(ObjCBridgeClassBuilderProtocol))) {
+    napi_throw_error(env, nullptr, "Cannot extend an already extended class.");
+    return nullptr;
+  }
+
+  napi_value options = nullptr;
+  bool hasOptionsObject = false;
+  if (argc >= 2) {
+    napi_valuetype secondArgType;
+    napi_typeof(env, args[1], &secondArgType);
+    hasOptionsObject = secondArgType == napi_object;
+    if (hasOptionsObject) {
+      options = args[1];
+    }
+  }
+
+  bool hasOwnOverrides = false;
+  napi_value overridePropertyNames = nullptr;
+  napi_get_all_property_names(env, args[0], napi_key_own_only, napi_key_skip_symbols,
+                              napi_key_numbers_to_strings, &overridePropertyNames);
+  uint32_t overridePropertyCount = 0;
+  napi_get_array_length(env, overridePropertyNames, &overridePropertyCount);
+  hasOwnOverrides = overridePropertyCount > 0;
+
+  bool hasExposedMethodsOption = false;
+  bool hasProtocolsOption = false;
+  if (hasOptionsObject) {
+    napi_has_named_property(env, options, "exposedMethods", &hasExposedMethodsOption);
+    napi_has_named_property(env, options, "protocols", &hasProtocolsOption);
+  }
+
+  bool shouldReuseExistingClass = false;
+  Class existingExternalClass = nullptr;
+
+  // Create a class name.
   napi_value baseClassName;
   napi_get_named_property(env, thisArg, "name", &baseClassName);
   static char baseClassNameBuf[512];
   napi_get_value_string_utf8(env, baseClassName, baseClassNameBuf, 512, nullptr);
 
-  std::string newClassName = baseClassNameBuf;
-  newClassName += "_Extended_";
-  newClassName += std::to_string(rand());
+  std::string requestedName;
+  if (hasOptionsObject) {
+    bool hasCustomName = false;
+    napi_has_named_property(env, options, "name", &hasCustomName);
+    if (hasCustomName) {
+      napi_value customNameValue = nullptr;
+      napi_get_named_property(env, options, "name", &customNameValue);
+      napi_valuetype customNameType = napi_undefined;
+      napi_typeof(env, customNameValue, &customNameType);
+      if (customNameType == napi_string) {
+        static char customNameBuf[512];
+        size_t customNameLen = 0;
+        napi_get_value_string_utf8(env, customNameValue, customNameBuf, sizeof(customNameBuf),
+                                   &customNameLen);
+        if (customNameLen > 0) {
+          requestedName.assign(customNameBuf, customNameLen);
+        }
+      }
+    }
+  }
 
+  std::string newClassName;
+  if (!requestedName.empty()) {
+    newClassName = requestedName;
+    Class existingClass = objc_lookUpClass(newClassName.c_str());
+    if (existingClass != nullptr &&
+        class_conformsToProtocol(existingClass, @protocol(ObjCBridgeClassBuilderProtocol))) {
+      size_t suffix = 1;
+      std::string candidate;
+      do {
+        candidate = requestedName + std::to_string(suffix++);
+      } while (objc_lookUpClass(candidate.c_str()) != nullptr);
+      newClassName = candidate;
+    } else if (existingClass != nullptr && !hasOwnOverrides && !hasExposedMethodsOption &&
+               !hasProtocolsOption) {
+      // Name-only extensions should resolve to an existing external class when present.
+      shouldReuseExistingClass = true;
+      existingExternalClass = existingClass;
+    }
+  } else {
+    newClassName = baseClassNameBuf;
+    newClassName += "_Extended_";
+    newClassName += std::to_string(rand());
+  }
   // Create the new constructor function that extends the base
   napi_value newConstructor;
   napi_define_class(env, newClassName.c_str(), newClassName.length(), JS_BridgedConstructor,
@@ -438,16 +856,21 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
   // Set up JavaScript inheritance from the base class
   napi_inherits(env, newConstructor, thisArg);
 
+  napi_value safeConformsToProtocol = nullptr;
+  napi_create_function(env, "conformsToProtocol", NAPI_AUTO_LENGTH, JS_classConformsToProtocolSafe,
+                       nullptr, &safeConformsToProtocol);
+  napi_set_named_property(env, newConstructor, "conformsToProtocol", safeConformsToProtocol);
+
   // Get prototype for adding methods
-  napi_value newPrototype;
+  napi_value newPrototype, basePrototype;
   napi_get_named_property(env, newConstructor, "prototype", &newPrototype);
+  napi_get_named_property(env, thisArg, "prototype", &basePrototype);
 
   // Copy methods and accessors preserving descriptors.
   napi_value global, objectCtor, getOwnPropertyDescriptors, defineProperties;
   napi_get_global(env, &global);
   napi_get_named_property(env, global, "Object", &objectCtor);
-  napi_get_named_property(env, objectCtor, "getOwnPropertyDescriptors",
-                          &getOwnPropertyDescriptors);
+  napi_get_named_property(env, objectCtor, "getOwnPropertyDescriptors", &getOwnPropertyDescriptors);
   napi_get_named_property(env, objectCtor, "defineProperties", &defineProperties);
 
   napi_value descriptors;
@@ -456,29 +879,42 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
   napi_value defineArgs[] = {newPrototype, descriptors};
   napi_call_function(env, objectCtor, defineProperties, 2, defineArgs, nullptr);
 
-  // Handle optional second parameter for protocols
-  if (argc >= 2) {
-    napi_valuetype secondArgType;
-    napi_typeof(env, args[1], &secondArgType);
-    if (secondArgType == napi_object) {
-      napi_value exposedMethods;
-      bool hasExposedMethods = false;
-      napi_has_named_property(env, args[1], "exposedMethods", &hasExposedMethods);
+  napi_value installSuperAccessor = nullptr;
+  napi_value installSuperScript = nullptr;
+  napi_create_string_utf8(env, kInstallSuperAccessorSource, NAPI_AUTO_LENGTH, &installSuperScript);
+  napi_run_script(env, installSuperScript, &installSuperAccessor);
+  napi_value superArgs[] = {newPrototype, basePrototype};
+  napi_call_function(env, global, installSuperAccessor, 2, superArgs, nullptr);
 
-      if (hasExposedMethods) {
-        napi_get_named_property(env, args[1], "exposedMethods", &exposedMethods);
-        napi_set_named_property(env, newConstructor, "ObjCExposedMethods", exposedMethods);
-      }
+  // Handle optional second parameter for metadata/options
+  if (hasOptionsObject) {
+    napi_value exposedMethods;
+    bool hasExposedMethods = false;
+    napi_has_named_property(env, options, "exposedMethods", &hasExposedMethods);
 
-      napi_value protocols;
-      bool hasProtocols = false;
-      napi_has_named_property(env, args[1], "protocols", &hasProtocols);
-
-      if (hasProtocols) {
-        napi_get_named_property(env, args[1], "protocols", &protocols);
-        napi_set_named_property(env, newConstructor, "ObjCProtocols", protocols);
-      }
+    if (hasExposedMethods) {
+      napi_get_named_property(env, options, "exposedMethods", &exposedMethods);
+      napi_set_named_property(env, newConstructor, "ObjCExposedMethods", exposedMethods);
     }
+
+    napi_value protocols;
+    bool hasProtocols = false;
+    napi_has_named_property(env, options, "protocols", &hasProtocols);
+
+    if (hasProtocols) {
+      napi_get_named_property(env, options, "protocols", &protocols);
+      napi_set_named_property(env, newConstructor, "ObjCProtocols", protocols);
+    }
+  }
+
+  napi_value classNameValue = nullptr;
+  napi_create_string_utf8(env, newClassName.c_str(), newClassName.length(), &classNameValue);
+  napi_set_named_property(env, newConstructor, "ObjCClassName", classNameValue);
+
+  if (shouldReuseExistingClass && existingExternalClass != nullptr) {
+    napi_remove_wrap(env, newConstructor, nullptr);
+    napi_wrap(env, newConstructor, (void*)existingExternalClass, nullptr, nullptr, nullptr);
+    return newConstructor;
   }
 
   // Use ClassBuilder to create the native class and bridge the methods

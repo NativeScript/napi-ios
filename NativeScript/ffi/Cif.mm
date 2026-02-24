@@ -1,6 +1,7 @@
 #include "Cif.h"
 #include <Foundation/Foundation.h>
 #include <algorithm>
+#include <cstring>
 #include <iostream>
 #include <vector>
 #include "Metadata.h"
@@ -8,7 +9,6 @@
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
-#include <cstring>
 
 namespace nativescript {
 
@@ -64,10 +64,11 @@ Cif* ObjCBridgeState::getCFunctionCif(napi_env env, MDSectionOffset offset) {
   return cif;
 }
 
-Cif::Cif(napi_env env, std::string encoding) {
+Cif::Cif(napi_env env, std::string encoding, unsigned int implicitArgc) {
   auto signature = [NSMethodSignature signatureWithObjCTypes:encoding.c_str()];
   unsigned long numberOfArguments = signature.numberOfArguments;
-  this->argc = (int)numberOfArguments - 2;
+  unsigned long skippedArgs = std::min<unsigned long>(numberOfArguments, implicitArgc);
+  this->argc = (int)(numberOfArguments - skippedArgs);
   this->argv = (napi_value*)malloc(sizeof(napi_value) * this->argc);
 
   unsigned int totalArgc = (unsigned int)numberOfArguments;
@@ -101,7 +102,7 @@ Cif::Cif(napi_env env, std::string encoding) {
     auto argTypeInfo = TypeConv::Make(env, &argenc);
     this->atypes[i] = argTypeInfo->type;
 
-    if (i >= 2) {
+    if (i >= skippedArgs) {
       this->argTypes.push_back(argTypeInfo);
     }
   }
@@ -116,7 +117,7 @@ Cif::Cif(napi_env env, std::string encoding) {
   }
 
   for (unsigned int i = 0; i < this->argc; i++) {
-    this->avalues[i] = malloc(cif.arg_types[i + 2]->size);
+    this->avalues[i] = malloc(cif.arg_types[i + skippedArgs]->size);
     this->avaluesAllocCount++;
   }
 }

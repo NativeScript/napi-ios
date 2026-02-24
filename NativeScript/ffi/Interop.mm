@@ -8,8 +8,8 @@
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
-#include <objc/runtime.h>
 #include <dlfcn.h>
+#include <objc/runtime.h>
 #include <cmath>
 #include <cstdint>
 #include <memory>
@@ -350,6 +350,7 @@ void registerInterop(napi_env env, napi_value global) {
   napi_set_named_property(env, types, "protocol", createJSNumber(env, mdTypePointer));
   napi_set_named_property(env, types, "class", createJSNumber(env, mdTypeAnyObject));
   napi_set_named_property(env, types, "SEL", createJSNumber(env, mdTypeSelector));
+  napi_set_named_property(env, types, "selector", createJSNumber(env, mdTypeSelector));
   napi_set_named_property(env, types, "pointer", createJSNumber(env, mdTypePointer));
 
   napi_value Pointer = Pointer::defineJSClass(env);

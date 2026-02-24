@@ -17,21 +17,28 @@ CategoryDecl::CategoryDecl(CXCursor cursor) {
           return CXChildVisit_Continue;
         }
 
-        auto cls = (CategoryDecl *)clientData;
+        auto cls = (CategoryDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_ObjCClassRef: {
-          CXString name = clang_getCursorSpelling(cursor);
-          std::string nameStr = clang_getCString(name);
-          cls->className = nameStr;
-          clang_disposeString(name);
-          break;
-        }
+          case CXCursor_ObjCClassRef: {
+            CXString name = clang_getCursorSpelling(cursor);
+            std::string nameStr = clang_getCString(name);
+            cls->className = nameStr;
+            clang_disposeString(name);
+            break;
+          }
+          case CXCursor_ObjCProtocolRef: {
+            CXString name = clang_getCursorSpelling(cursor);
+            std::string nameStr = clang_getCString(name);
+            cls->protocolNames.emplace_back(nameStr);
+            clang_disposeString(name);
+            break;
+          }
 
-        default:
-          break;
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
@@ -40,7 +47,7 @@ CategoryDecl::CategoryDecl(CXCursor cursor) {
 }
 
 void CategoryDecl::processMembers(
-    std::vector<std::string> *classTypeParameters) {
+    std::vector<std::string>* classTypeParameters) {
   _classTypeParameters = classTypeParameters;
   clang_visitChildren(
       cursor,
@@ -49,22 +56,22 @@ void CategoryDecl::processMembers(
           return CXChildVisit_Continue;
         }
 
-        auto cls = (CategoryDecl *)clientData;
+        auto cls = (CategoryDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_ObjCPropertyDecl:
-        case CXCursor_ObjCClassMethodDecl:
-        case CXCursor_ObjCInstanceMethodDecl: {
-          auto member = MemberDecl(cursor, cls->_classTypeParameters);
-          member.parentClassName = cls->className;
-          cls->members.emplace_back(std::move(member));
-          break;
-        }
+          case CXCursor_ObjCPropertyDecl:
+          case CXCursor_ObjCClassMethodDecl:
+          case CXCursor_ObjCInstanceMethodDecl: {
+            auto member = MemberDecl(cursor, cls->_classTypeParameters);
+            member.parentClassName = cls->className;
+            cls->members.emplace_back(std::move(member));
+            break;
+          }
 
-        default:
-          break;
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
@@ -72,4 +79,4 @@ void CategoryDecl::processMembers(
       this);
 }
 
-} // namespace metagen
+}  // namespace metagen

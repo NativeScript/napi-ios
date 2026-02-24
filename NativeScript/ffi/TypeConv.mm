@@ -19,6 +19,7 @@
 #include <stdbool.h>
 #include <cstring>
 #include <functional>
+#include <limits>
 #include <memory>
 #include <string>
 #include <unordered_map>
@@ -950,6 +951,36 @@ class PointerTypeConv : public TypeConv {
     void** res = (void**)result;
 
     auto unwrapKnownNativeHandle = [&](napi_value input, void** out) -> bool {
+      auto describeValue = [&](napi_value candidate) -> std::string {
+        if (candidate == nullptr) {
+          return "(null)";
+        }
+
+        napi_value nameValue = nullptr;
+        bool hasName = false;
+        if (napi_has_named_property(env, candidate, "name", &hasName) != napi_ok || !hasName) {
+          return "(unnamed)";
+        }
+
+        if (napi_get_named_property(env, candidate, "name", &nameValue) != napi_ok) {
+          return "(unnamed)";
+        }
+
+        napi_valuetype nameType = napi_undefined;
+        if (napi_typeof(env, nameValue, &nameType) != napi_ok || nameType != napi_string) {
+          return "(unnamed)";
+        }
+
+        char buffer[512];
+        size_t length = 0;
+        if (napi_get_value_string_utf8(env, nameValue, buffer, sizeof(buffer), &length) !=
+            napi_ok) {
+          return "(unnamed)";
+        }
+
+        return std::string(buffer, length);
+      };
+
       void* wrapped = nullptr;
       napi_status unwrapStatus = napi_unwrap(env, input, &wrapped);
       if (unwrapStatus != napi_ok) {
@@ -1054,9 +1085,236 @@ class PointerTypeConv : public TypeConv {
 
         if (Reference::isInstance(env, value)) {
           Reference* ref = Reference::unwrap(env, value);
+          if (ref == nullptr) {
+            napi_throw_error(env, nullptr, "Invalid Reference");
+            *res = nullptr;
+            return;
+          }
           if (ref->data == nullptr) {
-            ref->type = pointeeType;
-            ref->data = malloc(pointeeType->type->size);
+            std::shared_ptr<TypeConv> resolvedType = pointeeType;
+            if (resolvedType == nullptr) {
+              resolvedType = ref->type;
+            }
+
+            if (resolvedType == nullptr && ref->initValue != nullptr) {
+              napi_value initValue = get_ref_value(env, ref->initValue);
+              if (initValue != nullptr) {
+                napi_valuetype initType = napi_undefined;
+                if (napi_typeof(env, initValue, &initType) == napi_ok) {
+                  auto makeStructType = [&](StructInfo* info) -> std::shared_ptr<TypeConv> {
+                    if (info == nullptr || info->name == nullptr) {
+                      return nullptr;
+                    }
+
+                    std::string encoding = "{";
+                    encoding += info->name;
+                    encoding += "=";
+                    for (const auto& field : info->fields) {
+                      if (field.type == nullptr) {
+                        return nullptr;
+                      }
+                      field.type->encode(&encoding);
+                    }
+                    encoding += "}";
+
+                    const char* encodingPtr = encoding.c_str();
+                    return TypeConv::Make(env, &encodingPtr);
+                  };
+
+                  if (initType == napi_object) {
+                    if (StructObject::isInstance(env, initValue)) {
+                      StructObject* structObj = StructObject::unwrap(env, initValue);
+                      if (structObj != nullptr) {
+                        resolvedType = makeStructType(structObj->info);
+                      }
+                    }
+
+                    if (resolvedType == nullptr) {
+                      auto bridgeState = ObjCBridgeState::InstanceData(env);
+                      if (bridgeState != nullptr) {
+                        bool isArray = false;
+                        bool isTypedArray = false;
+                        bool isArrayBuffer = false;
+                        bool isDataView = false;
+                        napi_is_array(env, initValue, &isArray);
+                        napi_is_typedarray(env, initValue, &isTypedArray);
+                        napi_is_arraybuffer(env, initValue, &isArrayBuffer);
+                        napi_is_dataview(env, initValue, &isDataView);
+                        if (!isArray && !isTypedArray && !isArrayBuffer && !isDataView) {
+                          napi_value propertyNames = nullptr;
+                          if (napi_get_property_names(env, initValue, &propertyNames) == napi_ok &&
+                              propertyNames != nullptr) {
+                            uint32_t propertyCount = 0;
+                            napi_get_array_length(env, propertyNames, &propertyCount);
+                            std::unordered_set<std::string> keys;
+                            std::unordered_map<std::string, bool> keyIsInteger;
+                            keys.reserve(propertyCount);
+                            for (uint32_t i = 0; i < propertyCount; i++) {
+                              napi_value keyValue = nullptr;
+                              if (napi_get_element(env, propertyNames, i, &keyValue) != napi_ok ||
+                                  keyValue == nullptr) {
+                                continue;
+                              }
+                              napi_valuetype keyType = napi_undefined;
+                              if (napi_typeof(env, keyValue, &keyType) != napi_ok ||
+                                  keyType != napi_string) {
+                                continue;
+                              }
+                              size_t keyLength = 0;
+                              if (napi_get_value_string_utf8(env, keyValue, nullptr, 0,
+                                                             &keyLength) != napi_ok) {
+                                continue;
+                              }
+                              std::vector<char> keyBuffer(keyLength + 1, '\0');
+                              if (napi_get_value_string_utf8(env, keyValue, keyBuffer.data(),
+                                                             keyBuffer.size(),
+                                                             &keyLength) != napi_ok) {
+                                continue;
+                              }
+                              std::string key(keyBuffer.data(), keyLength);
+                              keys.insert(key);
+
+                              napi_value propertyValue = nullptr;
+                              if (napi_get_property(env, initValue, keyValue, &propertyValue) ==
+                                      napi_ok &&
+                                  propertyValue != nullptr) {
+                                napi_valuetype propertyType = napi_undefined;
+                                if (napi_typeof(env, propertyValue, &propertyType) == napi_ok) {
+                                  bool isInteger = false;
+                                  if (propertyType == napi_bigint) {
+                                    isInteger = true;
+                                  } else if (propertyType == napi_number) {
+                                    double numericValue = 0;
+                                    if (napi_get_value_double(env, propertyValue, &numericValue) ==
+                                        napi_ok) {
+                                      int64_t truncated = static_cast<int64_t>(numericValue);
+                                      isInteger = static_cast<double>(truncated) == numericValue;
+                                    }
+                                  }
+                                  keyIsInteger[key] = isInteger;
+                                }
+                              }
+                            }
+
+                            if (!keys.empty()) {
+                              auto isIntegerKind = [](MDTypeKind kind) -> bool {
+                                switch (kind) {
+                                  case mdTypeChar:
+                                  case mdTypeSInt:
+                                  case mdTypeSShort:
+                                  case mdTypeSLong:
+                                  case mdTypeSInt64:
+                                  case mdTypeUChar:
+                                  case mdTypeUInt:
+                                  case mdTypeUShort:
+                                  case mdTypeULong:
+                                  case mdTypeUInt64:
+                                  case mdTypeUInt8:
+                                  case mdTypeBool:
+                                    return true;
+                                  default:
+                                    return false;
+                                }
+                              };
+
+                              auto isFloatingKind = [](MDTypeKind kind) -> bool {
+                                return kind == mdTypeFloat || kind == mdTypeDouble ||
+                                       kind == mdTypeLongDouble || kind == mdTypeF16;
+                              };
+
+                              StructInfo* bestMatch = nullptr;
+                              int bestScore = std::numeric_limits<int>::min();
+                              uint16_t bestSize = std::numeric_limits<uint16_t>::max();
+
+                              for (const auto& entry : bridgeState->structOffsets) {
+                                StructInfo* info = bridgeState->getStructInfo(env, entry.second);
+                                if (info == nullptr || info->fields.size() != keys.size()) {
+                                  continue;
+                                }
+
+                                bool match = true;
+                                for (const auto& field : info->fields) {
+                                  if (field.name == nullptr ||
+                                      keys.find(field.name) == keys.end()) {
+                                    match = false;
+                                    break;
+                                  }
+                                }
+                                if (!match) {
+                                  continue;
+                                }
+
+                                int score = 0;
+                                bool hasOnlyNumericFields = true;
+                                for (const auto& field : info->fields) {
+                                  if (field.type == nullptr) {
+                                    hasOnlyNumericFields = false;
+                                    break;
+                                  }
+
+                                  MDTypeKind fieldKind = field.type->kind;
+                                  if (isIntegerKind(fieldKind)) {
+                                    auto integerEntry =
+                                        keyIsInteger.find(field.name != nullptr ? field.name : "");
+                                    score +=
+                                        (integerEntry != keyIsInteger.end() && integerEntry->second)
+                                            ? 3
+                                            : 1;
+                                  } else if (isFloatingKind(fieldKind)) {
+                                    score += 2;
+                                  } else {
+                                    hasOnlyNumericFields = false;
+                                    break;
+                                  }
+                                }
+
+                                if (!hasOnlyNumericFields) {
+                                  continue;
+                                }
+
+                                if (score > bestScore ||
+                                    (score == bestScore && info->size < bestSize)) {
+                                  bestScore = score;
+                                  bestSize = info->size;
+                                  bestMatch = info;
+                                }
+                              }
+
+                              if (bestMatch != nullptr) {
+                                resolvedType = makeStructType(bestMatch);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+
+                  if (resolvedType == nullptr) {
+                    const char* inferredEncoding = "@";
+                    if (initType == napi_number || initType == napi_bigint) {
+                      inferredEncoding = "q";
+                    } else if (initType == napi_boolean) {
+                      inferredEncoding = "B";
+                    }
+                    resolvedType = TypeConv::Make(env, &inferredEncoding);
+                  }
+                }
+              }
+            }
+
+            if (resolvedType == nullptr) {
+              const char* defaultEncoding = "@";
+              resolvedType = TypeConv::Make(env, &defaultEncoding);
+            }
+
+            ref->type = resolvedType;
+            size_t pointeeSize = sizeof(void*);
+            if (resolvedType != nullptr && resolvedType->type != nullptr &&
+                resolvedType->type->size > 0) {
+              pointeeSize = resolvedType->type->size;
+            }
+            ref->data = malloc(pointeeSize);
             ref->ownsData = true;
             if (ref->initValue) {
               napi_value initValue = get_ref_value(env, ref->initValue);
@@ -1523,6 +1781,20 @@ class ObjCObjectTypeConv : public TypeConv {
       return result;
     }
 
+    // Untyped id values that are actually Objective-C blocks should be
+    // callable from JS. Preserve callback identity when we already have one.
+    if (isObjCBlockObject(obj)) {
+      napi_value cached = getCachedBlockCallback(env, (void*)obj);
+      if (cached != nullptr) {
+        return cached;
+      }
+
+      const char* signature = getObjCBlockSignature((void*)obj);
+      if (signature != nullptr) {
+        return FunctionPointer::wrapWithEncoding(env, (void*)obj, signature, true);
+      }
+    }
+
     // Auto-unbox plain id string values.
     const bool isUntypedObject = classOffset == 0 && protocolOffsets.empty();
     if (isUntypedObject && [obj isKindOfClass:[NSString class]]) {
@@ -1537,6 +1809,37 @@ class ObjCObjectTypeConv : public TypeConv {
     }
 
     auto bridgeState = ObjCBridgeState::InstanceData(env);
+
+    auto normalizePtr = [](void* ptr) -> uintptr_t {
+#if INTPTR_MAX == INT64_MAX
+      return reinterpret_cast<uintptr_t>(ptr) & 0x0000FFFFFFFFFFFFULL;
+#else
+      return reinterpret_cast<uintptr_t>(ptr);
+#endif
+    };
+
+    if (bridgeState != nullptr) {
+      auto protocolIt = bridgeState->mdProtocolsByPointer.find((Protocol*)obj);
+      if (protocolIt != bridgeState->mdProtocolsByPointer.end()) {
+        auto proto = bridgeState->getProtocol(env, protocolIt->second);
+        if (proto != nullptr) {
+          return get_ref_value(env, proto->constructor);
+        }
+      } else {
+        const uintptr_t objNormalized = normalizePtr((void*)obj);
+        for (const auto& entry : bridgeState->mdProtocolsByPointer) {
+          if (normalizePtr((void*)entry.first) != objNormalized) {
+            continue;
+          }
+
+          auto proto = bridgeState->getProtocol(env, entry.second);
+          if (proto != nullptr) {
+            return get_ref_value(env, proto->constructor);
+          }
+        }
+      }
+    }
+
     auto roundTrip = bridgeState->getRoundTripObject(env, obj);
     if (roundTrip != nullptr) {
       return roundTrip;
@@ -1664,7 +1967,8 @@ class ObjCObjectTypeConv : public TypeConv {
           return;
         }
 
-        status = napi_unwrap(env, value, (void**)res);
+        void* wrapped = nullptr;
+        status = napi_unwrap(env, value, &wrapped);
 
         if (status != napi_ok) {
           bool isArrayBuffer = false;
@@ -1875,6 +2179,39 @@ class ObjCObjectTypeConv : public TypeConv {
             return;
           }
         }
+
+        if (bridgeState != nullptr && wrapped != nullptr) {
+          for (const auto& entry : bridgeState->classes) {
+            auto bridgedClass = entry.second;
+            if (bridgedClass == wrapped) {
+              *res = (id)bridgedClass->nativeClass;
+              return;
+            }
+          }
+
+          for (const auto& entry : bridgeState->protocols) {
+            auto bridgedProtocol = entry.second;
+            if (bridgedProtocol != wrapped) {
+              continue;
+            }
+
+            Protocol* runtimeProtocol = objc_getProtocol(bridgedProtocol->name.c_str());
+            if (runtimeProtocol == nil) {
+              std::string baseName;
+              if (stripProtocolSuffix(bridgedProtocol->name.c_str(), &baseName)) {
+                runtimeProtocol = objc_getProtocol(baseName.c_str());
+              }
+            }
+
+            if (runtimeProtocol != nil) {
+              *res = (id)runtimeProtocol;
+              return;
+            }
+          }
+        }
+
+        *res = (id)wrapped;
+        return;
 
         break;
       }

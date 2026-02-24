@@ -319,6 +319,7 @@ class CategoryDecl {
 
   std::string name;
   std::string className;
+  std::vector<std::string> protocolNames;
 
   std::vector<MemberDecl> members;
 

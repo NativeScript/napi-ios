@@ -189,6 +189,35 @@ void Runtime::Init(bool isWorker) {
         console.warn('gc() is not exposed');
       };
     }
+
+    if (typeof globalThis.URLPattern !== "function") {
+      globalThis.URLPattern = class URLPattern {
+        constructor(input, baseURL) {
+          if (typeof input !== "string") {
+            throw new TypeError("Failed to construct 'URLPattern': input must be a string");
+          }
+
+          let url;
+          if (baseURL === undefined || baseURL === null) {
+            url = new URL(input);
+          } else {
+            url = new URL(input, baseURL);
+          }
+
+          const normalizeProtocol = (value) => value.endsWith(":") ? value.slice(0, -1) : value;
+
+          this.protocol = normalizeProtocol(url.protocol);
+          this.username = url.username || "*";
+          this.password = url.password || "*";
+          this.hostname = url.hostname || "*";
+          this.port = url.port || "";
+          this.pathname = url.pathname || "/";
+          this.search = url.search || "*";
+          this.hash = url.hash || "*";
+          this.hasRegExpGroups = false;
+        }
+      };
+    }
   )";
 
   napi_value compatScript, result;

@@ -1,13 +1,14 @@
 #include "Block.h"
 #import <Foundation/Foundation.h>
+#include <cstdint>
+#include <cstring>
+#include <unordered_map>
 #include "Interop.h"
 #include "ObjCBridge.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"
 #include "objc/runtime.h"
-#include <cstring>
-#include <unordered_map>
 
 struct Block_descriptor_1 {
   unsigned long int reserved;  // NULL
@@ -34,6 +35,7 @@ namespace {
 constexpr int kBlockNeedsFree = (1 << 24);
 constexpr int kBlockHasCopyDispose = (1 << 25);
 constexpr int kBlockRefCountOne = (1 << 1);
+constexpr int kBlockHasSignature = (1 << 30);
 std::unordered_map<void*, napi_ref> g_blockToJsFunction;
 
 void block_copy(void* dest, void* src) {
@@ -165,6 +167,54 @@ id registerBlock(napi_env env, Closure* closure, napi_value callback) {
   return (id)block;
 }
 
+napi_value getCachedBlockCallback(napi_env env, void* blockPtr) {
+  return getCachedBlockJsFunction(env, blockPtr);
+}
+
+bool isObjCBlockObject(id obj) {
+  if (obj == nil) {
+    return false;
+  }
+
+  Class cls = object_getClass(obj);
+  if (cls == nil) {
+    return false;
+  }
+
+  const char* className = class_getName(cls);
+  if (className == nullptr) {
+    return false;
+  }
+
+  // Runtime block classes are typically internal names like
+  // __NSGlobalBlock__, __NSMallocBlock__, __NSStackBlock__.
+  return className[0] == '_' && className[1] == '_' && strstr(className, "Block") != nullptr;
+}
+
+const char* getObjCBlockSignature(void* blockPtr) {
+  auto block = static_cast<Block_literal_1*>(blockPtr);
+  if (block == nullptr || block->descriptor == nullptr) {
+    return nullptr;
+  }
+
+  if ((block->flags & kBlockHasSignature) == 0) {
+    return nullptr;
+  }
+
+  // Descriptor layout:
+  // unsigned long reserved;
+  // unsigned long size;
+  // [copy_helper, dispose_helper] if BLOCK_HAS_COPY_DISPOSE
+  // const char* signature if BLOCK_HAS_SIGNATURE
+  auto descriptorCursor = reinterpret_cast<uint8_t*>(block->descriptor);
+  descriptorCursor += sizeof(unsigned long) * 2;
+  if ((block->flags & kBlockHasCopyDispose) != 0) {
+    descriptorCursor += sizeof(void*) * 2;
+  }
+
+  return *reinterpret_cast<const char**>(descriptorCursor);
+}
+
 NAPI_FUNCTION(registerBlock) {
   NAPI_CALLBACK_BEGIN(2)
 
@@ -234,8 +284,63 @@ napi_value FunctionPointer::wrap(napi_env env, void* function, metagen::MDSectio
   return result;
 }
 
+napi_value FunctionPointer::wrapWithEncoding(napi_env env, void* function, const char* encoding,
+                                             bool isBlock) {
+  if (function == nullptr || encoding == nullptr || encoding[0] == '\0') {
+    napi_value nullValue;
+    napi_get_null(env, &nullValue);
+    return nullValue;
+  }
+
+  if (isBlock) {
+    napi_value cached = getCachedBlockJsFunction(env, function);
+    if (cached != nullptr) {
+      return cached;
+    }
+  }
+
+  FunctionPointer* ref = new FunctionPointer();
+  ref->function = function;
+  ref->offset = 0;
+  ref->ownsCif = true;
+  ref->cif = new Cif(env, encoding, isBlock ? 1 : 0);
+
+  napi_value result;
+  napi_create_function(env, isBlock ? "objcBlockWrapper" : "cFunctionWrapper", NAPI_AUTO_LENGTH,
+                       isBlock ? jsCallAsBlock : jsCallAsCFunction, ref, &result);
+
+  // Allow fast pointer extraction when JS function wrappers are passed back to native.
+  napi_ref nativePointerRef;
+  napi_wrap(env, result, function, nullptr, nullptr, &nativePointerRef);
+  (void)nativePointerRef;
+
+  // Keep raw pointer metadata without overriding the function callback data.
+  // Overriding callback data breaks JS invocation for wrapped function pointers.
+  napi_value ptrExternal;
+  napi_create_external(env, function, nullptr, nullptr, &ptrExternal);
+  napi_property_descriptor ptrProp = {
+      .utf8name = "__ns_native_ptr",
+      .method = nullptr,
+      .getter = nullptr,
+      .setter = nullptr,
+      .value = ptrExternal,
+      .attributes = napi_default,
+      .data = nullptr,
+  };
+  napi_define_properties(env, result, 1, &ptrProp);
+
+  napi_ref jsRef;
+  napi_add_finalizer(env, result, ref, FunctionPointer::finalize, nullptr, &jsRef);
+
+  return result;
+}
+
 void FunctionPointer::finalize(napi_env env, void* finalize_data, void* finalize_hint) {
   auto ref = (FunctionPointer*)finalize_data;
+  if (ref->ownsCif && ref->cif != nullptr) {
+    delete ref->cif;
+    ref->cif = nullptr;
+  }
   delete ref;
 }
 
