@@ -6,6 +6,7 @@
 namespace nativescript {
 
 void initProxyFactory(napi_env env, ObjCBridgeState* bridgeState);
+void attachObjectLifecycleAssociation(napi_env env, id object);
 
 }  // namespace nativescript
 

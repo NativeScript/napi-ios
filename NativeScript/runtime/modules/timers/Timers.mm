@@ -7,8 +7,6 @@
 #include <dispatch/dispatch.h>
 #include <objc/runtime.h>
 #include <cmath>
-#include <mutex>
-#include <unordered_set>
 #include "Timers.h"
 
 @interface NSTimerHandle : NSObject {
@@ -19,50 +17,14 @@
 }
 @end
 
-namespace {
-std::mutex& TimerHandlesMutex();
-std::unordered_set<NSTimerHandle*>& ActiveTimerHandles();
-NSTimerHandle* RetainActiveTimerHandle(void* rawHandle);
-}  // namespace
-
 @implementation NSTimerHandle
 - (void)dealloc {
-  {
-    std::lock_guard<std::mutex> guard(TimerHandlesMutex());
-    ActiveTimerHandles().erase(self);
-  }
-
   timer = nil;
   [super dealloc];
 }
 @end
 
 namespace {
-std::mutex& TimerHandlesMutex() {
-  static std::mutex mutex;
-  return mutex;
-}
-
-std::unordered_set<NSTimerHandle*>& ActiveTimerHandles() {
-  static std::unordered_set<NSTimerHandle*> activeHandles;
-  return activeHandles;
-}
-
-NSTimerHandle* RetainActiveTimerHandle(void* rawHandle) {
-  NSTimerHandle* handle = static_cast<NSTimerHandle*>(rawHandle);
-  if (handle == nil) {
-    return nil;
-  }
-
-  std::lock_guard<std::mutex> guard(TimerHandlesMutex());
-  if (ActiveTimerHandles().find(handle) == ActiveTimerHandles().end()) {
-    return nil;
-  }
-
-  [handle retain];
-  return handle;
-}
-
 const void* kTimerHandleAssociationKey = &kTimerHandleAssociationKey;
 
 void AddTimerToMainRunLoop(NSTimer* timer) {
@@ -84,7 +46,8 @@ void AddTimerToMainRunLoop(NSTimer* timer) {
   dispatch_sync(dispatch_get_main_queue(), addTimer);
 }
 
-void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle) {
+void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle,
+                        bool invalidateTimer = true) {
   if (handle == nil) {
     return;
   }
@@ -95,7 +58,9 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle) {
         NSTimer* rawTimer = handle->timer;
         objc_setAssociatedObject(rawTimer, kTimerHandleAssociationKey, nil,
                                  OBJC_ASSOCIATION_ASSIGN);
-        [rawTimer invalidate];
+        if (invalidateTimer && [rawTimer isValid]) {
+          [rawTimer invalidate];
+        }
         handle->timer = nil;
       }
     }
@@ -158,10 +123,8 @@ JS_METHOD(Timers::SetTimeout) {
   NSTimerHandle* handle = [[NSTimerHandle alloc] init];
   handle->env = env;
   handle->callback = callback;
-  {
-    std::lock_guard<std::mutex> guard(TimerHandlesMutex());
-    ActiveTimerHandles().insert(handle);
-  }
+  // Keep one retain owned by the JS external handle.
+  [handle retain];
 
   NSTimer* timer = [NSTimer
       timerWithTimeInterval:interval
@@ -192,7 +155,9 @@ JS_METHOD(Timers::SetTimeout) {
                         napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
                         napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
 
-                        DisposeTimerHandle(callbackEnv, handle);
+                        // One-shot timers are already in-flight here; avoid
+                        // invalidating during callback teardown.
+                        DisposeTimerHandle(callbackEnv, handle, false);
                         [handle release];
                       }];
 
@@ -204,14 +169,15 @@ JS_METHOD(Timers::SetTimeout) {
   napi_create_external(
       env, handle,
       [](napi_env env, void* data, void* /*hint*/) {
-        NSTimerHandle* handle = RetainActiveTimerHandle(data);
+        NSTimerHandle* handle = static_cast<NSTimerHandle*>(data);
         if (handle == nil) {
           return;
         }
         [handle release];
-        [handle release];
       },
       nullptr, &result);
+  // Drop creator ownership. Remaining ownership is timer association + JS external.
+  [handle release];
 
   AddTimerToMainRunLoop(timer);
 
@@ -239,10 +205,8 @@ JS_METHOD(Timers::SetInterval) {
   NSTimerHandle* handle = [[NSTimerHandle alloc] init];
   handle->env = env;
   handle->callback = callback;
-  {
-    std::lock_guard<std::mutex> guard(TimerHandlesMutex());
-    ActiveTimerHandles().insert(handle);
-  }
+  // Keep one retain owned by the JS external handle.
+  [handle retain];
 
   NSTimer* timer = [NSTimer
       timerWithTimeInterval:interval
@@ -283,14 +247,15 @@ JS_METHOD(Timers::SetInterval) {
   napi_create_external(
       env, handle,
       [](napi_env env, void* data, void* /*hint*/) {
-        NSTimerHandle* handle = RetainActiveTimerHandle(data);
+        NSTimerHandle* handle = static_cast<NSTimerHandle*>(data);
         if (handle == nil) {
           return;
         }
         [handle release];
-        [handle release];
       },
       nullptr, &result);
+  // Drop creator ownership. Remaining ownership is timer association + JS external.
+  [handle release];
 
   AddTimerToMainRunLoop(timer);
 
@@ -314,10 +279,11 @@ JS_METHOD(Timers::ClearTimer) {
 
   void* rawHandle = nullptr;
   napi_get_value_external(env, argv[0], &rawHandle);
-  NSTimerHandle* handle = RetainActiveTimerHandle(rawHandle);
+  NSTimerHandle* handle = static_cast<NSTimerHandle*>(rawHandle);
   if (handle == nil) {
     return nullptr;
   }
+  [handle retain];
   DisposeTimerHandle(env, handle);
   [handle release];
 

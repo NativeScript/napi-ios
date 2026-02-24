@@ -79,7 +79,7 @@ struct char_traits<unsigned short> {
 
 #define NAPI_CALLBACK_BEGIN_VARGS()                                          \
   napi_status status;                                                        \
-  size_t argc;                                                               \
+  size_t argc = 0;                                                           \
   void* data;                                                                \
   napi_value jsThis;                                                         \
   NAPI_GUARD(napi_get_cb_info(env, info, &argc, nullptr, &jsThis, &data)) {  \

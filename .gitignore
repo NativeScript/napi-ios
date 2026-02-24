@@ -59,4 +59,7 @@ v8_build
 
 .cache/
 
+dist
+packages/*/types
+
 SwiftBindgen

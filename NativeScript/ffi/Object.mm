@@ -6,9 +6,11 @@
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
+#import <dispatch/dispatch.h>
 #include <objc/runtime.h>
 
 static SEL JSWrapperObjectAssociationKey = @selector(JSWrapperObjectAssociationKey);
+static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 
 @interface JSWrapperObjectAssociation : NSObject
 
@@ -20,6 +22,15 @@ static SEL JSWrapperObjectAssociationKey = @selector(JSWrapperObjectAssociationK
 + (instancetype)associationFor:(id)object;
 
 - (instancetype)initWithEnv:(napi_env)env ref:(napi_ref)ref;
+
+@end
+
+@interface ObjCLifecycleAssociation : NSObject {
+  napi_env _env;
+  uintptr_t _objectAddress;
+}
+
+- (instancetype)initWithEnv:(napi_env)env object:(id)object;
 
 @end
 
@@ -49,6 +60,33 @@ static SEL JSWrapperObjectAssociationKey = @selector(JSWrapperObjectAssociationK
 - (void)dealloc {
   [super dealloc];
   napi_delete_reference(self.env, self.ref);
+}
+
+@end
+
+@implementation ObjCLifecycleAssociation
+
+- (instancetype)initWithEnv:(napi_env)env object:(id)object {
+  self = [super init];
+  if (self) {
+    _env = env;
+    _objectAddress = (uintptr_t)object;
+  }
+
+  return self;
+}
+
+- (void)dealloc {
+  napi_env env = _env;
+  uintptr_t objectAddress = _objectAddress;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    nativescript::ObjCBridgeState* bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
+    if (bridgeState != nullptr) {
+      bridgeState->objectRefs.erase((id)objectAddress);
+    }
+  });
+
+  [super dealloc];
 }
 
 @end
@@ -118,6 +156,22 @@ void initProxyFactory(napi_env env, ObjCBridgeState* state) {
   napi_create_function(env, "transferOwnershipToNative", NAPI_AUTO_LENGTH,
                        JS_transferOwnershipToNative, nullptr, &transferOwnershipToNative);
   state->transferOwnershipToNative = make_ref(env, transferOwnershipToNative);
+}
+
+void attachObjectLifecycleAssociation(napi_env env, id object) {
+  if (object == nil) {
+    return;
+  }
+
+  if (objc_getAssociatedObject(object, ObjCLifecycleAssociationKey) != nil) {
+    return;
+  }
+
+  ObjCLifecycleAssociation* association = [[ObjCLifecycleAssociation alloc] initWithEnv:env
+                                                                                  object:object];
+  objc_setAssociatedObject(object, ObjCLifecycleAssociationKey, association,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  [association release];
 }
 
 void finalize_objc_object(napi_env /*env*/, void* data, void* hint) {

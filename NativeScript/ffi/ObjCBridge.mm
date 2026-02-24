@@ -569,6 +569,7 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   }
 
   objectRefs[nativeObject] = ref;
+  attachObjectLifecycleAssociation(env, nativeObject);
 
   return result;
 }
