@@ -1,10 +1,31 @@
+const child_process = require("node:child_process");
+const process = require("node:process");
+const fs = require("node:fs");
 const semver = require("semver");
-const child_process = require("child_process");
 const dayjs = require("dayjs");
-const fs = require("fs");
 
-const currentVersion =
-  process.env.NPM_VERSION || require("../package.json").version;
+/** @type {string} */
+let currentVersion = process.env.NPM_VERSION;
+if (!currentVersion) {
+  const cmdArgs = process.argv.slice(2);
+  const target = cmdArgs[0];
+
+  switch (target) {
+    case "root":
+      currentVersion = require("../package.json").version;
+      break;
+    case "macos":
+      currentVersion = require("../packages/macos/package.json").version;
+      break;
+    case "ios":
+      currentVersion = require("../packages/ios/package.json").version;
+      break;
+    default:
+      throw new Error(
+        `Unknown target "${target}". Expected one of "root", "macos", or "ios".`,
+      );
+  }
+}
 
 if (!currentVersion) {
   throw new Error("Invalid current version");
@@ -16,16 +37,20 @@ let prPrerelease = "";
 
 if (currentTag === "pr" && process.env.GITHUB_EVENT_PATH) {
   try {
-    const ev = JSON.parse(fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"));
+    const ev = JSON.parse(
+      fs.readFileSync(process.env.GITHUB_EVENT_PATH, "utf8"),
+    );
     const prNum = ev.pull_request.number;
     // add extra PR number to version-pr.PRNUM-....
     prPrerelease = `${prNum}-`;
-  } catch (e) {
+  } catch {
     // don't add pr prerelease
   }
 }
 
-const preRelease = `${currentTag}.${prPrerelease}${dayjs().format("YYYY-MM-DD")}-${runID}`;
+const preRelease = `${currentTag}.${prPrerelease}${dayjs().format(
+  "YYYY-MM-DD",
+)}-${runID}`;
 
 function normalizeVersionCandidate(candidate) {
   if (!candidate) {
@@ -49,7 +74,9 @@ function normalizeVersionCandidate(candidate) {
   }
 
   // Supports tag formats such as refs/tags/v1.2.3, pkg@1.2.3, etc.
-  const extracted = trimmed.match(/\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?/);
+  const extracted = trimmed.match(
+    /\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?/,
+  );
   if (extracted && semver.parse(extracted[0])) {
     return extracted[0];
   }
@@ -58,7 +85,9 @@ function normalizeVersionCandidate(candidate) {
 }
 
 function getLastTagVersion() {
-  const explicitTagVersion = normalizeVersionCandidate(process.env.LAST_TAGGED_VERSION);
+  const explicitTagVersion = normalizeVersionCandidate(
+    process.env.LAST_TAGGED_VERSION,
+  );
   if (explicitTagVersion) {
     return explicitTagVersion;
   }
@@ -95,7 +124,7 @@ const lastTagVersion = getLastTagVersion();
 function setPreRelease(version) {
   const parsed = semver.parse(version);
   return semver.parse(
-    `${parsed.major}.${parsed.minor}.${parsed.patch}-${preRelease}`
+    `${parsed.major}.${parsed.minor}.${parsed.patch}-${preRelease}`,
   );
 }
 

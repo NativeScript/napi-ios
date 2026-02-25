@@ -7,7 +7,6 @@ on:
       - "v*"
 
 env:
-  NPM_TAG: "next"
   XCODE_VERSION: "^15.0"
 
 jobs:
@@ -15,8 +14,10 @@ jobs:
     name: Build
     runs-on: macos-14
     outputs:
-      npm_version: ${{ steps.npm_version_output.outputs.NPM_VERSION }}
-      npm_tag: ${{ steps.npm_version_output.outputs.NPM_TAG }}
+      npm_version_ios: ${{ steps.npm_version_output.outputs.NPM_VERSION_IOS }}
+      npm_tag_ios: ${{ steps.npm_version_output.outputs.NPM_TAG_IOS }}
+      npm_version_macos: ${{ steps.npm_version_output.outputs.NPM_VERSION_MACOS }}
+      npm_tag_macos: ${{ steps.npm_version_output.outputs.NPM_TAG_MACOS }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
@@ -57,30 +58,43 @@ jobs:
         run: |
           NPM_VERSION=$(node -e "console.log(require('./package.json').version);")
           echo NPM_VERSION=$NPM_VERSION >> $GITHUB_ENV
-      - name: Bump version for dev release
+      - name: Bump versions for dev release
         if: ${{ !contains(github.ref, 'refs/tags/') }}
         run: |
-          NPM_VERSION=$(node ./scripts/get-next-version.js)
-          echo NPM_VERSION=$NPM_VERSION >> $GITHUB_ENV
-          npm version $NPM_VERSION --no-git-tag-version
-      - name: Output NPM Version and tag
+          # Bump @nativescript/ios-node-api
+          NPM_VERSION_IOS=$(node ./scripts/get-next-version.js ios)
+          echo NPM_VERSION_IOS=$NPM_VERSION_IOS >> $GITHUB_ENV
+          cd packages/ios
+          npm version $NPM_VERSION_IOS --no-git-tag-version
+          cd -
+
+          # Bump @nativescript/macos-node-api
+          NPM_VERSION_MACOS=$(node ./scripts/get-next-version.js macos)
+          echo NPM_VERSION_MACOS=$NPM_VERSION_MACOS >> $GITHUB_ENV
+          cd packages/macos
+          npm version $NPM_VERSION_MACOS --no-git-tag-version
+          cd -
+      - name: Output NPM Versions and tags
         id: npm_version_output
         run: |
-          NPM_TAG=$(node ./scripts/get-npm-tag.js)
-          echo NPM_VERSION=$NPM_VERSION >> $GITHUB_OUTPUT
-          echo NPM_TAG=$NPM_TAG >> $GITHUB_OUTPUT
+          NPM_TAG_IOS=$(node ./scripts/get-npm-tag.js ios)
+          NPM_TAG_MACOS=$(node ./scripts/get-npm-tag.js macos)
+          echo NPM_VERSION_IOS=$NPM_VERSION_IOS >> $GITHUB_OUTPUT
+          echo NPM_VERSION_MACOS=$NPM_VERSION_MACOS >> $GITHUB_OUTPUT
+          echo NPM_TAG_IOS=$NPM_TAG_IOS >> $GITHUB_OUTPUT
+          echo NPM_TAG_MACOS=$NPM_TAG_MACOS >> $GITHUB_OUTPUT
       - name: Build
-        run: npm run build-ios
-      - name: Upload npm package artifact
+        run: ./build_all_react_native.sh
+      - name: Upload npm package artifact for @nativescript/ios-node-api
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
-          name: npm-package
-          path: dist/nativescript-ios-${{steps.npm_version_output.outputs.NPM_VERSION}}.tgz
-      - name: Upload dSYMs artifact
+          name: nativescript-ios-node-api
+          path: packages/ios/nativescript-ios-node-api-${{steps.npm_version_output.outputs.NPM_VERSION_IOS}}.tgz
+      - name: Upload npm package artifact for @nativescript/macos-node-api
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
-          name: NativeScript-dSYMs
-          path: dist/dSYMs
+          name: nativescript-macos-node-api
+          path: packages/macos/nativescript-macos-node-api-${{steps.npm_version_output.outputs.NPM_VERSION_MACOS}}.tgz
   test:
     name: Test
     runs-on: macos-14
@@ -96,7 +110,7 @@ jobs:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: 22
+          node-version: 24
       - name: Install Python
         uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
         with:
@@ -174,25 +188,42 @@ jobs:
           path: dist
       - name: Update npm (required for OIDC trusted publishing)
         run: |
-          npm install -g npm@^11.5.1
+          npm install -g npm@^11.6.2
           npm --version
-      - name: Publish package (OIDC trusted publishing)
+      - name: Publish @nativescript/ios-node-api package (OIDC trusted publishing)
         if: ${{ vars.USE_NPM_TOKEN != 'true' }}
         run: |
-          echo "Publishing @nativescript/ios@$NPM_VERSION to NPM with tag $NPM_TAG via OIDC trusted publishing..."
+          echo "Publishing @nativescript/ios-node-api@$NPM_VERSION_IOS to NPM with tag $NPM_TAG_IOS via OIDC trusted publishing..."
           unset NODE_AUTH_TOKEN
           if [ -n "${NPM_CONFIG_USERCONFIG:-}" ]; then
             rm -f "$NPM_CONFIG_USERCONFIG"
           fi
-          npm publish ./dist/nativescript-ios-${{env.NPM_VERSION}}.tgz --tag $NPM_TAG --access public --provenance
+          npm publish packages/ios/nativescript-ios-node-api-${{env.NPM_VERSION_IOS}}.tgz --tag $NPM_TAG_IOS --access public --provenance
         env:
           NODE_AUTH_TOKEN: ""
-
-      - name: Publish package (granular token)
+      - name: Publish @nativescript/macos-node-api package (OIDC trusted publishing)
+        if: ${{ vars.USE_NPM_TOKEN != 'true' }}
+        run: |
+          echo "Publishing @nativescript/macos-node-api@$NPM_VERSION_MACOS to NPM with tag $NPM_TAG_MACOS via OIDC trusted publishing..."
+          unset NODE_AUTH_TOKEN
+          if [ -n "${NPM_CONFIG_USERCONFIG:-}" ]; then
+            rm -f "$NPM_CONFIG_USERCONFIG"
+          fi
+          npm publish packages/macos/nativescript-macos-node-api-${{env.NPM_VERSION_MACOS}}.tgz --tag $NPM_TAG_MACOS --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ""
+      - name: Publish @nativescript/ios-node-api package (granular token)
         if: ${{ vars.USE_NPM_TOKEN == 'true' }}
         run: |
-          echo "Publishing @nativescript/ios@$NPM_VERSION to NPM with tag $NPM_TAG via granular token..."
-          npm publish ./dist/nativescript-ios-${{env.NPM_VERSION}}.tgz --tag $NPM_TAG --access public --provenance
+          echo "Publishing @nativescript/ios-node-api@$NPM_VERSION to NPM with tag $NPM_TAG_IOS via granular token..."
+          npm publish packages/ios/nativescript-ios-node-api-${{env.NPM_VERSION_IOS}}.tgz --tag $NPM_TAG_IOS --access public --provenance
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+      - name: Publish @nativescript/macos-node-api package (granular token)
+        if: ${{ vars.USE_NPM_TOKEN == 'true' }}
+        run: |
+          echo "Publishing @nativescript/macos-node-api@$NPM_VERSION to NPM with tag $NPM_TAG_MACOS via granular token..."
+          npm publish packages/macos/nativescript-macos-node-api-${{env.NPM_VERSION_MACOS}}.tgz --tag $NPM_TAG_MACOS --access public --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
   github-release:
@@ -216,25 +247,22 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: 22
+          node-version: 24
       - name: Setup
         run: npm install
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
-          name: npm-package
-          path: dist
+          name: nativescript-ios-node-api
+          path: packages/ios
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
-          name: NativeScript-dSYMs
-          path: dist/dSYMs
-      - name: Zip dSYMs
-        working-directory: dist/dSYMs
-        run: find . -maxdepth 1 -name '*.dSYM' -print | xargs -I@ zip -r @.zip @
+          name: nativescript-macos-node-api
+          path: packages/macos
       - name: Partial Changelog
         run: npx conventional-changelog -p angular -r2 > body.md
       - uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1.20.0
         with:
-          artifacts: "dist/nativescript-ios-*.tgz,dist/dSYMs/*.zip"
+          artifacts: "packages/macos/nativescript-macos-node-api-*.tgz,packages/ios/nativescript-ios-node-api-*.tgz"
           bodyFile: "body.md"
           prerelease: ${{needs.build.outputs.npm_tag != 'latest'}}
           allowUpdates: true

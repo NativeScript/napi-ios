@@ -60,13 +60,13 @@ jobs:
       - name: Bump version for dev release
         if: ${{ !contains(github.ref, 'refs/tags/') }}
         run: |
-          NPM_VERSION=$(node ./scripts/get-next-version.js)
+          NPM_VERSION=$(node ./scripts/get-next-version.js root)
           echo NPM_VERSION=$NPM_VERSION >> $GITHUB_ENV
           npm version $NPM_VERSION --no-git-tag-version
       - name: Output NPM Version and tag
         id: npm_version_output
         run: |
-          NPM_TAG=$(node ./scripts/get-npm-tag.js)
+          NPM_TAG=$(node ./scripts/get-npm-tag.js root)
           echo NPM_VERSION=$NPM_VERSION >> $GITHUB_OUTPUT
           echo NPM_TAG=$NPM_TAG >> $GITHUB_OUTPUT
       - name: Build
