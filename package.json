@@ -16,7 +16,8 @@
     "email": "oss@nativescript.org"
   },
   "workspaces": [
-    "packages/*"
+    "packages/*",
+    "scripts"
   ],
   "scripts": {
     "apply-patches": "./apply_patches.sh",
