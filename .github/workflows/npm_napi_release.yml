@@ -100,8 +100,10 @@ jobs:
       contents: read
       id-token: write
     env:
-      NPM_VERSION: ${{needs.build.outputs.npm_version}}
-      NPM_TAG: ${{needs.build.outputs.npm_tag}}
+      NPM_VERSION_IOS: ${{needs.build.outputs.npm_version_ios}}
+      NPM_TAG_IOS: ${{needs.build.outputs.npm_tag_ios}}
+      NPM_VERSION_MACOS: ${{needs.build.outputs.npm_version_macos}}
+      NPM_TAG_MACOS: ${{needs.build.outputs.npm_tag_macos}}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
@@ -113,8 +115,12 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
-          name: npm-package
-          path: dist
+          name: nativescript-ios-node-api
+          path: packages/ios/nativescript-ios-node-api-${{env.NPM_VERSION_IOS}}.tgz
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: nativescript-macos-node-api
+          path: packages/macos/nativescript-macos-node-api-${{env.NPM_VERSION_MACOS}}.tgz
       - name: Update npm (required for OIDC trusted publishing)
         run: |
           npm install -g npm@^11.6.2
@@ -164,7 +170,8 @@ jobs:
     needs:
       - build
     env:
-      NPM_VERSION: ${{needs.build.outputs.npm_version}}
+      NPM_VERSION_IOS: ${{needs.build.outputs.npm_version_ios}}
+      NPM_VERSION_MACOS: ${{needs.build.outputs.npm_version_macos}}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
@@ -181,7 +188,11 @@ jobs:
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: nativescript-ios-node-api
-          path: packages/ios
+          path: packages/ios/nativescript-ios-node-api-${{env.NPM_VERSION_IOS}}.tgz
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: nativescript-macos-node-api
+          path: packages/macos/nativescript-macos-node-api-${{env.NPM_VERSION_MACOS}}.tgz
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: nativescript-macos-node-api
@@ -192,5 +203,5 @@ jobs:
         with:
           artifacts: "packages/macos/nativescript-macos-node-api-*.tgz,packages/ios/nativescript-ios-node-api-*.tgz"
           bodyFile: "body.md"
-          prerelease: ${{needs.build.outputs.npm_tag != 'latest'}}
+          prerelease: ${{needs.build.outputs.npm_tag_ios != 'latest' && needs.build.outputs.npm_tag_macos != 'latest'}}
           allowUpdates: true
