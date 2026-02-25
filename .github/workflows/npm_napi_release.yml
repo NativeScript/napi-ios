@@ -122,11 +122,11 @@ jobs:
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: nativescript-ios-node-api
-          path: packages/ios/nativescript-ios-node-api-${{env.NPM_VERSION_IOS}}.tgz
+          path: packages/ios
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: nativescript-macos-node-api
-          path: packages/macos/nativescript-macos-node-api-${{env.NPM_VERSION_MACOS}}.tgz
+          path: packages/macos
       - name: Update npm (required for OIDC trusted publishing)
         run: |
           npm install -g npm@^11.6.2
@@ -194,11 +194,11 @@ jobs:
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: nativescript-ios-node-api
-          path: packages/ios/nativescript-ios-node-api-${{env.NPM_VERSION_IOS}}.tgz
+          path: packages/ios
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: nativescript-macos-node-api
-          path: packages/macos/nativescript-macos-node-api-${{env.NPM_VERSION_MACOS}}.tgz
+          path: packages/macos
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
           name: nativescript-macos-node-api
