@@ -31,7 +31,9 @@ function validateNpmTag(version) {
 }
 
 function getNpmTag(version) {
-  if (!validateNpmTag(version)) throw new Error("Invalid npm tag");
+  if (!validateNpmTag(version)) {
+    throw new Error(`Invalid npm tag "${version}"`);
+  }
   const parsed = semver.parse(version);
   return parsed.prerelease[0] || "latest";
 }
