@@ -81,6 +81,12 @@ jobs:
           echo NPM_TAG_MACOS=$NPM_TAG_MACOS >> $GITHUB_OUTPUT
       - name: Build
         run: ./build_all_react_native.sh
+      - name: Pack @nativescript/ios-node-api
+        working-directory: packages/ios
+        run: npm pack
+      - name: Pack @nativescript/macos-node-api
+        working-directory: packages/macos
+        run: npm pack
       - name: Upload npm package artifact for @nativescript/ios-node-api
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
