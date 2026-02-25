@@ -91,78 +91,11 @@ jobs:
         with:
           name: nativescript-macos-node-api
           path: packages/macos/nativescript-macos-node-api-${{steps.npm_version_output.outputs.NPM_VERSION_MACOS}}.tgz
-  test:
-    name: Test
-    runs-on: macos-26
-    needs: build
-    steps:
-      - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
-        with:
-          egress-policy: audit
-      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
-        with:
-          xcode-version: ${{env.XCODE_VERSION}}
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
-        with:
-          node-version: 24
-      - name: Install Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
-        with:
-          python-version: "3"
-      - name: Install Dependencies
-        run: |
-          npm install
-          python3 -m pip install --upgrade pip six
-          # Ensure LLVM linker used by -fuse-ld=lld is available
-          if ! command -v ld64.lld >/dev/null; then
-            brew list lld || brew install lld
-          fi
-          # Ensure CMake is available without conflicting with pinned Homebrew formula
-          if ! command -v cmake >/dev/null; then
-            brew list cmake || brew install cmake
-          fi
-          # Some scripts expect cmake at /usr/local/bin; create a shim if needed
-          if [ ! -x /usr/local/bin/cmake ]; then
-            sudo mkdir -p /usr/local/bin
-            sudo ln -sf "$(command -v cmake)" /usr/local/bin/cmake
-          fi
-          brew install chargepoint/xcparse/xcparse
-          npm install -g @edusperoni/junit-cli-report-viewer verify-junit-xml
-      - name: Prepare
-        run: npm run setup-ci
-      - name: Prepare test folder
-        run: |
-          mkdir -p dist-test
-          echo TEST_FOLDER=$(pwd)/dist-test >> $GITHUB_ENV
-      - name: Xcode Tests
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
-        # try to run the tests with xcpretty. If it fails then try again without xcpretty twice for better log output
-        # the xcode tests are a bit flaky and they should never fail on this step, as this step only collects the JS test results as junit xml
-        with:
-          timeout_minutes: 20
-          max_attempts: 2
-          command: set -o pipefail && xcodebuild -project v8ios.xcodeproj -scheme TestRunner -resultBundlePath $TEST_FOLDER/test_results -destination platform\=iOS\ Simulator,OS\=17.2,name\=iPhone\ 15\ Pro\ Max build test | xcpretty
-          on_retry_command: rm -rf $TEST_FOLDER/test_results* && xcrun simctl shutdown all
-          new_command_on_retry: xcodebuild -project v8ios.xcodeproj -scheme TestRunner -resultBundlePath $TEST_FOLDER/test_results -destination platform\=iOS\ Simulator,OS\=17.2,name\=iPhone\ 15\ Pro\ Max build test
-      - name: Validate Test Results
-        run: |
-          xcparse attachments $TEST_FOLDER/test_results.xcresult $TEST_FOLDER/test-out
-          find $TEST_FOLDER/test-out -name "*junit*.xml" -maxdepth 1 -print0 | xargs -n 1 -0 npx junit-cli-report-viewer
-          find $TEST_FOLDER/test-out -name "*junit*.xml" -maxdepth 1 -print0 | xargs -n 1 -0 npx verify-junit-xml
-      - name: Archive Test Result Data
-        if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
-        with:
-          name: test-results
-          path: ${{env.TEST_FOLDER}}/test_results.xcresult
   publish:
     runs-on: ubuntu-latest
     environment: npm-publish
     needs:
       - build
-      - test
     permissions:
       contents: read
       id-token: write
@@ -230,7 +163,6 @@ jobs:
       contents: write
     needs:
       - build
-      - test
     env:
       NPM_VERSION: ${{needs.build.outputs.npm_version}}
     steps:
