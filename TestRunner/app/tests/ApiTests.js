@@ -135,29 +135,49 @@ describe(module.id, function () {
     });
 
     it("instanceOfUITabBarController", function () {
-        if (pendingIfMissingSymbol("UITabBarController") ||
-            pendingIfMissingSymbol("UIViewController") ||
-            pendingIfMissingSymbol("UIResponder")) {
+        if (hasGlobalSymbol("UITabBarController") &&
+            hasGlobalSymbol("UIViewController") &&
+            hasGlobalSymbol("UIResponder")) {
+            var uiObject = UITabBarController.alloc().init();
+            expect(uiObject instanceof UITabBarController).toBe(true);
+            expect(uiObject instanceof UIViewController).toBe(true);
+            expect(uiObject instanceof UIResponder).toBe(true);
+            expect(uiObject instanceof NSObject).toBe(true);
             return;
         }
 
-        var object = UITabBarController.alloc().init();
-        expect(object instanceof UITabBarController).toBe(true);
-        expect(object instanceof UIViewController).toBe(true);
-        expect(object instanceof UIResponder).toBe(true);
-        expect(object instanceof NSObject).toBe(true);
+        if (hasGlobalSymbol("NSTabViewController") &&
+            hasGlobalSymbol("NSViewController") &&
+            hasGlobalSymbol("NSResponder")) {
+            var nsObject = NSTabViewController.alloc().init();
+            expect(nsObject instanceof NSTabViewController).toBe(true);
+            expect(nsObject instanceof NSViewController).toBe(true);
+            expect(nsObject instanceof NSResponder).toBe(true);
+            expect(nsObject instanceof NSObject).toBe(true);
+            return;
+        }
+
+        pending("Neither UIKit nor AppKit tab/view controller hierarchy is available.");
     });
 
     it("Appearance", function () {
-        if (pendingIfMissingSymbol("UILabel") || pendingIfMissingSymbol("UIColor")) {
+        if (hasGlobalSymbol("UILabel") && hasGlobalSymbol("UIColor")) {
+            expect(UILabel.appearance().description.indexOf('<Customizable class: UILabel>')).not.toBe(-1);
+
+            UILabel.appearance().textColor = UIColor.redColor;
+            expect(UILabel.appearance().textColor).toBe(UIColor.redColor);
             return;
         }
 
-        expect(UILabel.appearance().description.indexOf('<Customizable class: UILabel>')).not.toBe(-1);
+        if (hasGlobalSymbol("NSAppearance") && hasGlobalSymbol("NSAppearanceNameAqua")) {
+            var appearance = NSAppearance.appearanceNamed(NSAppearanceNameAqua);
+            expect(appearance).toBeDefined();
+            expect(appearance).not.toBeNull();
+            expect(appearance.name).toContain("Aqua");
+            return;
+        }
 
-        UILabel.appearance().textColor = UIColor.redColor;
-        expect(UILabel.appearance().textColor).toBe(UIColor.redColor);
-        // expect(UILabel.appearance().constructor).toBe(UILabel);
+        pending("Neither UIKit nor AppKit appearance APIs are available.");
     });
 
     it("ReadonlyPropertyInProtocolAndOverrideWithSetterInInterface", function () {
@@ -248,42 +268,88 @@ describe(module.id, function () {
     });
 
     it("SpecialCaseProperty_When_InstancesRespondToSelector:_IsFalse", function () {
-        if (pendingIfMissingSymbol("UITextField")) {
+        var uiTextField = hasGlobalSymbol("UITextField") ? global.UITextField : null;
+        var nsView = hasGlobalSymbol("NSView") ? global.NSView : null;
+        if (uiTextField) {
+            var uiField = new uiTextField();
+            expect(uiField.secureTextEntry).toBe(false);
+            uiField.secureTextEntry = true;
+            expect(uiField.secureTextEntry).toBe(true);
             return;
         }
 
-        var field = new UITextField();
-        expect(field.secureTextEntry).toBe(false);
-        field.secureTextEntry = true;
-        expect(field.secureTextEntry).toBe(true);
+        if (!nsView) {
+            pending("No suitable platform class is available for special-case property checks.");
+            return;
+        }
+
+        var field = nsView.alloc().init();
+        expect(field.hidden).toBe(false);
+        field.hidden = true;
+        expect(field.hidden).toBe(true);
     });
 
      it("SpecialCaseProperty_When_CustomSelector_ImplementedInJS", function () {
-        if (pendingIfMissingSymbol("UITextField")) {
+        var uiTextField = hasGlobalSymbol("UITextField") ? global.UITextField : null;
+        var nsView = hasGlobalSymbol("NSView") ? global.NSView : null;
+        if (uiTextField) {
+            var uiField = new (uiTextField.extend({
+                get secureTextEntry() {
+                    TNSLog("getter");
+                    return this._secureTextEntry;
+                },
+                set secureTextEntry(val) {
+                    this._secureTextEntry = val;
+                    TNSLog("setter:" + val);
+                }
+            }))();
+            var uiExpectedOutput = "";
+
+            expect(uiField.secureTextEntry).toBeUndefined(); uiExpectedOutput+="getter";
+
+            uiField.secureTextEntry = true; uiExpectedOutput+="setter:true";
+
+            expect(uiField.secureTextEntry).toBe(true); uiExpectedOutput+="getter";
+
+            uiField.secureTextEntry = false; uiExpectedOutput+="setter:false";
+
+            expect(uiField.secureTextEntry).toBe(false); uiExpectedOutput+="getter";
+
+            expect(TNSGetOutput()).toBe(uiExpectedOutput);
             return;
         }
 
-        var field = new (UITextField.extend({
-            get secureTextEntry() {
+        if (!nsView) {
+            pending("No suitable platform class is available for special-case property checks.");
+            return;
+        }
+
+        var overrides = {};
+        Object.defineProperty(overrides, "hidden", {
+            get: function () {
                 TNSLog("getter");
-                return this._secureTextEntry;
+                return this._value;
             },
-            set secureTextEntry(val) {
-                this._secureTextEntry = val;
+            set: function (val) {
+                this._value = val;
                 TNSLog("setter:" + val);
-            }
-        }))();
+            },
+            enumerable: true,
+            configurable: true
+        });
+
+        var field = new (nsView.extend(overrides))();
         var expectedOutput = "";
 
-        expect(field.secureTextEntry).toBeUndefined(); expectedOutput+="getter";
+        expect(field.hidden).toBeUndefined(); expectedOutput+="getter";
 
-        field.secureTextEntry = true; expectedOutput+="setter:true";
+        field.hidden = true; expectedOutput+="setter:true";
 
-        expect(field.secureTextEntry).toBe(true); expectedOutput+="getter";
+        expect(field.hidden).toBe(true); expectedOutput+="getter";
 
-        field.secureTextEntry = false; expectedOutput+="setter:false";
+        field.hidden = false; expectedOutput+="setter:false";
 
-        expect(field.secureTextEntry).toBe(false); expectedOutput+="getter";
+        expect(field.hidden).toBe(false); expectedOutput+="getter";
 
         expect(TNSGetOutput()).toBe(expectedOutput);
      });
@@ -802,25 +868,32 @@ describe(module.id, function () {
     // });
 
     it("Unimplemented properties from UIBarItem class should be provided by the inheritors", function () {
-        var classConstructors = ["UIBarButtonItem", "UITabBarItem"];
-        for (var className of classConstructors) {
-            if (!hasGlobalSymbol(className)) {
-                pending(className + " is not available in this runtime/platform configuration.");
-                return;
+        if (hasGlobalSymbol("UIBarButtonItem") && hasGlobalSymbol("UITabBarItem")) {
+            var iosClassConstructors = ["UIBarButtonItem", "UITabBarItem"];
+            var iosProps = ["enabled", "image", "imageInsets", "title"];
+            if (NSProcessInfo.processInfo.isOperatingSystemAtLeastVersion({majorVersion: 11, minorVersion: 0, patchVersion: 0})) {
+                iosProps = iosProps.concat("landscapeImagePhone", "landscapeImagePhoneInsets");
             }
+
+            for (var iosKlass of iosClassConstructors) {
+                var iosInstance = new global[iosKlass]();
+                for (var iosProp of iosProps) {
+                    expect(iosInstance[iosProp]).toBeDefined(`"${iosProp}" must be defined in instances of "${iosKlass}"`);
+                }
+            }
+            return;
         }
 
-        var props = ["enabled", "image", "imageInsets", "title"];
-        if (NSProcessInfo.processInfo.isOperatingSystemAtLeastVersion({majorVersion: 11, minorVersion: 0, patchVersion: 0})) {
-            props = props.concat("landscapeImagePhone", "landscapeImagePhoneInsets");
+        if (hasGlobalSymbol("NSToolbarItem")) {
+            var toolbarItem = NSToolbarItem.alloc().initWithItemIdentifier("nativescript.test.item");
+            var macProps = ["enabled", "image", "label", "paletteLabel", "toolTip"];
+            for (var macProp of macProps) {
+                expect(toolbarItem[macProp]).toBeDefined(`"${macProp}" must be defined in instances of "NSToolbarItem"`);
+            }
+            return;
         }
 
-        for (var klass of classConstructors) {
-            var instance = new global[klass]();
-            for (var prop of props) {
-                expect(instance[prop]).toBeDefined(`"${prop}" must be defined in instances of "${klass}"`);
-            }
-        }
+        pending("Neither UIKit UIBarItem inheritors nor AppKit NSToolbarItem are available.");
     });
 
     it("Unimplemented properties from MTLRenderPassAttachmentDescriptor class should be provided by the inheritors", function () {
@@ -846,16 +919,25 @@ describe(module.id, function () {
     });
 
     it("Dynamically load modules", () => {
-        if (pendingIfMissingSymbol("CMMotionActivityManager")) {
+        var className = null;
+        for (var candidate of ["CMMotionActivityManager", "CMMotionManager", "CLLocationManager", "AVAudioEngine"]) {
+            if (hasGlobalSymbol(candidate)) {
+                className = candidate;
+                break;
+            }
+        }
+
+        if (!className) {
+            pending("No candidate class from dynamically loaded frameworks is available in this runtime.");
             return;
         }
 
-        // The CMMotionActivityManager interface is defined inside the CoreMotion system framework which is not
-        // statically loaded and the runtime must dynamically resolve it at runtime.
-        let activityManager = CMMotionActivityManager.new();
-        expect(activityManager).not.toBeUndefined();
-        expect(activityManager).not.toBeNull();
-        expect(activityManager instanceof CMMotionActivityManager).toBe(true);
+        // The selected class is expected to come from a framework resolved at runtime.
+        let dynamicType = global[className];
+        let instance = dynamicType.new ? dynamicType.new() : dynamicType.alloc().init();
+        expect(instance).not.toBeUndefined();
+        expect(instance).not.toBeNull();
+        expect(instance instanceof dynamicType).toBe(true);
     });
 
     it("Optional method returning a structure should use objc_msgSend_stret on x86_64", () => {

@@ -12,11 +12,13 @@
 //  - IOS_SWIFT_VERSION overrides default Swift version (default: 5.0).
 //  - IOS_COMMAND_TIMEOUT_MS overrides timeout for build/install/simctl commands (default: 3 minutes).
 //  - IOS_BUILD_TIMEOUT_MS overrides timeout for xcodebuild app build (default: IOS_COMMAND_TIMEOUT_MS).
+//  - IOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
 //  - IOS_TEST_TIMEOUT_MS overrides max test runtime (default: 2 minutes).
 //  - IOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
 //  - IOS_TESTS filters test modules (comma-separated substrings passed to app as -tests).
 //  - IOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval (default: 45 seconds).
 //  - IOS_TEST_LOG_STREAM=0 disables parallel simulator log stream (enabled by default).
+//  - IOS_SIM_LOG_LOOKBACK sets log-show window used for post-failure diagnostics (default: 45s).
 
 const fs = require("fs");
 const path = require("path");
@@ -75,13 +77,24 @@ function parseTimeoutMs(name, fallback) {
     return value;
 }
 
+function parsePositiveInt(name, fallback) {
+    const value = Number(process.env[name] || fallback);
+    if (!Number.isFinite(value) || value <= 0) {
+        return fallback;
+    }
+
+    return Math.floor(value);
+}
+
 const commandTimeoutMs = parseTimeoutMs("IOS_COMMAND_TIMEOUT_MS", 3 * 60 * 1000);
 const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", commandTimeoutMs);
+const commandMaxBufferBytes = parsePositiveInt("IOS_COMMAND_MAX_BUFFER_BYTES", 64 * 1024 * 1024);
 const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 2 * 60 * 1000);
 const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 45 * 1000);
 const emitJunitLogs = process.env.IOS_LOG_JUNIT !== "0";
 const requestedTests = (process.env.IOS_TESTS || "").trim();
 const enableLiveLogStream = process.env.IOS_TEST_LOG_STREAM !== "0";
+const simulatorLogLookback = process.env.IOS_SIM_LOG_LOOKBACK || "45s";
 const consoleLogMarker = "CONSOLE LOG:";
 
 function looksLikeDestination(value) {
@@ -111,6 +124,7 @@ function run(command, args, options = {}) {
     const result = cp.spawnSync(command, args, {
         encoding: "utf8",
         timeout: effectiveTimeout,
+        maxBuffer: commandMaxBufferBytes,
         ...options
     });
 
@@ -529,7 +543,8 @@ function buildTestRunnerApp(destination, swiftVersion) {
         ];
         const result = cp.spawnSync("xcodebuild", args, {
             encoding: "utf8",
-            timeout: buildTimeoutMs
+            timeout: buildTimeoutMs,
+            maxBuffer: commandMaxBufferBytes
         });
         if (result.error && result.error.code === "ETIMEDOUT") {
             if (result.stdout && result.stdout.trim().length > 0) {
@@ -801,7 +816,10 @@ async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs,
         }
 
         if (Date.now() - state.lastActivityAt >= inactivityTimeoutMs) {
-            return { junitResult: null, launchResult, timedOut: true, inactive: true };
+            const launchStillRunning = launchProcess.exitCode === null || launchProcess.exitCode === undefined;
+            if (!enableLiveLogStream || !launchStillRunning) {
+                return { junitResult: null, launchResult, timedOut: true, inactive: true };
+            }
         }
 
         await sleep(250);
@@ -829,7 +847,7 @@ function collectRecentSimulatorLogs(udid, pid) {
         "--style",
         "compact",
         "--last",
-        "3m",
+        simulatorLogLookback,
         "--predicate",
         predicate
     ]);

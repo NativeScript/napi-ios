@@ -6,6 +6,7 @@
 //  - MACOS_TEST_SKIP_BUILD=1 skips xcodebuild app build.
 //  - MACOS_TEST_CLEAN_BUILD=1 deletes derived data before build.
 //  - MACOS_COMMAND_TIMEOUT_MS overrides timeout for build commands (default: 10 minutes).
+//  - MACOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
 //  - MACOS_TEST_TIMEOUT_MS overrides max test runtime after launch (default: 2 minutes).
 //  - MACOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval after launch (default: 45 seconds).
 //  - MACOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
@@ -68,7 +69,17 @@ function parseTimeoutMs(name, fallback) {
     return value;
 }
 
+function parsePositiveInt(name, fallback) {
+    const value = Number(process.env[name] || fallback);
+    if (!Number.isFinite(value) || value <= 0) {
+        return fallback;
+    }
+
+    return Math.floor(value);
+}
+
 const commandTimeoutMs = parseTimeoutMs("MACOS_COMMAND_TIMEOUT_MS", 10 * 60 * 1000);
+const commandMaxBufferBytes = parsePositiveInt("MACOS_COMMAND_MAX_BUFFER_BYTES", 64 * 1024 * 1024);
 const testTimeoutMs = parseTimeoutMs("MACOS_TEST_TIMEOUT_MS", 2 * 60 * 1000);
 const inactivityTimeoutMs = parseTimeoutMs("MACOS_TEST_INACTIVITY_TIMEOUT_MS", 45 * 1000);
 const emitJunitLogs = process.env.MACOS_LOG_JUNIT !== "0";
@@ -94,6 +105,7 @@ function run(command, args, options = {}) {
     const result = cp.spawnSync(command, args, {
         encoding: "utf8",
         timeout: effectiveTimeout,
+        maxBuffer: commandMaxBufferBytes,
         ...options
     });
 
@@ -350,7 +362,8 @@ function emitLLDBBacktrace(appBinaryPath, runArgs) {
 
     const result = cp.spawnSync("xcrun", args, {
         encoding: "utf8",
-        timeout: commandTimeoutMs
+        timeout: commandTimeoutMs,
+        maxBuffer: commandMaxBufferBytes
     });
 
     if (result.error) {
@@ -396,7 +409,8 @@ async function emitCrashBacktrace(appBinaryPath, runArgs, launchedAtMs, pid) {
 function runBuildAndRequireSuccess(command, args, timeoutMs = commandTimeoutMs) {
     const result = cp.spawnSync(command, args, {
         encoding: "utf8",
-        timeout: timeoutMs
+        timeout: timeoutMs,
+        maxBuffer: commandMaxBufferBytes
     });
 
     if (result.error && result.error.code === "ETIMEDOUT") {
