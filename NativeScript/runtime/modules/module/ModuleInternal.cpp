@@ -16,6 +16,8 @@
 #include "native_api_util.h"
 #include "runtime/RuntimeConfig.h"
 #include "runtime/Util.h"
+#include "runtime/modules/node/Node.h"
+#include "runtime/modules/web/Web.h"
 
 #ifdef TARGET_ENGINE_V8
 #include "../../napi/v8/v8-module-loader.h"
@@ -73,14 +75,14 @@ bool PathExistsWithExactCase(const std::filesystem::path& path) {
 
 bool IsRegularFileWithExactCase(const std::filesystem::path& path) {
   std::error_code ec;
-  return PathExistsWithExactCase(path) && std::filesystem::is_regular_file(path, ec) &&
-         !ec;
+  return PathExistsWithExactCase(path) &&
+         std::filesystem::is_regular_file(path, ec) && !ec;
 }
 
 bool IsDirectoryWithExactCase(const std::filesystem::path& path) {
   std::error_code ec;
-  return PathExistsWithExactCase(path) && std::filesystem::is_directory(path, ec) &&
-         !ec;
+  return PathExistsWithExactCase(path) &&
+         std::filesystem::is_directory(path, ec) && !ec;
 }
 }  // namespace
 
@@ -115,11 +117,28 @@ void ModuleInternal::Init(napi_env env, const std::string& baseDir) {
 
   m_env = env;
 
-#ifdef V8_RUNTIME
-  // Initialize ES module system for V8
-  // We need to get the V8 isolate from napi_env to properly initialize ES
-  // modules This is implementation-specific and may need adjustment based on
-  // the actual V8 NAPI binding v8impl::InitializeESModuleSystem(isolate);
+#ifdef TARGET_ENGINE_V8
+  // Bootstrap V8 ES module hooks early so dynamic import() from CommonJS
+  // settles even before the first explicit .mjs module load.
+  napi_value bootstrapSource;
+  if (napi_create_string_utf8(env, "export default 0;", NAPI_AUTO_LENGTH,
+                              &bootstrapSource) == napi_ok) {
+    const std::string bootstrapModulePath =
+        RuntimeConfig.ApplicationPath + "/app/.nativescript-esm-bootstrap.mjs";
+    napi_value bootstrapNamespace;
+    napi_status bootstrapStatus =
+        napi_run_script_as_module(env, bootstrapSource,
+                                  bootstrapModulePath.c_str(),
+                                  &bootstrapNamespace);
+    if (bootstrapStatus != napi_ok) {
+      bool pendingException = false;
+      napi_is_exception_pending(env, &pendingException);
+      if (pendingException) {
+        napi_value ignored;
+        napi_get_and_clear_last_exception(env, &ignored);
+      }
+    }
+  }
 #endif
 
   const char* requireFactoryScript = R"(
@@ -345,7 +364,19 @@ void ModuleInternal::CheckFileExists(napi_env env, const std::string& path,
 
 napi_value ModuleInternal::LoadInternalModule(napi_env env,
                                               const std::string& moduleName) {
-  if (moduleName == "url") {
+  auto nodeModule = Node::LoadInternalModule(env, moduleName);
+  if (nodeModule != nullptr) {
+    return nodeModule;
+  }
+
+#ifdef __APPLE__
+  auto webModule = Web::LoadInternalModule(env, moduleName);
+  if (webModule != nullptr) {
+    return webModule;
+  }
+#endif
+
+  if (moduleName == "url" || moduleName == "node:url") {
     napi_value moduleObj;
     napi_create_object(env, &moduleObj);
     napi_value url;
@@ -396,7 +427,8 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
     return "";
   }
   bool hasMain = false;
-  napi_status hasMainStatus = napi_has_named_property(env, obj, "main", &hasMain);
+  napi_status hasMainStatus =
+      napi_has_named_property(env, obj, "main", &hasMain);
   if (hasMainStatus != napi_ok || !hasMain) {
     // package.json without "main" should fall back to index.js/index.mjs
     error = false;
@@ -544,7 +576,8 @@ std::string ModuleInternal::ResolvePath(napi_env env,
     }
 
     // Try .mjs extension first (ES modules have priority)
-    std::filesystem::path mjsBase = hasAppModulesBase ? appModulesPath : fullPath;
+    std::filesystem::path mjsBase =
+        hasAppModulesBase ? appModulesPath : fullPath;
     std::filesystem::path mjsPath = mjsBase.string() + ".mjs";
     if (PathExistsWithExactCase(mjsPath)) {
       exists = true;
@@ -555,7 +588,8 @@ std::string ModuleInternal::ResolvePath(napi_env env,
     }
 
     // Try .js extension by appending, preserving dotted filenames
-    std::filesystem::path jsBase = hasAppModulesBase ? appModulesPath : fullPath;
+    std::filesystem::path jsBase =
+        hasAppModulesBase ? appModulesPath : fullPath;
     std::filesystem::path jsPath = jsBase.string() + ".js";
     if (PathExistsWithExactCase(jsPath)) {
       exists = true;
@@ -911,7 +945,8 @@ napi_value ModuleInternal::LoadESModule(napi_env env, const std::string& path) {
       absPathFs = std::filesystem::path(path);
     }
     absPathFs = absPathFs.lexically_normal();
-    auto canonicalPath = std::filesystem::weakly_canonical(absPathFs, pathError);
+    auto canonicalPath =
+        std::filesystem::weakly_canonical(absPathFs, pathError);
     if (!pathError) {
       absPathFs = canonicalPath;
     }

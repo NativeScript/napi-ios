@@ -151,10 +151,13 @@ if(ENABLE_JS_RUNTIME)
     runtime/modules/worker/WorkerImpl.mm
     runtime/modules/worker/WorkerImpl.mm
     runtime/modules/module/ModuleInternal.cpp
+    runtime/modules/node/Node.cpp
+    runtime/modules/node/FS.cpp
     runtime/modules/performance/Performance.cpp
     runtime/Bundle.mm
     runtime/modules/timers/Timers.mm
     runtime/modules/app/App.mm
+    runtime/modules/web/Web.mm
     runtime/NativeScript.mm
     runtime/RuntimeConfig.cpp
     runtime/modules/url/ada/ada.cpp

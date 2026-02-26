@@ -1375,7 +1375,12 @@ class PointerTypeConv : public TypeConv {
                 resolvedType->type->size > 0) {
               pointeeSize = resolvedType->type->size;
             }
-            ref->data = malloc(pointeeSize);
+            ref->data = calloc(1, pointeeSize);
+            if (ref->data == nullptr) {
+              napi_throw_error(env, nullptr, "Out of memory while allocating out parameter");
+              *res = nullptr;
+              return;
+            }
             ref->ownsData = true;
             if (ref->initValue) {
               napi_value initValue = get_ref_value(env, ref->initValue);
@@ -2572,6 +2577,15 @@ class StructTypeConv : public TypeConv {
     return info;
   }
 
+  inline size_t getStructSize(napi_env env) {
+    if (this->type != nullptr && this->type->size > 0) {
+      return this->type->size;
+    }
+
+    auto info = getInfo(env);
+    return info != nullptr ? info->size : 0;
+  }
+
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     auto info = getInfo(env);
 
@@ -2590,6 +2604,12 @@ class StructTypeConv : public TypeConv {
                 bool* shouldFreeAny) override {
     NAPI_PREAMBLE
 
+    const size_t structSize = getStructSize(env);
+    if (structSize == 0) {
+      napi_throw_type_error(env, "TypeError", "Invalid struct size");
+      return;
+    }
+
     bool isTypedArray = false;
     napi_is_typedarray(env, value, &isTypedArray);
 
@@ -2601,8 +2621,10 @@ class StructTypeConv : public TypeConv {
         NAPI_THROW_LAST_ERROR
         return;
       }
-
-      memcpy(result, data, length * getTypedArrayUnitLength(type));
+      const size_t unitLength = getTypedArrayUnitLength(type);
+      const size_t byteLength = length * unitLength;
+      memset(result, 0, structSize);
+      memcpy(result, data, std::min(byteLength, structSize));
 
       return;
     }
@@ -2631,7 +2653,9 @@ class StructTypeConv : public TypeConv {
 
     auto structObject = StructObject::unwrap(env, value);
     if (structObject != nullptr) {
-      memcpy(result, structObject->data, structObject->info->size);
+      const size_t copySize = std::min(static_cast<size_t>(structObject->info->size), structSize);
+      memset(result, 0, structSize);
+      memcpy(result, structObject->data, copySize);
       return;
     }
 
@@ -2643,7 +2667,14 @@ class StructTypeConv : public TypeConv {
       return;
     }
 
-    // Serialize directly to previously allocated memory
+    if (structSize < info->size) {
+      std::vector<uint8_t> storage(info->size, 0);
+      StructObject(env, info, value, storage.data());
+      memcpy(result, storage.data(), structSize);
+      return;
+    }
+
+    // Serialize directly to previously allocated memory.
     StructObject(env, info, value, result);
   }
 };
@@ -2868,8 +2899,7 @@ class VectorTypeConv : public TypeConv {
   std::shared_ptr<TypeConv> elementType;
   MDTypeKind vectorKind;
 
-  VectorTypeConv(MDTypeKind vectorKind, uint16_t vectorSize,
-                 std::shared_ptr<TypeConv> elementType)
+  VectorTypeConv(MDTypeKind vectorKind, uint16_t vectorSize, std::shared_ptr<TypeConv> elementType)
       : vectorSize(vectorSize), elementType(elementType), vectorKind(vectorKind) {
     auto vectorType = new ffi_type();
 #if defined(FFI_TYPE_EXT_VECTOR)
@@ -2882,10 +2912,12 @@ class VectorTypeConv : public TypeConv {
     size_t abiLanes = lanes == 3 ? 4 : lanes;
     vectorType->elements = (ffi_type**)malloc(sizeof(ffi_type*) * (abiLanes + 1));
 
-    ffi_type* elementFfiType =
-        elementType != nullptr && elementType->type != nullptr ? elementType->type : &ffi_type_float;
+    ffi_type* elementFfiType = elementType != nullptr && elementType->type != nullptr
+                                   ? elementType->type
+                                   : &ffi_type_float;
     const size_t elementSize = std::max<size_t>(elementFfiType->size, sizeof(float));
-    const size_t elementAlignment = std::max<size_t>(elementFfiType->alignment, static_cast<size_t>(1));
+    const size_t elementAlignment =
+        std::max<size_t>(elementFfiType->alignment, static_cast<size_t>(1));
 
     for (size_t i = 0; i < abiLanes; i++) {
       vectorType->elements[i] = elementFfiType;

@@ -7,6 +7,7 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <unordered_set>
 
 #include "runtime/RuntimeConfig.h"
 
@@ -57,7 +58,11 @@ std::string ModulePathToURL(const std::string& modulePath) {
 }
 
 bool IsNodeBuiltinSpecifier(const std::string& specifier) {
-  return specifier == "node:url" || specifier == "url";
+  static const std::unordered_set<std::string> kBuiltins = {
+      "url",         "node:url",         "fs",  "node:fs",
+      "fs/promises", "node:fs/promises", "web", "node:web",
+      "stream/web",  "node:stream/web"};
+  return kBuiltins.contains(specifier);
 }
 
 std::string NormalizeNodeBuiltinSpecifier(const std::string& specifier) {
@@ -86,6 +91,109 @@ export function fileURLToPath(value) {
   return decodeURIComponent(u.pathname);
 }
 export default { URL, URLSearchParams, pathToFileURL, fileURLToPath };
+)";
+  }
+
+  if (builtinName == "fs") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __fs = __load("node:fs");
+export const readFileSync = __fs.readFileSync;
+export const writeFileSync = __fs.writeFileSync;
+export const existsSync = __fs.existsSync;
+export const mkdirSync = __fs.mkdirSync;
+export const readdirSync = __fs.readdirSync;
+export const statSync = __fs.statSync;
+export const lstatSync = __fs.lstatSync;
+export const unlinkSync = __fs.unlinkSync;
+export const rmSync = __fs.rmSync;
+export const readFile = __fs.readFile;
+export const writeFile = __fs.writeFile;
+export const constants = __fs.constants;
+export const promises = __fs.promises;
+export default __fs;
+)";
+  }
+
+  if (builtinName == "fs/promises") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __fsp = __load("node:fs").promises;
+export const readFile = __fsp.readFile;
+export const writeFile = __fsp.writeFile;
+export const mkdir = __fsp.mkdir;
+export const readdir = __fsp.readdir;
+export const stat = __fsp.stat;
+export const lstat = __fsp.lstat;
+export const unlink = __fsp.unlink;
+export const rm = __fsp.rm;
+export default __fsp;
+)";
+  }
+
+  if (builtinName == "web") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __web = __load("web");
+export const fetch = __web.fetch;
+export const Headers = __web.Headers;
+export const Request = __web.Request;
+export const Response = __web.Response;
+export const WebSocket = __web.WebSocket;
+export const ReadableStream = __web.ReadableStream;
+export const WritableStream = __web.WritableStream;
+export const TransformStream = __web.TransformStream;
+export default __web;
+)";
+  }
+
+  if (builtinName == "stream/web") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __streamWeb = __load("stream/web");
+export const ReadableStream = __streamWeb.ReadableStream;
+export const ReadableStreamDefaultReader = __streamWeb.ReadableStreamDefaultReader;
+export const WritableStream = __streamWeb.WritableStream;
+export const TransformStream = __streamWeb.TransformStream;
+export const ByteLengthQueuingStrategy = __streamWeb.ByteLengthQueuingStrategy;
+export const CountQueuingStrategy = __streamWeb.CountQueuingStrategy;
+export default __streamWeb;
 )";
   }
 
@@ -456,6 +564,7 @@ v8::MaybeLocal<v8::Promise> ImportModuleDynamicallyCallback(
                                             isolate, "Failed to resolve module")
                                             .ToLocalChecked()))
           .Check();
+      isolate->PerformMicrotaskCheckpoint();
       return scope.Escape(resolver->GetPromise());
     }
 
@@ -469,6 +578,7 @@ v8::MaybeLocal<v8::Promise> ImportModuleDynamicallyCallback(
                                       isolate, "Failed to instantiate module")
                                       .ToLocalChecked()))
             .Check();
+        isolate->PerformMicrotaskCheckpoint();
         return scope.Escape(resolver->GetPromise());
       }
     }
@@ -481,11 +591,13 @@ v8::MaybeLocal<v8::Promise> ImportModuleDynamicallyCallback(
                                       isolate, "Failed to evaluate module")
                                       .ToLocalChecked()))
             .Check();
+        isolate->PerformMicrotaskCheckpoint();
         return scope.Escape(resolver->GetPromise());
       }
     }
 
     resolver->Resolve(context, module->GetModuleNamespace()).Check();
+    isolate->PerformMicrotaskCheckpoint();
 
   } catch (const std::exception& e) {
     resolver
@@ -494,6 +606,7 @@ v8::MaybeLocal<v8::Promise> ImportModuleDynamicallyCallback(
             v8::Exception::Error(
                 v8::String::NewFromUtf8(isolate, e.what()).ToLocalChecked()))
         .Check();
+    isolate->PerformMicrotaskCheckpoint();
   }
 
   return scope.Escape(resolver->GetPromise());

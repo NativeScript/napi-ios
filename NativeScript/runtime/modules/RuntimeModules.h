@@ -3,12 +3,14 @@
 
 #include "console/Console.h"
 #include "js_native_api_types.h"
+#include "node/Node.h"
 #include "performance/Performance.h"
 #include "runtime/RuntimeConfig.h"
 #include "runtime/modules/module/ModuleInternal.h"
 #include "runtime/modules/worker/Worker.h"
 #include "url/URL.h"
 #include "url/URLSearchParams.h"
+#include "web/Web.h"
 #ifdef __APPLE__
 #include "app/App.h"
 #include "timers/Timers.h"
@@ -28,10 +30,12 @@ class RuntimeModules {
 
     Console::Init(env, global);
     Performance::Init(env, global);
+    Node::Init(env, global);
 
 #ifdef __APPLE__
     App::Init(env);
     Timers::Init(env, global);
+    Web::Init(env, global);
 #endif  // __APPLE__
 
     Worker::Init(env, global);

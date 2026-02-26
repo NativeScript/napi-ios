@@ -211,6 +211,7 @@ loadTest("./Promises");
 loadTest("./Modules");
 //
 loadTest("./RuntimeImplementedAPIs");
+loadTest("./WebNodeBuiltins");
 
 loadTest("./Timers");
 
