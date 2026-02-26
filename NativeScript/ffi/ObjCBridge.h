@@ -29,7 +29,11 @@ using namespace metagen;
 
 namespace nativescript {
 
+class ObjCBridgeState;
+
 void finalize_objc_object(napi_env /*env*/, void* data, void* hint);
+bool IsBridgeStateLive(const ObjCBridgeState* bridgeState,
+                       uint64_t token) noexcept;
 
 // Determines how retain/release should be called when an Objective-C
 // object is exposed to JavaScript land.
@@ -193,6 +197,7 @@ class ObjCBridgeState {
   }
 
  public:
+  uint64_t lifetimeToken = 0;
   std::unordered_map<id, napi_ref> objectRefs;
 
   napi_ref pointerClass = nullptr;

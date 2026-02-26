@@ -24,8 +24,10 @@
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
 #include <objc/runtime.h>
+#include <atomic>
 #include <cstring>
 #include <initializer_list>
+#include <mutex>
 
 #ifdef EMBED_METADATA_SIZE
 const unsigned char __attribute__((section("__objc_metadata,__objc_metadata")))
@@ -37,6 +39,42 @@ embedded_metadata[EMBED_METADATA_SIZE] = "NSMDSectionHeaderX86";
 #endif
 
 namespace nativescript {
+namespace {
+std::mutex gLiveBridgeStatesMutex;
+std::unordered_map<const ObjCBridgeState*, uint64_t> gLiveBridgeStates;
+std::atomic<uint64_t> gNextBridgeStateToken{1};
+
+uint64_t RegisterBridgeState(const ObjCBridgeState* bridgeState) {
+  if (bridgeState == nullptr) {
+    return 0;
+  }
+
+  uint64_t token = gNextBridgeStateToken.fetch_add(1, std::memory_order_relaxed);
+  std::lock_guard<std::mutex> lock(gLiveBridgeStatesMutex);
+  gLiveBridgeStates[bridgeState] = token;
+  return token;
+}
+
+void UnregisterBridgeState(const ObjCBridgeState* bridgeState) {
+  if (bridgeState == nullptr) {
+    return;
+  }
+
+  std::lock_guard<std::mutex> lock(gLiveBridgeStatesMutex);
+  gLiveBridgeStates.erase(bridgeState);
+}
+}  // namespace
+
+bool IsBridgeStateLive(const ObjCBridgeState* bridgeState,
+                       uint64_t token) noexcept {
+  if (bridgeState == nullptr || token == 0) {
+    return false;
+  }
+
+  std::lock_guard<std::mutex> lock(gLiveBridgeStatesMutex);
+  auto find = gLiveBridgeStates.find(bridgeState);
+  return find != gLiveBridgeStates.end() && find->second == token;
+}
 
 void finalize_bridge_data(napi_env env, void* data, void* hint) {
   auto bridgeState = (ObjCBridgeState*)data;
@@ -459,6 +497,7 @@ void registerLegacyCompatGlobals(napi_env env, napi_value global, ObjCBridgeStat
 ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
                                  const void* metadata_ptr) {
   napi_set_instance_data(env, this, finalize_bridge_data, nil);
+  lifetimeToken = RegisterBridgeState(this);
 
   self_dl = dlopen(nullptr, RTLD_NOW);
 
@@ -495,6 +534,8 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 }
 
 ObjCBridgeState::~ObjCBridgeState() {
+  UnregisterBridgeState(this);
+
   // Clean up cached Cif objects
   for (auto& pair : cifs) {
     delete pair.second;

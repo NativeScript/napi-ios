@@ -26,11 +26,13 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 @end
 
 @interface ObjCLifecycleAssociation : NSObject {
-  napi_env _env;
+  nativescript::ObjCBridgeState* _bridgeState;
+  uint64_t _bridgeStateToken;
   uintptr_t _objectAddress;
 }
 
-- (instancetype)initWithEnv:(napi_env)env object:(id)object;
+- (instancetype)initWithBridgeState:(nativescript::ObjCBridgeState*)bridgeState
+                             object:(id)object;
 
 @end
 
@@ -66,10 +68,12 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 
 @implementation ObjCLifecycleAssociation
 
-- (instancetype)initWithEnv:(napi_env)env object:(id)object {
+- (instancetype)initWithBridgeState:(nativescript::ObjCBridgeState*)bridgeState
+                             object:(id)object {
   self = [super init];
   if (self) {
-    _env = env;
+    _bridgeState = bridgeState;
+    _bridgeStateToken = bridgeState != nullptr ? bridgeState->lifetimeToken : 0;
     _objectAddress = (uintptr_t)object;
   }
 
@@ -77,11 +81,11 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 }
 
 - (void)dealloc {
-  napi_env env = _env;
+  nativescript::ObjCBridgeState* bridgeState = _bridgeState;
+  uint64_t bridgeStateToken = _bridgeStateToken;
   uintptr_t objectAddress = _objectAddress;
   dispatch_async(dispatch_get_main_queue(), ^{
-    nativescript::ObjCBridgeState* bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
-    if (bridgeState != nullptr) {
+    if (nativescript::IsBridgeStateLive(bridgeState, bridgeStateToken)) {
       bridgeState->objectRefs.erase((id)objectAddress);
     }
   });
@@ -163,12 +167,17 @@ void attachObjectLifecycleAssociation(napi_env env, id object) {
     return;
   }
 
+  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr) {
+    return;
+  }
+
   if (objc_getAssociatedObject(object, ObjCLifecycleAssociationKey) != nil) {
     return;
   }
 
-  ObjCLifecycleAssociation* association = [[ObjCLifecycleAssociation alloc] initWithEnv:env
-                                                                                  object:object];
+  ObjCLifecycleAssociation* association =
+      [[ObjCLifecycleAssociation alloc] initWithBridgeState:bridgeState object:object];
   objc_setAssociatedObject(object, ObjCLifecycleAssociationKey, association,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
   [association release];

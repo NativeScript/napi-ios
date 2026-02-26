@@ -9,11 +9,53 @@
 #include "Util.h"
 #include "js_native_api.h"
 #include "node_api_util.h"
+#include <mutex>
 
 namespace nativescript {
 namespace {
 std::unordered_map<std::string, MethodDescriptor> gKnownExposedMethods;
-napi_env gClassBuilderEnv = nullptr;
+std::mutex gClassBuilderEnvMutex;
+std::unordered_map<Class, napi_env> gClassBuilderEnvs;
+
+void registerClassBuilderEnv(Class nativeClass, napi_env env) {
+  if (nativeClass == Nil || env == nullptr) {
+    return;
+  }
+
+  std::lock_guard<std::mutex> lock(gClassBuilderEnvMutex);
+  gClassBuilderEnvs[nativeClass] = env;
+}
+
+void unregisterClassBuilderEnv(Class nativeClass) {
+  if (nativeClass == Nil) {
+    return;
+  }
+
+  std::lock_guard<std::mutex> lock(gClassBuilderEnvMutex);
+  gClassBuilderEnvs.erase(nativeClass);
+}
+
+napi_env resolveClassBuilderEnv(id self) {
+  if (self == nil) {
+    return nullptr;
+  }
+
+  Class currentClass = object_getClass(self);
+  if (currentClass == Nil) {
+    return nullptr;
+  }
+
+  std::lock_guard<std::mutex> lock(gClassBuilderEnvMutex);
+  while (currentClass != Nil) {
+    auto find = gClassBuilderEnvs.find(currentClass);
+    if (find != gClassBuilderEnvs.end()) {
+      return find->second;
+    }
+    currentClass = class_getSuperclass(currentClass);
+  }
+
+  return nullptr;
+}
 
 const char* kInstallSuperAccessorSource = R"(
   (function (prototype, basePrototype) {
@@ -201,11 +243,15 @@ napi_value JS_classConformsToProtocolSafe(napi_env env, napi_callback_info info)
 
 NSUInteger JS_SymbolIteratorCountByEnumerating(id self, SEL _cmd, NSFastEnumerationState* state,
                                                id __unsafe_unretained stackbuf[], NSUInteger len) {
-  if (len == 0 || gClassBuilderEnv == nullptr) {
+  if (len == 0) {
     return 0;
   }
 
-  napi_env env = gClassBuilderEnv;
+  napi_env env = resolveClassBuilderEnv(self);
+  if (env == nullptr) {
+    return 0;
+  }
+
   ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
   if (bridgeState == nullptr) {
     return 0;
@@ -343,7 +389,6 @@ NSUInteger JS_SymbolIteratorCountByEnumerating(id self, SEL _cmd, NSFastEnumerat
 
 ClassBuilder::ClassBuilder(napi_env env, napi_value constructor) {
   this->env = env;
-  gClassBuilderEnv = env;
   bridgeState = ObjCBridgeState::InstanceData(env);
 
   metadataOffset = MD_SECTION_OFFSET_NULL;
@@ -399,6 +444,7 @@ ClassBuilder::ClassBuilder(napi_env env, napi_value constructor) {
   class_addProtocol(nativeClass, @protocol(ObjCBridgeClassBuilderProtocol));
 
   objc_registerClassPair(nativeClass);
+  registerClassBuilderEnv(nativeClass, env);
 
   napi_remove_wrap(env, constructor, nullptr);
 
@@ -412,6 +458,8 @@ ClassBuilder::ClassBuilder(napi_env env, napi_value constructor) {
 }
 
 ClassBuilder::~ClassBuilder() {
+  unregisterClassBuilderEnv(nativeClass);
+
   if (nativeClass != nullptr) {
     objc_disposeClassPair(nativeClass);
     napi_delete_reference(env, constructor);
