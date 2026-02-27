@@ -197,6 +197,7 @@ class ObjCBridgeState {
   }
 
  public:
+  napi_env env = nullptr;
   uint64_t lifetimeToken = 0;
   std::unordered_map<id, napi_ref> objectRefs;
 

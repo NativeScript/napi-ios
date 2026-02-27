@@ -496,6 +496,7 @@ void registerLegacyCompatGlobals(napi_env env, napi_value global, ObjCBridgeStat
 
 ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
                                  const void* metadata_ptr) {
+  this->env = env;
   napi_set_instance_data(env, this, finalize_bridge_data, nil);
   lifetimeToken = RegisterBridgeState(this);
 
@@ -535,6 +536,57 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 
 ObjCBridgeState::~ObjCBridgeState() {
   UnregisterBridgeState(this);
+
+  auto deleteRef = [&](napi_ref& ref) {
+    if (env != nullptr && ref != nullptr) {
+      napi_delete_reference(env, ref);
+      ref = nullptr;
+    }
+  };
+
+  for (auto& pair : constructorsByPointer) {
+    deleteRef(pair.second);
+  }
+  constructorsByPointer.clear();
+
+  for (auto& frame : roundTripCacheFrames) {
+    for (auto& entry : frame) {
+      deleteRef(entry.second);
+    }
+  }
+  roundTripCacheFrames.clear();
+
+  for (auto& entry : recentRoundTripCache) {
+    deleteRef(entry.second);
+  }
+  recentRoundTripCache.clear();
+
+  std::unordered_set<napi_ref> classAndProtocolConstructorRefs;
+  classAndProtocolConstructorRefs.reserve(classes.size() + protocols.size());
+  for (const auto& pair : classes) {
+    if (pair.second != nullptr && pair.second->constructor != nullptr) {
+      classAndProtocolConstructorRefs.insert(pair.second->constructor);
+    }
+  }
+  for (const auto& pair : protocols) {
+    if (pair.second != nullptr && pair.second->constructor != nullptr) {
+      classAndProtocolConstructorRefs.insert(pair.second->constructor);
+    }
+  }
+  for (auto& pair : mdValueCache) {
+    napi_ref& ref = pair.second;
+    if (ref != nullptr && classAndProtocolConstructorRefs.find(ref) == classAndProtocolConstructorRefs.end()) {
+      deleteRef(ref);
+    }
+  }
+  mdValueCache.clear();
+
+  deleteRef(pointerClass);
+  deleteRef(referenceClass);
+  deleteRef(functionReferenceClass);
+  deleteRef(createNativeProxy);
+  deleteRef(createFastEnumeratorIterator);
+  deleteRef(transferOwnershipToNative);
 
   // Clean up cached Cif objects
   for (auto& pair : cifs) {

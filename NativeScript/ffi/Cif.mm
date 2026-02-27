@@ -107,8 +107,6 @@ Cif::Cif(napi_env env, std::string encoding, unsigned int implicitArgc) {
     }
   }
 
-  [signature release];
-
   ffi_status status = ffi_prep_cif(&cif, FFI_DEFAULT_ABI, totalArgc, rtype, this->atypes);
 
   if (status != FFI_OK) {

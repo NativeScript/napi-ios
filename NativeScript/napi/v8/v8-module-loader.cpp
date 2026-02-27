@@ -7,11 +7,103 @@
 #include <filesystem>
 #include <fstream>
 #include <sstream>
+#include <unordered_map>
 #include <unordered_set>
 
 #include "runtime/RuntimeConfig.h"
 
 namespace v8impl {
+
+namespace {
+
+// Cache for package.json "type" field lookups
+std::unordered_map<std::string, bool> g_packageTypeCache;
+
+// Strip shebang line from source code (e.g., #!/usr/bin/env node)
+std::string StripShebang(const std::string& source) {
+  if (source.size() >= 2 && source[0] == '#' && source[1] == '!') {
+    size_t lineEnd = source.find('\n');
+    if (lineEnd != std::string::npos) {
+      return source.substr(lineEnd + 1);
+    }
+    return "";  // Entire file is just a shebang
+  }
+  return source;
+}
+
+// Check if path has .cjs extension (explicitly CommonJS)
+bool IsCJSModule(const std::string& path) {
+  return path.size() >= 4 && path.compare(path.size() - 4, 4, ".cjs") == 0;
+}
+
+// Find nearest package.json by walking up from directory
+std::string FindPackageJson(const std::filesystem::path& startDir) {
+  std::filesystem::path current = startDir;
+
+  while (!current.empty() && current != current.root_path()) {
+    std::filesystem::path packagePath = current / "package.json";
+    std::error_code ec;
+    if (std::filesystem::exists(packagePath, ec) && !ec) {
+      return packagePath.string();
+    }
+    current = current.parent_path();
+  }
+
+  return "";
+}
+
+// Check if package.json has "type": "module"
+bool IsPackageTypeModule(const std::string& packageJsonPath) {
+  auto cacheIt = g_packageTypeCache.find(packageJsonPath);
+  if (cacheIt != g_packageTypeCache.end()) {
+    return cacheIt->second;
+  }
+
+  bool isModule = false;
+
+  std::ifstream file(packageJsonPath);
+  if (file.is_open()) {
+    std::string content((std::istreambuf_iterator<char>(file)),
+                        std::istreambuf_iterator<char>());
+    file.close();
+
+    // Simple JSON parsing for "type": "module"
+    // Look for "type" followed by : and "module"
+    size_t typePos = content.find("\"type\"");
+    if (typePos != std::string::npos) {
+      size_t colonPos = content.find(':', typePos + 6);
+      if (colonPos != std::string::npos) {
+        size_t valueStart = content.find('"', colonPos + 1);
+        if (valueStart != std::string::npos) {
+          size_t valueEnd = content.find('"', valueStart + 1);
+          if (valueEnd != std::string::npos) {
+            std::string typeValue =
+                content.substr(valueStart + 1, valueEnd - valueStart - 1);
+            isModule = (typeValue == "module");
+          }
+        }
+      }
+    }
+  }
+
+  g_packageTypeCache[packageJsonPath] = isModule;
+  return isModule;
+}
+
+// Determine if a .js file should be treated as ESM based on nearest
+// package.json
+bool ShouldTreatAsESModule(const std::string& path) {
+  std::filesystem::path filePath(path);
+  std::string packageJson = FindPackageJson(filePath.parent_path());
+
+  if (!packageJson.empty()) {
+    return IsPackageTypeModule(packageJson);
+  }
+
+  return false;  // Default to CommonJS
+}
+
+}  // namespace
 
 // Global registry for ES modules
 std::unordered_map<std::string, v8::Global<v8::Module>> g_moduleRegistry;
@@ -59,9 +151,8 @@ std::string ModulePathToURL(const std::string& modulePath) {
 
 bool IsNodeBuiltinSpecifier(const std::string& specifier) {
   static const std::unordered_set<std::string> kBuiltins = {
-      "url",         "node:url",         "fs",  "node:fs",
-      "fs/promises", "node:fs/promises", "web", "node:web",
-      "stream/web",  "node:stream/web"};
+      "url",  "node:url",  "fs",  "node:fs",  "fs/promises", "node:fs/promises",
+      "path", "node:path", "web", "node:web", "stream/web",  "node:stream/web"};
   return kBuiltins.contains(specifier);
 }
 
@@ -149,6 +240,38 @@ export default __fsp;
 )";
   }
 
+  if (builtinName == "path") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __path = __load("node:path");
+export const basename = __path.basename;
+export const dirname = __path.dirname;
+export const extname = __path.extname;
+export const isAbsolute = __path.isAbsolute;
+export const join = __path.join;
+export const normalize = __path.normalize;
+export const parse = __path.parse;
+export const format = __path.format;
+export const relative = __path.relative;
+export const resolve = __path.resolve;
+export const toNamespacedPath = __path.toNamespacedPath;
+export const sep = __path.sep;
+export const delimiter = __path.delimiter;
+export const posix = __path.posix;
+export const win32 = __path.win32;
+export default __path;
+)";
+  }
+
   if (builtinName == "web") {
     return R"(
 const __load = (name) => {
@@ -201,7 +324,22 @@ export default __streamWeb;
 }
 
 bool IsESModule(const std::string& path) {
-  return path.size() >= 4 && path.compare(path.size() - 4, 4, ".mjs") == 0;
+  // .mjs is always ESM
+  if (path.size() >= 4 && path.compare(path.size() - 4, 4, ".mjs") == 0) {
+    return true;
+  }
+
+  // .cjs is always CommonJS
+  if (IsCJSModule(path)) {
+    return false;
+  }
+
+  // .js files: check package.json "type" field
+  if (path.size() >= 3 && path.compare(path.size() - 3, 3, ".js") == 0) {
+    return ShouldTreatAsESModule(path);
+  }
+
+  return false;
 }
 
 bool IsJSONModule(const std::string& path) {
@@ -216,7 +354,7 @@ std::string ReadFileContent(const std::string& path) {
 
   std::stringstream buffer;
   buffer << file.rdbuf();
-  return buffer.str();
+  return StripShebang(buffer.str());
 }
 
 v8::Local<v8::String> WrapModuleContent(v8::Isolate* isolate,
@@ -278,6 +416,13 @@ std::string ResolveESModulePath(v8::Isolate* isolate,
     return NormalizeModulePath(jsPath);
   }
 
+  // Try with .cjs extension (explicit CommonJS)
+  std::filesystem::path cjsPath = fullPath.string() + ".cjs";
+  if (std::filesystem::exists(cjsPath) &&
+      std::filesystem::is_regular_file(cjsPath)) {
+    return NormalizeModulePath(cjsPath);
+  }
+
   // Try directory with index.mjs
   if (std::filesystem::exists(fullPath) &&
       std::filesystem::is_directory(fullPath)) {
@@ -292,6 +437,13 @@ std::string ResolveESModulePath(v8::Isolate* isolate,
     if (std::filesystem::exists(indexJs) &&
         std::filesystem::is_regular_file(indexJs)) {
       return NormalizeModulePath(indexJs);
+    }
+
+    // Try directory with index.cjs
+    std::filesystem::path indexCjs = fullPath / "index.cjs";
+    if (std::filesystem::exists(indexCjs) &&
+        std::filesystem::is_regular_file(indexCjs)) {
+      return NormalizeModulePath(indexCjs);
     }
   }
 
@@ -644,6 +796,9 @@ void CleanupESModuleSystem(v8::Isolate* isolate) {
 
   // Clear the registry
   g_moduleRegistry.clear();
+
+  // Clear the package.json type cache
+  g_packageTypeCache.clear();
 }
 
 }  // namespace v8impl

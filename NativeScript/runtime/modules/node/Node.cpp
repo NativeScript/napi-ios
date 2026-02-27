@@ -1,6 +1,7 @@
 #include "Node.h"
 
 #include "FS.h"
+#include "Path.h"
 #include "native_api_util.h"
 
 namespace nativescript {
@@ -14,6 +15,10 @@ napi_value Node::LoadInternalModule(napi_env env,
                                     const std::string& moduleName) {
   if (moduleName == "fs" || moduleName == "node:fs") {
     return FS::CreateModule(env);
+  }
+
+  if (moduleName == "path" || moduleName == "node:path") {
+    return Path::CreateModule(env);
   }
 
   if (moduleName == "fs/promises" || moduleName == "node:fs/promises") {
