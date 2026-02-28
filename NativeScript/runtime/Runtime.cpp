@@ -336,7 +336,35 @@ napi_value Runtime::RunModule(std::string spec) {
 
 void Runtime::RunMainModule() { napi_value result = RunModule("./"); }
 
-void Runtime::RunLoop() { CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true); }
+void Runtime::RunLoop() {
+  // Keep the runtime alive while asynchronous main-thread work is pending, but
+  // still exit once the loop has been idle for a short period.
+  constexpr CFTimeInterval kPollSeconds = 0.1;
+  constexpr int kIdlePollsBeforeExit = 10;  // ~1s idle window
+
+  int idlePolls = 0;
+  while (true) {
+    const auto result =
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, kPollSeconds, false);
+
+    if (result == kCFRunLoopRunHandledSource) {
+      idlePolls = 0;
+      continue;
+    }
+
+    if (result == kCFRunLoopRunTimedOut) {
+      idlePolls++;
+      if (idlePolls >= kIdlePollsBeforeExit) {
+        break;
+      }
+      continue;
+    }
+
+    if (result == kCFRunLoopRunStopped || result == kCFRunLoopRunFinished) {
+      break;
+    }
+  }
+}
 
 bool Runtime::IsAlive(napi_env env) {
   SpinLock lock(envsMutex_);

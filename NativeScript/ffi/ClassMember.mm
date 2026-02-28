@@ -26,12 +26,22 @@ namespace nativescript {
 
 napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo) {
   napi_value jsThis;
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
+  ObjCClassMember* method = nullptr;
+  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&method);
 
-  id self;
-  napi_unwrap(env, jsThis, (void**)&self);
+  id self = nil;
+  napi_status unwrapStatus = napi_unwrap(env, jsThis, (void**)&self);
+  if ((unwrapStatus != napi_ok || self == nil) && method != nullptr && method->cls != nullptr &&
+      method->cls->nativeClass != nil) {
+    self = (id)method->cls->nativeClass;
+  }
+  if (self == nil) {
+    napi_throw_error(env, "NativeScriptException",
+                     "There was no native class counterpart to the JavaScript constructor.");
+    return nullptr;
+  }
 
-  bool supercall = class_conformsToProtocol(self, @protocol(ObjCBridgeClassBuilderProtocol));
+  bool supercall = class_conformsToProtocol((Class)self, @protocol(ObjCBridgeClassBuilderProtocol));
 
   if (supercall) {
     ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
@@ -219,6 +229,10 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
         continue;
       }
 
+      if (cls != nullptr) {
+        member->cls = cls;
+      }
+
       if (hasOwnProperty && name != "init") {
         if ((flags & mdMemberIsInit) != 0) {
           member->cls = cls;
@@ -269,14 +283,20 @@ void ObjCClassMember::addOverload(SEL selector, MDSectionOffset offset) {
   overloads.emplace_back(selector, offset);
 }
 
-inline bool objcNativeCall(napi_env env, Cif* cif, id self, void** avalues, void* rvalue) {
-  bool classMethod = class_isMetaClass(object_getClass(self));
+inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod, void** avalues,
+                           void* rvalue) {
   SEL selector = avalues != nullptr && cif->cif.nargs >= 2 ? *((SEL*)avalues[1]) : nullptr;
 
-  bool supercall = classMethod
-                       ? class_conformsToProtocol(self, @protocol(ObjCBridgeClassBuilderProtocol))
-                       : class_conformsToProtocol(object_getClass(self),
-                                                  @protocol(ObjCBridgeClassBuilderProtocol));
+  Class receiverClass = nil;
+  if (classMethod) {
+    receiverClass = (Class)self;
+  } else {
+    receiverClass = object_getClass(self);
+  }
+
+  bool supercall =
+      receiverClass != nil &&
+      class_conformsToProtocol(receiverClass, @protocol(ObjCBridgeClassBuilderProtocol));
 
   if (supercall && classMethod) {
     ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
@@ -300,7 +320,9 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, void** avalues, void
       ffi_call(&cif->cif, FFI_FN(objc_msgSend), rvalue, avalues);
 #endif
     } else {
-      struct objc_super superobj = {self, class_getSuperclass(object_getClass(self))};
+      Class superClass = classMethod ? class_getSuperclass(object_getClass((id)receiverClass))
+                                     : class_getSuperclass(receiverClass);
+      struct objc_super superobj = {self, superClass};
       auto superobjPtr = &superobj;
       avalues[0] = (void*)&superobjPtr;
 #if defined(__x86_64__)
@@ -786,18 +808,34 @@ ObjCClassMember* findInitializerForArgs(napi_env env, ObjCClassMemberMap* initia
   return candidates[0].member;
 }
 
-inline id assertSelf(napi_env env, napi_value jsThis) {
-  id self;
-  napi_unwrap(env, jsThis, (void**)&self);
+inline id assertSelf(napi_env env, napi_value jsThis, ObjCClassMember* method = nullptr) {
+  id self = nil;
+  napi_status unwrapStatus = napi_unwrap(env, jsThis, (void**)&self);
 
-  if (self == nil) {
-    napi_throw_error(env, "NativeScriptException",
-                     "There was no native counterpart to the JavaScript object. Native API was "
-                     "called with a likely plain object.");
-    return nullptr;
+  if (unwrapStatus == napi_ok && self != nil) {
+    return self;
   }
 
-  return self;
+  bool shouldUseClassFallback = false;
+  if (method != nullptr && method->cls != nullptr && method->cls->nativeClass != nil) {
+    if (method->classMethod) {
+      shouldUseClassFallback = true;
+    } else {
+      napi_valuetype jsType = napi_undefined;
+      if (napi_typeof(env, jsThis, &jsType) == napi_ok && jsType == napi_function) {
+        shouldUseClassFallback = true;
+      }
+    }
+  }
+
+  if (shouldUseClassFallback) {
+    return (id)method->cls->nativeClass;
+  }
+
+  napi_throw_error(env, "NativeScriptException",
+                   "There was no native counterpart to the JavaScript object. Native API was "
+                   "called with a likely plain object.");
+  return nullptr;
 }
 
 ObjCClass* resolveInitMetadataClass(napi_env env, napi_value jsThis, ObjCClassMember* method,
@@ -977,7 +1015,7 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
   size_t argc = 0;
   napi_get_cb_info(env, cbinfo, &argc, nullptr, &jsThis, (void**)&method);
 
-  id self = assertSelf(env, jsThis);
+  id self = assertSelf(env, jsThis, method);
 
   if (self == nullptr) {
     return nullptr;
@@ -1063,14 +1101,15 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
 
   id rvalue;
   bool retainedReceiver = false;
-  if (!method->classMethod) {
+  const bool receiverIsClass = object_isClass(self);
+  if (!receiverIsClass) {
     // init can return a different object and release the original receiver.
     // Keep the original receiver alive while this JS wrapper still references it.
     [self retain];
     retainedReceiver = true;
   }
 
-  if (!objcNativeCall(env, cif, self, avalues, &rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, avalues, &rvalue)) {
     if (retainedReceiver) {
       [self release];
     }
@@ -1093,7 +1132,7 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
   }
 
   napi_value constructor = jsThis;
-  if (!method->classMethod) {
+  if (!receiverIsClass) {
     napi_get_named_property(env, jsThis, "constructor", &constructor);
   }
 
@@ -1116,7 +1155,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
   napi_value stackArgs[16];
   napi_get_cb_info(env, cbinfo, &actualArgc, stackArgs, &jsThis, (void**)&method);
 
-  id self = assertSelf(env, jsThis);
+  id self = assertSelf(env, jsThis, method);
 
   if (self == nullptr) {
     return nullptr;
@@ -1124,7 +1163,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   RoundTripCacheFrameGuard roundTripCacheFrame(env, method->bridgeState);
 
-  const bool receiverIsClass = class_isMetaClass(object_getClass(self));
+  const bool receiverIsClass = object_isClass(self);
   Class receiverClass = receiverIsClass ? (Class)self : [self class];
   auto resolveDescriptorCif = [&](MethodDescriptor* descriptor, Cif** cacheSlot) -> Cif* {
     if (descriptor == nullptr || cacheSlot == nullptr) {
@@ -1336,7 +1375,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
 
-  if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, avalues, rvalue)) {
     for (id block : fallbackBlocksToRelease) {
       [block release];
     }
@@ -1363,7 +1402,6 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   const char* selectorName = sel_getName(selectedSelector);
   if (strcmp(selectorName, "class") == 0) {
-    const bool receiverIsClass = class_isMetaClass(object_getClass(self));
     if (!receiverIsClass) {
       napi_value constructor = jsThis;
       napi_get_named_property(env, jsThis, "constructor", &constructor);
@@ -1375,7 +1413,6 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
   }
 
   if (cif->returnType->kind == mdTypeInstanceObject) {
-    const bool receiverIsClass = class_isMetaClass(object_getClass(self));
     napi_value constructor = jsThis;
     if (!receiverIsClass) {
       napi_get_named_property(env, jsThis, "constructor", &constructor);
@@ -1386,7 +1423,6 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
   }
 
   if (cif->returnType->kind == mdTypeAnyObject) {
-    const bool receiverIsClass = class_isMetaClass(object_getClass(self));
     id obj = *((id*)rvalue);
     if (receiverIsClass && obj != nil) {
       Class receiverClass = (Class)self;
@@ -1408,11 +1444,13 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
 
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&method);
 
-  id self = assertSelf(env, jsThis);
+  id self = assertSelf(env, jsThis, method);
 
   if (self == nullptr) {
     return nullptr;
   }
+
+  const bool receiverIsClass = object_isClass(self);
 
   Cif* cif = method->cif;
   if (cif == nullptr) {
@@ -1432,18 +1470,17 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
 
   // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
 
-  if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, avalues, rvalue)) {
     return nullptr;
   }
 
   const char* selectorName = sel_getName(method->methodOrGetter.selector);
   if (strcmp(selectorName, "class") == 0) {
-    id classObject = class_isMetaClass(object_getClass(self)) ? self : (id)object_getClass(self);
+    id classObject = receiverIsClass ? self : (id)object_getClass(self);
     return method->bridgeState->getObject(env, classObject, kUnownedObject, 0, nullptr);
   }
 
   if (cif->returnType->kind == mdTypeInstanceObject) {
-    const bool receiverIsClass = class_isMetaClass(object_getClass(self));
     napi_value constructor = jsThis;
     if (!receiverIsClass) {
       napi_get_named_property(env, jsThis, "constructor", &constructor);
@@ -1468,11 +1505,13 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
 
   napi_get_cb_info(env, cbinfo, &argc, &argv, &jsThis, (void**)&method);
 
-  id self = assertSelf(env, jsThis);
+  id self = assertSelf(env, jsThis, method);
 
   if (self == nullptr) {
     return nullptr;
   }
+
+  const bool receiverIsClass = object_isClass(self);
 
   RoundTripCacheFrameGuard roundTripCacheFrame(env, method->bridgeState);
 
@@ -1495,7 +1534,7 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
   bool shouldFree = false;
   cif->argTypes[0]->toNative(env, argv, avalues[2], &shouldFree, &shouldFree);
 
-  if (!objcNativeCall(env, cif, self, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, avalues, rvalue)) {
     return nullptr;
   }
 

@@ -2,6 +2,7 @@
 #import <Foundation/Foundation.h>
 #include <cstdint>
 #include <cstring>
+#include <mutex>
 #include <unordered_map>
 #include "Interop.h"
 #include "ObjCBridge.h"
@@ -37,11 +38,15 @@ constexpr int kBlockHasCopyDispose = (1 << 25);
 constexpr int kBlockRefCountOne = (1 << 1);
 constexpr int kBlockHasSignature = (1 << 30);
 std::unordered_map<void*, napi_ref> g_blockToJsFunction;
+std::mutex g_blockToJsFunctionMutex;
 
 void block_copy(void* dest, void* src) {
   auto dst = static_cast<Block_literal_1*>(dest);
   auto source = static_cast<Block_literal_1*>(src);
   dst->closure = source->closure;
+  if (dst->closure != nullptr) {
+    dst->closure->retain();
+  }
 }
 
 void block_release(void* src) {
@@ -51,17 +56,20 @@ void block_release(void* src) {
   }
 
   if (block->closure != nullptr && block->closure->env != nullptr) {
+    std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
     auto it = g_blockToJsFunction.find(block);
     if (it != g_blockToJsFunction.end()) {
-      napi_delete_reference(block->closure->env, it->second);
+      if (std::this_thread::get_id() == block->closure->jsThreadId) {
+        napi_delete_reference(block->closure->env, it->second);
+      }
       g_blockToJsFunction.erase(it);
     }
   }
 
   if (block->closure != nullptr) {
-    delete block->closure;
-    block->closure = nullptr;
+    block->closure->release();
   }
+  block->closure = nullptr;
 }
 
 Block_descriptor_1 kBlockDescriptor = {
@@ -69,10 +77,11 @@ Block_descriptor_1 kBlockDescriptor = {
     .size = sizeof(Block_literal_1),
     .copy_helper = block_copy,
     .dispose_helper = block_release,
-    .signature = nullptr,
+    .signature = "v@?",
 };
 
 inline napi_value getCachedBlockJsFunction(napi_env env, void* blockPtr) {
+  std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
   auto it = g_blockToJsFunction.find(blockPtr);
   if (it == g_blockToJsFunction.end()) {
     return nullptr;
@@ -89,6 +98,7 @@ inline void cacheBlockJsFunction(napi_env env, void* blockPtr, napi_value jsFunc
   if (blockPtr == nullptr || jsFunction == nullptr) {
     return;
   }
+  std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
   if (g_blockToJsFunction.find(blockPtr) != g_blockToJsFunction.end()) {
     return;
   }
@@ -104,16 +114,19 @@ void block_finalize(napi_env env, void* data, void* hint) {
     return;
   }
 
-  auto it = g_blockToJsFunction.find(block);
-  if (it != g_blockToJsFunction.end()) {
-    napi_delete_reference(env, it->second);
-    g_blockToJsFunction.erase(it);
+  {
+    std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
+    auto it = g_blockToJsFunction.find(block);
+    if (it != g_blockToJsFunction.end()) {
+      napi_delete_reference(env, it->second);
+      g_blockToJsFunction.erase(it);
+    }
   }
 
   if (block->closure != nullptr) {
-    delete block->closure;
-    block->closure = nullptr;
+    block->closure->release();
   }
+  block->closure = nullptr;
 
   free(block);
 }
@@ -136,7 +149,7 @@ id registerBlock(napi_env env, Closure* closure, napi_value callback) {
   }
 
   block->isa = mallocBlockISA != nullptr ? mallocBlockISA : stackBlockISA;
-  block->flags = kBlockNeedsFree | kBlockHasCopyDispose | kBlockRefCountOne;
+  block->flags = kBlockNeedsFree | kBlockHasCopyDispose | kBlockRefCountOne | kBlockHasSignature;
   block->reserved = 0;
   block->invoke = closure->fnptr;
   block->descriptor = &kBlockDescriptor;

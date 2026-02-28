@@ -14,14 +14,45 @@
 #include "node_api_util.h"
 #include "objc/message.h"
 
+#include <CoreFoundation/CFRunLoop.h>
 #include <Foundation/Foundation.h>
+#include <dispatch/dispatch.h>
 #include <cassert>
-#include <cstring>
 #include <condition_variable>
+#include <cstring>
 #include <mutex>
 #include <vector>
 
 namespace nativescript {
+
+namespace {
+
+inline void deleteClosureOnOwningThread(Closure* closure) {
+  if (closure == nullptr) {
+    return;
+  }
+
+#ifdef ENABLE_JS_RUNTIME
+  if (std::this_thread::get_id() != closure->jsThreadId) {
+    CFRunLoopRef runloop = closure->jsRunLoop;
+    if (runloop == nullptr) {
+      runloop = CFRunLoopGetMain();
+    }
+
+    if (runloop != nullptr) {
+      CFRunLoopPerformBlock(runloop, kCFRunLoopCommonModes, ^{
+        delete closure;
+      });
+      CFRunLoopWakeUp(runloop);
+      return;
+    }
+  }
+#endif  // ENABLE_JS_RUNTIME
+
+  delete closure;
+}
+
+}  // namespace
 
 inline bool selectorEndsWithErrorParam(SEL selector) {
   if (selector == nullptr) {
@@ -74,7 +105,9 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
 
   napi_status status = napi_call_function(env, thisArg, func, argc, argv, &result);
 
-  if (done != NULL) *done = true;
+  if (done != nullptr) {
+    *done = true;
+  }
 
   // If the call failed, we need to create an error object and throw it in native
   // Likely it will circle back to JS. We have try/catch around all native calls from JS,
@@ -251,6 +284,7 @@ struct JSBlockCallContext {
   std::mutex mutex;
   std::condition_variable cv;
   bool done;
+  bool useCondvar;
 };
 
 void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb, void* context, void* data) {
@@ -267,18 +301,28 @@ void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb, void* cont
     argv[i] = closure->argTypes[i]->toJS(env, ctx->args[i + 1], 0);
   }
 
-  JSCallbackInner(closure, func, thisArg, argv, ctx->cif->nargs - 1, &ctx->done, ctx->ret);
-
-  ctx->cv.notify_one();
+  JSCallbackInner(closure, func, thisArg, argv, ctx->cif->nargs - 1, nullptr, ctx->ret);
+  if (ctx->useCondvar) {
+    {
+      std::lock_guard<std::mutex> lock(ctx->mutex);
+      ctx->done = true;
+    }
+    ctx->cv.notify_one();
+  }
 }
 
 void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   Closure* closure = (Closure*)data;
   napi_env env = closure->env;
-
-#ifdef ENABLE_JS_RUNTIME
-  NapiScope scope(env);
-#endif
+  closure->retain();
+  struct ClosureRetainGuard {
+    Closure* closure;
+    ~ClosureRetainGuard() {
+      if (closure != nullptr) {
+        closure->release();
+      }
+    }
+  } retainGuard{closure};
 
   auto currentThreadId = std::this_thread::get_id();
 
@@ -287,8 +331,12 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   ctx.ret = ret;
   ctx.args = args;
   ctx.done = false;
+  ctx.useCondvar = false;
 
   if (currentThreadId == closure->jsThreadId) {
+#ifdef ENABLE_JS_RUNTIME
+    NapiScope scope(env);
+#endif
     Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
   } else {
 #ifndef ENABLE_JS_RUNTIME
@@ -296,13 +344,32 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
       assert(false && "Threadsafe functions are not supported");
     }
 
+    ctx.useCondvar = true;
     napi_acquire_threadsafe_function(closure->tsfn);
     std::unique_lock<std::mutex> lock(ctx.mutex);
     napi_call_threadsafe_function(closure->tsfn, &ctx, napi_tsfn_blocking);
     ctx.cv.wait(lock, [&ctx] { return ctx.done; });
     napi_release_threadsafe_function(closure->tsfn, napi_tsfn_release);
 #else
-    Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
+    auto runloop = closure->jsRunLoop;
+    if (runloop == nullptr) {
+      runloop = CFRunLoopGetMain();
+    }
+
+    if (runloop == nullptr) {
+      NapiScope scope(env);
+      Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
+    } else {
+      JSBlockCallContext* ctxPtr = &ctx;
+      dispatch_semaphore_t done = dispatch_semaphore_create(0);
+      CFRunLoopPerformBlock(runloop, kCFRunLoopCommonModes, ^{
+        NapiScope scope(env);
+        Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, ctxPtr);
+        dispatch_semaphore_signal(done);
+      });
+      CFRunLoopWakeUp(runloop);
+      dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
+    }
 #endif  // ENABLE_JS_RUNTIME
   }
 }
@@ -418,6 +485,14 @@ Closure::~Closure() {
     free(atypes);
   }
   ffi_closure_free(closure);
+}
+
+void Closure::retain() { retainCount.fetch_add(1, std::memory_order_relaxed); }
+
+void Closure::release() {
+  if (retainCount.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+    deleteClosureOnOwningThread(this);
+  }
 }
 
 }  // namespace nativescript

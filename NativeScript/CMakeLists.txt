@@ -153,6 +153,7 @@ if(ENABLE_JS_RUNTIME)
     runtime/modules/module/ModuleInternal.cpp
     runtime/modules/node/Node.cpp
     runtime/modules/node/FS.cpp
+    runtime/modules/node/Path.cpp
     runtime/modules/performance/Performance.cpp
     runtime/Bundle.mm
     runtime/modules/timers/Timers.mm

@@ -76,7 +76,8 @@ class ObjCClassMember {
       : bridgeState(bridgeState),
         methodOrGetter(MethodDescriptor(selector, offset)),
         returnOwned((flags & metagen::mdMemberReturnOwned) != 0),
-        classMethod((flags & metagen::mdMemberStatic) != 0) {}
+        classMethod((flags & metagen::mdMemberStatic) != 0),
+        cls(nullptr) {}
 
   ObjCClassMember(ObjCBridgeState* bridgeState, SEL getterSelector,
                   SEL setterSelector, MDSectionOffset getterOffset,
@@ -85,7 +86,8 @@ class ObjCClassMember {
         methodOrGetter(MethodDescriptor(getterSelector, getterOffset)),
         setter(MethodDescriptor(setterSelector, setterOffset)),
         returnOwned((flags & metagen::mdMemberReturnOwned) != 0),
-        classMethod((flags & metagen::mdMemberStatic) != 0) {
+        classMethod((flags & metagen::mdMemberStatic) != 0),
+        cls(nullptr) {
     methodOrGetter.isProperty = true;
     setter.isProperty = true;
   }
