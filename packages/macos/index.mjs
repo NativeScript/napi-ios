@@ -24,12 +24,15 @@ if (!isNativeScriptRuntime) {
 
     module.exports.init(
       // deno-lint-ignore no-process-globals
-      process.env.METADATA_PATH
+      process.env.METADATA_PATH,
     );
   } else if (typeof require !== "undefined") {
     // ===
     // If we're in a React Native-like environment
     // ===
+
+    // Hermes doesn't support MJS, so fall back to CJS. Really, the bundler
+    // shouldn't have resolved this file in the first place.
 
     // react-native-node-api/babel-plugin will rewrite this to:
     //   module.exports = require("react-native-node-api").requireNodeAddon("-nativescript-macos-node-api—-NativeScript");
