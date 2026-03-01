@@ -1,6 +1,6 @@
 {
   "name": "@nativescript/macos-node-api",
-  "version": "0.4.2",
+  "version": "0.4.3",
   "description": "An embeddable, engine-agnostic NativeScript runtime for macOS based on Node-API",
   "repository": {
     "type": "git",
@@ -11,10 +11,12 @@
   "typings": "index.d.ts",
   "type": "module",
   "files": [
+    "./*.d.ts",
     "build/RelWithDebInfo/NativeScript.apple.node",
+    "index.cjs",
     "index.d.ts",
-    "types",
-    "./*.d.ts"
+    "index.mjs",
+    "types"
   ],
   "scripts": {
     "test": "node ../../examples/foundation.js",
