@@ -4,7 +4,13 @@ const isNativeScriptRuntime =
 
 if (!isNativeScriptRuntime) {
   // deno-lint-ignore no-process-globals
-  if (typeof process !== "undefined" && typeof process.dlopen === "function") {
+  if (
+    typeof process !== "undefined" &&
+    typeof process.dlopen === "function" &&
+    typeof process.env === "object" &&
+    typeof URL === "function" &&
+    typeof __filename === "string"
+  ) {
     // ===
     // If we're in a Node-like environment (e.g. Node.js, Deno, or Bun)
     // ===
@@ -12,10 +18,10 @@ if (!isNativeScriptRuntime) {
     const module = { exports: {} };
     process.dlopen(
       module,
-      require("node:path").resolve(
-        __dirname,
+      new URL(
         "./build/RelWithDebInfo/NativeScript.apple.node/macos-arm64/NativeScript.framework/Versions/A/NativeScript",
-      ),
+        `file://${__filename}`,
+      ).pathname,
     );
     module.exports.init(process.env.METADATA_PATH);
   } else if (typeof require !== "undefined") {

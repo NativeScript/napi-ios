@@ -4,7 +4,12 @@ const isNativeScriptRuntime =
 
 if (!isNativeScriptRuntime) {
   // deno-lint-ignore no-process-globals
-  if (typeof process !== "undefined" && typeof process.dlopen === "function") {
+  if (
+    typeof process !== "undefined" &&
+    typeof process.dlopen === "function" &&
+    typeof process.env === "object" &&
+    typeof URL === "function"
+  ) {
     // ===
     // If we're in a Node-like environment (e.g. Node.js, Deno, or Bun)
     // ===
