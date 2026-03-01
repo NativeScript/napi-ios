@@ -1,8 +1,8 @@
 // @ts-check
 
 import "@nativescript/macos-node-api";
-import "@nativescript/macos-node-api/GameController";
-import "@nativescript/macos-node-api/CoreFoundation";
+import "@nativescript/macos-node-api/GameController.d.ts";
+import "@nativescript/macos-node-api/CoreFoundation.d.ts";
 
 objc.import("GameController");
 

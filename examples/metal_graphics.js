@@ -1,8 +1,8 @@
 // https://developer.apple.com/documentation/metal/using_a_render_pipeline_to_render_primitives?language=objc
 
 import "@nativescript/macos-node-api";
-import "@nativescript/macos-node-api/Metal";
-import "@nativescript/macos-node-api/MetalKit";
+import "@nativescript/macos-node-api/Metal.d.ts";
+import "@nativescript/macos-node-api/MetalKit.d.ts";
 
 objc.import("Metal");
 objc.import("MetalKit");
@@ -34,7 +34,8 @@ export class ApplicationDelegate extends NSObject {
 
     window.title = "NativeScript for macOS";
     window.delegate = this;
-    window.styleMask = NSWindowStyleMask.Titled |
+    window.styleMask =
+      NSWindowStyleMask.Titled |
       NSWindowStyleMask.Closable |
       NSWindowStyleMask.Miniaturizable |
       NSWindowStyleMask.Resizable |
@@ -218,9 +219,8 @@ fragment float4 fragmentShader(RasterizerData in [[stage_in]])
     const renderPassDescriptor = view.currentRenderPassDescriptor;
 
     if (renderPassDescriptor !== null) {
-      const renderEncoder = commandBuffer.renderCommandEncoderWithDescriptor(
-        renderPassDescriptor,
-      );
+      const renderEncoder =
+        commandBuffer.renderCommandEncoderWithDescriptor(renderPassDescriptor);
       renderEncoder.label = "MyRenderEncoder";
 
       renderEncoder.setViewport({

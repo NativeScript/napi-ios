@@ -1,6 +1,6 @@
 // @ts-check
 
-import "../packages/macos/index.js";
+import "@nativescript/macos-node-api";
 
 /**
  * @implements {NSApplicationDelegate}

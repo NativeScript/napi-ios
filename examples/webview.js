@@ -1,7 +1,7 @@
 // @ts-check
 
 import "@nativescript/macos-node-api";
-import "@nativescript/macos-node-api/WebKit";
+import "@nativescript/macos-node-api/WebKit.d.ts";
 
 objc.import("WebKit");
 
@@ -32,7 +32,8 @@ export class ApplicationDelegate extends NSObject {
 
     window.title = "NativeScript for macOS";
     window.delegate = this;
-    window.styleMask = NSWindowStyleMask.Titled |
+    window.styleMask =
+      NSWindowStyleMask.Titled |
       NSWindowStyleMask.Closable |
       NSWindowStyleMask.Miniaturizable |
       NSWindowStyleMask.Resizable;

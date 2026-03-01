@@ -1,7 +1,7 @@
 // @ts-check
 
 import "@nativescript/macos-node-api";
-import "@nativescript/macos-node-api/MLCompute";
+import "@nativescript/macos-node-api/MLCompute.d.ts";
 
 objc.import("MLCompute");
 
@@ -14,19 +14,19 @@ const tInput = MLCTensor.tensorWithShapeDataType(shape, MLCDataType.Float32);
 const tWeights = MLCTensor.tensorWithShapeRandomInitializerTypeDataType(
   [1, imageSize, layerSize, 1],
   MLCRandomInitializerType.GlorotUniform,
-  MLCDataType.Float32
+  MLCDataType.Float32,
 );
 const tBiases = MLCTensor.tensorWithShapeRandomInitializerTypeDataType(
   [1, layerSize, 1, 1],
   MLCRandomInitializerType.GlorotUniform,
-  MLCDataType.Float32
+  MLCDataType.Float32,
 );
 
 const input = new Float32Array(imageSize * batchSize).fill(1);
 
 const dataInput = MLCTensorData.dataWithBytesNoCopyLength(
   input,
-  input.byteLength
+  input.byteLength,
 );
 
 const graph = MLCGraph.new();
@@ -38,8 +38,8 @@ const denseLayer = MLCFullyConnectedLayer.layerWithWeightsBiasesDescriptor(
     layerSize,
     imageSize,
     imageSize,
-    layerSize
-  )
+    layerSize,
+  ),
 );
 
 if (!denseLayer) {
@@ -59,7 +59,7 @@ inference.addInputs({ input: tInput });
 
 inference.compileWithOptionsDevice(
   MLCGraphCompilationOptions.DebugLayers,
-  device
+  device,
 );
 
 inference.executeWithInputsDataBatchSizeOptionsCompletionHandler(
@@ -68,5 +68,5 @@ inference.executeWithInputsDataBatchSizeOptionsCompletionHandler(
   MLCExecutionOptions.Synchronous,
   (output, error, time) => {
     console.log(output, error, time);
-  }
+  },
 );

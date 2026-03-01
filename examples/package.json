@@ -8,7 +8,7 @@
   "author": "DjDeveloperr <hey@djdev.me>",
   "license": "MIT",
   "dependencies": {
-    "popmotion": "^11.0.5",
-    "@nativescript/macos-node-api": "file:../packages/macos"
+    "@nativescript/macos-node-api": "*",
+    "popmotion": "^11.0.5"
   }
 }

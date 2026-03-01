@@ -10,7 +10,7 @@ if (!isNativeScriptRuntime) {
     // ===
 
     const path =
-      "./build/RelWithDebInfo/NativeScript.apple.node/macos-arm64_x86_64/NativeScript.framework/Versions/A/NativeScript";
+      "./build/RelWithDebInfo/NativeScript.apple.node/macos-arm64/NativeScript.framework/Versions/A/NativeScript";
 
     let metaURL = import.meta.url;
     if (!metaURL.includes("://")) {

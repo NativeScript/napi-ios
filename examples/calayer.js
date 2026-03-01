@@ -1,8 +1,6 @@
 // @ts-check
 
-// import "@nativescript/macos-node-api";
-
-/// <reference path="../packages/macos/types/index.d.ts" />
+import "@nativescript/macos-node-api";
 
 class ApplicationDelegate extends NSObject {
   static ObjCProtocols = [NSApplicationDelegate, NSWindowDelegate];
@@ -31,7 +29,8 @@ class ApplicationDelegate extends NSObject {
 
     window.title = "NativeScript for macOS";
     window.delegate = this;
-    window.styleMask = NSWindowStyleMask.Titled |
+    window.styleMask =
+      NSWindowStyleMask.Titled |
       NSWindowStyleMask.Closable |
       NSWindowStyleMask.Miniaturizable |
       NSWindowStyleMask.Resizable |
@@ -117,6 +116,7 @@ class ViewController extends NSViewController {
     gradientLayer.endPoint = { x: 0.5, y: 1 };
 
     const nsArray = NSMutableArray.arrayWithCapacity(3);
+    // @ts-ignore
     nsArray[0] = "hello world";
     console.log(nsArray);
 
