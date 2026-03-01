@@ -25,7 +25,7 @@ const path = require("path");
 const cp = require("child_process");
 const crypto = require("crypto");
 
-const projectPath = path.join(__dirname, "../napi-ios.xcodeproj");
+const projectPath = path.join(__dirname, "../NativeScriptRuntime.xcodeproj");
 const scheme = "TestRunner";
 const bundleId = "com.descendra.TestRunner";
 
@@ -53,7 +53,7 @@ const metadataGeneratorBuildStepScript = path.join(
 const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
 const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
 const iosBuildInputs = [
-    path.join(__dirname, "../napi-ios.xcodeproj", "project.pbxproj"),
+    path.join(__dirname, "../NativeScriptRuntime.xcodeproj", "project.pbxproj"),
     path.join(__dirname, "../TestRunner", "Source Files"),
     path.join(__dirname, "../TestRunner", "Info.plist"),
     path.join(__dirname, "../TestFixtures"),

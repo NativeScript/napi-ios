@@ -592,7 +592,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 22D44B512E23EBDA00E2B467 /* Build configuration list for PBXProject "napi-ios" */;
+			buildConfigurationList = 22D44B512E23EBDA00E2B467 /* Build configuration list for PBXProject "NativeScriptRuntime" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -972,10 +972,10 @@
 				PRODUCT_BUNDLE_IDENTIFIER = org.nativescript.TKLiveSync;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				REGISTER_APP_GROUPS = YES;
-				SDKROOT = iphoneos;
+				SDKROOT = "";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1073,10 +1073,10 @@
 				MTL_FAST_MATH = YES;
 				PRODUCT_BUNDLE_IDENTIFIER = org.nativescript.TKLiveSync;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
-				SDKROOT = iphoneos;
+				SDKROOT = "";
 				SKIP_INSTALL = YES;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1668,7 +1668,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		22D44B512E23EBDA00E2B467 /* Build configuration list for PBXProject "napi-ios" */ = {
+		22D44B512E23EBDA00E2B467 /* Build configuration list for PBXProject "NativeScriptRuntime" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				22D44B522E23EBDA00E2B467 /* Debug */,

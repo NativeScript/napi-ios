@@ -21,18 +21,4 @@ checkpoint "Syncing V8"
 echo running: gclient sync ${GCLIENT_SYNC_ARGS}
 gclient sync ${GCLIENT_SYNC_ARGS}
 
-checkpoint "Patching V8"
-
-V8_PATCHSET_IOS=(
-  # Fix use_system_xcode build error
-  "system_xcode_build_error.patch"
-
-  # Find libclang_rt.iossim.a on Xcode 14
-  "v8_build_xcode14_toolchain_fixes.patch"
-)
-
-for patch in "${V8_PATCHSET_IOS[@]}"
-do
-    checkpoint "Patch set: ${patch}"
-    patch -d "v8" -p1 < "v8_patches/$patch"
-done
+checkpoint "V8 fetch complete (no local patches are applied)."

@@ -18,7 +18,7 @@ const cp = require("child_process");
 const crypto = require("crypto");
 const os = require("os");
 
-const projectPath = path.join(__dirname, "../napi-ios.xcodeproj");
+const projectPath = path.join(__dirname, "../NativeScriptRuntime.xcodeproj");
 const scheme = "TestRunner";
 const configuration = "Debug";
 const derivedDataPath = path.join(__dirname, "../build", "derived-data", "macos-tests");
@@ -42,7 +42,7 @@ const metadataGeneratorBuildStepScript = path.join(
 );
 const buildStatePath = path.join(derivedDataPath, ".macos-test-build-state.json");
 const macosBuildInputs = [
-    path.join(__dirname, "../napi-ios.xcodeproj", "project.pbxproj"),
+    path.join(__dirname, "../NativeScriptRuntime.xcodeproj", "project.pbxproj"),
     path.join(__dirname, "../TestRunner", "Source Files"),
     path.join(__dirname, "../TestRunner", "Info.plist"),
     path.join(__dirname, "../TestFixtures"),
