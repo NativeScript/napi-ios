@@ -35,7 +35,7 @@
     "build:ios": "./build_nativescript.sh --iphone --no-simulator",
     "build:ios-sim": "./build_nativescript.sh --no-iphone --simulator",
     "build:macos": "./build_nativescript.sh --macos --no-iphone --no-simulator",
-    "build:macos-cli": "./build_nativescript.sh --no-iphone --no-simulator --macos-cli --v8",
+    "build:macos-cli": "./build_nativescript.sh --no-iphone --no-simulator --no-macos --macos-cli --v8",
     "build:macos-napi": "./build_nativescript.sh --no-iphone --no-simulator --macos-napi",
     "nsr": "./dist/nsr",
     "test:macos": "node ./scripts/run-tests-macos.js ./build/test-results/macos-junit.xml",

@@ -2,6 +2,7 @@
 
 struct RuntimeConfig RuntimeConfig = {.BaseDir = "",
                                       .ApplicationPath = "",
+                                      .Arguments = {},
                                       .MetadataPtr = nullptr,
                                       .IsDebug = false,
                                       .LogToSystemConsole = false,

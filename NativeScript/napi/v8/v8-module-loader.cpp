@@ -12,6 +12,12 @@
 
 #include "runtime/RuntimeConfig.h"
 
+typedef napi_value (*napi_module_init)(napi_env env, napi_value exports);
+
+namespace nativescript {
+extern std::unordered_map<std::string, napi_module_init> napiModuleRegistry;
+}
+
 namespace v8impl {
 
 namespace {
@@ -161,6 +167,75 @@ std::string NormalizeNodeBuiltinSpecifier(const std::string& specifier) {
     return specifier.substr(5);
   }
   return specifier;
+}
+
+std::string EscapeForSingleQuotedJsString(const std::string& value) {
+  std::string escaped;
+  escaped.reserve(value.size());
+
+  for (char c : value) {
+    switch (c) {
+      case '\\':
+        escaped += "\\\\";
+        break;
+      case '\'':
+        escaped += "\\'";
+        break;
+      case '\n':
+        escaped += "\\n";
+        break;
+      case '\r':
+        escaped += "\\r";
+        break;
+      default:
+        escaped += c;
+        break;
+    }
+  }
+
+  return escaped;
+}
+
+std::string NormalizeRegisteredNapiModuleSpecifier(
+    const std::string& specifier) {
+  auto it = nativescript::napiModuleRegistry.find(specifier);
+  if (it != nativescript::napiModuleRegistry.end() && it->second != nullptr) {
+    return specifier;
+  }
+
+  if (specifier.rfind("node:", 0) == 0) {
+    std::string withoutPrefix = specifier.substr(5);
+    it = nativescript::napiModuleRegistry.find(withoutPrefix);
+    if (it != nativescript::napiModuleRegistry.end() && it->second != nullptr) {
+      return withoutPrefix;
+    }
+  }
+
+  return "";
+}
+
+std::string GetRegisteredNapiESModuleSource(const std::string& specifier) {
+  std::string normalized = NormalizeRegisteredNapiModuleSpecifier(specifier);
+  if (normalized.empty()) {
+    return "";
+  }
+
+  std::string escapedSpecifier = EscapeForSingleQuotedJsString(normalized);
+  return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load native module '${name}'`);
+};
+const __nativeModule = __load(')" +
+         escapedSpecifier + R"(');
+export default __nativeModule;
+)";
 }
 
 std::string GetBuiltinESModuleSource(const std::string& specifier) {
@@ -632,6 +707,13 @@ v8::MaybeLocal<v8::Module> ResolveModuleCallback(
 
     const std::string moduleId = "nativescript:node_builtin/" + builtinName;
     return CompileVirtualESModule(isolate, moduleId, source);
+  }
+
+  const auto registeredSource = GetRegisteredNapiESModuleSource(spec);
+  if (!registeredSource.empty()) {
+    const auto normalized = NormalizeRegisteredNapiModuleSpecifier(spec);
+    const std::string moduleId = "nativescript:napi_module/" + normalized;
+    return CompileVirtualESModule(isolate, moduleId, registeredSource);
   }
 
   // Find referrer path

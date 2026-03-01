@@ -7,18 +7,26 @@
 #include <dispatch/dispatch.h>
 #include <objc/runtime.h>
 #include <cmath>
+#include <atomic>
 #include "Timers.h"
+
+static std::atomic<int> gActiveTimers{0};
 
 @interface NSTimerHandle : NSObject {
  @public
   NSTimer* timer;
   napi_env env;
   napi_ref callback;
+  bool activeCounted;
 }
 @end
 
 @implementation NSTimerHandle
 - (void)dealloc {
+  if (activeCounted) {
+    gActiveTimers.fetch_sub(1, std::memory_order_relaxed);
+    activeCounted = false;
+  }
   timer = nil;
   [super dealloc];
 }
@@ -26,6 +34,19 @@
 
 namespace {
 const void* kTimerHandleAssociationKey = &kTimerHandleAssociationKey;
+
+void MarkTimerActive(NSTimerHandle* handle) {
+  if (handle == nil) {
+    return;
+  }
+
+  @synchronized(handle) {
+    if (!handle->activeCounted) {
+      handle->activeCounted = true;
+      gActiveTimers.fetch_add(1, std::memory_order_relaxed);
+    }
+  }
+}
 
 void AddTimerToMainRunLoop(NSTimer* timer) {
   if (timer == nil) {
@@ -73,9 +94,18 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle,
   }
 
   napi_ref callback = nullptr;
+  bool shouldDecrementActiveCount = false;
   @synchronized(handle) {
+    if (handle->activeCounted) {
+      handle->activeCounted = false;
+      shouldDecrementActiveCount = true;
+    }
     callback = handle->callback;
     handle->callback = nullptr;
+  }
+
+  if (shouldDecrementActiveCount) {
+    gActiveTimers.fetch_sub(1, std::memory_order_relaxed);
   }
 
   napi_env cleanupEnv = callEnv != nullptr ? callEnv : handle->env;
@@ -93,13 +123,15 @@ JS_CLASS_INIT(Timers::Init) {
       napi_util::desc("setInterval", SetInterval),
       napi_util::desc("clearTimeout", ClearTimer),
       napi_util::desc("clearInterval", ClearTimer),
+      napi_util::desc("queueMicrotask", QueueMicrotask),
       napi_util::desc("__ns__setTimeout", SetTimeout),
       napi_util::desc("__ns__setInterval", SetInterval),
       napi_util::desc("__ns__clearTimeout", ClearTimer),
       napi_util::desc("__ns__clearInterval", ClearTimer),
+      napi_util::desc("__ns__queueMicrotask", QueueMicrotask),
   };
 
-  napi_define_properties(env, global, 8, properties);
+  napi_define_properties(env, global, 10, properties);
 }
 
 JS_METHOD(Timers::SetTimeout) {
@@ -123,8 +155,10 @@ JS_METHOD(Timers::SetTimeout) {
   NSTimerHandle* handle = [[NSTimerHandle alloc] init];
   handle->env = env;
   handle->callback = callback;
+  handle->activeCounted = false;
   // Keep one retain owned by the JS external handle.
   [handle retain];
+  MarkTimerActive(handle);
 
   NSTimer* timer = [NSTimer
       timerWithTimeInterval:interval
@@ -205,8 +239,10 @@ JS_METHOD(Timers::SetInterval) {
   NSTimerHandle* handle = [[NSTimerHandle alloc] init];
   handle->env = env;
   handle->callback = callback;
+  handle->activeCounted = false;
   // Keep one retain owned by the JS external handle.
   [handle retain];
+  MarkTimerActive(handle);
 
   NSTimer* timer = [NSTimer
       timerWithTimeInterval:interval
@@ -288,6 +324,67 @@ JS_METHOD(Timers::ClearTimer) {
   [handle release];
 
   return nullptr;
+}
+
+JS_METHOD(Timers::QueueMicrotask) {
+  size_t argc = 1;
+  napi_value argv[1];
+  napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
+
+  if (argc < 1 || argv[0] == nullptr) {
+    napi_throw_type_error(env, nullptr,
+                          "The \"callback\" argument must be of type function");
+    return nullptr;
+  }
+
+  napi_valuetype callbackType;
+  if (napi_typeof(env, argv[0], &callbackType) != napi_ok ||
+      callbackType != napi_function) {
+    napi_throw_type_error(env, nullptr,
+                          "The \"callback\" argument must be of type function");
+    return nullptr;
+  }
+
+  napi_value global;
+  napi_get_global(env, &global);
+
+  napi_value promiseCtor;
+  if (napi_get_named_property(env, global, "Promise", &promiseCtor) != napi_ok) {
+    napi_throw_error(env, nullptr, "Promise is not available");
+    return nullptr;
+  }
+
+  napi_value resolveFn;
+  if (napi_get_named_property(env, promiseCtor, "resolve", &resolveFn) != napi_ok) {
+    napi_throw_error(env, nullptr, "Promise.resolve is not available");
+    return nullptr;
+  }
+
+  napi_value undefinedValue;
+  napi_get_undefined(env, &undefinedValue);
+
+  napi_value promise;
+  napi_value resolveArgs[1] = {undefinedValue};
+  if (napi_call_function(env, promiseCtor, resolveFn, 1, resolveArgs, &promise) !=
+      napi_ok) {
+    return nullptr;
+  }
+
+  napi_value thenFn;
+  if (napi_get_named_property(env, promise, "then", &thenFn) != napi_ok) {
+    napi_throw_error(env, nullptr, "Promise.then is not available");
+    return nullptr;
+  }
+
+  if (napi_call_function(env, promise, thenFn, 1, argv, nullptr) != napi_ok) {
+    return nullptr;
+  }
+
+  return napi_util::undefined(env);
+}
+
+bool Timers::HasActiveTimers() {
+  return gActiveTimers.load(std::memory_order_relaxed) > 0;
 }
 
 }  // namespace nativescript

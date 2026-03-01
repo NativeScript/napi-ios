@@ -4101,7 +4101,7 @@ JSEngineCallback(JSContext *ctx, JSValueConst this_val, int argc, JSValueConst *
 napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
     assert(env && runtime);
 
-    *env = (napi_env__ *) mi_malloc(sizeof(struct napi_env__));
+    *env = (napi_env__ *) mi_zalloc(sizeof(struct napi_env__));
 
     (*env)->runtime = runtime;
 
@@ -4164,6 +4164,7 @@ napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
     (*env)->isThrowNull = false;
     (*env)->gcBefore = NULL;
     (*env)->gcAfter = NULL;
+    (*env)->referenceSymbolValue = JS_UNDEFINED;
 
 
     LIST_INIT(&(*env)->handleScopeList);
@@ -4215,36 +4216,6 @@ napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
 napi_status qjs_free_napi_env(napi_env env) {
     CHECK_ARG(env)
 
-    // Free all handle scopes
-    napi_handle_scope handleScope, tempHandleScope;
-    LIST_FOREACH_SAFE(handleScope, &env->handleScopeList, node, tempHandleScope) {
-        struct Handle *handle, *tempHandle;
-        SLIST_FOREACH_SAFE(handle, &handleScope->handleList, node, tempHandle) {
-            JS_FreeValue(env->context, handle->value);
-            if (handle->type == HANDLE_HEAP_ALLOCATED) {
-                mi_free(handle);
-            }
-        }
-        LIST_REMOVE(handleScope, node);
-        if (handleScope->type == HANDLE_HEAP_ALLOCATED) {
-            mi_free(handleScope);
-        }
-    }
-
-    // Free all references
-    napi_ref ref, temp;
-    LIST_FOREACH_SAFE(ref, &env->referencesList, node, temp) {
-        LIST_REMOVE(ref, node);
-        JS_FreeValue(env->context, ref->value);
-        mi_free(ref);
-    }
-
-    // Free Reference Symbol
-    JS_FreeValue(env->context, env->referenceSymbolValue);
-
-    // Free Finalization Registry
-    JS_FreeValue(env->context, env->finalizationRegistry);
-
     // Free Instance Data
     if (env->instanceData && env->instanceData->finalizeCallback) {
         env->instanceData->finalizeCallback(env, env->instanceData->data,
@@ -4259,26 +4230,6 @@ napi_status qjs_free_napi_env(napi_env env) {
     if (env->gcBefore != NULL) {
         mi_free(env->gcBefore);
     }
-
-    // Free Atoms
-    JS_FreeAtom(env->context, env->atoms.napi_external);
-    JS_FreeAtom(env->context, env->atoms.registerFinalizer);
-    JS_FreeAtom(env->context, env->atoms.buffer);
-    JS_FreeAtom(env->context, env->atoms.napi_buffer);
-    JS_FreeAtom(env->context, env->atoms.byteLength);
-    JS_FreeAtom(env->context, env->atoms.byteOffset);
-    JS_FreeAtom(env->context, env->atoms.constructor);
-    JS_FreeAtom(env->context, env->atoms.prototype);
-    JS_FreeAtom(env->context, env->atoms.name);
-    JS_FreeAtom(env->context, env->atoms.length);
-    JS_FreeAtom(env->context, env->atoms.is);
-    JS_FreeAtom(env->context, env->atoms.freeze);
-    JS_FreeAtom(env->context, env->atoms.seal);
-    JS_FreeAtom(env->context, env->atoms.Symbol);
-    JS_FreeAtom(env->context, env->atoms.NAPISymbolFor);
-    JS_FreeAtom(env->context, env->atoms.object);
-    JS_FreeAtom(env->context, env->atoms.napi_typetag);
-    JS_FreeAtom(env->context, env->atoms.weakref);
 
     // Free Context
     JS_FreeContext(env->context);

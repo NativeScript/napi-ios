@@ -1,6 +1,7 @@
 #ifndef C_FUNCTION_H
 #define C_FUNCTION_H
 
+#include <cstdint>
 #include "Cif.h"
 
 namespace nativescript {
@@ -14,6 +15,7 @@ class CFunction {
 
   void* fnptr;
   Cif* cif = nullptr;
+  uint8_t dispatchFlags = 0;
 };
 
 }  // namespace nativescript

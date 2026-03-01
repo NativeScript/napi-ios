@@ -4,10 +4,12 @@
 #include <sys/types.h>
 
 #include <string>
+#include <vector>
 
 struct RuntimeConfig {
   std::string BaseDir;
   std::string ApplicationPath;
+  std::vector<std::string> Arguments;
   void* MetadataPtr;
   bool IsDebug;
   bool LogToSystemConsole;

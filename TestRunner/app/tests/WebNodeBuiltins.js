@@ -346,3 +346,205 @@ describe("Node fs builtin", function () {
             });
     });
 });
+
+describe("Node process builtin", function () {
+    function tryRequire(name) {
+        try {
+            return require(name);
+        } catch (_) {
+            return null;
+        }
+    }
+
+    function ensureProcessBuiltins(processModule, nodeProcessModule) {
+        if (!processModule || !nodeProcessModule || typeof process !== "object") {
+            pending("Node process builtin is not enabled in this runtime build.");
+            return false;
+        }
+
+        return true;
+    }
+
+    function getTempRoot() {
+        if (typeof NSTemporaryDirectory === "function") {
+            return String(NSTemporaryDirectory());
+        }
+
+        return String(NSHomeDirectory());
+    }
+
+    function randomSuffix() {
+        return Date.now().toString(16) + "-" + Math.floor(Math.random() * 100000).toString(16);
+    }
+
+    it("should expose global process and internal process modules", function () {
+        const processModule = tryRequire("process");
+        const nodeProcessModule = tryRequire("node:process");
+
+        if (!ensureProcessBuiltins(processModule, nodeProcessModule)) {
+            return;
+        }
+
+        expect(processModule).toBe(process);
+        expect(nodeProcessModule).toBe(process);
+        expect(typeof process.cwd).toBe("function");
+        expect(typeof process.env).toBe("object");
+    });
+
+    it("should expose common process metadata", function () {
+        const processModule = tryRequire("process");
+        const nodeProcessModule = tryRequire("node:process");
+
+        if (!ensureProcessBuiltins(processModule, nodeProcessModule)) {
+            return;
+        }
+
+        expect(typeof process.platform).toBe("string");
+        expect(process.platform.length).toBeGreaterThan(0);
+        expect(typeof process.arch).toBe("string");
+        expect(process.arch.length).toBeGreaterThan(0);
+        expect(typeof process.pid).toBe("number");
+        expect(typeof process.ppid).toBe("number");
+        expect(typeof process.version).toBe("string");
+        expect(typeof process.versions).toBe("object");
+        expect(typeof process.versions.node).toBe("string");
+        expect(Array.isArray(process.argv)).toBe(true);
+        expect(process.argv.length).toBeGreaterThan(0);
+        expect(process.argv0).toBe(process.argv[0]);
+        expect(typeof process.execPath).toBe("string");
+        expect(process.execPath.length).toBeGreaterThan(0);
+
+        const marker = "__nsProcessMarker_" + randomSuffix();
+        process.env[marker] = "1";
+        expect(process.env[marker]).toBe("1");
+        delete process.env[marker];
+    });
+
+    it("should support cwd and chdir", function () {
+        const processModule = tryRequire("process");
+        const nodeProcessModule = tryRequire("node:process");
+        const fs = tryRequire("fs");
+
+        if (!ensureProcessBuiltins(processModule, nodeProcessModule)) {
+            return;
+        }
+
+        if (!fs) {
+            pending("fs builtin is required for process.chdir test setup.");
+            return;
+        }
+
+        const originalCwd = process.cwd();
+        expect(typeof originalCwd).toBe("string");
+        expect(originalCwd.length).toBeGreaterThan(0);
+
+        const directoryName = "ns-process-tests-" + randomSuffix();
+        const testDir = getTempRoot().replace(/\/+$/, "") + "/" + directoryName;
+        fs.mkdirSync(testDir, { recursive: true });
+
+        try {
+            process.chdir(testDir);
+            expect(process.cwd().indexOf(directoryName)).not.toBe(-1);
+        } finally {
+            process.chdir(originalCwd);
+            fs.rmSync(testDir, { recursive: true, force: true });
+        }
+    });
+
+    it("should expose timing helpers", function () {
+        const processModule = tryRequire("process");
+        const nodeProcessModule = tryRequire("node:process");
+
+        if (!ensureProcessBuiltins(processModule, nodeProcessModule)) {
+            return;
+        }
+
+        expect(typeof process.uptime).toBe("function");
+        expect(process.uptime()).not.toBeLessThan(0);
+
+        expect(typeof process.hrtime).toBe("function");
+        const start = process.hrtime();
+        expect(Array.isArray(start)).toBe(true);
+        expect(start.length).toBe(2);
+
+        const diff = process.hrtime(start);
+        expect(Array.isArray(diff)).toBe(true);
+        expect(diff.length).toBe(2);
+        expect(diff[0]).not.toBeLessThan(0);
+        expect(diff[1]).not.toBeLessThan(0);
+        expect(diff[1]).toBeLessThan(1000000000);
+
+        if (typeof BigInt === "function" && process.hrtime.bigint) {
+            expect(typeof process.hrtime.bigint()).toBe("bigint");
+        }
+    });
+
+    it("should expose simple stdio write streams", function () {
+        const processModule = tryRequire("process");
+        const nodeProcessModule = tryRequire("node:process");
+
+        if (!ensureProcessBuiltins(processModule, nodeProcessModule)) {
+            return;
+        }
+
+        expect(process.stdin).toBeDefined();
+        expect(process.stdout).toBeDefined();
+        expect(process.stderr).toBeDefined();
+        expect(typeof process.stdout.write).toBe("function");
+        expect(typeof process.stderr.write).toBe("function");
+        expect(process.stdin.fd).toBe(0);
+        expect(process.stdout.fd).toBe(1);
+        expect(process.stderr.fd).toBe(2);
+
+        let stdoutCallbackCalled = false;
+        const stdoutResult = process.stdout.write("[process.stdout.write smoke]\\n", function () {
+            stdoutCallbackCalled = true;
+        });
+        expect(stdoutResult).toBe(true);
+        expect(stdoutCallbackCalled).toBe(true);
+
+        let stderrCallbackCalled = false;
+        const stderrResult = process.stderr.write(
+            "[process.stderr.write smoke]\\n",
+            "utf8",
+            function () {
+                stderrCallbackCalled = true;
+            }
+        );
+        expect(stderrResult).toBe(true);
+        expect(stderrCallbackCalled).toBe(true);
+    });
+
+    it("should support process.on-style listener APIs", function () {
+        const processModule = tryRequire("process");
+        const nodeProcessModule = tryRequire("node:process");
+
+        if (!ensureProcessBuiltins(processModule, nodeProcessModule)) {
+            return;
+        }
+
+        expect(typeof process.on).toBe("function");
+        expect(typeof process.off).toBe("function");
+        expect(typeof process.once).toBe("function");
+        expect(typeof process.emit).toBe("function");
+        expect(typeof process.listenerCount).toBe("function");
+
+        const eventName = "__ns-process-on-smoke";
+        let value = 0;
+        function handler(delta) {
+            value += delta;
+        }
+
+        const returned = process.on(eventName, handler);
+        expect(returned).toBe(process);
+        expect(process.listenerCount(eventName)).toBe(1);
+
+        const emitted = process.emit(eventName, 2);
+        expect(emitted).toBe(true);
+        expect(value).toBe(2);
+
+        process.off(eventName, handler);
+        expect(process.listenerCount(eventName)).toBe(0);
+        expect(process.emit(eventName, 1)).toBe(false);
+    });
+});

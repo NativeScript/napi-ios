@@ -1,6 +1,7 @@
 #ifndef BRIDGED_METHOD_H
 #define BRIDGED_METHOD_H
 
+#include <cstdint>
 #include <iostream>
 #include <vector>
 
@@ -23,6 +24,7 @@ class MethodDescriptor {
   MethodDescriptorKind kind;
 
   MDSectionOffset signatureOffset;
+  uint8_t dispatchFlags = 0;
   std::string encoding;
   bool isProperty = false;
 
@@ -54,8 +56,10 @@ struct ObjCClassMemberOverload {
   MethodDescriptor method;
   Cif* cif = nullptr;
 
-  ObjCClassMemberOverload(SEL selector, MDSectionOffset offset)
-      : method(selector, offset) {}
+  ObjCClassMemberOverload(SEL selector, MDSectionOffset offset, uint8_t dispatchFlags)
+      : method(selector, offset) {
+    method.dispatchFlags = dispatchFlags;
+  }
 };
 
 class ObjCClassMember {
@@ -69,7 +73,7 @@ class ObjCClassMember {
   static napi_value jsGetter(napi_env env, napi_callback_info cbinfo);
   static napi_value jsReadOnlySetter(napi_env env, napi_callback_info cbinfo);
   static napi_value jsSetter(napi_env env, napi_callback_info cbinfo);
-  void addOverload(SEL selector, MDSectionOffset offset);
+  void addOverload(SEL selector, MDSectionOffset offset, uint8_t dispatchFlags);
 
   ObjCClassMember(ObjCBridgeState* bridgeState, SEL selector,
                   MDSectionOffset offset, MDMemberFlag flags)
@@ -77,7 +81,9 @@ class ObjCClassMember {
         methodOrGetter(MethodDescriptor(selector, offset)),
         returnOwned((flags & metagen::mdMemberReturnOwned) != 0),
         classMethod((flags & metagen::mdMemberStatic) != 0),
-        cls(nullptr) {}
+        cls(nullptr) {
+    methodOrGetter.dispatchFlags = returnOwned ? 1 : 0;
+  }
 
   ObjCClassMember(ObjCBridgeState* bridgeState, SEL getterSelector,
                   SEL setterSelector, MDSectionOffset getterOffset,
@@ -90,6 +96,8 @@ class ObjCClassMember {
         cls(nullptr) {
     methodOrGetter.isProperty = true;
     setter.isProperty = true;
+    methodOrGetter.dispatchFlags = returnOwned ? 1 : 0;
+    setter.dispatchFlags = 0;
   }
 
   ObjCBridgeState* bridgeState;

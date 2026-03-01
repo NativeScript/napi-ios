@@ -12,9 +12,7 @@ cp ./package.json "$OUTPUT_DIR"
 cp -r "./project-template-macos/" "$OUTPUT_DIR/framework"
 
 cp -R "dist/NativeScript.xcframework" "$OUTPUT_DIR/framework/internal"
-if [ -d "dist/TKLiveSync.xcframework" ]; then
-    cp -R "dist/TKLiveSync.xcframework" "$OUTPUT_DIR/framework/internal"
-fi
+cp -R "dist/TKLiveSync.xcframework" "$OUTPUT_DIR/framework/internal"
 
 mkdir -p "$OUTPUT_DIR/framework/internal/metadata-generator-x86_64"
 cp -r "metadata-generator/dist/x86_64/." "$OUTPUT_DIR/framework/internal/metadata-generator-x86_64"

@@ -170,6 +170,11 @@ docset_path = os.path.join(os.path.expanduser("~"),
                            .format(docset_platform))
 yaml_output_folder = env_or_none("NS_DEBUG_METADATA_PATH") or env_or_none("TNS_DEBUG_METADATA_PATH")
 strict_includes = env_or_none("NS_DEBUG_METADATA_STRICT_INCLUDES") or env_or_none("TNS_DEBUG_METADATA_STRICT_INCLUDES")
+signature_bindings_cpp_path = env_or_none("NS_SIGNATURE_BINDINGS_CPP_PATH") or env_or_none("TNS_SIGNATURE_BINDINGS_CPP_PATH")
+if signature_bindings_cpp_path is None:
+    default_signature_bindings_path = os.path.join(src_root, "NativeScript", "ffi", "GeneratedSignatureDispatch.inc")
+    if os.path.isdir(os.path.dirname(default_signature_bindings_path)):
+        signature_bindings_cpp_path = default_signature_bindings_path
 
 
 def save_stream_to_file(filename, stream):
@@ -201,6 +206,10 @@ def generate_metadata(arch):
         current_yaml_output_folder = yaml_output_folder + "-" + arch
         generator_call.extend(["-output-yaml", current_yaml_output_folder])
         print("Generating debug metadata in: \"{}\"".format(current_yaml_output_folder))
+
+    if signature_bindings_cpp_path is not None:
+        generator_call.extend(["-output-signature-bindings-cpp", signature_bindings_cpp_path])
+        print("Generating signature dispatch bindings in: \"{}\"".format(signature_bindings_cpp_path))
 
     whitelist_file_name = os.path.join(src_root, "whitelist.mdg")
     if os.path.exists(whitelist_file_name):

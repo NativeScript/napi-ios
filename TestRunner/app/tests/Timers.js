@@ -8,12 +8,15 @@ describe("native timer", () => {
   let clearTimeout = global.__ns__clearTimeout;
   /** @type {global.clearInterval} */
   let clearInterval = global.__ns__clearInterval;
+  /** @type {global.queueMicrotask} */
+  let queueMicrotask = global.__ns__queueMicrotask || global.queueMicrotask;
 
   it("exists", () => {
     expect(setTimeout).toBeDefined();
     expect(setInterval).toBeDefined();
     expect(clearTimeout).toBeDefined();
     expect(clearInterval).toBeDefined();
+    expect(queueMicrotask).toBeDefined();
   });
 
   it("triggers timeout", (done) => {
@@ -93,6 +96,21 @@ describe("native timer", () => {
       calls++;
       done();
     });
+  });
+
+  it("runs microtask before timeout", (done) => {
+    const order = [];
+
+    queueMicrotask(() => {
+      order.push("microtask");
+    });
+
+    setTimeout(() => {
+      order.push("timeout");
+      expect(order[0]).toBe("microtask");
+      expect(order[1]).toBe("timeout");
+      done();
+    }, 0);
   });
   it("frees up resources after complete", (done) => {
     let timeout = 0;

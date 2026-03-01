@@ -11,6 +11,7 @@
 #include "IR.h"
 #include "Metadata.h"
 #include "MetadataWriter.h"
+#include "SignatureDispatchEmitter.h"
 #include "TSEmitter.h"
 #include "Umbrella.h"
 
@@ -49,6 +50,7 @@ int main(int argc, char** argv) {
   std::string outputYamlFolder;
   std::string outputModuleMapsFolder;
   std::string outputBinFile;
+  std::string outputSignatureBindingsCppFile;
   std::string outputDtsFolder;
   std::string docSetFile;
   std::string blacklistModulesFile;
@@ -107,6 +109,8 @@ int main(int argc, char** argv) {
       outputModuleMapsFolder = argv[++i];
     } else if (arg == "-output-bin") {
       outputBinFile = argv[++i];
+    } else if (arg == "-output-signature-bindings-cpp") {
+      outputSignatureBindingsCppFile = argv[++i];
     } else if (arg == "-output-dts" || arg == "-output-typescript") {
       outputDtsFolder = argv[++i];
     } else if (arg == "-docset-path") {
@@ -248,6 +252,10 @@ int main(int argc, char** argv) {
   if (!outputBinFile.empty()) {
     MDMetadataWriter writer(factory);
     writer.write();
+
+    if (!outputSignatureBindingsCppFile.empty()) {
+      writeSignatureDispatchBindings(writer, outputSignatureBindingsCppFile);
+    }
 
     auto result = writer.serialize();
 

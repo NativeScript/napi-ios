@@ -176,6 +176,7 @@ napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
 napi_status js_free_napi_env(napi_env env) {
   if (env == nullptr) return napi_invalid_arg;
   JSR::env_to_jsr_cache.erase(env);
+  js_run_env_cleanup_hooks(env);
   env->DeleteMe();
   return napi_ok;
 }

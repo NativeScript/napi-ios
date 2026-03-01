@@ -17,7 +17,15 @@
 #include "NativeScript.h"
 #include "robin_hood.h"
 
+extern "C" {
+void node_module_register(const char* name, napi_module_init init) {
+  nativescript::napiModuleRegistry[name] = init;
+}
+}
+
 namespace nativescript {
+
+std::unordered_map<std::string, napi_module_init> napiModuleRegistry;
 
 static robin_hood::unordered_map<napi_env, Runtime*> runtimes_;
 
@@ -345,7 +353,7 @@ void Runtime::RunLoop() {
   int idlePolls = 0;
   while (true) {
     const auto result =
-        CFRunLoopRunInMode(kCFRunLoopDefaultMode, kPollSeconds, false);
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, kPollSeconds, true);
 
     if (result == kCFRunLoopRunHandledSource) {
       idlePolls = 0;
@@ -353,6 +361,12 @@ void Runtime::RunLoop() {
     }
 
     if (result == kCFRunLoopRunTimedOut) {
+#ifdef __APPLE__
+      if (Timers::HasActiveTimers()) {
+        idlePolls = 0;
+        continue;
+      }
+#endif
       idlePolls++;
       if (idlePolls >= kIdlePollsBeforeExit) {
         break;

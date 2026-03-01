@@ -1,6 +1,7 @@
 #include "CFunction.h"
 #include "ClassMember.h"
 #include "ObjCBridge.h"
+#include "SignatureDispatch.h"
 #include "ffi/NativeScriptException.h"
 #include "ffi/Tasks.h"
 #include <cstring>
@@ -41,9 +42,11 @@ CFunction* ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
 
   auto sigOffset =
       metadata->signaturesOffset + metadata->getOffset(offset + sizeof(MDSectionOffset));
+  MDFunctionFlag functionFlags = metadata->getFunctionFlag(offset + sizeof(MDSectionOffset) * 2);
 
   auto cFunction = new CFunction(dlsym(self_dl, metadata->getString(offset)));
   cFunction->cif = getCFunctionCif(env, sigOffset);
+  cFunction->dispatchFlags = (functionFlags & mdFunctionReturnOwned) != 0 ? 1 : 0;
   cFunctionCache[offset] = cFunction;
 
   return cFunction;
@@ -62,6 +65,16 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   auto func = bridgeState->getCFunction(env, offset);
 
   auto cif = func->cif;
+
+  const uint64_t dispatchId =
+      cif != nullptr && cif->signatureHash != 0
+          ? composeSignatureDispatchId(cif->signatureHash, SignatureCallKind::CFunction,
+                                       func->dispatchFlags)
+          : 0;
+  auto invoker = dispatchId != 0 ? lookupCFunctionPreparedInvoker(dispatchId) : nullptr;
+
+  MDFunctionFlag functionFlags = bridgeState->metadata->getFunctionFlag(
+      offset + sizeof(MDSectionOffset) * 2);
 
   size_t argc = cif->argc;
   napi_get_cb_info(env, cbinfo, &argc, cif->argv, nullptr, nullptr);
@@ -85,13 +98,17 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     void** avaluesPtr = new void*[cif->argc];
     memcpy(avaluesPtr, avalues, cif->argc * sizeof(void*));
 
-    Tasks::Register([env, cif, func, rvalue, avaluesPtr]() {
+    Tasks::Register([env, cif, func, invoker, rvalue, avaluesPtr]() {
       void* avalues[cif->argc];
       memcpy(avalues, avaluesPtr, cif->argc * sizeof(void*));
       delete[] avaluesPtr;
 
       @try {
-        ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
+        if (invoker != nullptr) {
+          invoker(func->fnptr, avalues, rvalue);
+        } else {
+          ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
+        }
       } @catch (NSException* exception) {
         NapiScope scope(env);
         std::string message = exception.description.UTF8String;
@@ -106,7 +123,11 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
 #endif
 
   @try {
-    ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
+    if (invoker != nullptr) {
+      invoker(func->fnptr, avalues, rvalue);
+    } else {
+      ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     NSLog(@"ObjC->JS: Exception in CFunction: %s", message.c_str());
@@ -135,8 +156,6 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  MDFunctionFlag functionFlags = bridgeState->metadata->getFunctionFlag(
-      offset + sizeof(MDSectionOffset) * 2);
   uint32_t toJSFlags = kCStringAsReference;
   if ((functionFlags & mdFunctionReturnOwned) != 0) {
     toJSFlags |= kReturnOwned;

@@ -2,13 +2,13 @@
 
 #include "FS.h"
 #include "Path.h"
+#include "Process.h"
 #include "native_api_util.h"
 
 namespace nativescript {
 
 void Node::Init(napi_env env, napi_value global) {
-  (void)env;
-  (void)global;
+  Process::Init(env, global);
 }
 
 napi_value Node::LoadInternalModule(napi_env env,
@@ -19,6 +19,10 @@ napi_value Node::LoadInternalModule(napi_env env,
 
   if (moduleName == "path" || moduleName == "node:path") {
     return Path::CreateModule(env);
+  }
+
+  if (moduleName == "process" || moduleName == "node:process") {
+    return Process::CreateModule(env);
   }
 
   if (moduleName == "fs/promises" || moduleName == "node:fs/promises") {

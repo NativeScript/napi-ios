@@ -1,6 +1,7 @@
 #ifndef METHOD_CIF_H
 #define METHOD_CIF_H
 
+#include <cstdint>
 #include <string>
 
 #include "MetadataReader.h"
@@ -18,6 +19,7 @@ class Cif {
   size_t frameLength;
   size_t rvalueLength;
   bool isVariadic = false;
+  uint64_t signatureHash = 0;
 
   void* rvalue;
   void** avalues;

@@ -131,6 +131,20 @@ std::unique_ptr<Runtime> runtime_;
       RuntimeConfig.ApplicationPath =
           [[config.BaseDir stringByAppendingPathComponent:@"app"] UTF8String];
     }
+    RuntimeConfig.Arguments.clear();
+    if (config.Arguments != nullptr && config.ArgumentsCount > 0) {
+      RuntimeConfig.Arguments.reserve((size_t)config.ArgumentsCount);
+      for (int i = 0; i < config.ArgumentsCount; i++) {
+        const char* arg = config.Arguments[i];
+        RuntimeConfig.Arguments.emplace_back(arg != nullptr ? arg : "");
+      }
+    } else {
+      NSArray<NSString*>* processArgs = [[NSProcessInfo processInfo] arguments];
+      RuntimeConfig.Arguments.reserve((size_t)[processArgs count]);
+      for (NSString* arg in processArgs) {
+        RuntimeConfig.Arguments.emplace_back([arg UTF8String]);
+      }
+    }
     if (config.MetadataPtr != nil) {
       RuntimeConfig.MetadataPtr = [config MetadataPtr];
     } else {

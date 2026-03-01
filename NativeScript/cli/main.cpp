@@ -61,6 +61,13 @@ void bootFromModuleSpec(std::string baseDir, std::string spec) {
 
 int main(int argc, char** argv) {
   RuntimeConfig.LogToSystemConsole = true;
+  RuntimeConfig.Arguments.clear();
+  if (argv != nullptr && argc > 0) {
+    RuntimeConfig.Arguments.reserve(static_cast<size_t>(argc));
+    for (int i = 0; i < argc; i++) {
+      RuntimeConfig.Arguments.emplace_back(argv[i] != nullptr ? argv[i] : "");
+    }
+  }
 
 #ifdef __APPLE__
   std::string bytecodePath = getBytecodePathFromBundle();

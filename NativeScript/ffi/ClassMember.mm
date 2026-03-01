@@ -13,6 +13,7 @@
 #include "Closure.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
+#include "SignatureDispatch.h"
 #include "TypeConv.h"
 #include "Util.h"
 #include "ffi/Block.h"
@@ -207,7 +208,8 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
         if (memberIt->second.methodOrGetter.isProperty) {
           continue;
         }
-        memberIt->second.addOverload(methodSelector, signatureOffset);
+        memberIt->second.addOverload(methodSelector, signatureOffset,
+                                     (flags & metagen::mdMemberReturnOwned) != 0 ? 1 : 0);
         member = &memberIt->second;
       } else if (inheritedProperty && superMember != nullptr &&
                  !superMember->methodOrGetter.isProperty) {
@@ -216,9 +218,11 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
                                   superMember->methodOrGetter.signatureOffset, flags));
         member = &inserted.first->second;
         for (const auto& overload : superMember->overloads) {
-          member->addOverload(overload.method.selector, overload.method.signatureOffset);
+          member->addOverload(overload.method.selector, overload.method.signatureOffset,
+                              overload.method.dispatchFlags);
         }
-        member->addOverload(methodSelector, signatureOffset);
+        member->addOverload(methodSelector, signatureOffset,
+                            (flags & metagen::mdMemberReturnOwned) != 0 ? 1 : 0);
       } else {
         const auto& inserted = memberMap.emplace(
             name, ObjCClassMember(bridgeState, methodSelector, signatureOffset, flags));
@@ -269,7 +273,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
   }
 }
 
-void ObjCClassMember::addOverload(SEL selector, MDSectionOffset offset) {
+void ObjCClassMember::addOverload(SEL selector, MDSectionOffset offset, uint8_t dispatchFlags) {
   if (methodOrGetter.selector == selector) {
     return;
   }
@@ -280,11 +284,11 @@ void ObjCClassMember::addOverload(SEL selector, MDSectionOffset offset) {
     }
   }
 
-  overloads.emplace_back(selector, offset);
+  overloads.emplace_back(selector, offset, dispatchFlags);
 }
 
-inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod, void** avalues,
-                           void* rvalue) {
+inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod, uint8_t dispatchFlags,
+                           void** avalues, void* rvalue) {
   SEL selector = avalues != nullptr && cif->cif.nargs >= 2 ? *((SEL*)avalues[1]) : nullptr;
 
   Class receiverClass = nil;
@@ -310,6 +314,16 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod, vo
 
   @try {
     if (!supercall) {
+      if (cif != nullptr && cif->signatureHash != 0) {
+        const uint64_t dispatchId = composeSignatureDispatchId(
+            cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags);
+        auto invoker = lookupObjCPreparedInvoker(dispatchId);
+        if (invoker != nullptr) {
+          invoker((void*)objc_msgSend, avalues, rvalue);
+          return true;
+        }
+      }
+
 #if defined(__x86_64__)
       if (isStret) {
         ffi_call(&cif->cif, FFI_FN(objc_msgSend_stret), rvalue, avalues);
@@ -1109,7 +1123,8 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
     retainedReceiver = true;
   }
 
-  if (!objcNativeCall(env, cif, self, receiverIsClass, avalues, &rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, method->methodOrGetter.dispatchFlags,
+                      avalues, &rvalue)) {
     if (retainedReceiver) {
       [self release];
     }
@@ -1375,7 +1390,8 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
 
-  if (!objcNativeCall(env, cif, self, receiverIsClass, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, selectedMethod->dispatchFlags, avalues,
+                      rvalue)) {
     for (id block : fallbackBlocksToRelease) {
       [block release];
     }
@@ -1470,7 +1486,8 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
 
   // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
 
-  if (!objcNativeCall(env, cif, self, receiverIsClass, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, method->methodOrGetter.dispatchFlags,
+                      avalues, rvalue)) {
     return nullptr;
   }
 
@@ -1534,7 +1551,8 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
   bool shouldFree = false;
   cif->argTypes[0]->toNative(env, argv, avalues[2], &shouldFree, &shouldFree);
 
-  if (!objcNativeCall(env, cif, self, receiverIsClass, avalues, rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, method->setter.dispatchFlags, avalues,
+                      rvalue)) {
     return nullptr;
   }
 

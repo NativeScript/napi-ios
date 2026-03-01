@@ -3,11 +3,21 @@
 
 #include <CoreFoundation/CFRunLoop.h>
 
+#include <unordered_map>
+
 #include "js_native_api_types.h"
 #include "runtime/SpinLock.h"
 #include "runtime/modules/RuntimeModules.h"
 
+typedef napi_value (*napi_module_init)(napi_env env, napi_value exports);
+
+extern "C" {
+void node_module_register(const char* name, napi_module_init init);
+}
+
 namespace nativescript {
+
+extern std::unordered_map<std::string, napi_module_init> napiModuleRegistry;
 
 class Runtime {
  public:

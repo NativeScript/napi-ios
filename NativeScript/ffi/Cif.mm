@@ -11,6 +11,22 @@
 #include "Util.h"
 
 namespace nativescript {
+namespace {
+
+constexpr uint64_t kFNV64OffsetBasis = 14695981039346656037ull;
+constexpr uint64_t kFNV64Prime = 1099511628211ull;
+
+uint64_t hashBytesFnv1a(const void* data, size_t size) {
+  const auto* bytes = static_cast<const uint8_t*>(data);
+  uint64_t hash = kFNV64OffsetBasis;
+  for (size_t i = 0; i < size; i++) {
+    hash ^= static_cast<uint64_t>(bytes[i]);
+    hash *= kFNV64Prime;
+  }
+  return hash;
+}
+
+}  // namespace
 
 // Essentially, we cache libffi structures per unique method signature,
 // this helps us avoid the overhead of creating them on the fly for each
@@ -180,6 +196,7 @@ Cif::Cif(napi_env env, Method method) {
 
 Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool isMethod,
          bool isBlock) {
+  MDSectionOffset signatureStart = offset;
   auto returnTypeKind = reader->getTypeKind(offset);
   bool next = ((MDTypeFlag)returnTypeKind & mdTypeFlagNext) != 0;
   isVariadic = ((MDTypeFlag)returnTypeKind & mdTypeFlagVariadic) != 0;
@@ -249,6 +266,13 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
 
   rvalue = malloc(cif.rtype->size);
   rvalueLength = cif.rtype->size;
+
+  const size_t signatureLength = static_cast<size_t>(offset - signatureStart);
+  if (signatureLength > 0) {
+    const auto* signatureBytes =
+        reinterpret_cast<const uint8_t*>(reader->data) + signatureStart;
+    signatureHash = hashBytesFnv1a(signatureBytes, signatureLength);
+  }
 }
 
 Cif::~Cif() {
