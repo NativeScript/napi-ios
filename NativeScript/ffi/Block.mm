@@ -3,6 +3,7 @@
 #include <cstdint>
 #include <cstring>
 #include <mutex>
+#include <thread>
 #include <unordered_map>
 #include "Interop.h"
 #include "ObjCBridge.h"
@@ -37,8 +38,58 @@ constexpr int kBlockNeedsFree = (1 << 24);
 constexpr int kBlockHasCopyDispose = (1 << 25);
 constexpr int kBlockRefCountOne = (1 << 1);
 constexpr int kBlockHasSignature = (1 << 30);
-std::unordered_map<void*, napi_ref> g_blockToJsFunction;
+
+struct BlockJsFunctionEntry {
+  napi_ref ref = nullptr;
+  napi_env env = nullptr;
+  std::thread::id jsThreadId;
+  CFRunLoopRef jsRunLoop = nullptr;
+};
+
+std::unordered_map<void*, BlockJsFunctionEntry> g_blockToJsFunction;
 std::mutex g_blockToJsFunctionMutex;
+
+inline bool removeCachedBlockJsFunctionEntry(void* blockPtr, BlockJsFunctionEntry* entry) {
+  std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
+  auto it = g_blockToJsFunction.find(blockPtr);
+  if (it == g_blockToJsFunction.end()) {
+    return false;
+  }
+  if (entry != nullptr) {
+    *entry = it->second;
+  }
+  g_blockToJsFunction.erase(it);
+  return true;
+}
+
+inline void deleteBlockReferenceOnOwningLoop(const BlockJsFunctionEntry& entry) {
+  if (entry.ref == nullptr || entry.env == nullptr) {
+    return;
+  }
+
+  if (entry.jsThreadId == std::this_thread::get_id()) {
+    napi_delete_reference(entry.env, entry.ref);
+    return;
+  }
+
+  CFRunLoopRef runLoop = entry.jsRunLoop;
+  if (runLoop == nullptr) {
+    runLoop = CFRunLoopGetMain();
+  }
+
+  if (runLoop == nullptr) {
+    return;
+  }
+
+  CFRetain(runLoop);
+  napi_env env = entry.env;
+  napi_ref ref = entry.ref;
+  CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^{
+    napi_delete_reference(env, ref);
+    CFRelease(runLoop);
+  });
+  CFRunLoopWakeUp(runLoop);
+}
 
 void block_copy(void* dest, void* src) {
   auto dst = static_cast<Block_literal_1*>(dest);
@@ -55,15 +106,9 @@ void block_release(void* src) {
     return;
   }
 
-  if (block->closure != nullptr && block->closure->env != nullptr) {
-    std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
-    auto it = g_blockToJsFunction.find(block);
-    if (it != g_blockToJsFunction.end()) {
-      if (std::this_thread::get_id() == block->closure->jsThreadId) {
-        napi_delete_reference(block->closure->env, it->second);
-      }
-      g_blockToJsFunction.erase(it);
-    }
+  BlockJsFunctionEntry entry;
+  if (removeCachedBlockJsFunctionEntry(block, &entry)) {
+    deleteBlockReferenceOnOwningLoop(entry);
   }
 
   if (block->closure != nullptr) {
@@ -81,20 +126,34 @@ Block_descriptor_1 kBlockDescriptor = {
 };
 
 inline napi_value getCachedBlockJsFunction(napi_env env, void* blockPtr) {
-  std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
-  auto it = g_blockToJsFunction.find(blockPtr);
-  if (it == g_blockToJsFunction.end()) {
-    return nullptr;
+  BlockJsFunctionEntry removedEntry;
+  bool shouldDelete = false;
+  napi_value value = nullptr;
+
+  {
+    std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
+    auto it = g_blockToJsFunction.find(blockPtr);
+    if (it == g_blockToJsFunction.end()) {
+      return nullptr;
+    }
+
+    value = nativescript::get_ref_value(env, it->second.ref);
+    if (value == nullptr) {
+      removedEntry = it->second;
+      g_blockToJsFunction.erase(it);
+      shouldDelete = true;
+    }
   }
-  napi_value value = nativescript::get_ref_value(env, it->second);
-  if (value == nullptr) {
-    napi_delete_reference(env, it->second);
-    g_blockToJsFunction.erase(it);
+
+  if (shouldDelete) {
+    deleteBlockReferenceOnOwningLoop(removedEntry);
   }
+
   return value;
 }
 
-inline void cacheBlockJsFunction(napi_env env, void* blockPtr, napi_value jsFunction) {
+inline void cacheBlockJsFunction(napi_env env, void* blockPtr, napi_value jsFunction,
+                                 nativescript::Closure* closure) {
   if (blockPtr == nullptr || jsFunction == nullptr) {
     return;
   }
@@ -103,24 +162,27 @@ inline void cacheBlockJsFunction(napi_env env, void* blockPtr, napi_value jsFunc
     return;
   }
   // Keep this weak so callback identity can round-trip without preventing GC.
-  g_blockToJsFunction[blockPtr] = nativescript::make_ref(env, jsFunction, 0);
+  BlockJsFunctionEntry entry;
+  entry.ref = nativescript::make_ref(env, jsFunction, 0);
+  entry.env = env;
+  entry.jsThreadId = closure != nullptr ? closure->jsThreadId : std::this_thread::get_id();
+  entry.jsRunLoop = closure != nullptr ? closure->jsRunLoop : CFRunLoopGetCurrent();
+  g_blockToJsFunction[blockPtr] = entry;
 }
 
 }  // namespace
 
 void block_finalize(napi_env env, void* data, void* hint) {
+  (void)env;
+  (void)hint;
   auto block = static_cast<Block_literal_1*>(data);
   if (block == nullptr) {
     return;
   }
 
-  {
-    std::lock_guard<std::mutex> lock(g_blockToJsFunctionMutex);
-    auto it = g_blockToJsFunction.find(block);
-    if (it != g_blockToJsFunction.end()) {
-      napi_delete_reference(env, it->second);
-      g_blockToJsFunction.erase(it);
-    }
+  BlockJsFunctionEntry entry;
+  if (removeCachedBlockJsFunctionEntry(block, &entry)) {
+    deleteBlockReferenceOnOwningLoop(entry);
   }
 
   if (block->closure != nullptr) {
@@ -175,7 +237,7 @@ id registerBlock(napi_env env, Closure* closure, napi_value callback) {
   }
 #endif  // ENABLE_JS_RUNTIME
 
-  cacheBlockJsFunction(env, block, callback);
+  cacheBlockJsFunction(env, block, callback, closure);
 
   return (id)block;
 }

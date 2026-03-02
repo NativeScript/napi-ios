@@ -19,6 +19,9 @@ class Process {
   static napi_value Uptime(napi_env env, napi_callback_info info);
   static napi_value Hrtime(napi_env env, napi_callback_info info);
   static napi_value HrtimeBigInt(napi_env env, napi_callback_info info);
+  static napi_value MemoryUsage(napi_env env, napi_callback_info info);
+  static napi_value MemoryUsageRss(napi_env env, napi_callback_info info);
+  static napi_value Exit(napi_env env, napi_callback_info info);
   static napi_value StreamWrite(napi_env env, napi_callback_info info);
 
   static napi_value CreateWritableStream(napi_env env, int fd);

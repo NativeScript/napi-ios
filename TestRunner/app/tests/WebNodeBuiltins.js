@@ -479,6 +479,35 @@ describe("Node process builtin", function () {
         }
     });
 
+    it("should expose memoryUsage info", function () {
+        const processModule = tryRequire("process");
+        const nodeProcessModule = tryRequire("node:process");
+
+        if (!ensureProcessBuiltins(processModule, nodeProcessModule)) {
+            return;
+        }
+
+        expect(typeof process.memoryUsage).toBe("function");
+
+        const usage = process.memoryUsage();
+        expect(usage).toBeDefined();
+        expect(typeof usage.rss).toBe("number");
+        expect(typeof usage.heapTotal).toBe("number");
+        expect(typeof usage.heapUsed).toBe("number");
+        expect(typeof usage.external).toBe("number");
+        expect(typeof usage.arrayBuffers).toBe("number");
+        expect(usage.rss).not.toBeLessThan(0);
+        expect(usage.heapTotal).not.toBeLessThan(0);
+        expect(usage.heapUsed).not.toBeLessThan(0);
+        expect(usage.external).not.toBeLessThan(0);
+        expect(usage.arrayBuffers).not.toBeLessThan(0);
+
+        expect(typeof process.memoryUsage.rss).toBe("function");
+        const rssValue = process.memoryUsage.rss();
+        expect(typeof rssValue).toBe("number");
+        expect(rssValue).not.toBeLessThan(0);
+    });
+
     it("should expose simple stdio write streams", function () {
         const processModule = tryRequire("process");
         const nodeProcessModule = tryRequire("node:process");
@@ -527,6 +556,7 @@ describe("Node process builtin", function () {
         expect(typeof process.off).toBe("function");
         expect(typeof process.once).toBe("function");
         expect(typeof process.emit).toBe("function");
+        expect(typeof process.exit).toBe("function");
         expect(typeof process.listenerCount).toBe("function");
 
         const eventName = "__ns-process-on-smoke";
@@ -546,5 +576,17 @@ describe("Node process builtin", function () {
         process.off(eventName, handler);
         expect(process.listenerCount(eventName)).toBe(0);
         expect(process.emit(eventName, 1)).toBe(false);
+
+        let sawSigint = false;
+        function sigintListener() {
+            sawSigint = true;
+        }
+
+        process.on("SIGINT", sigintListener);
+        expect(process.listenerCount("SIGINT")).toBe(1);
+        expect(process.emit("SIGINT")).toBe(true);
+        expect(sawSigint).toBe(true);
+        process.off("SIGINT", sigintListener);
+        expect(process.listenerCount("SIGINT")).toBe(0);
     });
 });

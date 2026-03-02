@@ -2,16 +2,32 @@
 
 #include <unistd.h>
 
+#include <cmath>
 #include <chrono>
 #include <cstdint>
+#include <csignal>
 #include <cstdio>
+#include <cstdlib>
 #include <filesystem>
+#include <mutex>
+#include <sys/resource.h>
 #include <string>
 #include <vector>
 
 #include "js_native_api.h"
+#include "jsr.h"
 #include "native_api_util.h"
+#include "runtime/Runtime.h"
 #include "runtime/RuntimeConfig.h"
+
+#if defined(__APPLE__)
+#include <dispatch/dispatch.h>
+#include <mach/mach.h>
+#endif
+
+#if defined(TARGET_ENGINE_V8)
+#include "v8-api.h"
+#endif
 
 #if !defined(_WIN32)
 extern char** environ;
@@ -183,6 +199,170 @@ uint64_t GetMonotonicNanoseconds() {
       std::chrono::duration_cast<std::chrono::nanoseconds>(
           std::chrono::steady_clock::now().time_since_epoch())
           .count());
+}
+
+uint64_t GetResidentSetSizeBytes() {
+#if defined(__APPLE__)
+  mach_task_basic_info_data_t info;
+  mach_msg_type_number_t count = MACH_TASK_BASIC_INFO_COUNT;
+  if (task_info(mach_task_self(), MACH_TASK_BASIC_INFO,
+                reinterpret_cast<task_info_t>(&info), &count) == KERN_SUCCESS) {
+    return static_cast<uint64_t>(info.resident_size);
+  }
+#endif
+
+  struct rusage usage;
+  if (getrusage(RUSAGE_SELF, &usage) == 0) {
+#if defined(__APPLE__)
+    return static_cast<uint64_t>(usage.ru_maxrss);
+#else
+    return static_cast<uint64_t>(usage.ru_maxrss) * 1024ULL;
+#endif
+  }
+
+  return 0;
+}
+
+struct MemoryUsageInfo {
+  uint64_t rss = 0;
+  uint64_t heapTotal = 0;
+  uint64_t heapUsed = 0;
+  uint64_t external = 0;
+  uint64_t arrayBuffers = 0;
+};
+
+MemoryUsageInfo GetMemoryUsageInfo(napi_env env) {
+  MemoryUsageInfo info;
+  info.rss = GetResidentSetSizeBytes();
+
+#if defined(TARGET_ENGINE_V8)
+  if (env != nullptr && env->isolate != nullptr) {
+    v8::HeapStatistics stats;
+    env->isolate->GetHeapStatistics(&stats);
+    info.heapTotal = static_cast<uint64_t>(stats.total_heap_size());
+    info.heapUsed = static_cast<uint64_t>(stats.used_heap_size());
+    info.external = static_cast<uint64_t>(stats.external_memory());
+    info.arrayBuffers = 0;
+  }
+#endif
+
+  return info;
+}
+
+struct ProcessSignalState {
+  std::mutex mutex;
+  napi_env env = nullptr;
+  napi_ref processRef = nullptr;
+#if defined(__APPLE__) && !defined(_WIN32)
+  dispatch_source_t sigintSource = nullptr;
+  bool sigintInstalled = false;
+#endif
+};
+
+ProcessSignalState& GetProcessSignalState() {
+  static ProcessSignalState state;
+  return state;
+}
+
+bool EmitSignalToProcess(const char* signalName) {
+  ProcessSignalState& state = GetProcessSignalState();
+
+  napi_env env = nullptr;
+  napi_ref processRef = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(state.mutex);
+    env = state.env;
+    processRef = state.processRef;
+  }
+
+  if (env == nullptr || processRef == nullptr || !Runtime::IsAlive(env)) {
+    return false;
+  }
+
+  NapiScope scope(env);
+
+  napi_value processObj;
+  if (napi_get_reference_value(env, processRef, &processObj) != napi_ok ||
+      napi_util::is_null_or_undefined(env, processObj)) {
+    return false;
+  }
+
+  napi_value emitFn;
+  if (napi_get_named_property(env, processObj, "emit", &emitFn) != napi_ok ||
+      !napi_util::is_of_type(env, emitFn, napi_function)) {
+    return false;
+  }
+
+  napi_value signalValue = napi_util::to_js_string(env, signalName);
+  napi_value args[1] = {signalValue};
+  napi_value emitResult;
+  if (napi_call_function(env, processObj, emitFn, 1, args, &emitResult) !=
+      napi_ok) {
+    napi_value pendingException;
+    napi_get_and_clear_last_exception(env, &pendingException);
+    return false;
+  }
+
+  bool handled = false;
+  if (napi_get_value_bool(env, emitResult, &handled) != napi_ok) {
+    return false;
+  }
+
+  return handled;
+}
+
+#if defined(__APPLE__) && !defined(_WIN32)
+void HandleSigintDispatch(void* context) {
+  (void)context;
+
+  const bool handled = EmitSignalToProcess("SIGINT");
+  if (!handled) {
+    std::fflush(nullptr);
+    std::exit(130);
+  }
+}
+#endif
+
+void InstallProcessSignalBridge(napi_env env, napi_value processObj) {
+#if defined(__APPLE__) && !defined(_WIN32)
+  if (Runtime::IsWorker()) {
+    return;
+  }
+
+  ProcessSignalState& state = GetProcessSignalState();
+  std::lock_guard<std::mutex> lock(state.mutex);
+
+  if (state.processRef == nullptr || state.env != env) {
+    // Best effort: a runtime can only have one global process object.
+    napi_ref processRef = nullptr;
+    if (napi_create_reference(env, processObj, 1, &processRef) == napi_ok) {
+      state.env = env;
+      state.processRef = processRef;
+    }
+  }
+
+  if (state.sigintInstalled) {
+    return;
+  }
+
+  ::signal(SIGINT, SIG_IGN);
+
+  dispatch_source_t source = dispatch_source_create(
+      DISPATCH_SOURCE_TYPE_SIGNAL, SIGINT, 0, dispatch_get_main_queue());
+  if (source == nullptr) {
+    return;
+  }
+
+  dispatch_set_context(source, nullptr);
+  dispatch_source_set_event_handler_f(source, HandleSigintDispatch);
+  dispatch_resume(source);
+
+  state.sigintSource = source;
+  state.sigintInstalled = true;
+#else
+  (void)env;
+  (void)processObj;
+#endif
 }
 
 void InstallProcessEventEmitterShim(napi_env env, napi_value processObj) {
@@ -435,6 +615,7 @@ napi_value Process::CreateProcessObject(napi_env env) {
 
   napi_util::napi_set_function(env, processObj, "cwd", Cwd);
   napi_util::napi_set_function(env, processObj, "chdir", Chdir);
+  napi_util::napi_set_function(env, processObj, "exit", Exit);
   napi_util::napi_set_function(env, processObj, "uptime", Uptime);
 
   napi_value hrtime = napi_util::napi_set_function(env, processObj, "hrtime", Hrtime);
@@ -443,7 +624,15 @@ napi_value Process::CreateProcessObject(napi_env env) {
                        &hrtimeBigInt);
   napi_set_named_property(env, hrtime, "bigint", hrtimeBigInt);
 
+  napi_value memoryUsage =
+      napi_util::napi_set_function(env, processObj, "memoryUsage", MemoryUsage);
+  napi_value memoryUsageRss;
+  napi_create_function(env, "rss", NAPI_AUTO_LENGTH, MemoryUsageRss, nullptr,
+                       &memoryUsageRss);
+  napi_set_named_property(env, memoryUsage, "rss", memoryUsageRss);
+
   InstallProcessEventEmitterShim(env, processObj);
+  InstallProcessSignalBridge(env, processObj);
 
   return processObj;
 }
@@ -595,6 +784,67 @@ napi_value Process::HrtimeBigInt(napi_env env, napi_callback_info info) {
   napi_value result;
   napi_create_bigint_uint64(env, GetMonotonicNanoseconds(), &result);
   return result;
+}
+
+napi_value Process::MemoryUsage(napi_env env, napi_callback_info info) {
+  (void)info;
+
+  MemoryUsageInfo infoValue = GetMemoryUsageInfo(env);
+
+  napi_value usage;
+  napi_create_object(env, &usage);
+  napi_set_named_property(env, usage, "rss",
+                          napi_util::to_js_number(
+                              env, static_cast<double>(infoValue.rss)));
+  napi_set_named_property(env, usage, "heapTotal",
+                          napi_util::to_js_number(
+                              env, static_cast<double>(infoValue.heapTotal)));
+  napi_set_named_property(env, usage, "heapUsed",
+                          napi_util::to_js_number(
+                              env, static_cast<double>(infoValue.heapUsed)));
+  napi_set_named_property(env, usage, "external",
+                          napi_util::to_js_number(
+                              env, static_cast<double>(infoValue.external)));
+  napi_set_named_property(
+      env, usage, "arrayBuffers",
+      napi_util::to_js_number(env, static_cast<double>(infoValue.arrayBuffers)));
+
+  return usage;
+}
+
+napi_value Process::MemoryUsageRss(napi_env env, napi_callback_info info) {
+  (void)info;
+  (void)env;
+  return napi_util::to_js_number(
+      env, static_cast<double>(GetResidentSetSizeBytes()));
+}
+
+napi_value Process::Exit(napi_env env, napi_callback_info info) {
+  NAPI_CALLBACK_BEGIN_VARGS()
+
+  int32_t exitCode = 0;
+  if (argc > 0 && !napi_util::is_null_or_undefined(env, argv[0])) {
+    napi_value codeAsNumber;
+    if (napi_coerce_to_number(env, argv[0], &codeAsNumber) != napi_ok) {
+      napi_throw_type_error(env, nullptr,
+                            "The \"code\" argument must be a number");
+      return nullptr;
+    }
+
+    double codeValue = 0;
+    if (napi_get_value_double(env, codeAsNumber, &codeValue) != napi_ok ||
+        !std::isfinite(codeValue)) {
+      napi_throw_type_error(env, nullptr,
+                            "The \"code\" argument must be a finite number");
+      return nullptr;
+    }
+
+    exitCode = static_cast<int32_t>(codeValue);
+  }
+
+  std::fflush(nullptr);
+  std::exit(exitCode);
+  return nullptr;
 }
 
 napi_value Process::StreamWrite(napi_env env, napi_callback_info info) {
