@@ -33,7 +33,7 @@ jobs:
         run: npm run build-metagen
       
       - name: Build NativeScript
-        run: npm run build-ios
+        run: npm run build
 
       - name: Build CLI
         run: npm run build:macos-cli
