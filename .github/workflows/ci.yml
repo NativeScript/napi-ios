@@ -40,3 +40,6 @@ jobs:
 
       - name: Run Tests on macOS
         run: npm test:macos
+
+      - name: Run Tests on iOS
+        run: npm test:ios
