@@ -31,6 +31,9 @@ jobs:
 
       - name: Build metadata generator
         run: npm run build-metagen
+
+      - name: Generate macOS metadata
+        run: npm run metagen macos
       
       - name: Build NativeScript
         run: npm run build
