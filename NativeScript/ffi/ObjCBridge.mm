@@ -504,19 +504,19 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 
   if (metadata_ptr && *((const char*)metadata_ptr) != '\0') {
 #ifdef EMBED_METADATA_SIZE
-    NSLog(@"Ignoring metadata pointer due to embedded metadata");
+    // NSLog(@"Ignoring metadata pointer due to embedded metadata");
     metadata = new MDMetadataReader((void*)embedded_metadata);
 #else
-    NSLog(@"Using metadata from pointer: %p", metadata_ptr);
+    // NSLog(@"Using metadata from pointer: %p", metadata_ptr);
     metadata = new MDMetadataReader((void*)metadata_ptr);
 #endif
   } else {
 #ifdef EMBED_METADATA_SIZE
     if (metadata_path != nullptr) {
-      NSLog(@"Loading metadata from file: %s", metadata_path);
+      // NSLog(@"Loading metadata from file: %s", metadata_path);
       metadata = loadMetadataFromFile(metadata_path);
     } else {
-      NSLog(@"Using embedded metadata");
+      // NSLog(@"Using embedded metadata");
       metadata = new MDMetadataReader((void*)embedded_metadata);
     }
 #else
