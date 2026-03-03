@@ -29,6 +29,7 @@ function parseArgs(argv) {
     timeoutMs: 45_000,
     repeat: 2,
     grep: null,
+    runtime: null,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -43,6 +44,10 @@ function parseArgs(argv) {
     }
     if (arg === "--grep" && args[i + 1]) {
       parsed.grep = String(args[++i]);
+      continue;
+    }
+    if (arg === "--runtime" && args[i + 1]) {
+      parsed.runtime = String(args[++i]);
       continue;
     }
   }
@@ -241,7 +246,9 @@ async function main() {
   const opts = parseArgs(process.argv);
   const repoRoot = path.resolve(__dirname, "..", "..");
   const memoryDir = path.resolve(__dirname);
-  const nsrPath = path.join(repoRoot, "dist", "nsr");
+  const nsrPath = opts.runtime
+    ? path.resolve(repoRoot, opts.runtime)
+    : path.join(repoRoot, "dist", "nsr");
 
   if (!fs.existsSync(nsrPath)) {
     console.error(`Missing runtime binary: ${nsrPath}`);

@@ -16,6 +16,11 @@ class CFunction {
   void* fnptr;
   Cif* cif = nullptr;
   uint8_t dispatchFlags = 0;
+  bool dispatchLookupCached = false;
+  uint64_t dispatchLookupSignatureHash = 0;
+  uint64_t dispatchId = 0;
+  void* preparedInvoker = nullptr;
+  void* napiInvoker = nullptr;
 };
 
 }  // namespace nativescript

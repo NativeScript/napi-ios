@@ -287,9 +287,72 @@ void ObjCClassMember::addOverload(SEL selector, MDSectionOffset offset, uint8_t 
   overloads.emplace_back(selector, offset, dispatchFlags);
 }
 
-inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod, uint8_t dispatchFlags,
-                           void** avalues, void* rvalue) {
-  SEL selector = avalues != nullptr && cif->cif.nargs >= 2 ? *((SEL*)avalues[1]) : nullptr;
+inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMethod, SEL selector,
+                                MethodDescriptor* descriptor, uint8_t dispatchFlags,
+                                const napi_value* argv, void* rvalue, bool* didInvoke) {
+  if (didInvoke != nullptr) {
+    *didInvoke = false;
+  }
+
+  if (cif == nullptr || cif->signatureHash == 0) {
+    return true;
+  }
+
+  Class receiverClass = classMethod ? (Class)self : object_getClass(self);
+  const bool supercall =
+      receiverClass != nil &&
+      class_conformsToProtocol(receiverClass, @protocol(ObjCBridgeClassBuilderProtocol));
+  if (supercall) {
+    return true;
+  }
+
+  if (descriptor != nullptr) {
+    if (!descriptor->dispatchLookupCached ||
+        descriptor->dispatchLookupSignatureHash != cif->signatureHash ||
+        descriptor->dispatchLookupFlags != dispatchFlags) {
+      descriptor->dispatchLookupSignatureHash = cif->signatureHash;
+      descriptor->dispatchLookupFlags = dispatchFlags;
+      descriptor->dispatchId = composeSignatureDispatchId(
+          cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags);
+      descriptor->preparedInvoker =
+          reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
+      descriptor->napiInvoker =
+          reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
+      descriptor->dispatchLookupCached = true;
+    }
+  }
+
+  auto invoker = descriptor != nullptr
+                     ? reinterpret_cast<ObjCNapiInvoker>(descriptor->napiInvoker)
+                     : lookupObjCNapiInvoker(composeSignatureDispatchId(
+                           cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags));
+  if (invoker == nullptr) {
+    return true;
+  }
+
+  @try {
+    if (!invoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue)) {
+      return false;
+    }
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    nativescript::NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return false;
+  }
+
+  if (didInvoke != nullptr) {
+    *didInvoke = true;
+  }
+  return true;
+}
+
+inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
+                           MethodDescriptor* descriptor, uint8_t dispatchFlags, void** avalues,
+                           void* rvalue) {
+  SEL selector = descriptor != nullptr
+                     ? descriptor->selector
+                     : (avalues != nullptr && cif->cif.nargs >= 2 ? *((SEL*)avalues[1]) : nullptr);
 
   Class receiverClass = nil;
   if (classMethod) {
@@ -315,9 +378,25 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod, ui
   @try {
     if (!supercall) {
       if (cif != nullptr && cif->signatureHash != 0) {
-        const uint64_t dispatchId = composeSignatureDispatchId(
-            cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags);
-        auto invoker = lookupObjCPreparedInvoker(dispatchId);
+        if (descriptor != nullptr &&
+            (!descriptor->dispatchLookupCached ||
+             descriptor->dispatchLookupSignatureHash != cif->signatureHash ||
+             descriptor->dispatchLookupFlags != dispatchFlags)) {
+          descriptor->dispatchLookupSignatureHash = cif->signatureHash;
+          descriptor->dispatchLookupFlags = dispatchFlags;
+          descriptor->dispatchId = composeSignatureDispatchId(
+              cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags);
+          descriptor->preparedInvoker =
+              reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
+          descriptor->napiInvoker =
+              reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
+          descriptor->dispatchLookupCached = true;
+        }
+
+        auto invoker = descriptor != nullptr
+                           ? reinterpret_cast<ObjCPreparedInvoker>(descriptor->preparedInvoker)
+                           : lookupObjCPreparedInvoker(composeSignatureDispatchId(
+                                 cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags));
         if (invoker != nullptr) {
           invoker((void*)objc_msgSend, avalues, rvalue);
           return true;
@@ -1075,13 +1154,6 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
         method->bridgeState->getMethodCif(env, method->methodOrGetter.signatureOffset);
   }
 
-  CifArgumentStorage argStorage(cif, 2);
-  if (!argStorage.valid()) {
-    napi_throw_error(env, "NativeScriptException",
-                     "Unable to allocate argument storage for Objective-C call.");
-    return nullptr;
-  }
-
   if (!resolvedInitArgs.empty()) {
     argc = resolvedInitArgs.size();
     if (argc != cif->argc) {
@@ -1095,6 +1167,63 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
   } else {
     argc = cif->argc;
     napi_get_cb_info(env, cbinfo, &argc, cif->argv, &jsThis, nullptr);
+  }
+
+  id rvalue = nil;
+  bool retainedReceiver = false;
+  const bool receiverIsClass = object_isClass(self);
+  if (!receiverIsClass) {
+    // init can return a different object and release the original receiver.
+    // Keep the original receiver alive while this JS wrapper still references it.
+    [self retain];
+    retainedReceiver = true;
+  }
+
+  bool didDirectInvoke = false;
+  if (!tryObjCNapiDispatch(env, cif, self, receiverIsClass, method->methodOrGetter.selector,
+                           &method->methodOrGetter, method->methodOrGetter.dispatchFlags,
+                           cif->argv, &rvalue,
+                           &didDirectInvoke)) {
+    if (retainedReceiver) {
+      [self release];
+    }
+    return nullptr;
+  }
+
+  if (didDirectInvoke) {
+    if (rvalue == nil) {
+      if (retainedReceiver) {
+        [self release];
+      }
+      napi_value result;
+      napi_get_null(env, &result);
+      return result;
+    }
+
+    napi_value constructor = jsThis;
+    if (!receiverIsClass) {
+      napi_get_named_property(env, jsThis, "constructor", &constructor);
+    }
+
+    napi_value result = method->bridgeState->getObject(env, rvalue, constructor, kUnownedObject);
+
+    if (rvalue != self) {
+      [rvalue release];
+    } else if (retainedReceiver) {
+      [self release];
+    }
+
+    return result;
+  }
+
+  CifArgumentStorage argStorage(cif, 2);
+  if (!argStorage.valid()) {
+    if (retainedReceiver) {
+      [self release];
+    }
+    napi_throw_error(env, "NativeScriptException",
+                     "Unable to allocate argument storage for Objective-C call.");
+    return nullptr;
   }
 
   void* avalues[cif->cif.nargs];
@@ -1113,18 +1242,8 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
     }
   }
 
-  id rvalue;
-  bool retainedReceiver = false;
-  const bool receiverIsClass = object_isClass(self);
-  if (!receiverIsClass) {
-    // init can return a different object and release the original receiver.
-    // Keep the original receiver alive while this JS wrapper still references it.
-    [self retain];
-    retainedReceiver = true;
-  }
-
-  if (!objcNativeCall(env, cif, self, receiverIsClass, method->methodOrGetter.dispatchFlags,
-                      avalues, &rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, &method->methodOrGetter,
+                      method->methodOrGetter.dispatchFlags, avalues, &rvalue)) {
     if (retainedReceiver) {
       [self release];
     }
@@ -1295,13 +1414,6 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     return nullptr;
   }
 
-  CifArgumentStorage argStorage(cif, 2);
-  if (!argStorage.valid()) {
-    napi_throw_error(env, "NativeScriptException",
-                     "Unable to allocate argument storage for Objective-C call.");
-    return nullptr;
-  }
-
   auto rvalueStorage = allocateCifReturnStorage(cif);
   if (!rvalueStorage) {
     napi_throw_error(env, "NativeScriptException",
@@ -1324,16 +1436,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     cif->argv[i] = i < jsArgs.size() ? jsArgs[i] : jsUndefined;
   }
 
-  void* avalues[cif->cif.nargs];
   void* rvalue = rvalueStorage.get();
-
-  avalues[0] = (void*)&self;
-  avalues[1] = (void*)&selectedSelector;
-
-  bool shouldFreeAny = false;
-  bool shouldFree[cif->argc];
-  std::vector<id> fallbackBlocksToRelease;
-  NSError* implicitNSError = nil;
   const bool hasImplicitNSErrorOutArg =
       isNSErrorOutMethod && !cif->isVariadic && actualArgc + 1 == cif->argc;
 
@@ -1355,6 +1458,90 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
     return nullptr;
   };
+
+  auto toJSResult = [&](void* nativeResult) -> napi_value {
+    const char* selectorName = sel_getName(selectedSelector);
+    if (strcmp(selectorName, "class") == 0) {
+      if (!receiverIsClass) {
+        napi_value constructor = jsThis;
+        napi_get_named_property(env, jsThis, "constructor", &constructor);
+        return constructor;
+      }
+
+      id classObject = self;
+      return method->bridgeState->getObject(env, classObject, kUnownedObject, 0, nullptr);
+    }
+
+    if (cif->returnType->kind == mdTypeInstanceObject) {
+      napi_value constructor = jsThis;
+      if (!receiverIsClass) {
+        napi_get_named_property(env, jsThis, "constructor", &constructor);
+      }
+      id obj = *((id*)nativeResult);
+      return method->bridgeState->getObject(env, obj, constructor,
+                                            method->returnOwned ? kOwnedObject : kUnownedObject);
+    }
+
+    if (cif->returnType->kind == mdTypeAnyObject) {
+      id obj = *((id*)nativeResult);
+      if (receiverIsClass && obj != nil) {
+        Class receiverClass = (Class)self;
+        if (receiverClass == [NSString class] || receiverClass == [NSMutableString class]) {
+          if (strcmp(selectorName, "string") == 0 ||
+              strcmp(selectorName, "stringWithString:") == 0 ||
+              strcmp(selectorName, "stringWithCapacity:") == 0) {
+            return method->bridgeState->getObject(env, obj, jsThis, kUnownedObject);
+          }
+        }
+      }
+    }
+
+    return cif->returnType->toJS(env, nativeResult, method->returnOwned ? kReturnOwned : 0);
+  };
+
+  bool usesBlockFallback = false;
+  if (cif->argc > 0) {
+    const char* selectorName = sel_getName(selectedSelector);
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      const char* blockEncoding = blockEncodingForSelector(selectorName, i);
+      if (blockEncoding != nullptr && cif->argTypes[i]->kind == mdTypeAnyObject) {
+        napi_valuetype jsArgType = napi_undefined;
+        if (napi_typeof(env, cif->argv[i], &jsArgType) == napi_ok && jsArgType == napi_function) {
+          usesBlockFallback = true;
+          break;
+        }
+      }
+    }
+  }
+
+  if (!hasImplicitNSErrorOutArg && !usesBlockFallback) {
+    bool didDirectInvoke = false;
+    if (!tryObjCNapiDispatch(env, cif, self, receiverIsClass, selectedSelector, selectedMethod,
+                             selectedMethod->dispatchFlags, cif->argv, rvalue,
+                             &didDirectInvoke)) {
+      return nullptr;
+    }
+
+    if (didDirectInvoke) {
+      return toJSResult(rvalue);
+    }
+  }
+
+  CifArgumentStorage argStorage(cif, 2);
+  if (!argStorage.valid()) {
+    napi_throw_error(env, "NativeScriptException",
+                     "Unable to allocate argument storage for Objective-C call.");
+    return nullptr;
+  }
+
+  void* avalues[cif->cif.nargs];
+  avalues[0] = (void*)&self;
+  avalues[1] = (void*)&selectedSelector;
+
+  bool shouldFreeAny = false;
+  bool shouldFree[cif->argc];
+  std::vector<id> fallbackBlocksToRelease;
+  NSError* implicitNSError = nil;
 
   if (cif->argc > 0) {
     for (unsigned int i = 0; i < cif->argc; i++) {
@@ -1390,8 +1577,8 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
 
-  if (!objcNativeCall(env, cif, self, receiverIsClass, selectedMethod->dispatchFlags, avalues,
-                      rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, selectedMethod,
+                      selectedMethod->dispatchFlags, avalues, rvalue)) {
     for (id block : fallbackBlocksToRelease) {
       [block release];
     }
@@ -1416,42 +1603,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     return nullptr;
   }
 
-  const char* selectorName = sel_getName(selectedSelector);
-  if (strcmp(selectorName, "class") == 0) {
-    if (!receiverIsClass) {
-      napi_value constructor = jsThis;
-      napi_get_named_property(env, jsThis, "constructor", &constructor);
-      return constructor;
-    }
-
-    id classObject = self;
-    return method->bridgeState->getObject(env, classObject, kUnownedObject, 0, nullptr);
-  }
-
-  if (cif->returnType->kind == mdTypeInstanceObject) {
-    napi_value constructor = jsThis;
-    if (!receiverIsClass) {
-      napi_get_named_property(env, jsThis, "constructor", &constructor);
-    }
-    id obj = *((id*)rvalue);
-    return method->bridgeState->getObject(env, obj, constructor,
-                                          method->returnOwned ? kOwnedObject : kUnownedObject);
-  }
-
-  if (cif->returnType->kind == mdTypeAnyObject) {
-    id obj = *((id*)rvalue);
-    if (receiverIsClass && obj != nil) {
-      Class receiverClass = (Class)self;
-      if (receiverClass == [NSString class] || receiverClass == [NSMutableString class]) {
-        if (strcmp(selectorName, "string") == 0 || strcmp(selectorName, "stringWithString:") == 0 ||
-            strcmp(selectorName, "stringWithCapacity:") == 0) {
-          return method->bridgeState->getObject(env, obj, jsThis, kUnownedObject);
-        }
-      }
-    }
-  }
-
-  return cif->returnType->toJS(env, rvalue, method->returnOwned ? kReturnOwned : 0);
+  return toJSResult(rvalue);
 }
 
 napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
@@ -1484,11 +1636,21 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
   void* avalues[2] = {&self, &method->methodOrGetter.selector};
   void* rvalue = rvalueStorage.get();
 
-  // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
-
-  if (!objcNativeCall(env, cif, self, receiverIsClass, method->methodOrGetter.dispatchFlags,
-                      avalues, rvalue)) {
+  bool didDirectInvoke = false;
+  if (!tryObjCNapiDispatch(env, cif, self, receiverIsClass, method->methodOrGetter.selector,
+                           &method->methodOrGetter, method->methodOrGetter.dispatchFlags, nullptr,
+                           rvalue,
+                           &didDirectInvoke)) {
     return nullptr;
+  }
+
+  if (!didDirectInvoke) {
+    // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
+
+    if (!objcNativeCall(env, cif, self, receiverIsClass, &method->methodOrGetter,
+                        method->methodOrGetter.dispatchFlags, avalues, rvalue)) {
+      return nullptr;
+    }
   }
 
   const char* selectorName = sel_getName(method->methodOrGetter.selector);
@@ -1538,6 +1700,21 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
         method->bridgeState->getMethodCif(env, method->setter.signatureOffset);
   }
 
+  if (cif->argc > 0) {
+    cif->argv[0] = argv;
+  }
+
+  bool didDirectInvoke = false;
+  if (!tryObjCNapiDispatch(env, cif, self, receiverIsClass, method->setter.selector,
+                           &method->setter, method->setter.dispatchFlags, cif->argv, nullptr,
+                           &didDirectInvoke)) {
+    return nullptr;
+  }
+
+  if (didDirectInvoke) {
+    return nullptr;
+  }
+
   CifArgumentStorage argStorage(cif, 2);
   if (!argStorage.valid()) {
     napi_throw_error(env, "NativeScriptException",
@@ -1551,8 +1728,8 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
   bool shouldFree = false;
   cif->argTypes[0]->toNative(env, argv, avalues[2], &shouldFree, &shouldFree);
 
-  if (!objcNativeCall(env, cif, self, receiverIsClass, method->setter.dispatchFlags, avalues,
-                      rvalue)) {
+  if (!objcNativeCall(env, cif, self, receiverIsClass, &method->setter,
+                      method->setter.dispatchFlags, avalues, rvalue)) {
     return nullptr;
   }
 

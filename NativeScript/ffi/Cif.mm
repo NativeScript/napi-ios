@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <cstring>
 #include <iostream>
+#include <type_traits>
+#include <unordered_set>
 #include <vector>
 #include "Metadata.h"
 #include "MetadataReader.h"
@@ -16,14 +18,179 @@ namespace {
 constexpr uint64_t kFNV64OffsetBasis = 14695981039346656037ull;
 constexpr uint64_t kFNV64Prime = 1099511628211ull;
 
-uint64_t hashBytesFnv1a(const void* data, size_t size) {
+uint64_t hashBytesFnv1a(const void* data, size_t size,
+                        uint64_t seed = kFNV64OffsetBasis) {
   const auto* bytes = static_cast<const uint8_t*>(data);
-  uint64_t hash = kFNV64OffsetBasis;
+  uint64_t hash = seed;
   for (size_t i = 0; i < size; i++) {
     hash ^= static_cast<uint64_t>(bytes[i]);
     hash *= kFNV64Prime;
   }
   return hash;
+}
+
+MDTypeKind canonicalizeSignatureTypeKind(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      return mdTypeAnyObject;
+    default:
+      return kind;
+  }
+}
+
+template <typename T>
+void appendIntegralToHash(uint64_t* hash, T value) {
+  using Unsigned = typename std::make_unsigned<T>::type;
+  Unsigned unsignedValue = static_cast<Unsigned>(value);
+  for (size_t i = 0; i < sizeof(Unsigned); i++) {
+    const uint8_t byte = static_cast<uint8_t>((unsignedValue >> (i * 8)) & 0xFF);
+    *hash = hashBytesFnv1a(&byte, sizeof(byte), *hash);
+  }
+}
+
+bool appendMetadataSignatureHash(MDMetadataReader* reader,
+                                 MDSectionOffset signatureOffset,
+                                 std::unordered_set<MDSectionOffset>* activeSignatures,
+                                 uint64_t* hash);
+
+bool appendMetadataTypeHash(MDMetadataReader* reader, MDSectionOffset* offset,
+                            std::unordered_set<MDSectionOffset>* activeSignatures,
+                            uint64_t* hash) {
+  if (reader == nullptr || offset == nullptr || hash == nullptr ||
+      activeSignatures == nullptr) {
+    return false;
+  }
+
+  const MDTypeKind kindWithFlags = reader->getTypeKind(*offset);
+  *offset += sizeof(MDTypeKind);
+  const MDTypeKind rawKind =
+      static_cast<MDTypeKind>((kindWithFlags & ~mdTypeFlagNext) &
+                              ~mdTypeFlagVariadic);
+
+  appendIntegralToHash<uint8_t>(hash, 0xB0);
+  const MDTypeKind canonicalKind = canonicalizeSignatureTypeKind(rawKind);
+  appendIntegralToHash<uint8_t>(hash, static_cast<uint8_t>(canonicalKind));
+
+  switch (rawKind) {
+    case mdTypeArray:
+    case mdTypeVector:
+    case mdTypeExtVector:
+    case mdTypeComplex: {
+      const auto arraySize = reader->getArraySize(*offset);
+      *offset += sizeof(uint16_t);
+      appendIntegralToHash<uint16_t>(hash, arraySize);
+      if (!appendMetadataTypeHash(reader, offset, activeSignatures, hash)) {
+        return false;
+      }
+      break;
+    }
+
+    case mdTypeStruct: {
+      const auto structOffset = reader->getOffset(*offset);
+      *offset += sizeof(MDSectionOffset);
+      appendIntegralToHash<MDSectionOffset>(hash, structOffset);
+      break;
+    }
+
+    case mdTypeClassObject: {
+      auto classOffset = reader->getOffset(*offset);
+      *offset += sizeof(MDSectionOffset);
+      bool hasNext = (classOffset & mdSectionOffsetNext) != 0;
+      while (hasNext) {
+        auto protocolOffset = reader->getOffset(*offset);
+        *offset += sizeof(MDSectionOffset);
+        hasNext = (protocolOffset & mdSectionOffsetNext) != 0;
+      }
+      break;
+    }
+
+    case mdTypeProtocolObject: {
+      bool hasNext = true;
+      while (hasNext) {
+        auto protocolOffset = reader->getOffset(*offset);
+        *offset += sizeof(MDSectionOffset);
+        hasNext = (protocolOffset & mdSectionOffsetNext) != 0;
+      }
+      break;
+    }
+
+    case mdTypePointer:
+      if (!appendMetadataTypeHash(reader, offset, activeSignatures, hash)) {
+        return false;
+      }
+      break;
+
+    case mdTypeBlock:
+    case mdTypeFunctionPointer: {
+      const auto nestedSignatureOffset = reader->getOffset(*offset);
+      *offset += sizeof(MDSectionOffset);
+      if (nestedSignatureOffset != MD_SECTION_OFFSET_NULL) {
+        const auto nestedAbsoluteOffset =
+            reader->signaturesOffset + nestedSignatureOffset;
+        if (!appendMetadataSignatureHash(reader, nestedAbsoluteOffset,
+                                         activeSignatures, hash)) {
+          return false;
+        }
+      }
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  appendIntegralToHash<uint8_t>(hash, 0xBF);
+  return true;
+}
+
+bool appendMetadataSignatureHash(MDMetadataReader* reader,
+                                 MDSectionOffset signatureOffset,
+                                 std::unordered_set<MDSectionOffset>* activeSignatures,
+                                 uint64_t* hash) {
+  if (reader == nullptr || hash == nullptr || activeSignatures == nullptr) {
+    return false;
+  }
+
+  if (activeSignatures->find(signatureOffset) != activeSignatures->end()) {
+    appendIntegralToHash<uint8_t>(hash, 0xEE);
+    return true;
+  }
+  activeSignatures->insert(signatureOffset);
+
+  MDSectionOffset offset = signatureOffset;
+  const MDTypeKind returnTypeKind = reader->getTypeKind(offset);
+  bool next = (returnTypeKind & mdTypeFlagNext) != 0;
+  const bool isVariadic = (returnTypeKind & mdTypeFlagVariadic) != 0;
+
+  appendIntegralToHash<uint8_t>(hash, 0xA0);
+  appendIntegralToHash<uint8_t>(hash, isVariadic ? 1 : 0);
+
+  if (!appendMetadataTypeHash(reader, &offset, activeSignatures, hash)) {
+    activeSignatures->erase(signatureOffset);
+    return false;
+  }
+
+  uint32_t argCount = 0;
+  while (next) {
+    const MDTypeKind argTypeKind = reader->getTypeKind(offset);
+    next = (argTypeKind & mdTypeFlagNext) != 0;
+    if (!appendMetadataTypeHash(reader, &offset, activeSignatures, hash)) {
+      activeSignatures->erase(signatureOffset);
+      return false;
+    }
+    argCount++;
+  }
+
+  appendIntegralToHash<uint32_t>(hash, argCount);
+  appendIntegralToHash<uint8_t>(hash, 0xAF);
+
+  activeSignatures->erase(signatureOffset);
+  return true;
 }
 
 }  // namespace
@@ -267,11 +434,13 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
   rvalue = malloc(cif.rtype->size);
   rvalueLength = cif.rtype->size;
 
-  const size_t signatureLength = static_cast<size_t>(offset - signatureStart);
-  if (signatureLength > 0) {
-    const auto* signatureBytes =
-        reinterpret_cast<const uint8_t*>(reader->data) + signatureStart;
-    signatureHash = hashBytesFnv1a(signatureBytes, signatureLength);
+  if (signatureStart != MD_SECTION_OFFSET_NULL) {
+    uint64_t canonicalSignatureHash = kFNV64OffsetBasis;
+    std::unordered_set<MDSectionOffset> activeSignatures;
+    if (appendMetadataSignatureHash(reader, signatureStart, &activeSignatures,
+                                    &canonicalSignatureHash)) {
+      signatureHash = canonicalSignatureHash;
+    }
   }
 }
 

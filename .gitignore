@@ -63,3 +63,6 @@ dist
 packages/*/types
 
 SwiftBindgen
+
+# Generated Objective-C/C dispatch wrappers
+NativeScript/ffi/GeneratedSignatureDispatch.inc

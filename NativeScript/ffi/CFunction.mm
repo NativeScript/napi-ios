@@ -11,6 +11,33 @@
 
 namespace nativescript {
 
+inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
+  if (function == nullptr || cif == nullptr || cif->signatureHash == 0) {
+    if (function != nullptr) {
+      function->dispatchLookupCached = true;
+      function->dispatchLookupSignatureHash = 0;
+      function->dispatchId = 0;
+      function->preparedInvoker = nullptr;
+      function->napiInvoker = nullptr;
+    }
+    return;
+  }
+
+  if (function->dispatchLookupCached &&
+      function->dispatchLookupSignatureHash == cif->signatureHash) {
+    return;
+  }
+
+  function->dispatchLookupSignatureHash = cif->signatureHash;
+  function->dispatchId = composeSignatureDispatchId(
+      cif->signatureHash, SignatureCallKind::CFunction, function->dispatchFlags);
+  function->preparedInvoker =
+      reinterpret_cast<void*>(lookupCFunctionPreparedInvoker(function->dispatchId));
+  function->napiInvoker =
+      reinterpret_cast<void*>(lookupCFunctionNapiInvoker(function->dispatchId));
+  function->dispatchLookupCached = true;
+}
+
 void ObjCBridgeState::registerFunctionGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->functionsOffset;
   while (offset < metadata->protocolsOffset) {
@@ -65,19 +92,39 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   auto func = bridgeState->getCFunction(env, offset);
 
   auto cif = func->cif;
-
-  const uint64_t dispatchId =
-      cif != nullptr && cif->signatureHash != 0
-          ? composeSignatureDispatchId(cif->signatureHash, SignatureCallKind::CFunction,
-                                       func->dispatchFlags)
-          : 0;
-  auto invoker = dispatchId != 0 ? lookupCFunctionPreparedInvoker(dispatchId) : nullptr;
+  ensureCFunctionDispatchLookup(func, cif);
+  auto preparedInvoker = reinterpret_cast<CFunctionPreparedInvoker>(func->preparedInvoker);
+  auto napiInvoker = reinterpret_cast<CFunctionNapiInvoker>(func->napiInvoker);
 
   MDFunctionFlag functionFlags = bridgeState->metadata->getFunctionFlag(
       offset + sizeof(MDSectionOffset) * 2);
 
   size_t argc = cif->argc;
   napi_get_cb_info(env, cbinfo, &argc, cif->argv, nullptr, nullptr);
+
+  uint32_t toJSFlags = kCStringAsReference;
+  if ((functionFlags & mdFunctionReturnOwned) != 0) {
+    toJSFlags |= kReturnOwned;
+  }
+
+  const bool isMainEntrypoint =
+      strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0;
+
+  if (napiInvoker != nullptr && !isMainEntrypoint) {
+    @try {
+      if (!napiInvoker(env, cif, func->fnptr, cif->argv, cif->rvalue)) {
+        return nullptr;
+      }
+    } @catch (NSException* exception) {
+      std::string message = exception.description.UTF8String;
+      NSLog(@"ObjC->JS: Exception in CFunction (direct): %s", message.c_str());
+      nativescript::NativeScriptException nativeScriptException(message);
+      nativeScriptException.ReThrowToJS(env);
+      return nullptr;
+    }
+
+    return cif->returnType->toJS(env, cif->rvalue, toJSFlags);
+  }
 
   void* avalues[cif->argc];
   void* rvalue = cif->rvalue;
@@ -94,18 +141,18 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   }
 
 #ifdef ENABLE_JS_RUNTIME
-  if (strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0) {
+  if (isMainEntrypoint) {
     void** avaluesPtr = new void*[cif->argc];
     memcpy(avaluesPtr, avalues, cif->argc * sizeof(void*));
 
-    Tasks::Register([env, cif, func, invoker, rvalue, avaluesPtr]() {
+    Tasks::Register([env, cif, func, preparedInvoker, rvalue, avaluesPtr]() {
       void* avalues[cif->argc];
       memcpy(avalues, avaluesPtr, cif->argc * sizeof(void*));
       delete[] avaluesPtr;
 
       @try {
-        if (invoker != nullptr) {
-          invoker(func->fnptr, avalues, rvalue);
+        if (preparedInvoker != nullptr) {
+          preparedInvoker(func->fnptr, avalues, rvalue);
         } else {
           ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
         }
@@ -123,8 +170,8 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
 #endif
 
   @try {
-    if (invoker != nullptr) {
-      invoker(func->fnptr, avalues, rvalue);
+    if (preparedInvoker != nullptr) {
+      preparedInvoker(func->fnptr, avalues, rvalue);
     } else {
       ffi_call(&cif->cif, FFI_FN(func->fnptr), rvalue, avalues);
     }
@@ -154,11 +201,6 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
         cif->argTypes[i]->free(env, *((void**)avalues[i]));
       }
     }
-  }
-
-  uint32_t toJSFlags = kCStringAsReference;
-  if ((functionFlags & mdFunctionReturnOwned) != 0) {
-    toJSFlags |= kReturnOwned;
   }
 
   return cif->returnType->toJS(env, rvalue, toJSFlags);

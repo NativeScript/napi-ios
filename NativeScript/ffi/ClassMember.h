@@ -27,6 +27,12 @@ class MethodDescriptor {
   uint8_t dispatchFlags = 0;
   std::string encoding;
   bool isProperty = false;
+  bool dispatchLookupCached = false;
+  uint64_t dispatchLookupSignatureHash = 0;
+  uint8_t dispatchLookupFlags = 0;
+  uint64_t dispatchId = 0;
+  void* preparedInvoker = nullptr;
+  void* napiInvoker = nullptr;
 
   MethodDescriptor() {}
 
