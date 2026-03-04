@@ -44,10 +44,11 @@ function median(values) {
   return (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
-async function runOnce(binaryPath, benchScriptPath, cwd) {
+async function runOnce(binaryPath, benchScriptPath, cwd, extraEnv = {}) {
   return new Promise((resolve, reject) => {
     const child = spawn(binaryPath, ["run", benchScriptPath], {
       cwd,
+      env: { ...process.env, ...extraEnv },
       stdio: ["ignore", "pipe", "pipe"],
     });
 
@@ -183,10 +184,23 @@ async function main() {
   const nonGsdRuns = [];
 
   for (let i = 0; i < opts.repeat; i++) {
-    console.log(`Running iteration ${i + 1}/${opts.repeat} with GSD runtime...`);
-    gsdRuns.push(await runOnce(gsdPath, benchScriptPath, repoRoot));
-    console.log(`Running iteration ${i + 1}/${opts.repeat} with non-GSD runtime...`);
-    nonGsdRuns.push(await runOnce(nonGsdPath, benchScriptPath, repoRoot));
+    const iteration = i + 1;
+    const runGsdFirst = (i & 1) === 0;
+    if (runGsdFirst) {
+      console.log(`Running iteration ${iteration}/${opts.repeat} with GSD runtime...`);
+      gsdRuns.push(await runOnce(gsdPath, benchScriptPath, repoRoot));
+      console.log(`Running iteration ${iteration}/${opts.repeat} with non-GSD runtime...`);
+      nonGsdRuns.push(
+        await runOnce(nonGsdPath, benchScriptPath, repoRoot, { NS_DISABLE_GSD: "1" }),
+      );
+    } else {
+      console.log(`Running iteration ${iteration}/${opts.repeat} with non-GSD runtime...`);
+      nonGsdRuns.push(
+        await runOnce(nonGsdPath, benchScriptPath, repoRoot, { NS_DISABLE_GSD: "1" }),
+      );
+      console.log(`Running iteration ${iteration}/${opts.repeat} with GSD runtime...`);
+      gsdRuns.push(await runOnce(gsdPath, benchScriptPath, repoRoot));
+    }
   }
 
   const gsdAgg = aggregateRuns(gsdRuns);

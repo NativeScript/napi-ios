@@ -184,6 +184,10 @@ async function main() {
     });
 
     if (output.status !== 0) {
+      console.error(`Failed to generate metadata for ${sdkName} ${arch}`);
+      console.error(`Command: ${exec} ${args.join(" ")}`);
+      console.error(`Exit code: ${output.status}`);
+      console.error(`Error output: ${output.stderr.toString()}`);
       throw new Error("Failed to generate metadata");
     }
   }

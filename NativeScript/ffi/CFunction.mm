@@ -5,6 +5,7 @@
 #include "ffi/NativeScriptException.h"
 #include "ffi/Tasks.h"
 #include <cstring>
+#include <vector>
 #ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"
 #endif
@@ -99,8 +100,36 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   MDFunctionFlag functionFlags = bridgeState->metadata->getFunctionFlag(
       offset + sizeof(MDSectionOffset) * 2);
 
-  size_t argc = cif->argc;
-  napi_get_cb_info(env, cbinfo, &argc, cif->argv, nullptr, nullptr);
+  const napi_value* invocationArgs = nullptr;
+  std::vector<napi_value> dynamicArgs;
+  std::vector<napi_value> paddedArgs;
+  napi_value stackArgs[16];
+  if (cif->argc > 0) {
+    size_t actualArgc = 16;
+    napi_get_cb_info(env, cbinfo, &actualArgc, stackArgs, nullptr, nullptr);
+
+    const napi_value* callArgs = stackArgs;
+    if (actualArgc > 16) {
+      dynamicArgs.resize(actualArgc);
+      size_t retryArgc = actualArgc;
+      napi_get_cb_info(env, cbinfo, &retryArgc, dynamicArgs.data(), nullptr, nullptr);
+      dynamicArgs.resize(retryArgc);
+      actualArgc = retryArgc;
+      callArgs = dynamicArgs.data();
+    }
+
+    invocationArgs = callArgs;
+    if (actualArgc != cif->argc) {
+      napi_value jsUndefined = nullptr;
+      napi_get_undefined(env, &jsUndefined);
+      paddedArgs.assign(cif->argc, jsUndefined);
+      size_t copyArgc = actualArgc < cif->argc ? actualArgc : cif->argc;
+      if (copyArgc > 0) {
+        memcpy(paddedArgs.data(), callArgs, copyArgc * sizeof(napi_value));
+      }
+      invocationArgs = paddedArgs.data();
+    }
+  }
 
   uint32_t toJSFlags = kCStringAsReference;
   if ((functionFlags & mdFunctionReturnOwned) != 0) {
@@ -112,7 +141,7 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   if (napiInvoker != nullptr && !isMainEntrypoint) {
     @try {
-      if (!napiInvoker(env, cif, func->fnptr, cif->argv, cif->rvalue)) {
+      if (!napiInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue)) {
         return nullptr;
       }
     } @catch (NSException* exception) {
@@ -136,7 +165,8 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     for (unsigned int i = 0; i < cif->argc; i++) {
       shouldFree[i] = false;
       avalues[i] = cif->avalues[i];
-      cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i], &shouldFree[i], &shouldFreeAny);
+      cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i], &shouldFree[i],
+                                 &shouldFreeAny);
     }
   }
 

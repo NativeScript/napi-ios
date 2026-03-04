@@ -4,6 +4,7 @@
 #include <objc/runtime.h>
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
 #include <cstdlib>
 #include <cstring>
 #include <limits>
@@ -1014,6 +1015,13 @@ class RoundTripCacheFrameGuard {
 
 namespace {
 
+inline size_t alignUpSize(size_t value, size_t alignment) {
+  if (alignment == 0) {
+    return value;
+  }
+  return ((value + alignment - 1) / alignment) * alignment;
+}
+
 size_t getCifArgumentStorageSize(Cif* cif, unsigned int argumentIndex,
                                  unsigned int implicitArgumentCount) {
   if (cif == nullptr || cif->cif.arg_types == nullptr) {
@@ -1034,6 +1042,26 @@ size_t getCifArgumentStorageSize(Cif* cif, unsigned int argumentIndex,
   return storageSize;
 }
 
+size_t getCifArgumentStorageAlign(Cif* cif, unsigned int argumentIndex,
+                                  unsigned int implicitArgumentCount) {
+  if (cif == nullptr || cif->cif.arg_types == nullptr) {
+    return alignof(void*);
+  }
+
+  const unsigned int ffiIndex = argumentIndex + implicitArgumentCount;
+  if (ffiIndex >= cif->cif.nargs) {
+    return alignof(void*);
+  }
+
+  ffi_type* ffiArgType = cif->cif.arg_types[ffiIndex];
+  size_t alignment = ffiArgType != nullptr ? ffiArgType->alignment : 0;
+  if (alignment == 0) {
+    alignment = alignof(void*);
+  }
+
+  return alignment;
+}
+
 class CifArgumentStorage {
  public:
   CifArgumentStorage(Cif* cif, unsigned int implicitArgumentCount) {
@@ -1042,24 +1070,45 @@ class CifArgumentStorage {
     }
 
     buffers_.resize(cif->argc, nullptr);
-    for (unsigned int i = 0; i < cif->argc; i++) {
-      size_t storageSize = getCifArgumentStorageSize(cif, i, implicitArgumentCount);
-      void* storage = malloc(storageSize);
-      if (storage == nullptr) {
-        valid_ = false;
-        break;
-      }
 
-      memset(storage, 0, storageSize);
-      buffers_[i] = storage;
+    size_t totalSize = 0;
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      const size_t storageAlign = getCifArgumentStorageAlign(cif, i, implicitArgumentCount);
+      const size_t storageSize = getCifArgumentStorageSize(cif, i, implicitArgumentCount);
+      totalSize = alignUpSize(totalSize, storageAlign);
+      totalSize += storageSize;
+    }
+
+    if (totalSize == 0) {
+      totalSize = sizeof(void*);
+    }
+
+    if (totalSize <= kInlineSize) {
+      storageBase_ = inlineBuffer_;
+    } else {
+      storageBase_ = malloc(totalSize);
+    }
+
+    if (storageBase_ == nullptr) {
+      valid_ = false;
+      return;
+    }
+
+    memset(storageBase_, 0, totalSize);
+
+    size_t offset = 0;
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      const size_t storageAlign = getCifArgumentStorageAlign(cif, i, implicitArgumentCount);
+      const size_t storageSize = getCifArgumentStorageSize(cif, i, implicitArgumentCount);
+      offset = alignUpSize(offset, storageAlign);
+      buffers_[i] = static_cast<void*>(static_cast<unsigned char*>(storageBase_) + offset);
+      offset += storageSize;
     }
   }
 
   ~CifArgumentStorage() {
-    for (void* buffer : buffers_) {
-      if (buffer != nullptr) {
-        free(buffer);
-      }
+    if (storageBase_ != nullptr && storageBase_ != inlineBuffer_) {
+      free(storageBase_);
     }
   }
 
@@ -1074,30 +1123,55 @@ class CifArgumentStorage {
   }
 
  private:
+  static constexpr size_t kInlineSize = 256;
+  alignas(max_align_t) unsigned char inlineBuffer_[kInlineSize];
+  void* storageBase_ = nullptr;
   bool valid_ = true;
   std::vector<void*> buffers_;
 };
 
-std::unique_ptr<void, decltype(&::free)> allocateCifReturnStorage(Cif* cif) {
-  size_t storageSize = 0;
-  if (cif != nullptr) {
-    storageSize = cif->rvalueLength;
-    if (storageSize == 0 && cif->cif.rtype != nullptr) {
-      storageSize = cif->cif.rtype->size;
+class CifReturnStorage {
+ public:
+  explicit CifReturnStorage(Cif* cif) {
+    size_ = 0;
+    if (cif != nullptr) {
+      size_ = cif->rvalueLength;
+      if (size_ == 0 && cif->cif.rtype != nullptr) {
+        size_ = cif->cif.rtype->size;
+      }
+    }
+    if (size_ == 0) {
+      size_ = sizeof(void*);
+    }
+
+    if (size_ <= kInlineSize) {
+      data_ = inlineBuffer_;
+      memset(data_, 0, size_);
+      return;
+    }
+
+    data_ = malloc(size_);
+    if (data_ != nullptr) {
+      memset(data_, 0, size_);
     }
   }
 
-  if (storageSize == 0) {
-    storageSize = sizeof(void*);
+  ~CifReturnStorage() {
+    if (data_ != nullptr && data_ != inlineBuffer_) {
+      free(data_);
+    }
   }
 
-  void* storage = malloc(storageSize);
-  if (storage != nullptr) {
-    memset(storage, 0, storageSize);
-  }
+  bool valid() const { return data_ != nullptr; }
 
-  return std::unique_ptr<void, decltype(&::free)>(storage, &::free);
-}
+  void* get() const { return data_; }
+
+ private:
+  static constexpr size_t kInlineSize = 32;
+  alignas(max_align_t) unsigned char inlineBuffer_[kInlineSize];
+  void* data_ = nullptr;
+  size_t size_ = 0;
+};
 
 }  // namespace
 
@@ -1250,9 +1324,11 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
     return nullptr;
   }
 
-  for (unsigned int i = 0; i < cif->argc; i++) {
-    if (shouldFree[i]) {
-      cif->argTypes[i]->free(env, *((void**)avalues[i + 2]));
+  if (shouldFreeAny) {
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      if (shouldFree[i]) {
+        cif->argTypes[i]->free(env, *((void**)avalues[i + 2]));
+      }
     }
   }
 
@@ -1324,15 +1400,18 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     return resolved;
   };
 
-  std::vector<napi_value> jsArgs;
-  if (actualArgc <= 16) {
-    jsArgs.assign(stackArgs, stackArgs + actualArgc);
-  } else {
-    jsArgs.resize(actualArgc);
+  const napi_value* callArgs = stackArgs;
+  std::vector<napi_value> dynamicArgs;
+  if (actualArgc > 16) {
+    dynamicArgs.resize(actualArgc);
     size_t argcRetry = actualArgc;
-    napi_get_cb_info(env, cbinfo, &argcRetry, jsArgs.data(), &jsThis, (void**)&method);
-    jsArgs.resize(argcRetry);
+    napi_get_cb_info(env, cbinfo, &argcRetry, dynamicArgs.data(), &jsThis, (void**)&method);
+    dynamicArgs.resize(argcRetry);
     actualArgc = argcRetry;
+    callArgs = dynamicArgs.data();
+  } else if (!method->overloads.empty()) {
+    dynamicArgs.assign(stackArgs, stackArgs + actualArgc);
+    callArgs = dynamicArgs.data();
   }
 
   MethodDescriptor* selectedMethod = &method->methodOrGetter;
@@ -1357,11 +1436,11 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
       int score = 0;
       for (size_t i = 0; i < actualArgc; i++) {
-        if (!canConvertToType(env, jsArgs[i], cif->argTypes[i])) {
+        if (!canConvertToType(env, callArgs[i], cif->argTypes[i])) {
           return;
         }
         napi_valuetype jsType = napi_undefined;
-        napi_typeof(env, jsArgs[i], &jsType);
+        napi_typeof(env, callArgs[i], &jsType);
         switch (cif->argTypes[i]->kind) {
           case mdTypeBool:
             if (jsType == napi_boolean) score += 2;
@@ -1414,14 +1493,15 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     return nullptr;
   }
 
-  auto rvalueStorage = allocateCifReturnStorage(cif);
-  if (!rvalueStorage) {
+  CifReturnStorage rvalueStorage(cif);
+  if (!rvalueStorage.valid()) {
     napi_throw_error(env, "NativeScriptException",
                      "Unable to allocate return value storage for Objective-C call.");
     return nullptr;
   }
 
   SEL selectedSelector = selectedMethod->selector;
+  const char* selectedSelectorName = sel_getName(selectedSelector);
   const bool isNSErrorOutMethod = isNSErrorOutMethodSignature(selectedSelector, cif);
   if (!cif->isVariadic && isNSErrorOutMethod) {
     if (actualArgc > cif->argc || actualArgc + 1 < cif->argc) {
@@ -1430,15 +1510,21 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  napi_value jsUndefined = nullptr;
-  napi_get_undefined(env, &jsUndefined);
-  for (size_t i = 0; i < cif->argc; i++) {
-    cif->argv[i] = i < jsArgs.size() ? jsArgs[i] : jsUndefined;
-  }
-
   void* rvalue = rvalueStorage.get();
   const bool hasImplicitNSErrorOutArg =
       isNSErrorOutMethod && !cif->isVariadic && actualArgc + 1 == cif->argc;
+  const napi_value* invocationArgs = callArgs;
+  std::vector<napi_value> paddedArgs;
+  if (actualArgc != cif->argc) {
+    napi_value jsUndefined = nullptr;
+    napi_get_undefined(env, &jsUndefined);
+    paddedArgs.assign(cif->argc, jsUndefined);
+    const size_t copyArgc = std::min(actualArgc, static_cast<size_t>(cif->argc));
+    if (copyArgc > 0) {
+      memcpy(paddedArgs.data(), callArgs, copyArgc * sizeof(napi_value));
+    }
+    invocationArgs = paddedArgs.data();
+  }
 
   auto blockEncodingForSelector = [](const char* selectorName,
                                      unsigned int argIndex) -> const char* {
@@ -1460,8 +1546,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
   };
 
   auto toJSResult = [&](void* nativeResult) -> napi_value {
-    const char* selectorName = sel_getName(selectedSelector);
-    if (strcmp(selectorName, "class") == 0) {
+    if (selectedSelectorName != nullptr && strcmp(selectedSelectorName, "class") == 0) {
       if (!receiverIsClass) {
         napi_value constructor = jsThis;
         napi_get_named_property(env, jsThis, "constructor", &constructor);
@@ -1487,9 +1572,10 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
       if (receiverIsClass && obj != nil) {
         Class receiverClass = (Class)self;
         if (receiverClass == [NSString class] || receiverClass == [NSMutableString class]) {
-          if (strcmp(selectorName, "string") == 0 ||
-              strcmp(selectorName, "stringWithString:") == 0 ||
-              strcmp(selectorName, "stringWithCapacity:") == 0) {
+          if (selectedSelectorName != nullptr &&
+              (strcmp(selectedSelectorName, "string") == 0 ||
+               strcmp(selectedSelectorName, "stringWithString:") == 0 ||
+               strcmp(selectedSelectorName, "stringWithCapacity:") == 0)) {
             return method->bridgeState->getObject(env, obj, jsThis, kUnownedObject);
           }
         }
@@ -1501,12 +1587,12 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   bool usesBlockFallback = false;
   if (cif->argc > 0) {
-    const char* selectorName = sel_getName(selectedSelector);
     for (unsigned int i = 0; i < cif->argc; i++) {
-      const char* blockEncoding = blockEncodingForSelector(selectorName, i);
+      const char* blockEncoding = blockEncodingForSelector(selectedSelectorName, i);
       if (blockEncoding != nullptr && cif->argTypes[i]->kind == mdTypeAnyObject) {
         napi_valuetype jsArgType = napi_undefined;
-        if (napi_typeof(env, cif->argv[i], &jsArgType) == napi_ok && jsArgType == napi_function) {
+        if (napi_typeof(env, invocationArgs[i], &jsArgType) == napi_ok &&
+            jsArgType == napi_function) {
           usesBlockFallback = true;
           break;
         }
@@ -1517,7 +1603,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
   if (!hasImplicitNSErrorOutArg && !usesBlockFallback) {
     bool didDirectInvoke = false;
     if (!tryObjCNapiDispatch(env, cif, self, receiverIsClass, selectedSelector, selectedMethod,
-                             selectedMethod->dispatchFlags, cif->argv, rvalue,
+                             selectedMethod->dispatchFlags, invocationArgs, rvalue,
                              &didDirectInvoke)) {
       return nullptr;
     }
@@ -1547,8 +1633,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     for (unsigned int i = 0; i < cif->argc; i++) {
       shouldFree[i] = false;
       avalues[i + 2] = argStorage.at(i);
-      const char* selectorNameForLog = sel_getName(selectedSelector);
-      const char* blockEncoding = blockEncodingForSelector(selectorNameForLog, i);
+      const char* blockEncoding = blockEncodingForSelector(selectedSelectorName, i);
 
       if (hasImplicitNSErrorOutArg && i == cif->argc - 1) {
         *((NSError***)avalues[i + 2]) = &implicitNSError;
@@ -1558,10 +1643,11 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
       bool convertedViaBlockFallback = false;
       if (blockEncoding != nullptr && cif->argTypes[i]->kind == mdTypeAnyObject) {
         napi_valuetype jsArgType = napi_undefined;
-        if (napi_typeof(env, cif->argv[i], &jsArgType) == napi_ok && jsArgType == napi_function) {
+        if (napi_typeof(env, invocationArgs[i], &jsArgType) == napi_ok &&
+            jsArgType == napi_function) {
           auto closure = new Closure(std::string(blockEncoding), true);
           closure->env = env;
-          id block = registerBlock(env, closure, cif->argv[i]);
+          id block = registerBlock(env, closure, invocationArgs[i]);
           *((void**)avalues[i + 2]) = (void*)block;
           fallbackBlocksToRelease.push_back(block);
           convertedViaBlockFallback = true;
@@ -1569,7 +1655,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
       }
 
       if (!convertedViaBlockFallback) {
-        cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i + 2], &shouldFree[i],
+        cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i + 2], &shouldFree[i],
                                    &shouldFreeAny);
       }
     }
@@ -1589,9 +1675,11 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     [block release];
   }
 
-  for (unsigned int i = 0; i < cif->argc; i++) {
-    if (shouldFree[i]) {
-      cif->argTypes[i]->free(env, *((void**)avalues[i + 2]));
+  if (shouldFreeAny) {
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      if (shouldFree[i]) {
+        cif->argTypes[i]->free(env, *((void**)avalues[i + 2]));
+      }
     }
   }
 
@@ -1626,8 +1714,8 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
         method->bridgeState->getMethodCif(env, method->methodOrGetter.signatureOffset);
   }
 
-  auto rvalueStorage = allocateCifReturnStorage(cif);
-  if (!rvalueStorage) {
+  CifReturnStorage rvalueStorage(cif);
+  if (!rvalueStorage.valid()) {
     napi_throw_error(env, "NativeScriptException",
                      "Unable to allocate return value storage for Objective-C getter call.");
     return nullptr;

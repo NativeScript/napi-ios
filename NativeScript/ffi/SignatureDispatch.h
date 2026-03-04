@@ -6,6 +6,8 @@
 #include <cmath>
 #include <cstddef>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
 
 #include "Cif.h"
 #include "js_native_api.h"
@@ -130,23 +132,46 @@ inline Invoker lookupDispatchInvoker(const Entry (&entries)[N],
   return nullptr;
 }
 
+inline bool isGeneratedDispatchEnabled() {
+  static const bool enabled = []() {
+    const char* disableFlag = std::getenv("NS_DISABLE_GSD");
+    if (disableFlag == nullptr || disableFlag[0] == '\0') {
+      return true;
+    }
+    return !(disableFlag[0] == '0' && disableFlag[1] == '\0');
+  }();
+  return enabled;
+}
+
 inline ObjCPreparedInvoker lookupObjCPreparedInvoker(uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
   return lookupDispatchInvoker<ObjCDispatchEntry, ObjCPreparedInvoker>(
       kGeneratedObjCDispatchEntries, dispatchId);
 }
 
 inline CFunctionPreparedInvoker lookupCFunctionPreparedInvoker(
     uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
   return lookupDispatchInvoker<CFunctionDispatchEntry, CFunctionPreparedInvoker>(
       kGeneratedCFunctionDispatchEntries, dispatchId);
 }
 
 inline ObjCNapiInvoker lookupObjCNapiInvoker(uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
   return lookupDispatchInvoker<ObjCNapiDispatchEntry, ObjCNapiInvoker>(
       kGeneratedObjCNapiDispatchEntries, dispatchId);
 }
 
 inline CFunctionNapiInvoker lookupCFunctionNapiInvoker(uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
   return lookupDispatchInvoker<CFunctionNapiDispatchEntry, CFunctionNapiInvoker>(
       kGeneratedCFunctionNapiDispatchEntries, dispatchId);
 }

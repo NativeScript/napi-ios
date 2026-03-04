@@ -411,6 +411,37 @@ bool isFastDirectNapiKind(MDTypeKind kind) {
   }
 }
 
+bool isFastManagedNapiKind(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+    case mdTypeSelector:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool argKindMayNeedCleanup(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+    case mdTypeClass:
+    case mdTypeSelector:
+      return false;
+    default:
+      return !isFastDirectNapiKind(kind);
+  }
+}
+
 std::string makeWrapperShapeKey(DispatchKind kind, const MDSignature* signature) {
   if (signature == nullptr) {
     return {};
@@ -431,6 +462,8 @@ std::string makeWrapperShapeKey(DispatchKind kind, const MDSignature* signature)
 
     if (isFastDirectNapiKind(arg->kind)) {
       key << "F" << static_cast<int>(arg->kind);
+    } else if (isFastManagedNapiKind(arg->kind)) {
+      key << "H" << static_cast<int>(arg->kind);
     } else {
       key << "M" << argType;
     }
@@ -441,8 +474,8 @@ std::string makeWrapperShapeKey(DispatchKind kind, const MDSignature* signature)
 }
 
 void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
-                                size_t index, bool hasManagedArgs) {
-  const char* failCleanup = hasManagedArgs ? "  cleanupManagedArgs();\n" : "";
+                                size_t index, bool hasCleanupArgs) {
+  const char* failCleanup = hasCleanupArgs ? "  cleanupManagedArgs();\n" : "";
   if (type == nullptr) {
     out << failCleanup;
     out << "  return false;\n";
@@ -454,7 +487,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       out << "  int32_t tmpArg" << index << " = 0;\n";
       out << "  if (napi_get_value_int32(env, argv[" << index
           << "], &tmpArg" << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -468,7 +501,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       out << "  uint32_t tmpArg" << index << " = 0;\n";
       out << "  if (napi_get_value_uint32(env, argv[" << index
           << "], &tmpArg" << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -481,7 +514,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       out << "  int32_t tmpArg" << index << " = 0;\n";
       out << "  if (napi_get_value_int32(env, argv[" << index
           << "], &tmpArg" << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -494,7 +527,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       out << "  uint32_t tmpArg" << index << " = 0;\n";
       out << "  if (napi_get_value_uint32(env, argv[" << index
           << "], &tmpArg" << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -506,7 +539,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     case mdTypeSInt: {
       out << "  if (napi_get_value_int32(env, argv[" << index << "], &arg"
           << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -516,7 +549,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     case mdTypeUInt: {
       out << "  if (napi_get_value_uint32(env, argv[" << index << "], &arg"
           << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -531,7 +564,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       out << "      if (napi_get_value_bigint_int64(env, argv[" << index
           << "], &arg" << index << ", &lossless" << index
           << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "        cleanupManagedArgs();\n";
       }
       out << "        return false;\n";
@@ -548,7 +581,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       out << "      int64_t signedValue" << index << " = 0;\n";
       out << "      if (napi_get_value_int64(env, argv[" << index
           << "], &signedValue" << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "        cleanupManagedArgs();\n";
       }
       out << "        return false;\n";
@@ -562,7 +595,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       out << "  double tmpArg" << index << " = 0.0;\n";
       out << "  if (napi_get_value_double(env, argv[" << index
           << "], &tmpArg" << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -574,7 +607,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     case mdTypeDouble: {
       out << "  if (napi_get_value_double(env, argv[" << index << "], &arg"
           << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -589,7 +622,7 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       out << "  bool boolValue" << index << " = false;\n";
       out << "  if (napi_get_value_bool(env, argv[" << index << "], &boolValue"
           << index << ") != napi_ok) {\n";
-      if (hasManagedArgs) {
+      if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
@@ -648,16 +681,26 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
   }
   out << ");\n";
   out << "  auto fn = reinterpret_cast<Fn>(fnptr);\n";
-  std::vector<size_t> managedArgIndexes;
-  managedArgIndexes.reserve(argTypes.size());
+  std::vector<size_t> cleanupArgIndexes;
+  std::vector<size_t> noCleanupManagedArgIndexes;
+  cleanupArgIndexes.reserve(argTypes.size());
+  noCleanupManagedArgIndexes.reserve(argTypes.size());
   for (size_t i = 0; i < argTypes.size(); i++) {
     if (!isFastDirectNapiKind(argTypeInfos[i]->kind)) {
-      managedArgIndexes.push_back(i);
+      if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+        cleanupArgIndexes.push_back(i);
+      } else {
+        noCleanupManagedArgIndexes.push_back(i);
+      }
     }
   }
-  const bool hasManagedArgs = !managedArgIndexes.empty();
-  if (hasManagedArgs) {
+  const bool hasCleanupArgs = !cleanupArgIndexes.empty();
+  if (hasCleanupArgs) {
     out << "  bool shouldFreeAny = false;\n";
+  }
+  if (!noCleanupManagedArgIndexes.empty()) {
+    out << "  bool ignoredShouldFree = false;\n";
+    out << "  bool ignoredShouldFreeAny = false;\n";
   }
   if (returnType != "void") {
     out << "  " << returnType << " nativeResult{};\n";
@@ -665,12 +708,13 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
 
   for (size_t i = 0; i < argTypes.size(); i++) {
     out << "  " << argTypes[i] << " arg" << i << "{};\n";
-    if (!isFastDirectNapiKind(argTypeInfos[i]->kind)) {
+    if (!isFastDirectNapiKind(argTypeInfos[i]->kind) &&
+        argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
       out << "  bool shouldFree" << i << " = false;\n";
     }
   }
 
-  if (hasManagedArgs) {
+  if (hasCleanupArgs) {
     out << "  auto cleanupManagedArgs = [&]() {\n";
     out << "    if (shouldFreeAny) {\n";
     if (kind == DispatchKind::CFunction && returnType != "void") {
@@ -681,7 +725,7 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
              "*reinterpret_cast<void**>(&nativeResult);\n";
       out << "      }\n";
     }
-    for (const auto i : managedArgIndexes) {
+    for (const auto i : cleanupArgIndexes) {
       out << "      if (shouldFree" << i << ") {\n";
       if (kind == DispatchKind::CFunction && returnType != "void") {
         out << "        if (returnPointerValue != nullptr && "
@@ -705,10 +749,33 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
 
   for (size_t i = 0; i < argTypes.size(); i++) {
     if (isFastDirectNapiKind(argTypeInfos[i]->kind)) {
-      writeFastNapiArgConversion(out, argTypeInfos[i], i, hasManagedArgs);
+      writeFastNapiArgConversion(out, argTypeInfos[i], i, hasCleanupArgs);
+    } else if (isFastManagedNapiKind(argTypeInfos[i]->kind)) {
+      out << "  if (!TryFastConvertNapiArgument(env, static_cast<MDTypeKind>("
+          << static_cast<int>(argTypeInfos[i]->kind) << "), argv[" << i
+          << "], &arg" << i << ")) {\n";
+      if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+        out << "    cif->argTypes[" << i << "]->toNative(env, argv[" << i
+            << "], &arg" << i << ", &shouldFree" << i << ", &shouldFreeAny);\n";
+      } else {
+        out << "    ignoredShouldFree = false;\n";
+        out << "    ignoredShouldFreeAny = false;\n";
+        out << "    cif->argTypes[" << i << "]->toNative(env, argv[" << i
+            << "], &arg" << i
+            << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
+      }
+      out << "  }\n";
     } else {
-      out << "  cif->argTypes[" << i << "]->toNative(env, argv[" << i
-          << "], &arg" << i << ", &shouldFree" << i << ", &shouldFreeAny);\n";
+      if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+        out << "  cif->argTypes[" << i << "]->toNative(env, argv[" << i
+            << "], &arg" << i << ", &shouldFree" << i << ", &shouldFreeAny);\n";
+      } else {
+        out << "  ignoredShouldFree = false;\n";
+        out << "  ignoredShouldFreeAny = false;\n";
+        out << "  cif->argTypes[" << i << "]->toNative(env, argv[" << i
+            << "], &arg" << i
+            << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
+      }
     }
   }
 
@@ -735,7 +802,7 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
     out << "  *reinterpret_cast<" << returnType
         << "*>(rvalue) = nativeResult;\n";
   }
-  if (hasManagedArgs) {
+  if (hasCleanupArgs) {
     out << "  cleanupManagedArgs();\n";
   }
 
