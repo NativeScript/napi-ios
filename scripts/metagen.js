@@ -130,7 +130,19 @@ async function main() {
   await fs.mkdir(typesDir, { recursive: true });
 
   for (const arch of Object.keys(sdk.targets)) {
-    const exec = path.resolve(
+    // Use the matching arch binary when available, falling back to arm64.
+    // build_metadata_generator.sh produces both dist/arm64 and dist/x86_64.
+    const preferredArch = arch;
+    const preferredExec = path.resolve(
+      __dirname,
+      "..",
+      "metadata-generator",
+      "dist",
+      preferredArch,
+      "bin",
+      "objc-metadata-generator",
+    );
+    const fallbackExec = path.resolve(
       __dirname,
       "..",
       "metadata-generator",
@@ -139,6 +151,14 @@ async function main() {
       "bin",
       "objc-metadata-generator",
     );
+
+    let exec;
+    try {
+      await fs.access(preferredExec);
+      exec = preferredExec;
+    } catch {
+      exec = fallbackExec;
+    }
 
     const args = [
       `types=${typesDir}`,
@@ -187,7 +207,12 @@ async function main() {
       console.error(`Failed to generate metadata for ${sdkName} ${arch}`);
       console.error(`Command: ${exec} ${args.join(" ")}`);
       console.error(`Exit code: ${output.status}`);
-      console.error(`Error output: ${output.stderr.toString()}`);
+      if (output.signal) {
+        console.error(`Killed by signal: ${output.signal}`);
+      }
+      if (output.error) {
+        console.error(`Spawn error: ${output.error.message}`);
+      }
       throw new Error("Failed to generate metadata");
     }
   }

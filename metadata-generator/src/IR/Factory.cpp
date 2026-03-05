@@ -87,8 +87,12 @@ bool MetadataFactory::shouldProcess(CXCursor cursor, bool required) {
   CXSourceLocation srcloc = clang_getCursorLocation(cursor);
   CXFile file;
   clang_getFileLocation(srcloc, &file, nullptr, nullptr, nullptr);
+  if (file == nullptr) {
+    return false;
+  }
   CXString fileName = clang_getFileName(file);
-  std::string fileNameStr = clang_getCString(fileName);
+  const char* fileNameCStr = clang_getCString(fileName);
+  std::string fileNameStr = fileNameCStr ? fileNameCStr : "";
   clang_disposeString(fileName);
 
   auto cached = shouldProcessCache.find(fileNameStr);

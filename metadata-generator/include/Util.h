@@ -1,10 +1,11 @@
 #pragma once
 
 #include <clang-c/Index.h>
+
 #include <algorithm>
 #include <cctype>
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
 #include <string>
 #include <vector>
 
@@ -19,24 +20,36 @@ enum class AvailabilityPlatform {
   XROS,
 };
 
-inline AvailabilityPlatform gAvailabilityPlatform = AvailabilityPlatform::Unknown;
+inline AvailabilityPlatform gAvailabilityPlatform =
+    AvailabilityPlatform::Unknown;
 inline int gAvailabilityTargetMajor = -1;
 inline int gAvailabilityTargetMinor = -1;
 
-inline AvailabilityPlatform platformFromTargetTriple(const std::string& targetTriple) {
-  if (targetTriple.find("macosx") != std::string::npos) return AvailabilityPlatform::MacOS;
-  if (targetTriple.find("ios") != std::string::npos) return AvailabilityPlatform::IOS;
-  if (targetTriple.find("tvos") != std::string::npos) return AvailabilityPlatform::TvOS;
-  if (targetTriple.find("watchos") != std::string::npos) return AvailabilityPlatform::WatchOS;
-  if (targetTriple.find("xros") != std::string::npos) return AvailabilityPlatform::XROS;
+inline AvailabilityPlatform platformFromTargetTriple(
+    const std::string& targetTriple) {
+  // Check 'macosx' before 'macos' to avoid partial match; also handle modern
+  // 'macos' spelling used in triples like x86_64-apple-macos11.0.
+  if (targetTriple.find("macosx") != std::string::npos ||
+      targetTriple.find("macos") != std::string::npos)
+    return AvailabilityPlatform::MacOS;
+  if (targetTriple.find("ios") != std::string::npos)
+    return AvailabilityPlatform::IOS;
+  if (targetTriple.find("tvos") != std::string::npos)
+    return AvailabilityPlatform::TvOS;
+  if (targetTriple.find("watchos") != std::string::npos)
+    return AvailabilityPlatform::WatchOS;
+  if (targetTriple.find("xros") != std::string::npos)
+    return AvailabilityPlatform::XROS;
   return AvailabilityPlatform::Unknown;
 }
 
-inline bool parsePlatformVersionFromTargetTriple(const std::string& targetTriple, int& major,
-                                                 int& minor) {
+inline bool parsePlatformVersionFromTargetTriple(
+    const std::string& targetTriple, int& major, int& minor) {
   size_t pos = std::string::npos;
   if ((pos = targetTriple.find("macosx")) != std::string::npos) {
-    pos += 6;
+    pos += 6;  // skip "macosx"
+  } else if ((pos = targetTriple.find("macos")) != std::string::npos) {
+    pos += 5;  // skip "macos" (modern spelling, e.g. x86_64-apple-macos11.0)
   } else if ((pos = targetTriple.find("watchos")) != std::string::npos) {
     pos += 7;
   } else if ((pos = targetTriple.find("tvos")) != std::string::npos) {
@@ -63,7 +76,8 @@ inline bool parsePlatformVersionFromTargetTriple(const std::string& targetTriple
     size_t minorStart = pos;
     while (pos < targetTriple.size() && std::isdigit(targetTriple[pos])) pos++;
     if (minorStart < pos) {
-      minor = std::atoi(targetTriple.substr(minorStart, pos - minorStart).c_str());
+      minor =
+          std::atoi(targetTriple.substr(minorStart, pos - minorStart).c_str());
     }
   }
 
@@ -148,7 +162,7 @@ inline std::vector<std::string> splitCamelCase(const std::string& value) {
   return result;
 }
 
-inline std::string &rtrim(std::string &s) {
+inline std::string& rtrim(std::string& s) {
   s.erase(std::find_if(s.rbegin(), s.rend(),
                        [](unsigned char ch) { return !std::isspace(ch); })
               .base(),
@@ -197,8 +211,12 @@ inline std::string getFrameworkName(CXCursor cursor) {
   CXSourceLocation srcloc = clang_getCursorLocation(cursor);
   CXFile file;
   clang_getFileLocation(srcloc, &file, nullptr, nullptr, nullptr);
+  if (file == nullptr) {
+    return "Runtime";
+  }
   CXString fileName = clang_getFileName(file);
-  std::string fileNameStr = clang_getCString(fileName);
+  const char* fileNameCStr = clang_getCString(fileName);
+  std::string fileNameStr = fileNameCStr ? fileNameCStr : "";
   clang_disposeString(fileName);
   auto pos = fileNameStr.find(".framework/");
   if (pos == std::string::npos) {
@@ -246,7 +264,8 @@ inline bool isAvailable(CXCursor cursor) {
   clang_disposeString(deprecatedMessage);
   clang_disposeString(unavailableMessage);
 
-  const char* wantedPlatform = platformNameForAvailability(gAvailabilityPlatform);
+  const char* wantedPlatform =
+      platformNameForAvailability(gAvailabilityPlatform);
   bool isCursorAvailableForTarget = true;
   for (auto& item : platformAvailability) {
     const char* platform = clang_getCString(item.Platform);
@@ -356,4 +375,4 @@ inline bool cursorHasReturnsRetainedAttribute(CXCursor cursor) {
   return search.hasAttribute;
 }
 
-} // namespace metagen
+}  // namespace metagen
