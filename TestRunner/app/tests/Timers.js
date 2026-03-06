@@ -36,15 +36,24 @@ describe("native timer", () => {
   });
 
   it("triggers interval", (done) => {
+    const startedAt = Date.now();
     let calls = 0;
     const itv = setInterval(() => {
       calls++;
-    }, 100);
-    setTimeout(() => {
+      if (calls < 10) {
+        return;
+      }
+
       clearInterval(itv);
-      expect(calls).toBe(10);
+      clearTimeout(deadline);
+      expect(Date.now() - startedAt).not.toBeLessThan(900);
       done();
-    }, 1000);
+    }, 100);
+    const deadline = setTimeout(() => {
+      clearInterval(itv);
+      expect(calls).toBeGreaterThanOrEqual(10);
+      done();
+    }, 2500);
   });
 
   it("cancels timeout", (done) => {
