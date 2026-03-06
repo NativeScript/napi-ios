@@ -42,7 +42,7 @@ jobs:
         run: npm run build:macos-cli
 
       - name: Run Tests on macOS
-        run: npm test:macos
+        run: npm run test:macos
 
       - name: Run Tests on iOS
-        run: npm test:ios
+        run: npm run test:ios
