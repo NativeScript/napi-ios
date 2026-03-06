@@ -245,7 +245,7 @@ function readRecentCrashReportForPid(pid, launchedAtMs) {
     }
 
     const candidates = fs.readdirSync(crashReportsDir)
-        .filter((name) => name.startsWith("TestRunner-") && (name.endsWith(".ips") || name.endsWith(".crash")))
+        .filter((name) => name.startsWith("TestRunner") && (name.endsWith(".ips") || name.endsWith(".crash")))
         .map((name) => {
             const fullPath = path.join(crashReportsDir, name);
             let stats;
@@ -676,7 +676,7 @@ function main() {
         const exitStatus = getProcessExitStatus(code, signal);
 
         if (!completedSuccessfully) {
-            if (isLikelyCrash(code, signal)) {
+            if (code !== 0 || signal) {
                 await emitCrashBacktrace(appBinaryPath, runArgs, launchedAtMs, childPid);
             }
 
