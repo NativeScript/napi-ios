@@ -45,4 +45,6 @@ jobs:
         run: npm run test:macos
 
       - name: Run Tests on iOS
+        env:
+          IOS_BUILD_TIMEOUT_MS: "600000"
         run: npm run test:ios

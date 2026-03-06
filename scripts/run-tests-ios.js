@@ -87,7 +87,9 @@ function parsePositiveInt(name, fallback) {
 }
 
 const commandTimeoutMs = parseTimeoutMs("IOS_COMMAND_TIMEOUT_MS", 3 * 60 * 1000);
-const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", commandTimeoutMs);
+// Clean CI runners often need substantially longer for the first iOS build than
+// for simulator control commands like boot/install/log collection.
+const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", 10 * 60 * 1000);
 const commandMaxBufferBytes = parsePositiveInt("IOS_COMMAND_MAX_BUFFER_BYTES", 64 * 1024 * 1024);
 const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 2 * 60 * 1000);
 const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 45 * 1000);
