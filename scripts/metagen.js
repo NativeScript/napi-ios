@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 
 const { spawnSync } = require("node:child_process");
-const fs = require("node:fs/promises");
+const fsp = require("node:fs/promises");
+const os = require("node:os");
 const path = require("node:path");
 
 const COMMON_FRAMEWORKS = [
@@ -62,6 +63,191 @@ function getSDKPath(platform) {
   }
 
   return output.stdout.trim();
+}
+
+function sleep(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function findLLDB() {
+  const xcrun = spawnSync("xcrun", ["--find", "lldb"], {
+    stdio: ["ignore", "pipe", "ignore"],
+    encoding: "utf8",
+  });
+
+  if (xcrun.status === 0) {
+    const candidate = xcrun.stdout.trim();
+    if (candidate) {
+      return candidate;
+    }
+  }
+
+  return "lldb";
+}
+
+function formatLLDBOutput(output) {
+  return [output.stdout, output.stderr].filter(Boolean).join("");
+}
+
+function runLLDBBacktrace(exec, args) {
+  const lldb = findLLDB();
+  const output = spawnSync(
+    lldb,
+    [
+      "--batch",
+      "--no-lldbinit",
+      "-o",
+      "run",
+      "-k",
+      "bt",
+      "-k",
+      "thread backtrace all",
+      "--",
+      exec,
+      ...args,
+    ],
+    {
+      stdio: ["ignore", "pipe", "pipe"],
+      encoding: "utf8",
+      timeout: 120000,
+    },
+  );
+
+  return {
+    output,
+  };
+}
+
+function formatCrashReport(reportPath, content) {
+  try {
+    const lines = content.split(/\r?\n/);
+    const header = JSON.parse(lines[0]);
+    const body = JSON.parse(lines.slice(1).join("\n"));
+    const faultingThreadIndex = body.faultingThread ?? 0;
+    const thread = body.threads?.[faultingThreadIndex];
+    const usedImages = body.usedImages ?? [];
+
+    const imageNames = new Map();
+    for (const image of usedImages) {
+      if (typeof image.imageIndex === "number" && image.name) {
+        imageNames.set(image.imageIndex, image.name);
+      }
+    }
+
+    const linesOut = [
+      `Crash report: ${reportPath}`,
+      `Process: ${body.procName ?? header.app_name ?? "unknown"}`,
+      `Timestamp: ${header.timestamp ?? body.captureTime ?? "unknown"}`,
+      `Exception: ${body.exception?.type ?? "unknown"} ${body.exception?.signal ?? ""}`.trim(),
+      `Termination: ${body.termination?.indicator ?? "unknown"}`,
+      `Faulting thread: ${faultingThreadIndex}`,
+    ];
+
+    const frames = thread?.frames ?? [];
+    if (frames.length > 0) {
+      linesOut.push("Faulting thread frames:");
+      for (const [index, frame] of frames.entries()) {
+        const image = imageNames.get(frame.imageIndex) ?? `image#${frame.imageIndex ?? "?"}`;
+        const symbol = frame.symbol ?? "<unknown>";
+        const offset =
+          typeof frame.symbolLocation === "number"
+            ? ` + ${frame.symbolLocation}`
+            : typeof frame.imageOffset === "number"
+              ? ` @ ${frame.imageOffset}`
+              : "";
+        linesOut.push(`  #${index} ${image} ${symbol}${offset}`);
+      }
+    }
+
+    return linesOut.join("\n");
+  } catch (error) {
+    return [
+      `Crash report: ${reportPath}`,
+      "Unable to parse crash report as JSON; showing raw excerpt instead.",
+      content.slice(0, 4000),
+    ].join("\n");
+  }
+}
+
+async function findRecentCrashReport(exec, startedAtMs) {
+  const reportsDir = path.join(os.homedir(), "Library", "Logs", "DiagnosticReports");
+  const execName = path.basename(exec);
+  const deadline = Date.now() + 10000;
+
+  while (Date.now() < deadline) {
+    let entries = [];
+    try {
+      entries = await fsp.readdir(reportsDir, { withFileTypes: true });
+    } catch {
+      return null;
+    }
+
+    const candidates = [];
+    for (const entry of entries) {
+      if (!entry.isFile() || !entry.name.endsWith(".ips")) {
+        continue;
+      }
+      if (!entry.name.startsWith(execName)) {
+        continue;
+      }
+
+      const reportPath = path.join(reportsDir, entry.name);
+      try {
+        const stat = await fsp.stat(reportPath);
+        if (stat.mtimeMs + 1000 < startedAtMs) {
+          continue;
+        }
+        candidates.push({ reportPath, mtimeMs: stat.mtimeMs });
+      } catch {
+        // Ignore reports that disappear while polling.
+      }
+    }
+
+    candidates.sort((a, b) => b.mtimeMs - a.mtimeMs);
+    if (candidates.length > 0) {
+      const content = await fsp.readFile(candidates[0].reportPath, "utf8");
+      return {
+        reportPath: candidates[0].reportPath,
+        content,
+      };
+    }
+
+    await sleep(1000);
+  }
+
+  return null;
+}
+
+async function emitCrashDiagnostics(exec, args, startedAtMs) {
+  console.error("Attempting crash diagnostics...");
+
+  const lldbResult = runLLDBBacktrace(exec, args);
+  const lldbOutput = formatLLDBOutput(lldbResult.output);
+
+  if (lldbOutput.trim()) {
+    console.error("LLDB output:");
+    console.error(lldbOutput.trimEnd());
+  } else {
+    console.error("LLDB produced no output.");
+  }
+
+  const attachDenied =
+    lldbOutput.includes("Not allowed to attach to process") ||
+    lldbOutput.includes("attach failed");
+  if (lldbResult.output.error) {
+    console.error(`LLDB error: ${lldbResult.output.error.message}`);
+  }
+  if (attachDenied) {
+    console.error("LLDB attach was denied by macOS; falling back to DiagnosticReports.");
+  }
+
+  const crashReport = await findRecentCrashReport(exec, startedAtMs);
+  if (!crashReport) {
+    console.error("No recent macOS crash report found in ~/Library/Logs/DiagnosticReports.");
+    return;
+  }
+
+  console.error(formatCrashReport(crashReport.reportPath, crashReport.content));
 }
 
 const sdks = {
@@ -126,8 +312,8 @@ async function main() {
   }
 
   const typesDir = path.resolve(__dirname, "..", "packages", sdkName, "types");
-  await fs.rm(typesDir, { recursive: true, force: true });
-  await fs.mkdir(typesDir, { recursive: true });
+  await fsp.rm(typesDir, { recursive: true, force: true });
+  await fsp.mkdir(typesDir, { recursive: true });
 
   for (const arch of Object.keys(sdk.targets)) {
     // Use the matching arch binary when available, falling back to arm64.
@@ -154,7 +340,7 @@ async function main() {
 
     let exec;
     try {
-      await fs.access(preferredExec);
+      await fsp.access(preferredExec);
       exec = preferredExec;
     } catch {
       exec = fallbackExec;
@@ -199,11 +385,15 @@ async function main() {
 
     console.log(`$ MetadataGenerator ${args.join(" ")}`);
 
+    const startedAtMs = Date.now();
     const output = spawnSync(exec, args, {
       stdio: "inherit",
     });
 
     if (output.status !== 0) {
+      if (process.platform === "darwin" && output.signal) {
+        await emitCrashDiagnostics(exec, args, startedAtMs);
+      }
       console.error(`Failed to generate metadata for ${sdkName} ${arch}`);
       console.error(`Command: ${exec} ${args.join(" ")}`);
       console.error(`Exit code: ${output.status}`);
