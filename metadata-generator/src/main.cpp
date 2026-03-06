@@ -2,6 +2,9 @@
 
 #include <cstdio>
 #include <cstdlib>
+#include <cstring>
+#include <filesystem>
+#include <fstream>
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -187,9 +190,35 @@ int main(int argc, char** argv) {
     }
   }
 
-  auto umbrellaHeader = std::fopen(umbrellaHeaderName.c_str(), "w");
-  std::fwrite(code.data(), 1, code.size(), umbrellaHeader);
-  std::fclose(umbrellaHeader);
+  std::error_code umbrellaDirError;
+  std::filesystem::path umbrellaPath(umbrellaHeaderName);
+  if (!umbrellaPath.parent_path().empty()) {
+    std::filesystem::create_directories(umbrellaPath.parent_path(),
+                                        umbrellaDirError);
+    if (umbrellaDirError) {
+      std::cerr << "Failed to create umbrella output directory: "
+                << umbrellaPath.parent_path() << " ("
+                << umbrellaDirError.message() << ")" << std::endl;
+      std::exit(1);
+    }
+  }
+
+  std::ofstream umbrellaHeader(
+      umbrellaHeaderName, std::ios::out | std::ios::binary | std::ios::trunc);
+  if (!umbrellaHeader.is_open()) {
+    std::cerr << "Failed to open umbrella header for writing: "
+              << umbrellaHeaderName << " (" << std::strerror(errno) << ")"
+              << std::endl;
+    std::exit(1);
+  }
+
+  umbrellaHeader.write(code.data(), static_cast<std::streamsize>(code.size()));
+  if (!umbrellaHeader) {
+    std::cerr << "Failed to write umbrella header: " << umbrellaHeaderName
+              << std::endl;
+    std::exit(1);
+  }
+  umbrellaHeader.close();
 
   std::vector<const char*> argsC(args.size());
   for (size_t i = 0; i < args.size(); ++i) {

@@ -312,8 +312,10 @@ async function main() {
   }
 
   const typesDir = path.resolve(__dirname, "..", "packages", sdkName, "types");
+  const metadataDir = path.resolve(__dirname, "..", "metadata-generator", "metadata");
   await fsp.rm(typesDir, { recursive: true, force: true });
   await fsp.mkdir(typesDir, { recursive: true });
+  await fsp.mkdir(metadataDir, { recursive: true });
 
   for (const arch of Object.keys(sdk.targets)) {
     // Use the matching arch binary when available, falling back to arm64.
@@ -357,18 +359,12 @@ async function main() {
       "-verbose",
       "-output-bin",
       path.resolve(
-        __dirname,
-        "..",
-        "metadata-generator",
-        "metadata",
+        metadataDir,
         `metadata.${sdkName}.${arch}.nsmd`,
       ),
       "-output-umbrella",
       path.resolve(
-        __dirname,
-        "..",
-        "metadata-generator",
-        "metadata",
+        metadataDir,
         `metadata.${sdkName}.${arch}.h`,
       ),
       "Xclang",
