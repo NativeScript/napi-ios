@@ -761,19 +761,14 @@ describe(module.id, function () {
     });
 
     it("returns retained", function () {
-        console.log("rr 1");
         expect(functionReturnsNSRetained().retainCount()).toBe(1);
-        console.log("rr 2");
         expect(functionReturnsCFRetained().retainCount()).toBe(1);
-        console.log("rr 3");
         expect(functionImplicitCreate().retainCount()).toBe(1);
 
-        console.log("rr 4");
         var obj = functionExplicitCreateNSObject();
         expect(obj.retainCount()).toBe(2);
         CFRelease(obj);
 
-        console.log("rr 5");
         expect(TNSReturnsRetained.methodReturnsNSRetained().retainCount()).toBe(1);
         expect(TNSReturnsRetained.methodReturnsCFRetained().retainCount()).toBe(1);
         expect(TNSReturnsRetained.newNSObjectMethod().retainCount()).toBe(1);
