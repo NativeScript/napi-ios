@@ -16,7 +16,7 @@
 //  - IOS_TEST_TIMEOUT_MS overrides max test runtime (default: 2 minutes).
 //  - IOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
 //  - IOS_TESTS filters test modules (comma-separated substrings passed to app as -tests).
-//  - IOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval (default: 45 seconds).
+//  - IOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval (default: 2 minutes).
 //  - IOS_TEST_LOG_STREAM=0 disables parallel simulator log stream (enabled by default).
 //  - IOS_SIM_LOG_LOOKBACK sets log-show window used for post-failure diagnostics (default: 45s).
 
@@ -92,7 +92,7 @@ const commandTimeoutMs = parseTimeoutMs("IOS_COMMAND_TIMEOUT_MS", 3 * 60 * 1000)
 const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", 10 * 60 * 1000);
 const commandMaxBufferBytes = parsePositiveInt("IOS_COMMAND_MAX_BUFFER_BYTES", 64 * 1024 * 1024);
 const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 2 * 60 * 1000);
-const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 45 * 1000);
+const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 2 * 60 * 1000);
 const emitJunitLogs = process.env.IOS_LOG_JUNIT !== "0";
 const requestedTests = (process.env.IOS_TESTS || "").trim();
 const enableLiveLogStream = process.env.IOS_TEST_LOG_STREAM !== "0";
