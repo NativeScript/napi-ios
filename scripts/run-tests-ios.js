@@ -17,7 +17,7 @@
 //  - IOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
 //  - IOS_TESTS filters test modules (comma-separated substrings passed to app as -tests).
 //  - IOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval (default: 2 minutes).
-//  - IOS_TEST_LOG_STREAM=0 disables parallel simulator log stream (enabled by default).
+//  - IOS_TEST_LOG_STREAM=1 enables parallel simulator log stream (disabled by default).
 //  - IOS_SIM_LOG_LOOKBACK sets log-show window used for post-failure diagnostics (default: 45s).
 
 const fs = require("fs");
@@ -95,7 +95,7 @@ const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 2 * 60 * 1000);
 const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 2 * 60 * 1000);
 const emitJunitLogs = process.env.IOS_LOG_JUNIT !== "0";
 const requestedTests = (process.env.IOS_TESTS || "").trim();
-const enableLiveLogStream = process.env.IOS_TEST_LOG_STREAM !== "0";
+const enableLiveLogStream = process.env.IOS_TEST_LOG_STREAM === "1";
 const simulatorLogLookback = process.env.IOS_SIM_LOG_LOOKBACK || "45s";
 const consoleLogMarker = "CONSOLE LOG:";
 
@@ -803,7 +803,7 @@ function waitForLaunchProcessClose(launchProcess, timeoutMs) {
     });
 }
 
-async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs, state) {
+async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs, state, launchRepresentsAppLifetime) {
     let launchResult = null;
     launchProcess.on("close", (code, signal) => {
         launchResult = { code: code ?? 0, signal: signal || null };
@@ -821,6 +821,10 @@ async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs,
         const junitResult = readCompletedJunitFileIfPresent(udid);
         if (junitResult) {
             return { junitResult, launchResult, timedOut: false };
+        }
+
+        if (launchRepresentsAppLifetime && launchResult) {
+            return { junitResult: null, launchResult, timedOut: false };
         }
 
         if (Date.now() - state.lastActivityAt >= inactivityTimeoutMs) {
@@ -1023,7 +1027,8 @@ async function main() {
             udid,
             launchProcess,
             testTimeoutMs,
-            launchState
+            launchState,
+            !enableLiveLogStream
         );
         if (junitResult) {
             fs.writeFileSync(junitOutPath, junitResult.xml);
