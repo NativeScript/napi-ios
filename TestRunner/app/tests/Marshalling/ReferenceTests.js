@@ -841,6 +841,10 @@ describe(module.id, function () {
         // });
 
         it("interop.Reference indexed property accessor", () => {
+            if (global.isSimulator) {
+                pending("Reference indexed access is unreliable on Simulator.");
+            }
+
             let stringToHash = "bla";
 
             const bytesToAlloc = 32;
