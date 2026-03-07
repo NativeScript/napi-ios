@@ -47,6 +47,6 @@ jobs:
       - name: Run Tests on iOS
         env:
           IOS_BUILD_TIMEOUT_MS: "600000"
+          IOS_TEST_TIMEOUT_MS: "600000"
           IOS_TEST_INACTIVITY_TIMEOUT_MS: "180000"
-          IOS_TEST_LOG_STREAM: "0"
         run: npm run test:ios

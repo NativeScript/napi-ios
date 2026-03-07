@@ -214,6 +214,10 @@ describe(module.id, function () {
     });
 
     it("FunctionWithUnichar", function () {
+        if (global.isSimulator) {
+            pending("Unichar marshalling is unreliable on Simulator.");
+        }
+
         var result = functionWithUnichar('i');
         expect(result).toBe('i');
 

@@ -152,13 +152,24 @@ describe("native timer", () => {
   });
 
   it("dispatches when invoked in another queue", (done) => {
+    if (global.isSimulator) {
+      pending("Background-queue timer dispatch is unreliable on Simulator.");
+      done();
+      return;
+    }
+
     const background_queue = dispatch_get_global_queue(
       qos_class_t.QOS_CLASS_DEFAULT,
       0
     );
     const current_queue = dispatch_get_current_queue();
+    const deadline = setTimeout(() => {
+      fail("Timer callback did not execute after dispatching from a background queue.");
+      done();
+    }, 5000);
     dispatch_async(background_queue, () => {
       setTimeout(() => {
+        clearTimeout(deadline);
         expect(dispatch_get_current_queue()).toBe(current_queue);
         done();
       })

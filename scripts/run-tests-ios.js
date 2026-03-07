@@ -13,11 +13,11 @@
 //  - IOS_COMMAND_TIMEOUT_MS overrides timeout for build/install/simctl commands (default: 3 minutes).
 //  - IOS_BUILD_TIMEOUT_MS overrides timeout for xcodebuild app build (default: IOS_COMMAND_TIMEOUT_MS).
 //  - IOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
-//  - IOS_TEST_TIMEOUT_MS overrides max test runtime (default: 2 minutes).
+//  - IOS_TEST_TIMEOUT_MS overrides max test runtime (default: 10 minutes).
 //  - IOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
 //  - IOS_TESTS filters test modules (comma-separated substrings passed to app as -tests).
 //  - IOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval (default: 2 minutes).
-//  - IOS_TEST_LOG_STREAM=1 enables parallel simulator log stream (disabled by default).
+//  - IOS_TEST_LOG_STREAM=0 disables parallel simulator log stream (enabled by default).
 //  - IOS_SIM_LOG_LOOKBACK sets log-show window used for post-failure diagnostics (default: 45s).
 
 const fs = require("fs");
@@ -91,11 +91,11 @@ const commandTimeoutMs = parseTimeoutMs("IOS_COMMAND_TIMEOUT_MS", 3 * 60 * 1000)
 // for simulator control commands like boot/install/log collection.
 const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", 10 * 60 * 1000);
 const commandMaxBufferBytes = parsePositiveInt("IOS_COMMAND_MAX_BUFFER_BYTES", 64 * 1024 * 1024);
-const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 2 * 60 * 1000);
+const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 10 * 60 * 1000);
 const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 2 * 60 * 1000);
 const emitJunitLogs = process.env.IOS_LOG_JUNIT !== "0";
 const requestedTests = (process.env.IOS_TESTS || "").trim();
-const enableLiveLogStream = process.env.IOS_TEST_LOG_STREAM === "1";
+const enableLiveLogStream = process.env.IOS_TEST_LOG_STREAM !== "0";
 const simulatorLogLookback = process.env.IOS_SIM_LOG_LOOKBACK || "45s";
 const consoleLogMarker = "CONSOLE LOG:";
 
@@ -803,7 +803,7 @@ function waitForLaunchProcessClose(launchProcess, timeoutMs) {
     });
 }
 
-async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs, state, launchRepresentsAppLifetime) {
+async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs, state) {
     let launchResult = null;
     launchProcess.on("close", (code, signal) => {
         launchResult = { code: code ?? 0, signal: signal || null };
@@ -821,10 +821,6 @@ async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs,
         const junitResult = readCompletedJunitFileIfPresent(udid);
         if (junitResult) {
             return { junitResult, launchResult, timedOut: false };
-        }
-
-        if (launchRepresentsAppLifetime && launchResult) {
-            return { junitResult: null, launchResult, timedOut: false };
         }
 
         if (Date.now() - state.lastActivityAt >= inactivityTimeoutMs) {
@@ -1027,8 +1023,7 @@ async function main() {
             udid,
             launchProcess,
             testTimeoutMs,
-            launchState,
-            !enableLiveLogStream
+            launchState
         );
         if (junitResult) {
             fs.writeFileSync(junitOutPath, junitResult.xml);

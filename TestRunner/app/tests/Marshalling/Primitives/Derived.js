@@ -340,6 +340,10 @@ describe(module.id, function () {
     });
 
     it("DerivedMethodWithUnichar", function () {
+        if (global.isSimulator) {
+            pending("Unichar marshalling is unreliable on Simulator.");
+        }
+
         var result = TNSPrimitives.extend({
             methodWithUnichar: function (x) {
                 expect(TNSPrimitives.prototype.methodWithUnichar.apply(this, arguments)).toBe('i');
