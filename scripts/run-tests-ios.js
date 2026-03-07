@@ -688,6 +688,12 @@ function wireLogStreamOutput(logStreamProcess, state) {
 
     const includeLine = (normalized) => {
         return normalized.includes("CONSOLE LOG:") ||
+            normalized.includes("SPEC START:") ||
+            normalized.includes("SPEC DONE:") ||
+            normalized.includes("TKUnit:") ||
+            normalized.includes("Application Start!") ||
+            normalized.includes("SUCCESS:") ||
+            normalized.includes("FAILURE:") ||
             normalized.includes("NativeScriptException") ||
             /Uncaught Exception/i.test(normalized) ||
             /EXC_BAD_ACCESS|EXC_CRASH|Abort trap/i.test(normalized) ||
@@ -818,10 +824,7 @@ async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs,
         }
 
         if (Date.now() - state.lastActivityAt >= inactivityTimeoutMs) {
-            const launchStillRunning = launchProcess.exitCode === null || launchProcess.exitCode === undefined;
-            if (!enableLiveLogStream || !launchStillRunning) {
-                return { junitResult: null, launchResult, timedOut: true, inactive: true };
-            }
+            return { junitResult: null, launchResult, timedOut: true, inactive: true };
         }
 
         await sleep(250);
