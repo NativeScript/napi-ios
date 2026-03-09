@@ -32,10 +32,135 @@
 #include <unordered_set>
 #include <vector>
 
+namespace {
+
+static size_t getBufferElementSize(napi_typedarray_type type) {
+  switch (type) {
+    case napi_int8_array:
+    case napi_uint8_array:
+    case napi_uint8_clamped_array:
+      return 1;
+    case napi_int16_array:
+    case napi_uint16_array:
+      return 2;
+    case napi_int32_array:
+    case napi_uint32_array:
+    case napi_float32_array:
+      return 4;
+    case napi_float64_array:
+    case napi_bigint64_array:
+    case napi_biguint64_array:
+      return 8;
+    default:
+      return 1;
+  }
+}
+
+static bool getJSBufferData(napi_env env, napi_value value, void** data, size_t* byteLength) {
+  if (data == nullptr || byteLength == nullptr) {
+    return false;
+  }
+
+  bool isArrayBuffer = false;
+  if (napi_is_arraybuffer(env, value, &isArrayBuffer) == napi_ok && isArrayBuffer) {
+    return napi_get_arraybuffer_info(env, value, data, byteLength) == napi_ok;
+  }
+
+  bool isTypedArray = false;
+  if (napi_is_typedarray(env, value, &isTypedArray) == napi_ok && isTypedArray) {
+    napi_typedarray_type type;
+    napi_value arrayBuffer;
+    size_t byteOffset = 0;
+    size_t elementLength = 0;
+    if (napi_get_typedarray_info(env, value, &type, &elementLength, data, &arrayBuffer,
+                                 &byteOffset) != napi_ok) {
+      return false;
+    }
+
+    *byteLength = elementLength * getBufferElementSize(type);
+    return true;
+  }
+
+  bool isDataView = false;
+  if (napi_is_dataview(env, value, &isDataView) == napi_ok && isDataView) {
+    napi_value arrayBuffer;
+    size_t byteOffset = 0;
+    return napi_get_dataview_info(env, value, byteLength, data, &arrayBuffer, &byteOffset) ==
+           napi_ok;
+  }
+
+  return false;
+}
+
+static const void* kNSDataJSValueAssociationKey = &kNSDataJSValueAssociationKey;
+
+}  // namespace
+
+@interface NSDataJSValueAssociation : NSObject
+
+- (instancetype)initWithEnv:(napi_env)env
+                      value:(napi_value)value
+                bridgeState:(nativescript::ObjCBridgeState*)bridgeState;
+
+@end
+
+@implementation NSDataJSValueAssociation {
+  napi_env env_;
+  nativescript::ObjCBridgeState* bridgeState_;
+  uint64_t bridgeStateToken_;
+  napi_ref valueRef_;
+}
+
+- (instancetype)initWithEnv:(napi_env)env
+                      value:(napi_value)value
+                bridgeState:(nativescript::ObjCBridgeState*)bridgeState {
+  self = [super init];
+  if (self != nil) {
+    env_ = env;
+    bridgeState_ = bridgeState;
+    bridgeStateToken_ = bridgeState != nullptr ? bridgeState->lifetimeToken : 0;
+    valueRef_ = nativescript::make_ref(env, value);
+  }
+
+  return self;
+}
+
+- (void)dealloc {
+  if (valueRef_ != nullptr && env_ != nullptr &&
+      nativescript::IsBridgeStateLive(bridgeState_, bridgeStateToken_)) {
+    napi_delete_reference(env_, valueRef_);
+  }
+
+  [super dealloc];
+}
+
+@end
+
 namespace nativescript {
 
 namespace {
 constexpr const char* kProtocolSuffix = "Protocol";
+
+NSData* createNSDataWrapper(napi_env env, napi_value value, ObjCBridgeState* bridgeState) {
+  void* data = nullptr;
+  size_t byteLength = 0;
+  if (!getJSBufferData(env, value, &data, &byteLength)) {
+    return nil;
+  }
+
+  NSData* wrappedData = [NSData dataWithBytesNoCopy:data length:byteLength freeWhenDone:NO];
+  if (wrappedData == nil) {
+    return nil;
+  }
+
+  NSDataJSValueAssociation* association =
+      [[NSDataJSValueAssociation alloc] initWithEnv:env value:value bridgeState:bridgeState];
+  objc_setAssociatedObject(wrappedData, kNSDataJSValueAssociationKey, association,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  [association release];
+
+  return wrappedData;
+}
 
 inline size_t alignUp(size_t value, size_t alignment) {
   if (alignment == 0) {
@@ -2087,41 +2212,31 @@ class ObjCObjectTypeConv : public TypeConv {
           bool isArrayBuffer = false;
           napi_is_arraybuffer(env, value, &isArrayBuffer);
           if (isArrayBuffer) {
-            void* data = nullptr;
-            size_t byteLength = 0;
-            napi_get_arraybuffer_info(env, value, &data, &byteLength);
-            *res = [NSData dataWithBytes:data length:byteLength];
-            cacheRoundTrip(*res);
-            return;
+            *res = createNSDataWrapper(env, value, bridgeState);
+            if (*res != nil) {
+              cacheRoundTrip(*res);
+              return;
+            }
           }
 
           bool isTypedArray = false;
           napi_is_typedarray(env, value, &isTypedArray);
           if (isTypedArray) {
-            napi_typedarray_type typedArrayType;
-            size_t elementLength = 0;
-            void* data = nullptr;
-            napi_value arrayBuffer;
-            size_t byteOffset = 0;
-            napi_get_typedarray_info(env, value, &typedArrayType, &elementLength, &data,
-                                     &arrayBuffer, &byteOffset);
-            size_t byteLength = elementLength * getTypedArrayUnitLength(typedArrayType);
-            *res = [NSData dataWithBytes:data length:byteLength];
-            cacheRoundTrip(*res);
-            return;
+            *res = createNSDataWrapper(env, value, bridgeState);
+            if (*res != nil) {
+              cacheRoundTrip(*res);
+              return;
+            }
           }
 
           bool isDataView = false;
           napi_is_dataview(env, value, &isDataView);
           if (isDataView) {
-            size_t byteLength = 0;
-            void* data = nullptr;
-            napi_value arrayBuffer;
-            size_t byteOffset = 0;
-            napi_get_dataview_info(env, value, &byteLength, &data, &arrayBuffer, &byteOffset);
-            *res = [NSData dataWithBytes:data length:byteLength];
-            cacheRoundTrip(*res);
-            return;
+            *res = createNSDataWrapper(env, value, bridgeState);
+            if (*res != nil) {
+              cacheRoundTrip(*res);
+              return;
+            }
           }
 
           bool isArray = false;
@@ -3440,8 +3555,7 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
 
 namespace {
 
-bool tryFastConvertStringToNSString(napi_env env, napi_value value, id* out,
-                                    bool mutableString) {
+bool tryFastConvertStringToNSString(napi_env env, napi_value value, id* out, bool mutableString) {
   if (out == nullptr) {
     return false;
   }
@@ -3452,29 +3566,27 @@ bool tryFastConvertStringToNSString(napi_env env, napi_value value, id* out,
     char16_t* utf16Buffer = utf16Stack;
     size_t utf16Capacity = kStackUtf16Capacity;
     size_t utf16Length = 0;
-    if (napi_get_value_string_utf16(env, value, utf16Buffer, utf16Capacity,
-                                    &utf16Length) != napi_ok) {
+    if (napi_get_value_string_utf16(env, value, utf16Buffer, utf16Capacity, &utf16Length) !=
+        napi_ok) {
       return false;
     }
 
     std::vector<char16_t> utf16Heap;
     if (utf16Length + 1 >= utf16Capacity) {
-      if (napi_get_value_string_utf16(env, value, nullptr, 0, &utf16Length) !=
-          napi_ok) {
+      if (napi_get_value_string_utf16(env, value, nullptr, 0, &utf16Length) != napi_ok) {
         return false;
       }
       utf16Heap.resize(utf16Length + 1, 0);
       utf16Buffer = utf16Heap.data();
       utf16Capacity = utf16Heap.size();
-      if (napi_get_value_string_utf16(env, value, utf16Buffer, utf16Capacity,
-                                      &utf16Length) != napi_ok) {
+      if (napi_get_value_string_utf16(env, value, utf16Buffer, utf16Capacity, &utf16Length) !=
+          napi_ok) {
         return false;
       }
     }
 
-    *out = [[NSMutableString alloc]
-        initWithCharacters:reinterpret_cast<const unichar*>(utf16Buffer)
-                    length:utf16Length];
+    *out = [[NSMutableString alloc] initWithCharacters:reinterpret_cast<const unichar*>(utf16Buffer)
+                                                length:utf16Length];
     return true;
   }
 
@@ -3483,37 +3595,32 @@ bool tryFastConvertStringToNSString(napi_env env, napi_value value, id* out,
   char* utf8Buffer = utf8Stack;
   size_t utf8Capacity = kStackUtf8Capacity;
   size_t utf8Length = 0;
-  if (napi_get_value_string_utf8(env, value, utf8Buffer, utf8Capacity,
-                                 &utf8Length) != napi_ok) {
+  if (napi_get_value_string_utf8(env, value, utf8Buffer, utf8Capacity, &utf8Length) != napi_ok) {
     return false;
   }
 
   std::vector<char> utf8Heap;
   if (utf8Length + 1 >= utf8Capacity) {
-    if (napi_get_value_string_utf8(env, value, nullptr, 0, &utf8Length) !=
-        napi_ok) {
+    if (napi_get_value_string_utf8(env, value, nullptr, 0, &utf8Length) != napi_ok) {
       return false;
     }
     utf8Heap.resize(utf8Length + 1, '\0');
     utf8Buffer = utf8Heap.data();
     utf8Capacity = utf8Heap.size();
-    if (napi_get_value_string_utf8(env, value, utf8Buffer, utf8Capacity,
-                                   &utf8Length) != napi_ok) {
+    if (napi_get_value_string_utf8(env, value, utf8Buffer, utf8Capacity, &utf8Length) != napi_ok) {
       return false;
     }
   }
 
   id stringValue = [[[NSString alloc] initWithBytes:utf8Buffer
                                              length:utf8Length
-                                           encoding:NSUTF8StringEncoding]
-      autorelease];
+                                           encoding:NSUTF8StringEncoding] autorelease];
   *out = stringValue != nil ? stringValue : [NSString string];
   return true;
 }
 
-bool tryFastConvertObjCObjectValue(napi_env env, napi_value value,
-                                   napi_valuetype valueType, MDTypeKind kind,
-                                   id* out) {
+bool tryFastConvertObjCObjectValue(napi_env env, napi_value value, napi_valuetype valueType,
+                                   MDTypeKind kind, id* out) {
   if (out == nullptr) {
     return false;
   }
@@ -3554,8 +3661,7 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value,
     case napi_bigint: {
       int64_t bigintValue = 0;
       bool lossless = false;
-      if (napi_get_value_bigint_int64(env, value, &bigintValue, &lossless) !=
-          napi_ok) {
+      if (napi_get_value_bigint_int64(env, value, &bigintValue, &lossless) != napi_ok) {
         return false;
       }
       *out = [NSNumber numberWithLongLong:bigintValue];
@@ -3563,11 +3669,19 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value,
     }
 
     case napi_string:
-      return tryFastConvertStringToNSString(
-          env, value, out, kind == mdTypeNSMutableStringObject);
+      return tryFastConvertStringToNSString(env, value, out, kind == mdTypeNSMutableStringObject);
 
     case napi_object:
     case napi_function: {
+      auto bridgeState = ObjCBridgeState::InstanceData(env);
+      auto cacheRoundTrip = [&](id nativeObj) {
+        if (nativeObj == nil || bridgeState == nullptr || !bridgeState->hasRoundTripCacheFrame()) {
+          return;
+        }
+
+        bridgeState->cacheRoundTripObject(env, nativeObj, value);
+      };
+
       if (valueType == napi_object) {
         if (Pointer::isInstance(env, value)) {
           Pointer* ptr = Pointer::unwrap(env, value);
@@ -3597,12 +3711,10 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value,
             for (const auto& entry : bridgeState->protocols) {
               auto bridgedProtocol = entry.second;
               if (bridgedProtocol == wrapped) {
-                Protocol* runtimeProtocol =
-                    objc_getProtocol(bridgedProtocol->name.c_str());
+                Protocol* runtimeProtocol = objc_getProtocol(bridgedProtocol->name.c_str());
                 if (runtimeProtocol == nil) {
                   std::string baseName;
-                  if (stripProtocolSuffix(bridgedProtocol->name.c_str(),
-                                          &baseName)) {
+                  if (stripProtocolSuffix(bridgedProtocol->name.c_str(), &baseName)) {
                     runtimeProtocol = objc_getProtocol(baseName.c_str());
                   }
                 }
@@ -3620,49 +3732,33 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value,
       }
 
       bool isTypedArray = false;
-      if (napi_is_typedarray(env, value, &isTypedArray) == napi_ok &&
-          isTypedArray) {
-        napi_typedarray_type typedArrayType;
-        size_t elementLength = 0;
-        void* data = nullptr;
-        napi_value arrayBuffer = nullptr;
-        size_t byteOffset = 0;
-        if (napi_get_typedarray_info(env, value, &typedArrayType, &elementLength,
-                                     &data, &arrayBuffer, &byteOffset) !=
-            napi_ok) {
-          return false;
+      if (napi_is_typedarray(env, value, &isTypedArray) == napi_ok && isTypedArray) {
+        *out = createNSDataWrapper(env, value, bridgeState);
+        if (*out != nil) {
+          cacheRoundTrip(*out);
+          return true;
         }
-        size_t byteLength =
-            elementLength * getTypedArrayUnitLength(typedArrayType);
-        *out = [NSData dataWithBytes:data length:byteLength];
-        return true;
+        return false;
       }
 
       bool isArrayBuffer = false;
-      if (napi_is_arraybuffer(env, value, &isArrayBuffer) == napi_ok &&
-          isArrayBuffer) {
-        void* data = nullptr;
-        size_t byteLength = 0;
-        if (napi_get_arraybuffer_info(env, value, &data, &byteLength) !=
-            napi_ok) {
-          return false;
+      if (napi_is_arraybuffer(env, value, &isArrayBuffer) == napi_ok && isArrayBuffer) {
+        *out = createNSDataWrapper(env, value, bridgeState);
+        if (*out != nil) {
+          cacheRoundTrip(*out);
+          return true;
         }
-        *out = [NSData dataWithBytes:data length:byteLength];
-        return true;
+        return false;
       }
 
       bool isDataView = false;
       if (napi_is_dataview(env, value, &isDataView) == napi_ok && isDataView) {
-        void* data = nullptr;
-        size_t byteLength = 0;
-        napi_value arrayBuffer = nullptr;
-        size_t byteOffset = 0;
-        if (napi_get_dataview_info(env, value, &byteLength, &data, &arrayBuffer,
-                                   &byteOffset) != napi_ok) {
-          return false;
+        *out = createNSDataWrapper(env, value, bridgeState);
+        if (*out != nil) {
+          cacheRoundTrip(*out);
+          return true;
         }
-        *out = [NSData dataWithBytes:data length:byteLength];
-        return true;
+        return false;
       }
 
       return false;
@@ -3675,8 +3771,7 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value,
 
 }  // namespace
 
-bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
-                                void* result) {
+bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value, void* result) {
   if (result == nullptr || value == nullptr) {
     return false;
   }
@@ -3693,8 +3788,7 @@ bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
     case mdTypeInstanceObject:
     case mdTypeNSStringObject:
     case mdTypeNSMutableStringObject:
-      return tryFastConvertObjCObjectValue(env, value, valueType,
-                                           static_cast<MDTypeKind>(kind),
+      return tryFastConvertObjCObjectValue(env, value, valueType, static_cast<MDTypeKind>(kind),
                                            reinterpret_cast<id*>(result));
 
     case mdTypeSelector: {
@@ -3709,21 +3803,18 @@ bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
           constexpr size_t kStackSelectorCapacity = 128;
           char selectorStack[kStackSelectorCapacity];
           size_t selectorLength = 0;
-          if (napi_get_value_string_utf8(env, value, selectorStack,
-                                         kStackSelectorCapacity,
+          if (napi_get_value_string_utf8(env, value, selectorStack, kStackSelectorCapacity,
                                          &selectorLength) != napi_ok) {
             return false;
           }
           const char* selectorName = selectorStack;
           std::vector<char> selectorHeap;
           if (selectorLength + 1 >= kStackSelectorCapacity) {
-            if (napi_get_value_string_utf8(env, value, nullptr, 0,
-                                           &selectorLength) != napi_ok) {
+            if (napi_get_value_string_utf8(env, value, nullptr, 0, &selectorLength) != napi_ok) {
               return false;
             }
             selectorHeap.resize(selectorLength + 1, '\0');
-            if (napi_get_value_string_utf8(env, value, selectorHeap.data(),
-                                           selectorHeap.size(),
+            if (napi_get_value_string_utf8(env, value, selectorHeap.data(), selectorHeap.size(),
                                            &selectorLength) != napi_ok) {
               return false;
             }
