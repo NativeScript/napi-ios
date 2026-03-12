@@ -709,6 +709,10 @@ function wireLogStreamOutput(logStreamProcess, state) {
         }
 
         const normalized = stripAnsi(line);
+        state.recentRawLines.push(normalized);
+        if (state.recentRawLines.length > 400) {
+            state.recentRawLines.splice(0, state.recentRawLines.length - 400);
+        }
         if (!includeLine(normalized)) {
             return;
         }
@@ -864,13 +868,7 @@ function collectRecentSimulatorLogs(udid, pid) {
     const text = result.stdout || "";
     let lines = text
         .split(/\r?\n/)
-        .filter((line) =>
-            line.includes("CONSOLE LOG:") ||
-            line.includes("NativeScriptException") ||
-            line.includes("Uncaught") ||
-            line.includes("EXC_BAD_ACCESS") ||
-            line.includes("heap")
-        );
+        .filter(Boolean);
 
     // Keep only the most recent app run in this log window.
     const startIndex = (() => {
@@ -893,6 +891,106 @@ function collectRecentSimulatorLogs(udid, pid) {
     }
 
     return lines.join("\n");
+}
+
+function getRecentRawLogTail(state, maxLines = 80) {
+    if (!state.recentRawLines || state.recentRawLines.length === 0) {
+        return "";
+    }
+
+    return state.recentRawLines.slice(-maxLines).join("\n");
+}
+
+function readJunitFileState(udid) {
+    const dataContainer = getAppDataContainerPath(udid);
+    if (!dataContainer) {
+        return {
+            dataContainer: null,
+            junitPath: null,
+            exists: false,
+            complete: false,
+            sizeBytes: 0,
+            tail: "",
+            documentsEntries: []
+        };
+    }
+
+    const documentsPath = path.join(dataContainer, "Documents");
+    const junitPath = path.join(documentsPath, "junit-result.xml");
+    const documentsEntries = fs.existsSync(documentsPath)
+        ? fs.readdirSync(documentsPath).sort()
+        : [];
+
+    if (!fs.existsSync(junitPath)) {
+        return {
+            dataContainer,
+            junitPath,
+            exists: false,
+            complete: false,
+            sizeBytes: 0,
+            tail: "",
+            documentsEntries
+        };
+    }
+
+    const xml = fs.readFileSync(junitPath, "utf8");
+    return {
+        dataContainer,
+        junitPath,
+        exists: true,
+        complete: xml.includes("</testsuites>"),
+        sizeBytes: Buffer.byteLength(xml, "utf8"),
+        tail: xml.slice(-2000),
+        documentsEntries
+    };
+}
+
+function collectSimulatorProcessSnapshot(udid) {
+    const result = run("xcrun", ["simctl", "spawn", udid, "ps", "-axo", "pid,ppid,stat,etime,command"]);
+    if (result.status !== 0) {
+        return "";
+    }
+
+    const lines = (result.stdout || "")
+        .split(/\r?\n/)
+        .filter((line) => /PID|TestRunner|launchd_sim|UIKitApplication/i.test(line));
+
+    return lines.join("\n");
+}
+
+function formatInactivityDiagnostics(udid, state, pid) {
+    const sections = [];
+    const rawTail = getRecentRawLogTail(state);
+    if (rawTail) {
+        sections.push(`--- Recent raw simulator log lines ---\n${rawTail}`);
+    }
+
+    const simulatorLogs = collectRecentSimulatorLogs(udid, pid);
+    if (simulatorLogs) {
+        sections.push(`--- Recent TestRunner simulator logs ---\n${simulatorLogs}`);
+    }
+
+    const junitState = readJunitFileState(udid);
+    const junitSummaryLines = [
+        `data container: ${junitState.dataContainer || "<missing>"}`,
+        `junit path: ${junitState.junitPath || "<missing>"}`,
+        `junit exists: ${junitState.exists}`,
+        `junit complete: ${junitState.complete}`,
+        `junit size bytes: ${junitState.sizeBytes}`,
+        `documents entries: ${junitState.documentsEntries.length > 0 ? junitState.documentsEntries.join(", ") : "<empty>"}`
+    ];
+    if (junitState.tail) {
+        junitSummaryLines.push("junit tail:");
+        junitSummaryLines.push(junitState.tail);
+    }
+    sections.push(`--- App container state ---\n${junitSummaryLines.join("\n")}`);
+
+    const processSnapshot = collectSimulatorProcessSnapshot(udid);
+    if (processSnapshot) {
+        sections.push(`--- Simulator process snapshot ---\n${processSnapshot}`);
+    }
+
+    return sections.join("\n\n");
 }
 
 function parseJasmineSummary(logText) {
@@ -990,7 +1088,13 @@ async function main() {
     let launchProcess;
     let logStreamProcess;
     let exitCode = 0;
-    const launchState = { logs: "", jasmineSummary: null, fatalDetected: false, lastActivityAt: Date.now() };
+    const launchState = {
+        logs: "",
+        jasmineSummary: null,
+        fatalDetected: false,
+        lastActivityAt: Date.now(),
+        recentRawLines: []
+    };
 
     try {
         if (enableLiveLogStream) {
@@ -1043,11 +1147,10 @@ async function main() {
         } else {
             const closeResult = launchResult || { code: 0, signal: null };
             const launchPid = extractLaunchPid(launchState.logs);
-            const simulatorLogs = collectRecentSimulatorLogs(udid, launchPid);
-            if (simulatorLogs) {
-                launchState.logs += `\n${simulatorLogs}`;
-                console.log("\n--- TestRunner Logs (simulator) ---");
-                console.log(simulatorLogs);
+            const inactivityDiagnostics = formatInactivityDiagnostics(udid, launchState, launchPid);
+            if (inactivityDiagnostics) {
+                launchState.logs += `\n${inactivityDiagnostics}`;
+                console.log(`\n${inactivityDiagnostics}`);
             }
 
             const jasmineSummary = launchState.jasmineSummary || parseJasmineSummary(launchState.logs);
