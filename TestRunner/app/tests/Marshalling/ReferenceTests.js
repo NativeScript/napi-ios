@@ -844,23 +844,14 @@ describe(module.id, function () {
             let stringToHash = "bla";
 
             const bytesToAlloc = 32;
-            console.log("[diag][ReferenceAccessor] start");
             const result = interop.alloc(bytesToAlloc);
-            console.log("[diag][ReferenceAccessor] allocated", result.toString());
             CC_SHA256(interop.handleof(NSString.stringWithString(stringToHash).UTF8String), stringToHash.length, result);
-            console.log("[diag][ReferenceAccessor] sha complete");
             let buffer = new interop.Reference(interop.types.uint8, result);
-            console.log("[diag][ReferenceAccessor] buffer ready");
 
             let actual = "";
             for (let i = 0; i < bytesToAlloc; i++) {
                 actual += buffer[i].toString(16).padStart(2, "0");
-                if ((i + 1) % 8 === 0) {
-                    console.log("[diag][ReferenceAccessor] bytes", i + 1, actual);
-                }
             }
-
-            console.log("[diag][ReferenceAccessor] final", actual);
             expect(actual).toBe("4df3c3f68fcc83b27e9d42c90431a72499f17875c81a599b566c9889b9696703");
         });
     });

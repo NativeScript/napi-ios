@@ -970,22 +970,7 @@ napi_value interop_alloc(napi_env env, napi_callback_info info) {
   napi_get_value_int64(env, arg, &size);
 
   void* data = malloc(size);
-
-  napi_value PointerClass = get_ref_value(env, ObjCBridgeState::InstanceData(env)->pointerClass);
-  napi_value result;
-  napi_new_instance(env, PointerClass, 0, nullptr, &result);
-
-  Pointer* ptr = nullptr;
-  napi_unwrap(env, result, (void**)&ptr);
-
-  if (ptr == nullptr) {
-    napi_throw_error(env, nullptr, "Invalid pointer");
-    return nullptr;
-  }
-
-  ptr->data = data;
-
-  return result;
+  return Pointer::create(env, data);
 }
 
 napi_value interop_handleof(napi_env env, napi_callback_info info) {
@@ -1190,20 +1175,15 @@ napi_value Pointer::create(napi_env env, void* data) {
 
   ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
   napi_value jsPointer = get_ref_value(env, bridgeState->pointerClass);
+  napi_value argv[1];
+  napi_create_bigint_uint64(env, static_cast<uint64_t>(reinterpret_cast<uintptr_t>(data)),
+                            &argv[0]);
   napi_value result;
-  napi_status status = napi_new_instance(env, jsPointer, 0, nullptr, &result);
+  napi_status status = napi_new_instance(env, jsPointer, 1, argv, &result);
 
   if (status != napi_ok) {
     return nullptr;
   }
-
-  Pointer* ptr = Pointer::unwrap(env, result);
-  if (ptr == nullptr) {
-    return nullptr;
-  }
-
-  ptr->data = data;
-  cachePointer(env, data, result);
   return result;
 }
 
