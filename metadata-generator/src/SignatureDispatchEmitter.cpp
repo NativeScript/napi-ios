@@ -68,7 +68,8 @@ void appendIntegral(uint64_t* hash, std::string* key, T value) {
   using Unsigned = typename std::make_unsigned<T>::type;
   Unsigned unsignedValue = static_cast<Unsigned>(value);
   for (size_t i = 0; i < sizeof(Unsigned); i++) {
-    const uint8_t byte = static_cast<uint8_t>((unsignedValue >> (i * 8)) & 0xFF);
+    const uint8_t byte =
+        static_cast<uint8_t>((unsignedValue >> (i * 8)) & 0xFF);
     *hash = hashBytesFnv1a(&byte, sizeof(byte), *hash);
     if (key != nullptr) {
       key->push_back(static_cast<char>(byte));
@@ -76,11 +77,11 @@ void appendIntegral(uint64_t* hash, std::string* key, T value) {
   }
 }
 
-bool appendCanonicalSignature(const MDSignature* signature,
-                             MDSectionOffset signatureOffset,
-                             const SignatureMap& signatures,
-                             std::unordered_set<MDSectionOffset>* activeSignatures,
-                             uint64_t* hash, std::string* key);
+bool appendCanonicalSignature(
+    const MDSignature* signature, MDSectionOffset signatureOffset,
+    const SignatureMap& signatures,
+    std::unordered_set<MDSectionOffset>* activeSignatures, uint64_t* hash,
+    std::string* key);
 
 bool appendCanonicalType(const MDTypeInfo* type, const SignatureMap& signatures,
                          std::unordered_set<MDSectionOffset>* activeSignatures,
@@ -100,8 +101,8 @@ bool appendCanonicalType(const MDTypeInfo* type, const SignatureMap& signatures,
     case mdTypeExtVector:
     case mdTypeComplex:
       appendIntegral<uint16_t>(hash, key, type->arraySize);
-      if (!appendCanonicalType(type->elementType, signatures, activeSignatures, hash,
-                               key)) {
+      if (!appendCanonicalType(type->elementType, signatures, activeSignatures,
+                               hash, key)) {
         return false;
       }
       break;
@@ -141,11 +142,11 @@ bool appendCanonicalType(const MDTypeInfo* type, const SignatureMap& signatures,
   return true;
 }
 
-bool appendCanonicalSignature(const MDSignature* signature,
-                             MDSectionOffset signatureOffset,
-                             const SignatureMap& signatures,
-                             std::unordered_set<MDSectionOffset>* activeSignatures,
-                             uint64_t* hash, std::string* key) {
+bool appendCanonicalSignature(
+    const MDSignature* signature, MDSectionOffset signatureOffset,
+    const SignatureMap& signatures,
+    std::unordered_set<MDSectionOffset>* activeSignatures, uint64_t* hash,
+    std::string* key) {
   if (signature == nullptr || hash == nullptr || activeSignatures == nullptr) {
     return false;
   }
@@ -442,7 +443,8 @@ bool argKindMayNeedCleanup(MDTypeKind kind) {
   }
 }
 
-std::string makeWrapperShapeKey(DispatchKind kind, const MDSignature* signature) {
+std::string makeWrapperShapeKey(DispatchKind kind,
+                                const MDSignature* signature) {
   if (signature == nullptr) {
     return {};
   }
@@ -485,8 +487,8 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
   switch (type->kind) {
     case mdTypeChar: {
       out << "  int32_t tmpArg" << index << " = 0;\n";
-      out << "  if (napi_get_value_int32(env, argv[" << index
-          << "], &tmpArg" << index << ") != napi_ok) {\n";
+      out << "  if (napi_get_value_int32(env, argv[" << index << "], &tmpArg"
+          << index << ") != napi_ok) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
@@ -499,8 +501,8 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     case mdTypeUChar:
     case mdTypeUInt8: {
       out << "  uint32_t tmpArg" << index << " = 0;\n";
-      out << "  if (napi_get_value_uint32(env, argv[" << index
-          << "], &tmpArg" << index << ") != napi_ok) {\n";
+      out << "  if (napi_get_value_uint32(env, argv[" << index << "], &tmpArg"
+          << index << ") != napi_ok) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
@@ -512,8 +514,8 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     }
     case mdTypeSShort: {
       out << "  int32_t tmpArg" << index << " = 0;\n";
-      out << "  if (napi_get_value_int32(env, argv[" << index
-          << "], &tmpArg" << index << ") != napi_ok) {\n";
+      out << "  if (napi_get_value_int32(env, argv[" << index << "], &tmpArg"
+          << index << ") != napi_ok) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
@@ -524,16 +526,13 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       break;
     }
     case mdTypeUShort: {
-      out << "  uint32_t tmpArg" << index << " = 0;\n";
-      out << "  if (napi_get_value_uint32(env, argv[" << index
-          << "], &tmpArg" << index << ") != napi_ok) {\n";
+      out << "  if (!TryFastConvertNapiUInt16Argument(env, argv[" << index
+          << "], &arg" << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
       out << "  }\n";
-      out << "  arg" << index << " = static_cast<uint16_t>(tmpArg" << index
-          << ");\n";
       break;
     }
     case mdTypeSInt: {
@@ -593,8 +592,8 @@ void writeFastNapiArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     }
     case mdTypeFloat: {
       out << "  double tmpArg" << index << " = 0.0;\n";
-      out << "  if (napi_get_value_double(env, argv[" << index
-          << "], &tmpArg" << index << ") != napi_ok) {\n";
+      out << "  if (napi_get_value_double(env, argv[" << index << "], &tmpArg"
+          << index << ") != napi_ok) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
@@ -731,7 +730,8 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
         out << "        if (returnPointerValue != nullptr && "
                "*reinterpret_cast<void**>(&arg"
             << i << ") == returnPointerValue) {\n";
-        out << "          // Returning an argument pointer keeps ownership with "
+        out << "          // Returning an argument pointer keeps ownership "
+               "with "
                "the return value.\n";
         out << "        } else {\n";
         out << "          cif->argTypes[" << i
@@ -945,7 +945,8 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   size_t wrapperIndex = 0;
   for (const auto& wrapper : wrappers) {
     wrapperNameByKey.emplace(
-        wrapper.first, makeNapiWrapperName(wrapper.second.first, wrapperIndex++));
+        wrapper.first,
+        makeNapiWrapperName(wrapper.second.first, wrapperIndex++));
   }
 
   std::vector<std::pair<uint64_t, std::string>> sortedObjCNapiEntries(

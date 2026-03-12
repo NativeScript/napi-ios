@@ -1,16 +1,186 @@
 #include "CFunction.h"
+#include <dispatch/dispatch.h>
+#include <cstring>
+#include <vector>
+#include "Block.h"
 #include "ClassMember.h"
+#include "Interop.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
 #include "ffi/NativeScriptException.h"
 #include "ffi/Tasks.h"
-#include <cstring>
-#include <vector>
 #ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"
 #endif
 
 namespace nativescript {
+
+namespace {
+
+inline bool unwrapCompatNativeHandleForCFunction(napi_env env, napi_value value, void** out) {
+  if (value == nullptr || out == nullptr) {
+    return false;
+  }
+
+  if (Pointer::isInstance(env, value)) {
+    Pointer* ptr = Pointer::unwrap(env, value);
+    *out = ptr != nullptr ? ptr->data : nullptr;
+    return ptr != nullptr;
+  }
+
+  if (Reference::isInstance(env, value)) {
+    Reference* ref = Reference::unwrap(env, value);
+    *out = ref != nullptr ? ref->data : nullptr;
+    return ref != nullptr;
+  }
+
+  napi_valuetype valueType = napi_undefined;
+  if (napi_typeof(env, value, &valueType) != napi_ok) {
+    return false;
+  }
+
+  if (valueType == napi_bigint) {
+    uint64_t raw = 0;
+    bool lossless = false;
+    if (napi_get_value_bigint_uint64(env, value, &raw, &lossless) != napi_ok) {
+      return false;
+    }
+    *out = reinterpret_cast<void*>(static_cast<uintptr_t>(raw));
+    return true;
+  }
+
+  if (valueType == napi_external) {
+    return napi_get_value_external(env, value, out) == napi_ok;
+  }
+
+  if (valueType != napi_object && valueType != napi_function) {
+    return false;
+  }
+
+  bool hasNativePointer = false;
+  if (napi_has_named_property(env, value, "__ns_native_ptr", &hasNativePointer) == napi_ok &&
+      hasNativePointer) {
+    napi_value nativePointerValue = nullptr;
+    if (napi_get_named_property(env, value, "__ns_native_ptr", &nativePointerValue) == napi_ok &&
+        napi_get_value_external(env, nativePointerValue, out) == napi_ok && *out != nullptr) {
+      return true;
+    }
+  }
+
+  return napi_unwrap(env, value, out) == napi_ok && *out != nullptr;
+}
+
+inline napi_value createCompatDispatchQueueWrapperForCFunction(napi_env env,
+                                                               dispatch_queue_t queue) {
+  if (queue == nullptr) {
+    napi_value nullValue = nullptr;
+    napi_get_null(env, &nullValue);
+    return nullValue;
+  }
+
+  return Pointer::create(env, reinterpret_cast<void*>(queue));
+}
+
+inline napi_value tryCallCompatLibdispatchFunction(napi_env env, napi_callback_info cbinfo,
+                                                   const char* functionName) {
+  if (strcmp(functionName, "dispatch_get_global_queue") == 0) {
+    size_t argc = 2;
+    napi_value argv[2] = {nullptr, nullptr};
+    napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
+
+    int64_t identifier = 0;
+    if (argc > 0) {
+      napi_valuetype identifierType = napi_undefined;
+      if (napi_typeof(env, argv[0], &identifierType) == napi_ok && identifierType == napi_bigint) {
+        bool lossless = false;
+        if (napi_get_value_bigint_int64(env, argv[0], &identifier, &lossless) != napi_ok) {
+          napi_throw_type_error(env, nullptr,
+                                "dispatch_get_global_queue expects a numeric identifier.");
+          return nullptr;
+        }
+      } else {
+        napi_value coercedIdentifier = nullptr;
+        if (napi_coerce_to_number(env, argv[0], &coercedIdentifier) != napi_ok ||
+            napi_get_value_int64(env, coercedIdentifier, &identifier) != napi_ok) {
+          napi_throw_type_error(env, nullptr,
+                                "dispatch_get_global_queue expects a numeric identifier.");
+          return nullptr;
+        }
+      }
+    }
+
+    uint64_t flags = 0;
+    if (argc > 1) {
+      napi_valuetype flagsType = napi_undefined;
+      if (napi_typeof(env, argv[1], &flagsType) == napi_ok && flagsType == napi_bigint) {
+        bool lossless = false;
+        if (napi_get_value_bigint_uint64(env, argv[1], &flags, &lossless) != napi_ok) {
+          napi_throw_type_error(env, nullptr, "dispatch_get_global_queue expects numeric flags.");
+          return nullptr;
+        }
+      } else {
+        napi_value coercedFlags = nullptr;
+        int64_t signedFlags = 0;
+        if (napi_coerce_to_number(env, argv[1], &coercedFlags) != napi_ok ||
+            napi_get_value_int64(env, coercedFlags, &signedFlags) != napi_ok) {
+          napi_throw_type_error(env, nullptr, "dispatch_get_global_queue expects numeric flags.");
+          return nullptr;
+        }
+        flags = static_cast<uint64_t>(signedFlags);
+      }
+    }
+
+    return createCompatDispatchQueueWrapperForCFunction(
+        env, dispatch_get_global_queue(identifier, flags));
+  }
+
+  if (strcmp(functionName, "dispatch_get_current_queue") == 0) {
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+    return createCompatDispatchQueueWrapperForCFunction(env, dispatch_get_current_queue());
+#pragma clang diagnostic pop
+  }
+
+  if (strcmp(functionName, "dispatch_async") == 0) {
+    size_t argc = 2;
+    napi_value argv[2] = {nullptr, nullptr};
+    napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
+
+    if (argc < 2) {
+      napi_throw_type_error(env, nullptr, "dispatch_async expects a queue and callback.");
+      return nullptr;
+    }
+
+    void* queueHandle = nullptr;
+    if (!unwrapCompatNativeHandleForCFunction(env, argv[0], &queueHandle) ||
+        queueHandle == nullptr) {
+      napi_throw_type_error(env, nullptr, "dispatch_async expects a native queue handle.");
+      return nullptr;
+    }
+
+    napi_valuetype callbackType = napi_undefined;
+    if (napi_typeof(env, argv[1], &callbackType) != napi_ok || callbackType != napi_function) {
+      napi_throw_type_error(env, nullptr, "dispatch_async expects a function callback.");
+      return nullptr;
+    }
+
+    auto closure = new Closure(std::string("v"), true);
+    closure->env = env;
+    id block = registerBlock(env, closure, argv[1]);
+    dispatch_block_t dispatchBlock = (dispatch_block_t)block;
+
+    dispatch_async(reinterpret_cast<dispatch_queue_t>(queueHandle), dispatchBlock);
+    [block release];
+
+    napi_value undefinedValue = nullptr;
+    napi_get_undefined(env, &undefinedValue);
+    return undefinedValue;
+  }
+
+  return nullptr;
+}
+
+}  // namespace
 
 inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
   if (function == nullptr || cif == nullptr || cif->signatureHash == 0) {
@@ -34,8 +204,7 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
       cif->signatureHash, SignatureCallKind::CFunction, function->dispatchFlags);
   function->preparedInvoker =
       reinterpret_cast<void*>(lookupCFunctionPreparedInvoker(function->dispatchId));
-  function->napiInvoker =
-      reinterpret_cast<void*>(lookupCFunctionNapiInvoker(function->dispatchId));
+  function->napiInvoker = reinterpret_cast<void*>(lookupCFunctionNapiInvoker(function->dispatchId));
   function->dispatchLookupCached = true;
 }
 
@@ -90,6 +259,11 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
 
   auto name = bridgeState->metadata->getString(offset);
 
+  if (strcmp(name, "dispatch_async") == 0 || strcmp(name, "dispatch_get_current_queue") == 0 ||
+      strcmp(name, "dispatch_get_global_queue") == 0) {
+    return tryCallCompatLibdispatchFunction(env, cbinfo, name);
+  }
+
   auto func = bridgeState->getCFunction(env, offset);
 
   auto cif = func->cif;
@@ -97,8 +271,8 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   auto preparedInvoker = reinterpret_cast<CFunctionPreparedInvoker>(func->preparedInvoker);
   auto napiInvoker = reinterpret_cast<CFunctionNapiInvoker>(func->napiInvoker);
 
-  MDFunctionFlag functionFlags = bridgeState->metadata->getFunctionFlag(
-      offset + sizeof(MDSectionOffset) * 2);
+  MDFunctionFlag functionFlags =
+      bridgeState->metadata->getFunctionFlag(offset + sizeof(MDSectionOffset) * 2);
 
   const napi_value* invocationArgs = nullptr;
   std::vector<napi_value> dynamicArgs;
@@ -139,7 +313,7 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
   const bool isMainEntrypoint =
       strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0;
 
-  if (napiInvoker != nullptr && !isMainEntrypoint) {
+  if (napiInvoker != nullptr && !cif->skipGeneratedNapiDispatch && !isMainEntrypoint) {
     @try {
       if (!napiInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue)) {
         return nullptr;

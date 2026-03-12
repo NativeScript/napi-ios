@@ -44,11 +44,17 @@ class TypeConv {
   virtual void encode(std::string* encoding) {}
 };
 
-// Fast-path conversion for known metadata kinds used by generated dispatch wrappers.
-// Returns true only when conversion is fully handled and written to `result`.
-// Returns false when caller should fall back to TypeConv::toNative.
+// Fast-path conversion for known metadata kinds used by generated dispatch
+// wrappers. Returns true only when conversion is fully handled and written to
+// `result`. Returns false when caller should fall back to TypeConv::toNative.
 bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
                                 void* result);
+
+// Fast direct conversion for uint16_t / unichar arguments used by generated
+// dispatch wrappers. Supports both numeric values and single-character JS
+// strings.
+bool TryFastConvertNapiUInt16Argument(napi_env env, napi_value value,
+                                      uint16_t* result);
 
 // Cleanup function to clear thread-local struct type caches
 void clearStructTypeCaches();

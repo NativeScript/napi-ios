@@ -31,8 +31,7 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
   uintptr_t _objectAddress;
 }
 
-- (instancetype)initWithBridgeState:(nativescript::ObjCBridgeState*)bridgeState
-                             object:(id)object;
+- (instancetype)initWithBridgeState:(nativescript::ObjCBridgeState*)bridgeState object:(id)object;
 
 @end
 
@@ -68,8 +67,7 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 
 @implementation ObjCLifecycleAssociation
 
-- (instancetype)initWithBridgeState:(nativescript::ObjCBridgeState*)bridgeState
-                             object:(id)object {
+- (instancetype)initWithBridgeState:(nativescript::ObjCBridgeState*)bridgeState object:(id)object {
   self = [super init];
   if (self) {
     _bridgeState = bridgeState;
@@ -197,26 +195,8 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
 
   NAPI_PREAMBLE
 
-  auto roundTrip = getRoundTripObject(env, obj);
-  if (roundTrip != nullptr) {
-    return roundTrip;
-  }
-
-  auto find = objectRefs.find(obj);
-  if (find != objectRefs.end()) {
-    auto value = get_ref_value(env, find->second);
-    if (value != nullptr) {
-      return value;
-    }
-
-    unregisterObject(obj);
-  }
-
-  JSWrapperObjectAssociation* association = [JSWrapperObjectAssociation associationFor:obj];
-  if (association != nil) {
-    napi_value jsObject = get_ref_value(env, association.ref);
-    [obj retain];
-    return proxyNativeObject(env, jsObject, obj);
+  if (napi_value cached = findCachedObjectWrapper(env, obj); cached != nullptr) {
+    return cached;
   }
 
   napi_value result = nil;
@@ -274,6 +254,40 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
   }
 
   return result;
+}
+
+napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
+  if (obj == nil) {
+    return nullptr;
+  }
+
+  auto roundTrip = getRoundTripObject(env, obj);
+  if (roundTrip != nullptr) {
+    return roundTrip;
+  }
+
+  if (napi_value handleCached = getCachedHandleObject(env, (void*)obj); handleCached != nullptr) {
+    void* wrapped = nullptr;
+    if (napi_unwrap(env, handleCached, &wrapped) == napi_ok &&
+        NormalizeHandleKey(wrapped) == NormalizeHandleKey((void*)obj)) {
+      return handleCached;
+    }
+  }
+
+  if (napi_value existing = getNormalizedObjectRef(env, obj); existing != nullptr) {
+    return existing;
+  }
+
+  JSWrapperObjectAssociation* association = [JSWrapperObjectAssociation associationFor:obj];
+  if (association != nil) {
+    napi_value jsObject = get_ref_value(env, association.ref);
+    if (jsObject != nullptr) {
+      [obj retain];
+      return proxyNativeObject(env, jsObject, obj);
+    }
+  }
+
+  return nullptr;
 }
 
 napi_value findConstructorForObject(napi_env env, ObjCBridgeState* bridgeState, id object,
@@ -369,15 +383,8 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership owne
     return roundTrip;
   }
 
-  auto find = objectRefs.find(obj);
-  if (find != objectRefs.end()) {
-    auto value = get_ref_value(env, find->second);
-    if (value != nullptr) {
-      return value;
-    }
-
-    // It was collected, but not unregistered yet.
-    unregisterObject(obj);
+  if (napi_value existing = getNormalizedObjectRef(env, obj); existing != nullptr) {
+    return existing;
   }
 
   auto findClass = classesByPointer.find(obj);

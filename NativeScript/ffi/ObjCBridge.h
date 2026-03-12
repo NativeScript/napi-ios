@@ -62,6 +62,17 @@ class ObjCBridgeState {
     return bridgeState;
   }
 
+  static inline uintptr_t NormalizeHandleKey(void* handle) {
+    if (handle == nullptr) {
+      return 0;
+    }
+#if INTPTR_MAX == INT64_MAX
+    return reinterpret_cast<uintptr_t>(handle) & 0x0000FFFFFFFFFFFFULL;
+#else
+    return reinterpret_cast<uintptr_t>(handle);
+#endif
+  }
+
   void registerVarGlobals(napi_env env, napi_value global);
   void registerEnumGlobals(napi_env env, napi_value global);
   void registerStructGlobals(napi_env env, napi_value global);
@@ -88,6 +99,51 @@ class ObjCBridgeState {
                        ObjectOwnership ownership = kUnownedObject,
                        MDSectionOffset classOffset = 0,
                        std::vector<MDSectionOffset>* protocolOffsets = nullptr);
+  napi_value findCachedObjectWrapper(napi_env env, id object);
+  inline void cacheHandleObject(napi_env env, void* handle, napi_value value) {
+    if (handle == nullptr || value == nullptr) {
+      return;
+    }
+
+    uintptr_t handleKey = NormalizeHandleKey(handle);
+    auto it = handleObjectRefs.find(handleKey);
+    if (it != handleObjectRefs.end()) {
+      auto existing = get_ref_value(env, it->second);
+      if (existing != nullptr) {
+        bool isSameValue = false;
+        if (napi_strict_equals(env, existing, value, &isSameValue) == napi_ok &&
+            isSameValue) {
+          return;
+        }
+      }
+
+      napi_delete_reference(env, it->second);
+      handleObjectRefs.erase(it);
+    }
+
+    napi_ref ref = nullptr;
+    napi_create_reference(env, value, 0, &ref);
+    handleObjectRefs[handleKey] = ref;
+  }
+  inline napi_value getCachedHandleObject(napi_env env, void* handle) {
+    if (handle == nullptr) {
+      return nullptr;
+    }
+
+    uintptr_t handleKey = NormalizeHandleKey(handle);
+    auto it = handleObjectRefs.find(handleKey);
+    if (it == handleObjectRefs.end()) {
+      return nullptr;
+    }
+
+    auto value = get_ref_value(env, it->second);
+    if (value == nullptr) {
+      napi_delete_reference(env, it->second);
+      handleObjectRefs.erase(it);
+    }
+
+    return value;
+  }
 
   void unregisterObject(id object) noexcept;
 
@@ -120,20 +176,32 @@ class ObjCBridgeState {
     if (roundTripCacheFrames.empty()) {
       auto recent = recentRoundTripCache.find(object);
       if (recent == recentRoundTripCache.end()) {
+        uintptr_t objectKey = NormalizeHandleKey((void*)object);
+        for (const auto& entry : recentRoundTripCache) {
+          if (NormalizeHandleKey((void*)entry.first) == objectKey) {
+            return get_ref_value(env, entry.second);
+          }
+        }
+
         return nullptr;
       }
 
       return get_ref_value(env, recent->second);
     }
 
+    uintptr_t objectKey = NormalizeHandleKey((void*)object);
     for (auto frame = roundTripCacheFrames.rbegin();
          frame != roundTripCacheFrames.rend(); ++frame) {
       auto find = frame->find(object);
-      if (find == frame->end()) {
-        continue;
+      if (find != frame->end()) {
+        return get_ref_value(env, find->second);
       }
 
-      return get_ref_value(env, find->second);
+      for (const auto& entry : *frame) {
+        if (NormalizeHandleKey((void*)entry.first) == objectKey) {
+          return get_ref_value(env, entry.second);
+        }
+      }
     }
 
     auto recent = recentRoundTripCache.find(object);
@@ -200,6 +268,7 @@ class ObjCBridgeState {
   napi_env env = nullptr;
   uint64_t lifetimeToken = 0;
   std::unordered_map<id, napi_ref> objectRefs;
+  std::unordered_map<uintptr_t, napi_ref> handleObjectRefs;
 
   napi_ref pointerClass = nullptr;
   napi_ref referenceClass = nullptr;
@@ -230,6 +299,24 @@ class ObjCBridgeState {
   MDMetadataReader* metadata;
 
  private:
+  inline napi_value getNormalizedObjectRef(napi_env env, id object) const {
+    auto exact = objectRefs.find(object);
+    if (exact != objectRefs.end()) {
+      return get_ref_value(env, exact->second);
+    }
+
+    uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    for (const auto& entry : objectRefs) {
+      if (NormalizeHandleKey((void*)entry.first) != objectKey) {
+        continue;
+      }
+
+      return get_ref_value(env, entry.second);
+    }
+
+    return nullptr;
+  }
+
   std::unordered_map<MDSectionOffset, StructInfo*> structInfoCache;
   std::vector<std::unordered_map<id, napi_ref>> roundTripCacheFrames;
   std::unordered_map<id, napi_ref> recentRoundTripCache;

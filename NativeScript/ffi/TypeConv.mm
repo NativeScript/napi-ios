@@ -94,6 +94,44 @@ static bool getJSBufferData(napi_env env, napi_value value, void** data, size_t*
 
 static const void* kNSDataJSValueAssociationKey = &kNSDataJSValueAssociationKey;
 
+static id resolveCachedHandleObject(napi_env env, void* handle) {
+  if (env == nullptr || handle == nullptr) {
+    return nil;
+  }
+
+  auto bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr) {
+    return nil;
+  }
+
+  napi_value cachedValue = bridgeState->getCachedHandleObject(env, handle);
+  if (cachedValue == nullptr) {
+    return nil;
+  }
+
+  void* wrapped = nullptr;
+  if (napi_unwrap(env, cachedValue, &wrapped) == napi_ok && wrapped != nullptr) {
+    bridgeState->cacheRoundTripObject(env, static_cast<id>(wrapped), cachedValue);
+    return static_cast<id>(wrapped);
+  }
+
+  bool hasNativePointer = false;
+  if (napi_has_named_property(env, cachedValue, "__ns_native_ptr", &hasNativePointer) == napi_ok &&
+      hasNativePointer) {
+    napi_value nativePointerValue = nullptr;
+    void* nativePointer = nullptr;
+    if (napi_get_named_property(env, cachedValue, "__ns_native_ptr", &nativePointerValue) ==
+            napi_ok &&
+        napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
+        nativePointer != nullptr) {
+      bridgeState->cacheRoundTripObject(env, static_cast<id>(nativePointer), cachedValue);
+      return static_cast<id>(nativePointer);
+    }
+  }
+
+  return nil;
+}
+
 }  // namespace
 
 @interface NSDataJSValueAssociation : NSObject
@@ -2078,14 +2116,8 @@ class ObjCObjectTypeConv : public TypeConv {
       return Pointer::create(env, (void*)obj);
     }
 
-    auto roundTrip = bridgeState->getRoundTripObject(env, obj);
-    if (roundTrip != nullptr) {
-      return roundTrip;
-    }
-
-    auto existing = bridgeState->objectRefs.find(obj);
-    if (existing != bridgeState->objectRefs.end()) {
-      return get_ref_value(env, existing->second);
+    if (napi_value existing = bridgeState->findCachedObjectWrapper(env, obj); existing != nullptr) {
+      return existing;
     }
 
     ObjectOwnership ownership;
@@ -2195,13 +2227,24 @@ class ObjCObjectTypeConv : public TypeConv {
 
         if (Pointer::isInstance(env, value)) {
           Pointer* ptr = Pointer::unwrap(env, value);
-          *res = (id)ptr->data;
+          void* pointerData = ptr != nullptr ? ptr->data : nullptr;
+          if (id cachedObject = resolveCachedHandleObject(env, pointerData); cachedObject != nil) {
+            *res = cachedObject;
+            return;
+          }
+          *res = (id)pointerData;
           return;
         }
 
         if (Reference::isInstance(env, value)) {
           Reference* ref = Reference::unwrap(env, value);
-          *res = (id)ref->data;
+          void* referenceData = ref != nullptr ? ref->data : nullptr;
+          if (id cachedObject = resolveCachedHandleObject(env, referenceData);
+              cachedObject != nil) {
+            *res = cachedObject;
+            return;
+          }
+          *res = (id)referenceData;
           return;
         }
 
@@ -2528,9 +2571,8 @@ class ObjCNSMutableStringObjectTypeConv : public TypeConv {
     }
 
     auto bridgeState = ObjCBridgeState::InstanceData(env);
-    auto existing = bridgeState->objectRefs.find(str);
-    if (existing != bridgeState->objectRefs.end()) {
-      return get_ref_value(env, existing->second);
+    if (napi_value existing = bridgeState->findCachedObjectWrapper(env, str); existing != nullptr) {
+      return existing;
     }
 
     ObjectOwnership ownership = (flags & kReturnOwned) != 0 ? kOwnedObject : kUnownedObject;
@@ -3685,12 +3727,23 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value, napi_valuetyp
       if (valueType == napi_object) {
         if (Pointer::isInstance(env, value)) {
           Pointer* ptr = Pointer::unwrap(env, value);
-          *out = (id)ptr->data;
+          void* pointerData = ptr != nullptr ? ptr->data : nullptr;
+          if (id cachedObject = resolveCachedHandleObject(env, pointerData); cachedObject != nil) {
+            *out = cachedObject;
+            return true;
+          }
+          *out = (id)pointerData;
           return true;
         }
         if (Reference::isInstance(env, value)) {
           Reference* ref = Reference::unwrap(env, value);
-          *out = (id)ref->data;
+          void* referenceData = ref != nullptr ? ref->data : nullptr;
+          if (id cachedObject = resolveCachedHandleObject(env, referenceData);
+              cachedObject != nil) {
+            *out = cachedObject;
+            return true;
+          }
+          *out = (id)referenceData;
           return true;
         }
       }
@@ -3832,6 +3885,50 @@ bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
     default:
       return false;
   }
+}
+
+bool TryFastConvertNapiUInt16Argument(napi_env env, napi_value value, uint16_t* result) {
+  if (result == nullptr || value == nullptr) {
+    return false;
+  }
+
+  napi_valuetype valueType = napi_undefined;
+  if (napi_typeof(env, value, &valueType) != napi_ok) {
+    return false;
+  }
+
+  if (valueType == napi_string) {
+    size_t strLen = 0;
+    if (napi_get_value_string_utf16(env, value, nullptr, 0, &strLen) != napi_ok) {
+      return false;
+    }
+    if (strLen != 1) {
+      napi_throw_type_error(env, nullptr, "Expected a single-character string.");
+      *result = 0;
+      return false;
+    }
+
+    char16_t chars[2] = {0, 0};
+    if (napi_get_value_string_utf16(env, value, chars, 2, &strLen) != napi_ok) {
+      return false;
+    }
+
+    *result = static_cast<uint16_t>(chars[0]);
+    return true;
+  }
+
+  napi_value coerced = value;
+  if (napi_coerce_to_number(env, value, &coerced) != napi_ok) {
+    return false;
+  }
+
+  uint32_t converted = 0;
+  if (napi_get_value_uint32(env, coerced, &converted) != napi_ok) {
+    return false;
+  }
+
+  *result = static_cast<uint16_t>(converted);
+  return true;
 }
 
 // Cleanup function to clear thread-local caches

@@ -18,8 +18,7 @@ namespace {
 constexpr uint64_t kFNV64OffsetBasis = 14695981039346656037ull;
 constexpr uint64_t kFNV64Prime = 1099511628211ull;
 
-uint64_t hashBytesFnv1a(const void* data, size_t size,
-                        uint64_t seed = kFNV64OffsetBasis) {
+uint64_t hashBytesFnv1a(const void* data, size_t size, uint64_t seed = kFNV64OffsetBasis) {
   const auto* bytes = static_cast<const uint8_t*>(data);
   uint64_t hash = seed;
   for (size_t i = 0; i < size; i++) {
@@ -53,24 +52,52 @@ void appendIntegralToHash(uint64_t* hash, T value) {
   }
 }
 
-bool appendMetadataSignatureHash(MDMetadataReader* reader,
-                                 MDSectionOffset signatureOffset,
+bool appendMetadataSignatureHash(MDMetadataReader* reader, MDSectionOffset signatureOffset,
                                  std::unordered_set<MDSectionOffset>* activeSignatures,
                                  uint64_t* hash);
 
+inline bool typeRequiresSlowGeneratedNapiDispatch(const std::shared_ptr<TypeConv>& type) {
+  if (type == nullptr) {
+    return false;
+  }
+
+  switch (type->kind) {
+    case mdTypeUChar:
+    case mdTypeUInt8:
+      return true;
+    default:
+      return false;
+  }
+}
+
+inline void updateGeneratedNapiDispatchCompatibility(Cif* cif) {
+  if (cif == nullptr) {
+    return;
+  }
+
+  cif->skipGeneratedNapiDispatch = typeRequiresSlowGeneratedNapiDispatch(cif->returnType);
+  if (cif->skipGeneratedNapiDispatch) {
+    return;
+  }
+
+  for (const auto& argType : cif->argTypes) {
+    if (typeRequiresSlowGeneratedNapiDispatch(argType)) {
+      cif->skipGeneratedNapiDispatch = true;
+      return;
+    }
+  }
+}
+
 bool appendMetadataTypeHash(MDMetadataReader* reader, MDSectionOffset* offset,
-                            std::unordered_set<MDSectionOffset>* activeSignatures,
-                            uint64_t* hash) {
-  if (reader == nullptr || offset == nullptr || hash == nullptr ||
-      activeSignatures == nullptr) {
+                            std::unordered_set<MDSectionOffset>* activeSignatures, uint64_t* hash) {
+  if (reader == nullptr || offset == nullptr || hash == nullptr || activeSignatures == nullptr) {
     return false;
   }
 
   const MDTypeKind kindWithFlags = reader->getTypeKind(*offset);
   *offset += sizeof(MDTypeKind);
   const MDTypeKind rawKind =
-      static_cast<MDTypeKind>((kindWithFlags & ~mdTypeFlagNext) &
-                              ~mdTypeFlagVariadic);
+      static_cast<MDTypeKind>((kindWithFlags & ~mdTypeFlagNext) & ~mdTypeFlagVariadic);
 
   appendIntegralToHash<uint8_t>(hash, 0xB0);
   const MDTypeKind canonicalKind = canonicalizeSignatureTypeKind(rawKind);
@@ -130,10 +157,8 @@ bool appendMetadataTypeHash(MDMetadataReader* reader, MDSectionOffset* offset,
       const auto nestedSignatureOffset = reader->getOffset(*offset);
       *offset += sizeof(MDSectionOffset);
       if (nestedSignatureOffset != MD_SECTION_OFFSET_NULL) {
-        const auto nestedAbsoluteOffset =
-            reader->signaturesOffset + nestedSignatureOffset;
-        if (!appendMetadataSignatureHash(reader, nestedAbsoluteOffset,
-                                         activeSignatures, hash)) {
+        const auto nestedAbsoluteOffset = reader->signaturesOffset + nestedSignatureOffset;
+        if (!appendMetadataSignatureHash(reader, nestedAbsoluteOffset, activeSignatures, hash)) {
           return false;
         }
       }
@@ -148,8 +173,7 @@ bool appendMetadataTypeHash(MDMetadataReader* reader, MDSectionOffset* offset,
   return true;
 }
 
-bool appendMetadataSignatureHash(MDMetadataReader* reader,
-                                 MDSectionOffset signatureOffset,
+bool appendMetadataSignatureHash(MDMetadataReader* reader, MDSectionOffset signatureOffset,
                                  std::unordered_set<MDSectionOffset>* activeSignatures,
                                  uint64_t* hash) {
   if (reader == nullptr || hash == nullptr || activeSignatures == nullptr) {
@@ -301,6 +325,8 @@ Cif::Cif(napi_env env, std::string encoding, unsigned int implicitArgc) {
     this->avalues[i] = malloc(cif.arg_types[i + skippedArgs]->size);
     this->avaluesAllocCount++;
   }
+
+  updateGeneratedNapiDispatchCompatibility(this);
 }
 
 Cif::Cif(napi_env env, Method method) {
@@ -359,6 +385,8 @@ Cif::Cif(napi_env env, Method method) {
     this->avalues[i] = malloc(cif.arg_types[i + 2]->size);
     this->avaluesAllocCount++;
   }
+
+  updateGeneratedNapiDispatchCompatibility(this);
 }
 
 Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool isMethod,
@@ -442,6 +470,8 @@ Cif::Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool is
       signatureHash = canonicalSignatureHash;
     }
   }
+
+  updateGeneratedNapiDispatchCompatibility(this);
 }
 
 Cif::~Cif() {

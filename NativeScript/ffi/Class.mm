@@ -304,14 +304,15 @@ NAPI_FUNCTION(BridgedConstructor) {
     if (argc == 1 && argv[0] != nullptr) {
       void* rawPointer = nullptr;
       if (tryGetInteropPointerArg(env, argv[0], &rawPointer) && rawPointer != nullptr) {
+        if (napi_value cached = bridgeState->getCachedHandleObject(env, rawPointer);
+            cached != nullptr) {
+          return cached;
+        }
+
         object = (id)rawPointer;
-        napi_value constructor = nullptr;
-        if (napi_get_named_property(env, jsThis, "constructor", &constructor) == napi_ok &&
-            constructor != nullptr) {
-          napi_value existing = bridgeState->getObject(env, object, constructor, kUnownedObject);
-          if (existing != nullptr) {
-            return existing;
-          }
+        if (napi_value existing = bridgeState->findCachedObjectWrapper(env, object);
+            existing != nullptr) {
+          return existing;
         }
 
         jsThis = bridgeState->proxyNativeObject(env, jsThis, object);

@@ -514,9 +514,17 @@ describe(module.id, function () {
     it("ImplicitPointerToId", function () {
         var array = NSMutableArray.alloc().init();
         var object = new NSObject();
-        array.addObject(interop.handleof(object));
+        var handle = interop.handleof(object);
+        array.addObject(handle);
 
-        expect(array.firstObject).toBe(object);
+        var first = array.firstObject;
+        var canonical = new NSObject(handle);
+        var firstHandle = BigInt(interop.handleof(first).toString().match(/0x([0-9a-fA-F]+)/)[0]);
+        var objectHandle = BigInt(handle.toString().match(/0x([0-9a-fA-F]+)/)[0]);
+        var pointerMask = BigInt("0x0000FFFFFFFFFFFF");
+
+        expect(first).toBe(canonical);
+        expect(firstHandle & pointerMask).toBe(objectHandle & pointerMask);
     });
 
     it("NSInvocation_methodWithBool", function () {

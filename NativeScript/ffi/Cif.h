@@ -20,6 +20,7 @@ class Cif {
   size_t rvalueLength;
   bool isVariadic = false;
   uint64_t signatureHash = 0;
+  bool skipGeneratedNapiDispatch = false;
 
   void* rvalue;
   void** avalues;

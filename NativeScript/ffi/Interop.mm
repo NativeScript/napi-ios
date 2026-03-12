@@ -254,8 +254,23 @@ inline bool getCachedPointer(napi_env env, void* data, napi_value* value) {
   if (it == g_pointerCache.end()) {
     return false;
   }
+
   *value = get_ref_value(env, it->second);
-  return *value != nullptr;
+  if (*value == nullptr) {
+    napi_delete_reference(env, it->second);
+    g_pointerCache.erase(it);
+    return false;
+  }
+
+  Pointer* ptr = Pointer::unwrap(env, *value);
+  if (ptr == nullptr || ptr->data != data) {
+    napi_delete_reference(env, it->second);
+    g_pointerCache.erase(it);
+    *value = nullptr;
+    return false;
+  }
+
+  return true;
 }
 
 inline void cachePointer(napi_env env, void* data, napi_value value) {
@@ -316,23 +331,28 @@ inline bool unwrapKnownNativeHandle(napi_env env, napi_value value, void** out) 
     return true;
   }
 
-  bool hasNativePointer = false;
-  napi_has_named_property(env, value, kNativePointerProperty, &hasNativePointer);
-  if (hasNativePointer) {
-    napi_value nativePointerValue;
-    if (napi_get_named_property(env, value, kNativePointerProperty, &nativePointerValue) ==
-        napi_ok) {
-      void* nativePointer = nullptr;
-      if (napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
-          nativePointer != nullptr) {
-        *out = nativePointer;
-        return true;
-      }
-    }
+  if (StructObject* structObject = StructObject::unwrap(env, value)) {
+    *out = structObject->data;
+    return structObject->data != nullptr;
   }
 
   void* wrapped = nullptr;
   if (napi_unwrap(env, value, &wrapped) != napi_ok || wrapped == nullptr) {
+    bool hasNativePointer = false;
+    napi_has_named_property(env, value, kNativePointerProperty, &hasNativePointer);
+    if (hasNativePointer) {
+      napi_value nativePointerValue;
+      if (napi_get_named_property(env, value, kNativePointerProperty, &nativePointerValue) ==
+          napi_ok) {
+        void* nativePointer = nullptr;
+        if (napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
+            nativePointer != nullptr) {
+          *out = nativePointer;
+          return true;
+        }
+      }
+    }
+
     return false;
   }
 
@@ -800,6 +820,11 @@ napi_value interop_free(napi_env env, napi_callback_info info) {
   napi_unwrap(env, arg, (void**)&ptr);
 
   if (ptr != nullptr && ptr->data != nullptr) {
+    auto it = g_pointerCache.find(pointerKey(ptr->data));
+    if (it != g_pointerCache.end()) {
+      napi_delete_reference(env, it->second);
+      g_pointerCache.erase(it);
+    }
     free(ptr->data);
     ptr->data = nullptr;
   }
@@ -1017,6 +1042,10 @@ napi_value interop_handleof(napi_env env, napi_callback_info info) {
 
   void* data = nullptr;
   if (unwrapKnownNativeHandle(env, value, &data) && data != nullptr) {
+    if (valueType == napi_object && !Pointer::isInstance(env, value) &&
+        !Reference::isInstance(env, value) && !FunctionReference::isInstance(env, value)) {
+      ObjCBridgeState::InstanceData(env)->cacheHandleObject(env, data, value);
+    }
     return Pointer::create(env, data);
   }
   if (resolveNativePointerFromFunctionName(env, value, &data) && data != nullptr) {
@@ -1537,6 +1566,13 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
     if (argtype == napi_object && Pointer::isInstance(env, argv[1])) {
       reference->data = Pointer::unwrap(env, argv[1])->data;
       reference->ownsData = false;
+    } else if (reference->type != nullptr && reference->type->kind == mdTypeStruct &&
+               argtype == napi_object && StructObject::isInstance(env, argv[1])) {
+      StructObject* structObject = StructObject::unwrap(env, argv[1]);
+      if (structObject != nullptr) {
+        reference->data = structObject->data;
+        reference->ownsData = false;
+      }
     } else if (argtype == napi_object && Reference::isInstance(env, argv[1])) {
       Reference* other = Reference::unwrap(env, argv[1]);
       if (other != nullptr && other->data != nullptr) {

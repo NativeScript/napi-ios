@@ -295,7 +295,7 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
     *didInvoke = false;
   }
 
-  if (cif == nullptr || cif->signatureHash == 0) {
+  if (cif == nullptr || cif->signatureHash == 0 || cif->skipGeneratedNapiDispatch) {
     return true;
   }
 
@@ -1255,9 +1255,8 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
 
   bool didDirectInvoke = false;
   if (!tryObjCNapiDispatch(env, cif, self, receiverIsClass, method->methodOrGetter.selector,
-                           &method->methodOrGetter, method->methodOrGetter.dispatchFlags,
-                           cif->argv, &rvalue,
-                           &didDirectInvoke)) {
+                           &method->methodOrGetter, method->methodOrGetter.dispatchFlags, cif->argv,
+                           &rvalue, &didDirectInvoke)) {
     if (retainedReceiver) {
       [self release];
     }
@@ -1727,13 +1726,13 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
   bool didDirectInvoke = false;
   if (!tryObjCNapiDispatch(env, cif, self, receiverIsClass, method->methodOrGetter.selector,
                            &method->methodOrGetter, method->methodOrGetter.dispatchFlags, nullptr,
-                           rvalue,
-                           &didDirectInvoke)) {
+                           rvalue, &didDirectInvoke)) {
     return nullptr;
   }
 
   if (!didDirectInvoke) {
-    // NSLog(@"objcNativeCall: %p, %@", self, NSStringFromSelector(method->methodOrGetter.selector));
+    // NSLog(@"objcNativeCall: %p, %@", self,
+    // NSStringFromSelector(method->methodOrGetter.selector));
 
     if (!objcNativeCall(env, cif, self, receiverIsClass, &method->methodOrGetter,
                         method->methodOrGetter.dispatchFlags, avalues, rvalue)) {
