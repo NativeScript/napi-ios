@@ -994,7 +994,7 @@ napi_value interop_alloc(napi_env env, napi_callback_info info) {
   int64_t size;
   napi_get_value_int64(env, arg, &size);
 
-  void* data = malloc(size);
+  void* data = calloc(1, size);
   return Pointer::create(env, data);
 }
 

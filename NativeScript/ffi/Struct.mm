@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cstring>
 #include <vector>
+#include "Interop.h"
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
@@ -248,7 +249,23 @@ NAPI_FUNCTION(StructConstructor) {
   StructObject* object;
 
   if (argType == napi_object) {
-    object = new StructObject(env, info, arg);
+    if (Pointer::isInstance(env, arg)) {
+      Pointer* pointer = Pointer::unwrap(env, arg);
+      if (pointer == nullptr) {
+        napi_throw_error(env, nullptr, "Invalid pointer-backed struct argument");
+        return nullptr;
+      }
+      object = new StructObject(info, pointer->data, env, arg);
+    } else if (Reference::isInstance(env, arg)) {
+      Reference* reference = Reference::unwrap(env, arg);
+      if (reference == nullptr || reference->data == nullptr) {
+        napi_throw_error(env, nullptr, "Reference is not initialized");
+        return nullptr;
+      }
+      object = new StructObject(info, reference->data, env, arg);
+    } else {
+      object = new StructObject(env, info, arg);
+    }
   } else {
     object = new StructObject(info);
   }
@@ -324,8 +341,8 @@ NAPI_FUNCTION(StructEquals) {
 
     StructObject* structObject = StructObject::unwrap(env, value);
     if (structObject != nullptr) {
-      size_t copySize = std::min(static_cast<size_t>(info->size),
-                                 static_cast<size_t>(structObject->info->size));
+      size_t copySize =
+          std::min(static_cast<size_t>(info->size), static_cast<size_t>(structObject->info->size));
       memcpy(out.data(), structObject->data, copySize);
       return true;
     }
@@ -353,8 +370,10 @@ NAPI_FUNCTION(StructEquals) {
   return result;
 }
 
-inline StructObject::StructObject(StructInfo* info, void* data) {
+inline StructObject::StructObject(StructInfo* info, void* data, napi_env env,
+                                  napi_value backingValue) {
   this->info = info;
+  this->env = env;
   if (data == nullptr) {
     this->data = malloc(info->size);
     memset(this->data, 0, this->info->size);
@@ -362,11 +381,15 @@ inline StructObject::StructObject(StructInfo* info, void* data) {
   } else {
     this->data = data;
     this->owned = false;
+    if (env != nullptr && backingValue != nullptr) {
+      napi_create_reference(env, backingValue, 1, &this->backingRef);
+    }
   }
 }
 
 StructObject::StructObject(napi_env env, StructInfo* info, napi_value object, void* memory) {
   this->info = info;
+  this->env = env;
 
   if (memory == nullptr) {
     this->owned = true;
@@ -375,6 +398,8 @@ StructObject::StructObject(napi_env env, StructInfo* info, napi_value object, vo
     this->owned = false;
     this->data = memory;
   }
+
+  memset(this->data, 0, this->info->size);
 
   for (auto& field : info->fields) {
     bool hasProp = false;
@@ -389,6 +414,9 @@ StructObject::StructObject(napi_env env, StructInfo* info, napi_value object, vo
 }
 
 StructObject::~StructObject() {
+  if (this->backingRef != nullptr && this->env != nullptr) {
+    napi_delete_reference(this->env, this->backingRef);
+  }
   if (this->owned) free(this->data);
 }
 
