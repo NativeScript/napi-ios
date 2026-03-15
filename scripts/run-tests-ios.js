@@ -49,6 +49,7 @@ const metadataGeneratorBuildStepScript = path.join(
     "bin",
     "build-step-metadata-generator.py"
 );
+const nativeScriptSourceRoot = path.join(__dirname, "../NativeScript");
 
 const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
 const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
@@ -499,11 +500,21 @@ function buildTKLiveSyncSimulatorXCFramework() {
 }
 
 function ensureIOSSimulatorArtifacts() {
+    const sourceInputs = [
+        nativeScriptSourceRoot,
+        path.join(__dirname, "../build_nativescript.sh")
+    ];
+    const sourceMtime = sourceInputs.reduce(
+        (latest, inputPath) => Math.max(latest, getPathStats(inputPath).maxMtimeMs),
+        0
+    );
+    const artifactMtime = getPathStats(nativeScriptXCFramework).maxMtimeMs;
     const hasNativeScriptSimulator = hasSimulatorSlice(nativeScriptXCFramework);
     const hasTKLiveSyncSimulator = hasSimulatorSlice(tkLiveSyncXCFramework);
+    const needsNativeScriptRebuild = artifactMtime === 0 || artifactMtime < sourceMtime;
 
-    if (!hasNativeScriptSimulator) {
-        console.log("NativeScript simulator artifacts missing in dist/NativeScript.xcframework; running build:ios-sim...");
+    if (!hasNativeScriptSimulator || needsNativeScriptRebuild) {
+        console.log("NativeScript simulator artifacts are missing or stale; running build:ios-sim...");
         runAndRequireSuccess("npm", ["run", "build:ios-sim"]);
     }
 

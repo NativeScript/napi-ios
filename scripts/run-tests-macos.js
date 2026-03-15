@@ -25,6 +25,7 @@ const derivedDataPath = path.join(__dirname, "../build", "derived-data", "macos-
 const testRunnerAppSourcePath = path.join(__dirname, "../TestRunner", "app");
 const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
 const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
+const nativeScriptSourceRoot = path.join(__dirname, "../NativeScript");
 const metadataGeneratorRoot = path.join(__dirname, "../metadata-generator");
 const metadataGeneratorBinary = path.join(
     metadataGeneratorRoot,
@@ -461,6 +462,26 @@ function ensureMetadataGeneratorBuilt() {
     runBuildAndRequireSuccess("npm", ["run", "build-metagen"], commandTimeoutMs);
 }
 
+function ensureMacOSRuntimeArtifactsBuilt() {
+    const sourceInputs = [
+        nativeScriptSourceRoot,
+        path.join(__dirname, "../build_nativescript.sh")
+    ];
+
+    const sourceMtime = sourceInputs.reduce(
+        (latest, inputPath) => Math.max(latest, getPathStats(inputPath).maxMtimeMs),
+        0
+    );
+    const artifactMtime = getPathStats(nativeScriptXCFramework).maxMtimeMs;
+
+    if (artifactMtime > 0 && artifactMtime >= sourceMtime) {
+        return;
+    }
+
+    console.log("NativeScript macOS artifacts are missing or stale; running build:macos...");
+    runBuildAndRequireSuccess("npm", ["run", "build:macos"], commandTimeoutMs);
+}
+
 function buildTestRunnerApp() {
     const appBundlePath = path.join(
         derivedDataPath,
@@ -477,6 +498,7 @@ function buildTestRunnerApp() {
     }
 
     ensureMetadataGeneratorBuilt();
+    ensureMacOSRuntimeArtifactsBuilt();
 
     const nativeFingerprint = createBuildFingerprint(macosBuildInputs);
     const existingBuildState = readBuildState();
