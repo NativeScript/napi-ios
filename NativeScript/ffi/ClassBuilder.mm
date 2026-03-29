@@ -565,8 +565,7 @@ void ClassBuilder::addMethod(std::string& name, MethodDescriptor* desc, napi_val
   switch (desc->kind) {
     case kMethodDescEncoding: {
       const char* encoding = desc->encoding.c_str();
-      auto closure = new Closure(encoding, false, true);
-      closure->env = env;
+      auto closure = new Closure(env, encoding, false, true);
       if (func != nullptr)
         closure->func = make_ref(env, func);
       else
@@ -579,9 +578,8 @@ void ClassBuilder::addMethod(std::string& name, MethodDescriptor* desc, napi_val
 
     case kMethodDescSignatureOffset: {
       std::string encoding;
-      auto closure = new Closure(bridgeState->metadata, desc->signatureOffset, false, &encoding,
-                                 true, desc->isProperty);
-      closure->env = env;
+      auto closure = new Closure(env, bridgeState->metadata, desc->signatureOffset, false,
+                                 &encoding, true, desc->isProperty);
       if (func != nullptr)
         closure->func = make_ref(env, func);
       else

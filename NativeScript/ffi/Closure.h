@@ -20,8 +20,8 @@ class Closure {
   static void callBlockFromMainThread(napi_env env, napi_value js_cb,
                                       void* context, void* data);
 
-  Closure(std::string typeEncoding, bool isBlock, bool isMethod = false);
-  Closure(MDMetadataReader* reader, MDSectionOffset offset,
+  Closure(napi_env env, std::string typeEncoding, bool isBlock, bool isMethod = false);
+  Closure(napi_env env, MDMetadataReader* reader, MDSectionOffset offset,
           bool isBlock = false, std::string* encoding = nullptr,
           bool isMethod = false, bool isGetter = false, bool isSetter = false);
 
@@ -29,14 +29,14 @@ class Closure {
   void retain();
   void release();
 
-  napi_env env;
+  napi_env env = nullptr;
   napi_ref thisConstructor;
   napi_ref func = nullptr;
   bool isGetter = false;
   bool isSetter = false;
   std::string propertyName;
   SEL selector = nullptr;
-  napi_threadsafe_function tsfn;
+  napi_threadsafe_function tsfn = nullptr;
 
   std::thread::id jsThreadId = std::this_thread::get_id();
   CFRunLoopRef jsRunLoop = CFRunLoopGetCurrent();

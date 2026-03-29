@@ -3137,7 +3137,7 @@ ${body}
 
     const wrapperFactory = Function(
       'invoke',
-      `return function(${paramNames.join(',')}) { return invoke(new.target ? this : undefined, arguments, new.target); };`,
+      `return function(${paramNames.join(',')}) { 'use strict'; return invoke(this, arguments, new.target); };`,
     );
     const compiled = wrapperFactory(invoke);
 

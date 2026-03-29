@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include <map>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
@@ -146,6 +147,7 @@ class ObjCBridgeState {
   }
 
   void unregisterObject(id object) noexcept;
+  void detachObject(id object) noexcept;
 
   inline void beginRoundTripCacheFrame(napi_env /*env*/) {
     roundTripCacheFrames.emplace_back();
@@ -299,7 +301,14 @@ class ObjCBridgeState {
   MDMetadataReader* metadata;
 
  private:
+  inline void storeObjectRef(id object, napi_ref ref) noexcept {
+    std::lock_guard<std::mutex> lock(objectRefsMutex);
+    objectRefs[object] = ref;
+  }
+
   inline napi_value getNormalizedObjectRef(napi_env env, id object) const {
+    std::lock_guard<std::mutex> lock(objectRefsMutex);
+
     auto exact = objectRefs.find(object);
     if (exact != objectRefs.end()) {
       return get_ref_value(env, exact->second);
@@ -317,9 +326,23 @@ class ObjCBridgeState {
     return nullptr;
   }
 
+  inline napi_ref takeObjectRef(id object) noexcept {
+    std::lock_guard<std::mutex> lock(objectRefsMutex);
+
+    auto exact = objectRefs.find(object);
+    if (exact == objectRefs.end()) {
+      return nullptr;
+    }
+
+    napi_ref ref = exact->second;
+    objectRefs.erase(exact);
+    return ref;
+  }
+
   std::unordered_map<MDSectionOffset, StructInfo*> structInfoCache;
   std::vector<std::unordered_map<id, napi_ref>> roundTripCacheFrames;
   std::unordered_map<id, napi_ref> recentRoundTripCache;
+  mutable std::mutex objectRefsMutex;
   void* objc_autoreleasePool;
 };
 

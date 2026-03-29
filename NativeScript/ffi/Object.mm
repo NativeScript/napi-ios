@@ -6,7 +6,6 @@
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
-#import <dispatch/dispatch.h>
 #include <objc/runtime.h>
 
 static SEL JSWrapperObjectAssociationKey = @selector(JSWrapperObjectAssociationKey);
@@ -82,11 +81,9 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
   nativescript::ObjCBridgeState* bridgeState = _bridgeState;
   uint64_t bridgeStateToken = _bridgeStateToken;
   uintptr_t objectAddress = _objectAddress;
-  dispatch_async(dispatch_get_main_queue(), ^{
-    if (nativescript::IsBridgeStateLive(bridgeState, bridgeStateToken)) {
-      bridgeState->objectRefs.erase((id)objectAddress);
-    }
-  });
+  if (nativescript::IsBridgeStateLive(bridgeState, bridgeStateToken)) {
+    bridgeState->detachObject((id)objectAddress);
+  }
 
   [super dealloc];
 }
@@ -95,11 +92,16 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 
 napi_value JS_transferOwnershipToNative(napi_env env, napi_callback_info cbinfo) {
   size_t argc = 1;
-  napi_value arg;
-  napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, nullptr);
+  napi_value arg = nullptr;
+  if (napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, nullptr) != napi_ok || argc == 0 ||
+      arg == nullptr) {
+    return nullptr;
+  }
 
   id obj = nil;
-  napi_unwrap(env, arg, (void**)&obj);
+  if (napi_unwrap(env, arg, (void**)&obj) != napi_ok || obj == nil) {
+    return nullptr;
+  }
 
   [JSWrapperObjectAssociation transferOwnership:env of:arg toNative:obj];
 
@@ -127,6 +129,9 @@ const char* nativeObjectProxySource = R"(
       },
 
       set (target, name, value) {
+        const isInternalProperty = typeof name === 'string' &&
+          (name === 'napi_external' || name === 'napi_typetag' || name === '__ns_native_ptr');
+
         if (isArray) {
           const index = Number(name);
           if (!isNaN(index)) {
@@ -135,7 +140,7 @@ const char* nativeObjectProxySource = R"(
           }
         }
 
-        if (!(name in target) && !isTransfered) {
+        if (!isInternalProperty && !(name in target) && !isTransfered) {
           isTransfered = true;
           transferOwnershipToNative(target);
         }
@@ -217,10 +222,26 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
   if (isClass) {
     result = constructor;
   } else {
-    napi_value ext;
-    napi_create_external(env, nullptr, nullptr, nullptr, &ext);
+    napi_value prototype;
+    NAPI_GUARD(napi_get_named_property(env, constructor, "prototype", &prototype)) {
+      NAPI_THROW_LAST_ERROR
+      return nullptr;
+    }
 
-    NAPI_GUARD(napi_new_instance(env, constructor, 1, &ext, &result)) {
+    NAPI_GUARD(napi_create_object(env, &result)) {
+      NAPI_THROW_LAST_ERROR
+      return nullptr;
+    }
+
+    napi_value global;
+    napi_value objectCtor;
+    napi_value setPrototypeOf;
+    napi_value argv[2] = {result, prototype};
+    napi_get_global(env, &global);
+    napi_get_named_property(env, global, "Object", &objectCtor);
+    napi_get_named_property(env, objectCtor, "setPrototypeOf", &setPrototypeOf);
+
+    NAPI_GUARD(napi_call_function(env, objectCtor, setPrototypeOf, 2, argv, nullptr)) {
       NAPI_THROW_LAST_ERROR
       return nullptr;
     }
@@ -259,6 +280,10 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
 napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
   if (obj == nil) {
     return nullptr;
+  }
+
+  if (napi_value jsObject = idToJsObject(env, obj); jsObject != nullptr) {
+    return jsObject;
   }
 
   auto roundTrip = getRoundTripObject(env, obj);
@@ -442,10 +467,11 @@ void ObjCBridgeState::unregisterObject(id object) noexcept {
   // dbglog([string UTF8String]);
   // #endif
 
-  if (objectRefs.contains(object)) {
-    objectRefs.erase(object);
+  if (takeObjectRef(object) != nullptr) {
     [object release];
   }
 }
+
+void ObjCBridgeState::detachObject(id object) noexcept { takeObjectRef(object); }
 
 }  // namespace nativescript

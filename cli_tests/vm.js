@@ -199,6 +199,17 @@ assertEqual(
   15,
   "compileFunction should run against the parsing context",
 );
+const compiledThis = vm.compileFunction("return this.multiplier * value;", ["value"]);
+assertEqual(
+  compiledThis.call({ multiplier: 7 }, 6),
+  42,
+  "compileFunction should preserve explicit call() receivers",
+);
+assertEqual(
+  compiledThis.apply({ multiplier: 8 }, [5]),
+  40,
+  "compileFunction should preserve explicit apply() receivers",
+);
 const compiledCache = compiled.createCachedData();
 assert(
   compiledCache && typeof compiledCache.byteLength === "number",
@@ -215,6 +226,15 @@ try {
 assert(moduleCtorThrew, "vm.Module should be abstract");
 
 (async () => {
+  const importedVm = await import("node:vm");
+  assert(
+    typeof importedVm.createContext === "function",
+    "dynamic import('node:vm') should expose named vm exports",
+  );
+  assert(
+    importedVm.default && typeof importedVm.default.runInContext === "function",
+    "dynamic import('node:vm') should expose the default vm export",
+  );
   const synthetic = new vm.SyntheticModule(
     ["value", "label"],
     function () {

@@ -92,6 +92,100 @@ static bool getJSBufferData(napi_env env, napi_value value, void** data, size_t*
   return false;
 }
 
+static uint16_t encodeFloat16(double value) {
+  if (std::isnan(value)) {
+    return 0x7e00;
+  }
+
+  if (std::isinf(value)) {
+    return std::signbit(value) ? 0xfc00 : 0x7c00;
+  }
+
+  union {
+    float f;
+    uint32_t bits;
+  } input = {static_cast<float>(value)};
+
+  const uint32_t sign = (input.bits >> 16) & 0x8000;
+  uint32_t exponent = (input.bits >> 23) & 0xff;
+  uint32_t mantissa = input.bits & 0x007fffff;
+
+  if (exponent == 0) {
+    return static_cast<uint16_t>(sign);
+  }
+
+  int32_t halfExponent = static_cast<int32_t>(exponent) - 127 + 15;
+  if (halfExponent >= 0x1f) {
+    return static_cast<uint16_t>(sign | 0x7c00);
+  }
+
+  if (halfExponent <= 0) {
+    if (halfExponent < -10) {
+      return static_cast<uint16_t>(sign);
+    }
+
+    mantissa |= 0x00800000;
+    const uint32_t shift = static_cast<uint32_t>(14 - halfExponent);
+    uint32_t halfMantissa = mantissa >> shift;
+    if (((mantissa >> (shift - 1)) & 1u) != 0) {
+      halfMantissa += 1;
+    }
+    return static_cast<uint16_t>(sign | halfMantissa);
+  }
+
+  uint32_t halfMantissa = mantissa >> 13;
+  if ((mantissa & 0x00001000) != 0) {
+    halfMantissa += 1;
+    if ((halfMantissa & 0x00000400) != 0) {
+      halfMantissa = 0;
+      halfExponent += 1;
+      if (halfExponent >= 0x1f) {
+        return static_cast<uint16_t>(sign | 0x7c00);
+      }
+    }
+  }
+
+  return static_cast<uint16_t>(sign | (static_cast<uint32_t>(halfExponent) << 10) |
+                               (halfMantissa & 0x03ff));
+}
+
+static double decodeFloat16(uint16_t bits) {
+  const uint32_t sign = (bits & 0x8000u) << 16;
+  const uint32_t exponent = (bits >> 10) & 0x1fu;
+  const uint32_t mantissa = bits & 0x03ffu;
+
+  union {
+    uint32_t bits;
+    float f;
+  } output = {0};
+
+  if (exponent == 0) {
+    if (mantissa == 0) {
+      output.bits = sign;
+      return static_cast<double>(output.f);
+    }
+
+    uint32_t normalizedMantissa = mantissa;
+    int32_t normalizedExponent = -14;
+    while ((normalizedMantissa & 0x0400u) == 0) {
+      normalizedMantissa <<= 1;
+      normalizedExponent -= 1;
+    }
+    normalizedMantissa &= 0x03ffu;
+    output.bits = sign | (static_cast<uint32_t>(normalizedExponent + 127) << 23) |
+                  (normalizedMantissa << 13);
+    return static_cast<double>(output.f);
+  }
+
+  if (exponent == 0x1fu) {
+    output.bits = sign | 0x7f800000u | (mantissa << 13);
+    return static_cast<double>(output.f);
+  }
+
+  output.bits = sign | ((exponent - 15 + 127) << 23) | (mantissa << 13);
+  return static_cast<double>(output.f);
+}
+
 static const void* kNSDataJSValueAssociationKey = &kNSDataJSValueAssociationKey;
 
 static id resolveCachedHandleObject(napi_env env, void* handle) {
@@ -973,6 +1067,32 @@ class Float32TypeConv : public TypeConv {
 
 static const std::shared_ptr<Float32TypeConv> float32TypeConv = std::make_shared<Float32TypeConv>();
 
+class Float16TypeConv : public TypeConv {
+ public:
+  Float16TypeConv() {
+    type = &ffi_type_uint16;
+    kind = mdTypeF16;
+  }
+
+  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    napi_value result;
+    napi_create_double(env, decodeFloat16(*(uint16_t*)value), &result);
+    return result;
+  }
+
+  void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
+                bool* shouldFreeAny) override {
+    double val = 0;
+    napi_coerce_to_number(env, value, &value);
+    napi_get_value_double(env, value, &val);
+    *(uint16_t*)result = encodeFloat16(val);
+  }
+
+  void encode(std::string* encoding) override { *encoding += "H"; }
+};
+
+static const std::shared_ptr<Float16TypeConv> float16TypeConv = std::make_shared<Float16TypeConv>();
+
 class Float64TypeConv : public TypeConv {
  public:
   Float64TypeConv() {
@@ -1720,8 +1840,7 @@ class BlockTypeConv : public TypeConv {
         }
 
         auto bridgeState = ObjCBridgeState::InstanceData(env);
-        auto closure = new Closure(bridgeState->metadata, signatureOffset, true);
-        closure->env = env;
+        auto closure = new Closure(env, bridgeState->metadata, signatureOffset, true);
         id block = registerBlock(env, closure, value);
         *res = (void*)block;
         *shouldFree = true;
@@ -1849,8 +1968,7 @@ class FunctionPointerTypeConv : public TypeConv {
         }
 
         auto bridgeState = ObjCBridgeState::InstanceData(env);
-        auto closure = new Closure(bridgeState->metadata, signatureOffset, false);
-        closure->env = env;
+        auto closure = new Closure(env, bridgeState->metadata, signatureOffset, false);
         closure->func = make_ref(env, value);
         napi_remove_wrap(env, value, nullptr);
         napi_ref ref;
@@ -2538,7 +2656,7 @@ class ObjCNSStringObjectTypeConv : public TypeConv {
       [str getCharacters:(unichar*)chars.data() range:NSMakeRange(0, length)];
     }
     napi_value result;
-    napi_create_string_utf16(env, length > 0 ? chars.data() : nullptr, length, &result);
+    napi_create_string_utf16(env, chars.data(), length, &result);
     return result;
   }
 
@@ -3419,6 +3537,10 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
       return float32TypeConv;
     }
 
+    case mdTypeF16: {
+      return float16TypeConv;
+    }
+
     case mdTypeDouble: {
       return float64TypeConv;
     }
@@ -3590,7 +3712,6 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
     }
 
     default:
-      std::cout << "getTypeInfo unknown type kind: " << (int)kind << std::endl;
       return pointerTypeConv;
   }
 }

@@ -301,8 +301,7 @@ NAPI_FUNCTION(registerBlock) {
 
   napi_value callback = argv[1];
 
-  auto closure = new Closure(enc, true);
-  closure->env = env;
+  auto closure = new Closure(env, enc, true);
   registerBlock(env, closure, callback);
 
   return callback;

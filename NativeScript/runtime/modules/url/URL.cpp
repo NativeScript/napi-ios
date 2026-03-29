@@ -145,37 +145,7 @@ napi_value URL::GetSearchParams(napi_env env, napi_callback_info info) {
 
   // Create URLSearchParams from the search string
   url_search_params params(search_string);
-  URLSearchParams* searchParams =
-      new URLSearchParams(params, instance->GetURL());
-
-  // Get the URLSearchParams constructor
-  napi_value global;
-  NAPI_GUARD(napi_get_global(env, &global)) {
-    delete searchParams;
-    return nullptr;
-  }
-
-  napi_value constructor;
-  NAPI_GUARD(
-      napi_get_named_property(env, global, "URLSearchParams", &constructor)) {
-    delete searchParams;
-    return nullptr;
-  }
-
-  napi_value result;
-  NAPI_GUARD(napi_new_instance(env, constructor, 0, nullptr, &result)) {
-    delete searchParams;
-    return nullptr;
-  }
-
-  // Wrap the native URLSearchParams instance
-  NAPI_GUARD(napi_wrap(env, result, searchParams, URLSearchParams::Destructor,
-                       searchParams, nullptr)) {
-    delete searchParams;
-    return nullptr;
-  }
-
-  return result;
+  return URLSearchParams::Create(env, std::move(params), instance->GetURL());
 }
 
 napi_value URL::GetUserName(napi_env env, napi_callback_info info) {

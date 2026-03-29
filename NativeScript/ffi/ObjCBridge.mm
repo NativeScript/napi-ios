@@ -586,8 +586,7 @@ inline napi_value compat_dispatch_async(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  auto closure = new Closure(std::string("v"), true);
-  closure->env = env;
+  auto closure = new Closure(env, std::string("v"), true);
   id block = registerBlock(env, closure, argv[1]);
   dispatch_block_t dispatchBlock = (dispatch_block_t)block;
 
@@ -834,17 +833,13 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   napi_get_global(env, &global);
   napi_call_function(env, global, factory, 3, args, &result);
 
-  // We need to wrap the proxied object separately except for Hermes,
-  // We'll just ignore the error there.
-  napi_wrap(env, result, nativeObject, nullptr, nullptr, nullptr);
-
   napi_ref ref = nullptr;
   NAPI_GUARD(napi_add_finalizer(env, result, nativeObject, finalize_objc_object, this, &ref)) {
     NAPI_THROW_LAST_ERROR
     return nullptr;
   }
 
-  objectRefs[nativeObject] = ref;
+  storeObjectRef(nativeObject, ref);
   attachObjectLifecycleAssociation(env, nativeObject);
 
   return result;

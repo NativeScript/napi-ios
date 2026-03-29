@@ -164,8 +164,7 @@ inline napi_value tryCallCompatLibdispatchFunction(napi_env env, napi_callback_i
       return nullptr;
     }
 
-    auto closure = new Closure(std::string("v"), true);
-    closure->env = env;
+    auto closure = new Closure(env, std::string("v"), true);
     id block = registerBlock(env, closure, argv[1]);
     dispatch_block_t dispatchBlock = (dispatch_block_t)block;
 

@@ -12,6 +12,7 @@
 #include <iostream>
 #include <sstream>
 #include <unordered_map>
+#include <unordered_set>
 
 #include "ffi/NativeScriptException.h"
 #include "native_api_util.h"
@@ -22,6 +23,9 @@
 
 #ifdef TARGET_ENGINE_V8
 #include "../../napi/v8/v8-module-loader.h"
+#elif defined(TARGET_ENGINE_QUICKJS)
+#include "quickjs.h"
+#include "quicks-runtime.h"
 #endif
 
 typedef napi_value (*napi_module_init)(napi_env env, napi_value exports);
@@ -224,6 +228,297 @@ napi_value LoadRegisteredNapiModule(napi_env env,
 
   return nullptr;
 }
+
+std::string ModulePathToURL(const std::string& modulePath) {
+  if (modulePath.rfind("file://", 0) == 0) {
+    return modulePath;
+  }
+
+  if (modulePath.rfind("nativescript:", 0) == 0 ||
+      modulePath.rfind("node:", 0) == 0) {
+    return "nativescript:" + modulePath;
+  }
+
+  if (!modulePath.empty() && modulePath[0] == '/') {
+    return "file://" + modulePath;
+  }
+
+  return "nativescript:" + modulePath;
+}
+
+bool IsNodeBuiltinSpecifier(const std::string& specifier) {
+  static const std::unordered_set<std::string> kBuiltins = {
+      "url", "node:url", "fs", "node:fs", "fs/promises", "node:fs/promises",
+      "path", "node:path", "vm", "node:vm", "web", "node:web",
+      "stream/web", "node:stream/web"};
+  return kBuiltins.contains(specifier);
+}
+
+std::string NormalizeNodeBuiltinSpecifier(const std::string& specifier) {
+  if (specifier.rfind("node:", 0) == 0) {
+    return specifier.substr(5);
+  }
+  return specifier;
+}
+
+std::string EscapeForSingleQuotedJsString(const std::string& value) {
+  std::string escaped;
+  escaped.reserve(value.size());
+
+  for (char c : value) {
+    switch (c) {
+      case '\\':
+        escaped += "\\\\";
+        break;
+      case '\'':
+        escaped += "\\'";
+        break;
+      case '\n':
+        escaped += "\\n";
+        break;
+      case '\r':
+        escaped += "\\r";
+        break;
+      default:
+        escaped += c;
+        break;
+    }
+  }
+
+  return escaped;
+}
+
+std::string NormalizeRegisteredNapiModuleSpecifier(
+    const std::string& specifier) {
+  auto it = nativescript::napiModuleRegistry.find(specifier);
+  if (it != nativescript::napiModuleRegistry.end() && it->second != nullptr) {
+    return specifier;
+  }
+
+  if (specifier.rfind("node:", 0) == 0) {
+    std::string withoutPrefix = specifier.substr(5);
+    it = nativescript::napiModuleRegistry.find(withoutPrefix);
+    if (it != nativescript::napiModuleRegistry.end() && it->second != nullptr) {
+      return withoutPrefix;
+    }
+  }
+
+  return "";
+}
+
+std::string GetRegisteredNapiESModuleSource(const std::string& specifier) {
+  std::string normalized = NormalizeRegisteredNapiModuleSpecifier(specifier);
+  if (normalized.empty()) {
+    return "";
+  }
+
+  std::string escapedSpecifier = EscapeForSingleQuotedJsString(normalized);
+  return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load native module '${name}'`);
+};
+const __nativeModule = __load(')" +
+         escapedSpecifier + R"(');
+export default __nativeModule;
+)";
+}
+
+std::string GetBuiltinESModuleSource(const std::string& specifier) {
+  const auto builtinName = NormalizeNodeBuiltinSpecifier(specifier);
+
+  if (builtinName == "url") {
+    return R"(
+const __toURL = (input) => input instanceof URL ? input : new URL(String(input));
+export const URL = globalThis.URL;
+export const URLSearchParams = globalThis.URLSearchParams;
+export function pathToFileURL(path) {
+  const value = String(path);
+  return new URL(value.startsWith("/") ? `file://${value}` : `file:///${value}`);
+}
+export function fileURLToPath(value) {
+  const u = __toURL(value);
+  if (u.protocol !== "file:") {
+    throw new TypeError("The URL must be of scheme file:");
+  }
+  return decodeURIComponent(u.pathname);
+}
+export default { URL, URLSearchParams, pathToFileURL, fileURLToPath };
+)";
+  }
+
+  if (builtinName == "fs") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __fs = __load("node:fs");
+export const readFileSync = __fs.readFileSync;
+export const writeFileSync = __fs.writeFileSync;
+export const existsSync = __fs.existsSync;
+export const mkdirSync = __fs.mkdirSync;
+export const readdirSync = __fs.readdirSync;
+export const statSync = __fs.statSync;
+export const lstatSync = __fs.lstatSync;
+export const unlinkSync = __fs.unlinkSync;
+export const rmSync = __fs.rmSync;
+export const readFile = __fs.readFile;
+export const writeFile = __fs.writeFile;
+export const constants = __fs.constants;
+export const promises = __fs.promises;
+export default __fs;
+)";
+  }
+
+  if (builtinName == "fs/promises") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __fsp = __load("node:fs").promises;
+export const readFile = __fsp.readFile;
+export const writeFile = __fsp.writeFile;
+export const mkdir = __fsp.mkdir;
+export const readdir = __fsp.readdir;
+export const stat = __fsp.stat;
+export const lstat = __fsp.lstat;
+export const unlink = __fsp.unlink;
+export const rm = __fsp.rm;
+export default __fsp;
+)";
+  }
+
+  if (builtinName == "path") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __path = __load("node:path");
+export const basename = __path.basename;
+export const dirname = __path.dirname;
+export const extname = __path.extname;
+export const isAbsolute = __path.isAbsolute;
+export const join = __path.join;
+export const normalize = __path.normalize;
+export const parse = __path.parse;
+export const format = __path.format;
+export const relative = __path.relative;
+export const resolve = __path.resolve;
+export const toNamespacedPath = __path.toNamespacedPath;
+export const sep = __path.sep;
+export const delimiter = __path.delimiter;
+export const posix = __path.posix;
+export const win32 = __path.win32;
+export default __path;
+)";
+  }
+
+  if (builtinName == "vm") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __vm = __load("node:vm");
+export const Script = __vm.Script;
+export const Module = __vm.Module;
+export const SourceTextModule = __vm.SourceTextModule;
+export const SyntheticModule = __vm.SyntheticModule;
+export const compileFunction = __vm.compileFunction;
+export const constants = __vm.constants;
+export const createContext = __vm.createContext;
+export const isContext = __vm.isContext;
+export const measureMemory = __vm.measureMemory;
+export const runInContext = __vm.runInContext;
+export const runInNewContext = __vm.runInNewContext;
+export const runInThisContext = __vm.runInThisContext;
+export default __vm;
+)";
+  }
+
+  if (builtinName == "web") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __web = __load("web");
+export const fetch = __web.fetch;
+export const Headers = __web.Headers;
+export const Request = __web.Request;
+export const Response = __web.Response;
+export const WebSocket = __web.WebSocket;
+export const ReadableStream = __web.ReadableStream;
+export const WritableStream = __web.WritableStream;
+export const TransformStream = __web.TransformStream;
+export default __web;
+)";
+  }
+
+  if (builtinName == "stream/web") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __streamWeb = __load("stream/web");
+export const ReadableStream = __streamWeb.ReadableStream;
+export const ReadableStreamDefaultReader = __streamWeb.ReadableStreamDefaultReader;
+export const WritableStream = __streamWeb.WritableStream;
+export const TransformStream = __streamWeb.TransformStream;
+export const ByteLengthQueuingStrategy = __streamWeb.ByteLengthQueuingStrategy;
+export const CountQueuingStrategy = __streamWeb.CountQueuingStrategy;
+export default __streamWeb;
+)";
+  }
+
+  return "";
+}
 }  // namespace
 
 ModuleInternal::ModuleInternal()
@@ -322,6 +617,10 @@ void ModuleInternal::Init(napi_env env, const std::string& baseDir) {
       env, baseDir.empty() ? RuntimeConfig.ApplicationPath : baseDir);
   status = napi_set_named_property(env, global, "require", globalRequire);
   assert(status == napi_ok);
+
+#if defined(TARGET_ENGINE_QUICKJS)
+  InitQuickJSESModuleLoader(env);
+#endif
 }
 
 napi_value ModuleInternal::GetRequireFunction(napi_env env,
@@ -1203,6 +1502,151 @@ napi_value ModuleInternal::LoadESModule(napi_env env, const std::string& path) {
   throw NativeScriptException("ES Modules are not supported in this runtime.");
 #endif
 }
+
+#if defined(TARGET_ENGINE_QUICKJS)
+void ModuleInternal::InitQuickJSESModuleLoader(napi_env env) {
+  JSRuntime* runtime = qjs_get_runtime(env);
+  if (runtime == nullptr) {
+    return;
+  }
+
+  JS_SetModuleLoaderFunc(
+      runtime,
+      [](JSContext* ctx, const char* base_name, const char* name,
+         void* opaque) -> char* {
+        auto* modules = static_cast<ModuleInternal*>(opaque);
+        if (modules == nullptr) {
+          return js_strdup(ctx, name != nullptr ? name : "");
+        }
+
+        std::string normalized = modules->NormalizeQuickJSImportSpecifier(
+            base_name != nullptr ? base_name : "",
+            name != nullptr ? name : "");
+        return js_strdup(ctx, normalized.c_str());
+      },
+      [](JSContext* ctx, const char* module_name,
+         void* opaque) -> JSModuleDef* {
+        auto* modules = static_cast<ModuleInternal*>(opaque);
+        if (modules == nullptr) {
+          return nullptr;
+        }
+
+        return modules->LoadQuickJSImportModule(
+            ctx, module_name != nullptr ? module_name : "");
+      },
+      this);
+}
+
+std::string ModuleInternal::NormalizeQuickJSImportSpecifier(
+    const std::string& baseName, const std::string& moduleName) {
+  if (moduleName.empty()) {
+    return moduleName;
+  }
+
+  if (IsNodeBuiltinSpecifier(moduleName) ||
+      !NormalizeRegisteredNapiModuleSpecifier(moduleName).empty()) {
+    return moduleName;
+  }
+
+  if (moduleName.rfind("file://", 0) == 0) {
+    return moduleName.substr(std::string("file://").size());
+  }
+
+  std::string normalizedBase = baseName;
+  if (normalizedBase.rfind("file://", 0) == 0) {
+    normalizedBase = normalizedBase.substr(std::string("file://").size());
+  }
+
+  std::string baseDir = RuntimeConfig.ApplicationPath;
+  if (!normalizedBase.empty() && normalizedBase[0] == '/') {
+    std::filesystem::path basePath(normalizedBase);
+    baseDir = basePath.parent_path().string();
+  } else if (!normalizedBase.empty() &&
+             normalizedBase.rfind("nativescript:", 0) != 0 &&
+             normalizedBase.rfind("node:", 0) != 0) {
+    std::filesystem::path basePath(normalizedBase);
+    baseDir = basePath.parent_path().string();
+  }
+
+  try {
+    std::string resolved = ResolvePath(m_env, baseDir, moduleName);
+    std::error_code ec;
+    auto absolutePath = std::filesystem::absolute(resolved, ec);
+    if (ec) {
+      ec.clear();
+      absolutePath = std::filesystem::path(resolved);
+    }
+
+    absolutePath = absolutePath.lexically_normal();
+    auto canonicalPath = std::filesystem::weakly_canonical(absolutePath, ec);
+    if (!ec) {
+      absolutePath = canonicalPath;
+    }
+
+    return absolutePath.string();
+  } catch (...) {
+    return moduleName;
+  }
+}
+
+JSModuleDef* ModuleInternal::LoadQuickJSImportModule(JSContext* ctx,
+                                                     const std::string& moduleName) {
+  std::string source = GetBuiltinESModuleSource(moduleName);
+  if (source.empty()) {
+    source = GetRegisteredNapiESModuleSource(moduleName);
+  }
+
+  std::string resolvedModuleName = moduleName;
+  if (source.empty()) {
+    resolvedModuleName = NormalizeQuickJSImportSpecifier("", moduleName);
+    if (!IsESModule(resolvedModuleName)) {
+      JS_ThrowReferenceError(ctx, "could not load module '%s'",
+                             moduleName.c_str());
+      return nullptr;
+    }
+
+    std::ifstream file(resolvedModuleName);
+    if (!file.is_open()) {
+      JS_ThrowReferenceError(ctx, "could not load module '%s'",
+                             resolvedModuleName.c_str());
+      return nullptr;
+    }
+
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    source = StripShebang(buffer.str());
+  }
+
+  JSValue moduleValue = JS_Eval(ctx, source.c_str(), source.size(),
+                                resolvedModuleName.c_str(),
+                                JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+  if (JS_IsException(moduleValue)) {
+    return nullptr;
+  }
+
+  JSModuleDef* module = static_cast<JSModuleDef*>(JS_VALUE_GET_PTR(moduleValue));
+  JSValue meta = JS_GetImportMeta(ctx, module);
+  if (JS_IsException(meta)) {
+    JS_FreeValue(ctx, moduleValue);
+    return nullptr;
+  }
+
+  std::string moduleURL = ModulePathToURL(resolvedModuleName);
+  if (JS_DefinePropertyValueStr(ctx, meta, "url",
+                                JS_NewString(ctx, moduleURL.c_str()),
+                                JS_PROP_C_W_E) < 0 ||
+      JS_DefinePropertyValueStr(ctx, meta, "main", JS_FALSE,
+                                JS_PROP_C_W_E) < 0) {
+    JS_FreeValue(ctx, meta);
+    JS_FreeValue(ctx, moduleValue);
+    return nullptr;
+  }
+
+  JS_FreeValue(ctx, meta);
+  JS_FreeValue(ctx, moduleValue);
+  return module;
+}
+#endif
 
 napi_value ModuleInternal::WrapModuleContent(napi_env env,
                                              const std::string& path) {
