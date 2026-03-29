@@ -3,13 +3,12 @@
 #include "FS.h"
 #include "Path.h"
 #include "Process.h"
+#include "VM.h"
 #include "native_api_util.h"
 
 namespace nativescript {
 
-void Node::Init(napi_env env, napi_value global) {
-  Process::Init(env, global);
-}
+void Node::Init(napi_env env, napi_value global) { Process::Init(env, global); }
 
 napi_value Node::LoadInternalModule(napi_env env,
                                     const std::string& moduleName) {
@@ -23,6 +22,10 @@ napi_value Node::LoadInternalModule(napi_env env,
 
   if (moduleName == "process" || moduleName == "node:process") {
     return Process::CreateModule(env);
+  }
+
+  if (moduleName == "vm" || moduleName == "node:vm") {
+    return VM::CreateModule(env);
   }
 
   if (moduleName == "fs/promises" || moduleName == "node:fs/promises") {

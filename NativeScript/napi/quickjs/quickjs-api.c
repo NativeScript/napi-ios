@@ -4328,3 +4328,20 @@ napi_status qjs_update_stack_top(napi_env env) {
     JS_UpdateStackTop(env->runtime->runtime);
     return napi_clear_last_error(env);
 }
+
+napi_status qjs_create_scoped_value(napi_env env, JSValue value,
+                                    napi_value *result) {
+    return CreateScopedResult(env, value, result);
+}
+
+JSContext *qjs_get_context(napi_env env) {
+    return env != NULL ? env->context : NULL;
+}
+
+JSRuntime *qjs_get_runtime(napi_env env) {
+    if (env == NULL || env->runtime == NULL) {
+        return NULL;
+    }
+
+    return env->runtime->runtime;
+}

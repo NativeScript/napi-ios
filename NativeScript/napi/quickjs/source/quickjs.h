@@ -312,6 +312,8 @@ static inline bool JS_VALUE_IS_NAN(JSValue v)
    JS_TAG_FUNCTION_BYTECODE or JS_TAG_MODULE tag. It can be executed
    with JS_EvalFunction(). */
 #define JS_EVAL_FLAG_COMPILE_ONLY (1 << 5)
+/* compile a module without resolving its imports yet */
+#define JS_EVAL_FLAG_COMPILE_ONLY_NO_RESOLVE JS_EVAL_FLAG_UNUSED
 /* don't include the stack frames before this eval in the Error() backtraces */
 #define JS_EVAL_FLAG_BACKTRACE_BARRIER (1 << 6)
 /* allow top-level await in normal script. JS_Eval() returns a
