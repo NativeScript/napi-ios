@@ -157,8 +157,9 @@ std::string ModulePathToURL(const std::string& modulePath) {
 
 bool IsNodeBuiltinSpecifier(const std::string& specifier) {
   static const std::unordered_set<std::string> kBuiltins = {
-      "url",  "node:url",  "fs",  "node:fs",  "fs/promises", "node:fs/promises",
-      "path", "node:path", "web", "node:web", "stream/web",  "node:stream/web"};
+      "url", "node:url", "fs", "node:fs", "fs/promises", "node:fs/promises",
+      "path", "node:path", "vm", "node:vm", "web", "node:web",
+      "stream/web", "node:stream/web"};
   return kBuiltins.contains(specifier);
 }
 
@@ -344,6 +345,35 @@ export const delimiter = __path.delimiter;
 export const posix = __path.posix;
 export const win32 = __path.win32;
 export default __path;
+)";
+  }
+
+  if (builtinName == "vm") {
+    return R"(
+const __load = (name) => {
+  if (typeof globalThis.require === "function") {
+    return globalThis.require(name);
+  }
+  if (typeof globalThis.__nativeRequire === "function") {
+    const dir = typeof globalThis.__approot === "string" ? `${globalThis.__approot}/app` : "";
+    return globalThis.__nativeRequire(name, dir);
+  }
+  throw new Error(`Cannot load builtin module '${name}'`);
+};
+const __vm = __load("node:vm");
+export const Script = __vm.Script;
+export const Module = __vm.Module;
+export const SourceTextModule = __vm.SourceTextModule;
+export const SyntheticModule = __vm.SyntheticModule;
+export const compileFunction = __vm.compileFunction;
+export const constants = __vm.constants;
+export const createContext = __vm.createContext;
+export const isContext = __vm.isContext;
+export const measureMemory = __vm.measureMemory;
+export const runInContext = __vm.runInContext;
+export const runInNewContext = __vm.runInNewContext;
+export const runInThisContext = __vm.runInThisContext;
+export default __vm;
 )";
   }
 

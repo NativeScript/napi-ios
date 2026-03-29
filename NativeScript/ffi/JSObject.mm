@@ -8,53 +8,45 @@
   napi_env env;
   napi_ref ref;
   nativescript::ObjCBridgeState* bridgeState;
+  uint64_t bridgeStateToken;
 }
 
 - (instancetype)initWithEnv:(napi_env)env value:(napi_value)value;
-- (void)removeFromBridgeState;
 - (napi_value)value;
 
 @end
-
-void JSObject_finalize(napi_env, void* data, void*) {
-  JSObject* obj = (JSObject*)data;
-  [obj removeFromBridgeState];
-  [obj release];
-}
 
 @implementation JSObject
 
 - (instancetype)initWithEnv:(napi_env)_env value:(napi_value)value {
   [super init];
   self->env = _env;
-  napi_add_finalizer(env, value, self, JSObject_finalize, nullptr, &ref);
-  uint32_t result;
-  napi_reference_ref(env, ref, &result);
+  napi_create_reference(env, value, 1, &ref);
   napi_wrap(env, value, self, nullptr, nullptr, nullptr);
   bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
-  if (bridgeState != nullptr) {
-    bridgeState->objectRefs[self] = ref;
-  }
+  bridgeStateToken = bridgeState != nullptr ? bridgeState->lifetimeToken : 0;
   return self;
 }
 
-- (void)removeFromBridgeState {
-  if (bridgeState == nullptr) {
-    return;
+- (napi_value)value {
+  if (env == nullptr || ref == nullptr) {
+    return nullptr;
   }
 
-  bridgeState->objectRefs.erase(self);
-  bridgeState = nullptr;
-}
-
-- (napi_value)value {
   napi_value result;
   napi_get_reference_value(env, ref, &result);
   return result;
 }
 
 - (void)dealloc {
-  napi_delete_reference(env, ref);
+  if (env != nullptr && ref != nullptr &&
+      (bridgeState == nullptr || nativescript::IsBridgeStateLive(bridgeState, bridgeStateToken))) {
+    napi_delete_reference(env, ref);
+    ref = nullptr;
+  }
+  bridgeState = nullptr;
+  bridgeStateToken = 0;
+  env = nullptr;
   [super dealloc];
 }
 
@@ -70,7 +62,7 @@ void JSObject_finalize(napi_env, void* data, void*) {
 namespace nativescript {
 
 id jsObjectToId(napi_env env, napi_value value) {
-  return [[JSObject alloc] initWithEnv:env value:value];
+  return [[[JSObject alloc] initWithEnv:env value:value] autorelease];
 }
 
 napi_value idToJsObject(napi_env env, id obj) {

@@ -1706,8 +1706,8 @@ Reference::~Reference() {
 
 napi_value FunctionReference::defineJSClass(napi_env env) {
   napi_value constructor;
-  napi_create_function(env, "FunctionReference", NAPI_AUTO_LENGTH, FunctionReference::constructor,
-                       nullptr, &constructor);
+  napi_define_class(env, "FunctionReference", NAPI_AUTO_LENGTH, FunctionReference::constructor,
+                    nullptr, 0, nullptr, &constructor);
 
   napi_value symbolSizeof = jsSymbolFor(env, "sizeof");
   napi_value sizeValue;
@@ -1726,14 +1726,6 @@ bool FunctionReference::isInstance(napi_env env, napi_value value) {
   napi_typeof(env, value, &valueType);
   if (valueType != napi_object && valueType != napi_function) {
     return false;
-  }
-
-  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
-  bool isInstance = false;
-  napi_value FunctionReferenceClass = get_ref_value(env, bridgeState->functionReferenceClass);
-  napi_instanceof(env, value, FunctionReferenceClass, &isInstance);
-  if (isInstance) {
-    return true;
   }
 
   bool hasMarker = false;
@@ -1815,7 +1807,7 @@ napi_value FunctionReference::constructor(napi_env env, napi_callback_info info)
       .getter = nullptr,
       .setter = nullptr,
       .value = nativeRef,
-      .attributes = napi_default,
+      .attributes = napi_configurable,
       .data = nullptr,
   };
   napi_define_properties(env, arg, 1, &nativeRefProp);
@@ -1830,7 +1822,7 @@ napi_value FunctionReference::constructor(napi_env env, napi_callback_info info)
       .getter = nullptr,
       .setter = nullptr,
       .value = marker,
-      .attributes = napi_default,
+      .attributes = napi_configurable,
       .data = nullptr,
   };
   napi_define_properties(env, arg, 1, &markerProp);
@@ -1860,9 +1852,8 @@ FunctionReference::~FunctionReference() {
 
 void* FunctionReference::getFunctionPointer(MDSectionOffset offset, bool isBlock) {
   if (closure == nullptr) {
-    closure =
-        std::make_shared<Closure>(ObjCBridgeState::InstanceData(env)->metadata, offset, isBlock);
-    closure->env = env;
+    closure = std::make_shared<Closure>(env, ObjCBridgeState::InstanceData(env)->metadata, offset,
+                                        isBlock);
     closure->func = ref;
   }
 

@@ -271,6 +271,7 @@ struct JSRuntime {
     void *host_promise_rejection_tracker_opaque;
 
     struct list_head job_list; /* list of JSJobEntry.link */
+    struct list_head weakref_keepalive_list; /* strong refs kept until the current host job completes */
 
     JSModuleNormalizeFunc *module_normalize_func;
     JSModuleLoaderFunc *module_loader_func;
@@ -319,6 +320,11 @@ typedef struct JSStackFrame {
        the function is running. */
     JSValue *cur_sp;
 } JSStackFrame;
+
+typedef struct JSWeakRefKeepAliveEntry {
+    struct list_head link;
+    JSValue value;
+} JSWeakRefKeepAliveEntry;
 
 typedef enum {
     JS_GC_OBJ_TYPE_JS_OBJECT,
@@ -1847,6 +1853,7 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     init_list_head(&rt->string_list);
 #endif
     init_list_head(&rt->job_list);
+    init_list_head(&rt->weakref_keepalive_list);
 
     if (JS_InitAtoms(rt))
         goto fail;
@@ -2131,6 +2138,7 @@ void JS_FreeRuntime(JSRuntime *rt)
         js_free_rt(rt, e);
     }
     init_list_head(&rt->job_list);
+    JS_ClearWeakRefKeepAlives(rt);
 
     JS_RunGC(rt);
 
@@ -7441,9 +7449,9 @@ static JSValue JS_GetPropertyInternal2(JSContext *ctx, JSValue obj,
     if (unlikely(tag != JS_TAG_OBJECT)) {
         switch(tag) {
         case JS_TAG_NULL:
-            return JS_ThrowTypeErrorAtom(ctx, "cannot read property '%s' of null", prop);
+            return JS_ThrowTypeErrorAtom(ctx, "Cannot read properties of null (reading '%s')", prop);
         case JS_TAG_UNDEFINED:
-            return JS_ThrowTypeErrorAtom(ctx, "cannot read property '%s' of undefined", prop);
+            return JS_ThrowTypeErrorAtom(ctx, "Cannot read properties of undefined (reading '%s')", prop);
         case JS_TAG_EXCEPTION:
             return JS_EXCEPTION;
         case JS_TAG_STRING:
@@ -8321,10 +8329,10 @@ static JSValue JS_GetPropertyValue(JSContext *ctx, JSValue this_obj,
         switch(tag) {
         case JS_TAG_NULL:
             JS_FreeValue(ctx, prop);
-            return JS_ThrowTypeError(ctx, "cannot read property of null");
+            return JS_ThrowTypeError(ctx, "Cannot read properties of null");
         case JS_TAG_UNDEFINED:
             JS_FreeValue(ctx, prop);
-            return JS_ThrowTypeError(ctx, "cannot read property of undefined");
+            return JS_ThrowTypeError(ctx, "Cannot read properties of undefined");
         }
     }
     atom = JS_ValueToAtom(ctx, prop);
@@ -33614,7 +33622,8 @@ static JSValue __JS_EvalInternal(JSContext *ctx, JSValue this_obj,
     /* Could add a flag to avoid resolution if necessary */
     if (m) {
         m->func_obj = fun_obj;
-        if (js_resolve_module(ctx, m) < 0)
+        if (!(flags & JS_EVAL_FLAG_COMPILE_ONLY_NO_RESOLVE) &&
+            js_resolve_module(ctx, m) < 0)
             goto fail1;
         fun_obj = JS_NewModuleValue(ctx, m);
     }
@@ -55655,6 +55664,7 @@ static JSValue js_weakref_constructor(JSContext *ctx, JSValue new_target, int ar
     wr->kind = JS_WEAK_REF_KIND_WEAK_REF;
     wr->u.weak_ref_data = wrd;
     insert_weakref_record(arg, wr);
+    JS_KeepWeakRefTargetAlive(ctx, arg);
 
     JS_SetOpaqueInternal(obj, wrd);
     return obj;
@@ -55979,6 +55989,35 @@ static void insert_weakref_record(JSValue target, struct JSWeakRefRecord *wr)
     /* Add the weak reference */
     wr->next_weak_ref = *pwr;
     *pwr = wr;
+}
+
+void JS_KeepWeakRefTargetAlive(JSContext *ctx, JSValueConst value)
+{
+    JSRuntime *rt;
+    JSWeakRefKeepAliveEntry *entry;
+
+    if (!JS_IsObject(value) && !JS_IsSymbol(value))
+        return;
+
+    rt = JS_GetRuntime(ctx);
+    entry = js_malloc(ctx, sizeof(*entry));
+    if (!entry)
+        return;
+
+    entry->value = JS_DupValue(ctx, value);
+    list_add_tail(&entry->link, &rt->weakref_keepalive_list);
+}
+
+void JS_ClearWeakRefKeepAlives(JSRuntime *rt)
+{
+    struct list_head *el, *el1;
+
+    list_for_each_safe(el, el1, &rt->weakref_keepalive_list) {
+        JSWeakRefKeepAliveEntry *entry = list_entry(el, JSWeakRefKeepAliveEntry, link);
+        list_del(&entry->link);
+        JS_FreeValueRT(rt, entry->value);
+        js_free_rt(rt, entry);
+    }
 }
 
 /* Poly IC */

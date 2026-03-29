@@ -9,11 +9,15 @@ namespace nativescript {
 class URLSearchParams {
  public:
   static void Init(napi_env env, napi_value global);
+  static napi_value Create(napi_env env, ada::url_search_params params,
+                           ada::url_aggregator* parent = nullptr);
   static void Destructor(napi_env env, void* nativeObject, void* finalize_hint);
 
   explicit URLSearchParams(ada::url_search_params params,
                            ada::url_aggregator* parent = nullptr);
   ada::url_search_params* GetURLSearchParams();
+  void Reset(ada::url_search_params params,
+             ada::url_aggregator* parent = nullptr);
 
  private:
   static napi_value New(napi_env env, napi_callback_info info);

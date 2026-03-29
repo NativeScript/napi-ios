@@ -374,7 +374,8 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   }
 }
 
-Closure::Closure(std::string encoding, bool isBlock, bool isMethod) {
+Closure::Closure(napi_env env, std::string encoding, bool isBlock, bool isMethod) {
+  this->env = env;
   auto signature = [NSMethodSignature signatureWithObjCTypes:encoding.c_str()];
   size_t argc = signature.numberOfArguments;
 
@@ -412,8 +413,9 @@ Closure::Closure(std::string encoding, bool isBlock, bool isMethod) {
       this, fnptr);
 }
 
-Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
+Closure::Closure(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
                  std::string* encoding, bool isMethod, bool isGetter, bool isSetter) {
+  this->env = env;
   this->isGetter = isGetter;
   this->isSetter = isSetter;
 

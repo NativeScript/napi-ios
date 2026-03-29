@@ -140,8 +140,6 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
             (superReadonly == readonly && sameGetter && (readonly || sameSetter))) {
           continue;
         }
-      } else if (inheritedProperty && readonly) {
-        continue;
       }
 
       auto updatedMember = ObjCClassMember(
@@ -1644,8 +1642,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
         napi_valuetype jsArgType = napi_undefined;
         if (napi_typeof(env, invocationArgs[i], &jsArgType) == napi_ok &&
             jsArgType == napi_function) {
-          auto closure = new Closure(std::string(blockEncoding), true);
-          closure->env = env;
+          auto closure = new Closure(env, std::string(blockEncoding), true);
           id block = registerBlock(env, closure, invocationArgs[i]);
           *((void**)avalues[i + 2]) = (void*)block;
           fallbackBlocksToRelease.push_back(block);
