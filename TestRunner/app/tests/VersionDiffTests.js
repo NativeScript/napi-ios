@@ -1,10 +1,31 @@
 describe(module.id, function() {
+    var isIOS = typeof UIDevice !== "undefined" &&
+        UIDevice.currentDevice &&
+        UIDevice.currentDevice.systemVersion;
+    var isMacOS = !isIOS &&
+        typeof NSProcessInfo !== "undefined" &&
+        NSProcessInfo.processInfo;
+
+    if (!isIOS && !isMacOS) {
+        it("Version fixtures are unavailable on this platform", function () {
+            pending("Versioned fixture classes are unavailable on this platform metadata.");
+        });
+        return;
+    }
+
     afterEach(function () {
         TNSClearOutput();
     });
 
     function SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(version) {
-        var systemVersion = NSString.stringWithString(UIDevice.currentDevice.systemVersion);
+        var systemVersion;
+        if (isIOS) {
+            systemVersion = NSString.stringWithString(UIDevice.currentDevice.systemVersion);
+        } else {
+            var osVersion = NSProcessInfo.processInfo.operatingSystemVersion;
+            systemVersion = NSString.stringWithString(`${osVersion.majorVersion}.${osVersion.minorVersion}`);
+        }
+
         return systemVersion.compareOptions(version, NSStringCompareOptions.NSNumericSearch) !== NSComparisonResult.NSOrderedAscending;
     };
 
@@ -74,6 +95,11 @@ describe(module.id, function() {
     });
 
     it("Base class which is unavailable should be skipped", function() {
+        if (!TNSInterfaceNeverAvailableDescendant || !TNSInterfaceAlwaysAvailable) {
+            pending("Unavailable on this platform");
+            return;
+        }
+
         // Test case inspired from MTLArrayType(8.0) : MTLType(11.0) : NSObject
         // TNSInterfaceNeverAvailableDescendant : TNSInterfaceNeverAvailable(API31.7 - skipped) : TNSInterfaceAlwaysAvailable
         expect(Object.getPrototypeOf(TNSInterfaceNeverAvailableDescendant).toString()).toBe(TNSInterfaceAlwaysAvailable.toString(), "TNSInterfaceNeverAvailable base class should be skipped as it is unavailable");
@@ -91,6 +117,11 @@ describe(module.id, function() {
     // });
 
     it("Members of a protocol which is available should be present", function() {
+        if (!TNSInterfaceAlwaysAvailable) {
+            pending("Unavailable on this platform");
+            return;
+        }
+
         const obj = new TNSInterfaceAlwaysAvailable();
         let expectedOutput = "";
         expect(Object.getOwnPropertyNames(TNSInterfaceAlwaysAvailable.prototype)).toContain("propertyFromProtocolAlwaysAvailable", "TNSProtocolAlwaysAvailable properties should be present as it is available");

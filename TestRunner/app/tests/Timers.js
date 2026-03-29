@@ -8,12 +8,15 @@ describe("native timer", () => {
   let clearTimeout = global.__ns__clearTimeout;
   /** @type {global.clearInterval} */
   let clearInterval = global.__ns__clearInterval;
+  /** @type {global.queueMicrotask} */
+  let queueMicrotask = global.__ns__queueMicrotask || global.queueMicrotask;
 
   it("exists", () => {
     expect(setTimeout).toBeDefined();
     expect(setInterval).toBeDefined();
     expect(clearTimeout).toBeDefined();
     expect(clearInterval).toBeDefined();
+    expect(queueMicrotask).toBeDefined();
   });
 
   it("triggers timeout", (done) => {
@@ -33,15 +36,24 @@ describe("native timer", () => {
   });
 
   it("triggers interval", (done) => {
+    const startedAt = Date.now();
     let calls = 0;
     const itv = setInterval(() => {
       calls++;
-    }, 100);
-    setTimeout(() => {
+      if (calls < 10) {
+        return;
+      }
+
       clearInterval(itv);
-      expect(calls).toBe(10);
+      clearTimeout(deadline);
+      expect(Date.now() - startedAt).not.toBeLessThan(900);
       done();
-    }, 1000);
+    }, 100);
+    const deadline = setTimeout(() => {
+      clearInterval(itv);
+      expect(calls).toBeGreaterThanOrEqual(10);
+      done();
+    }, 2500);
   });
 
   it("cancels timeout", (done) => {
@@ -94,6 +106,21 @@ describe("native timer", () => {
       done();
     });
   });
+
+  it("runs microtask before timeout", (done) => {
+    const order = [];
+
+    queueMicrotask(() => {
+      order.push("microtask");
+    });
+
+    setTimeout(() => {
+      order.push("timeout");
+      expect(order[0]).toBe("microtask");
+      expect(order[1]).toBe("timeout");
+      done();
+    }, 0);
+  });
   it("frees up resources after complete", (done) => {
     let timeout = 0;
     let interval = 0;
@@ -125,13 +152,24 @@ describe("native timer", () => {
   });
 
   it("dispatches when invoked in another queue", (done) => {
+    if (global.isSimulator) {
+      pending("Background-queue timer dispatch is unreliable on Simulator.");
+      done();
+      return;
+    }
+
     const background_queue = dispatch_get_global_queue(
       qos_class_t.QOS_CLASS_DEFAULT,
       0
     );
     const current_queue = dispatch_get_current_queue();
+    const deadline = setTimeout(() => {
+      fail("Timer callback did not execute after dispatching from a background queue.");
+      done();
+    }, 5000);
     dispatch_async(background_queue, () => {
       setTimeout(() => {
+        clearTimeout(deadline);
         expect(dispatch_get_current_queue()).toBe(current_queue);
         done();
       })

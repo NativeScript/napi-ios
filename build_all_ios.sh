@@ -65,7 +65,26 @@ if [[ "$TARGET_ENGINE" == "none" ]]; then
 else
   # If you're building *without* --no-engine, you're trying to make an npm
   # release of the root-level workspace, @nativescript/ios.
-  ./build_tklivesync.sh --no-vision
+  TKLIVESYNC_ARGS=(--no-vision)
+  if $BUILD_IPHONE; then
+    TKLIVESYNC_ARGS+=(--iphone)
+  else
+    TKLIVESYNC_ARGS+=(--no-iphone)
+  fi
+
+  if $BUILD_SIMULATOR; then
+    TKLIVESYNC_ARGS+=(--simulator)
+  else
+    TKLIVESYNC_ARGS+=(--no-simulator)
+  fi
+
+  if $BUILD_MACOS; then
+    TKLIVESYNC_ARGS+=(--macos)
+  else
+    TKLIVESYNC_ARGS+=(--no-macos)
+  fi
+
+  ./build_tklivesync.sh "${TKLIVESYNC_ARGS[@]}"
   ./prepare_dSYMs.sh
   ./build_npm_ios.sh
 fi

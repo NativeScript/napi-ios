@@ -14,7 +14,6 @@
 
 #include "js_native_api_types.h"
 #include "v8-api.h"
-#include "v8-array-buffer.h"
 
 namespace nativescript {
 

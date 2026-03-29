@@ -10,10 +10,10 @@
 #include <memory>
 
 #include "../../third_party/inspector_protocol/crdtp/protocol_core.h"
-#include "include/v8-inspector.h"
 #include "src/base/logging.h"
 #include "src/base/macros.h"
 #include "src/inspector/string-16.h"
+#include "v8-inspector.h"
 
 namespace v8_inspector {
 

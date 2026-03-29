@@ -29,6 +29,16 @@ describe(module.id, function () {
         expect(module).toBeDefined();
      });
 
+     it("supports .cjs modules", function(){
+        let explicit = require("./cjs-file.cjs");
+        expect(explicit.type).toBe("cjs");
+        expect(explicit.value).toBe(42);
+
+        let extensionless = require("./cjs-file");
+        expect(extensionless.type).toBe("cjs");
+        expect(extensionless.value).toBe(42);
+     });
+
     //  it("'use strict'; statement is respected", function(){
     //     let requireFunc = () => require("./strict-violation-use-strict");
     //     expect(requireFunc).toThrowError("Cannot delete unqualified property 'x' in strict mode.");

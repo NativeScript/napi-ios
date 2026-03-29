@@ -100,7 +100,7 @@ inline std::string JsonStringifyObject(napi_env env, napi_value value,
 }
 
 inline napi_value JsonParse(napi_env env, const std::string& json) {
-  napi_value result;
+  napi_value result = nullptr;
   napi_value parseFunction;
   napi_value global;
   napi_get_global(env, &global);
@@ -108,7 +108,11 @@ inline napi_value JsonParse(napi_env env, const std::string& json) {
   napi_get_named_property(env, parseFunction, "parse", &parseFunction);
   napi_value args[1];
   napi_create_string_utf8(env, json.c_str(), json.size(), &args[0]);
-  napi_call_function(env, global, parseFunction, 1, args, &result);
+  napi_status status =
+      napi_call_function(env, global, parseFunction, 1, args, &result);
+  if (status != napi_ok) {
+    return nullptr;
+  }
   return result;
 }
 

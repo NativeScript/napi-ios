@@ -12,6 +12,9 @@ class Timers {
   static JS_METHOD(SetTimeout);
   static JS_METHOD(SetInterval);
   static JS_METHOD(ClearTimer);
+  static JS_METHOD(QueueMicrotask);
+
+  static bool HasActiveTimers();
 };
 
 }  // namespace nativescript

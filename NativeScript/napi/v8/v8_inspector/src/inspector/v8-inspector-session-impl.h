@@ -12,8 +12,7 @@
 #include "src/inspector/protocol/Forward.h"
 #include "src/inspector/protocol/Runtime.h"
 #include "src/inspector/protocol/Schema.h"
-
-#include "include/v8-inspector.h"
+#include "v8-inspector.h"
 
 namespace v8_inspector {
 

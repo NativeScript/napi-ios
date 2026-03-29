@@ -7,9 +7,9 @@
 
 #include <cstdint>
 
-#include "include/v8-function-callback.h"
-#include "include/v8-local-handle.h"
 #include "src/common/globals.h"
+#include "v8-function-callback.h"
+#include "v8-local-handle.h"
 
 namespace v8 {
 

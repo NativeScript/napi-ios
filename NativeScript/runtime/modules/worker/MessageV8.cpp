@@ -12,7 +12,6 @@
 
 #include "ffi/NativeScriptException.h"
 #include "v8-api.h"
-#include "v8-isolate.h"
 
 using namespace v8;
 
@@ -86,7 +85,7 @@ class PersistentToLocal {
 
 void ThrowDataCloneException(napi_env env, Local<Context> context,
                              Local<v8::String> message) {
-  Isolate* isolate = context->GetIsolate();
+  Isolate* isolate = env->isolate;
   //  Local<Value> argv[] = {message,
   //                         FIXED_ONE_BYTE_STRING(isolate, "DataCloneError")};
   Local<Value> exception;

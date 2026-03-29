@@ -101,6 +101,11 @@ enum MDMemberFlag : uint8_t {
   mdMemberNext = 1 << 7,
 };
 
+enum MDFunctionFlag : uint8_t {
+  mdFunctionFlagNone = 0,
+  mdFunctionReturnOwned = 1 << 0,
+};
+
 #define MD_HEADER_MAGIC_SIZE 4
 #define MD_HEADER_MAGIC "NSMD"
 #define MD_HEADER_VERSION_SIZE 2

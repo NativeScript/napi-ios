@@ -16,14 +16,303 @@
 #import <CoreFoundation/CoreFoundation.h>
 #import <Foundation/Foundation.h>
 #include <objc/runtime.h>
+#if defined(__has_include)
+#if __has_include(<ptrauth.h>)
+#include <ptrauth.h>
+#endif
+#endif
 #include <stdbool.h>
+#include <algorithm>
+#include <cstring>
+#include <functional>
+#include <limits>
 #include <memory>
 #include <string>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
 
+namespace {
+
+static size_t getBufferElementSize(napi_typedarray_type type) {
+  switch (type) {
+    case napi_int8_array:
+    case napi_uint8_array:
+    case napi_uint8_clamped_array:
+      return 1;
+    case napi_int16_array:
+    case napi_uint16_array:
+      return 2;
+    case napi_int32_array:
+    case napi_uint32_array:
+    case napi_float32_array:
+      return 4;
+    case napi_float64_array:
+    case napi_bigint64_array:
+    case napi_biguint64_array:
+      return 8;
+    default:
+      return 1;
+  }
+}
+
+static bool getJSBufferData(napi_env env, napi_value value, void** data, size_t* byteLength) {
+  if (data == nullptr || byteLength == nullptr) {
+    return false;
+  }
+
+  bool isArrayBuffer = false;
+  if (napi_is_arraybuffer(env, value, &isArrayBuffer) == napi_ok && isArrayBuffer) {
+    return napi_get_arraybuffer_info(env, value, data, byteLength) == napi_ok;
+  }
+
+  bool isTypedArray = false;
+  if (napi_is_typedarray(env, value, &isTypedArray) == napi_ok && isTypedArray) {
+    napi_typedarray_type type;
+    napi_value arrayBuffer;
+    size_t byteOffset = 0;
+    size_t elementLength = 0;
+    if (napi_get_typedarray_info(env, value, &type, &elementLength, data, &arrayBuffer,
+                                 &byteOffset) != napi_ok) {
+      return false;
+    }
+
+    *byteLength = elementLength * getBufferElementSize(type);
+    return true;
+  }
+
+  bool isDataView = false;
+  if (napi_is_dataview(env, value, &isDataView) == napi_ok && isDataView) {
+    napi_value arrayBuffer;
+    size_t byteOffset = 0;
+    return napi_get_dataview_info(env, value, byteLength, data, &arrayBuffer, &byteOffset) ==
+           napi_ok;
+  }
+
+  return false;
+}
+
+static const void* kNSDataJSValueAssociationKey = &kNSDataJSValueAssociationKey;
+
+static id resolveCachedHandleObject(napi_env env, void* handle) {
+  if (env == nullptr || handle == nullptr) {
+    return nil;
+  }
+
+  auto bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr) {
+    return nil;
+  }
+
+  napi_value cachedValue = bridgeState->getCachedHandleObject(env, handle);
+  if (cachedValue == nullptr) {
+    return nil;
+  }
+
+  void* wrapped = nullptr;
+  if (napi_unwrap(env, cachedValue, &wrapped) == napi_ok && wrapped != nullptr) {
+    bridgeState->cacheRoundTripObject(env, static_cast<id>(wrapped), cachedValue);
+    return static_cast<id>(wrapped);
+  }
+
+  bool hasNativePointer = false;
+  if (napi_has_named_property(env, cachedValue, "__ns_native_ptr", &hasNativePointer) == napi_ok &&
+      hasNativePointer) {
+    napi_value nativePointerValue = nullptr;
+    void* nativePointer = nullptr;
+    if (napi_get_named_property(env, cachedValue, "__ns_native_ptr", &nativePointerValue) ==
+            napi_ok &&
+        napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
+        nativePointer != nullptr) {
+      bridgeState->cacheRoundTripObject(env, static_cast<id>(nativePointer), cachedValue);
+      return static_cast<id>(nativePointer);
+    }
+  }
+
+  return nil;
+}
+
+}  // namespace
+
+@interface NSDataJSValueAssociation : NSObject
+
+- (instancetype)initWithEnv:(napi_env)env
+                      value:(napi_value)value
+                bridgeState:(nativescript::ObjCBridgeState*)bridgeState;
+
+@end
+
+@implementation NSDataJSValueAssociation {
+  napi_env env_;
+  nativescript::ObjCBridgeState* bridgeState_;
+  uint64_t bridgeStateToken_;
+  napi_ref valueRef_;
+}
+
+- (instancetype)initWithEnv:(napi_env)env
+                      value:(napi_value)value
+                bridgeState:(nativescript::ObjCBridgeState*)bridgeState {
+  self = [super init];
+  if (self != nil) {
+    env_ = env;
+    bridgeState_ = bridgeState;
+    bridgeStateToken_ = bridgeState != nullptr ? bridgeState->lifetimeToken : 0;
+    valueRef_ = nativescript::make_ref(env, value);
+  }
+
+  return self;
+}
+
+- (void)dealloc {
+  if (valueRef_ != nullptr && env_ != nullptr &&
+      nativescript::IsBridgeStateLive(bridgeState_, bridgeStateToken_)) {
+    napi_delete_reference(env_, valueRef_);
+  }
+
+  [super dealloc];
+}
+
+@end
+
 namespace nativescript {
+
+namespace {
+constexpr const char* kProtocolSuffix = "Protocol";
+
+NSData* createNSDataWrapper(napi_env env, napi_value value, ObjCBridgeState* bridgeState) {
+  void* data = nullptr;
+  size_t byteLength = 0;
+  if (!getJSBufferData(env, value, &data, &byteLength)) {
+    return nil;
+  }
+
+  NSData* wrappedData = [NSData dataWithBytesNoCopy:data length:byteLength freeWhenDone:NO];
+  if (wrappedData == nil) {
+    return nil;
+  }
+
+  NSDataJSValueAssociation* association =
+      [[NSDataJSValueAssociation alloc] initWithEnv:env value:value bridgeState:bridgeState];
+  objc_setAssociatedObject(wrappedData, kNSDataJSValueAssociationKey, association,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  [association release];
+
+  return wrappedData;
+}
+
+inline size_t alignUp(size_t value, size_t alignment) {
+  if (alignment == 0) {
+    return value;
+  }
+  return ((value + alignment - 1) / alignment) * alignment;
+}
+
+inline uintptr_t normalizeRuntimePointer(uintptr_t ptr) {
+#if INTPTR_MAX == INT64_MAX
+  return ptr & 0x0000FFFFFFFFFFFFULL;
+#else
+  return ptr;
+#endif
+}
+
+inline bool isKindOfClassFast(id obj, Class expectedClass) {
+  if (obj == nil || expectedClass == Nil) {
+    return false;
+  }
+
+  return [obj isKindOfClass:expectedClass];
+}
+
+bool stripProtocolSuffix(const char* name, std::string* out) {
+  if (name == nullptr || out == nullptr) {
+    return false;
+  }
+
+  const size_t nameLen = std::strlen(name);
+  const size_t suffixLen = std::strlen(kProtocolSuffix);
+  if (nameLen <= suffixLen) {
+    return false;
+  }
+
+  if (std::strcmp(name + (nameLen - suffixLen), kProtocolSuffix) != 0) {
+    return false;
+  }
+
+  *out = std::string(name, nameLen - suffixLen);
+  return !out->empty();
+}
+
+bool protocolNamesMatch(const char* metadataName, const char* runtimeName) {
+  if (metadataName == nullptr || runtimeName == nullptr) {
+    return false;
+  }
+
+  if (std::strcmp(metadataName, runtimeName) == 0) {
+    return true;
+  }
+
+  std::string metadataBase(metadataName);
+  std::string runtimeBase(runtimeName);
+  stripProtocolSuffix(metadataName, &metadataBase);
+  stripProtocolSuffix(runtimeName, &runtimeBase);
+
+  return metadataBase == runtimeBase;
+}
+
+MDSectionOffset findProtocolMetadataOffset(MDMetadataReader* metadata, const char* protocolName) {
+  if (metadata == nullptr || protocolName == nullptr) {
+    return MD_SECTION_OFFSET_NULL;
+  }
+
+  MDSectionOffset offset = metadata->protocolsOffset;
+  while (offset < metadata->classesOffset) {
+    MDSectionOffset originalOffset = offset;
+
+    auto nameOffset = metadata->getOffset(offset);
+    offset += sizeof(MDSectionOffset);
+    bool next = (nameOffset & mdSectionOffsetNext) != 0;
+    nameOffset &= ~mdSectionOffsetNext;
+
+    auto name = metadata->resolveString(nameOffset);
+    if (protocolNamesMatch(name, protocolName)) {
+      return originalOffset;
+    }
+
+    while (next) {
+      auto protocolImpl = metadata->getOffset(offset);
+      offset += sizeof(MDSectionOffset);
+      next = (protocolImpl & mdSectionOffsetNext) != 0;
+    }
+
+    next = true;
+    while (next) {
+      auto flags = metadata->getMemberFlag(offset);
+      next = (flags & mdMemberNext) != 0;
+      offset += sizeof(flags);
+
+      if (flags == mdMemberFlagNull) {
+        break;
+      }
+
+      if ((flags & mdMemberProperty) != 0) {
+        bool readonly = (flags & mdMemberReadonly) != 0;
+        offset += sizeof(MDSectionOffset);  // name
+        offset += sizeof(MDSectionOffset);  // getter selector
+        offset += sizeof(MDSectionOffset);  // getter signature
+        if (!readonly) {
+          offset += sizeof(MDSectionOffset);  // setter selector
+          offset += sizeof(MDSectionOffset);  // setter signature
+        }
+      } else {
+        offset += sizeof(MDSectionOffset);  // selector
+        offset += sizeof(MDSectionOffset);  // signature
+      }
+    }
+  }
+
+  return MD_SECTION_OFFSET_NULL;
+}
+}  // namespace
 
 // Forward declaration
 class StructTypeConv;
@@ -47,9 +336,20 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
   std::string structname;
   const char* nameStart = *encoding + 1;  // skip '{'
   const char* c = nameStart;
-  while (*c != '=') {
+  while (*c != '\0' && *c != '=') {
     structname += *c;
     c++;
+  }
+  if (*c != '=') {
+    // Malformed struct encoding. Advance to the end of this token and
+    // fallback to pointer conversion to avoid reading past the buffer.
+    while (**encoding != '\0' && **encoding != '}') {
+      (*encoding)++;
+    }
+    if (**encoding == '}') {
+      (*encoding)++;
+    }
+    return &ffi_type_pointer;
   }
 
   // Check if we're already processing this struct (cycle detection)
@@ -75,16 +375,18 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
   }
 
   // Check if we already have a forward declaration for this struct
-  auto forwardIt = forwardDeclaredEncodingStructs.find(structname);
-  if (forwardIt != forwardDeclaredEncodingStructs.end()) {
+  auto existingForwardIt = forwardDeclaredEncodingStructs.find(structname);
+  if (existingForwardIt != forwardDeclaredEncodingStructs.end()) {
     // Skip the struct encoding
     (*encoding)++;  // skip '{'
-    while (**encoding != '}') {
+    while (**encoding != '\0' && **encoding != '}') {
       (*encoding)++;
     }
-    (*encoding)++;  // skip '}'
+    if (**encoding == '}') {
+      (*encoding)++;  // skip '}'
+    }
 
-    return forwardIt->second;
+    return existingForwardIt->second;
   }
 
   // Mark this struct as being processed
@@ -100,18 +402,25 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
 
   (*encoding)++;  // skip '{'
 
-  while (**encoding != '=') {
+  while (**encoding != '\0' && **encoding != '=') {
     (*encoding)++;
   }  // skip name
+  if (**encoding == '\0') {
+    processingEncodingStructs.erase(structname);
+    delete type;
+    return &ffi_type_pointer;
+  }
 
   (*encoding)++;  // skip '='
 
-  while (**encoding != '}') {
+  while (**encoding != '\0' && **encoding != '}') {
     ffi_type* elementType = TypeConv::Make(env, encoding)->type;
     elements.push_back(elementType);
   }
 
-  (*encoding)++;  // skip '}'
+  if (**encoding == '}') {
+    (*encoding)++;  // skip '}'
+  }
 
   type->elements = (ffi_type**)malloc(sizeof(ffi_type*) * (elements.size() + 1));
   for (int i = 0; i < elements.size(); i++) {
@@ -121,8 +430,9 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
   type->elements[elements.size()] = nullptr;
 
   // If this was a forward declaration, update it with the real layout
-  if (forwardIt != forwardDeclaredEncodingStructs.end()) {
-    ffi_type* forwardType = forwardIt->second;
+  auto resolvedForwardIt = forwardDeclaredEncodingStructs.find(structname);
+  if (resolvedForwardIt != forwardDeclaredEncodingStructs.end()) {
+    ffi_type* forwardType = resolvedForwardIt->second;
     forwardType->type = type->type;
     forwardType->size = type->size;
     forwardType->alignment = type->alignment;
@@ -131,7 +441,7 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
     // Clean up the temporary type and use the forward declaration
     delete type;
     type = forwardType;
-    forwardDeclaredEncodingStructs.erase(forwardIt);
+    forwardDeclaredEncodingStructs.erase(resolvedForwardIt);
   }
 
   // Remove from processing set
@@ -157,9 +467,9 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
   }
 
   // Check if we already have a forward declaration for this struct
-  auto forwardIt = forwardDeclaredStructs.find(structOffset);
-  if (forwardIt != forwardDeclaredStructs.end()) {
-    return forwardIt->second;
+  auto existingForwardIt = forwardDeclaredStructs.find(structOffset);
+  if (existingForwardIt != forwardDeclaredStructs.end()) {
+    return existingForwardIt->second;
   }
 
   // Mark this struct as being processed
@@ -200,8 +510,9 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
   type->elements[elements.size()] = nullptr;
 
   // If this was a forward declaration, update it with the real layout
-  if (forwardIt != forwardDeclaredStructs.end()) {
-    ffi_type* forwardType = forwardIt->second;
+  auto resolvedForwardIt = forwardDeclaredStructs.find(structOffset);
+  if (resolvedForwardIt != forwardDeclaredStructs.end()) {
+    ffi_type* forwardType = resolvedForwardIt->second;
     forwardType->type = type->type;
     forwardType->size = type->size;
     forwardType->alignment = type->alignment;
@@ -210,7 +521,7 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
     // Clean up the temporary type and use the forward declaration
     delete type;
     type = forwardType;
-    forwardDeclaredStructs.erase(forwardIt);
+    forwardDeclaredStructs.erase(resolvedForwardIt);
   }
 
   // Remove from processing set
@@ -243,7 +554,10 @@ static inline size_t getTypedArrayUnitLength(napi_typedarray_type type) {
 
 class VoidTypeConv : public TypeConv {
  public:
-  VoidTypeConv() { type = &ffi_type_void; }
+  VoidTypeConv() {
+    type = &ffi_type_void;
+    kind = mdTypeVoid;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
@@ -258,11 +572,21 @@ static const std::shared_ptr<VoidTypeConv> voidTypeConv = std::make_shared<VoidT
 
 class SCharTypeConv : public TypeConv {
  public:
-  SCharTypeConv() { type = &ffi_type_schar; }
+  SCharTypeConv() {
+    type = &ffi_type_schar;
+    kind = mdTypeChar;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    int8_t raw = *(int8_t*)value;
+    if (raw == 0 || raw == 1) {
+      napi_value result;
+      napi_get_boolean(env, raw == 1, &result);
+      return result;
+    }
+
     napi_value result;
-    napi_create_int32(env, *(int8_t*)value, &result);
+    napi_create_int32(env, raw, &result);
     return result;
   }
 
@@ -281,11 +605,21 @@ static const std::shared_ptr<SCharTypeConv> scharTypeConv = std::make_shared<SCh
 
 class UCharTypeConv : public TypeConv {
  public:
-  UCharTypeConv() { type = &ffi_type_uchar; }
+  UCharTypeConv() {
+    type = &ffi_type_uchar;
+    kind = mdTypeUChar;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    uint8_t raw = *(uint8_t*)value;
+    if (raw == 0 || raw == 1) {
+      napi_value result;
+      napi_get_boolean(env, raw == 1, &result);
+      return result;
+    }
+
     napi_value result;
-    napi_create_uint32(env, *(uint8_t*)value, &result);
+    napi_create_uint32(env, raw, &result);
     return result;
   }
 
@@ -304,11 +638,21 @@ static const std::shared_ptr<UCharTypeConv> ucharTypeConv = std::make_shared<UCh
 
 class UInt8TypeConv : public TypeConv {
  public:
-  UInt8TypeConv() { type = &ffi_type_uint8; }
+  UInt8TypeConv() {
+    type = &ffi_type_uint8;
+    kind = mdTypeUInt8;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    uint8_t raw = *(uint8_t*)value;
+    if (raw == 0 || raw == 1) {
+      napi_value result;
+      napi_get_boolean(env, raw == 1, &result);
+      return result;
+    }
+
     napi_value result;
-    napi_create_uint32(env, *(uint8_t*)value, &result);
+    napi_create_uint32(env, raw, &result);
     return result;
   }
 
@@ -327,7 +671,10 @@ static const std::shared_ptr<UInt8TypeConv> uint8TypeConv = std::make_shared<UIn
 
 class SInt16TypeConv : public TypeConv {
  public:
-  SInt16TypeConv() { type = &ffi_type_sshort; }
+  SInt16TypeConv() {
+    type = &ffi_type_sshort;
+    kind = mdTypeSShort;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
@@ -350,17 +697,46 @@ static const std::shared_ptr<SInt16TypeConv> sint16TypeConv = std::make_shared<S
 
 class UInt16TypeConv : public TypeConv {
  public:
-  UInt16TypeConv() { type = &ffi_type_ushort; }
+  UInt16TypeConv() {
+    type = &ffi_type_ushort;
+    kind = mdTypeUShort;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    uint16_t raw = *(uint16_t*)value;
+    if (raw >= 32 && raw <= 126) {
+      char buffer[2] = {static_cast<char>(raw), '\0'};
+      napi_value result;
+      napi_create_string_utf8(env, buffer, NAPI_AUTO_LENGTH, &result);
+      return result;
+    }
+
     napi_value result;
-    napi_create_uint32(env, *(uint16_t*)value, &result);
+    napi_create_uint32(env, raw, &result);
     return result;
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    uint32_t val;
+    napi_valuetype valueType = napi_undefined;
+    napi_typeof(env, value, &valueType);
+
+    if (valueType == napi_string) {
+      size_t strLen = 0;
+      napi_get_value_string_utf16(env, value, nullptr, 0, &strLen);
+      if (strLen != 1) {
+        napi_throw_type_error(env, nullptr, "Expected a single-character string.");
+        *(uint16_t*)result = 0;
+        return;
+      }
+
+      char16_t chars[2] = {0, 0};
+      napi_get_value_string_utf16(env, value, chars, 2, &strLen);
+      *(uint16_t*)result = static_cast<uint16_t>(chars[0]);
+      return;
+    }
+
+    uint32_t val = 0;
     napi_coerce_to_number(env, value, &value);
     napi_get_value_uint32(env, value, &val);
     *(uint16_t*)result = val;
@@ -373,7 +749,10 @@ static const std::shared_ptr<UInt16TypeConv> uint16TypeConv = std::make_shared<U
 
 class SInt32TypeConv : public TypeConv {
  public:
-  SInt32TypeConv() { type = &ffi_type_sint; }
+  SInt32TypeConv() {
+    type = &ffi_type_sint;
+    kind = mdTypeSInt;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
@@ -396,7 +775,10 @@ static const std::shared_ptr<SInt32TypeConv> sint32TypeConv = std::make_shared<S
 
 class UInt32TypeConv : public TypeConv {
  public:
-  UInt32TypeConv() { type = &ffi_type_uint; }
+  UInt32TypeConv() {
+    type = &ffi_type_uint;
+    kind = mdTypeUInt;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
@@ -419,12 +801,20 @@ static const std::shared_ptr<UInt32TypeConv> uint32TypeConv = std::make_shared<U
 
 class SInt64TypeConv : public TypeConv {
  public:
-  SInt64TypeConv() { type = &ffi_type_sint64; }
+  SInt64TypeConv() {
+    type = &ffi_type_sint64;
+    kind = mdTypeSInt64;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
     int64_t val = *(int64_t*)value;
-    napi_create_int64(env, val, &result);
+    constexpr int64_t kMaxSafeInteger = 9007199254740991LL;
+    if (val > kMaxSafeInteger || val < -kMaxSafeInteger) {
+      napi_create_bigint_int64(env, val, &result);
+    } else {
+      napi_create_int64(env, val, &result);
+    }
     return result;
   }
 
@@ -462,12 +852,20 @@ static const std::shared_ptr<SInt64TypeConv> sint64TypeConv = std::make_shared<S
 
 class UInt64TypeConv : public TypeConv {
  public:
-  UInt64TypeConv() { type = &ffi_type_uint64; }
+  UInt64TypeConv() {
+    type = &ffi_type_uint64;
+    kind = mdTypeUInt64;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
     uint64_t val = *(uint64_t*)value;
-    napi_create_int64(env, (int64_t)val, &result);
+    constexpr uint64_t kMaxSafeInteger = 9007199254740991ULL;
+    if (val > kMaxSafeInteger) {
+      napi_create_bigint_uint64(env, val, &result);
+    } else {
+      napi_create_int64(env, static_cast<int64_t>(val), &result);
+    }
     return result;
   }
 
@@ -512,7 +910,10 @@ class UInt128TypeConv : public TypeConv {
                     }};
 
  public:
-  UInt128TypeConv() { type = &_type; }
+  UInt128TypeConv() {
+    type = &_type;
+    kind = mdTypeUInt128;
+  }
 
   // TODO
 
@@ -548,7 +949,10 @@ static const std::shared_ptr<UInt128TypeConv> uint128TypeConv = std::make_shared
 
 class Float32TypeConv : public TypeConv {
  public:
-  Float32TypeConv() { type = &ffi_type_float; }
+  Float32TypeConv() {
+    type = &ffi_type_float;
+    kind = mdTypeFloat;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
@@ -571,7 +975,10 @@ static const std::shared_ptr<Float32TypeConv> float32TypeConv = std::make_shared
 
 class Float64TypeConv : public TypeConv {
  public:
-  Float64TypeConv() { type = &ffi_type_double; }
+  Float64TypeConv() {
+    type = &ffi_type_double;
+    kind = mdTypeDouble;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
@@ -597,20 +1004,49 @@ static const std::shared_ptr<Float64TypeConv> float64TypeConv = std::make_shared
 
 class BoolTypeConv : public TypeConv {
  public:
-  BoolTypeConv() { type = &ffi_type_uint8; }
+  BoolTypeConv() {
+    type = &ffi_type_uint8;
+    kind = mdTypeBool;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    uint8_t raw = *(uint8_t*)value;
+    if (raw == 0 || raw == 1) {
+      napi_value result;
+      napi_get_boolean(env, raw == 1, &result);
+      return result;
+    }
+
     napi_value result;
-    napi_get_boolean(env, *(bool*)value, &result);
+    napi_create_uint32(env, raw, &result);
     return result;
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    bool val;
+    napi_valuetype valueType = napi_undefined;
+    napi_typeof(env, value, &valueType);
+
+    if (valueType == napi_number) {
+      uint32_t val = 0;
+      napi_coerce_to_number(env, value, &value);
+      napi_get_value_uint32(env, value, &val);
+      *(uint8_t*)result = static_cast<uint8_t>(val);
+      return;
+    }
+
+    if (valueType == napi_bigint) {
+      uint64_t val = 0;
+      bool lossless = false;
+      napi_get_value_bigint_uint64(env, value, &val, &lossless);
+      *(uint8_t*)result = static_cast<uint8_t>(val);
+      return;
+    }
+
+    bool val = false;
     napi_coerce_to_bool(env, value, &value);
     napi_get_value_bool(env, value, &val);
-    *(bool*)result = val;
+    *(uint8_t*)result = static_cast<uint8_t>(val ? 1 : 0);
   }
 
   void encode(std::string* encoding) override { *encoding += "B"; }
@@ -622,14 +1058,114 @@ class PointerTypeConv : public TypeConv {
  public:
   std::shared_ptr<TypeConv> pointeeType = nullptr;
 
-  PointerTypeConv() { type = &ffi_type_pointer; }
+  PointerTypeConv() {
+    type = &ffi_type_pointer;
+    kind = mdTypePointer;
+  }
 
   PointerTypeConv(std::shared_ptr<TypeConv> pointeeType) : pointeeType(pointeeType) {
     type = &ffi_type_pointer;
+    kind = mdTypePointer;
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    return Pointer::create(env, *((void**)value));
+    void* raw = *((void**)value);
+    if (raw == nullptr) {
+      napi_value nullValue;
+      napi_get_null(env, &nullValue);
+      return nullValue;
+    }
+
+    auto normalizePtr = [](void* ptr) -> uintptr_t {
+#if INTPTR_MAX == INT64_MAX
+      // Objective-C pointers may carry auth/tag bits on some runtimes.
+      // Compare using canonical lower bits for stable lookups.
+      return reinterpret_cast<uintptr_t>(ptr) & 0x0000FFFFFFFFFFFFULL;
+#else
+      return reinterpret_cast<uintptr_t>(ptr);
+#endif
+    };
+
+    auto bridgeState = ObjCBridgeState::InstanceData(env);
+    if (bridgeState != nullptr) {
+      auto classIt = bridgeState->mdClassesByPointer.find((Class)raw);
+      if (classIt != bridgeState->mdClassesByPointer.end()) {
+        auto cls = bridgeState->getClass(env, classIt->second);
+        if (cls != nullptr) {
+          return get_ref_value(env, cls->constructor);
+        }
+      } else {
+        const uintptr_t rawNormalized = normalizePtr(raw);
+        for (const auto& entry : bridgeState->mdClassesByPointer) {
+          if (normalizePtr((void*)entry.first) != rawNormalized) {
+            continue;
+          }
+
+          auto cls = bridgeState->getClass(env, entry.second);
+          if (cls != nullptr) {
+            return get_ref_value(env, cls->constructor);
+          }
+        }
+      }
+
+      auto protocolIt = bridgeState->mdProtocolsByPointer.find((Protocol*)raw);
+      if (protocolIt != bridgeState->mdProtocolsByPointer.end()) {
+        auto proto = bridgeState->getProtocol(env, protocolIt->second);
+        if (proto != nullptr) {
+          return get_ref_value(env, proto->constructor);
+        }
+      } else {
+        const uintptr_t rawNormalized = normalizePtr(raw);
+        for (const auto& entry : bridgeState->mdProtocolsByPointer) {
+          if (normalizePtr((void*)entry.first) != rawNormalized) {
+            continue;
+          }
+
+          auto proto = bridgeState->getProtocol(env, entry.second);
+          if (proto != nullptr) {
+            return get_ref_value(env, proto->constructor);
+          }
+        }
+
+        // Some protocol pointers come from compile-time @protocol() references
+        // and don't always match objc_getProtocol() pointer identity.
+        // Resolve them by scanning runtime protocol list and matching by address.
+        unsigned int protocolCount = 0;
+        Protocol** protocols = objc_copyProtocolList(&protocolCount);
+        if (protocols != nullptr) {
+          for (unsigned int i = 0; i < protocolCount; i++) {
+            Protocol* runtimeProto = protocols[i];
+            if (normalizePtr((void*)runtimeProto) != rawNormalized) {
+              continue;
+            }
+
+            const char* runtimeName = protocol_getName(runtimeProto);
+            MDSectionOffset metadataOffset =
+                findProtocolMetadataOffset(bridgeState->metadata, runtimeName);
+            if (metadataOffset != MD_SECTION_OFFSET_NULL) {
+              bridgeState->mdProtocolsByPointer[runtimeProto] = metadataOffset;
+              auto proto = bridgeState->getProtocol(env, metadataOffset);
+              if (proto != nullptr) {
+                ::free(protocols);
+                return get_ref_value(env, proto->constructor);
+              }
+            }
+
+            break;
+          }
+          ::free(protocols);
+        }
+      }
+    }
+
+    if (pointeeType != nullptr && pointeeType->kind != mdTypeVoid) {
+      napi_value referenceValue = Reference::create(env, pointeeType, raw, false);
+      if (referenceValue != nullptr) {
+        return referenceValue;
+      }
+    }
+
+    return Pointer::create(env, raw);
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
@@ -637,6 +1173,66 @@ class PointerTypeConv : public TypeConv {
     NAPI_PREAMBLE
 
     void** res = (void**)result;
+
+    auto unwrapKnownNativeHandle = [&](napi_value input, void** out) -> bool {
+      auto describeValue = [&](napi_value candidate) -> std::string {
+        if (candidate == nullptr) {
+          return "(null)";
+        }
+
+        napi_value nameValue = nullptr;
+        bool hasName = false;
+        if (napi_has_named_property(env, candidate, "name", &hasName) != napi_ok || !hasName) {
+          return "(unnamed)";
+        }
+
+        if (napi_get_named_property(env, candidate, "name", &nameValue) != napi_ok) {
+          return "(unnamed)";
+        }
+
+        napi_valuetype nameType = napi_undefined;
+        if (napi_typeof(env, nameValue, &nameType) != napi_ok || nameType != napi_string) {
+          return "(unnamed)";
+        }
+
+        char buffer[512];
+        size_t length = 0;
+        if (napi_get_value_string_utf8(env, nameValue, buffer, sizeof(buffer), &length) !=
+            napi_ok) {
+          return "(unnamed)";
+        }
+
+        return std::string(buffer, length);
+      };
+
+      void* wrapped = nullptr;
+      napi_status unwrapStatus = napi_unwrap(env, input, &wrapped);
+      if (unwrapStatus != napi_ok) {
+        return false;
+      }
+
+      auto bridgeState = ObjCBridgeState::InstanceData(env);
+      if (bridgeState != nullptr) {
+        for (const auto& entry : bridgeState->classes) {
+          auto bridgedClass = entry.second;
+          if (bridgedClass == wrapped) {
+            *out = (void*)bridgedClass->nativeClass;
+            return true;
+          }
+        }
+
+        for (const auto& entry : bridgeState->protocols) {
+          auto bridgedProtocol = entry.second;
+          if (bridgedProtocol == wrapped) {
+            *out = (void*)objc_getProtocol(bridgedProtocol->name.c_str());
+            return true;
+          }
+        }
+      }
+
+      *out = wrapped;
+      return true;
+    };
 
     napi_valuetype type;
     napi_typeof(env, value, &type);
@@ -676,21 +1272,22 @@ class PointerTypeConv : public TypeConv {
 
         str[len] = '\0';
 
-        // Check if we need to create a CFStringRef instead of a C string
-        // if (pointeeType && pointeeType->kind == mdTypeNSStringObject) {
-        // Create CFStringRef for CF/NS string pointers
-        CFStringRef cfStr =
-            CFStringCreateWithCString(kCFAllocatorDefault, str, kCFStringEncodingUTF8);
-        ::free(str);  // Free the temporary C string
-        *res = (void*)cfStr;
-        *shouldFree = false;  // CFStringRef is reference counted, don't use free()
-        *shouldFreeAny = false;
-        // } else {
-        //   // Default behavior: return C string
-        //   *res = (void*)str;
-        //   *shouldFree = true;
-        //   *shouldFreeAny = true;
-        // }
+        bool shouldCreateCFString =
+            pointeeType != nullptr && (pointeeType->kind == mdTypeNSStringObject ||
+                                       pointeeType->kind == mdTypeNSMutableStringObject);
+
+        if (shouldCreateCFString) {
+          CFStringRef cfStr =
+              CFStringCreateWithCString(kCFAllocatorDefault, str, kCFStringEncodingUTF8);
+          ::free(str);
+          *res = (void*)cfStr;
+          *shouldFree = true;
+          *shouldFreeAny = true;
+        } else {
+          *res = (void*)str;
+          *shouldFree = true;
+          *shouldFreeAny = true;
+        }
         return;
       }
 
@@ -712,9 +1309,241 @@ class PointerTypeConv : public TypeConv {
 
         if (Reference::isInstance(env, value)) {
           Reference* ref = Reference::unwrap(env, value);
+          if (ref == nullptr) {
+            napi_throw_error(env, nullptr, "Invalid Reference");
+            *res = nullptr;
+            return;
+          }
           if (ref->data == nullptr) {
-            ref->type = pointeeType;
-            ref->data = malloc(pointeeType->type->size);
+            std::shared_ptr<TypeConv> resolvedType = pointeeType;
+            if (resolvedType == nullptr) {
+              resolvedType = ref->type;
+            }
+
+            if (resolvedType == nullptr && ref->initValue != nullptr) {
+              napi_value initValue = get_ref_value(env, ref->initValue);
+              if (initValue != nullptr) {
+                napi_valuetype initType = napi_undefined;
+                if (napi_typeof(env, initValue, &initType) == napi_ok) {
+                  auto makeStructType = [&](StructInfo* info) -> std::shared_ptr<TypeConv> {
+                    if (info == nullptr || info->name == nullptr) {
+                      return nullptr;
+                    }
+
+                    std::string encoding = "{";
+                    encoding += info->name;
+                    encoding += "=";
+                    for (const auto& field : info->fields) {
+                      if (field.type == nullptr) {
+                        return nullptr;
+                      }
+                      field.type->encode(&encoding);
+                    }
+                    encoding += "}";
+
+                    const char* encodingPtr = encoding.c_str();
+                    return TypeConv::Make(env, &encodingPtr);
+                  };
+
+                  if (initType == napi_object) {
+                    if (StructObject::isInstance(env, initValue)) {
+                      StructObject* structObj = StructObject::unwrap(env, initValue);
+                      if (structObj != nullptr) {
+                        resolvedType = makeStructType(structObj->info);
+                      }
+                    }
+
+                    if (resolvedType == nullptr) {
+                      auto bridgeState = ObjCBridgeState::InstanceData(env);
+                      if (bridgeState != nullptr) {
+                        bool isArray = false;
+                        bool isTypedArray = false;
+                        bool isArrayBuffer = false;
+                        bool isDataView = false;
+                        napi_is_array(env, initValue, &isArray);
+                        napi_is_typedarray(env, initValue, &isTypedArray);
+                        napi_is_arraybuffer(env, initValue, &isArrayBuffer);
+                        napi_is_dataview(env, initValue, &isDataView);
+                        if (!isArray && !isTypedArray && !isArrayBuffer && !isDataView) {
+                          napi_value propertyNames = nullptr;
+                          if (napi_get_property_names(env, initValue, &propertyNames) == napi_ok &&
+                              propertyNames != nullptr) {
+                            uint32_t propertyCount = 0;
+                            napi_get_array_length(env, propertyNames, &propertyCount);
+                            std::unordered_set<std::string> keys;
+                            std::unordered_map<std::string, bool> keyIsInteger;
+                            keys.reserve(propertyCount);
+                            for (uint32_t i = 0; i < propertyCount; i++) {
+                              napi_value keyValue = nullptr;
+                              if (napi_get_element(env, propertyNames, i, &keyValue) != napi_ok ||
+                                  keyValue == nullptr) {
+                                continue;
+                              }
+                              napi_valuetype keyType = napi_undefined;
+                              if (napi_typeof(env, keyValue, &keyType) != napi_ok ||
+                                  keyType != napi_string) {
+                                continue;
+                              }
+                              size_t keyLength = 0;
+                              if (napi_get_value_string_utf8(env, keyValue, nullptr, 0,
+                                                             &keyLength) != napi_ok) {
+                                continue;
+                              }
+                              std::vector<char> keyBuffer(keyLength + 1, '\0');
+                              if (napi_get_value_string_utf8(env, keyValue, keyBuffer.data(),
+                                                             keyBuffer.size(),
+                                                             &keyLength) != napi_ok) {
+                                continue;
+                              }
+                              std::string key(keyBuffer.data(), keyLength);
+                              keys.insert(key);
+
+                              napi_value propertyValue = nullptr;
+                              if (napi_get_property(env, initValue, keyValue, &propertyValue) ==
+                                      napi_ok &&
+                                  propertyValue != nullptr) {
+                                napi_valuetype propertyType = napi_undefined;
+                                if (napi_typeof(env, propertyValue, &propertyType) == napi_ok) {
+                                  bool isInteger = false;
+                                  if (propertyType == napi_bigint) {
+                                    isInteger = true;
+                                  } else if (propertyType == napi_number) {
+                                    double numericValue = 0;
+                                    if (napi_get_value_double(env, propertyValue, &numericValue) ==
+                                        napi_ok) {
+                                      int64_t truncated = static_cast<int64_t>(numericValue);
+                                      isInteger = static_cast<double>(truncated) == numericValue;
+                                    }
+                                  }
+                                  keyIsInteger[key] = isInteger;
+                                }
+                              }
+                            }
+
+                            if (!keys.empty()) {
+                              auto isIntegerKind = [](MDTypeKind kind) -> bool {
+                                switch (kind) {
+                                  case mdTypeChar:
+                                  case mdTypeSInt:
+                                  case mdTypeSShort:
+                                  case mdTypeSLong:
+                                  case mdTypeSInt64:
+                                  case mdTypeUChar:
+                                  case mdTypeUInt:
+                                  case mdTypeUShort:
+                                  case mdTypeULong:
+                                  case mdTypeUInt64:
+                                  case mdTypeUInt8:
+                                  case mdTypeBool:
+                                    return true;
+                                  default:
+                                    return false;
+                                }
+                              };
+
+                              auto isFloatingKind = [](MDTypeKind kind) -> bool {
+                                return kind == mdTypeFloat || kind == mdTypeDouble ||
+                                       kind == mdTypeLongDouble || kind == mdTypeF16;
+                              };
+
+                              StructInfo* bestMatch = nullptr;
+                              int bestScore = std::numeric_limits<int>::min();
+                              uint16_t bestSize = std::numeric_limits<uint16_t>::max();
+
+                              for (const auto& entry : bridgeState->structOffsets) {
+                                StructInfo* info = bridgeState->getStructInfo(env, entry.second);
+                                if (info == nullptr || info->fields.size() != keys.size()) {
+                                  continue;
+                                }
+
+                                bool match = true;
+                                for (const auto& field : info->fields) {
+                                  if (field.name == nullptr ||
+                                      keys.find(field.name) == keys.end()) {
+                                    match = false;
+                                    break;
+                                  }
+                                }
+                                if (!match) {
+                                  continue;
+                                }
+
+                                int score = 0;
+                                bool hasOnlyNumericFields = true;
+                                for (const auto& field : info->fields) {
+                                  if (field.type == nullptr) {
+                                    hasOnlyNumericFields = false;
+                                    break;
+                                  }
+
+                                  MDTypeKind fieldKind = field.type->kind;
+                                  if (isIntegerKind(fieldKind)) {
+                                    auto integerEntry =
+                                        keyIsInteger.find(field.name != nullptr ? field.name : "");
+                                    score +=
+                                        (integerEntry != keyIsInteger.end() && integerEntry->second)
+                                            ? 3
+                                            : 1;
+                                  } else if (isFloatingKind(fieldKind)) {
+                                    score += 2;
+                                  } else {
+                                    hasOnlyNumericFields = false;
+                                    break;
+                                  }
+                                }
+
+                                if (!hasOnlyNumericFields) {
+                                  continue;
+                                }
+
+                                if (score > bestScore ||
+                                    (score == bestScore && info->size < bestSize)) {
+                                  bestScore = score;
+                                  bestSize = info->size;
+                                  bestMatch = info;
+                                }
+                              }
+
+                              if (bestMatch != nullptr) {
+                                resolvedType = makeStructType(bestMatch);
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+
+                  if (resolvedType == nullptr) {
+                    const char* inferredEncoding = "@";
+                    if (initType == napi_number || initType == napi_bigint) {
+                      inferredEncoding = "q";
+                    } else if (initType == napi_boolean) {
+                      inferredEncoding = "B";
+                    }
+                    resolvedType = TypeConv::Make(env, &inferredEncoding);
+                  }
+                }
+              }
+            }
+
+            if (resolvedType == nullptr) {
+              const char* defaultEncoding = "@";
+              resolvedType = TypeConv::Make(env, &defaultEncoding);
+            }
+
+            ref->type = resolvedType;
+            size_t pointeeSize = sizeof(void*);
+            if (resolvedType != nullptr && resolvedType->type != nullptr &&
+                resolvedType->type->size > 0) {
+              pointeeSize = resolvedType->type->size;
+            }
+            ref->data = calloc(1, pointeeSize);
+            if (ref->data == nullptr) {
+              napi_throw_error(env, nullptr, "Out of memory while allocating out parameter");
+              *res = nullptr;
+              return;
+            }
             ref->ownsData = true;
             if (ref->initValue) {
               napi_value initValue = get_ref_value(env, ref->initValue);
@@ -737,10 +1566,7 @@ class PointerTypeConv : public TypeConv {
           return;
         }
 
-        void* wrapped;
-        status = napi_unwrap(env, value, &wrapped);
-        if (status == napi_ok) {
-          *res = wrapped;
+        if (unwrapKnownNativeHandle(value, res)) {
           return;
         }
 
@@ -760,27 +1586,49 @@ class PointerTypeConv : public TypeConv {
           *res = data;
           return;
         }
+
+        bool isArrayBuffer = false;
+        napi_is_arraybuffer(env, value, &isArrayBuffer);
+        if (isArrayBuffer) {
+          void* data = nullptr;
+          size_t byteLength = 0;
+          napi_get_arraybuffer_info(env, value, &data, &byteLength);
+          *res = data;
+          return;
+        }
+        break;
+      }
+
+      case napi_function: {
+        if (unwrapKnownNativeHandle(value, res)) {
+          return;
+        }
+        break;
       }
 
       default:
-        NSLog(@"value %d", type);
         napi_throw_error(env, nullptr, "Invalid pointer type");
         *res = nullptr;
         return;
     }
+
+    napi_throw_error(env, nullptr, "Invalid pointer type");
+    *res = nullptr;
   }
 
   void free(napi_env env, void* value) override {
-    // if (pointeeType && pointeeType->kind == mdTypeNSStringObject) {
-    // CFStringRef needs CFRelease, not free()
-    CFStringRef cfStr = (CFStringRef)value;
-    if (cfStr != nullptr) {
-      CFRelease(cfStr);
+    if (value == nullptr) {
+      return;
     }
-    // } else {
-    //   // Default behavior for C strings
-    //   ::free(value);
-    // }
+
+    bool isCFString = pointeeType != nullptr && (pointeeType->kind == mdTypeNSStringObject ||
+                                                 pointeeType->kind == mdTypeNSMutableStringObject);
+
+    if (isCFString) {
+      CFRelease((CFStringRef)value);
+    } else {
+      ::free(value);
+    }
   }
 
   void encode(std::string* encoding) override { *encoding += "^v"; }
@@ -794,10 +1642,17 @@ class BlockTypeConv : public TypeConv {
 
   BlockTypeConv(MDSectionOffset signatureOffset) : signatureOffset(signatureOffset) {
     type = &ffi_type_pointer;
+    kind = mdTypeBlock;
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    return FunctionPointer::wrap(env, *((void**)value), signatureOffset, true);
+    void* fn = *((void**)value);
+    if (fn == nullptr) {
+      napi_value nullValue;
+      napi_get_null(env, &nullValue);
+      return nullValue;
+    }
+    return FunctionPointer::wrap(env, fn, signatureOffset, true);
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
@@ -846,6 +1701,17 @@ class BlockTypeConv : public TypeConv {
       }
 
       case napi_function: {
+        if (FunctionReference::isInstance(env, value)) {
+          FunctionReference* ref = FunctionReference::unwrap(env, value);
+          if (ref == nullptr) {
+            napi_throw_error(env, nullptr, "Invalid FunctionReference");
+            *res = nullptr;
+            return;
+          }
+          *res = ref->getFunctionPointer(signatureOffset, true);
+          return;
+        }
+
         void* wrapped;
         status = napi_unwrap(env, value, &wrapped);
         if (status == napi_ok) {
@@ -892,10 +1758,17 @@ class FunctionPointerTypeConv : public TypeConv {
 
   FunctionPointerTypeConv(MDSectionOffset signatureOffset) : signatureOffset(signatureOffset) {
     type = &ffi_type_pointer;
+    kind = mdTypeFunctionPointer;
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    return FunctionPointer::wrap(env, *((void**)value), signatureOffset, false);
+    void* fn = *((void**)value);
+    if (fn == nullptr) {
+      napi_value nullValue;
+      napi_get_null(env, &nullValue);
+      return nullValue;
+    }
+    return FunctionPointer::wrap(env, fn, signatureOffset, false);
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
@@ -941,14 +1814,33 @@ class FunctionPointerTypeConv : public TypeConv {
         } else if (Reference::isInstance(env, value)) {
           Reference* ref = Reference::unwrap(env, value);
           *res = ref->data;
-        } else {
+        } else if (FunctionReference::isInstance(env, value)) {
           FunctionReference* ref = FunctionReference::unwrap(env, value);
-          *res = ref->getFunctionPointer(signatureOffset);
+          if (ref == nullptr) {
+            napi_throw_error(env, nullptr, "Invalid FunctionReference");
+            *res = nullptr;
+            return;
+          }
+          *res = ref->getFunctionPointer(signatureOffset, false);
+        } else {
+          napi_throw_error(env, nullptr, "Invalid function pointer object");
+          *res = nullptr;
         }
         return;
       }
 
       case napi_function: {
+        if (FunctionReference::isInstance(env, value)) {
+          FunctionReference* ref = FunctionReference::unwrap(env, value);
+          if (ref == nullptr) {
+            napi_throw_error(env, nullptr, "Invalid FunctionReference");
+            *res = nullptr;
+            return;
+          }
+          *res = ref->getFunctionPointer(signatureOffset, false);
+          return;
+        }
+
         void* wrapped;
         status = napi_unwrap(env, value, &wrapped);
         if (status == napi_ok) {
@@ -957,7 +1849,7 @@ class FunctionPointerTypeConv : public TypeConv {
         }
 
         auto bridgeState = ObjCBridgeState::InstanceData(env);
-        auto closure = new Closure(bridgeState->metadata, signatureOffset, true);
+        auto closure = new Closure(bridgeState->metadata, signatureOffset, false);
         closure->env = env;
         closure->func = make_ref(env, value);
         napi_remove_wrap(env, value, nullptr);
@@ -979,10 +1871,23 @@ class FunctionPointerTypeConv : public TypeConv {
 
 class StringTypeConv : public TypeConv {
  public:
-  StringTypeConv() { type = &ffi_type_pointer; }
+  StringTypeConv() {
+    type = &ffi_type_pointer;
+    kind = mdTypeString;
+  }
 
   napi_value toJS(napi_env env, void* cont, uint32_t flags) override {
     void* value = *((void**)cont);
+    if (value == nullptr) {
+      napi_value null;
+      napi_get_null(env, &null);
+      return null;
+    }
+
+    if ((flags & kCStringAsReference) != 0) {
+      return Reference::create(env, scharTypeConv, value, false);
+    }
+
     napi_value result;
     napi_create_string_utf8(env, (char*)value, NAPI_AUTO_LENGTH, &result);
     return result;
@@ -1014,6 +1919,45 @@ class StringTypeConv : public TypeConv {
       if (Reference::isInstance(env, value)) {
         Reference* ref = Reference::unwrap(env, value);
         *(char**)result = (char*)ref->data;
+        *shouldFree = false;
+        *shouldFreeAny = false;
+        return;
+      }
+
+      bool isTypedArray = false;
+      napi_is_typedarray(env, value, &isTypedArray);
+      if (isTypedArray) {
+        void* data = nullptr;
+        size_t length = 0;
+        napi_typedarray_type typedArrayType;
+        napi_get_typedarray_info(env, value, &typedArrayType, &length, &data, nullptr, nullptr);
+        *(char**)result = static_cast<char*>(data);
+        *shouldFree = false;
+        *shouldFreeAny = false;
+        return;
+      }
+
+      bool isArrayBuffer = false;
+      napi_is_arraybuffer(env, value, &isArrayBuffer);
+      if (isArrayBuffer) {
+        void* data = nullptr;
+        size_t byteLength = 0;
+        napi_get_arraybuffer_info(env, value, &data, &byteLength);
+        *(char**)result = static_cast<char*>(data);
+        *shouldFree = false;
+        *shouldFreeAny = false;
+        return;
+      }
+
+      bool isDataView = false;
+      napi_is_dataview(env, value, &isDataView);
+      if (isDataView) {
+        void* data = nullptr;
+        size_t byteLength = 0;
+        napi_value arrayBuffer = nullptr;
+        size_t byteOffset = 0;
+        napi_get_dataview_info(env, value, &byteLength, &data, &arrayBuffer, &byteOffset);
+        *(char**)result = static_cast<char*>(data);
         *shouldFree = false;
         *shouldFreeAny = false;
         return;
@@ -1061,33 +2005,120 @@ class ObjCObjectTypeConv : public TypeConv {
   MDSectionOffset classOffset = 0;
   std::vector<MDSectionOffset> protocolOffsets;
 
-  ObjCObjectTypeConv() { type = &ffi_type_pointer; }
+  ObjCObjectTypeConv() {
+    type = &ffi_type_pointer;
+    kind = mdTypeAnyObject;
+  }
 
   ObjCObjectTypeConv(MDSectionOffset classOffset, std::vector<MDSectionOffset> protocolOffsets)
       : classOffset(classOffset), protocolOffsets(protocolOffsets) {
     type = &ffi_type_pointer;
+    if (classOffset != 0) {
+      kind = mdTypeClassObject;
+    } else {
+      kind = protocolOffsets.empty() ? mdTypeAnyObject : mdTypeProtocolObject;
+    }
   }
 
   ObjCObjectTypeConv(std::vector<MDSectionOffset> protocolOffsets)
       : protocolOffsets(protocolOffsets) {
     type = &ffi_type_pointer;
+    kind = protocolOffsets.empty() ? mdTypeAnyObject : mdTypeProtocolObject;
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    id obj = *((id*)value);
+    void* rawPtr = *((void**)value);
+    id obj = (__bridge id)rawPtr;
+
     if (obj == nil) {
       napi_value null;
       napi_get_null(env, &null);
       return null;
     }
 
-    if ([obj isKindOfClass:[NSMutableString class]]) {
+    auto bridgeState = ObjCBridgeState::InstanceData(env);
+
+    if (bridgeState != nullptr) {
+      auto normalizePtr = [](void* ptr) -> uintptr_t {
+        return normalizeRuntimePointer(reinterpret_cast<uintptr_t>(ptr));
+      };
+
+      auto protocolIt = bridgeState->mdProtocolsByPointer.find((Protocol*)obj);
+      if (protocolIt != bridgeState->mdProtocolsByPointer.end()) {
+        auto proto = bridgeState->getProtocol(env, protocolIt->second);
+        if (proto != nullptr) {
+          return get_ref_value(env, proto->constructor);
+        }
+      } else {
+        const uintptr_t objNormalized = normalizePtr((void*)obj);
+        for (const auto& entry : bridgeState->mdProtocolsByPointer) {
+          if (normalizePtr((void*)entry.first) != objNormalized) {
+            continue;
+          }
+
+          auto proto = bridgeState->getProtocol(env, entry.second);
+          if (proto != nullptr) {
+            return get_ref_value(env, proto->constructor);
+          }
+        }
+      }
+    }
+
+    // Always unbox NSNull and CFBoolean/NSNumber values (except NSDecimalNumber),
+    // so primitive round-trips match historical runtime behavior.
+    if (isKindOfClassFast(obj, [NSNull class])) {
+      napi_value null;
+      napi_get_null(env, &null);
+      return null;
+    }
+
+    if (isKindOfClassFast(obj, [NSNumber class]) &&
+        !isKindOfClassFast(obj, [NSDecimalNumber class])) {
+      if (CFGetTypeID((CFTypeRef)obj) == CFBooleanGetTypeID()) {
+        napi_value result;
+        napi_get_boolean(env, [obj boolValue], &result);
+        return result;
+      }
+
       napi_value result;
-      napi_create_string_utf8(env, [obj UTF8String], [obj length], &result);
+      napi_create_double(env, [obj doubleValue], &result);
       return result;
     }
 
-    auto bridgeState = ObjCBridgeState::InstanceData(env);
+    // Untyped id values that are actually Objective-C blocks should be
+    // callable from JS. Preserve callback identity when we already have one.
+    if (isObjCBlockObject(obj)) {
+      napi_value cached = getCachedBlockCallback(env, (void*)obj);
+      if (cached != nullptr) {
+        return cached;
+      }
+
+      const char* signature = getObjCBlockSignature((void*)obj);
+      if (signature != nullptr) {
+        return FunctionPointer::wrapWithEncoding(env, (void*)obj, signature, true);
+      }
+    }
+
+    // Auto-unbox plain id string values.
+    const bool isUntypedObject = classOffset == 0 && protocolOffsets.empty();
+    if (isUntypedObject && isKindOfClassFast(obj, [NSString class])) {
+      NSUInteger length = [obj length];
+      std::vector<char16_t> chars(length > 0 ? length : 1);
+      if (length > 0) {
+        [((NSString*)obj) getCharacters:(unichar*)chars.data() range:NSMakeRange(0, length)];
+      }
+      napi_value result;
+      napi_create_string_utf16(env, length > 0 ? chars.data() : nullptr, length, &result);
+      return result;
+    }
+
+    if (bridgeState == nullptr) {
+      return Pointer::create(env, (void*)obj);
+    }
+
+    if (napi_value existing = bridgeState->findCachedObjectWrapper(env, obj); existing != nullptr) {
+      return existing;
+    }
 
     ObjectOwnership ownership;
     if ((flags & kReturnOwned) != 0) {
@@ -1123,24 +2154,23 @@ class ObjCObjectTypeConv : public TypeConv {
 
       case napi_string: {
         size_t len = 0;
-        NAPI_GUARD(napi_get_value_string_utf8(env, value, nullptr, len, &len)) {
+        NAPI_GUARD(napi_get_value_string_utf8(env, value, nullptr, 0, &len)) {
           NAPI_THROW_LAST_ERROR
           return;
         }
 
-        char* str = (char*)malloc(len + 1);
-
-        NAPI_GUARD(napi_get_value_string_utf8(env, value, str, len + 1, &len)) {
+        std::vector<char> chars(len + 1);
+        NAPI_GUARD(napi_get_value_string_utf8(env, value, chars.data(), len + 1, &len)) {
           NAPI_THROW_LAST_ERROR
-          ::free(str);
           return;
         }
 
-        str[len] = '\0';
-
-        *res = [[[NSString alloc] initWithUTF8String:str] autorelease];
-
-        ::free(str);
+        *res = [[[NSString alloc] initWithBytes:chars.data()
+                                         length:len
+                                       encoding:NSUTF8StringEncoding] autorelease];
+        if (*res == nil) {
+          *res = [NSString string];
+        }
         break;
       }
 
@@ -1185,21 +2215,73 @@ class ObjCObjectTypeConv : public TypeConv {
 
       case napi_object:
       case napi_function: {
+        auto bridgeState = ObjCBridgeState::InstanceData(env);
+        auto cacheRoundTrip = [&](id nativeObj) {
+          if (nativeObj == nil || bridgeState == nullptr ||
+              !bridgeState->hasRoundTripCacheFrame()) {
+            return;
+          }
+
+          bridgeState->cacheRoundTripObject(env, nativeObj, value);
+        };
+
         if (Pointer::isInstance(env, value)) {
           Pointer* ptr = Pointer::unwrap(env, value);
-          *res = (id)ptr->data;
+          void* pointerData = ptr != nullptr ? ptr->data : nullptr;
+          if (id cachedObject = resolveCachedHandleObject(env, pointerData); cachedObject != nil) {
+            *res = cachedObject;
+            return;
+          }
+          *res = (id)pointerData;
           return;
         }
 
         if (Reference::isInstance(env, value)) {
           Reference* ref = Reference::unwrap(env, value);
-          *res = (id)ref->data;
+          void* referenceData = ref != nullptr ? ref->data : nullptr;
+          if (id cachedObject = resolveCachedHandleObject(env, referenceData);
+              cachedObject != nil) {
+            *res = cachedObject;
+            return;
+          }
+          *res = (id)referenceData;
           return;
         }
 
-        status = napi_unwrap(env, value, (void**)res);
+        void* wrapped = nullptr;
+        status = napi_unwrap(env, value, &wrapped);
 
         if (status != napi_ok) {
+          bool isArrayBuffer = false;
+          napi_is_arraybuffer(env, value, &isArrayBuffer);
+          if (isArrayBuffer) {
+            *res = createNSDataWrapper(env, value, bridgeState);
+            if (*res != nil) {
+              cacheRoundTrip(*res);
+              return;
+            }
+          }
+
+          bool isTypedArray = false;
+          napi_is_typedarray(env, value, &isTypedArray);
+          if (isTypedArray) {
+            *res = createNSDataWrapper(env, value, bridgeState);
+            if (*res != nil) {
+              cacheRoundTrip(*res);
+              return;
+            }
+          }
+
+          bool isDataView = false;
+          napi_is_dataview(env, value, &isDataView);
+          if (isDataView) {
+            *res = createNSDataWrapper(env, value, bridgeState);
+            if (*res != nil) {
+              cacheRoundTrip(*res);
+              return;
+            }
+          }
+
           bool isArray = false;
           napi_is_array(env, value, &isArray);
           if (isArray) {
@@ -1212,20 +2294,43 @@ class ObjCObjectTypeConv : public TypeConv {
               napi_get_element(env, value, i, &elem);
               id obj = nil;
               toNative(env, elem, (void*)&obj, shouldFree, shouldFreeAny);
-              [(*res) addObject:obj];
+              [(*res) addObject:obj != nil ? obj : [NSNull null]];
             }
 
+            cacheRoundTrip(*res);
             return;
           } else {
-            napi_value global, jsObject, valueConstructor, DateConstructor;
+            napi_value global, jsObject, valueConstructor, DateConstructor, MapConstructor;
+            napi_value StringConstructor, NumberConstructor, BooleanConstructor;
             napi_get_global(env, &global);
             napi_get_named_property(env, global, "Object", &jsObject);
             napi_get_named_property(env, global, "Date", &DateConstructor);
+            napi_get_named_property(env, global, "Map", &MapConstructor);
+            napi_get_named_property(env, global, "String", &StringConstructor);
+            napi_get_named_property(env, global, "Number", &NumberConstructor);
+            napi_get_named_property(env, global, "Boolean", &BooleanConstructor);
             napi_get_named_property(env, value, "constructor", &valueConstructor);
             bool isEqual;
             napi_strict_equals(env, jsObject, valueConstructor, &isEqual);
             bool isDate;
             napi_strict_equals(env, DateConstructor, valueConstructor, &isDate);
+            bool isMap;
+            napi_strict_equals(env, MapConstructor, valueConstructor, &isMap);
+            bool isStringObject = false;
+            bool isNumberObject = false;
+            bool isBooleanObject = false;
+            napi_strict_equals(env, StringConstructor, valueConstructor, &isStringObject);
+            napi_strict_equals(env, NumberConstructor, valueConstructor, &isNumberObject);
+            napi_strict_equals(env, BooleanConstructor, valueConstructor, &isBooleanObject);
+
+            if (isStringObject || isNumberObject || isBooleanObject) {
+              napi_value valueOfMethod;
+              napi_get_named_property(env, value, "valueOf", &valueOfMethod);
+              napi_value primitiveValue;
+              napi_call_function(env, value, valueOfMethod, 0, nullptr, &primitiveValue);
+              toNative(env, primitiveValue, result, shouldFree, shouldFreeAny);
+              return;
+            }
 
             if (isDate) {
               // Get the timestamp from the JavaScript Date object
@@ -1240,13 +2345,86 @@ class ObjCObjectTypeConv : public TypeConv {
               // Convert milliseconds to seconds for NSDate
               NSTimeInterval timeInSeconds = timeInMilliseconds / 1000.0;
               *res = [NSDate dateWithTimeIntervalSince1970:timeInSeconds];
+              cacheRoundTrip(*res);
+              return;
+            }
+
+            if (isMap) {
+              *res = [NSMutableDictionary dictionary];
+
+              napi_value entriesMethod;
+              napi_get_named_property(env, value, "entries", &entriesMethod);
+              napi_value iterator;
+              napi_call_function(env, value, entriesMethod, 0, nullptr, &iterator);
+
+              napi_value nextMethod;
+              napi_get_named_property(env, iterator, "next", &nextMethod);
+
+              while (true) {
+                napi_value step;
+                napi_call_function(env, iterator, nextMethod, 0, nullptr, &step);
+
+                napi_value doneValue;
+                napi_get_named_property(env, step, "done", &doneValue);
+                bool done = false;
+                napi_get_value_bool(env, doneValue, &done);
+                if (done) {
+                  break;
+                }
+
+                napi_value tuple;
+                napi_get_named_property(env, step, "value", &tuple);
+                napi_value keyValue;
+                napi_value elementValue;
+                napi_get_element(env, tuple, 0, &keyValue);
+                napi_get_element(env, tuple, 1, &elementValue);
+
+                id keyObject = nil;
+                id valueObject = nil;
+                toNative(env, keyValue, (void*)&keyObject, shouldFree, shouldFreeAny);
+                toNative(env, elementValue, (void*)&valueObject, shouldFree, shouldFreeAny);
+
+                if (keyObject != nil && valueObject != nil) {
+                  [(*res) setObject:valueObject forKey:keyObject];
+                }
+              }
+
+              cacheRoundTrip(*res);
               return;
             }
 
             if (!isEqual) {
-              auto bridgeState = ObjCBridgeState::InstanceData(env);
               *res = jsObjectToId(env, value);
               return;
+            }
+
+            bool hasLength = false;
+            napi_has_named_property(env, value, "length", &hasLength);
+            if (hasLength) {
+              napi_value lengthValue;
+              napi_get_named_property(env, value, "length", &lengthValue);
+              napi_valuetype lengthType = napi_undefined;
+              napi_typeof(env, lengthValue, &lengthType);
+              if (lengthType == napi_number) {
+                uint32_t len = 0;
+                napi_get_value_uint32(env, lengthValue, &len);
+                *res = [NSMutableArray arrayWithCapacity:len];
+                for (uint32_t i = 0; i < len; i++) {
+                  bool hasElement = false;
+                  napi_has_element(env, value, i, &hasElement);
+                  if (!hasElement) {
+                    [(*res) addObject:[NSNull null]];
+                    continue;
+                  }
+                  napi_value elem;
+                  napi_get_element(env, value, i, &elem);
+                  id obj = nil;
+                  toNative(env, elem, (void*)&obj, shouldFree, shouldFreeAny);
+                  [(*res) addObject:obj != nil ? obj : [NSNull null]];
+                }
+                cacheRoundTrip(*res);
+                return;
+              }
             }
 
             *res = [NSMutableDictionary dictionary];
@@ -1268,9 +2446,43 @@ class ObjCObjectTypeConv : public TypeConv {
               if (obj != nil) [(*res) setObject:obj forKey:[NSString stringWithUTF8String:buf]];
             }
 
+            cacheRoundTrip(*res);
             return;
           }
         }
+
+        if (bridgeState != nullptr && wrapped != nullptr) {
+          for (const auto& entry : bridgeState->classes) {
+            auto bridgedClass = entry.second;
+            if (bridgedClass == wrapped) {
+              *res = (id)bridgedClass->nativeClass;
+              return;
+            }
+          }
+
+          for (const auto& entry : bridgeState->protocols) {
+            auto bridgedProtocol = entry.second;
+            if (bridgedProtocol != wrapped) {
+              continue;
+            }
+
+            Protocol* runtimeProtocol = objc_getProtocol(bridgedProtocol->name.c_str());
+            if (runtimeProtocol == nil) {
+              std::string baseName;
+              if (stripProtocolSuffix(bridgedProtocol->name.c_str(), &baseName)) {
+                runtimeProtocol = objc_getProtocol(baseName.c_str());
+              }
+            }
+
+            if (runtimeProtocol != nil) {
+              *res = (id)runtimeProtocol;
+              return;
+            }
+          }
+        }
+
+        *res = (id)wrapped;
+        return;
 
         break;
       }
@@ -1306,7 +2518,10 @@ static const auto objcInstanceObjectTypeConv = std::make_shared<ObjCInstanceObje
 
 class ObjCNSStringObjectTypeConv : public TypeConv {
  public:
-  ObjCNSStringObjectTypeConv() { type = &ffi_type_pointer; }
+  ObjCNSStringObjectTypeConv() {
+    type = &ffi_type_pointer;
+    kind = mdTypeNSStringObject;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     NSString* str = *((NSString**)value);
@@ -1317,8 +2532,13 @@ class ObjCNSStringObjectTypeConv : public TypeConv {
       return null;
     }
 
+    NSUInteger length = [str length];
+    std::vector<char16_t> chars(length > 0 ? length : 1);
+    if (length > 0) {
+      [str getCharacters:(unichar*)chars.data() range:NSMakeRange(0, length)];
+    }
     napi_value result;
-    napi_create_string_utf8(env, [str UTF8String], [str length], &result);
+    napi_create_string_utf16(env, length > 0 ? chars.data() : nullptr, length, &result);
     return result;
   }
 
@@ -1336,10 +2556,13 @@ static const std::shared_ptr<ObjCNSStringObjectTypeConv> objcNSStringObjectTypeC
 
 class ObjCNSMutableStringObjectTypeConv : public TypeConv {
  public:
-  ObjCNSMutableStringObjectTypeConv() { type = &ffi_type_pointer; }
+  ObjCNSMutableStringObjectTypeConv() {
+    type = &ffi_type_pointer;
+    kind = mdTypeNSMutableStringObject;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    NSString* str = *((NSString**)value);
+    NSMutableString* str = *((NSMutableString**)value);
 
     if (str == nullptr) {
       napi_value null;
@@ -1347,9 +2570,13 @@ class ObjCNSMutableStringObjectTypeConv : public TypeConv {
       return null;
     }
 
-    napi_value result;
-    napi_create_string_utf8(env, [str UTF8String], [str length], &result);
-    return result;
+    auto bridgeState = ObjCBridgeState::InstanceData(env);
+    if (napi_value existing = bridgeState->findCachedObjectWrapper(env, str); existing != nullptr) {
+      return existing;
+    }
+
+    ObjectOwnership ownership = (flags & kReturnOwned) != 0 ? kOwnedObject : kUnownedObject;
+    return bridgeState->getObject(env, str, ownership);
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
@@ -1362,24 +2589,19 @@ class ObjCNSMutableStringObjectTypeConv : public TypeConv {
       NSMutableString** res = (NSMutableString**)result;
 
       size_t len = 0;
-      NAPI_GUARD(napi_get_value_string_utf8(env, value, nullptr, len, &len)) {
+      NAPI_GUARD(napi_get_value_string_utf16(env, value, nullptr, len, &len)) {
         NAPI_THROW_LAST_ERROR
         return;
       }
 
-      char* str = (char*)malloc(len + 1);
+      std::vector<char16_t> chars(len + 1);
 
-      NAPI_GUARD(napi_get_value_string_utf8(env, value, str, len + 1, &len)) {
+      NAPI_GUARD(napi_get_value_string_utf16(env, value, chars.data(), len + 1, &len)) {
         NAPI_THROW_LAST_ERROR
-        ::free(str);
         return;
       }
 
-      str[len] = '\0';
-
-      *res = [[NSMutableString alloc] initWithUTF8String:str];
-
-      ::free(str);
+      *res = [[NSMutableString alloc] initWithCharacters:(unichar*)chars.data() length:len];
       return;
     }
 
@@ -1395,7 +2617,10 @@ static const std::shared_ptr<ObjCNSMutableStringObjectTypeConv> objcNSMutableStr
 
 class ObjCClassTypeConv : public TypeConv {
  public:
-  ObjCClassTypeConv() { type = &ffi_type_pointer; }
+  ObjCClassTypeConv() {
+    type = &ffi_type_pointer;
+    kind = mdTypeClass;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     Class cls = *((Class*)value);
@@ -1437,7 +2662,10 @@ char selector_name_buf[256];
 
 class SelectorTypeConv : public TypeConv {
  public:
-  SelectorTypeConv() { type = &ffi_type_pointer; }
+  SelectorTypeConv() {
+    type = &ffi_type_pointer;
+    kind = mdTypeSelector;
+  }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
@@ -1491,6 +2719,7 @@ class StructTypeConv : public TypeConv {
 
   StructTypeConv(MDSectionOffset structOffset, ffi_type* type) : structOffset(structOffset) {
     this->type = type;
+    kind = mdTypeStruct;
   }
 
   // ~StructTypeConv() { delete type; }
@@ -1503,6 +2732,15 @@ class StructTypeConv : public TypeConv {
     }
 
     return info;
+  }
+
+  inline size_t getStructSize(napi_env env) {
+    if (this->type != nullptr && this->type->size > 0) {
+      return this->type->size;
+    }
+
+    auto info = getInfo(env);
+    return info != nullptr ? info->size : 0;
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
@@ -1523,6 +2761,12 @@ class StructTypeConv : public TypeConv {
                 bool* shouldFreeAny) override {
     NAPI_PREAMBLE
 
+    const size_t structSize = getStructSize(env);
+    if (structSize == 0) {
+      napi_throw_type_error(env, "TypeError", "Invalid struct size");
+      return;
+    }
+
     bool isTypedArray = false;
     napi_is_typedarray(env, value, &isTypedArray);
 
@@ -1534,8 +2778,10 @@ class StructTypeConv : public TypeConv {
         NAPI_THROW_LAST_ERROR
         return;
       }
-
-      memcpy(result, data, length * getTypedArrayUnitLength(type));
+      const size_t unitLength = getTypedArrayUnitLength(type);
+      const size_t byteLength = length * unitLength;
+      memset(result, 0, structSize);
+      memcpy(result, data, std::min(byteLength, structSize));
 
       return;
     }
@@ -1564,7 +2810,9 @@ class StructTypeConv : public TypeConv {
 
     auto structObject = StructObject::unwrap(env, value);
     if (structObject != nullptr) {
-      memcpy(result, structObject->data, structObject->info->size);
+      const size_t copySize = std::min(static_cast<size_t>(structObject->info->size), structSize);
+      memset(result, 0, structSize);
+      memcpy(result, structObject->data, copySize);
       return;
     }
 
@@ -1576,7 +2824,14 @@ class StructTypeConv : public TypeConv {
       return;
     }
 
-    // Serialize directly to previously allocated memory
+    if (structSize < info->size) {
+      std::vector<uint8_t> storage(info->size, 0);
+      StructObject(env, info, value, storage.data());
+      memcpy(result, storage.data(), structSize);
+      return;
+    }
+
+    // Serialize directly to previously allocated memory.
     StructObject(env, info, value, result);
   }
 };
@@ -1585,17 +2840,57 @@ class ArrayTypeConv : public TypeConv {
  public:
   int arraySize;
   std::shared_ptr<TypeConv> elementType;
+  bool decayToPointerForArguments = false;
 
   ArrayTypeConv(int arraySize, std::shared_ptr<TypeConv> elementType)
       : arraySize(arraySize), elementType(elementType) {
-    type = &ffi_type_pointer;
+    auto arrayType = new ffi_type();
+    arrayType->type = FFI_TYPE_STRUCT;
+    arrayType->size = 0;
+    arrayType->alignment = 0;
+    arrayType->elements = (ffi_type**)malloc(sizeof(ffi_type*) * (arraySize + 1));
+    for (int i = 0; i < arraySize; i++) {
+      arrayType->elements[i] = elementType->type;
+    }
+    arrayType->elements[arraySize] = nullptr;
+    type = arrayType;
+    kind = mdTypeArray;
+  }
+
+  ffi_type* ffiTypeForArgument() override {
+    decayToPointerForArguments = true;
+    return &ffi_type_pointer;
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    if (decayToPointerForArguments) {
+      void* raw = *((void**)value);
+      if (raw == nullptr) {
+        napi_value nullValue;
+        napi_get_null(env, &nullValue);
+        return nullValue;
+      }
+      return Pointer::create(env, raw);
+    }
+
     napi_value result;
-    void* data;
-    napi_create_arraybuffer(env, type->size, &data, &result);
-    memcpy(data, value, type->size);
+    napi_create_array_with_length(env, arraySize, &result);
+
+    size_t elementSize = getElementSize();
+
+    auto base = static_cast<uint8_t*>(value);
+    for (int i = 0; i < arraySize; i++) {
+      void* slot = base + (i * elementSize);
+      napi_value elementValue = elementType->toJS(env, slot, flags);
+      napi_valuetype elementValueType = napi_undefined;
+      napi_typeof(env, elementValue, &elementValueType);
+      if (elementValueType == napi_boolean) {
+        bool boolValue = false;
+        napi_get_value_bool(env, elementValue, &boolValue);
+        napi_create_uint32(env, boolValue ? 1 : 0, &elementValue);
+      }
+      napi_set_element(env, result, i, elementValue);
+    }
     return result;
   }
 
@@ -1603,50 +2898,340 @@ class ArrayTypeConv : public TypeConv {
                 bool* shouldFreeAny) override {
     NAPI_PREAMBLE
 
+    if (decayToPointerForArguments) {
+      void** pointerResult = static_cast<void**>(result);
+      *pointerResult = nullptr;
+
+      napi_valuetype valueType = napi_undefined;
+      napi_typeof(env, value, &valueType);
+      if (valueType == napi_null || valueType == napi_undefined) {
+        return;
+      }
+
+      if (Pointer::isInstance(env, value)) {
+        Pointer* ptr = Pointer::unwrap(env, value);
+        *pointerResult = ptr != nullptr ? ptr->data : nullptr;
+        return;
+      }
+
+      if (Reference::isInstance(env, value)) {
+        Reference* ref = Reference::unwrap(env, value);
+        *pointerResult = ref != nullptr ? ref->data : nullptr;
+        return;
+      }
+
+      if (StructObject::isInstance(env, value)) {
+        StructObject* structObject = StructObject::unwrap(env, value);
+        *pointerResult = structObject != nullptr ? structObject->data : nullptr;
+        return;
+      }
+
+      size_t arrayByteSize = getArrayByteSize();
+      if (arrayByteSize == 0) {
+        return;
+      }
+      void* copiedBuffer = malloc(arrayByteSize);
+      if (copiedBuffer == nullptr) {
+        napi_throw_error(env, nullptr, "Out of memory while converting C array argument");
+        return;
+      }
+
+      copyToInlineArrayStorage(env, value, copiedBuffer, shouldFree, shouldFreeAny);
+
+      bool hasPendingException = false;
+      napi_is_exception_pending(env, &hasPendingException);
+      if (hasPendingException) {
+        ::free(copiedBuffer);
+        return;
+      }
+
+      *pointerResult = copiedBuffer;
+      if (shouldFree != nullptr) {
+        *shouldFree = true;
+      }
+      if (shouldFreeAny != nullptr) {
+        *shouldFreeAny = true;
+      }
+      return;
+    }
+
+    copyToInlineArrayStorage(env, value, result, shouldFree, shouldFreeAny);
+  }
+
+  void free(napi_env env, void* value) override {
+    if (value != nullptr) {
+      ::free(value);
+    }
+  }
+
+  void encode(std::string* encoding) override {
+    *encoding += "[";
+    *encoding += std::to_string(arraySize);
+    elementType->encode(encoding);
+    *encoding += "]";
+  }
+
+ private:
+  size_t getElementSize() const {
+    size_t elementSize =
+        elementType != nullptr && elementType->type != nullptr ? elementType->type->size : 0;
+    if (elementSize == 0 && type != nullptr && arraySize > 0 && type->size >= (size_t)arraySize) {
+      elementSize = type->size / static_cast<size_t>(arraySize);
+    }
+    if (elementSize == 0) {
+      elementSize = sizeof(void*);
+    }
+    return elementSize;
+  }
+
+  size_t getArrayByteSize() const { return getElementSize() * static_cast<size_t>(arraySize); }
+
+  void copyToInlineArrayStorage(napi_env env, napi_value value, void* result, bool* shouldFree,
+                                bool* shouldFreeAny) {
+    size_t elementSize = getElementSize();
+    size_t arrayByteSize = getArrayByteSize();
+    memset(result, 0, arrayByteSize);
+
+    napi_valuetype valueType = napi_undefined;
+    napi_typeof(env, value, &valueType);
+    if (valueType == napi_null || valueType == napi_undefined) {
+      return;
+    }
+
     if (Pointer::isInstance(env, value)) {
       Pointer* ptr = Pointer::unwrap(env, value);
-      memcpy(result, ptr->data, type->size);
+      if (ptr == nullptr || ptr->data == nullptr) {
+        return;
+      }
+      memcpy(result, ptr->data, arrayByteSize);
+      return;
+    }
+
+    bool isArray = false;
+    napi_is_array(env, value, &isArray);
+    if (isArray) {
+      for (int i = 0; i < arraySize; i++) {
+        bool hasElement = false;
+        napi_has_element(env, value, i, &hasElement);
+        if (!hasElement) {
+          continue;
+        }
+
+        napi_value elementValue;
+        napi_get_element(env, value, i, &elementValue);
+        void* slot = static_cast<uint8_t*>(result) + (i * elementSize);
+        elementType->toNative(env, elementValue, slot, shouldFree, shouldFreeAny);
+      }
+      return;
+    }
+
+    bool isArrayBuffer = false;
+    napi_is_arraybuffer(env, value, &isArrayBuffer);
+    if (isArrayBuffer) {
+      void* data = nullptr;
+      size_t byteLength = 0;
+      napi_get_arraybuffer_info(env, value, &data, &byteLength);
+      memcpy(result, data, std::min(byteLength, arrayByteSize));
       return;
     }
 
     void* data;
     size_t length = 0;
-    napi_typedarray_type type;
-    NAPI_GUARD(napi_get_typedarray_info(env, value, &type, &length, &data, nullptr, nullptr)) {
+    napi_typedarray_type typedArrayType;
+    napi_status typedArrayStatus =
+        napi_get_typedarray_info(env, value, &typedArrayType, &length, &data, nullptr, nullptr);
+    if (typedArrayStatus != napi_ok) {
       NAPI_THROW_LAST_ERROR
       return;
     }
 
-    memcpy(result, data, length * getTypedArrayUnitLength(type));
-  }
-
-  void encode(std::string* encoding) override {
-    *encoding += "[";
-    *encoding += arraySize;
-    elementType->encode(encoding);
-    *encoding += "]";
+    size_t copyLength = length * getTypedArrayUnitLength(typedArrayType);
+    memcpy(result, data, std::min(copyLength, arrayByteSize));
   }
 };
 
 class VectorTypeConv : public TypeConv {
  public:
-  // TypeConv elementType;
+  uint16_t vectorSize;
+  std::shared_ptr<TypeConv> elementType;
+  MDTypeKind vectorKind;
 
-  VectorTypeConv() {
-    // TODO
-    type = &ffi_type_pointer;
+  VectorTypeConv(MDTypeKind vectorKind, uint16_t vectorSize, std::shared_ptr<TypeConv> elementType)
+      : vectorSize(vectorSize), elementType(elementType), vectorKind(vectorKind) {
+    auto vectorType = new ffi_type();
+#if defined(FFI_TYPE_EXT_VECTOR)
+    vectorType->type = vectorKind == mdTypeComplex ? FFI_TYPE_COMPLEX : FFI_TYPE_EXT_VECTOR;
+#else
+    vectorType->type = vectorKind == mdTypeComplex ? FFI_TYPE_COMPLEX : FFI_TYPE_STRUCT;
+#endif
+    size_t lanes = std::max<size_t>(vectorSize, 1);
+    // 3-lane vectors are ABI-lowered to 4-lane storage on Apple platforms.
+    size_t abiLanes = lanes == 3 ? 4 : lanes;
+    vectorType->elements = (ffi_type**)malloc(sizeof(ffi_type*) * (abiLanes + 1));
+
+    ffi_type* elementFfiType = elementType != nullptr && elementType->type != nullptr
+                                   ? elementType->type
+                                   : &ffi_type_float;
+    const size_t elementSize = std::max<size_t>(elementFfiType->size, sizeof(float));
+    const size_t elementAlignment =
+        std::max<size_t>(elementFfiType->alignment, static_cast<size_t>(1));
+
+    for (size_t i = 0; i < abiLanes; i++) {
+      vectorType->elements[i] = elementFfiType;
+    }
+    vectorType->elements[abiLanes] = nullptr;
+
+    size_t vectorAlignment = elementAlignment;
+    if (vectorKind != mdTypeComplex) {
+      size_t packedSize = abiLanes * elementSize;
+      size_t preferredAlignment = packedSize >= 16 ? 16 : packedSize;
+      vectorAlignment = std::max(vectorAlignment, preferredAlignment);
+    }
+    vectorAlignment = std::min<size_t>(vectorAlignment, 16);
+    vectorType->alignment = static_cast<unsigned short>(vectorAlignment);
+    vectorType->size = alignUp(abiLanes * elementSize, vectorAlignment);
+
+    type = vectorType;
+    kind = vectorKind;
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    NSLog(@"VectorTypeConv toJS: TODO");
     napi_value result;
-    napi_get_null(env, &result);
+    napi_create_array_with_length(env, vectorSize, &result);
+
+    size_t elementSize = getElementSize();
+    auto base = static_cast<uint8_t*>(value);
+    for (uint16_t i = 0; i < vectorSize; i++) {
+      void* slot = base + (static_cast<size_t>(i) * elementSize);
+      napi_value elementValue = elementType->toJS(env, slot, flags);
+      napi_valuetype elementValueType = napi_undefined;
+      napi_typeof(env, elementValue, &elementValueType);
+      if (elementValueType == napi_boolean) {
+        bool boolValue = false;
+        napi_get_value_bool(env, elementValue, &boolValue);
+        napi_create_uint32(env, boolValue ? 1 : 0, &elementValue);
+      }
+      napi_set_element(env, result, i, elementValue);
+    }
     return result;
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NSLog(@"VectorTypeConv toNative: TODO");
+    NAPI_PREAMBLE
+
+    memset(result, 0, getVectorByteSize());
+
+    napi_valuetype valueType = napi_undefined;
+    napi_typeof(env, value, &valueType);
+    if (valueType == napi_null || valueType == napi_undefined) {
+      return;
+    }
+
+    if (Pointer::isInstance(env, value)) {
+      Pointer* ptr = Pointer::unwrap(env, value);
+      if (ptr != nullptr && ptr->data != nullptr) {
+        copyFromContiguousBuffer(ptr->data, getVectorByteSize(), result);
+      }
+      return;
+    }
+
+    if (Reference::isInstance(env, value)) {
+      Reference* ref = Reference::unwrap(env, value);
+      if (ref != nullptr && ref->data != nullptr) {
+        copyFromContiguousBuffer(ref->data, getVectorByteSize(), result);
+      }
+      return;
+    }
+
+    if (StructObject::isInstance(env, value)) {
+      StructObject* structObject = StructObject::unwrap(env, value);
+      if (structObject != nullptr && structObject->data != nullptr) {
+        copyFromContiguousBuffer(structObject->data, structObject->info->size, result);
+      }
+      return;
+    }
+
+    bool isArray = false;
+    napi_is_array(env, value, &isArray);
+    if (isArray) {
+      writeFromArrayElements(env, value, result, shouldFree, shouldFreeAny);
+      return;
+    }
+
+    bool isArrayBuffer = false;
+    napi_is_arraybuffer(env, value, &isArrayBuffer);
+    if (isArrayBuffer) {
+      void* data = nullptr;
+      size_t byteLength = 0;
+      napi_get_arraybuffer_info(env, value, &data, &byteLength);
+      copyFromContiguousBuffer(data, byteLength, result);
+      return;
+    }
+
+    void* data = nullptr;
+    size_t length = 0;
+    napi_typedarray_type typedArrayType = napi_int8_array;
+    napi_status typedArrayStatus =
+        napi_get_typedarray_info(env, value, &typedArrayType, &length, &data, nullptr, nullptr);
+    if (typedArrayStatus == napi_ok) {
+      size_t copyLength = length * getTypedArrayUnitLength(typedArrayType);
+      copyFromContiguousBuffer(data, copyLength, result);
+      return;
+    }
+
+    napi_throw_type_error(
+        env, "TypeError",
+        "Invalid vector type, expected array, typed array, array buffer, pointer or reference.");
+  }
+
+  void encode(std::string* encoding) override {
+    *encoding += "V";
+    *encoding += std::to_string(vectorSize);
+    if (elementType != nullptr) {
+      elementType->encode(encoding);
+    }
+  }
+
+ private:
+  inline size_t getElementSize() const {
+    size_t elementSize =
+        elementType != nullptr && elementType->type != nullptr ? elementType->type->size : 0;
+    if (elementSize == 0) {
+      elementSize = sizeof(float);
+    }
+    return elementSize;
+  }
+
+  inline size_t getVectorByteSize() const {
+    size_t expectedSize = static_cast<size_t>(vectorSize) * getElementSize();
+    if (type != nullptr && type->size > expectedSize) {
+      expectedSize = type->size;
+    }
+    return expectedSize;
+  }
+
+  inline void copyFromContiguousBuffer(void* source, size_t sourceLength, void* destination) const {
+    memcpy(destination, source, std::min(sourceLength, getVectorByteSize()));
+  }
+
+  void writeFromArrayElements(napi_env env, napi_value value, void* result, bool* shouldFree,
+                              bool* shouldFreeAny) {
+    size_t elementSize = getElementSize();
+    auto base = static_cast<uint8_t*>(result);
+
+    for (uint16_t i = 0; i < vectorSize; i++) {
+      bool hasElement = false;
+      napi_has_element(env, value, i, &hasElement);
+      if (!hasElement) {
+        continue;
+      }
+
+      napi_value elementValue;
+      napi_get_element(env, value, i, &elementValue);
+      void* slot = base + (static_cast<size_t>(i) * elementSize);
+      elementType->toNative(env, elementValue, slot, shouldFree, shouldFreeAny);
+    }
   }
 };
 
@@ -1727,9 +3312,18 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, const char** encoding) {
     case '{': {
       std::string structname;
       const char* c = *encoding + 1;
-      while (*c != '=') {
+      while (*c != '\0' && *c != '=') {
         structname += *c;
         c++;
+      }
+      if (*c != '=') {
+        while (**encoding != '\0' && **encoding != '}') {
+          (*encoding)++;
+        }
+        if (**encoding == '}') {
+          (*encoding)++;
+        }
+        return pointerTypeConv;
       }
 
       // Check if we already have a cached StructTypeConv for this encoding-based struct
@@ -1739,9 +3333,13 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, const char** encoding) {
       }
 
       auto bridgeState = ObjCBridgeState::InstanceData(env);
-      // NSLog(@"struct: %s, %d", structname.c_str(),
-      //       bridgeState->structOffsets[structname]);
-      auto structOffset = bridgeState->structOffsets[structname];
+      MDSectionOffset structOffset = MD_SECTION_OFFSET_NULL;
+      if (bridgeState != nullptr) {
+        auto structOffsetIt = bridgeState->structOffsets.find(structname);
+        if (structOffsetIt != bridgeState->structOffsets.end()) {
+          structOffset = structOffsetIt->second;
+        }
+      }
       auto type = typeFromStruct(env, encoding);
       auto structTypeConv = std::make_shared<StructTypeConv>(StructTypeConv(structOffset, type));
 
@@ -1796,7 +3394,10 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
       return sint64TypeConv;
     }
 
-    case mdTypeUInt8:
+    case mdTypeUInt8: {
+      return uint8TypeConv;
+    }
+
     case mdTypeUChar: {
       return ucharTypeConv;
     }
@@ -1952,8 +3553,10 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
     }
 
     case mdTypeVector: {
-      // TODO
-      return std::make_shared<VectorTypeConv>();
+      auto vectorSize = reader->getArraySize(*offset);
+      *offset += sizeof(uint16_t);
+      auto elementType = TypeConv::Make(env, reader, offset, opaquePointers);
+      return std::make_shared<VectorTypeConv>(kind, vectorSize, elementType);
     }
 
     case mdTypeBlock: {
@@ -1973,19 +3576,359 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
     }
 
     case mdTypeExtVector: {
-      // TODO
-      return std::make_shared<VectorTypeConv>();
+      auto vectorSize = reader->getArraySize(*offset);
+      *offset += sizeof(uint16_t);
+      auto elementType = TypeConv::Make(env, reader, offset, opaquePointers);
+      return std::make_shared<VectorTypeConv>(kind, vectorSize, elementType);
     }
 
     case mdTypeComplex: {
-      // TODO
-      return std::make_shared<VectorTypeConv>();
+      auto vectorSize = reader->getArraySize(*offset);
+      *offset += sizeof(uint16_t);
+      auto elementType = TypeConv::Make(env, reader, offset, opaquePointers);
+      return std::make_shared<VectorTypeConv>(kind, vectorSize, elementType);
     }
 
     default:
       std::cout << "getTypeInfo unknown type kind: " << (int)kind << std::endl;
       return pointerTypeConv;
   }
+}
+
+namespace {
+
+bool tryFastConvertStringToNSString(napi_env env, napi_value value, id* out, bool mutableString) {
+  if (out == nullptr) {
+    return false;
+  }
+
+  if (mutableString) {
+    constexpr size_t kStackUtf16Capacity = 128;
+    char16_t utf16Stack[kStackUtf16Capacity];
+    char16_t* utf16Buffer = utf16Stack;
+    size_t utf16Capacity = kStackUtf16Capacity;
+    size_t utf16Length = 0;
+    if (napi_get_value_string_utf16(env, value, utf16Buffer, utf16Capacity, &utf16Length) !=
+        napi_ok) {
+      return false;
+    }
+
+    std::vector<char16_t> utf16Heap;
+    if (utf16Length + 1 >= utf16Capacity) {
+      if (napi_get_value_string_utf16(env, value, nullptr, 0, &utf16Length) != napi_ok) {
+        return false;
+      }
+      utf16Heap.resize(utf16Length + 1, 0);
+      utf16Buffer = utf16Heap.data();
+      utf16Capacity = utf16Heap.size();
+      if (napi_get_value_string_utf16(env, value, utf16Buffer, utf16Capacity, &utf16Length) !=
+          napi_ok) {
+        return false;
+      }
+    }
+
+    *out = [[NSMutableString alloc] initWithCharacters:reinterpret_cast<const unichar*>(utf16Buffer)
+                                                length:utf16Length];
+    return true;
+  }
+
+  constexpr size_t kStackUtf8Capacity = 256;
+  char utf8Stack[kStackUtf8Capacity];
+  char* utf8Buffer = utf8Stack;
+  size_t utf8Capacity = kStackUtf8Capacity;
+  size_t utf8Length = 0;
+  if (napi_get_value_string_utf8(env, value, utf8Buffer, utf8Capacity, &utf8Length) != napi_ok) {
+    return false;
+  }
+
+  std::vector<char> utf8Heap;
+  if (utf8Length + 1 >= utf8Capacity) {
+    if (napi_get_value_string_utf8(env, value, nullptr, 0, &utf8Length) != napi_ok) {
+      return false;
+    }
+    utf8Heap.resize(utf8Length + 1, '\0');
+    utf8Buffer = utf8Heap.data();
+    utf8Capacity = utf8Heap.size();
+    if (napi_get_value_string_utf8(env, value, utf8Buffer, utf8Capacity, &utf8Length) != napi_ok) {
+      return false;
+    }
+  }
+
+  id stringValue = [[[NSString alloc] initWithBytes:utf8Buffer
+                                             length:utf8Length
+                                           encoding:NSUTF8StringEncoding] autorelease];
+  *out = stringValue != nil ? stringValue : [NSString string];
+  return true;
+}
+
+bool tryFastConvertObjCObjectValue(napi_env env, napi_value value, napi_valuetype valueType,
+                                   MDTypeKind kind, id* out) {
+  if (out == nullptr) {
+    return false;
+  }
+
+  switch (valueType) {
+    case napi_null:
+    case napi_undefined:
+      *out = nil;
+      return true;
+
+    case napi_external: {
+      void* external = nullptr;
+      if (napi_get_value_external(env, value, &external) != napi_ok) {
+        return false;
+      }
+      *out = static_cast<id>(external);
+      return true;
+    }
+
+    case napi_number: {
+      double numericValue = 0;
+      if (napi_get_value_double(env, value, &numericValue) != napi_ok) {
+        return false;
+      }
+      *out = [NSNumber numberWithDouble:numericValue];
+      return true;
+    }
+
+    case napi_boolean: {
+      bool boolValue = false;
+      if (napi_get_value_bool(env, value, &boolValue) != napi_ok) {
+        return false;
+      }
+      *out = [NSNumber numberWithBool:boolValue];
+      return true;
+    }
+
+    case napi_bigint: {
+      int64_t bigintValue = 0;
+      bool lossless = false;
+      if (napi_get_value_bigint_int64(env, value, &bigintValue, &lossless) != napi_ok) {
+        return false;
+      }
+      *out = [NSNumber numberWithLongLong:bigintValue];
+      return true;
+    }
+
+    case napi_string:
+      return tryFastConvertStringToNSString(env, value, out, kind == mdTypeNSMutableStringObject);
+
+    case napi_object:
+    case napi_function: {
+      auto bridgeState = ObjCBridgeState::InstanceData(env);
+      auto cacheRoundTrip = [&](id nativeObj) {
+        if (nativeObj == nil || bridgeState == nullptr || !bridgeState->hasRoundTripCacheFrame()) {
+          return;
+        }
+
+        bridgeState->cacheRoundTripObject(env, nativeObj, value);
+      };
+
+      if (valueType == napi_object) {
+        if (Pointer::isInstance(env, value)) {
+          Pointer* ptr = Pointer::unwrap(env, value);
+          void* pointerData = ptr != nullptr ? ptr->data : nullptr;
+          if (id cachedObject = resolveCachedHandleObject(env, pointerData); cachedObject != nil) {
+            *out = cachedObject;
+            return true;
+          }
+          *out = (id)pointerData;
+          return true;
+        }
+        if (Reference::isInstance(env, value)) {
+          Reference* ref = Reference::unwrap(env, value);
+          void* referenceData = ref != nullptr ? ref->data : nullptr;
+          if (id cachedObject = resolveCachedHandleObject(env, referenceData);
+              cachedObject != nil) {
+            *out = cachedObject;
+            return true;
+          }
+          *out = (id)referenceData;
+          return true;
+        }
+      }
+
+      void* wrapped = nullptr;
+      if (napi_unwrap(env, value, &wrapped) == napi_ok) {
+        if (valueType == napi_function) {
+          auto bridgeState = ObjCBridgeState::InstanceData(env);
+          if (bridgeState != nullptr && wrapped != nullptr) {
+            for (const auto& entry : bridgeState->classes) {
+              auto bridgedClass = entry.second;
+              if (bridgedClass == wrapped) {
+                *out = (id)bridgedClass->nativeClass;
+                return true;
+              }
+            }
+
+            for (const auto& entry : bridgeState->protocols) {
+              auto bridgedProtocol = entry.second;
+              if (bridgedProtocol == wrapped) {
+                Protocol* runtimeProtocol = objc_getProtocol(bridgedProtocol->name.c_str());
+                if (runtimeProtocol == nil) {
+                  std::string baseName;
+                  if (stripProtocolSuffix(bridgedProtocol->name.c_str(), &baseName)) {
+                    runtimeProtocol = objc_getProtocol(baseName.c_str());
+                  }
+                }
+                if (runtimeProtocol != nil) {
+                  *out = (id)runtimeProtocol;
+                  return true;
+                }
+              }
+            }
+          }
+        }
+
+        *out = (id)wrapped;
+        return true;
+      }
+
+      bool isTypedArray = false;
+      if (napi_is_typedarray(env, value, &isTypedArray) == napi_ok && isTypedArray) {
+        *out = createNSDataWrapper(env, value, bridgeState);
+        if (*out != nil) {
+          cacheRoundTrip(*out);
+          return true;
+        }
+        return false;
+      }
+
+      bool isArrayBuffer = false;
+      if (napi_is_arraybuffer(env, value, &isArrayBuffer) == napi_ok && isArrayBuffer) {
+        *out = createNSDataWrapper(env, value, bridgeState);
+        if (*out != nil) {
+          cacheRoundTrip(*out);
+          return true;
+        }
+        return false;
+      }
+
+      bool isDataView = false;
+      if (napi_is_dataview(env, value, &isDataView) == napi_ok && isDataView) {
+        *out = createNSDataWrapper(env, value, bridgeState);
+        if (*out != nil) {
+          cacheRoundTrip(*out);
+          return true;
+        }
+        return false;
+      }
+
+      return false;
+    }
+
+    default:
+      return false;
+  }
+}
+
+}  // namespace
+
+bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value, void* result) {
+  if (result == nullptr || value == nullptr) {
+    return false;
+  }
+
+  napi_valuetype valueType = napi_undefined;
+  if (napi_typeof(env, value, &valueType) != napi_ok) {
+    return false;
+  }
+
+  switch (kind) {
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      return tryFastConvertObjCObjectValue(env, value, valueType, static_cast<MDTypeKind>(kind),
+                                           reinterpret_cast<id*>(result));
+
+    case mdTypeSelector: {
+      SEL* selector = reinterpret_cast<SEL*>(result);
+      switch (valueType) {
+        case napi_null:
+        case napi_undefined:
+          *selector = nullptr;
+          return true;
+
+        case napi_string: {
+          constexpr size_t kStackSelectorCapacity = 128;
+          char selectorStack[kStackSelectorCapacity];
+          size_t selectorLength = 0;
+          if (napi_get_value_string_utf8(env, value, selectorStack, kStackSelectorCapacity,
+                                         &selectorLength) != napi_ok) {
+            return false;
+          }
+          const char* selectorName = selectorStack;
+          std::vector<char> selectorHeap;
+          if (selectorLength + 1 >= kStackSelectorCapacity) {
+            if (napi_get_value_string_utf8(env, value, nullptr, 0, &selectorLength) != napi_ok) {
+              return false;
+            }
+            selectorHeap.resize(selectorLength + 1, '\0');
+            if (napi_get_value_string_utf8(env, value, selectorHeap.data(), selectorHeap.size(),
+                                           &selectorLength) != napi_ok) {
+              return false;
+            }
+            selectorName = selectorHeap.data();
+          }
+          *selector = sel_registerName(selectorName);
+          return true;
+        }
+
+        default:
+          return false;
+      }
+    }
+
+    default:
+      return false;
+  }
+}
+
+bool TryFastConvertNapiUInt16Argument(napi_env env, napi_value value, uint16_t* result) {
+  if (result == nullptr || value == nullptr) {
+    return false;
+  }
+
+  napi_valuetype valueType = napi_undefined;
+  if (napi_typeof(env, value, &valueType) != napi_ok) {
+    return false;
+  }
+
+  if (valueType == napi_string) {
+    size_t strLen = 0;
+    if (napi_get_value_string_utf16(env, value, nullptr, 0, &strLen) != napi_ok) {
+      return false;
+    }
+    if (strLen != 1) {
+      napi_throw_type_error(env, nullptr, "Expected a single-character string.");
+      *result = 0;
+      return false;
+    }
+
+    char16_t chars[2] = {0, 0};
+    if (napi_get_value_string_utf16(env, value, chars, 2, &strLen) != napi_ok) {
+      return false;
+    }
+
+    *result = static_cast<uint16_t>(chars[0]);
+    return true;
+  }
+
+  napi_value coerced = value;
+  if (napi_coerce_to_number(env, value, &coerced) != napi_ok) {
+    return false;
+  }
+
+  uint32_t converted = 0;
+  if (napi_get_value_uint32(env, coerced, &converted) != napi_ok) {
+    return false;
+  }
+
+  *result = static_cast<uint16_t>(converted);
+  return true;
 }
 
 // Cleanup function to clear thread-local caches

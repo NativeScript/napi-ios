@@ -1,9 +1,10 @@
 #include "Tasks.h"
+#include <utility>
 
 namespace nativescript {
 
 void Tasks::Register(std::function<void()> task) {
-    tasks_.push_back(task);
+    tasks_.emplace_back(std::move(task));
 }
 
 void Tasks::Drain() {

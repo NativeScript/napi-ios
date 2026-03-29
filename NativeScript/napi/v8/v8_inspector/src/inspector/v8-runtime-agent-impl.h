@@ -34,10 +34,10 @@
 #include <memory>
 #include <unordered_map>
 
-#include "include/v8-persistent-handle.h"
 #include "src/base/macros.h"
 #include "src/inspector/protocol/Forward.h"
 #include "src/inspector/protocol/Runtime.h"
+#include "v8-persistent-handle.h"
 
 namespace v8 {
 class Script;
@@ -52,8 +52,8 @@ class V8ConsoleMessage;
 class V8InspectorImpl;
 class V8InspectorSessionImpl;
 
-using protocol::Response;
 using protocol::Maybe;
+using protocol::Response;
 
 class V8RuntimeAgentImpl : public protocol::Runtime::Backend {
  public:

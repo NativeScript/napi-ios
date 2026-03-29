@@ -1,5 +1,9 @@
 #pragma once
 
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+
 #include "Metadata.h"
 
 namespace metagen {
@@ -9,6 +13,7 @@ typedef char MDHeaderMagic[MD_HEADER_MAGIC_SIZE];
 class MDMetadataReader {
  public:
   void* data;
+  bool ownsData = false;
 
   MDSectionOffset stringsOffset;
   MDSectionOffset constantsOffset;
@@ -20,7 +25,8 @@ class MDMetadataReader {
   MDSectionOffset structsOffset;
   MDSectionOffset unionsOffset;
 
-  MDMetadataReader(void* data) : data(data) {
+  MDMetadataReader(void* data, bool ownsData = false)
+      : data(data), ownsData(ownsData) {
     MDHeaderMagic magic;
     memcpy(magic, data, MD_HEADER_MAGIC_SIZE);
     if (memcmp(magic, MD_HEADER_MAGIC, MD_HEADER_MAGIC_SIZE) != 0) {
@@ -57,6 +63,13 @@ class MDMetadataReader {
     ptr_add(&data, sizeof(MDSectionOffset));
   }
 
+  ~MDMetadataReader() {
+    if (ownsData && data != nullptr) {
+      free(data);
+      data = nullptr;
+    }
+  }
+
   inline char* resolveString(MDSectionOffset offset) {
     return (char*)data + stringsOffset + offset;
   }
@@ -84,6 +97,10 @@ class MDMetadataReader {
 
   inline MDMemberFlag getMemberFlag(MDSectionOffset offset) {
     return *(MDMemberFlag*)((char*)data + offset);
+  }
+
+  inline MDFunctionFlag getFunctionFlag(MDSectionOffset offset) {
+    return *(MDFunctionFlag*)((char*)data + offset);
   }
 
   inline MDVariableEvalKind getVariableEvalKind(MDSectionOffset offset) {

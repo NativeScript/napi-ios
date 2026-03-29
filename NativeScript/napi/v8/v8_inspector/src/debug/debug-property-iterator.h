@@ -5,13 +5,13 @@
 #ifndef V8_DEBUG_DEBUG_PROPERTY_ITERATOR_H_
 #define V8_DEBUG_DEBUG_PROPERTY_ITERATOR_H_
 
-#include "include/v8-local-handle.h"
-#include "include/v8-maybe.h"
-#include "include/v8-object.h"
 #include "src/debug/debug-interface.h"
 #include "src/execution/isolate.h"
 #include "src/handles/handles.h"
 #include "src/objects/prototype.h"
+#include "v8-local-handle.h"
+#include "v8-maybe.h"
+#include "v8-object.h"
 
 namespace v8 {
 

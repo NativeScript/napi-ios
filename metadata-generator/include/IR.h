@@ -187,6 +187,7 @@ class FunctionDecl {
   TypeSpec returnType;
   std::vector<ParameterDecl> parameters;
   bool isVariadic;
+  bool returnOwned = false;
 };
 
 enum MemberKind {
@@ -270,6 +271,7 @@ class ClassDecl {
   std::unordered_set<std::string> implementedProtocolNames;
 
   bool tsIgnore = false;
+  bool unavailable = false;
 
   MDSectionOffset mdOffset = MD_SECTION_OFFSET_NULL;
 };
@@ -318,6 +320,7 @@ class CategoryDecl {
 
   std::string name;
   std::string className;
+  std::vector<std::string> protocolNames;
 
   std::vector<MemberDecl> members;
 

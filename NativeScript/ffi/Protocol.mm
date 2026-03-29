@@ -6,10 +6,49 @@
 #include "Util.h"
 #include "js_native_api.h"
 #include "node_api_util.h"
+#include <cctype>
 
 #import <Foundation/Foundation.h>
 
 namespace nativescript {
+namespace {
+Protocol* resolveRuntimeProtocol(const char* metadataProtocolName) {
+  if (metadataProtocolName == nullptr) {
+    return nil;
+  }
+
+  Protocol* protocol = objc_getProtocol(metadataProtocolName);
+  if (protocol != nil) {
+    return protocol;
+  }
+
+  static const std::string suffix = "Protocol";
+  std::string name(metadataProtocolName);
+  size_t suffixPos = name.rfind(suffix);
+  if (suffixPos == std::string::npos) {
+    return nil;
+  }
+
+  const size_t trailingPos = suffixPos + suffix.size();
+  if (trailingPos < name.size()) {
+    for (size_t i = trailingPos; i < name.size(); i++) {
+      unsigned char ch = static_cast<unsigned char>(name[i]);
+      if (!std::isdigit(ch)) {
+        return nil;
+      }
+    }
+  } else if (trailingPos != name.size()) {
+    return nil;
+  }
+
+  const std::string baseName = name.substr(0, suffixPos);
+  if (baseName.empty()) {
+    return nil;
+  }
+
+  return objc_getProtocol(baseName.c_str());
+}
+}  // namespace
 
 void ObjCBridgeState::registerProtocolGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->protocolsOffset;
@@ -23,7 +62,7 @@ void ObjCBridgeState::registerProtocolGlobals(napi_env env, napi_value global) {
 
     auto name = metadata->resolveString(nameOffset);
     // protocolOffsets[name] = originalOffset;
-    auto objcProtocol = objc_getProtocol(name);
+    auto objcProtocol = resolveRuntimeProtocol(name);
     if (objcProtocol != nil) {
       mdProtocolsByPointer[objcProtocol] = originalOffset;
     }

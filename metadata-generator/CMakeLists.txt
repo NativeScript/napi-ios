@@ -21,6 +21,7 @@ include_directories(
 
 set(EXEC_SOURCE_FILES
   src/main.cpp
+  src/SignatureDispatchEmitter.cpp
   src/Umbrella.cpp
   src/IR/Category.cpp
   src/IR/Class.cpp

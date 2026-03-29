@@ -25,7 +25,8 @@ class ApplicationDelegate extends NSObject {
 
     window.title = "NativeScript for macOS";
     window.delegate = this;
-    window.styleMask = NSWindowStyleMask.Titled |
+    window.styleMask =
+      NSWindowStyleMask.Titled |
       NSWindowStyleMask.Closable |
       NSWindowStyleMask.Miniaturizable |
       NSWindowStyleMask.Resizable |
@@ -34,12 +35,12 @@ class ApplicationDelegate extends NSObject {
     window.titlebarAppearsTransparent = true;
     window.titleVisibility = NSWindowTitleVisibility.Hidden;
 
-    window.backgroundColor = NSColor.colorWithSRGBRedGreenBlueAlpha(
-      118 / 255,
-      171 / 255,
-      235 / 255,
-      1,
-    );
+    // window.backgroundColor = NSColor.colorWithSRGBRedGreenBlueAlpha(
+    //   118 / 255,
+    //   171 / 255,
+    //   235 / 255,
+    //   1,
+    // );
 
     window.makeKeyAndOrderFront(this);
 
@@ -141,9 +142,33 @@ class ViewController extends NSViewController {
 
     this.button = button;
 
+    const glassView = NSGlassEffectView.alloc().initWithFrame({
+      origin: { x: 0, y: 0 },
+      size: { width: 300, height: 60 },
+    });
+    glassView.cornerRadius = 12.0;
+
+    const glassLabel = NSTextField.labelWithString("I'm a glass effect view!");
+    glassLabel.translatesAutoresizingMaskIntoConstraints = false;
+    glassLabel.alignment = NSTextAlignment.Center;
+
+    // Set the label directly as the contentView
+    glassView.contentView = glassLabel;
+
+    // Center the label within the glass effect's contentView
+    if (glassView.contentView) {
+      glassLabel.centerXAnchor.constraintEqualToAnchor(
+        glassView.contentView.centerXAnchor,
+      ).active = true;
+      glassLabel.centerYAnchor.constraintEqualToAnchor(
+        glassView.contentView.centerYAnchor,
+      ).active = true;
+    }
+
     vstack.addViewInGravity(imageView, NSStackViewGravity.Center);
     vstack.addViewInGravity(label, NSStackViewGravity.Center);
     vstack.addViewInGravity(button, NSStackViewGravity.Center);
+    vstack.addViewInGravity(glassView, NSStackViewGravity.Center);
 
     this.view.addSubview(vstack);
 

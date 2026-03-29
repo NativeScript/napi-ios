@@ -42,6 +42,7 @@ napi_status js_unlock_env(napi_env env) {
 
 napi_status js_free_napi_env(napi_env env) {
     if (env == nullptr) return napi_invalid_arg;
+    js_run_env_cleanup_hooks(env);
     delete env;
     return  napi_ok;
 }

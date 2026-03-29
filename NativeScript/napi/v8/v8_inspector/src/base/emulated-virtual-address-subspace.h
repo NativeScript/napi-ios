@@ -5,12 +5,12 @@
 #ifndef V8_BASE_EMULATED_VIRTUAL_ADDRESS_SUBSPACE_H_
 #define V8_BASE_EMULATED_VIRTUAL_ADDRESS_SUBSPACE_H_
 
-#include "include/v8-platform.h"
 #include "src/base/base-export.h"
 #include "src/base/compiler-specific.h"
 #include "src/base/platform/mutex.h"
 #include "src/base/region-allocator.h"
 #include "src/base/virtual-address-space.h"
+#include "v8-platform.h"
 
 namespace v8 {
 namespace base {

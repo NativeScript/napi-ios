@@ -104,7 +104,8 @@ static std::error_code CreateUmbrellaHeaderForAmbientModule(
         }
 
         if (std::filesystem::exists(headerPath)) {
-          std::cerr << "Adding modulemap header: " << headerPath.string() << std::endl;
+          std::cerr << "Adding modulemap header: " << headerPath.string()
+                    << std::endl;
           std::string headerPathStr = headerPath.string();
           addHeaderInclude(headerPathStr, umbrellaHeaders, umbrellaHeaderSet);
         }
@@ -147,6 +148,30 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
     return std::error_code();
   }
 
+  // On macOS SDKs, keep only selected public runtime headers from usr/include
+  // so we avoid broad private header parsing while preserving compatibility.
+  if (dir.find("/MacOSX.platform/Developer/SDKs/") != std::string::npos &&
+      dir.ends_with("/usr/include")) {
+    for (const char* subdir : {"objc", "dispatch"}) {
+      std::filesystem::path headersPath = std::filesystem::path(dir) / subdir;
+      if (std::filesystem::exists(headersPath)) {
+        if (std::error_code code = CreateUmbrellaHeaderForAmbientModulesInner(
+                headersPath.string(), false, umbrellaHeaders, includePaths,
+                frameworks, umbrellaHeaderSet, includePathSet, frameworkSet)) {
+          return code;
+        }
+      }
+    }
+    return std::error_code();
+  }
+
+  if (dir.find("/MacOSX.platform/Developer/SDKs/") != std::string::npos &&
+      dir.find("/usr/include/") != std::string::npos &&
+      dir.find("/usr/include/objc") == std::string::npos &&
+      dir.find("/usr/include/dispatch") == std::string::npos) {
+    return std::error_code();
+  }
+
   addIncludePath(dir, includePaths, includePathSet);
 
   std::filesystem::path moduleMapPath = dir + "/module.modulemap";
@@ -165,6 +190,12 @@ static std::error_code CreateUmbrellaHeaderForAmbientModulesInner(
     if (entry.is_directory()) {
       // TODO: .xcframework
       if (pathstring.ends_with(".framework") && isFrameworksDir) {
+        // These frameworks currently introduce parser-only failures that are
+        // not required for app/runtime test metadata generation.
+        if (pathstring.ends_with("/DriverKit.framework") ||
+            pathstring.ends_with("/Ruby.framework")) {
+          continue;
+        }
         std::cerr << "Found framework: " << pathstring << std::endl;
         std::filesystem::path moduleMapPath =
             entry.path() / "Modules" / "module.modulemap";
@@ -300,14 +331,16 @@ static std::error_code CreateUmbrellaHeaderForAmbientModules(
       std::string moduleMapFile = arg.substr(18);
       std::filesystem::path moduleMapPath(moduleMapFile);
       if (std::filesystem::exists(moduleMapPath)) {
-        std::cerr << "Found module map arg: " << moduleMapPath.string() << std::endl;
+        std::cerr << "Found module map arg: " << moduleMapPath.string()
+                  << std::endl;
         if (std::error_code code = CreateUmbrellaHeaderForAmbientModule(
                 moduleMapPath.parent_path(), false, moduleMapPath,
                 umbrellaHeaders, includePaths, frameworks, umbrellaHeaderSet,
                 includePathSet, frameworkSet)) {
           return code;
         }
-        std::cerr << "Added module map headers from: " << moduleMapPath.string() << std::endl;
+        std::cerr << "Added module map headers from: " << moduleMapPath.string()
+                  << std::endl;
       }
     }
   }

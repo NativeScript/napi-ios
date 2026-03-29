@@ -21,22 +21,7 @@ MemberDecl::MemberDecl(CXCursor cursor,
     name = jsifySelector(methodSelector);
     clang_disposeString(cxname);
 
-    clang_visitChildren(
-        cursor,
-        [](CXCursor cursor, CXCursor, CXClientData clientData) {
-          if (!isAvailable(cursor)) {
-            return CXChildVisit_Continue;
-          }
-
-          auto method = (MemberDecl *)clientData;
-
-          if (cursor.kind == CXCursor_NSReturnsRetained) {
-            method->returnOwned = true;
-          }
-
-          return CXChildVisit_Continue;
-        },
-        this);
+    returnOwned = cursorHasReturnsRetainedAttribute(cursor);
 
     auto argc = clang_Cursor_getNumArguments(cursor);
     if (argc > 0) {

@@ -10,11 +10,11 @@
 #include <memory>
 #include <set>
 
-#include "include/v8-local-handle.h"
-#include "include/v8-persistent-handle.h"
 #include "src/inspector/protocol/Console.h"
 #include "src/inspector/protocol/Forward.h"
 #include "src/inspector/protocol/Runtime.h"
+#include "v8-local-handle.h"
+#include "v8-persistent-handle.h"
 
 namespace v8_inspector {
 

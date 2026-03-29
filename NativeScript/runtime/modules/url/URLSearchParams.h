@@ -11,7 +11,8 @@ class URLSearchParams {
   static void Init(napi_env env, napi_value global);
   static void Destructor(napi_env env, void* nativeObject, void* finalize_hint);
 
-  explicit URLSearchParams(ada::url_search_params params);
+  explicit URLSearchParams(ada::url_search_params params,
+                           ada::url_aggregator* parent = nullptr);
   ada::url_search_params* GetURLSearchParams();
 
  private:
@@ -29,8 +30,10 @@ class URLSearchParams {
   static napi_value Sort(napi_env env, napi_callback_info info);
   static napi_value ToString(napi_env env, napi_callback_info info);
   static napi_value Values(napi_env env, napi_callback_info info);
+  void SyncParent();
 
   ada::url_search_params params_;
+  ada::url_aggregator* parent_ = nullptr;
 };
 
 }  // namespace nativescript

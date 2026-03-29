@@ -78,7 +78,6 @@ elseif(TARGET_ENGINE STREQUAL "hermes")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_HERMES")
 elseif(TARGET_ENGINE STREQUAL "v8")
   set(TARGET_ENGINE_V8 TRUE)
-  add_link_options("-fuse-ld=lld")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_V8")
 elseif(TARGET_ENGINE STREQUAL "quickjs")
   set(TARGET_ENGINE_QUICKJS TRUE)
@@ -152,10 +151,16 @@ if(ENABLE_JS_RUNTIME)
     runtime/modules/worker/WorkerImpl.mm
     runtime/modules/worker/WorkerImpl.mm
     runtime/modules/module/ModuleInternal.cpp
+    runtime/modules/node/Node.cpp
+    runtime/modules/node/FS.cpp
+    runtime/modules/node/Path.cpp
+    runtime/modules/node/Process.cpp
     runtime/modules/performance/Performance.cpp
+    runtime/ThreadSafeFunction.mm
     runtime/Bundle.mm
     runtime/modules/timers/Timers.mm
     runtime/modules/app/App.mm
+    runtime/modules/web/Web.mm
     runtime/NativeScript.mm
     runtime/RuntimeConfig.cpp
     runtime/modules/url/ada/ada.cpp
@@ -166,7 +171,6 @@ if(ENABLE_JS_RUNTIME)
   if(TARGET_ENGINE_V8)
     include_directories(
       napi/v8
-      napi/v8/include
       napi/v8/v8_inspector
     )
 
@@ -292,6 +296,17 @@ target_sources(
   "NativeScript.h"
 )
 
+if(TARGET_ENGINE_V8 AND TARGET_PLATFORM_IOS)
+  # iOS V8 slices are built with pointer compression enabled. Keep embedder
+  # build flags in sync to satisfy V8::Initialize() build config checks.
+  target_compile_definitions(
+    ${NAME}
+    PRIVATE
+    V8_COMPRESS_POINTERS
+    V8_31BIT_SMIS_ON_64BIT_ARCH
+  )
+endif()
+
 set(FRAMEWORK_VERSION_VALUE "${VERSION}")
 if(TARGET_PLATFORM_MACOS)
   # macOS framework consumers (including Xcode's copy/sign phases) expect
@@ -392,27 +407,42 @@ if(TARGET_ENGINE_JSC)
 endif()
 
 if(TARGET_ENGINE_V8)
-  if(TARGET_PLATFORM_MACOS)
-    target_link_directories(
-      ${NAME}
-      PRIVATE
-      ${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/v8_macos
-    )
+  add_library(v8::monolith STATIC IMPORTED GLOBAL)
+
+  set(V8_XCFRAMEWORK "${CMAKE_SOURCE_DIR}/../Frameworks/libv8_monolith.xcframework")
+
+  # Decide platform + slice
+  if(APPLE)
+    if(TARGET_PLATFORM STREQUAL "ios-sim")
+        # Prefer universal sim slice if present
+        set(V8_SLICE_DIR "${V8_XCFRAMEWORK}/ios-arm64-simulator/libv8_monolith.framework")
+        if(NOT EXISTS "${V8_SLICE_DIR}")
+          set(V8_SLICE_DIR "${V8_XCFRAMEWORK}/ios-arm64-simulator/libv8_monolith.framework") # fallback
+        endif()
+    elseif(TARGET_PLATFORM STREQUAL "ios")
+        # Prefer universal sim slice if present
+        set(V8_SLICE_DIR "${V8_XCFRAMEWORK}/ios-arm64/libv8_monolith.framework")
+        if(NOT EXISTS "${V8_SLICE_DIR}")
+          set(V8_SLICE_DIR "${V8_XCFRAMEWORK}/ios-arm64/libv8_monolith.framework") # fallback
+        endif()
+    else()
+      # macOS
+      set(V8_SLICE_DIR "${V8_XCFRAMEWORK}/macos-arm64/libv8_monolith.framework")
+      if(NOT EXISTS "${V8_SLICE_DIR}")
+        set(V8_SLICE_DIR "${V8_XCFRAMEWORK}/macos-arm64/libv8_monolith.framework") # keep same, just explicit
+      endif()
+    endif()
   else()
-    target_link_directories(
-      ${NAME}
-      PRIVATE
-      ${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/v8_ios
-    )
+    message(FATAL_ERROR "This example is for Apple platforms only.")
   endif()
 
-  target_link_libraries(
-    ${NAME}
-    PRIVATE
-    "v8_monolith"
-    "v8_libbase"
-    "v8_libplatform"
+  # Point imported lib at the slice
+  set_target_properties(v8::monolith PROPERTIES
+    IMPORTED_LOCATION "${V8_SLICE_DIR}/libv8_monolith"
+    INTERFACE_INCLUDE_DIRECTORIES "${V8_SLICE_DIR}/Headers"
   )
+
+  target_link_libraries(${NAME} PRIVATE v8::monolith)
 endif()
 
 target_link_libraries(

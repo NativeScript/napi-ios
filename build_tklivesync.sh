@@ -5,7 +5,7 @@ source "$(dirname "$0")/build_utils.sh"
 BUILD_CATALYST=$(to_bool ${BUILD_CATALYST:=true})
 BUILD_IPHONE=$(to_bool ${BUILD_IPHONE:=true})
 BUILD_SIMULATOR=$(to_bool ${BUILD_SIMULATOR:=true})
-BUILD_VISION=$(to_bool ${BUILD_VISION:=true})
+BUILD_VISION=$(to_bool ${BUILD_VISION:=false})
 VERBOSE=$(to_bool ${VERBOSE:=false})
 BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false})
 
@@ -34,7 +34,7 @@ mkdir -p $DIST/intermediates
 if $BUILD_SIMULATOR; then
 # generates library for simulator targets (usually includes arm64, x86_64)
 checkpoint "Building TKLiveSync for iphone simulators (multi-arch)"
-xcodebuild archive -project v8ios.xcodeproj \
+xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -scheme TKLiveSync \
                    -configuration Release \
                    -destination "generic/platform=iOS Simulator" \
@@ -47,7 +47,7 @@ fi
 if $BUILD_IPHONE; then
 #generates library for device target
 checkpoint "Building TKLiveSync for ARM64 device"
-xcodebuild archive -project v8ios.xcodeproj \
+xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -scheme TKLiveSync \
                    -configuration Release \
                    -destination "generic/platform=iOS" \
@@ -60,7 +60,7 @@ fi
 if $BUILD_CATALYST; then
 #generates library for Mac Catalyst target
 checkpoint "Building TKLiveSync for Mac Catalyst"
-xcodebuild archive -project v8ios.xcodeproj \
+xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -scheme TKLiveSync \
                    -configuration Release \
                    -destination "generic/platform=macOS,variant=Mac Catalyst" \
@@ -73,7 +73,7 @@ fi
 if $BUILD_MACOS; then
 #generates library for Mac OS target
 checkpoint "Building TKLiveSync for Mac OS"
-xcodebuild archive -project v8ios.xcodeproj \
+xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -scheme TKLiveSync \
                    -configuration Release \
                    -destination "generic/platform=macOS" \
@@ -86,7 +86,7 @@ fi
 if $BUILD_VISION; then
 #generates library for visionOS targets
 checkpoint "Building TKLiveSync for visionOS Simulators"
-xcodebuild archive -project v8ios.xcodeproj \
+xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -scheme "TKLiveSync" \
                    -configuration Release \
                    -destination "generic/platform=visionOS Simulator" \
@@ -96,7 +96,7 @@ xcodebuild archive -project v8ios.xcodeproj \
                    -archivePath $DIST/intermediates/TKLiveSync.xrsimulator.xcarchive
 
 checkpoint "Building TKLiveSync for visionOS Device"
-xcodebuild archive -project v8ios.xcodeproj \
+xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -scheme "TKLiveSync" \
                    -configuration Release \
                    -destination "generic/platform=visionOS" \

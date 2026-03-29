@@ -6,6 +6,10 @@ void MDMetadataWriter::write(FunctionDecl &decl) {
   MDFunction *mdFunction = new MDFunction();
 
   mdFunction->name = strings.add(decl.name, decl.name);
+  mdFunction->flags = mdFunctionFlagNone;
+  if (decl.returnOwned) {
+    mdFunction->flags = (MDFunctionFlag)(mdFunction->flags | mdFunctionReturnOwned);
+  }
 
   MDSignature *mdSignature = new MDSignature();
   mdSignature->returnType = getTypeInfo(decl.returnType);
@@ -81,6 +85,8 @@ size_t MDFunctionSerde::size(MDFunction *value) {
   addsize(value->name);
   // Signature
   addsize(value->signature);
+  // Flags
+  addsize(value->flags);
   return size;
 }
 
@@ -89,6 +95,8 @@ void MDFunctionSerde::serialize(MDFunction *value, void *data) {
   binwrite(value->name);
   // Signature
   binwrite(value->signature);
+  // Flags
+  binwrite(value->flags);
 }
 
 } // namespace metagen

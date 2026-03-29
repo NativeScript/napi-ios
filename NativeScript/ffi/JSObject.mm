@@ -4,11 +4,6 @@
 
 #import <Foundation/Foundation.h>
 
-void JSObject_finalize(napi_env, void* data, void*) {
-  id obj = (id)data;
-  [obj release];
-}
-
 @interface JSObject : NSObject {
   napi_env env;
   napi_ref ref;
@@ -16,9 +11,16 @@ void JSObject_finalize(napi_env, void* data, void*) {
 }
 
 - (instancetype)initWithEnv:(napi_env)env value:(napi_value)value;
+- (void)removeFromBridgeState;
 - (napi_value)value;
 
 @end
+
+void JSObject_finalize(napi_env, void* data, void*) {
+  JSObject* obj = (JSObject*)data;
+  [obj removeFromBridgeState];
+  [obj release];
+}
 
 @implementation JSObject
 
@@ -30,8 +32,19 @@ void JSObject_finalize(napi_env, void* data, void*) {
   napi_reference_ref(env, ref, &result);
   napi_wrap(env, value, self, nullptr, nullptr, nullptr);
   bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
-  bridgeState->objectRefs[self] = ref;
+  if (bridgeState != nullptr) {
+    bridgeState->objectRefs[self] = ref;
+  }
   return self;
+}
+
+- (void)removeFromBridgeState {
+  if (bridgeState == nullptr) {
+    return;
+  }
+
+  bridgeState->objectRefs.erase(self);
+  bridgeState = nullptr;
 }
 
 - (napi_value)value {
@@ -42,7 +55,6 @@ void JSObject_finalize(napi_env, void* data, void*) {
 
 - (void)dealloc {
   napi_delete_reference(env, ref);
-  bridgeState->objectRefs.erase(self);
   [super dealloc];
 }
 

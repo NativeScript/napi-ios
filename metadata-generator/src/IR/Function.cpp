@@ -1,4 +1,31 @@
 #include "IR.h"
+#include <cctype>
+#include <cstring>
+
+namespace {
+
+bool hasOwnershipWord(const std::string& functionName, const char* word) {
+  size_t pos = functionName.find(word);
+  while (pos != std::string::npos) {
+    const size_t after = pos + std::strlen(word);
+    const unsigned char next =
+        after < functionName.size() ? static_cast<unsigned char>(functionName[after]) : 0;
+    const bool endsWord =
+        after == functionName.size() || !std::islower(next);
+    if (endsWord) {
+      return true;
+    }
+    pos = functionName.find(word, pos + 1);
+  }
+  return false;
+}
+
+bool nameImpliesRetainedCFReturn(const std::string& functionName) {
+  return hasOwnershipWord(functionName, "Create") ||
+         hasOwnershipWord(functionName, "Copy");
+}
+
+}  // namespace
 
 namespace metagen {
 
@@ -10,7 +37,19 @@ FunctionDecl::FunctionDecl(CXCursor cursor) {
   clang_disposeString(cxname);
 
   CXType cxtype = clang_getCursorType(cursor);
-  returnType = TypeSpec(clang_getResultType(cxtype));
+  CXType resultType = clang_getResultType(cxtype);
+  returnType = TypeSpec(resultType);
+
+  returnOwned = cursorHasReturnsRetainedAttribute(cursor);
+
+  if (!returnOwned) {
+    CXType canonicalResultType = clang_getCanonicalType(resultType);
+    const bool returnsObjCObject =
+        canonicalResultType.kind == CXType_ObjCObjectPointer;
+    if (!returnsObjCObject && nameImpliesRetainedCFReturn(name)) {
+      returnOwned = true;
+    }
+  }
 
   auto argc = clang_Cursor_getNumArguments(cursor);
   if (argc > 0) {

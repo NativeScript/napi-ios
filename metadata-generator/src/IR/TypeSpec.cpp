@@ -194,13 +194,18 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
         typeParameters.emplace_back(typeArg, classTypeParameters);
       }
 
-      if (canonicalName == "id" || canonicalName == "Class") {
+      if (canonicalName == "id") {
         if (name == "instancetype") {
           kind = kTypeInstanceObject;
         } else {
           kind = kTypeAnyObject;
         }
-      } else if (canonicalName == "Protocol *") {
+      } else if (canonicalName == "Class") {
+        kind = kTypePointer;
+        pointee = std::make_shared<TypeSpec>();
+        pointee->kind = kTypeVoid;
+      } else if (canonicalName == "Protocol *" || canonicalName == "Protocol*" ||
+                 canonicalName == "Protocol") {
         kind = kTypePointer;
         pointee = std::make_shared<TypeSpec>();
         pointee->kind = kTypeVoid;
@@ -263,16 +268,27 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
 
     case CXType_Vector: {
       kind = kTypeVector;
+      auto element = clang_getElementType(canonicalType);
+      arrayElement = std::make_shared<TypeSpec>(element, classTypeParameters);
+      long long elementsCount = clang_getNumElements(canonicalType);
+      constArraySize = elementsCount > 0 ? static_cast<size_t>(elementsCount) : 0;
       break;
     }
 
     case CXType_ExtVector: {
       kind = kTypeExtVector;
+      auto element = clang_getElementType(canonicalType);
+      arrayElement = std::make_shared<TypeSpec>(element, classTypeParameters);
+      long long elementsCount = clang_getNumElements(canonicalType);
+      constArraySize = elementsCount > 0 ? static_cast<size_t>(elementsCount) : 0;
       break;
     }
 
     case CXType_Complex: {
       kind = kTypeComplex;
+      auto element = clang_getElementType(canonicalType);
+      arrayElement = std::make_shared<TypeSpec>(element, classTypeParameters);
+      constArraySize = 2;
       break;
     }
 
@@ -307,6 +323,14 @@ void MetadataFactory::processType(TypeSpec& type) {
     case kTypeConstArray:
     case kTypeIncompleteArray:
       processType(*type.arrayElement);
+      break;
+
+    case kTypeVector:
+    case kTypeExtVector:
+    case kTypeComplex:
+      if (type.arrayElement != nullptr) {
+        processType(*type.arrayElement);
+      }
       break;
 
     case kTypePointer:

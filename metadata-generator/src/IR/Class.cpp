@@ -1,3 +1,4 @@
+#include <unordered_map>
 #include <unordered_set>
 
 #include "IR.h"
@@ -32,13 +33,16 @@ ClassDecl::ClassDecl(CXCursor cursor) {
   clang_visitChildren(
       cursor,
       [](CXCursor cursor, CXCursor, CXClientData clientData) {
-        if (!isAvailable(cursor)) {
-          return CXChildVisit_Continue;
-        }
-
         auto cls = (ClassDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
+
+        // Preserve superclass references even when the immediate superclass is
+        // unavailable, so we can later collapse the chain to the nearest
+        // available ancestor.
+        if (kind != CXCursor_ObjCSuperClassRef && !isAvailable(cursor)) {
+          return CXChildVisit_Continue;
+        }
 
         switch (kind) {
           case CXCursor_ObjCSuperClassRef: {
@@ -119,16 +123,18 @@ void removeDuplicateMethods(std::vector<MemberDecl>& members) {
 
   std::unordered_set<std::string> instanceFiltered, classFiltered,
       instanceFilteredProperties, classFilteredProperties;
+  std::unordered_map<std::string, size_t> instancePropertyIndex,
+      classPropertyIndex;
 
   for (auto& member : members) {
     auto& filtered =
         member.isStatic ? classFilteredProperties : instanceFilteredProperties;
     if (member.kind == kMemberProperty) {
       filtered.insert(member.name);
-      // NOTE: For backward compatibility
-      // if (!member.setterName.empty()) {
-      //   filtered.insert(member.setterName);
-      // }
+      // Keep setter methods hidden when a property with the same setter exists.
+      if (!member.setterName.empty()) {
+        filtered.insert(member.setterName);
+      }
     }
   }
 
@@ -139,20 +145,35 @@ void removeDuplicateMethods(std::vector<MemberDecl>& members) {
     auto& filteredProps =
         member.isStatic ? classFilteredProperties : instanceFilteredProperties;
 
-    // Prevent getters from being emitted if there is a property with the
-    // same name.
+    // Prevent property accessors from being emitted as methods when a matching
+    // property exists.
     if (member.kind == kMemberMethod) {
       if (filteredProps.contains(member.name)) {
         continue;
       }
+      std::string key = "M:";
+      key += member.name;
+      key += "|";
+      key += member.methodSelector;
+      if (filtered.contains(key)) {
+        continue;
+      }
+      filteredMembers.emplace_back(member);
+      filtered.insert(key);
+    } else {
+      auto& propertyIndex =
+          member.isStatic ? classPropertyIndex : instancePropertyIndex;
+      auto existing = propertyIndex.find(member.name);
+      if (existing == propertyIndex.end()) {
+        propertyIndex.emplace(member.name, filteredMembers.size());
+        filteredMembers.emplace_back(member);
+      } else {
+        MemberDecl& previous = filteredMembers[existing->second];
+        if (previous.isReadonly && !member.isReadonly) {
+          previous = member;
+        }
+      }
     }
-
-    if (filtered.contains(member.name)) {
-      continue;
-    }
-
-    filteredMembers.emplace_back(member);
-    filtered.insert(member.name);
   }
 
   members = std::move(filteredMembers);
@@ -170,6 +191,12 @@ void MetadataFactory::processClassRefs() {
 
       auto skippedIt = skippedClasses.find(name);
       if (skippedIt != skippedClasses.end()) {
+        if (skippedIt->second.unavailable) {
+          if (!skippedIt->second.superClassName.empty()) {
+            referencedClasses.emplace(skippedIt->second.superClassName);
+          }
+          continue;
+        }
         auto [inserted, _] = classes.try_emplace(name, skippedIt->second);
         postProcessClass(inserted->second);
       } else {

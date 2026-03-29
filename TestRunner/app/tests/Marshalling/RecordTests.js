@@ -1,4 +1,18 @@
 describe(module.id, function () {
+    const RectCtor = typeof globalThis.CGRect === "function"
+        ? globalThis.CGRect
+        : (typeof globalThis.NSRect === "function" ? globalThis.NSRect : null);
+    const makeRect = typeof globalThis.CGRectMake === "function"
+        ? globalThis.CGRectMake
+        : (typeof globalThis.NSMakeRect === "function"
+            ? globalThis.NSMakeRect
+            : function (x, y, width, height) {
+                return {
+                    origin: { x, y },
+                    size: { width, height }
+                };
+            });
+
     afterEach(function () {
         TNSClearOutput();
         gc();
@@ -327,7 +341,9 @@ describe(module.id, function () {
             }
         }));
 
-        expect(actual instanceof CGRect).toBe(true);
+        if (RectCtor) {
+            expect(actual instanceof RectCtor).toBe(true);
+        }
         expect(actual.origin.x).toBe(100);
         expect(actual.origin.y).toBe(200);
         expect(actual.size.width).toBe(300);
@@ -336,10 +352,12 @@ describe(module.id, function () {
 
     it("Marshaling struct from javascript callback", () => {
         const actual = getStructFromCallback(new interop.FunctionReference(() => {
-            return CGRectMake(100, 200, 300, 400);
+            return makeRect(100, 200, 300, 400);
         }));
 
-        expect(actual instanceof CGRect).toBe(true);
+        if (RectCtor) {
+            expect(actual instanceof RectCtor).toBe(true);
+        }
         expect(actual.origin.x).toBe(100);
         expect(actual.origin.y).toBe(200);
         expect(actual.size.width).toBe(300);

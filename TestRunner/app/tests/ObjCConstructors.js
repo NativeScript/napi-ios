@@ -146,16 +146,25 @@ describe("Constructing Objective-C classes with new operator", function () {
         });
 
         it("should support even more complex parameters", () => {
-            let alertView = new UIAlertView({
-                title: "About",
-                message: "NativeScript Team",
-                delegate: null,
-                cancelButtonTitle: "OK",
-                otherButtonTitles: null
+            if (typeof UIAlertView !== "undefined") {
+                let alertView = new UIAlertView({
+                    title: "About",
+                    message: "NativeScript Team",
+                    delegate: null,
+                    cancelButtonTitle: "OK",
+                    otherButtonTitles: null
+                });
+                expect(alertView.title).toEqual("About");
+                expect(alertView.message).toEqual("NativeScript Team");
+                expect(alertView.buttonTitleAtIndex(0)).toEqual("OK");
+                return;
+            }
+
+            let attributed = new NSAttributedString({
+                string: "About",
+                attributes: null
             });
-            expect(alertView.title).toEqual("About");
-            expect(alertView.message).toEqual("NativeScript Team");
-            expect(alertView.buttonTitleAtIndex(0)).toEqual("OK");
+            expect(attributed.string).toEqual("About");
         });
 
         // it("should support void initializers", () => {

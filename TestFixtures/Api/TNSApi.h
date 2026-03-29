@@ -1,18 +1,26 @@
+#include <TargetConditionals.h>
+
+#if TARGET_OS_OSX
+@class NSColor;
+typedef NSColor TNSPlatformColor;
+#else
+@class UIColor;
+typedef UIColor TNSPlatformColor;
+#endif
+
 typedef NS_ENUM(NSInteger, TNSEnums) {
-    TNSEnum1 = -1,
-    TNSEnum2,
-    TNSEnum3,
+  TNSEnum1 = -1,
+  TNSEnum2,
+  TNSEnum3,
 };
 
 typedef NS_OPTIONS(NSInteger, TNSOptions) {
-    TNSOption1 = 1 << 0,
-    TNSOption2 = 1 << 1,
-    TNSOption3 = 1 << 2,
+  TNSOption1 = 1 << 0,
+  TNSOption2 = 1 << 1,
+  TNSOption3 = 1 << 2,
 };
 
-enum {
-    AnonymousEnumField = -1
-};
+enum { AnonymousEnumField = -1 };
 
 extern NSString* const TNSConstant;
 
@@ -26,8 +34,8 @@ void functionThrowsException();
 
 @property(getter=customGetter, setter=customSetter:) int property;
 
-typedef UIColor NIKColor;
-@property(strong, nonatomic) NIKColor* strokeColor; // ^{UIColor=#}
+typedef TNSPlatformColor NIKColor;
+@property(strong, nonatomic) NIKColor* strokeColor;  // ^{UIColor=#}
 
 + (void)methodThrowsException;
 - (void)methodThrowsException;
@@ -70,5 +78,5 @@ typedef UIColor NIKColor;
 - (CGRect)getRect;
 @end
 
-@interface RectClass : NSObject<RectProtocol>
+@interface RectClass : NSObject <RectProtocol>
 @end

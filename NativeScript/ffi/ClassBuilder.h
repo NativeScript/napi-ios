@@ -19,12 +19,13 @@ class ClassBuilder : public ObjCClass {
   ~ClassBuilder();
 
   void addProtocol(ObjCProtocol* protocol);
-  MethodDescriptor* lookupMethodDescriptor(std::string& name);
+  std::vector<MethodDescriptor*> lookupMethodDescriptors(std::string& name, bool setter = false);
+  MethodDescriptor* lookupMethodDescriptor(std::string& name, bool setter = false);
   void addMethod(std::string& name, MethodDescriptor* desc, napi_value key,
                  napi_value func = nullptr);
 
   void build();
-  
+
   // Static callback for extending native classes
   static napi_value ExtendCallback(napi_env env, napi_callback_info info);
 

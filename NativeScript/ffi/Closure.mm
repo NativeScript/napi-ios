@@ -14,12 +14,86 @@
 #include "node_api_util.h"
 #include "objc/message.h"
 
+#include <CoreFoundation/CFRunLoop.h>
 #include <Foundation/Foundation.h>
+#include <dispatch/dispatch.h>
 #include <cassert>
 #include <condition_variable>
+#include <cstring>
 #include <mutex>
+#include <vector>
 
 namespace nativescript {
+
+namespace {
+
+inline void deleteClosureOnOwningThread(Closure* closure) {
+  if (closure == nullptr) {
+    return;
+  }
+
+#ifdef ENABLE_JS_RUNTIME
+  if (std::this_thread::get_id() != closure->jsThreadId) {
+    CFRunLoopRef runloop = closure->jsRunLoop;
+    if (runloop == nullptr) {
+      runloop = CFRunLoopGetMain();
+    }
+
+    if (runloop != nullptr) {
+      CFRunLoopPerformBlock(runloop, kCFRunLoopCommonModes, ^{
+        delete closure;
+      });
+      CFRunLoopWakeUp(runloop);
+      return;
+    }
+  }
+#endif  // ENABLE_JS_RUNTIME
+
+  delete closure;
+}
+
+}  // namespace
+
+inline bool selectorEndsWithErrorParam(SEL selector) {
+  if (selector == nullptr) {
+    return false;
+  }
+
+  const char* selectorName = sel_getName(selector);
+  if (selectorName == nullptr) {
+    return false;
+  }
+
+  size_t selectorLength = strlen(selectorName);
+  const char* suffix = "error:";
+  size_t suffixLength = strlen(suffix);
+  if (selectorLength < suffixLength) {
+    return false;
+  }
+
+  return strcmp(selectorName + selectorLength - suffixLength, suffix) == 0;
+}
+
+inline bool isNSErrorMethodCallback(Closure* closure, ffi_cif* cif) {
+  if (closure == nullptr || cif == nullptr || cif->nargs < 3 || closure->returnType == nullptr) {
+    return false;
+  }
+
+  if (closure->returnType->kind != mdTypeBool) {
+    return false;
+  }
+
+  if (closure->argTypes.size() != cif->nargs) {
+    return false;
+  }
+
+  auto lastArgType = closure->argTypes[cif->nargs - 1];
+  if (lastArgType == nullptr || lastArgType->kind != mdTypePointer) {
+    return false;
+  }
+
+  return selectorEndsWithErrorParam(closure->selector);
+}
 
 inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisArg, napi_value* argv,
                             size_t argc, bool* done, void* ret) {
@@ -31,7 +105,9 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
 
   napi_status status = napi_call_function(env, thisArg, func, argc, argv, &result);
 
-  if (done != NULL) *done = true;
+  if (done != nullptr) {
+    *done = true;
+  }
 
   // If the call failed, we need to create an error object and throw it in native
   // Likely it will circle back to JS. We have try/catch around all native calls from JS,
@@ -101,7 +177,104 @@ void JSMethodCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
     argv[i - 2] = closure->argTypes[i]->toJS(env, args[i], 0);
   }
 
-  JSCallbackInner(closure, func, thisArg, argv, cif->nargs - 2, nullptr, ret);
+  napi_value result;
+  napi_get_and_clear_last_exception(env, &result);
+
+  napi_status status = napi_call_function(env, thisArg, func, cif->nargs - 2, argv, &result);
+  if (status != napi_ok) {
+    napi_get_and_clear_last_exception(env, &result);
+
+    if (isNSErrorMethodCallback(closure, cif)) {
+      if (ret != nullptr && cif->rtype != nullptr && cif->rtype->size > 0) {
+        memset(ret, 0, cif->rtype->size);
+      }
+
+      void* outArgValue = args[cif->nargs - 1];
+      NSError** outError = outArgValue != nullptr ? *((NSError***)outArgValue) : nullptr;
+      if (outError != nullptr) {
+        std::string message = "JS error";
+        napi_valuetype resultType = napi_undefined;
+        if (result != nullptr && napi_typeof(env, result, &resultType) == napi_ok) {
+          if (resultType == napi_object) {
+            napi_value messageValue = nullptr;
+            bool hasMessage = false;
+            if (napi_has_named_property(env, result, "message", &hasMessage) == napi_ok &&
+                hasMessage &&
+                napi_get_named_property(env, result, "message", &messageValue) == napi_ok) {
+              napi_valuetype messageType = napi_undefined;
+              if (napi_typeof(env, messageValue, &messageType) == napi_ok &&
+                  messageType == napi_string) {
+                size_t messageLength = 0;
+                napi_get_value_string_utf8(env, messageValue, nullptr, 0, &messageLength);
+                std::vector<char> messageBuffer(messageLength + 1);
+                napi_get_value_string_utf8(env, messageValue, messageBuffer.data(),
+                                           messageBuffer.size(), &messageLength);
+                message.assign(messageBuffer.data(), messageLength);
+              }
+            }
+          } else if (resultType == napi_string) {
+            size_t messageLength = 0;
+            napi_get_value_string_utf8(env, result, nullptr, 0, &messageLength);
+            std::vector<char> messageBuffer(messageLength + 1);
+            napi_get_value_string_utf8(env, result, messageBuffer.data(), messageBuffer.size(),
+                                       &messageLength);
+            message.assign(messageBuffer.data(), messageLength);
+          }
+        }
+
+        NSString* nsMessage = [NSString stringWithUTF8String:message.c_str()];
+        NSDictionary* userInfo = nsMessage != nil ? @{NSLocalizedDescriptionKey : nsMessage} : nil;
+        *outError = [NSError errorWithDomain:@"TNSErrorDomain" code:1 userInfo:userInfo];
+      }
+
+      return;
+    }
+
+    napi_valuetype resultType = napi_undefined;
+    napi_typeof(env, result, &resultType);
+
+    if (resultType != napi_object) {
+      napi_value code, msg;
+      napi_create_string_utf8(env, "NativeScriptException", NAPI_AUTO_LENGTH, &code);
+      napi_create_string_utf8(env,
+                              "Unable to obtain the error thrown by the JS implemented closure",
+                              NAPI_AUTO_LENGTH, &msg);
+      napi_create_error(env, code, msg, &result);
+    }
+
+    NativeScriptException::OnUncaughtError(env, result);
+  }
+
+  bool shouldFree;
+  closure->returnType->toNative(env, result, ret, &shouldFree, &shouldFree);
+}
+
+void JSFunctionCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
+  Closure* closure = (Closure*)data;
+  napi_env env = closure->env;
+
+#ifdef ENABLE_JS_RUNTIME
+  NapiScope scope(env);
+#endif
+
+  napi_value func = get_ref_value(env, closure->func);
+
+  napi_valuetype funcType = napi_undefined;
+  napi_typeof(env, func, &funcType);
+  if (funcType != napi_function) {
+    napi_throw_error(env, nullptr, "Function reference is not callable");
+    return;
+  }
+
+  napi_value thisArg;
+  napi_get_global(env, &thisArg);
+
+  napi_value argv[cif->nargs];
+  for (int i = 0; i < cif->nargs; i++) {
+    argv[i] = closure->argTypes[i]->toJS(env, args[i], 0);
+  }
+
+  JSCallbackInner(closure, func, thisArg, argv, cif->nargs, nullptr, ret);
 }
 
 struct JSBlockCallContext {
@@ -111,6 +284,7 @@ struct JSBlockCallContext {
   std::mutex mutex;
   std::condition_variable cv;
   bool done;
+  bool useCondvar;
 };
 
 void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb, void* context, void* data) {
@@ -127,18 +301,28 @@ void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb, void* cont
     argv[i] = closure->argTypes[i]->toJS(env, ctx->args[i + 1], 0);
   }
 
-  JSCallbackInner(closure, func, thisArg, argv, ctx->cif->nargs - 1, &ctx->done, ctx->ret);
-
-  ctx->cv.notify_one();
+  JSCallbackInner(closure, func, thisArg, argv, ctx->cif->nargs - 1, nullptr, ctx->ret);
+  if (ctx->useCondvar) {
+    {
+      std::lock_guard<std::mutex> lock(ctx->mutex);
+      ctx->done = true;
+    }
+    ctx->cv.notify_one();
+  }
 }
 
 void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   Closure* closure = (Closure*)data;
   napi_env env = closure->env;
-
-#ifdef ENABLE_JS_RUNTIME
-  NapiScope scope(env);
-#endif
+  closure->retain();
+  struct ClosureRetainGuard {
+    Closure* closure;
+    ~ClosureRetainGuard() {
+      if (closure != nullptr) {
+        closure->release();
+      }
+    }
+  } retainGuard{closure};
 
   auto currentThreadId = std::this_thread::get_id();
 
@@ -147,8 +331,12 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   ctx.ret = ret;
   ctx.args = args;
   ctx.done = false;
+  ctx.useCondvar = false;
 
   if (currentThreadId == closure->jsThreadId) {
+#ifdef ENABLE_JS_RUNTIME
+    NapiScope scope(env);
+#endif
     Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
   } else {
 #ifndef ENABLE_JS_RUNTIME
@@ -156,18 +344,37 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
       assert(false && "Threadsafe functions are not supported");
     }
 
+    ctx.useCondvar = true;
     napi_acquire_threadsafe_function(closure->tsfn);
     std::unique_lock<std::mutex> lock(ctx.mutex);
     napi_call_threadsafe_function(closure->tsfn, &ctx, napi_tsfn_blocking);
     ctx.cv.wait(lock, [&ctx] { return ctx.done; });
     napi_release_threadsafe_function(closure->tsfn, napi_tsfn_release);
 #else
-    Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
+    auto runloop = closure->jsRunLoop;
+    if (runloop == nullptr) {
+      runloop = CFRunLoopGetMain();
+    }
+
+    if (runloop == nullptr) {
+      NapiScope scope(env);
+      Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
+    } else {
+      JSBlockCallContext* ctxPtr = &ctx;
+      dispatch_semaphore_t done = dispatch_semaphore_create(0);
+      CFRunLoopPerformBlock(runloop, kCFRunLoopCommonModes, ^{
+        NapiScope scope(env);
+        Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, ctxPtr);
+        dispatch_semaphore_signal(done);
+      });
+      CFRunLoopWakeUp(runloop);
+      dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
+    }
 #endif  // ENABLE_JS_RUNTIME
   }
 }
 
-Closure::Closure(std::string encoding, bool isBlock) {
+Closure::Closure(std::string encoding, bool isBlock, bool isMethod) {
   auto signature = [NSMethodSignature signatureWithObjCTypes:encoding.c_str()];
   size_t argc = signature.numberOfArguments;
 
@@ -186,7 +393,7 @@ Closure::Closure(std::string encoding, bool isBlock) {
   for (int i = 0; i < argc; i++) {
     const char* argenc = [signature getArgumentTypeAtIndex:i];
     auto argTypeInfo = TypeConv::Make(env, &argenc);
-    this->atypes[i + skipArgs] = argTypeInfo->type;
+    this->atypes[i + skipArgs] = argTypeInfo->ffiTypeForArgument();
     this->argTypes.push_back(argTypeInfo);
   }
 
@@ -200,7 +407,9 @@ Closure::Closure(std::string encoding, bool isBlock) {
 
   closure = (ffi_closure*)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
 
-  ffi_prep_closure_loc(closure, &cif, isBlock ? JSBlockCallback : JSMethodCallback, this, fnptr);
+  ffi_prep_closure_loc(
+      closure, &cif, isBlock ? JSBlockCallback : (isMethod ? JSMethodCallback : JSFunctionCallback),
+      this, fnptr);
 }
 
 Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
@@ -242,7 +451,7 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
       this->atypes[0] = &ffi_type_pointer;
     }
     for (int i = 0; i < argTypes.size(); i++) {
-      this->atypes[i + skipArgs] = argTypes[i]->type;
+      this->atypes[i + skipArgs] = argTypes[i]->ffiTypeForArgument();
     }
   }
 
@@ -255,7 +464,9 @@ Closure::Closure(MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
 
   closure = (ffi_closure*)ffi_closure_alloc(sizeof(ffi_closure), &fnptr);
 
-  ffi_prep_closure_loc(closure, &cif, isBlock ? JSBlockCallback : JSMethodCallback, this, fnptr);
+  ffi_prep_closure_loc(
+      closure, &cif, isBlock ? JSBlockCallback : (isMethod ? JSMethodCallback : JSFunctionCallback),
+      this, fnptr);
 }
 
 Closure::~Closure() {
@@ -274,6 +485,14 @@ Closure::~Closure() {
     free(atypes);
   }
   ffi_closure_free(closure);
+}
+
+void Closure::retain() { retainCount.fetch_add(1, std::memory_order_relaxed); }
+
+void Closure::release() {
+  if (retainCount.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+    deleteClosureOnOwningThread(this);
+  }
 }
 
 }  // namespace nativescript

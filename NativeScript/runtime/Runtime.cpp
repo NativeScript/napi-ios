@@ -17,7 +17,15 @@
 #include "NativeScript.h"
 #include "robin_hood.h"
 
+extern "C" {
+void node_module_register(const char* name, napi_module_init init) {
+  nativescript::napiModuleRegistry[name] = init;
+}
+}
+
 namespace nativescript {
+
+std::unordered_map<std::string, napi_module_init> napiModuleRegistry;
 
 static robin_hood::unordered_map<napi_env, Runtime*> runtimes_;
 
@@ -105,9 +113,78 @@ void Runtime::Init(bool isWorker) {
   napi_set_named_property(env_, global, "global", global);
 
   const char* CompatScript = R"(
-    if (!WeakRef.prototype.get) WeakRef.prototype.get = function() {
-      return this.deref();
-    };
+    if (typeof globalThis.__decorate !== "function") {
+      globalThis.__decorate = function(decorators, target, key, desc) {
+        var c = arguments.length;
+        var r = c < 3 ? target : (desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc);
+        var d;
+        if (typeof Reflect === "object" && typeof Reflect.decorate === "function") {
+          r = Reflect.decorate(decorators, target, key, desc);
+        } else {
+          for (var i = decorators.length - 1; i >= 0; i--) {
+            d = decorators[i];
+            if (d) {
+              r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+            }
+          }
+        }
+        if (c > 3 && r) {
+          Object.defineProperty(target, key, r);
+        }
+        return r;
+      };
+    }
+
+    if (typeof globalThis.__param !== "function") {
+      globalThis.__param = function(paramIndex, decorator) {
+        return function(target, key) { decorator(target, key, paramIndex); };
+      };
+    }
+
+    if (typeof globalThis.ObjCClass !== "function") {
+      globalThis.ObjCClass = function ObjCClass(...protocols) {
+        return function(constructor) {
+          constructor.ObjCProtocols = protocols;
+        };
+      };
+    }
+
+    if (typeof WeakRef === "function") {
+      if (!WeakRef.prototype.get && typeof WeakRef.prototype.deref === "function") {
+        WeakRef.prototype.get = WeakRef.prototype.deref;
+      }
+
+      if (!WeakRef.prototype.clear) {
+        WeakRef.prototype.clear = function() {
+          console.warn("WeakRef.clear() is non-standard and has been deprecated. It does nothing and the call can be safely removed.");
+        };
+      }
+    }
+
+    if (!globalThis.__time) {
+      globalThis.__time = function() {
+        if (globalThis.performance && typeof performance.now === "function") {
+          return performance.now();
+        }
+        return Date.now();
+      };
+    }
+
+    if (globalThis.performance && typeof performance.now === "function" &&
+        typeof performance.timeOrigin !== "number") {
+      const now = performance.now();
+      const origin = Date.now() - now;
+      try {
+        Object.defineProperty(performance, "timeOrigin", {
+          configurable: true,
+          enumerable: true,
+          writable: false,
+          value: origin
+        });
+      } catch (_) {
+        performance.timeOrigin = origin;
+      }
+    }
 
     if (!globalThis.__collect) {
       globalThis.__collect = function() {
@@ -118,6 +195,35 @@ void Runtime::Init(bool isWorker) {
     if (!globalThis.gc) {
       globalThis.gc = function() {
         console.warn('gc() is not exposed');
+      };
+    }
+
+    if (typeof globalThis.URLPattern !== "function") {
+      globalThis.URLPattern = class URLPattern {
+        constructor(input, baseURL) {
+          if (typeof input !== "string") {
+            throw new TypeError("Failed to construct 'URLPattern': input must be a string");
+          }
+
+          let url;
+          if (baseURL === undefined || baseURL === null) {
+            url = new URL(input);
+          } else {
+            url = new URL(input, baseURL);
+          }
+
+          const normalizeProtocol = (value) => value.endsWith(":") ? value.slice(0, -1) : value;
+
+          this.protocol = normalizeProtocol(url.protocol);
+          this.username = url.username || "*";
+          this.password = url.password || "*";
+          this.hostname = url.hostname || "*";
+          this.port = url.port || "";
+          this.pathname = url.pathname || "/";
+          this.search = url.search || "*";
+          this.hash = url.hash || "*";
+          this.hasRegExpGroups = false;
+        }
       };
     }
   )";
@@ -238,7 +344,41 @@ napi_value Runtime::RunModule(std::string spec) {
 
 void Runtime::RunMainModule() { napi_value result = RunModule("./"); }
 
-void Runtime::RunLoop() { CFRunLoopRunInMode(kCFRunLoopDefaultMode, 0, true); }
+void Runtime::RunLoop() {
+  // Keep the runtime alive while asynchronous main-thread work is pending, but
+  // still exit once the loop has been idle for a short period.
+  constexpr CFTimeInterval kPollSeconds = 0.1;
+  constexpr int kIdlePollsBeforeExit = 10;  // ~1s idle window
+
+  int idlePolls = 0;
+  while (true) {
+    const auto result =
+        CFRunLoopRunInMode(kCFRunLoopDefaultMode, kPollSeconds, true);
+
+    if (result == kCFRunLoopRunHandledSource) {
+      idlePolls = 0;
+      continue;
+    }
+
+    if (result == kCFRunLoopRunTimedOut) {
+#ifdef __APPLE__
+      if (Timers::HasActiveTimers()) {
+        idlePolls = 0;
+        continue;
+      }
+#endif
+      idlePolls++;
+      if (idlePolls >= kIdlePollsBeforeExit) {
+        break;
+      }
+      continue;
+    }
+
+    if (result == kCFRunLoopRunStopped || result == kCFRunLoopRunFinished) {
+      break;
+    }
+  }
+}
 
 bool Runtime::IsAlive(napi_env env) {
   SpinLock lock(envsMutex_);

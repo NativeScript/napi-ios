@@ -1,11 +1,85 @@
 #include "Util.h"
+#include <vector>
 #include "Metadata.h"
+#include "ObjCBridge.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 
 using namespace metagen;
 
 namespace nativescript {
+
+inline std::string getStructEncodingForValue(napi_env env, napi_value value) {
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr || value == nullptr) {
+    return "";
+  }
+
+  napi_valuetype valueType = napi_undefined;
+  napi_typeof(env, value, &valueType);
+  if (valueType != napi_function && valueType != napi_object) {
+    return "";
+  }
+
+  napi_value typeSymbol = jsSymbolFor(env, "type");
+  if (typeSymbol != nullptr) {
+    bool hasTypeEncoding = false;
+    if (napi_has_property(env, value, typeSymbol, &hasTypeEncoding) == napi_ok && hasTypeEncoding) {
+      napi_value typeEncodingValue = nullptr;
+      if (napi_get_property(env, value, typeSymbol, &typeEncodingValue) == napi_ok &&
+          typeEncodingValue != nullptr) {
+        napi_valuetype typeEncodingType = napi_undefined;
+        napi_typeof(env, typeEncodingValue, &typeEncodingType);
+        if (typeEncodingType == napi_string) {
+          size_t length = 0;
+          napi_get_value_string_utf8(env, typeEncodingValue, nullptr, 0, &length);
+          std::vector<char> buffer(length + 1, '\0');
+          if (napi_get_value_string_utf8(env, typeEncodingValue, buffer.data(), buffer.size(),
+                                         &length) == napi_ok) {
+            return std::string(buffer.data(), length);
+          }
+        }
+      }
+    }
+  }
+
+  if (!bridgeState->structOffsets.empty()) {
+    napi_value nameValue = nullptr;
+    if (napi_get_named_property(env, value, "name", &nameValue) == napi_ok &&
+        nameValue != nullptr) {
+      napi_valuetype nameType = napi_undefined;
+      napi_typeof(env, nameValue, &nameType);
+      if (nameType == napi_string) {
+        size_t nameLength = 0;
+        napi_get_value_string_utf8(env, nameValue, nullptr, 0, &nameLength);
+        std::vector<char> nameBuffer(nameLength + 1, '\0');
+        if (napi_get_value_string_utf8(env, nameValue, nameBuffer.data(), nameBuffer.size(),
+                                       &nameLength) == napi_ok) {
+          std::string candidateName(nameBuffer.data(), nameLength);
+          auto structIt = bridgeState->structOffsets.find(candidateName);
+          if (structIt != bridgeState->structOffsets.end()) {
+            StructInfo* info = bridgeState->getStructInfo(env, structIt->second);
+            if (info != nullptr && info->name != nullptr) {
+              std::string encoding = "{";
+              encoding += info->name;
+              encoding += "=";
+              for (const auto& field : info->fields) {
+                if (field.type == nullptr) {
+                  return "";
+                }
+                field.type->encode(&encoding);
+              }
+              encoding += "}";
+              return encoding;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  return "";
+}
 
 std::string implicitSetterSelector(std::string name) {
   std::string setter;
@@ -109,8 +183,20 @@ std::string getEncodedType(napi_env env, napi_value value) {
     }
 
     case napi_function:
-      // Must be a native class constructor like NSObject.
-      return "@";
+    case napi_object: {
+      std::string structEncoding = getStructEncodingForValue(env, value);
+      if (!structEncoding.empty()) {
+        return structEncoding;
+      }
+
+      if (type == napi_function) {
+        // Native class constructor like NSObject.
+        return "@";
+      }
+
+      napi_throw_error(env, nullptr, "Invalid type");
+      return "v";
+    }
 
     default:
       napi_throw_error(env, nullptr, "Invalid type");

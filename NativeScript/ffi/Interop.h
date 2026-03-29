@@ -31,6 +31,10 @@ class Pointer {
   static napi_value add(napi_env env, napi_callback_info info);
   static napi_value subtract(napi_env env, napi_callback_info info);
   static napi_value toNumber(napi_env env, napi_callback_info info);
+  static napi_value toBigInt(napi_env env, napi_callback_info info);
+  static napi_value toHexString(napi_env env, napi_callback_info info);
+  static napi_value toDecimalString(napi_env env, napi_callback_info info);
+  static napi_value toString(napi_env env, napi_callback_info info);
   static napi_value customInspect(napi_env env, napi_callback_info info);
 
   static void finalize(napi_env env, void* data, void* hint);
@@ -46,6 +50,8 @@ class Reference {
  public:
   static napi_value defineJSClass(napi_env env);
   static bool isInstance(napi_env env, napi_value value);
+  static napi_value create(napi_env env, std::shared_ptr<TypeConv> type, void* data,
+                           bool ownsData = false);
 
   static Reference* unwrap(napi_env env, napi_value value);
 
@@ -70,6 +76,7 @@ class Reference {
 class FunctionReference {
  public:
   static napi_value defineJSClass(napi_env env);
+  static bool isInstance(napi_env env, napi_value value);
 
   static FunctionReference* unwrap(napi_env env, napi_value value);
 
@@ -80,7 +87,7 @@ class FunctionReference {
   FunctionReference(napi_env env, napi_ref ref) : env(env), ref(ref) {};
   ~FunctionReference();
 
-  void* getFunctionPointer(MDSectionOffset offset);
+  void* getFunctionPointer(MDSectionOffset offset, bool isBlock = false);
 
   napi_env env;
   napi_ref ref;

@@ -16,6 +16,8 @@ typedef enum ConvertToJSFlags : uint32_t {
   kReturnOwned = 1 << 0,
   kBlockParam = 1 << 1,
   kStructZeroCopy = 1 << 2,
+  kCStringAsReference = 1 << 3,
+  kCFunctionObjectReturn = 1 << 4,
 } ConvertToJSFlags;
 
 class TypeConv {
@@ -37,8 +39,22 @@ class TypeConv {
 
   virtual void free(napi_env env, void* value) {}
 
+  virtual ffi_type* ffiTypeForArgument() { return type; }
+
   virtual void encode(std::string* encoding) {}
 };
+
+// Fast-path conversion for known metadata kinds used by generated dispatch
+// wrappers. Returns true only when conversion is fully handled and written to
+// `result`. Returns false when caller should fall back to TypeConv::toNative.
+bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
+                                void* result);
+
+// Fast direct conversion for uint16_t / unichar arguments used by generated
+// dispatch wrappers. Supports both numeric values and single-character JS
+// strings.
+bool TryFastConvertNapiUInt16Argument(napi_env env, napi_value value,
+                                      uint16_t* result);
 
 // Cleanup function to clear thread-local struct type caches
 void clearStructTypeCaches();

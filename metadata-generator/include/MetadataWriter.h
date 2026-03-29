@@ -80,6 +80,7 @@ struct MDSignature {
 struct MDFunction {
   MDSectionOffset name;
   MDSectionOffset signature;
+  MDFunctionFlag flags;
 };
 
 struct MDMember {

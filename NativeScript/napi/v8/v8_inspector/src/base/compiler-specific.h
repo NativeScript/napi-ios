@@ -5,7 +5,7 @@
 #ifndef V8_BASE_COMPILER_SPECIFIC_H_
 #define V8_BASE_COMPILER_SPECIFIC_H_
 
-#include "include/v8config.h"
+#include "v8config.h"
 
 // Annotation to silence compiler warnings about unused
 // types/functions/variables. Use like:

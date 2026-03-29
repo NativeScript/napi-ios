@@ -36,8 +36,11 @@ class StructObject {
   void* data;
   StructInfo* info;
   bool owned;
+  napi_env env = nullptr;
+  napi_ref backingRef = nullptr;
 
-  StructObject(StructInfo* info, void* data = nullptr);
+  StructObject(StructInfo* info, void* data = nullptr, napi_env env = nullptr,
+               napi_value backingValue = nullptr);
   StructObject(napi_env env, StructInfo* info, napi_value object,
                void* memory = nullptr);
 

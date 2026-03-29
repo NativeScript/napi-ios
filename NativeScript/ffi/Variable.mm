@@ -5,26 +5,63 @@
 
 namespace nativescript {
 
+namespace {
+
+const char* getValidatedConstantString(MDMetadataReader* metadata,
+                                       MDSectionOffset stringOffsetRef) {
+  if (metadata == nullptr || metadata->data == nullptr) {
+    return nullptr;
+  }
+
+  if (stringOffsetRef < metadata->constantsOffset ||
+      stringOffsetRef + sizeof(MDSectionOffset) > metadata->enumsOffset) {
+    return nullptr;
+  }
+
+  const auto stringsStart = static_cast<const char*>(metadata->data) + metadata->stringsOffset;
+  const auto stringsSize = metadata->constantsOffset - metadata->stringsOffset;
+  if (stringsSize == 0) {
+    return nullptr;
+  }
+
+  const auto stringOffset = metadata->getOffset(stringOffsetRef);
+  if (stringOffset >= stringsSize) {
+    return nullptr;
+  }
+
+  const char* value = stringsStart + stringOffset;
+  const auto remaining = stringsSize - stringOffset;
+  if (memchr(value, '\0', remaining) == nullptr) {
+    return nullptr;
+  }
+
+  return value;
+}
+
+}  // namespace
+
 void ObjCBridgeState::registerVarGlobals(napi_env env, napi_value global) {
   auto offset = metadata->constantsOffset;
   while (offset < metadata->enumsOffset) {
     MDSectionOffset originalOffset = offset;
-    auto name = metadata->getString(offset);
+    auto name = getValidatedConstantString(metadata, offset);
     offset += sizeof(MDSectionOffset);
     auto evalKind = metadata->getVariableEvalKind(offset);
     offset += sizeof(MDVariableEvalKind);
 
-    napi_property_descriptor prop = {
-        .utf8name = name,
-        .method = nullptr,
-        .getter = JS_variableGetter,
-        .setter = nullptr,
-        .value = nullptr,
-        .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
-        .data = (void*)((size_t)originalOffset),
-    };
+    if (name != nullptr && name[0] != '\0') {
+      napi_property_descriptor prop = {
+          .utf8name = name,
+          .method = nullptr,
+          .getter = JS_variableGetter,
+          .setter = nullptr,
+          .value = nullptr,
+          .attributes = (napi_property_attributes)(napi_enumerable | napi_configurable),
+          .data = (void*)((size_t)originalOffset),
+      };
 
-    napi_define_properties(env, global, 1, &prop);
+      napi_define_properties(env, global, 1, &prop);
+    }
 
     switch (evalKind) {
       case mdEvalDouble: {
@@ -61,15 +98,19 @@ NAPI_FUNCTION(variableGetter) {
     return get_ref_value(env, cached);
   }
 
+  napi_value result = nullptr;
+
   // Name
-  auto name = bridgeState->metadata->getString(offset);
+  auto name = getValidatedConstantString(bridgeState->metadata, offset);
+  if (name == nullptr || name[0] == '\0') {
+    napi_get_null(env, &result);
+    return result;
+  }
   offset += sizeof(MDSectionOffset);
 
   // Eval kind
   auto evalKind = bridgeState->metadata->getVariableEvalKind(offset);
   offset += sizeof(MDVariableEvalKind);
-
-  napi_value result = nullptr;
 
   switch (evalKind) {
     case mdEvalDouble: {
@@ -96,6 +137,9 @@ NAPI_FUNCTION(variableGetter) {
     default: {
       auto type = TypeConv::Make(env, bridgeState->metadata, &offset);
       auto value = dlsym(bridgeState->self_dl, name);
+      if (value == nullptr) {
+        value = dlsym(RTLD_DEFAULT, name);
+      }
       if (value == nullptr) {
         napi_get_null(env, &result);
       } else {

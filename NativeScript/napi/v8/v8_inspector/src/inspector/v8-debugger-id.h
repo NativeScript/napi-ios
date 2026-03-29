@@ -7,9 +7,9 @@
 
 #include <utility>
 
-#include "include/v8-inspector.h"
 #include "src/base/macros.h"
 #include "src/inspector/protocol/Forward.h"
+#include "v8-inspector.h"
 
 namespace v8_inspector {
 class V8InspectorImpl;

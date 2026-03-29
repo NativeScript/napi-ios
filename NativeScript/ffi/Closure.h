@@ -1,6 +1,9 @@
 #ifndef CLOSURE_H
 #define CLOSURE_H
 
+#include <CoreFoundation/CFRunLoop.h>
+
+#include <atomic>
 #include <string>
 #include <thread>
 
@@ -17,12 +20,14 @@ class Closure {
   static void callBlockFromMainThread(napi_env env, napi_value js_cb,
                                       void* context, void* data);
 
-  Closure(std::string typeEncoding, bool isBlock);
+  Closure(std::string typeEncoding, bool isBlock, bool isMethod = false);
   Closure(MDMetadataReader* reader, MDSectionOffset offset,
           bool isBlock = false, std::string* encoding = nullptr,
           bool isMethod = false, bool isGetter = false, bool isSetter = false);
 
   ~Closure();
+  void retain();
+  void release();
 
   napi_env env;
   napi_ref thisConstructor;
@@ -30,9 +35,12 @@ class Closure {
   bool isGetter = false;
   bool isSetter = false;
   std::string propertyName;
+  SEL selector = nullptr;
   napi_threadsafe_function tsfn;
 
   std::thread::id jsThreadId = std::this_thread::get_id();
+  CFRunLoopRef jsRunLoop = CFRunLoopGetCurrent();
+  std::atomic<int> retainCount{1};
 
   ffi_cif cif;
   ffi_closure* closure;

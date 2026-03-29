@@ -396,7 +396,7 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
     if (result != nullptr) {
       *result = nullptr;
     }
-    
+
     return napi_invalid_arg;
   }
 
@@ -653,8 +653,7 @@ inline napi_status Wrap(napi_env env, napi_value js_object, void* native_object,
         env->isolate,
         v8::String::NewFromUtf8(env->isolate, "napi_private").ToLocalChecked());
 
-    obj->SetPrivate(context, pkey,
-                    v8::External::New(env->isolate, reference));
+    obj->SetPrivate(context, pkey, v8::External::New(env->isolate, reference));
   }
 
   return GET_RETURN_STATUS(env);
@@ -1527,7 +1526,11 @@ napi_status NAPI_CDECL napi_get_prototype(napi_env env, napi_value object,
   CHECK_TO_OBJECT(env, context, obj, object);
 
   // This doesn't invokes Proxy's [[GetPrototypeOf]] handler.
+#if V8_MAJOR_VERSION >= 14
+  v8::Local<v8::Value> val = obj->GetPrototypeV2();
+#else
   v8::Local<v8::Value> val = obj->GetPrototype();
+#endif
   *result = v8impl::JsValueFromV8LocalValue(val);
   return GET_RETURN_STATUS(env);
 }
@@ -1566,9 +1569,9 @@ napi_status NAPI_CDECL napi_create_string_latin1(napi_env env, const char* str,
                                                  size_t length,
                                                  napi_value* result) {
   return v8impl::NewString(env, str, length, result, [&](v8::Isolate* isolate) {
-    return v8::String::NewFromOneByte(isolate,
-                                      reinterpret_cast<const uint8_t*>(str),
-                                      v8::NewStringType::kNormal, length);
+    return v8::String::NewFromOneByte(
+        isolate, reinterpret_cast<const uint8_t*>(str),
+        v8::NewStringType::kNormal, static_cast<int>(length));
   });
 }
 
@@ -1586,9 +1589,9 @@ napi_status NAPI_CDECL napi_create_string_utf16(napi_env env,
                                                 size_t length,
                                                 napi_value* result) {
   return v8impl::NewString(env, str, length, result, [&](v8::Isolate* isolate) {
-    return v8::String::NewFromTwoByte(isolate,
-                                      reinterpret_cast<const uint16_t*>(str),
-                                      v8::NewStringType::kNormal, length);
+    return v8::String::NewFromTwoByte(
+        isolate, reinterpret_cast<const uint16_t*>(str),
+        v8::NewStringType::kNormal, static_cast<int>(length));
   });
 }
 
@@ -2306,9 +2309,17 @@ napi_status NAPI_CDECL napi_get_value_string_latin1(napi_env env,
     CHECK_ARG(env, result);
     *result = val.As<v8::String>()->Length();
   } else if (bufsize != 0) {
+#if V8_MAJOR_VERSION >= 14
+    v8::Local<v8::String> str = val.As<v8::String>();
+    size_t copied = std::min(static_cast<size_t>(str->Length()), bufsize - 1);
+    str->WriteOneByteV2(env->isolate, 0, static_cast<uint32_t>(copied),
+                        reinterpret_cast<uint8_t*>(buf),
+                        v8::String::WriteFlags::kNone);
+#else
     int copied = val.As<v8::String>()->WriteOneByte(
         env->isolate, reinterpret_cast<uint8_t*>(buf), 0, bufsize - 1,
         v8::String::NO_NULL_TERMINATION);
+#endif
 
     buf[copied] = '\0';
     if (result != nullptr) {
@@ -2341,11 +2352,22 @@ napi_status NAPI_CDECL napi_get_value_string_utf8(napi_env env,
 
   if (!buf) {
     CHECK_ARG(env, result);
-    *result = val.As<v8::String>()->Utf8Length(env->isolate);
+    *result =
+#if V8_MAJOR_VERSION >= 14
+        val.As<v8::String>()->Utf8LengthV2(env->isolate);
+#else
+        val.As<v8::String>()->Utf8Length(env->isolate);
+#endif
   } else if (bufsize != 0) {
+#if V8_MAJOR_VERSION >= 14
+    size_t copied = val.As<v8::String>()->WriteUtf8V2(
+        env->isolate, buf, bufsize - 1,
+        v8::String::WriteFlags::kReplaceInvalidUtf8);
+#else
     int copied = val.As<v8::String>()->WriteUtf8(
         env->isolate, buf, bufsize - 1, nullptr,
         v8::String::REPLACE_INVALID_UTF8 | v8::String::NO_NULL_TERMINATION);
+#endif
 
     buf[copied] = '\0';
     if (result != nullptr) {
@@ -2382,9 +2404,17 @@ napi_status NAPI_CDECL napi_get_value_string_utf16(napi_env env,
     // V8 assumes UTF-16 length is the same as the number of characters.
     *result = val.As<v8::String>()->Length();
   } else if (bufsize != 0) {
+#if V8_MAJOR_VERSION >= 14
+    v8::Local<v8::String> str = val.As<v8::String>();
+    size_t copied = std::min(static_cast<size_t>(str->Length()), bufsize - 1);
+    str->WriteV2(env->isolate, 0, static_cast<uint32_t>(copied),
+                 reinterpret_cast<uint16_t*>(buf),
+                 v8::String::WriteFlags::kNone);
+#else
     int copied = val.As<v8::String>()->Write(
         env->isolate, reinterpret_cast<uint16_t*>(buf), 0, bufsize - 1,
         v8::String::NO_NULL_TERMINATION);
+#endif
 
     buf[copied] = '\0';
     if (result != nullptr) {
@@ -3335,12 +3365,22 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
   }
 
   // Create script origin for ES module
-  v8::ScriptOrigin origin(
-      isolate,
-      v8::String::NewFromUtf8(isolate, modulePath.c_str(), v8::NewStringType::kNormal).ToLocalChecked(),
-      0, 0, false, -1, v8::Local<v8::Value>(), false, false,
-      true  // is_module = true for ES modules
+#if V8_MAJOR_VERSION >= 14
+  v8::ScriptOrigin origin(v8::String::NewFromUtf8(isolate, modulePath.c_str(),
+                                                  v8::NewStringType::kNormal)
+                              .ToLocalChecked(),
+                          0, 0, false, -1, v8::Local<v8::Value>(), false, false,
+                          true  // is_module = true for ES modules
   );
+#else
+  v8::ScriptOrigin origin(isolate,
+                          v8::String::NewFromUtf8(isolate, modulePath.c_str(),
+                                                  v8::NewStringType::kNormal)
+                              .ToLocalChecked(),
+                          0, 0, false, -1, v8::Local<v8::Value>(), false, false,
+                          true  // is_module = true for ES modules
+  );
+#endif
 
   v8::ScriptCompiler::Source source(v8_script.As<v8::String>(), origin);
 
@@ -3363,7 +3403,7 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
   }
 
   v8impl::g_moduleRegistry[modulePath].Reset(isolate, module);
-  
+
   // Check for pending exception from compilation
   if (module_try_catch.HasCaught()) {
     // Log the exception to console to debug
@@ -3381,14 +3421,15 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
 
   // Use our ES module resolver
   v8::TryCatch instantiate_try_catch(isolate);
-  if (!module->InstantiateModule(context, &v8impl::ResolveModuleCallback).FromMaybe(false)) {
+  if (!module->InstantiateModule(context, &v8impl::ResolveModuleCallback)
+           .FromMaybe(false)) {
     if (instantiate_try_catch.HasCaught()) {
       // Store the exception in env->last_exception instead of throwing
       set_last_exception(instantiate_try_catch.Exception());
     }
     return napi_set_last_error(env, napi_generic_failure);
   }
-  
+
   // Evaluate the module
   v8::TryCatch evaluate_try_catch(isolate);
   v8::MaybeLocal<v8::Value> maybe_result = module->Evaluate(context);
@@ -3422,8 +3463,7 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
 
     if (promise->State() == v8::Promise::kPending) {
       set_last_exception(v8::Exception::Error(
-          v8::String::NewFromUtf8(isolate,
-                                  "Module evaluation did not settle")
+          v8::String::NewFromUtf8(isolate, "Module evaluation did not settle")
               .ToLocalChecked()));
       return napi_set_last_error(env, napi_generic_failure);
     }
@@ -3558,6 +3598,18 @@ napi_status NAPI_CDECL napi_is_detached_arraybuffer(napi_env env,
 }
 
 namespace v8impl {
+#if V8_MAJOR_VERSION >= 14
+#define NAPI_HOSTOBJECT_INTERCEPTED v8::Intercepted
+#define NAPI_HOSTOBJECT_RETURN_YES return v8::Intercepted::kYes
+#define NAPI_HOSTOBJECT_RETURN_NO return v8::Intercepted::kNo
+#define NAPI_HOSTOBJECT_SETTER_INFO v8::PropertyCallbackInfo<void>
+#else
+#define NAPI_HOSTOBJECT_INTERCEPTED void
+#define NAPI_HOSTOBJECT_RETURN_YES return
+#define NAPI_HOSTOBJECT_RETURN_NO return
+#define NAPI_HOSTOBJECT_SETTER_INFO v8::PropertyCallbackInfo<v8::Value>
+#endif
+
 class NapiHostObject {
  public:
   NapiHostObject(napi_env env, bool is_array, napi_finalize finalize,
@@ -3575,8 +3627,9 @@ class NapiHostObject {
     setter_.Reset();
   }
 
-  static void Getter(v8::Local<v8::Name> property,
-                     const v8::PropertyCallbackInfo<v8::Value>& info) {
+  static NAPI_HOSTOBJECT_INTERCEPTED Getter(
+      v8::Local<v8::Name> property,
+      const v8::PropertyCallbackInfo<v8::Value>& info) {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
@@ -3599,22 +3652,27 @@ class NapiHostObject {
           v8impl::JsValueFromV8LocalValue(v8Getter), 3, argv, &result);
       if (status == napi_ok) {
         info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(result));
+        NAPI_HOSTOBJECT_RETURN_YES;
       } else {
         napi_value ex;
         napi_get_and_clear_last_exception(hostObject->env_, &ex);
         info.GetIsolate()->ThrowException(v8impl::V8LocalValueFromJsValue(ex));
+        NAPI_HOSTOBJECT_RETURN_YES;
       }
     } else {
       v8::Local<v8::Value> result;
       if (target->Get(isolate->GetCurrentContext(), property)
               .ToLocal(&result)) {
         info.GetReturnValue().Set(result);
+        NAPI_HOSTOBJECT_RETURN_YES;
       }
     }
+    NAPI_HOSTOBJECT_RETURN_NO;
   }
 
-  static void Setter(v8::Local<v8::Name> property, v8::Local<v8::Value> value,
-                     const v8::PropertyCallbackInfo<v8::Value>& info) {
+  static NAPI_HOSTOBJECT_INTERCEPTED Setter(
+      v8::Local<v8::Name> property, v8::Local<v8::Value> value,
+      const NAPI_HOSTOBJECT_SETTER_INFO& info) {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
@@ -3639,21 +3697,31 @@ class NapiHostObject {
               isolate->GetCurrentContext()->Global()),
           v8impl::JsValueFromV8LocalValue(v8Setter), 4, argv, &result);
       if (status == napi_ok) {
+#if V8_MAJOR_VERSION < 14
         info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(result));
+#endif
+        NAPI_HOSTOBJECT_RETURN_YES;
       } else {
         napi_value ex;
         napi_get_and_clear_last_exception(hostObject->env_, &ex);
         info.GetIsolate()->ThrowException(v8impl::V8LocalValueFromJsValue(ex));
+        NAPI_HOSTOBJECT_RETURN_YES;
       }
     } else {
-      target->Set(isolate->GetCurrentContext(), property, value)
-          .FromMaybe(false);
-      info.GetReturnValue().Set(value);
+      if (target->Set(isolate->GetCurrentContext(), property, value)
+              .FromMaybe(false)) {
+#if V8_MAJOR_VERSION < 14
+        info.GetReturnValue().Set(value);
+#endif
+        NAPI_HOSTOBJECT_RETURN_YES;
+      }
     }
+    NAPI_HOSTOBJECT_RETURN_NO;
   }
 
-  static void Query(v8::Local<v8::Name> property,
-                    const v8::PropertyCallbackInfo<v8::Integer>& info) {
+  static NAPI_HOSTOBJECT_INTERCEPTED Query(
+      v8::Local<v8::Name> property,
+      const v8::PropertyCallbackInfo<v8::Integer>& info) {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
@@ -3664,11 +3732,14 @@ class NapiHostObject {
 
     if (target->Has(isolate->GetCurrentContext(), property).FromMaybe(false)) {
       info.GetReturnValue().Set(v8::Integer::New(isolate, v8::None));
+      NAPI_HOSTOBJECT_RETURN_YES;
     }
+    NAPI_HOSTOBJECT_RETURN_NO;
   }
 
-  static void Deleter(v8::Local<v8::Name> property,
-                      const v8::PropertyCallbackInfo<v8::Boolean>& info) {
+  static NAPI_HOSTOBJECT_INTERCEPTED Deleter(
+      v8::Local<v8::Name> property,
+      const v8::PropertyCallbackInfo<v8::Boolean>& info) {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
@@ -3680,7 +3751,9 @@ class NapiHostObject {
     if (target->Delete(isolate->GetCurrentContext(), property)
             .FromMaybe(false)) {
       info.GetReturnValue().Set(true);
+      NAPI_HOSTOBJECT_RETURN_YES;
     }
+    NAPI_HOSTOBJECT_RETURN_NO;
   }
 
   static void Enumerator(const v8::PropertyCallbackInfo<v8::Array>& info) {
@@ -3697,8 +3770,8 @@ class NapiHostObject {
     info.GetReturnValue().Set(propertyNames);
   }
 
-  static void IndexedGetter(uint32_t index,
-                            const v8::PropertyCallbackInfo<v8::Value>& info) {
+  static NAPI_HOSTOBJECT_INTERCEPTED IndexedGetter(
+      uint32_t index, const v8::PropertyCallbackInfo<v8::Value>& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
         self->GetAlignedPointerFromInternalField(0));
@@ -3723,22 +3796,27 @@ class NapiHostObject {
           v8impl::JsValueFromV8LocalValue(v8Getter), 3, argv, &result);
       if (status == napi_ok) {
         info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(result));
+        NAPI_HOSTOBJECT_RETURN_YES;
       } else {
         napi_value ex;
         napi_get_and_clear_last_exception(hostObject->env_, &ex);
         info.GetIsolate()->ThrowException(v8impl::V8LocalValueFromJsValue(ex));
+        NAPI_HOSTOBJECT_RETURN_YES;
       }
     } else {
       v8::Local<v8::Value> result;
       if (target->Get(info.GetIsolate()->GetCurrentContext(), index)
               .ToLocal(&result)) {
         info.GetReturnValue().Set(result);
+        NAPI_HOSTOBJECT_RETURN_YES;
       }
     }
+    NAPI_HOSTOBJECT_RETURN_NO;
   }
 
-  static void IndexedSetter(uint32_t index, v8::Local<v8::Value> value,
-                            const v8::PropertyCallbackInfo<v8::Value>& info) {
+  static NAPI_HOSTOBJECT_INTERCEPTED IndexedSetter(
+      uint32_t index, v8::Local<v8::Value> value,
+      const NAPI_HOSTOBJECT_SETTER_INFO& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
         self->GetAlignedPointerFromInternalField(0));
@@ -3764,22 +3842,30 @@ class NapiHostObject {
               info.GetIsolate()->GetCurrentContext()->Global()),
           v8impl::JsValueFromV8LocalValue(v8Setter), 4, argv, &result);
       if (status == napi_ok) {
+#if V8_MAJOR_VERSION < 14
         info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(result));
+#endif
+        NAPI_HOSTOBJECT_RETURN_YES;
       } else {
         napi_value ex;
         napi_get_and_clear_last_exception(hostObject->env_, &ex);
         info.GetIsolate()->ThrowException(v8impl::V8LocalValueFromJsValue(ex));
+        NAPI_HOSTOBJECT_RETURN_YES;
       }
     } else {
       if (target->Set(info.GetIsolate()->GetCurrentContext(), index, value)
               .FromMaybe(false)) {
+#if V8_MAJOR_VERSION < 14
         info.GetReturnValue().Set(value);
+#endif
+        NAPI_HOSTOBJECT_RETURN_YES;
       }
     }
+    NAPI_HOSTOBJECT_RETURN_NO;
   }
 
-  static void IndexedQuery(uint32_t index,
-                           const v8::PropertyCallbackInfo<v8::Integer>& info) {
+  static NAPI_HOSTOBJECT_INTERCEPTED IndexedQuery(
+      uint32_t index, const v8::PropertyCallbackInfo<v8::Integer>& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
         self->GetAlignedPointerFromInternalField(0));
@@ -3790,10 +3876,12 @@ class NapiHostObject {
     if (target->Has(info.GetIsolate()->GetCurrentContext(), index)
             .FromMaybe(false)) {
       info.GetReturnValue().Set(v8::Integer::New(info.GetIsolate(), v8::None));
+      NAPI_HOSTOBJECT_RETURN_YES;
     }
+    NAPI_HOSTOBJECT_RETURN_NO;
   }
 
-  static void IndexedDeleter(
+  static NAPI_HOSTOBJECT_INTERCEPTED IndexedDeleter(
       uint32_t index, const v8::PropertyCallbackInfo<v8::Boolean>& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
@@ -3805,7 +3893,9 @@ class NapiHostObject {
     if (target->Delete(info.GetIsolate()->GetCurrentContext(), index)
             .FromMaybe(false)) {
       info.GetReturnValue().Set(true);
+      NAPI_HOSTOBJECT_RETURN_YES;
     }
+    NAPI_HOSTOBJECT_RETURN_NO;
   }
 
   static void IndexedEnumerator(
@@ -3831,6 +3921,11 @@ class NapiHostObject {
   v8::Persistent<v8::Value> getter_;
   v8::Persistent<v8::Value> setter_;
 };
+
+#undef NAPI_HOSTOBJECT_INTERCEPTED
+#undef NAPI_HOSTOBJECT_RETURN_YES
+#undef NAPI_HOSTOBJECT_RETURN_NO
+#undef NAPI_HOSTOBJECT_SETTER_INFO
 }  // namespace v8impl
 
 napi_status napi_create_host_object(napi_env env, napi_value value,
@@ -3899,14 +3994,39 @@ napi_status napi_create_host_object(napi_env env, napi_value value,
 
   // Set the prototype of the host object to the prototype of the value
   v8::Local<v8::Object> valueObject = v8Value.As<v8::Object>();
+#if V8_MAJOR_VERSION >= 14
+  if (!hostObject->SetPrototypeV2(context, valueObject->GetPrototypeV2())
+           .FromMaybe(false)) {
+#else
   if (!hostObject->SetPrototype(context, valueObject->GetPrototype())
            .FromMaybe(false)) {
+#endif
     napi_throw_error(env, nullptr, "Failed to set prototype");
     return napi_generic_failure;
   }
 
   v8::Local<v8::String> superPropertyName =
       v8::String::NewFromUtf8(isolate, "super").ToLocalChecked();
+#if V8_MAJOR_VERSION >= 14
+  if (!hostObject
+           ->SetNativeDataProperty(
+               context, superPropertyName,
+               [](v8::Local<v8::Name> property,
+                  const v8::PropertyCallbackInfo<v8::Value>& info) {
+                 v8::Local<v8::Object> jsThis = info.Data().As<v8::Object>();
+                 v8::Local<v8::Value> superValue;
+                 if (jsThis
+                         ->Get(info.GetIsolate()->GetCurrentContext(), property)
+                         .ToLocal(&superValue)) {
+                   info.GetReturnValue().Set(superValue);
+                 }
+               },
+               nullptr, valueObject)
+           .FromMaybe(false)) {
+    napi_throw_error(env, nullptr, "Failed to set super accessor");
+    return napi_generic_failure;
+  }
+#else
   hostObject->SetAccessor(
       context, superPropertyName,
       [](v8::Local<v8::Name> property,
@@ -3919,6 +4039,7 @@ napi_status napi_create_host_object(napi_env env, napi_value value,
         }
       },
       nullptr, valueObject);
+#endif
 
   // Wrap the host object in a napi_value
   *result = v8impl::JsValueFromV8LocalValue(hostObject);

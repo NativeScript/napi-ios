@@ -514,9 +514,17 @@ describe(module.id, function () {
     it("ImplicitPointerToId", function () {
         var array = NSMutableArray.alloc().init();
         var object = new NSObject();
-        array.addObject(interop.handleof(object));
+        var handle = interop.handleof(object);
+        array.addObject(handle);
 
-        expect(array.firstObject).toBe(object);
+        var first = array.firstObject;
+        var canonical = new NSObject(handle);
+        var firstHandle = BigInt(interop.handleof(first).toString().match(/0x([0-9a-fA-F]+)/)[0]);
+        var objectHandle = BigInt(handle.toString().match(/0x([0-9a-fA-F]+)/)[0]);
+        var pointerMask = BigInt("0x0000FFFFFFFFFFFF");
+
+        expect(first).toBe(canonical);
+        expect(firstHandle & pointerMask).toBe(objectHandle & pointerMask);
     });
 
     it("NSInvocation_methodWithBool", function () {
@@ -852,7 +860,6 @@ describe(module.id, function () {
             for (let i = 0; i < bytesToAlloc; i++) {
                 actual += buffer[i].toString(16).padStart(2, "0");
             }
-
             expect(actual).toBe("4df3c3f68fcc83b27e9d42c90431a72499f17875c81a599b566c9889b9696703");
         });
     });

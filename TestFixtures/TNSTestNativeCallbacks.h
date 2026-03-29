@@ -1,6 +1,15 @@
+#include <TargetConditionals.h>
 #include "Api/TNSApi.h"
 #include "Interfaces/TNSInheritance.h"
 #include "Marshalling/TNSRecords.h"
+
+#if TARGET_OS_OSX
+@class NSView;
+typedef NSView TNSPlatformView;
+#else
+@class UIView;
+typedef UIView TNSPlatformView;
+#endif
 
 @interface TNSTestNativeCallbacks : NSObject
 
@@ -20,7 +29,7 @@
 
 + (void)apiOverrideWithCustomGetterAndSetter:(TNSApi*)object;
 
-+ (void)apiReadonlyPropertyInProtocolAndOverrideWithSetterInInterface:(UIView*)object;
++ (void)apiReadonlyPropertyInProtocolAndOverrideWithSetterInInterface:(TNSPlatformView*)object;
 
 + (void)apiDescriptionOverride:(id)object;
 

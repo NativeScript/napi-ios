@@ -9,12 +9,12 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "include/v8-local-handle.h"
-#include "include/v8-persistent-handle.h"
 #include "src/base/macros.h"
 #include "src/debug/debug-interface.h"
 #include "src/inspector/string-16.h"
 #include "src/inspector/v8-debugger-id.h"
+#include "v8-local-handle.h"
+#include "v8-persistent-handle.h"
 
 namespace v8 {
 class Context;

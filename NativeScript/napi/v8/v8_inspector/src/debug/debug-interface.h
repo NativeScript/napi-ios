@@ -7,19 +7,19 @@
 
 #include <memory>
 
-#include "include/v8-callbacks.h"
-#include "include/v8-date.h"
-#include "include/v8-debug.h"
-#include "include/v8-embedder-heap.h"
-#include "include/v8-local-handle.h"
-#include "include/v8-memory-span.h"
-#include "include/v8-promise.h"
-#include "include/v8-script.h"
-#include "include/v8-util.h"
 #include "src/base/enum-set.h"
 #include "src/base/vector.h"
 #include "src/common/globals.h"
 #include "src/debug/interface-types.h"
+#include "v8-callbacks.h"
+#include "v8-date.h"
+#include "v8-debug.h"
+#include "v8-embedder-heap.h"
+#include "v8-local-handle.h"
+#include "v8-memory-span.h"
+#include "v8-promise.h"
+#include "v8-script.h"
+#include "v8-util.h"
 
 namespace v8_inspector {
 class V8Inspector;

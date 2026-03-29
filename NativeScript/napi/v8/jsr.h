@@ -6,6 +6,7 @@
 #define TEST_APP_JSR_H
 
 #include <memory>
+
 #include "SimpleAllocator.h"
 #include "jsr_common.h"
 #include "libplatform/libplatform.h"
@@ -97,7 +98,7 @@ namespace tns {
 inline static v8::Local<v8::String> ConvertToV8String(v8::Isolate* isolate,
                                                       const std::string& s) {
   return v8::String::NewFromUtf8(isolate, s.c_str(), v8::NewStringType::kNormal,
-                                 s.length())
+                                 static_cast<int>(s.length()))
       .ToLocalChecked();
 }
 

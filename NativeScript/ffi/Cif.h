@@ -1,6 +1,7 @@
 #ifndef METHOD_CIF_H
 #define METHOD_CIF_H
 
+#include <cstdint>
 #include <string>
 
 #include "MetadataReader.h"
@@ -18,6 +19,8 @@ class Cif {
   size_t frameLength;
   size_t rvalueLength;
   bool isVariadic = false;
+  uint64_t signatureHash = 0;
+  bool skipGeneratedNapiDispatch = false;
 
   void* rvalue;
   void** avalues;
@@ -32,10 +35,11 @@ class Cif {
   bool shouldFreeAny;
   bool* shouldFree;
 
-  Cif(napi_env env, std::string typeEncoding);
+  Cif(napi_env env, std::string typeEncoding, unsigned int implicitArgc = 2);
+  Cif(napi_env env, Method method);
   Cif(napi_env env, MDMetadataReader* reader, MDSectionOffset offset,
       bool isMethod = false, bool isBlock = false);
-  
+
   ~Cif();
 };
 
