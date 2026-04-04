@@ -155,6 +155,7 @@ if(ENABLE_JS_RUNTIME)
     runtime/modules/node/FS.cpp
     runtime/modules/node/Path.cpp
     runtime/modules/node/Process.cpp
+    runtime/modules/node/VM.cpp
     runtime/modules/performance/Performance.cpp
     runtime/ThreadSafeFunction.mm
     runtime/Bundle.mm
