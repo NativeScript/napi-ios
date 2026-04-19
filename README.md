@@ -127,6 +127,16 @@ To provision V8 artifacts, use:
 
 This downloads and extracts prebuilt V8 binaries into `Frameworks/`.
 
+# Hermes Artifacts
+
+To provision Hermes artifacts, use:
+
+```bash
+./download_hermes.sh
+```
+
+This downloads and extracts a prebuilt Hermes XCFramework into `Frameworks/`.
+
 # Building a Distribution Package
 
 1. Bump the version in package.json

@@ -411,6 +411,9 @@ napi_value FunctionPointer::wrapWithEncoding(napi_env env, void* function, const
 
 void FunctionPointer::finalize(napi_env env, void* finalize_data, void* finalize_hint) {
   auto ref = (FunctionPointer*)finalize_data;
+  if (ref == nullptr) {
+    return;
+  }
   if (ref->ownsCif && ref->cif != nullptr) {
     delete ref->cif;
     ref->cif = nullptr;

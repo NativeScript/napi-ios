@@ -10,6 +10,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <regex>
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
@@ -53,6 +54,16 @@ std::string StripShebang(const std::string& source) {
   }
   return source;
 }
+
+#if defined(TARGET_ENGINE_HERMES)
+std::string RewriteCommonJSDynamicImportsForHermes(const std::string& source) {
+  static const std::regex kDynamicImportPattern(
+      R"((^|[^A-Za-z0-9_$\.])import\s*\()",
+      std::regex::ECMAScript | std::regex::multiline);
+  return std::regex_replace(source, kDynamicImportPattern,
+                            "$1__dynamicImport(");
+}
+#endif
 
 // Check if path has .cjs extension (explicitly CommonJS)
 bool IsCJSModule(const std::string& path) {
@@ -204,9 +215,8 @@ napi_value LoadRegisteredNapiModule(napi_env env,
     if (hasPendingException) {
       napi_value exception;
       napi_get_and_clear_last_exception(env, &exception);
-      throw NativeScriptException(env, exception,
-                                  "Error initializing native module '" + name +
-                                      "'");
+      throw NativeScriptException(
+          env, exception, "Error initializing native module '" + name + "'");
     }
 
     if (moduleExports == nullptr) {
@@ -248,9 +258,10 @@ std::string ModulePathToURL(const std::string& modulePath) {
 
 bool IsNodeBuiltinSpecifier(const std::string& specifier) {
   static const std::unordered_set<std::string> kBuiltins = {
-      "url", "node:url", "fs", "node:fs", "fs/promises", "node:fs/promises",
-      "path", "node:path", "vm", "node:vm", "web", "node:web",
-      "stream/web", "node:stream/web"};
+      "url",         "node:url",         "fs",   "node:fs",
+      "fs/promises", "node:fs/promises", "path", "node:path",
+      "vm",          "node:vm",          "web",  "node:web",
+      "stream/web",  "node:stream/web"};
   return kBuiltins.contains(specifier);
 }
 
@@ -875,7 +886,8 @@ std::string ModuleInternal::ResolvePathFromPackageJson(
   napi_status hasMainStatus =
       napi_has_named_property(env, obj, "main", &hasMain);
   if (hasMainStatus != napi_ok || !hasMain) {
-    // package.json without "main" should fall back to index.js/index.mjs/index.cjs
+    // package.json without "main" should fall back to
+    // index.js/index.mjs/index.cjs
     error = false;
     return "";
   }
@@ -1196,9 +1208,8 @@ napi_value ModuleInternal::LoadImpl(napi_env env, const std::string& moduleName,
 
     if (it2 == m_loadedModules.end()) {
       if (path.ends_with(".js") || path.ends_with(".mjs") ||
-          path.ends_with(".cjs") ||
-          path.ends_with(".so") || path.ends_with(".dylib") ||
-          path.ends_with(".node")) {
+          path.ends_with(".cjs") || path.ends_with(".so") ||
+          path.ends_with(".dylib") || path.ends_with(".node")) {
         isData = false;
         result = LoadModule(env, path, cachePathKey);
       } else if (path.ends_with(".json")) {
@@ -1520,8 +1531,7 @@ void ModuleInternal::InitQuickJSESModuleLoader(napi_env env) {
         }
 
         std::string normalized = modules->NormalizeQuickJSImportSpecifier(
-            base_name != nullptr ? base_name : "",
-            name != nullptr ? name : "");
+            base_name != nullptr ? base_name : "", name != nullptr ? name : "");
         return js_strdup(ctx, normalized.c_str());
       },
       [](JSContext* ctx, const char* module_name,
@@ -1589,8 +1599,8 @@ std::string ModuleInternal::NormalizeQuickJSImportSpecifier(
   }
 }
 
-JSModuleDef* ModuleInternal::LoadQuickJSImportModule(JSContext* ctx,
-                                                     const std::string& moduleName) {
+JSModuleDef* ModuleInternal::LoadQuickJSImportModule(
+    JSContext* ctx, const std::string& moduleName) {
   std::string source = GetBuiltinESModuleSource(moduleName);
   if (source.empty()) {
     source = GetRegisteredNapiESModuleSource(moduleName);
@@ -1617,14 +1627,15 @@ JSModuleDef* ModuleInternal::LoadQuickJSImportModule(JSContext* ctx,
     source = StripShebang(buffer.str());
   }
 
-  JSValue moduleValue = JS_Eval(ctx, source.c_str(), source.size(),
-                                resolvedModuleName.c_str(),
-                                JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+  JSValue moduleValue =
+      JS_Eval(ctx, source.c_str(), source.size(), resolvedModuleName.c_str(),
+              JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
   if (JS_IsException(moduleValue)) {
     return nullptr;
   }
 
-  JSModuleDef* module = static_cast<JSModuleDef*>(JS_VALUE_GET_PTR(moduleValue));
+  JSModuleDef* module =
+      static_cast<JSModuleDef*>(JS_VALUE_GET_PTR(moduleValue));
   JSValue meta = JS_GetImportMeta(ctx, module);
   if (JS_IsException(meta)) {
     JS_FreeValue(ctx, moduleValue);
@@ -1635,8 +1646,8 @@ JSModuleDef* ModuleInternal::LoadQuickJSImportModule(JSContext* ctx,
   if (JS_DefinePropertyValueStr(ctx, meta, "url",
                                 JS_NewString(ctx, moduleURL.c_str()),
                                 JS_PROP_C_W_E) < 0 ||
-      JS_DefinePropertyValueStr(ctx, meta, "main", JS_FALSE,
-                                JS_PROP_C_W_E) < 0) {
+      JS_DefinePropertyValueStr(ctx, meta, "main", JS_FALSE, JS_PROP_C_W_E) <
+          0) {
     JS_FreeValue(ctx, meta);
     JS_FreeValue(ctx, moduleValue);
     return nullptr;
@@ -1666,6 +1677,9 @@ napi_value ModuleInternal::WrapModuleContent(napi_env env,
     // For ES modules, return content as-is to preserve import/export syntax
     result = content;
   } else {
+#if defined(TARGET_ENGINE_HERMES)
+    content = RewriteCommonJSDynamicImportsForHermes(content);
+#endif
     // For CommonJS modules, wrap in factory function
     result.reserve(content.length() + 1024);
     result += MODULE_PROLOGUE;
@@ -1696,8 +1710,22 @@ ModuleInternal::ModulePathKind ModuleInternal::GetModulePathKind(
   return kind;
 }
 
+#if defined(TARGET_ENGINE_HERMES)
+const char* ModuleInternal::MODULE_PROLOGUE =
+    "(function(module, exports, require, __filename, __dirname){ "
+    "const __dynamicImport = (specifier) => Promise.resolve().then(() => { "
+    "const __loaded = require(specifier); "
+    "if (__loaded !== null && (typeof __loaded === 'object' || typeof __loaded "
+    "=== 'function')) { "
+    "if (__loaded.__esModule) { return __loaded; } "
+    "return Object.assign({ default: __loaded }, __loaded); "
+    "} "
+    "return { default: __loaded }; "
+    "}); ";
+#else
 const char* ModuleInternal::MODULE_PROLOGUE =
     "(function(module, exports, require, __filename, __dirname){ ";
+#endif
 const char* ModuleInternal::MODULE_EPILOGUE = "\n})";
 int ModuleInternal::MODULE_PROLOGUE_LENGTH =
     std::string(ModuleInternal::MODULE_PROLOGUE).length();

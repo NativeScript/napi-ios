@@ -181,18 +181,22 @@ NAPI_FUNCTION(enumGetter) {
     // reverse mapping enum[value] -> canonical member name
     char valueKey[32];
     snprintf(valueKey, sizeof(valueKey), "%lld", (long long)value);
-    napi_value reverseName;
-    napi_create_string_utf8(env, reverseCanonical.c_str(), NAPI_AUTO_LENGTH, &reverseName);
-    napi_property_descriptor reverseProp = {
-        .utf8name = valueKey,
-        .method = nullptr,
-        .getter = nullptr,
-        .setter = nullptr,
-        .value = reverseName,
-        .attributes = napi_enumerable,
-        .data = nullptr,
-    };
-    napi_define_properties(env, result, 1, &reverseProp);
+    bool hasReverseMapping = false;
+    napi_has_named_property(env, result, valueKey, &hasReverseMapping);
+    if (!hasReverseMapping) {
+      napi_value reverseName;
+      napi_create_string_utf8(env, reverseCanonical.c_str(), NAPI_AUTO_LENGTH, &reverseName);
+      napi_property_descriptor reverseProp = {
+          .utf8name = valueKey,
+          .method = nullptr,
+          .getter = nullptr,
+          .setter = nullptr,
+          .value = reverseName,
+          .attributes = napi_enumerable,
+          .data = nullptr,
+      };
+      napi_define_properties(env, result, 1, &reverseProp);
+    }
   }
 
   bridgeState->mdValueCache[originalOffset] = make_ref(env, result);

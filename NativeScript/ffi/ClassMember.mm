@@ -32,7 +32,12 @@ napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo) {
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&method);
 
   id self = nil;
-  napi_status unwrapStatus = napi_unwrap(env, jsThis, (void**)&self);
+  ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+  if (state != nullptr && jsThis != nullptr) {
+    state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
+  }
+
+  napi_status unwrapStatus = self != nil ? napi_ok : napi_unwrap(env, jsThis, (void**)&self);
   if ((unwrapStatus != napi_ok || self == nil) && method != nullptr && method->cls != nullptr &&
       method->cls->nativeClass != nil) {
     self = (id)method->cls->nativeClass;
@@ -902,7 +907,15 @@ ObjCClassMember* findInitializerForArgs(napi_env env, ObjCClassMemberMap* initia
 
 inline id assertSelf(napi_env env, napi_value jsThis, ObjCClassMember* method = nullptr) {
   id self = nil;
-  napi_status unwrapStatus = napi_unwrap(env, jsThis, (void**)&self);
+  ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+  if (state != nullptr && jsThis != nullptr) {
+    napi_valuetype jsType = napi_undefined;
+    if (napi_typeof(env, jsThis, &jsType) == napi_ok && jsType == napi_function) {
+      state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
+    }
+  }
+
+  napi_status unwrapStatus = self != nil ? napi_ok : napi_unwrap(env, jsThis, (void**)&self);
 
   if (unwrapStatus == napi_ok && self != nil) {
     return self;
@@ -966,7 +979,8 @@ ObjCClass* resolveInitMetadataClass(napi_env env, napi_value jsThis, ObjCClassMe
     if (napi_get_named_property(env, jsThis, "constructor", &constructor) == napi_ok &&
         constructor != nullptr) {
       Class constructorClass = nil;
-      if (napi_unwrap(env, constructor, (void**)&constructorClass) == napi_ok) {
+      if (state->tryResolveBridgedClassConstructor(env, constructor, &constructorClass) ||
+          napi_unwrap(env, constructor, (void**)&constructorClass) == napi_ok) {
         ObjCClass* resolved = resolveFromClass(constructorClass);
         if (resolved != nullptr) {
           return resolved;

@@ -50,8 +50,8 @@ class Reference {
  public:
   static napi_value defineJSClass(napi_env env);
   static bool isInstance(napi_env env, napi_value value);
-  static napi_value create(napi_env env, std::shared_ptr<TypeConv> type, void* data,
-                           bool ownsData = false);
+  static napi_value create(napi_env env, std::shared_ptr<TypeConv> type,
+                           void* data, bool ownsData = false);
 
   static Reference* unwrap(napi_env env, napi_value value);
 
@@ -59,6 +59,11 @@ class Reference {
   static napi_value get_value(napi_env env, napi_callback_info info);
   static napi_value set_value(napi_env env, napi_callback_info info);
   static napi_value customInspect(napi_env env, napi_callback_info info);
+  static napi_value getInitValue(napi_env env, napi_value value,
+                                 Reference* ref);
+  static void setInitValue(napi_env env, napi_value value, Reference* ref,
+                           napi_value initValue);
+  static void clearInitValue(napi_env env, napi_value value, Reference* ref);
 
   static void finalize(napi_env env, void* data, void* hint);
 

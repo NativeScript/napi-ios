@@ -1,6 +1,7 @@
 #include "ClassBuilder.h"
 #import <Foundation/Foundation.h>
 #include <objc/runtime.h>
+#include <mutex>
 #include "Closure.h"
 #include "Interop.h"
 #include "Metadata.h"
@@ -9,7 +10,6 @@
 #include "Util.h"
 #include "js_native_api.h"
 #include "node_api_util.h"
-#include <mutex>
 
 namespace nativescript {
 namespace {
@@ -387,16 +387,18 @@ NSUInteger JS_SymbolIteratorCountByEnumerating(id self, SEL _cmd, NSFastEnumerat
 }
 }  // namespace
 
-ClassBuilder::ClassBuilder(napi_env env, napi_value constructor) {
+ClassBuilder::ClassBuilder(napi_env env, napi_value constructor, Class explicitSuperClass) {
   this->env = env;
   bridgeState = ObjCBridgeState::InstanceData(env);
 
   metadataOffset = MD_SECTION_OFFSET_NULL;
 
-  napi_value superConstructor;
-  napi_get_prototype(env, constructor, &superConstructor);
-  Class superClassNative = nullptr;
-  napi_unwrap(env, superConstructor, (void**)&superClassNative);
+  Class superClassNative = explicitSuperClass;
+  if (superClassNative == nullptr) {
+    napi_value superConstructor;
+    napi_get_prototype(env, constructor, &superConstructor);
+    napi_unwrap(env, superConstructor, (void**)&superClassNative);
+  }
 
   if (superClassNative == nullptr) {
     // If the class does not inherit from a native class,
@@ -805,7 +807,13 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
 
   // Get the native class from 'this' (the constructor function)
   Class baseNativeClass = nullptr;
-  napi_unwrap(env, thisArg, (void**)&baseNativeClass);
+  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState != nullptr) {
+    bridgeState->tryResolveBridgedClassConstructor(env, thisArg, &baseNativeClass);
+  }
+  if (baseNativeClass == nullptr) {
+    napi_unwrap(env, thisArg, (void**)&baseNativeClass);
+  }
 
   if (baseNativeClass == nullptr) {
     napi_throw_error(env, nullptr, "extend() can only be called on native class constructors");
@@ -966,11 +974,11 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
   }
 
   // Use ClassBuilder to create the native class and bridge the methods
-  ClassBuilder* builder = new ClassBuilder(env, newConstructor);
+  ClassBuilder* builder = new ClassBuilder(env, newConstructor, baseNativeClass);
   builder->build();
 
   // Register the builder in the bridge state
-  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  bridgeState = ObjCBridgeState::InstanceData(env);
   bridgeState->classesByPointer[builder->nativeClass] = builder;
 
   return newConstructor;

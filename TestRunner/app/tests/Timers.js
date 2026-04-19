@@ -1,4 +1,8 @@
 describe("native timer", () => {
+  const isHermes =
+    global.process &&
+    global.process.versions &&
+    global.process.versions.engine === "hermes";
   /** @type {global.setTimeout} */
   let setTimeout = global.__ns__setTimeout;
   /** @type {global.setInterval} */
@@ -145,7 +149,17 @@ describe("native timer", () => {
       // use another timeout as native weakrefs can't be gced until we leave the isolate after being used once
       setTimeout(() => {
         gc();
-        expect(!!weakRef.get()).toBe(false);
+        if (
+          isHermes &&
+          typeof global.__nsHermesTimerCallbackCount === "function" &&
+          typeof global.__nsHermesHasTimerCallback === "function"
+        ) {
+          expect(global.__nsHermesTimerCallbackCount()).toBe(0);
+          expect(global.__nsHermesHasTimerCallback(timeout.__timerId)).toBe(false);
+          expect(global.__nsHermesHasTimerCallback(interval.__timerId)).toBe(false);
+        } else {
+          expect(!!weakRef.get()).toBe(false);
+        }
         done();
       });
     }, 200);

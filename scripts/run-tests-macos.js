@@ -5,6 +5,8 @@
 // Env:
 //  - MACOS_TEST_SKIP_BUILD=1 skips xcodebuild app build.
 //  - MACOS_TEST_CLEAN_BUILD=1 deletes derived data before build.
+//  - MACOS_TEST_ENGINE selects the runtime engine build to use when runtime
+//    artifacts need rebuilding. Supported: v8, hermes, quickjs, jsc. Defaults to v8.
 //  - MACOS_COMMAND_TIMEOUT_MS overrides timeout for build commands (default: 10 minutes).
 //  - MACOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
 //  - MACOS_TEST_TIMEOUT_MS overrides max test runtime after launch (default: 2 minutes).
@@ -85,6 +87,7 @@ const testTimeoutMs = parseTimeoutMs("MACOS_TEST_TIMEOUT_MS", 2 * 60 * 1000);
 const inactivityTimeoutMs = parseTimeoutMs("MACOS_TEST_INACTIVITY_TIMEOUT_MS", 45 * 1000);
 const emitJunitLogs = process.env.MACOS_LOG_JUNIT !== "0";
 const requestedTests = (process.env.MACOS_TESTS || "").trim();
+const requestedEngine = (process.env.MACOS_TEST_ENGINE || "v8").trim().toLowerCase();
 
 const launchedMarker = "Application Start!";
 const junitPrefix = "TKUnit: ";
@@ -463,6 +466,7 @@ function ensureMetadataGeneratorBuilt() {
 }
 
 function ensureMacOSRuntimeArtifactsBuilt() {
+    const cachePath = path.join(__dirname, "../dist", "intermediates", "macos", "CMakeCache.txt");
     const sourceInputs = [
         nativeScriptSourceRoot,
         path.join(__dirname, "../build_nativescript.sh")
@@ -473,13 +477,35 @@ function ensureMacOSRuntimeArtifactsBuilt() {
         0
     );
     const artifactMtime = getPathStats(nativeScriptXCFramework).maxMtimeMs;
+    let configuredEngine = null;
 
-    if (artifactMtime > 0 && artifactMtime >= sourceMtime) {
+    if (fs.existsSync(cachePath)) {
+        try {
+            const cache = fs.readFileSync(cachePath, "utf8");
+            const match = cache.match(/^TARGET_ENGINE:STRING=(.+)$/m);
+            if (match) {
+                configuredEngine = match[1].trim().toLowerCase();
+            }
+        } catch (_) {
+            configuredEngine = null;
+        }
+    }
+
+    if (artifactMtime > 0 && artifactMtime >= sourceMtime && configuredEngine === requestedEngine) {
         return;
     }
 
-    console.log("NativeScript macOS artifacts are missing or stale; running build:macos...");
-    runBuildAndRequireSuccess("npm", ["run", "build:macos"], commandTimeoutMs);
+    const supportedEngines = new Set(["v8", "hermes", "quickjs", "jsc"]);
+    if (!supportedEngines.has(requestedEngine)) {
+        throw new Error(`Unsupported MACOS_TEST_ENGINE: ${requestedEngine}`);
+    }
+
+    console.log(`NativeScript macOS artifacts are missing, stale, or built for '${configuredEngine ?? "unknown"}'; running ${requestedEngine} build...`);
+    runBuildAndRequireSuccess(
+        "./build_nativescript.sh",
+        ["--macos", "--no-iphone", "--no-simulator", `--${requestedEngine}`],
+        commandTimeoutMs
+    );
 }
 
 function buildTestRunnerApp() {
@@ -500,7 +526,7 @@ function buildTestRunnerApp() {
     ensureMetadataGeneratorBuilt();
     ensureMacOSRuntimeArtifactsBuilt();
 
-    const nativeFingerprint = createBuildFingerprint(macosBuildInputs);
+    const nativeFingerprint = `${requestedEngine}:${createBuildFingerprint(macosBuildInputs)}`;
     const existingBuildState = readBuildState();
     const canReuseBuild = process.env.MACOS_TEST_CLEAN_BUILD !== "1" &&
         fs.existsSync(appPath) &&

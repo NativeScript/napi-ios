@@ -120,6 +120,10 @@ const char* nativeObjectProxySource = R"(
           return target[name];
         }
 
+        if (typeof name === 'symbol') {
+          return undefined;
+        }
+
         if (isArray) {
           const index = Number(name);
           if (!isNaN(index)) {
@@ -131,6 +135,11 @@ const char* nativeObjectProxySource = R"(
       set (target, name, value) {
         const isInternalProperty = typeof name === 'string' &&
           (name === 'napi_external' || name === 'napi_typetag' || name === '__ns_native_ptr');
+
+        if (typeof name === 'symbol') {
+          target[name] = value;
+          return true;
+        }
 
         if (isArray) {
           const index = Number(name);

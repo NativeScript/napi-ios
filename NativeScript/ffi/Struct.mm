@@ -236,6 +236,29 @@ NAPI_FUNCTION(StructConstructor) {
 
   napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, (void**)&info);
 
+  napi_valuetype thisType = napi_undefined;
+  if (jsThis == nullptr || napi_typeof(env, jsThis, &thisType) != napi_ok ||
+      (thisType != napi_object && thisType != napi_function)) {
+    napi_create_object(env, &jsThis);
+
+    if (info != nullptr) {
+      napi_value structCtor = StructObject::getJSClass(env, info);
+      napi_value structPrototype = nullptr;
+      if (structCtor != nullptr &&
+          napi_get_named_property(env, structCtor, "prototype", &structPrototype) == napi_ok &&
+          structPrototype != nullptr) {
+        napi_value global = nullptr;
+        napi_value objectCtor = nullptr;
+        napi_value setPrototypeOf = nullptr;
+        napi_get_global(env, &global);
+        napi_get_named_property(env, global, "Object", &objectCtor);
+        napi_get_named_property(env, objectCtor, "setPrototypeOf", &setPrototypeOf);
+        napi_value setPrototypeArgs[2] = {jsThis, structPrototype};
+        napi_call_function(env, objectCtor, setPrototypeOf, 2, setPrototypeArgs, nullptr);
+      }
+    }
+  }
+
   napi_value arg;
   if (argc > 0) {
     arg = argv[0];
