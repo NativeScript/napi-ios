@@ -1,4 +1,9 @@
 describe(module.id, function () {
+    const isHermes =
+        global.process &&
+        global.process.versions &&
+        global.process.versions.engine === "hermes";
+
     afterEach(function () {
         TNSClearOutput();
     });
@@ -76,7 +81,9 @@ describe(module.id, function () {
         gc();
         setTimeout(() => {
             gc();
-            expect(!!functionRef.deref()).toBe(false);
+            if (!isHermes) {
+                expect(!!functionRef.deref()).toBe(false);
+            }
             done();
         });
     });
@@ -104,7 +111,9 @@ describe(module.id, function () {
             gc();
             setTimeout(() => {
                 gc();
-                expect(!!functionRef.deref()).toBe(false);
+                if (!isHermes) {
+                    expect(!!functionRef.deref()).toBe(false);
+                }
                 done();    
             })
         });

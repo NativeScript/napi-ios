@@ -246,7 +246,13 @@ NAPI_FUNCTION(classSuperclassFallback) {
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
 
   Class currentClass = nil;
-  napi_unwrap(env, jsThis, (void**)&currentClass);
+  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState != nullptr && jsThis != nullptr) {
+    bridgeState->tryResolveBridgedClassConstructor(env, jsThis, &currentClass);
+  }
+  if (currentClass == nil) {
+    napi_unwrap(env, jsThis, (void**)&currentClass);
+  }
   if (currentClass == nil) {
     return nullptr;
   }
@@ -256,7 +262,6 @@ NAPI_FUNCTION(classSuperclassFallback) {
     return nullptr;
   }
 
-  auto bridgeState = ObjCBridgeState::InstanceData(env);
   auto find = bridgeState->classesByPointer.find(superClass);
   if (find != bridgeState->classesByPointer.end()) {
     return get_ref_value(env, find->second->constructor);
@@ -274,6 +279,36 @@ NAPI_FUNCTION(classSuperclassFallback) {
 NAPI_FUNCTION(BridgedConstructor) {
   NAPI_CALLBACK_BEGIN(16)
 
+  napi_value newTarget = nullptr;
+  napi_get_new_target(env, cbinfo, &newTarget);
+
+  napi_valuetype thisType = napi_undefined;
+  if (jsThis == nullptr || napi_typeof(env, jsThis, &thisType) != napi_ok ||
+      (thisType != napi_object && thisType != napi_function)) {
+    napi_create_object(env, &jsThis);
+
+    napi_value prototypeOwner = newTarget;
+    if (prototypeOwner == nullptr || napi_typeof(env, prototypeOwner, &thisType) != napi_ok ||
+        thisType != napi_function) {
+      prototypeOwner = nullptr;
+    }
+
+    if (prototypeOwner != nullptr) {
+      napi_value prototype = nullptr;
+      if (napi_get_named_property(env, prototypeOwner, "prototype", &prototype) == napi_ok &&
+          prototype != nullptr) {
+        napi_value global = nullptr;
+        napi_value objectCtor = nullptr;
+        napi_value setPrototypeOf = nullptr;
+        napi_get_global(env, &global);
+        napi_get_named_property(env, global, "Object", &objectCtor);
+        napi_get_named_property(env, objectCtor, "setPrototypeOf", &setPrototypeOf);
+        napi_value setPrototypeArgs[2] = {jsThis, prototype};
+        napi_call_function(env, objectCtor, setPrototypeOf, 2, setPrototypeArgs, nullptr);
+      }
+    }
+  }
+
   napi_valuetype jsType = napi_undefined;
   if (argc > 0) {
     napi_typeof(env, argv[0], &jsType);
@@ -285,11 +320,17 @@ NAPI_FUNCTION(BridgedConstructor) {
 
   Class cls = (Class)data;
 
-  if (jsThis != nullptr) {
-    napi_value constructor;
+  napi_value constructor = newTarget;
+  if (constructor == nullptr && jsThis != nullptr) {
     napi_get_named_property(env, jsThis, "constructor", &constructor);
+  }
+
+  if (constructor != nullptr) {
     Class newTargetCls = nil;
-    napi_unwrap(env, constructor, (void**)&newTargetCls);
+    if (!(bridgeState != nullptr &&
+          bridgeState->tryResolveBridgedClassConstructor(env, constructor, &newTargetCls))) {
+      napi_unwrap(env, constructor, (void**)&newTargetCls);
+    }
 
     if (newTargetCls != nil) {
       cls = newTargetCls;

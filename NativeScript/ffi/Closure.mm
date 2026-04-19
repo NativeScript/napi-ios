@@ -33,19 +33,22 @@ inline void deleteClosureOnOwningThread(Closure* closure) {
   }
 
 #ifdef ENABLE_JS_RUNTIME
-  if (std::this_thread::get_id() != closure->jsThreadId) {
-    CFRunLoopRef runloop = closure->jsRunLoop;
-    if (runloop == nullptr) {
-      runloop = CFRunLoopGetMain();
-    }
+  CFRunLoopRef runloop = closure->jsRunLoop;
+  if (runloop == nullptr) {
+    runloop = CFRunLoopGetMain();
+  }
 
-    if (runloop != nullptr) {
-      CFRunLoopPerformBlock(runloop, kCFRunLoopCommonModes, ^{
-        delete closure;
-      });
-      CFRunLoopWakeUp(runloop);
-      return;
-    }
+  if (closure->jsThreadId == std::this_thread::get_id()) {
+    delete closure;
+    return;
+  }
+
+  if (runloop != nullptr) {
+    CFRunLoopPerformBlock(runloop, kCFRunLoopCommonModes, ^{
+      delete closure;
+    });
+    CFRunLoopWakeUp(runloop);
+    return;
   }
 #endif  // ENABLE_JS_RUNTIME
 
@@ -291,7 +294,10 @@ void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb, void* cont
   auto closure = (Closure*)context;
   auto ctx = (JSBlockCallContext*)data;
 
-  napi_value func = get_ref_value(env, closure->func);
+  napi_value func = js_cb;
+  if (func == nullptr && closure->func != nullptr) {
+    func = get_ref_value(env, closure->func);
+  }
 
   napi_value thisArg;
   napi_get_global(env, &thisArg);
@@ -474,7 +480,13 @@ Closure::Closure(napi_env env, MDMetadataReader* reader, MDSectionOffset offset,
 Closure::~Closure() {
   if (func != nullptr) {
     if (env != nullptr) {
+#ifdef ENABLE_JS_RUNTIME
+      uint32_t remaining = 0;
+      napi_reference_unref(env, func, &remaining);
       napi_delete_reference(env, func);
+#else
+      napi_delete_reference(env, func);
+#endif
     }
     func = nullptr;
   }
@@ -492,7 +504,8 @@ Closure::~Closure() {
 void Closure::retain() { retainCount.fetch_add(1, std::memory_order_relaxed); }
 
 void Closure::release() {
-  if (retainCount.fetch_sub(1, std::memory_order_acq_rel) == 1) {
+  int previous = retainCount.fetch_sub(1, std::memory_order_acq_rel);
+  if (previous == 1) {
     deleteClosureOnOwningThread(this);
   }
 }

@@ -240,6 +240,119 @@ class ObjCBridgeState {
     recentRoundTripCache = std::move(frame);
   }
 
+  inline bool tryResolveBridgedClassConstructor(napi_env env, napi_value value,
+                                                Class* out) const {
+    if (out == nullptr || value == nullptr) {
+      return false;
+    }
+
+    auto matchesConstructor = [&](ObjCClass* bridgedClass) -> bool {
+      if (bridgedClass == nullptr || bridgedClass->constructor == nullptr ||
+          bridgedClass->nativeClass == nil) {
+        return false;
+      }
+
+      napi_value constructor = get_ref_value(env, bridgedClass->constructor);
+      if (constructor == nullptr) {
+        return false;
+      }
+
+      bool isSameValue = false;
+      if (napi_strict_equals(env, value, constructor, &isSameValue) ==
+              napi_ok &&
+          isSameValue) {
+        *out = bridgedClass->nativeClass;
+        return true;
+      }
+
+      return false;
+    };
+
+    for (const auto& entry : classesByPointer) {
+      if (matchesConstructor(entry.second)) {
+        return true;
+      }
+    }
+
+    for (const auto& entry : classes) {
+      if (matchesConstructor(entry.second)) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  inline bool tryResolveBridgedProtocolConstructor(napi_env env,
+                                                   napi_value value,
+                                                   Protocol** out) const {
+    if (out == nullptr || value == nullptr) {
+      return false;
+    }
+
+    for (const auto& entry : protocols) {
+      ObjCProtocol* bridgedProtocol = entry.second;
+      if (bridgedProtocol == nullptr ||
+          bridgedProtocol->constructor == nullptr) {
+        continue;
+      }
+
+      napi_value constructor = get_ref_value(env, bridgedProtocol->constructor);
+      if (constructor == nullptr) {
+        continue;
+      }
+
+      bool isSameValue = false;
+      if (napi_strict_equals(env, value, constructor, &isSameValue) !=
+              napi_ok ||
+          !isSameValue) {
+        continue;
+      }
+
+      Protocol* runtimeProtocol =
+          objc_getProtocol(bridgedProtocol->name.c_str());
+      if (runtimeProtocol == nullptr) {
+        static const std::string suffix = "Protocol";
+        if (bridgedProtocol->name.size() > suffix.size() &&
+            bridgedProtocol->name.compare(
+                bridgedProtocol->name.size() - suffix.size(), suffix.size(),
+                suffix) == 0) {
+          std::string baseName = bridgedProtocol->name.substr(
+              0, bridgedProtocol->name.size() - suffix.size());
+          runtimeProtocol = objc_getProtocol(baseName.c_str());
+        }
+      }
+
+      if (runtimeProtocol != nullptr) {
+        *out = runtimeProtocol;
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  inline bool tryResolveBridgedTypeConstructor(napi_env env, napi_value value,
+                                               id* out) const {
+    if (out == nullptr || value == nullptr) {
+      return false;
+    }
+
+    Class bridgedClass = nil;
+    if (tryResolveBridgedClassConstructor(env, value, &bridgedClass)) {
+      *out = (id)bridgedClass;
+      return true;
+    }
+
+    Protocol* bridgedProtocol = nullptr;
+    if (tryResolveBridgedProtocolConstructor(env, value, &bridgedProtocol)) {
+      *out = (id)bridgedProtocol;
+      return true;
+    }
+
+    return false;
+  }
+
   CFunction* getCFunction(napi_env env, MDSectionOffset offset);
 
   inline StructInfo* getStructInfo(napi_env env, MDSectionOffset offset) {

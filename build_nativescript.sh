@@ -43,6 +43,19 @@ for arg in $@; do
   esac
 done
 
+case "$TARGET_ENGINE" in
+  v8)
+    if [ ! -d "./Frameworks/libv8_monolith.xcframework" ]; then
+      ./download_v8.sh
+    fi
+    ;;
+  hermes)
+    if [ ! -d "./Frameworks/hermes.xcframework" ]; then
+      ./download_hermes.sh
+    fi
+    ;;
+esac
+
 QUIET=
 if ! $VERBOSE; then
   QUIET=-quiet
@@ -71,7 +84,19 @@ function cmake_build () {
     is_macos_napi=true
   fi
 
-  mkdir -p $DIST/intermediates/$platform
+  local build_dir="$DIST/intermediates/$platform"
+  local cache_file="$build_dir/CMakeCache.txt"
+
+  if [ -f "$cache_file" ]; then
+    local cached_engine
+    cached_engine=$(grep '^TARGET_ENGINE:STRING=' "$cache_file" | sed 's/^TARGET_ENGINE:STRING=//')
+    if [ -n "$cached_engine" ] && [ "$cached_engine" != "$TARGET_ENGINE" ]; then
+      echo "Reconfiguring $platform build directory for engine '$TARGET_ENGINE' (was '$cached_engine')."
+      rm -rf "$build_dir"
+    fi
+  fi
+
+  mkdir -p "$build_dir"
 
   if $EMBED_METADATA || $is_macos_cli || $is_macos_napi; then
 
@@ -83,9 +108,9 @@ function cmake_build () {
 
   fi
 
-  cmake -S=./NativeScript -B=$DIST/intermediates/$platform -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
+  cmake -S=./NativeScript -B="$build_dir" -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
 
-  cmake --build $DIST/intermediates/$platform --config $CONFIG_BUILD
+  cmake --build "$build_dir" --config $CONFIG_BUILD
 }
 
 if $BUILD_CATALYST; then

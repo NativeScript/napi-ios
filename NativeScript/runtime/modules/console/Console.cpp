@@ -54,12 +54,8 @@ JS_CLASS_INIT(Console::Init) {
 
   napi_new_instance(env, Console, 0, nullptr, &console);
 
-  const napi_property_descriptor globalProperties[] = {
-      napi_util::desc("Console", Console),
-      napi_util::desc("console", console),
-  };
-
-  napi_define_properties(env, global, 2, globalProperties);
+  napi_set_named_property(env, global, "Console", Console);
+  napi_set_named_property(env, global, "console", console);
 }
 
 JS_METHOD(Console::Constructor) {

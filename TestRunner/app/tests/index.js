@@ -212,6 +212,7 @@ loadTest("./Modules");
 //
 loadTest("./RuntimeImplementedAPIs");
 loadTest("./WebNodeBuiltins");
+loadTest("./VMTests");
 
 loadTest("./Timers");
 

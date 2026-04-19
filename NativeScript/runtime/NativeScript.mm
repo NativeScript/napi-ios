@@ -33,7 +33,7 @@ std::unique_ptr<Runtime> runtime_;
 }
 
 - (void)runMainApplication {
-  std::string spec = "./app";
+  std::string spec = "./app/index.js";
   try {
     runtime_->RunModule(spec);
   } catch (const NativeScriptException& e) {

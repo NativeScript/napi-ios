@@ -11,6 +11,8 @@ set(CMAKE_CXX_STANDARD 20)
 
 set(BUILD_FRAMEWORK TRUE)
 
+set(HERMES_XCFRAMEWORK "${CMAKE_SOURCE_DIR}/../Frameworks/hermes.xcframework")
+
 set(COMMON_FLAGS "-O3 -Wno-shorten-64-to-32")
 
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
@@ -48,6 +50,9 @@ elseif(TARGET_PLATFORM STREQUAL "ios-sim")
   set(SDK_NAME "iphonesimulator")
   set(CMAKE_OSX_ARCHITECTURES "arm64")
   set(TARGET_PLATFORM_SPEC "ios-arm64-simulator")
+  if(EXISTS "${HERMES_XCFRAMEWORK}/ios-arm64_x86_64-simulator")
+    set(TARGET_PLATFORM_SPEC "ios-arm64_x86_64-simulator")
+  endif()
 
 elseif(TARGET_PLATFORM STREQUAL "macos")
   set(CMAKE_XCODE_ATTRIBUTE_MACOSX_DEPLOYMENT_TARGET "13.3")
@@ -184,12 +189,23 @@ if(ENABLE_JS_RUNTIME)
     )
 
   elseif(TARGET_ENGINE_HERMES)
+    set(HERMES_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/hermes-headers")
+
     include_directories(
       napi/hermes
-      napi/hermes/include
-      napi/hermes/include/hermes
-      napi/hermes/include/jsi
     )
+
+    if(EXISTS "${HERMES_HEADERS_DIR}/jsi/jsi.h" AND EXISTS "${HERMES_HEADERS_DIR}/hermes/hermes.h")
+      include_directories(
+        ${HERMES_HEADERS_DIR}
+      )
+    else()
+      include_directories(
+        napi/hermes/include
+        napi/hermes/include/hermes
+        napi/hermes/include/jsi
+      )
+    endif()
 
     set(SOURCE_FILES
       ${SOURCE_FILES}

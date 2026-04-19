@@ -22,11 +22,45 @@ namespace nativescript {
 
 namespace {
 std::unordered_map<uintptr_t, napi_ref> g_pointerCache;
+constexpr const char* kPointerMarker = "__ns_pointer";
 constexpr const char* kNativePointerProperty = "__ns_native_ptr";
+constexpr const char* kReferenceMarker = "__ns_reference";
 constexpr const char* kFunctionReferenceMarker = "__ns_function_reference";
 constexpr const char* kFunctionReferenceDataProperty = "__ns_function_reference_data";
+constexpr const char* kReferenceInitValueSymbolKey = "__ns_reference_init_value";
 
 inline uintptr_t pointerKey(void* data) { return reinterpret_cast<uintptr_t>(data); }
+
+inline napi_value referenceInitValueSymbol(napi_env env) {
+  return jsSymbolFor(env, kReferenceInitValueSymbolKey);
+}
+
+inline napi_value getReferenceInitValueProperty(napi_env env, napi_value value) {
+  if (value == nullptr) {
+    return nullptr;
+  }
+
+  napi_value initValue = nullptr;
+  napi_get_property(env, value, referenceInitValueSymbol(env), &initValue);
+  return initValue;
+}
+
+inline void setReferenceInitValueProperty(napi_env env, napi_value value, napi_value initValue) {
+  if (value == nullptr || initValue == nullptr) {
+    return;
+  }
+
+  napi_set_property(env, value, referenceInitValueSymbol(env), initValue);
+}
+
+inline void clearReferenceInitValueProperty(napi_env env, napi_value value) {
+  if (value == nullptr) {
+    return;
+  }
+
+  bool deleted = false;
+  napi_delete_property(env, value, referenceInitValueSymbol(env), &deleted);
+}
 
 inline bool isInteropTypeCode(int32_t value) {
   switch (value) {
@@ -262,6 +296,14 @@ inline bool getCachedPointer(napi_env env, void* data, napi_value* value) {
     return false;
   }
 
+  napi_valuetype valueType = napi_undefined;
+  if (napi_typeof(env, *value, &valueType) != napi_ok || valueType != napi_object) {
+    napi_delete_reference(env, it->second);
+    g_pointerCache.erase(it);
+    *value = nullptr;
+    return false;
+  }
+
   Pointer* ptr = Pointer::unwrap(env, *value);
   if (ptr == nullptr || ptr->data != data) {
     napi_delete_reference(env, it->second);
@@ -279,7 +321,7 @@ inline void cachePointer(napi_env env, void* data, napi_value value) {
     return;
   }
   napi_ref ref = nullptr;
-  napi_create_reference(env, value, 1, &ref);
+  napi_create_reference(env, value, 0, &ref);
   g_pointerCache[key] = ref;
 }
 
@@ -1185,15 +1227,44 @@ napi_value Pointer::defineJSClass(napi_env env) {
   napi_get_named_property(env, constructor, "prototype", &prototype);
   napi_set_property(env, prototype, symbolSizeof, sizeValue);
 
+  napi_value marker;
+  napi_get_boolean(env, true, &marker);
+  napi_property_descriptor markerProp = {
+      .utf8name = kPointerMarker,
+      .method = nullptr,
+      .getter = nullptr,
+      .setter = nullptr,
+      .value = marker,
+      .attributes = napi_configurable,
+      .data = nullptr,
+  };
+  napi_define_properties(env, prototype, 1, &markerProp);
+
   return constructor;
 }
 
 bool Pointer::isInstance(napi_env env, napi_value value) {
-  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
-  bool isInstance = false;
-  napi_value Pointer = get_ref_value(env, bridgeState->pointerClass);
-  napi_instanceof(env, value, Pointer, &isInstance);
-  return isInstance;
+  napi_valuetype valueType = napi_undefined;
+  napi_typeof(env, value, &valueType);
+  if (valueType != napi_object && valueType != napi_function) {
+    return false;
+  }
+
+  bool hasMarker = false;
+  napi_has_named_property(env, value, kPointerMarker, &hasMarker);
+  if (!hasMarker) {
+    return false;
+  }
+
+  napi_value marker = nullptr;
+  if (napi_get_named_property(env, value, kPointerMarker, &marker) != napi_ok ||
+      marker == nullptr) {
+    return false;
+  }
+
+  bool markerValue = false;
+  napi_get_value_bool(env, marker, &markerValue);
+  return markerValue;
 }
 
 napi_value Pointer::create(napi_env env, void* data) {
@@ -1217,8 +1288,19 @@ napi_value Pointer::create(napi_env env, void* data) {
 }
 
 Pointer* Pointer::unwrap(napi_env env, napi_value value) {
+  if (value == nullptr) {
+    return nullptr;
+  }
+
+  napi_valuetype valueType = napi_undefined;
+  if (napi_typeof(env, value, &valueType) != napi_ok || valueType != napi_object) {
+    return nullptr;
+  }
+
   Pointer* ptr = nullptr;
-  napi_unwrap(env, value, (void**)&ptr);
+  if (napi_unwrap(env, value, (void**)&ptr) != napi_ok) {
+    return nullptr;
+  }
   return ptr;
 }
 
@@ -1227,6 +1309,30 @@ napi_value Pointer::constructor(napi_env env, napi_callback_info info) {
   size_t argc = 1;
   napi_value argv[1];
   napi_get_cb_info(env, info, &argc, argv, &jsThis, nullptr);
+
+  napi_valuetype thisType = napi_undefined;
+  if (jsThis == nullptr || napi_typeof(env, jsThis, &thisType) != napi_ok ||
+      (thisType != napi_object && thisType != napi_function)) {
+    napi_create_object(env, &jsThis);
+
+    auto bridgeState = ObjCBridgeState::InstanceData(env);
+    if (bridgeState != nullptr && bridgeState->pointerClass != nullptr) {
+      napi_value pointerCtor = get_ref_value(env, bridgeState->pointerClass);
+      napi_value pointerPrototype = nullptr;
+      if (pointerCtor != nullptr &&
+          napi_get_named_property(env, pointerCtor, "prototype", &pointerPrototype) == napi_ok &&
+          pointerPrototype != nullptr) {
+        napi_value global = nullptr;
+        napi_value objectCtor = nullptr;
+        napi_value setPrototypeOf = nullptr;
+        napi_get_global(env, &global);
+        napi_get_named_property(env, global, "Object", &objectCtor);
+        napi_get_named_property(env, objectCtor, "setPrototypeOf", &setPrototypeOf);
+        napi_value setPrototypeArgs[2] = {jsThis, pointerPrototype};
+        napi_call_function(env, objectCtor, setPrototypeOf, 2, setPrototypeArgs, nullptr);
+      }
+    }
+  }
 
   napi_value arg;
   if (argc == 0) {
@@ -1408,9 +1514,11 @@ napi_value Pointer::customInspect(napi_env env, napi_callback_info info) {
 
 void Pointer::finalize(napi_env env, void* data, void* hint) {
   Pointer* ptr = (Pointer*)data;
+  if (ptr == nullptr) {
+    return;
+  }
   auto it = g_pointerCache.find(pointerKey(ptr->data));
   if (it != g_pointerCache.end()) {
-    napi_delete_reference(env, it->second);
     g_pointerCache.erase(it);
   }
   delete ptr;
@@ -1469,15 +1577,44 @@ napi_value Reference::defineJSClass(napi_env env) {
   napi_get_named_property(env, constructor, "prototype", &prototype);
   napi_set_property(env, prototype, symbolSizeof, sizeValue);
 
+  napi_value marker;
+  napi_get_boolean(env, true, &marker);
+  napi_property_descriptor markerProp = {
+      .utf8name = kReferenceMarker,
+      .method = nullptr,
+      .getter = nullptr,
+      .setter = nullptr,
+      .value = marker,
+      .attributes = napi_configurable,
+      .data = nullptr,
+  };
+  napi_define_properties(env, prototype, 1, &markerProp);
+
   return constructor;
 }
 
 bool Reference::isInstance(napi_env env, napi_value value) {
-  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
-  bool isInstance = false;
-  napi_value Reference = get_ref_value(env, bridgeState->referenceClass);
-  napi_instanceof(env, value, Reference, &isInstance);
-  return isInstance;
+  napi_valuetype valueType = napi_undefined;
+  napi_typeof(env, value, &valueType);
+  if (valueType != napi_object && valueType != napi_function) {
+    return false;
+  }
+
+  bool hasMarker = false;
+  napi_has_named_property(env, value, kReferenceMarker, &hasMarker);
+  if (!hasMarker) {
+    return false;
+  }
+
+  napi_value marker = nullptr;
+  if (napi_get_named_property(env, value, kReferenceMarker, &marker) != napi_ok ||
+      marker == nullptr) {
+    return false;
+  }
+
+  bool markerValue = false;
+  napi_get_value_bool(env, marker, &markerValue);
+  return markerValue;
 }
 
 napi_value Reference::create(napi_env env, std::shared_ptr<TypeConv> type, void* data,
@@ -1510,11 +1647,69 @@ Reference* Reference::unwrap(napi_env env, napi_value value) {
   return ref;
 }
 
+napi_value Reference::getInitValue(napi_env env, napi_value value, Reference* ref) {
+  napi_value initValue = getReferenceInitValueProperty(env, value);
+  napi_valuetype initType = napi_undefined;
+  if (initValue != nullptr && napi_typeof(env, initValue, &initType) == napi_ok &&
+      initType != napi_undefined) {
+    return initValue;
+  }
+
+  if (ref != nullptr && ref->initValue != nullptr) {
+    return get_ref_value(env, ref->initValue);
+  }
+
+  return nullptr;
+}
+
+void Reference::setInitValue(napi_env env, napi_value value, Reference* ref, napi_value initValue) {
+  setReferenceInitValueProperty(env, value, initValue);
+
+  if (ref != nullptr && ref->initValue != nullptr) {
+    napi_delete_reference(env, ref->initValue);
+    ref->initValue = nullptr;
+  }
+}
+
+void Reference::clearInitValue(napi_env env, napi_value value, Reference* ref) {
+  clearReferenceInitValueProperty(env, value);
+
+  if (ref != nullptr && ref->initValue != nullptr) {
+    napi_delete_reference(env, ref->initValue);
+    ref->initValue = nullptr;
+  }
+}
+
 napi_value Reference::constructor(napi_env env, napi_callback_info info) {
   napi_value jsThis;
   size_t argc = 2;
   napi_value argv[2];
   napi_get_cb_info(env, info, &argc, argv, &jsThis, nullptr);
+
+  napi_valuetype thisType = napi_undefined;
+  if (jsThis == nullptr || napi_typeof(env, jsThis, &thisType) != napi_ok ||
+      (thisType != napi_object && thisType != napi_function)) {
+    napi_create_object(env, &jsThis);
+
+    auto bridgeState = ObjCBridgeState::InstanceData(env);
+    if (bridgeState != nullptr && bridgeState->referenceClass != nullptr) {
+      napi_value referenceCtor = get_ref_value(env, bridgeState->referenceClass);
+      napi_value referencePrototype = nullptr;
+      if (referenceCtor != nullptr &&
+          napi_get_named_property(env, referenceCtor, "prototype", &referencePrototype) ==
+              napi_ok &&
+          referencePrototype != nullptr) {
+        napi_value global = nullptr;
+        napi_value objectCtor = nullptr;
+        napi_value setPrototypeOf = nullptr;
+        napi_get_global(env, &global);
+        napi_get_named_property(env, global, "Object", &objectCtor);
+        napi_get_named_property(env, objectCtor, "setPrototypeOf", &setPrototypeOf);
+        napi_value setPrototypeArgs[2] = {jsThis, referencePrototype};
+        napi_call_function(env, objectCtor, setPrototypeOf, 2, setPrototypeArgs, nullptr);
+      }
+    }
+  }
 
   Reference* reference = new Reference();
   reference->env = env;
@@ -1553,7 +1748,7 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
       reference->data = calloc(1, size);
       reference->ownsData = true;
     } else {
-      reference->initValue = make_ref(env, argv[0]);
+      Reference::setInitValue(env, jsThis, reference, argv[0]);
     }
   } else if (argc == 2) {
     std::string type = getEncodedType(env, argv[0]);
@@ -1578,7 +1773,7 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
       if (other != nullptr && other->data != nullptr) {
         reference->data = other->data;
         reference->ownsData = false;
-      } else if (other != nullptr && other->initValue != nullptr) {
+      } else if (other != nullptr) {
         size_t size = reference->type != nullptr && reference->type->type != nullptr &&
                               reference->type->type->size > 0
                           ? reference->type->type->size
@@ -1586,8 +1781,10 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
         reference->data = calloc(1, size);
         reference->ownsData = true;
         bool shouldFree = false;
-        napi_value initValue = get_ref_value(env, other->initValue);
-        reference->type->toNative(env, initValue, reference->data, &shouldFree, &shouldFree);
+        napi_value initValue = Reference::getInitValue(env, argv[1], other);
+        if (initValue != nullptr) {
+          reference->type->toNative(env, initValue, reference->data, &shouldFree, &shouldFree);
+        }
       }
     } else {
       size_t size = reference->type != nullptr && reference->type->type != nullptr &&
@@ -1622,8 +1819,9 @@ napi_value Reference::get_value(napi_env env, napi_callback_info info) {
   }
 
   if (ref->data == nullptr) {
-    if (ref->initValue != nullptr) {
-      return get_ref_value(env, ref->initValue);
+    napi_value initValue = Reference::getInitValue(env, jsThis, ref);
+    if (initValue != nullptr) {
+      return initValue;
     }
 
     napi_value undefined;
@@ -1648,10 +1846,7 @@ napi_value Reference::set_value(napi_env env, napi_callback_info info) {
 
   if (ref->data == nullptr) {
     if (ref->type == nullptr) {
-      if (ref->initValue != nullptr) {
-        napi_delete_reference(env, ref->initValue);
-      }
-      ref->initValue = make_ref(env, arg);
+      Reference::setInitValue(env, jsThis, ref, arg);
       return nullptr;
     }
 
@@ -1663,10 +1858,7 @@ napi_value Reference::set_value(napi_env env, napi_callback_info info) {
 
   bool shouldFree = false;
   ref->type->toNative(env, arg, ref->data, &shouldFree, &shouldFree);
-  if (ref->initValue != nullptr) {
-    napi_delete_reference(env, ref->initValue);
-    ref->initValue = nullptr;
-  }
+  Reference::clearInitValue(env, jsThis, ref);
 
   return nullptr;
 }

@@ -29,6 +29,18 @@ constexpr char kContextSymbolName[] = "nativescript.vm.context";
 constexpr char kDefaultFilename[] = "vm.js";
 constexpr char kDefaultModuleIdentifier[] = "vm:module";
 
+bool ThrowHermesVmUnsupported(napi_env env, const char* feature) {
+  std::string message =
+      std::string(feature) + " is not supported by node:vm on Hermes yet";
+  napi_throw_error(env, nullptr, message.c_str());
+  return false;
+}
+
+napi_value ThrowHermesVmUnsupportedValue(napi_env env, const char* feature) {
+  ThrowHermesVmUnsupported(env, feature);
+  return nullptr;
+}
+
 bool IsNullOrUndefined(napi_env env, napi_value value) {
   if (value == nullptr) {
     return true;
@@ -2010,6 +2022,19 @@ napi_value RunInContextImpl(napi_env env, ContextState* state,
   return resultValue;
 }
 
+#elif defined(TARGET_ENGINE_HERMES)
+
+bool CreateContextState(napi_env env, ContextState* state) {
+  state->baselineKeys.clear();
+  return true;
+}
+
+napi_value RunInContextImpl(napi_env env, ContextState* state,
+                            napi_value sandboxValue, const std::string& source,
+                            const std::string& filename) {
+  return ThrowHermesVmUnsupportedValue(env, "Contextified execution");
+}
+
 #endif
 
 bool CreateAndAttachContextState(napi_env env, napi_value sandbox,
@@ -2251,6 +2276,10 @@ napi_value ScriptConstructor(napi_env env, napi_callback_info info) {
   if (!CompileOnlyQuickJS(env, source, filename)) {
     return nullptr;
   }
+#elif defined(TARGET_ENGINE_HERMES)
+  // Hermes currently executes vm.Script bodies through the generic
+  // runInThisContext path at call time. Separate pre-compilation support for
+  // node:vm has not been wired up yet.
 #endif
 
   ScriptState* script = new ScriptState{source, filename};
@@ -2362,6 +2391,8 @@ napi_value CreateSourceTextModuleCallback(napi_env env,
     return nullptr;
   }
   return result;
+#elif defined(TARGET_ENGINE_HERMES)
+  return ThrowHermesVmUnsupportedValue(env, "vm.SourceTextModule");
 #endif
 }
 
@@ -2396,6 +2427,8 @@ napi_value CreateSyntheticModuleCallback(napi_env env,
     return nullptr;
   }
   return result;
+#elif defined(TARGET_ENGINE_HERMES)
+  return ThrowHermesVmUnsupportedValue(env, "vm.SyntheticModule");
 #endif
 }
 
@@ -2908,6 +2941,11 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
     DONT_CONTEXTIFY: kDontContextify,
     USE_MAIN_CONTEXT_DEFAULT_LOADER: kUseMainContextDefaultLoader,
   });
+  const isHermes =
+    typeof process === 'object' &&
+    process !== null &&
+    process.versions &&
+    process.versions.engine === 'hermes';
 
   let nextId = 1;
 
@@ -3016,12 +3054,177 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
     return { sandbox: binding.createContext({}), options: contextObject };
   }
 
+  function runHermesInContext(source, contextifiedObject, options) {
+    const context = ensureExistingContext(contextifiedObject);
+    const filename = normalizeFilename(options);
+    const globalObject = globalThis;
+    const beforeKeys = new Set(Object.getOwnPropertyNames(globalObject));
+    const overlayKeys = Object.keys(context);
+    const backups = [];
+
+    for (const key of overlayKeys) {
+      backups.push({
+        descriptor: Object.getOwnPropertyDescriptor(globalObject, key),
+        existed: Object.prototype.hasOwnProperty.call(globalObject, key),
+        key,
+      });
+      globalObject[key] = context[key];
+    }
+
+    const restoreGlobals = () => {
+      const afterKeys = Object.getOwnPropertyNames(globalObject);
+      const afterKeySet = new Set(afterKeys);
+
+      for (const key of afterKeys) {
+        if (!beforeKeys.has(key) || Object.prototype.hasOwnProperty.call(context, key)) {
+          context[key] = globalObject[key];
+        }
+      }
+
+      for (let index = backups.length - 1; index >= 0; index -= 1) {
+        const backup = backups[index];
+        if (backup.existed) {
+          Object.defineProperty(globalObject, backup.key, backup.descriptor);
+        } else {
+          delete globalObject[backup.key];
+        }
+        afterKeySet.delete(backup.key);
+      }
+
+      for (const key of afterKeySet) {
+        if (!beforeKeys.has(key)) {
+          delete globalObject[key];
+        }
+      }
+    };
+
+    try {
+      return binding.runInThisContext(String(source), { filename });
+    } finally {
+      restoreGlobals();
+    }
+  }
+
+  function executeVmSource(source, contextifiedObject, options) {
+    if (contextifiedObject) {
+      if (isHermes) {
+        return runHermesInContext(source, contextifiedObject, options);
+      }
+      return binding.runInContext(source, contextifiedObject, options);
+    }
+
+    return binding.runInThisContext(source, options);
+  }
+
+  function extractModuleDependencySpecifiers(source) {
+    const specifiers = [];
+    const seen = new Set();
+    const patterns = [
+      /(?:^|[\r\n])\s*import\s+[^;]*?\s+from\s+['"]([^'"]+)['"]/g,
+      /(?:^|[\r\n])\s*import\s+['"]([^'"]+)['"]/g,
+    ];
+
+    for (const pattern of patterns) {
+      for (const match of String(source).matchAll(pattern)) {
+        const specifier = match[1];
+        if (!seen.has(specifier)) {
+          seen.add(specifier);
+          specifiers.push(specifier);
+        }
+      }
+    }
+
+    return specifiers;
+  }
+
+  function parseNamedBindings(bindings) {
+    return bindings
+      .split(',')
+      .map((entry) => entry.trim())
+      .filter(Boolean)
+      .map((entry) => {
+        const aliasMatch = entry.match(/^([A-Za-z0-9_$]+)\s+as\s+([A-Za-z0-9_$]+)$/);
+        if (aliasMatch) {
+          return `${aliasMatch[1]}: ${aliasMatch[2]}`;
+        }
+        return entry;
+      })
+      .join(', ');
+  }
+
+  function transformHermesModuleSource(sourceText) {
+    return String(sourceText)
+      .replace(
+        /^\s*import\s+\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]\s*;?\s*$/gm,
+        (_match, bindings, specifier) =>
+          `const { ${parseNamedBindings(bindings)} } = __imports[${JSON.stringify(specifier)}];`,
+      )
+      .replace(
+        /^\s*import\s+([A-Za-z0-9_$]+)\s+from\s+['"]([^'"]+)['"]\s*;?\s*$/gm,
+        (_match, binding, specifier) =>
+          `const ${binding} = __imports[${JSON.stringify(specifier)}].default;`,
+      )
+      .replace(
+        /^\s*export\s+default\s+([^;]+);?\s*$/gm,
+        (_match, expression) => `__exports.default = (${expression});`,
+      )
+      .replace(
+        /^\s*export\s+\{\s*([^}]+)\s*\}\s*;?\s*$/gm,
+        (_match, bindings) =>
+          bindings
+            .split(',')
+            .map((entry) => entry.trim())
+            .filter(Boolean)
+            .map((entry) => {
+              const aliasMatch = entry.match(
+                /^([A-Za-z0-9_$]+)\s+as\s+([A-Za-z0-9_$]+)$/,
+              );
+              if (aliasMatch) {
+                return `__exports.${aliasMatch[2]} = ${aliasMatch[1]};`;
+              }
+              return `__exports.${entry} = ${entry};`;
+            })
+            .join('\n'),
+      )
+      .replace(
+        /^\s*export\s+(const|let|var)\s+([A-Za-z0-9_$]+)\s*=\s*([^;]+);?\s*$/gm,
+        (_match, declaration, name, expression) =>
+          `${declaration} ${name} = ${expression};\n__exports.${name} = ${name};`,
+      );
+  }
+
+  function createHermesNamespace(state) {
+    if (state.namespace) {
+      return state.namespace;
+    }
+
+    function createNamespaceGetter(exportName) {
+      return function namespaceGetter() {
+        return state.exports[exportName];
+      };
+    }
+
+    const namespace = {};
+    for (const name of state.exportNames) {
+      const exportName = String(name);
+      Object.defineProperty(namespace, name, {
+        configurable: false,
+        enumerable: true,
+        get: createNamespaceGetter(exportName),
+      });
+    }
+    state.namespace = Object.freeze(namespace);
+    return state.namespace;
+  }
+
   class Script {
     constructor(code, options) {
       const source = String(code);
       const filename = normalizeFilename(options);
-      const native = new NativeScriptCtor(source, options);
-      nativeScript.set(this, native);
+      if (!isHermes) {
+        const native = new NativeScriptCtor(source, options);
+        nativeScript.set(this, native);
+      }
       scriptState.set(this, {
         source,
         filename,
@@ -3031,15 +3234,34 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
     }
 
     runInContext(contextifiedObject, options) {
-      return nativeScript.get(this).runInContext(ensureExistingContext(contextifiedObject), options);
+      const state = scriptState.get(this);
+      const context = ensureExistingContext(contextifiedObject);
+      if (isHermes) {
+        return executeVmSource(state.source, context, {
+          filename: normalizeFilename(options, state.filename),
+        });
+      }
+      return nativeScript.get(this).runInContext(context, options);
     }
 
     runInNewContext(contextObject, options) {
       const resolved = resolveRunInNewContextArgs(contextObject, options);
+      const state = scriptState.get(this);
+      if (isHermes) {
+        return executeVmSource(state.source, resolved.sandbox, {
+          filename: normalizeFilename(resolved.options, state.filename),
+        });
+      }
       return nativeScript.get(this).runInNewContext(resolved.sandbox, resolved.options);
     }
 
     runInThisContext(options) {
+      const state = scriptState.get(this);
+      if (isHermes) {
+        return executeVmSource(state.source, null, {
+          filename: normalizeFilename(options, state.filename),
+        });
+      }
       return nativeScript.get(this).runInThisContext(options);
     }
 
@@ -3065,12 +3287,16 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
   }
 
   function runInContext(code, contextifiedObject, options) {
-    return binding.runInContext(code, ensureExistingContext(contextifiedObject), options);
+    return executeVmSource(
+      code,
+      ensureExistingContext(contextifiedObject),
+      options,
+    );
   }
 
   function runInNewContext(code, contextObject, options) {
     const resolved = resolveRunInNewContextArgs(contextObject, options);
-    return binding.runInContext(code, resolved.sandbox, resolved.options);
+    return executeVmSource(code, resolved.sandbox, resolved.options);
   }
 
   function runInThisContext(code, options) {
@@ -3122,10 +3348,11 @@ ${body}
       `;
 
       try {
-        if (parsingContext) {
-          return binding.runInContext(invocationSource, target, { filename });
-        }
-        return binding.runInThisContext(invocationSource, { filename });
+        return executeVmSource(
+          invocationSource,
+          parsingContext ? target : null,
+          { filename },
+        );
       } finally {
         delete target[argsKey];
         delete target[thisKey];
@@ -3177,9 +3404,9 @@ ${body}
     return state;
   }
 
-  class ModuleBase {
+  class NativeModuleBase {
     constructor(handle) {
-      if (new.target === ModuleBase) {
+      if (new.target === NativeModuleBase) {
         throw new TypeError('vm.Module is an abstract class');
       }
 
@@ -3254,7 +3481,7 @@ ${body}
         const linked = [];
         for (const specifier of dependencySpecifiers) {
           const resolved = await linker(specifier, this);
-          if (!(resolved instanceof ModuleBase)) {
+          if (!(resolved instanceof NativeModuleBase)) {
             throw new TypeError('Linker must return vm.Module instances');
           }
           linked.push(resolved);
@@ -3279,7 +3506,7 @@ ${body}
     }
   }
 
-  class SourceTextModule extends ModuleBase {
+  class NativeSourceTextModule extends NativeModuleBase {
     constructor(sourceText, options = {}) {
       const source = String(sourceText);
       super(binding.createSourceTextModule(source, options));
@@ -3327,7 +3554,7 @@ ${body}
 
       for (let index = 0; index < modules.length; index += 1) {
         const mod = modules[index];
-        if (!(mod instanceof ModuleBase)) {
+        if (!(mod instanceof NativeModuleBase)) {
           throw new TypeError('linkRequests() expects vm.Module instances');
         }
       }
@@ -3345,7 +3572,7 @@ ${body}
       binding.moduleLinkRequests(
         state.handle,
         state.linkedModules.map((module) => {
-          if (!(module instanceof ModuleBase)) {
+          if (!(module instanceof NativeModuleBase)) {
             throw new TypeError('linkRequests() expects vm.Module instances');
           }
           return getModuleData(module).handle;
@@ -3373,7 +3600,7 @@ ${body}
       state.localError = undefined;
       state.evaluatePromise = (async () => {
         for (const mod of state.linkedModules) {
-          if (!(mod instanceof ModuleBase)) {
+          if (!(mod instanceof NativeModuleBase)) {
             throw new Error('Missing linked module');
           }
           await mod.evaluate();
@@ -3391,7 +3618,7 @@ ${body}
     }
   }
 
-  class SyntheticModule extends ModuleBase {
+  class NativeSyntheticModule extends NativeModuleBase {
     constructor(exportNames, evaluateCallback, options = {}) {
       if (!Array.isArray(exportNames)) {
         throw new TypeError('The "exportNames" argument must be an Array');
@@ -3455,6 +3682,298 @@ ${body}
       return state.evaluatePromise;
     }
   }
+
+  class HermesModuleBase {
+    constructor(state) {
+      if (new.target === HermesModuleBase) {
+        throw new TypeError('vm.Module is an abstract class');
+      }
+      moduleState.set(this, state);
+    }
+
+    get identifier() {
+      return getModuleData(this).identifier;
+    }
+
+    get context() {
+      return getModuleData(this).context;
+    }
+
+    get status() {
+      return getModuleData(this).status;
+    }
+
+    get namespace() {
+      const state = getModuleData(this);
+      if (state.status === 'unlinked') {
+        throw new Error('Module has not been linked');
+      }
+      return createHermesNamespace(state);
+    }
+
+    get error() {
+      return getModuleData(this).localError;
+    }
+
+    async link(linker) {
+      if (typeof linker !== 'function') {
+        throw new TypeError('The "linker" argument must be a function');
+      }
+
+      const state = getModuleData(this);
+      if (state.linkerPromise) {
+        return state.linkerPromise;
+      }
+
+      state.status = 'linking';
+      state.localError = undefined;
+      state.linkerPromise = (async () => {
+        const linked = [];
+        for (const specifier of state.dependencySpecifiers) {
+          const resolved = await linker(specifier, this);
+          if (!(resolved instanceof HermesModuleBase)) {
+            throw new TypeError('Linker must return vm.Module instances');
+          }
+          linked.push(resolved);
+        }
+        state.linkedModules = linked;
+        state.status = 'linked';
+      })().catch((error) => {
+        state.status = 'errored';
+        state.localError = error;
+        throw error;
+      });
+
+      return state.linkerPromise;
+    }
+
+    async evaluate() {
+      throw new TypeError('evaluate() is not implemented for this vm.Module');
+    }
+  }
+
+  class HermesSourceTextModule extends HermesModuleBase {
+    constructor(sourceText, options = {}) {
+      const source = String(sourceText);
+      super({
+        context:
+          options && options.context
+            ? ensureExistingContext(options.context)
+            : undefined,
+        dependencySpecifiers: extractModuleDependencySpecifiers(source),
+        evaluatePromise: null,
+        exports: Object.create(null),
+        exportNames: [],
+        identifier:
+          (options && typeof options.identifier === 'string' && options.identifier) ||
+          (options && typeof options.filename === 'string' && options.filename) ||
+          'vm:module',
+        linkedModules: [],
+        linkerPromise: null,
+        localError: undefined,
+        namespace: null,
+        sourceMapURL: extractSourceMapURL(source),
+        sourceText: source,
+        status: 'unlinked',
+      });
+    }
+
+    get dependencySpecifiers() {
+      return getModuleData(this).dependencySpecifiers.slice();
+    }
+
+    get moduleRequests() {
+      return this.dependencySpecifiers.map((specifier) => ({
+        specifier,
+        attributes: Object.freeze({}),
+        phase: 'evaluation',
+      }));
+    }
+
+    get sourceMapURL() {
+      return getModuleData(this).sourceMapURL;
+    }
+
+    createCachedData() {
+      return encodeSource(getModuleData(this).sourceText);
+    }
+
+    hasTopLevelAwait() {
+      return false;
+    }
+
+    hasAsyncGraph() {
+      return false;
+    }
+
+    linkRequests(modules) {
+      const state = getModuleData(this);
+      if (!Array.isArray(modules)) {
+        throw new TypeError('The "modules" argument must be an Array');
+      }
+      if (modules.length !== state.dependencySpecifiers.length) {
+        throw new Error('linkRequests() module count must match dependencySpecifiers');
+      }
+
+      for (const module of modules) {
+        if (!(module instanceof HermesModuleBase)) {
+          throw new TypeError('linkRequests() expects vm.Module instances');
+        }
+      }
+
+      state.linkedModules = modules.slice();
+    }
+
+    instantiate() {
+      const state = getModuleData(this);
+      if (state.status === 'linked' || state.status === 'evaluated') {
+        return;
+      }
+      if (state.linkedModules.length !== state.dependencySpecifiers.length) {
+        throw new Error('linkRequests() module count must match dependencySpecifiers');
+      }
+      state.status = 'linked';
+    }
+
+    async evaluate() {
+      const state = getModuleData(this);
+      if (state.status === 'evaluated') {
+        return undefined;
+      }
+      if (state.status === 'errored') {
+        throw state.localError;
+      }
+      if (state.evaluatePromise) {
+        return state.evaluatePromise;
+      }
+      if (state.status === 'unlinked') {
+        this.instantiate();
+      }
+
+      state.status = 'evaluating';
+      state.localError = undefined;
+      state.evaluatePromise = (async () => {
+        const imports = Object.create(null);
+        for (let index = 0; index < state.linkedModules.length; index += 1) {
+          const linkedModule = state.linkedModules[index];
+          if (!(linkedModule instanceof HermesModuleBase)) {
+            throw new Error('Missing linked module');
+          }
+          await linkedModule.evaluate();
+          imports[state.dependencySpecifiers[index]] = linkedModule.namespace;
+        }
+
+        const evaluator = Function(
+          '__imports',
+          '__exports',
+          `'use strict';\n${transformHermesModuleSource(state.sourceText)}\nreturn __exports;`,
+        );
+        evaluator(imports, state.exports);
+        state.exportNames = Object.keys(state.exports);
+        state.namespace = null;
+        state.status = 'evaluated';
+        return undefined;
+      })().catch((error) => {
+        state.status = 'errored';
+        state.localError = error;
+        throw error;
+      });
+
+      return state.evaluatePromise;
+    }
+  }
+
+  class HermesSyntheticModule extends HermesModuleBase {
+    constructor(exportNames, evaluateCallback, options = {}) {
+      if (!Array.isArray(exportNames)) {
+        throw new TypeError('The "exportNames" argument must be an Array');
+      }
+      if (typeof evaluateCallback !== 'function') {
+        throw new TypeError('The "evaluateCallback" argument must be a function');
+      }
+
+      super({
+        context:
+          options && options.context
+            ? ensureExistingContext(options.context)
+            : undefined,
+        dependencySpecifiers: [],
+        evaluateCallback,
+        evaluatePromise: null,
+        exports: Object.create(null),
+        exportNames: exportNames.map((name) => String(name)),
+        identifier:
+          (options && typeof options.identifier === 'string' && options.identifier) ||
+          (options && typeof options.filename === 'string' && options.filename) ||
+          'vm:module',
+        linkedModules: [],
+        linkerPromise: null,
+        localError: undefined,
+        namespace: null,
+        status: 'unlinked',
+      });
+    }
+
+    setExport(name, value) {
+      const state = getModuleData(this);
+      const exportName = String(name);
+      if (!state.exportNames.includes(exportName)) {
+        throw new Error(`Unknown synthetic module export "${exportName}"`);
+      }
+      state.exports[exportName] = value;
+      state.namespace = null;
+    }
+
+    linkRequests(modules) {
+      if (Array.isArray(modules) && modules.length !== 0) {
+        throw new Error('SyntheticModule does not accept linked requests');
+      }
+    }
+
+    instantiate() {
+      const state = getModuleData(this);
+      if (state.status === 'unlinked') {
+        state.status = 'linked';
+      }
+    }
+
+    async evaluate() {
+      const state = getModuleData(this);
+      if (state.status === 'evaluated') {
+        return undefined;
+      }
+      if (state.status === 'errored') {
+        throw state.localError;
+      }
+      if (state.evaluatePromise) {
+        return state.evaluatePromise;
+      }
+
+      state.status = 'evaluating';
+      state.localError = undefined;
+      state.evaluatePromise = (async () => {
+        this.instantiate();
+        await state.evaluateCallback.call(this);
+        state.namespace = null;
+        state.status = 'evaluated';
+        return undefined;
+      })().catch((error) => {
+        state.status = 'errored';
+        state.localError = error;
+        throw error;
+      });
+
+      return state.evaluatePromise;
+    }
+  }
+
+  const ModuleBase = isHermes ? HermesModuleBase : NativeModuleBase;
+  const SourceTextModule = isHermes
+    ? HermesSourceTextModule
+    : NativeSourceTextModule;
+  const SyntheticModule = isHermes
+    ? HermesSyntheticModule
+    : NativeSyntheticModule;
 
   function measureMemory() {
     const usage =

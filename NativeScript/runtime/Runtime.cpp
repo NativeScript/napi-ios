@@ -192,6 +192,29 @@ void Runtime::Init(bool isWorker) {
       };
     }
 
+    if (!globalThis.__dynamicImport) {
+      globalThis.__dynamicImport = function(specifier) {
+        return Promise.resolve().then(function() {
+          const runtimeRequire =
+            typeof globalThis.require === "function" ? globalThis.require : null;
+          if (!runtimeRequire) {
+            throw new ReferenceError("require is not available");
+          }
+
+          const loaded = runtimeRequire(specifier);
+          if (loaded !== null &&
+              (typeof loaded === "object" || typeof loaded === "function")) {
+            if (loaded.__esModule) {
+              return loaded;
+            }
+            return Object.assign({ default: loaded }, loaded);
+          }
+
+          return { default: loaded };
+        });
+      };
+    }
+
     if (!globalThis.gc) {
       globalThis.gc = function() {
         console.warn('gc() is not exposed');
@@ -232,7 +255,7 @@ void Runtime::Init(bool isWorker) {
   napi_create_string_utf8(env_, CompatScript, NAPI_AUTO_LENGTH, &compatScript);
   napi_run_script(env_, compatScript, &result);
 
-#ifdef TARGET_ENGINE_V8
+#if defined(TARGET_ENGINE_V8) || defined(TARGET_ENGINE_HERMES)
   const char* PromiseProxyScript = R"(
         // Ensure that Promise callbacks are executed on the
         // same thread on which they were created
@@ -306,7 +329,7 @@ void Runtime::Init(bool isWorker) {
   napi_create_string_utf8(env_, PromiseProxyScript, NAPI_AUTO_LENGTH,
                           &promiseProxyScript);
   napi_run_script(env_, promiseProxyScript, &result);
-#endif  // TARGET_ENGINE_V8
+#endif
 
   if (isWorker) {
     napi_property_descriptor prop = napi_util::desc("self", global);
@@ -318,6 +341,22 @@ void Runtime::Init(bool isWorker) {
   napi_define_properties(env_, global, 1, &prop);
 
   modules_.Init(env_, global);
+
+#ifdef TARGET_ENGINE_HERMES
+  const char* HermesGlobalBootstrap = R"(
+    if (typeof globalThis.Console === "function" && typeof globalThis.console === "undefined") {
+      globalThis.console = Object.create(globalThis.Console.prototype);
+    }
+    if (typeof globalThis.Performance === "function" && typeof globalThis.performance === "undefined") {
+      globalThis.performance = Object.create(globalThis.Performance.prototype);
+    }
+  )";
+
+  napi_value hermesGlobalBootstrapScript;
+  napi_create_string_utf8(env_, HermesGlobalBootstrap, NAPI_AUTO_LENGTH,
+                          &hermesGlobalBootstrapScript);
+  napi_run_script(env_, hermesGlobalBootstrapScript, &result);
+#endif
 
   const char* metadata_path = std::getenv("NS_METADATA_PATH");
   nativescript_init(env_, metadata_path, RuntimeConfig.MetadataPtr);
@@ -352,6 +391,8 @@ void Runtime::RunLoop() {
 
   int idlePolls = 0;
   while (true) {
+    js_execute_pending_jobs(env_);
+
     const auto result =
         CFRunLoopRunInMode(kCFRunLoopDefaultMode, kPollSeconds, true);
 

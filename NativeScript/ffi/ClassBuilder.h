@@ -15,7 +15,7 @@ class ObjCProtocol;
 
 class ClassBuilder : public ObjCClass {
  public:
-  ClassBuilder(napi_env env, napi_value constructor);
+  ClassBuilder(napi_env env, napi_value constructor, Class explicitSuperClass = nullptr);
   ~ClassBuilder();
 
   void addProtocol(ObjCProtocol* protocol);

@@ -1,9 +1,10 @@
 #include "Performance.h"
 
+#include <chrono>
+
 #include "js_native_api.h"
 #include "mach/mach_time.h"
 #include "native_api_util.h"
-#include <chrono>
 
 namespace nativescript {
 
@@ -22,9 +23,10 @@ double monotonicNowMs() {
 
 JS_CLASS_INIT(Performance::Init) {
   napi_value Performance, performance;
-  const auto systemNow = std::chrono::duration_cast<std::chrono::milliseconds>(
-                             std::chrono::system_clock::now().time_since_epoch())
-                             .count();
+  const auto systemNow =
+      std::chrono::duration_cast<std::chrono::milliseconds>(
+          std::chrono::system_clock::now().time_since_epoch())
+          .count();
   g_timeOrigin = (double)systemNow - monotonicNowMs();
 
   const napi_property_descriptor properties[] = {
@@ -59,21 +61,8 @@ JS_CLASS_INIT(Performance::Init) {
                     &Performance);
 
   napi_new_instance(env, Performance, 0, nullptr, &performance);
-
-  const napi_property_descriptor globalProperties[] = {
-      {
-          .utf8name = "performance",
-          .name = nullptr,
-          .method = nullptr,
-          .getter = nullptr,
-          .setter = nullptr,
-          .value = performance,
-          .attributes = napi_default,
-          .data = nullptr,
-      },
-  };
-
-  napi_define_properties(env, global, 1, globalProperties);
+  napi_set_named_property(env, global, "Performance", Performance);
+  napi_set_named_property(env, global, "performance", performance);
 }
 
 JS_METHOD(Performance::Constructor) {
