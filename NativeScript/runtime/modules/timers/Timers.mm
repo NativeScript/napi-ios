@@ -264,6 +264,7 @@ JS_CLASS_INIT(Timers::Init) {
       napi_util::desc("setInterval", SetInterval),
       napi_util::desc("clearTimeout", ClearTimer),
       napi_util::desc("clearInterval", ClearTimer),
+      napi_util::desc("__nsActiveTimerCount", ActiveTimerCount),
       napi_util::desc("queueMicrotask", QueueMicrotask),
       napi_util::desc("__ns__setTimeout", SetTimeout),
       napi_util::desc("__ns__setInterval", SetInterval),
@@ -558,6 +559,12 @@ JS_METHOD(Timers::QueueMicrotask) {
   }
 
   return napi_util::undefined(env);
+}
+
+JS_METHOD(Timers::ActiveTimerCount) {
+  napi_value result = nullptr;
+  napi_create_int32(env, gActiveTimers.load(std::memory_order_relaxed), &result);
+  return result;
 }
 
 bool Timers::HasActiveTimers() { return gActiveTimers.load(std::memory_order_relaxed) > 0; }

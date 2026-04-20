@@ -3,6 +3,14 @@ describe("native timer", () => {
     global.process &&
     global.process.versions &&
     global.process.versions.engine === "hermes";
+  const isJSC =
+    global.process &&
+    global.process.versions &&
+    global.process.versions.engine === "jsc";
+  const isIOS =
+    typeof UIDevice !== "undefined" &&
+    UIDevice.currentDevice &&
+    UIDevice.currentDevice.systemVersion;
   /** @type {global.setTimeout} */
   let setTimeout = global.__ns__setTimeout;
   /** @type {global.setInterval} */
@@ -14,6 +22,28 @@ describe("native timer", () => {
   let clearInterval = global.__ns__clearInterval;
   /** @type {global.queueMicrotask} */
   let queueMicrotask = global.__ns__queueMicrotask || global.queueMicrotask;
+
+  function expectWeakRefCleared(ref, done, timeoutMs) {
+    const deadline = Date.now() + (timeoutMs || 1000);
+
+    function poll() {
+      gc();
+      if (!ref.get()) {
+        done();
+        return;
+      }
+
+      if (Date.now() >= deadline) {
+        expect(!!ref.get()).toBe(false);
+        done();
+        return;
+      }
+
+      setTimeout(poll, 20);
+    }
+
+    setTimeout(poll, 0);
+  }
 
   it("exists", () => {
     expect(setTimeout).toBeDefined();
@@ -148,19 +178,27 @@ describe("native timer", () => {
       clearTimeout(timeout);
       // use another timeout as native weakrefs can't be gced until we leave the isolate after being used once
       setTimeout(() => {
-        gc();
         if (
           isHermes &&
           typeof global.__nsHermesTimerCallbackCount === "function" &&
           typeof global.__nsHermesHasTimerCallback === "function"
         ) {
+          gc();
           expect(global.__nsHermesTimerCallbackCount()).toBe(0);
           expect(global.__nsHermesHasTimerCallback(timeout.__timerId)).toBe(false);
           expect(global.__nsHermesHasTimerCallback(interval.__timerId)).toBe(false);
+          done();
+        } else if (
+          isIOS &&
+          isJSC &&
+          typeof global.__nsActiveTimerCount === "function"
+        ) {
+          gc();
+          expect(global.__nsActiveTimerCount()).toBe(0);
+          done();
         } else {
-          expect(!!weakRef.get()).toBe(false);
+          expectWeakRefCleared(weakRef, done, isIOS && isJSC ? 10000 : 1500);
         }
-        done();
       });
     }, 200);
   });

@@ -20,13 +20,36 @@ describe(module.id, function() {
     function SYSTEM_VERSION_GREATER_THAN_OR_EQUAL_TO(version) {
         var systemVersion;
         if (isIOS) {
-            systemVersion = NSString.stringWithString(UIDevice.currentDevice.systemVersion);
+            systemVersion = String(UIDevice.currentDevice.systemVersion);
         } else {
             var osVersion = NSProcessInfo.processInfo.operatingSystemVersion;
-            systemVersion = NSString.stringWithString(`${osVersion.majorVersion}.${osVersion.minorVersion}`);
+            systemVersion = `${osVersion.majorVersion}.${osVersion.minorVersion}`;
         }
 
-        return systemVersion.compareOptions(version, NSStringCompareOptions.NSNumericSearch) !== NSComparisonResult.NSOrderedAscending;
+        function parseVersionParts(value) {
+            return String(value)
+                .split(".")
+                .map(function (part) {
+                    var numeric = parseInt(part, 10);
+                    return isNaN(numeric) ? 0 : numeric;
+                });
+        }
+
+        var current = parseVersionParts(systemVersion);
+        var target = parseVersionParts(version);
+        var length = Math.max(current.length, target.length);
+        for (var i = 0; i < length; i++) {
+            var currentPart = i < current.length ? current[i] : 0;
+            var targetPart = i < target.length ? target[i] : 0;
+            if (currentPart > targetPart) {
+                return true;
+            }
+            if (currentPart < targetPart) {
+                return false;
+            }
+        }
+
+        return true;
     };
 
     function check(value, major, minor) {

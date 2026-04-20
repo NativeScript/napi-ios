@@ -13,6 +13,7 @@ class Timers {
   static JS_METHOD(SetInterval);
   static JS_METHOD(ClearTimer);
   static JS_METHOD(QueueMicrotask);
+  static JS_METHOD(ActiveTimerCount);
 
   static bool HasActiveTimers();
 };
