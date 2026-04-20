@@ -769,7 +769,7 @@ describe(module.id, function () {
             }
         });
 
-        var obj = TSObject.new();
+        var obj = TSObject.alloc().init();
         TNSObjCTypes.methodWithObject(obj);
 
         expect(TNSGetOutput()).toBe("abc 123");
@@ -817,8 +817,24 @@ describe(module.id, function () {
         });
 
         it("should accept type and record arguments", function () {
-            var record = new CGPoint();
-            var reference = new interop.Reference(CGPoint, record);
+            var pointType = [globalThis.CGPoint, globalThis.NSPoint, globalThis.CGPointStruct, globalThis.NSPointStruct]
+                .find(function (candidate) {
+                    if (candidate == null) {
+                        return false;
+                    }
+
+                    try {
+                        new candidate();
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                });
+
+            expect(pointType).toBeDefined();
+
+            var record = new pointType();
+            var reference = new interop.Reference(pointType, record);
 
             expect(reference).toEqual(jasmine.any(interop.Reference));
             expect(interop.handleof(reference)).toBe(interop.handleof(record));

@@ -1298,7 +1298,8 @@ class PointerTypeConv : public TypeConv {
       auto bridgeState = ObjCBridgeState::InstanceData(env);
       if (bridgeState != nullptr) {
         napi_valuetype inputType = napi_undefined;
-        if (napi_typeof(env, input, &inputType) == napi_ok && inputType == napi_function) {
+        if (napi_typeof(env, input, &inputType) == napi_ok &&
+            (inputType == napi_function || inputType == napi_object)) {
           id bridgedType = nil;
           if (bridgeState->tryResolveBridgedTypeConstructor(env, input, &bridgedType) &&
               bridgedType != nil) {
@@ -1403,6 +1404,15 @@ class PointerTypeConv : public TypeConv {
       }
 
       case napi_object: {
+        auto bridgeState = ObjCBridgeState::InstanceData(env);
+        if (bridgeState != nullptr) {
+          id bridgedType = nil;
+          if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
+              bridgedType != nil) {
+            *res = (void*)bridgedType;
+            return;
+          }
+        }
         if (Pointer::isInstance(env, value)) {
           Pointer* ptr = Pointer::unwrap(env, value);
           *res = ptr->data;
@@ -1669,10 +1679,6 @@ class PointerTypeConv : public TypeConv {
             *res = structObj->data;
           } else
             *res = nullptr;
-          return;
-        }
-
-        if (unwrapKnownNativeHandle(value, res)) {
           return;
         }
 
@@ -2352,7 +2358,7 @@ class ObjCObjectTypeConv : public TypeConv {
           return;
         }
 
-        if (bridgeState != nullptr && type == napi_function) {
+        if (bridgeState != nullptr) {
           id bridgedType = nil;
           if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
               bridgedType != nil) {
@@ -2786,18 +2792,8 @@ class ObjCClassTypeConv : public TypeConv {
     }
 
     auto bridgeState = ObjCBridgeState::InstanceData(env);
-
-    ObjCClass* bridgedCls = bridgeState->classesByPointer[cls];
-
-    if (bridgedCls == nullptr) {
-      napi_value null;
-      napi_get_null(env, &null);
-      return null;
-    }
-
-    napi_value constructor = get_ref_value(env, bridgedCls->constructor);
-
-    return constructor;
+    return bridgeState != nullptr ? bridgeState->getObject(env, (id)cls, kUnownedObject, 0, nullptr)
+                                  : nullptr;
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
@@ -3905,9 +3901,18 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value, napi_valuetyp
         }
       }
 
+      if (bridgeState != nullptr) {
+        id bridgedType = nil;
+        if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
+            bridgedType != nil) {
+          *out = bridgedType;
+          return true;
+        }
+      }
+
       void* wrapped = nullptr;
       if (napi_unwrap(env, value, &wrapped) == napi_ok) {
-        if (valueType == napi_function) {
+        if (valueType == napi_function || valueType == napi_object) {
           auto bridgeState = ObjCBridgeState::InstanceData(env);
           if (bridgeState != nullptr && wrapped != nullptr) {
             for (const auto& entry : bridgeState->classes) {

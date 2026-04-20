@@ -97,7 +97,7 @@ describe(module.id, function () {
             var size = interop.sizeof(TNSNestedStruct);
             expect(size).toBeGreaterThan(0);
             var buffer = interop.alloc(size);
-            var record = TNSNestedStruct(buffer);
+            var record = new TNSNestedStruct(buffer);
             TNSTestNativeCallbacks.recordsNestedStruct(record);
             expect(TNSGetOutput()).toBe('0 0 0 0');
             expect(interop.handleof(record)).toBe(buffer);

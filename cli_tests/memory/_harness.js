@@ -4,6 +4,12 @@ function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
+function drainPendingJobs() {
+  if (typeof __drainMicrotaskQueue === "function") {
+    __drainMicrotaskQueue();
+  }
+}
+
 function makePressure(bytes) {
   const chunkSize = 64 * 1024;
   const chunks = Math.max(1, Math.floor(bytes / chunkSize));
@@ -24,9 +30,11 @@ async function forceGC(rounds, pressureBytes, pauseMs) {
     if (typeof gc === "function") {
       gc();
     }
+    drainPendingJobs();
     const junk = makePressure(bytes);
     junk.length = 0;
     await sleep(pause);
+    drainPendingJobs();
   }
 }
 
@@ -34,6 +42,29 @@ function assert(condition, message) {
   if (!condition) {
     throw new Error(message || "assertion failed");
   }
+}
+
+function countAliveWeakRefs(refs) {
+  let alive = 0;
+  for (const ref of refs) {
+    if (ref && typeof ref.deref === "function" && ref.deref()) {
+      alive += 1;
+    }
+  }
+  return alive;
+}
+
+function weakTableCount(table) {
+  if (!table) {
+    return 0;
+  }
+
+  const objects = table.allObjects;
+  if (objects && typeof objects.count === "number") {
+    return objects.count;
+  }
+
+  return typeof table.count === "number" ? table.count : 0;
 }
 
 async function waitUntil(predicate, timeoutMs, intervalMs) {
@@ -46,6 +77,35 @@ async function waitUntil(predicate, timeoutMs, intervalMs) {
     }
     await sleep(interval);
   }
+  return !!predicate();
+}
+
+async function forceCollectUntil(predicate, options) {
+  const opts = options || {};
+  const timeoutMs = opts.timeoutMs ?? 10_000;
+  const intervalMs = opts.intervalMs ?? 20;
+  const gcRounds = opts.gcRounds ?? 2;
+  const pressureBytes = opts.pressureBytes ?? (16 * 1024 * 1024);
+  const pauseMs = opts.pauseMs ?? 4;
+  const settleTicks = opts.settleTicks ?? 2;
+  const start = Date.now();
+  let stableTicks = 0;
+
+  while (Date.now() - start < timeoutMs) {
+    await forceGC(gcRounds, pressureBytes, pauseMs);
+
+    if (predicate()) {
+      stableTicks += 1;
+      if (stableTicks >= settleTicks) {
+        return true;
+      }
+    } else {
+      stableTicks = 0;
+    }
+
+    await sleep(intervalMs);
+  }
+
   return !!predicate();
 }
 
@@ -138,12 +198,21 @@ function runAsyncMemoryTest(name, fn, options) {
           const details = await fn({
             sleep,
             forceGC,
+            forceCollectUntil,
             assert,
             waitUntil,
             drainRunLoopUntilIdle,
             makePressure,
+            countAliveWeakRefs,
+            weakTableCount,
             now: () => Date.now(),
             autoreleasepool: objc.autoreleasepool,
+            engine:
+              (typeof process === "object" &&
+                process &&
+                process.versions &&
+                process.versions.engine) ||
+              "unknown",
           });
 
           if (!finished) {

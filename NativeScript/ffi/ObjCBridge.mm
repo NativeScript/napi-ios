@@ -44,6 +44,7 @@ namespace {
 std::mutex gLiveBridgeStatesMutex;
 std::unordered_map<const ObjCBridgeState*, uint64_t> gLiveBridgeStates;
 std::atomic<uint64_t> gNextBridgeStateToken{1};
+constexpr const char* kNativePointerProperty = "__ns_native_ptr";
 
 uint64_t RegisterBridgeState(const ObjCBridgeState* bridgeState) {
   if (bridgeState == nullptr) {
@@ -114,7 +115,26 @@ inline bool isFunctionValue(napi_env env, napi_value value) {
   if (napi_typeof(env, value, &valueType) != napi_ok) {
     return false;
   }
-  return valueType == napi_function;
+  if (valueType == napi_function) {
+    return true;
+  }
+
+  if (valueType != napi_object) {
+    return false;
+  }
+
+  napi_value instance = nullptr;
+  napi_status status = napi_new_instance(env, value, 0, nullptr, &instance);
+  if (status == napi_ok) {
+    return true;
+  }
+
+  bool hasPendingException = false;
+  if (napi_is_exception_pending(env, &hasPendingException) == napi_ok && hasPendingException) {
+    napi_value exception = nullptr;
+    napi_get_and_clear_last_exception(env, &exception);
+  }
+  return false;
 }
 
 inline void clearPendingException(napi_env env) {
@@ -126,10 +146,6 @@ inline void clearPendingException(napi_env env) {
 }
 
 inline bool isConstructableValue(napi_env env, napi_value value) {
-  if (!isFunctionValue(env, value)) {
-    return false;
-  }
-
   napi_value instance = nullptr;
   napi_status status = napi_new_instance(env, value, 0, nullptr, &instance);
   if (status == napi_ok) {
@@ -383,12 +399,12 @@ inline void installMacUIColorCompatShim(napi_env env) {
   const char* script = R"(
     (function (globalObject) {
       if (typeof globalObject.UIColor === "undefined" &&
-          typeof globalObject.NSColor === "function") {
+          typeof globalObject.NSColor !== "undefined") {
         globalObject.UIColor = globalObject.NSColor;
       }
 
       const colorCtor = globalObject.UIColor || globalObject.NSColor;
-      if (typeof colorCtor !== "function" || !colorCtor.prototype) {
+      if (!colorCtor || !colorCtor.prototype) {
         return;
       }
 
@@ -675,6 +691,7 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
   this->env = env;
   napi_set_instance_data(env, this, finalize_bridge_data, nil);
   lifetimeToken = RegisterBridgeState(this);
+  trackedObjectLiveness = [[NSMutableSet alloc] init];
 
   self_dl = dlopen(nullptr, RTLD_NOW);
 
@@ -815,6 +832,10 @@ ObjCBridgeState::~ObjCBridgeState() {
   }
   mdFunctionSignatureCache.clear();
 
+  NSMutableSet* trackedObjectTable = static_cast<NSMutableSet*>(trackedObjectLiveness);
+  trackedObjectLiveness = nullptr;
+  [trackedObjectTable release];
+
   // if (objc_autoreleasePool != nullptr)
   //   objc_autoreleasePoolPop(objc_autoreleasePool);
 
@@ -832,17 +853,62 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   napi_get_boolean(env, [nativeObject isKindOfClass:NSArray.class], &args[1]);
   napi_get_global(env, &global);
   napi_call_function(env, global, factory, 3, args, &result);
+  napi_value nativePointer = Pointer::create(env, nativeObject);
+  if (nativePointer != nullptr) {
+    napi_set_named_property(env, result, kNativePointerProperty, nativePointer);
+  }
+  napi_wrap(env, result, nativeObject, nullptr, nullptr, nullptr);
 
   napi_ref ref = nullptr;
-  NAPI_GUARD(napi_add_finalizer(env, result, nativeObject, finalize_objc_object, this, &ref)) {
+  auto* finalizerContext = new JSObjectFinalizerContext{
+      .bridgeState = this,
+      .bridgeStateToken = lifetimeToken,
+      .object = nativeObject,
+      .ref = nullptr,
+  };
+  NAPI_GUARD(
+      napi_add_finalizer(env, result, finalizerContext, finalize_objc_object, nullptr, &ref)) {
+    delete finalizerContext;
     NAPI_THROW_LAST_ERROR
     return nullptr;
   }
+  finalizerContext->ref = ref;
 
   storeObjectRef(nativeObject, ref);
   attachObjectLifecycleAssociation(env, nativeObject);
+  trackObject(nativeObject);
 
   return result;
+}
+
+void ObjCBridgeState::trackObject(id object) noexcept {
+  if (object == nil) {
+    return;
+  }
+
+  NSMutableSet* trackedObjectTable = static_cast<NSMutableSet*>(trackedObjectLiveness);
+  if (trackedObjectTable == nil) {
+    return;
+  }
+
+  NSNumber* objectKey = [NSNumber numberWithUnsignedLongLong:NormalizeHandleKey((void*)object)];
+  std::lock_guard<std::mutex> lock(objectRefsMutex);
+  [trackedObjectTable addObject:objectKey];
+}
+
+bool ObjCBridgeState::isTrackedObjectAlive(id object) const noexcept {
+  if (object == nil) {
+    return false;
+  }
+
+  NSMutableSet* trackedObjectTable = static_cast<NSMutableSet*>(trackedObjectLiveness);
+  if (trackedObjectTable == nil) {
+    return false;
+  }
+
+  NSNumber* objectKey = [NSNumber numberWithUnsignedLongLong:NormalizeHandleKey((void*)object)];
+  std::lock_guard<std::mutex> lock(objectRefsMutex);
+  return [trackedObjectTable containsObject:objectKey];
 }
 
 }  // namespace nativescript
