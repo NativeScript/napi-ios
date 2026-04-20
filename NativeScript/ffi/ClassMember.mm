@@ -12,6 +12,7 @@
 #include <unordered_set>
 #include "ClassBuilder.h"
 #include "Closure.h"
+#include "Interop.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
@@ -25,6 +26,10 @@
 #include "node_api_util.h"
 
 namespace nativescript {
+
+namespace {
+constexpr const char* kNativePointerProperty = "__ns_native_ptr";
+}
 
 napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo) {
   napi_value jsThis;
@@ -909,13 +914,23 @@ inline id assertSelf(napi_env env, napi_value jsThis, ObjCClassMember* method = 
   id self = nil;
   ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
   if (state != nullptr && jsThis != nullptr) {
-    napi_valuetype jsType = napi_undefined;
-    if (napi_typeof(env, jsThis, &jsType) == napi_ok && jsType == napi_function) {
-      state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
-    }
+    state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
   }
 
   napi_status unwrapStatus = self != nil ? napi_ok : napi_unwrap(env, jsThis, (void**)&self);
+
+  if ((unwrapStatus != napi_ok || self == nil) && jsThis != nullptr) {
+    napi_value nativePointerValue = nullptr;
+    if (napi_get_named_property(env, jsThis, kNativePointerProperty, &nativePointerValue) ==
+            napi_ok &&
+        Pointer::isInstance(env, nativePointerValue)) {
+      Pointer* nativePointer = Pointer::unwrap(env, nativePointerValue);
+      if (nativePointer != nullptr && nativePointer->data != nullptr) {
+        self = static_cast<id>(nativePointer->data);
+        unwrapStatus = napi_ok;
+      }
+    }
+  }
 
   if (unwrapStatus == napi_ok && self != nil) {
     return self;

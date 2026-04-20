@@ -308,6 +308,9 @@ void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb, void* cont
   }
 
   JSCallbackInner(closure, func, thisArg, argv, ctx->cif->nargs - 1, nullptr, ctx->ret);
+#ifdef TARGET_ENGINE_HERMES
+  js_execute_pending_jobs(env);
+#endif
   if (ctx->useCondvar) {
     {
       std::lock_guard<std::mutex> lock(ctx->mutex);

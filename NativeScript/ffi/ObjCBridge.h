@@ -32,6 +32,13 @@ namespace nativescript {
 
 class ObjCBridgeState;
 
+struct JSObjectFinalizerContext {
+  ObjCBridgeState* bridgeState;
+  uint64_t bridgeStateToken;
+  id object;
+  napi_ref ref;
+};
+
 void finalize_objc_object(napi_env /*env*/, void* data, void* hint);
 bool IsBridgeStateLive(const ObjCBridgeState* bridgeState,
                        uint64_t token) noexcept;
@@ -147,7 +154,26 @@ class ObjCBridgeState {
   }
 
   void unregisterObject(id object) noexcept;
+  bool unregisterObjectIfRefMatches(id object, napi_ref ref) noexcept;
   void detachObject(id object) noexcept;
+  void trackObject(id object) noexcept;
+  bool isTrackedObjectAlive(id object) const noexcept;
+  inline bool hasObjectRef(id object) const noexcept {
+    std::lock_guard<std::mutex> lock(objectRefsMutex);
+
+    if (objectRefs.find(object) != objectRefs.end()) {
+      return true;
+    }
+
+    uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    for (const auto& entry : objectRefs) {
+      if (NormalizeHandleKey((void*)entry.first) == objectKey) {
+        return true;
+      }
+    }
+
+    return false;
+  }
 
   inline void beginRoundTripCacheFrame(napi_env /*env*/) {
     roundTripCacheFrames.emplace_back();
@@ -246,6 +272,50 @@ class ObjCBridgeState {
       return false;
     }
 
+    auto readFunctionName = [&](napi_value candidate) -> std::string {
+      napi_valuetype candidateType = napi_undefined;
+      if (napi_typeof(env, candidate, &candidateType) != napi_ok ||
+          candidateType != napi_function) {
+        return "";
+      }
+
+      bool hasName = false;
+      if (napi_has_named_property(env, candidate, "name", &hasName) !=
+              napi_ok ||
+          !hasName) {
+        return "";
+      }
+
+      napi_value nameValue = nullptr;
+      if (napi_get_named_property(env, candidate, "name", &nameValue) !=
+              napi_ok ||
+          nameValue == nullptr) {
+        return "";
+      }
+
+      napi_valuetype nameType = napi_undefined;
+      if (napi_typeof(env, nameValue, &nameType) != napi_ok ||
+          nameType != napi_string) {
+        return "";
+      }
+
+      size_t nameLength = 0;
+      if (napi_get_value_string_utf8(env, nameValue, nullptr, 0, &nameLength) !=
+              napi_ok ||
+          nameLength == 0) {
+        return "";
+      }
+
+      std::string name(nameLength, '\0');
+      if (napi_get_value_string_utf8(env, nameValue, name.data(),
+                                     name.size() + 1, &nameLength) != napi_ok) {
+        return "";
+      }
+
+      name.resize(nameLength);
+      return name;
+    };
+
     auto matchesConstructor = [&](ObjCClass* bridgedClass) -> bool {
       if (bridgedClass == nullptr || bridgedClass->constructor == nullptr ||
           bridgedClass->nativeClass == nil) {
@@ -280,6 +350,27 @@ class ObjCBridgeState {
       }
     }
 
+    std::string candidateName = readFunctionName(value);
+    if (!candidateName.empty()) {
+      for (const auto& entry : classesByPointer) {
+        ObjCClass* bridgedClass = entry.second;
+        if (bridgedClass == nullptr || bridgedClass->nativeClass == nil) {
+          continue;
+        }
+
+        if (bridgedClass->name == candidateName) {
+          *out = bridgedClass->nativeClass;
+          return true;
+        }
+      }
+
+      Class runtimeClass = objc_lookUpClass(candidateName.c_str());
+      if (runtimeClass != nil) {
+        *out = runtimeClass;
+        return true;
+      }
+    }
+
     return false;
   }
 
@@ -289,6 +380,50 @@ class ObjCBridgeState {
     if (out == nullptr || value == nullptr) {
       return false;
     }
+
+    auto readFunctionName = [&](napi_value candidate) -> std::string {
+      napi_valuetype candidateType = napi_undefined;
+      if (napi_typeof(env, candidate, &candidateType) != napi_ok ||
+          candidateType != napi_function) {
+        return "";
+      }
+
+      bool hasName = false;
+      if (napi_has_named_property(env, candidate, "name", &hasName) !=
+              napi_ok ||
+          !hasName) {
+        return "";
+      }
+
+      napi_value nameValue = nullptr;
+      if (napi_get_named_property(env, candidate, "name", &nameValue) !=
+              napi_ok ||
+          nameValue == nullptr) {
+        return "";
+      }
+
+      napi_valuetype nameType = napi_undefined;
+      if (napi_typeof(env, nameValue, &nameType) != napi_ok ||
+          nameType != napi_string) {
+        return "";
+      }
+
+      size_t nameLength = 0;
+      if (napi_get_value_string_utf8(env, nameValue, nullptr, 0, &nameLength) !=
+              napi_ok ||
+          nameLength == 0) {
+        return "";
+      }
+
+      std::string name(nameLength, '\0');
+      if (napi_get_value_string_utf8(env, nameValue, name.data(),
+                                     name.size() + 1, &nameLength) != napi_ok) {
+        return "";
+      }
+
+      name.resize(nameLength);
+      return name;
+    };
 
     for (const auto& entry : protocols) {
       ObjCProtocol* bridgedProtocol = entry.second;
@@ -323,6 +458,54 @@ class ObjCBridgeState {
         }
       }
 
+      if (runtimeProtocol != nullptr) {
+        *out = runtimeProtocol;
+        return true;
+      }
+    }
+
+    auto resolveProtocolByName =
+        [](const std::string& protocolName) -> Protocol* {
+      if (protocolName.empty()) {
+        return nullptr;
+      }
+
+      Protocol* runtimeProtocol = objc_getProtocol(protocolName.c_str());
+      if (runtimeProtocol != nullptr) {
+        return runtimeProtocol;
+      }
+
+      static const std::string suffix = "Protocol";
+      if (protocolName.size() > suffix.size() &&
+          protocolName.compare(protocolName.size() - suffix.size(),
+                               suffix.size(), suffix) == 0) {
+        std::string baseName =
+            protocolName.substr(0, protocolName.size() - suffix.size());
+        return objc_getProtocol(baseName.c_str());
+      }
+
+      return nullptr;
+    };
+
+    std::string candidateName = readFunctionName(value);
+    if (!candidateName.empty()) {
+      for (const auto& entry : protocols) {
+        ObjCProtocol* bridgedProtocol = entry.second;
+        if (bridgedProtocol == nullptr) {
+          continue;
+        }
+
+        if (bridgedProtocol->name == candidateName) {
+          Protocol* runtimeProtocol =
+              resolveProtocolByName(bridgedProtocol->name);
+          if (runtimeProtocol != nullptr) {
+            *out = runtimeProtocol;
+            return true;
+          }
+        }
+      }
+
+      Protocol* runtimeProtocol = resolveProtocolByName(candidateName);
       if (runtimeProtocol != nullptr) {
         *out = runtimeProtocol;
         return true;
@@ -439,11 +622,16 @@ class ObjCBridgeState {
     return nullptr;
   }
 
-  inline napi_ref takeObjectRef(id object) noexcept {
+  inline napi_ref takeObjectRef(id object,
+                                napi_ref expectedRef = nullptr) noexcept {
     std::lock_guard<std::mutex> lock(objectRefsMutex);
 
     auto exact = objectRefs.find(object);
     if (exact == objectRefs.end()) {
+      return nullptr;
+    }
+
+    if (expectedRef != nullptr && exact->second != expectedRef) {
       return nullptr;
     }
 
@@ -456,6 +644,7 @@ class ObjCBridgeState {
   std::vector<std::unordered_map<id, napi_ref>> roundTripCacheFrames;
   std::unordered_map<id, napi_ref> recentRoundTripCache;
   mutable std::mutex objectRefsMutex;
+  void* trackedObjectLiveness = nullptr;
   void* objc_autoreleasePool;
 };
 

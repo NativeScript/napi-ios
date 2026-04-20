@@ -55,8 +55,9 @@ std::string StripShebang(const std::string& source) {
   return source;
 }
 
-#if defined(TARGET_ENGINE_HERMES)
-std::string RewriteCommonJSDynamicImportsForHermes(const std::string& source) {
+#if defined(TARGET_ENGINE_HERMES) || defined(TARGET_ENGINE_JSC)
+std::string RewriteCommonJSDynamicImportsForFallbackEngines(
+    const std::string& source) {
   static const std::regex kDynamicImportPattern(
       R"((^|[^A-Za-z0-9_$\.])import\s*\()",
       std::regex::ECMAScript | std::regex::multiline);
@@ -1677,8 +1678,8 @@ napi_value ModuleInternal::WrapModuleContent(napi_env env,
     // For ES modules, return content as-is to preserve import/export syntax
     result = content;
   } else {
-#if defined(TARGET_ENGINE_HERMES)
-    content = RewriteCommonJSDynamicImportsForHermes(content);
+#if defined(TARGET_ENGINE_HERMES) || defined(TARGET_ENGINE_JSC)
+    content = RewriteCommonJSDynamicImportsForFallbackEngines(content);
 #endif
     // For CommonJS modules, wrap in factory function
     result.reserve(content.length() + 1024);

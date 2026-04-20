@@ -273,7 +273,68 @@ NAPI_FUNCTION(classSuperclassFallback) {
     return get_ref_value(env, bridgedClass->constructor);
   }
 
+  const char* runtimeName = class_getName(superClass);
+  if (runtimeName != nullptr && runtimeName[0] != '\0') {
+    napi_value global = nullptr;
+    napi_value constructor = nullptr;
+    bool hasGlobal = false;
+    napi_get_global(env, &global);
+    if (napi_has_named_property(env, global, runtimeName, &hasGlobal) == napi_ok && hasGlobal &&
+        napi_get_named_property(env, global, runtimeName, &constructor) == napi_ok &&
+        constructor != nullptr) {
+      return constructor;
+    }
+  }
+
   return bridgeState->getObject(env, (id)superClass, kUnownedObject, 0, nullptr);
+}
+
+NAPI_FUNCTION(classHasInstance) {
+  size_t argc = 1;
+  napi_value argv[1] = {nullptr};
+  napi_value jsThis = nullptr;
+  napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, nullptr);
+
+  Class expectedClass = nil;
+  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState != nullptr && jsThis != nullptr) {
+    bridgeState->tryResolveBridgedClassConstructor(env, jsThis, &expectedClass);
+  }
+  if (expectedClass == nil) {
+    napi_unwrap(env, jsThis, (void**)&expectedClass);
+  }
+
+  bool isInstance = false;
+  if (expectedClass != nil && argc > 0 && argv[0] != nullptr) {
+    napi_valuetype valueType = napi_undefined;
+    if (napi_typeof(env, argv[0], &valueType) == napi_ok &&
+        (valueType == napi_object || valueType == napi_function)) {
+      id instance = nil;
+      if (napi_unwrap(env, argv[0], (void**)&instance) != napi_ok || instance == nil) {
+        napi_value nativePointer = nullptr;
+        if (napi_get_named_property(env, argv[0], "__ns_native_ptr", &nativePointer) == napi_ok &&
+            Pointer::isInstance(env, nativePointer)) {
+          Pointer* pointer = Pointer::unwrap(env, nativePointer);
+          instance = pointer != nullptr ? static_cast<id>(pointer->data) : nil;
+        }
+      }
+
+      if (instance != nil) {
+        Class currentClass = object_getClass(instance);
+        while (currentClass != nil) {
+          if (currentClass == expectedClass) {
+            isInstance = true;
+            break;
+          }
+          currentClass = class_getSuperclass(currentClass);
+        }
+      }
+    }
+  }
+
+  napi_value result = nullptr;
+  napi_get_boolean(env, isInstance, &result);
+  return result;
 }
 
 NAPI_FUNCTION(BridgedConstructor) {
@@ -289,7 +350,7 @@ NAPI_FUNCTION(BridgedConstructor) {
 
     napi_value prototypeOwner = newTarget;
     if (prototypeOwner == nullptr || napi_typeof(env, prototypeOwner, &thisType) != napi_ok ||
-        thisType != napi_function) {
+        (thisType != napi_function && thisType != napi_object)) {
       prototypeOwner = nullptr;
     }
 
@@ -317,6 +378,18 @@ NAPI_FUNCTION(BridgedConstructor) {
   id object = nil;
 
   ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  auto ensureWrappedThis = [&](id nativeObject) {
+    if (jsThis == nullptr || nativeObject == nil) {
+      return;
+    }
+
+    void* existingWrapped = nullptr;
+    if (napi_unwrap(env, jsThis, &existingWrapped) == napi_ok && existingWrapped != nullptr) {
+      return;
+    }
+
+    napi_wrap(env, jsThis, nativeObject, nullptr, nullptr, nullptr);
+  };
 
   Class cls = (Class)data;
 
@@ -356,6 +429,7 @@ NAPI_FUNCTION(BridgedConstructor) {
           return existing;
         }
 
+        ensureWrappedThis(object);
         jsThis = bridgeState->proxyNativeObject(env, jsThis, object);
         napi_wrap(env, jsThis, object, nullptr, nullptr, nullptr);
         return jsThis;
@@ -373,6 +447,7 @@ NAPI_FUNCTION(BridgedConstructor) {
     // JS "init" method so constructor arguments participate in selector
     // matching (including Swift-style token objects).
     object = [cls alloc];
+    ensureWrappedThis(object);
     jsThis = bridgeState->proxyNativeObject(env, jsThis, object);
   }
 
@@ -683,6 +758,20 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
     superclass = nullptr;
   }
 
+  napi_value constructorNameValue = nullptr;
+  napi_create_string_utf8(env, jsConstructorName.c_str(), jsConstructorName.length(),
+                          &constructorNameValue);
+  napi_property_descriptor constructorNameProp = {
+      .utf8name = "name",
+      .method = nullptr,
+      .getter = nullptr,
+      .setter = nullptr,
+      .value = constructorNameValue,
+      .attributes = napi_default,
+      .data = nullptr,
+  };
+  napi_define_properties(env, constructor, 1, &constructorNameProp);
+
   this->constructor = make_ref(env, constructor);
   this->prototype = make_ref(env, prototype);
 
@@ -793,6 +882,38 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
     return hasOwn;
   };
 
+  if (!hasOwnNamedProperty(constructor, "name")) {
+    napi_value classNameValue = nullptr;
+    napi_create_string_utf8(env, jsConstructorName.c_str(), NAPI_AUTO_LENGTH, &classNameValue);
+    napi_property_descriptor nameProperty = {
+        .utf8name = "name",
+        .name = nil,
+        .method = nil,
+        .getter = nil,
+        .setter = nil,
+        .value = classNameValue,
+        .attributes = (napi_property_attributes)(napi_configurable),
+        .data = nil,
+    };
+    napi_define_properties(env, constructor, 1, &nameProperty);
+  }
+
+  if (!hasOwnNamedProperty(constructor, "length")) {
+    napi_value zeroValue = nullptr;
+    napi_create_int32(env, 0, &zeroValue);
+    napi_property_descriptor lengthProperty = {
+        .utf8name = "length",
+        .name = nil,
+        .method = nil,
+        .getter = nil,
+        .setter = nil,
+        .value = zeroValue,
+        .attributes = (napi_property_attributes)(napi_configurable),
+        .data = nil,
+    };
+    napi_define_properties(env, constructor, 1, &lengthProperty);
+  }
+
   if (!hasOwnNamedProperty(constructor, "alloc")) {
     napi_property_descriptor allocProperty = {
         .utf8name = "alloc",
@@ -835,6 +956,28 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
         },
     };
     napi_define_properties(env, constructor, 2, slots);
+  }
+
+  napi_value global = nullptr;
+  napi_value symbolCtor = nullptr;
+  napi_value hasInstanceSymbol = nullptr;
+  napi_get_global(env, &global);
+  napi_get_named_property(env, global, "Symbol", &symbolCtor);
+  napi_get_named_property(env, symbolCtor, "hasInstance", &hasInstanceSymbol);
+  bool hasOwnHasInstance = false;
+  napi_has_own_property(env, constructor, hasInstanceSymbol, &hasOwnHasInstance);
+  if (!hasOwnHasInstance) {
+    napi_property_descriptor hasInstanceProperty = {
+        .utf8name = nil,
+        .name = hasInstanceSymbol,
+        .method = JS_classHasInstance,
+        .getter = nil,
+        .setter = nil,
+        .value = nil,
+        .attributes = (napi_property_attributes)(napi_configurable),
+        .data = nil,
+    };
+    napi_define_properties(env, constructor, 1, &hasInstanceProperty);
   }
 
   if (!hasOwnNamedProperty(prototype, "toString")) {

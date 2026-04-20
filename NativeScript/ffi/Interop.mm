@@ -361,6 +361,16 @@ inline bool unwrapKnownNativeHandle(napi_env env, napi_value value, void** out) 
     return false;
   }
 
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState != nullptr) {
+    id bridgedType = nil;
+    if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
+        bridgedType != nil) {
+      *out = (void*)bridgedType;
+      return true;
+    }
+  }
+
   if (Pointer::isInstance(env, value)) {
     Pointer* ptr = Pointer::unwrap(env, value);
     *out = ptr != nullptr ? ptr->data : nullptr;
@@ -398,7 +408,7 @@ inline bool unwrapKnownNativeHandle(napi_env env, napi_value value, void** out) 
     return false;
   }
 
-  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  bridgeState = ObjCBridgeState::InstanceData(env);
   for (const auto& entry : bridgeState->classes) {
     if (entry.second == wrapped) {
       *out = (void*)entry.second->nativeClass;
@@ -1407,8 +1417,7 @@ napi_value Pointer::constructor(napi_env env, napi_callback_info info) {
   }
 
   Pointer* ptr = new Pointer(data);
-  napi_ref ref;
-  napi_wrap(env, jsThis, ptr, Pointer::finalize, nullptr, &ref);
+  napi_wrap(env, jsThis, ptr, Pointer::finalize, nullptr, nullptr);
   cachePointer(env, data, jsThis);
 
   return jsThis;
@@ -1665,9 +1674,17 @@ napi_value Reference::getInitValue(napi_env env, napi_value value, Reference* re
 void Reference::setInitValue(napi_env env, napi_value value, Reference* ref, napi_value initValue) {
   setReferenceInitValueProperty(env, value, initValue);
 
-  if (ref != nullptr && ref->initValue != nullptr) {
+  if (ref == nullptr) {
+    return;
+  }
+
+  if (ref->initValue != nullptr) {
     napi_delete_reference(env, ref->initValue);
     ref->initValue = nullptr;
+  }
+
+  if (initValue != nullptr) {
+    napi_create_reference(env, initValue, 1, &ref->initValue);
   }
 }
 

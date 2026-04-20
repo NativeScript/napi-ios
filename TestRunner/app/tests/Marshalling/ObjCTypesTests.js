@@ -4,6 +4,32 @@ describe(module.id, function () {
         global.process.versions &&
         global.process.versions.engine === "hermes";
 
+    function expectWeakRefCollected(ref, done, timeoutMs) {
+        if (isHermes) {
+            done();
+            return;
+        }
+
+        const deadline = Date.now() + (timeoutMs || 2000);
+        function poll() {
+            gc();
+            if (!ref.deref()) {
+                done();
+                return;
+            }
+
+            if (Date.now() >= deadline) {
+                expect(!!ref.deref()).toBe(false);
+                done();
+                return;
+            }
+
+            setTimeout(poll, 20);
+        }
+
+        setTimeout(poll, 0);
+    }
+
     afterEach(function () {
         TNSClearOutput();
     });
@@ -79,13 +105,7 @@ describe(module.id, function () {
         var actual = TNSGetOutput();
         expect(actual).toBe("simple block called");
         gc();
-        setTimeout(() => {
-            gc();
-            if (!isHermes) {
-                expect(!!functionRef.deref()).toBe(false);
-            }
-            done();
-        });
+        expectWeakRefCollected(functionRef, done);
     });
 
     it("Block retains and releases", function (done) {
@@ -109,13 +129,7 @@ describe(module.id, function () {
             verifyBlockCall();
             instance.methodReleaseRetainingBlock();
             gc();
-            setTimeout(() => {
-                gc();
-                if (!isHermes) {
-                    expect(!!functionRef.deref()).toBe(false);
-                }
-                done();    
-            })
+            expectWeakRefCollected(functionRef, done);
         });
     });
 

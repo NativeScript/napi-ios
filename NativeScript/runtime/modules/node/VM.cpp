@@ -29,15 +29,30 @@ constexpr char kContextSymbolName[] = "nativescript.vm.context";
 constexpr char kDefaultFilename[] = "vm.js";
 constexpr char kDefaultModuleIdentifier[] = "vm:module";
 
-bool ThrowHermesVmUnsupported(napi_env env, const char* feature) {
-  std::string message =
-      std::string(feature) + " is not supported by node:vm on Hermes yet";
+const char* GetVmEngineName() {
+#if defined(TARGET_ENGINE_HERMES)
+  return "Hermes";
+#elif defined(TARGET_ENGINE_JSC)
+  return "JavaScriptCore";
+#elif defined(TARGET_ENGINE_QUICKJS)
+  return "QuickJS";
+#elif defined(TARGET_ENGINE_V8)
+  return "V8";
+#else
+  return "this engine";
+#endif
+}
+
+bool ThrowEngineVmUnsupported(napi_env env, const char* feature) {
+  std::string message = std::string(feature) +
+                        " is not supported by node:vm on " + GetVmEngineName() +
+                        " yet";
   napi_throw_error(env, nullptr, message.c_str());
   return false;
 }
 
-napi_value ThrowHermesVmUnsupportedValue(napi_env env, const char* feature) {
-  ThrowHermesVmUnsupported(env, feature);
+napi_value ThrowEngineVmUnsupportedValue(napi_env env, const char* feature) {
+  ThrowEngineVmUnsupported(env, feature);
   return nullptr;
 }
 
@@ -2022,7 +2037,7 @@ napi_value RunInContextImpl(napi_env env, ContextState* state,
   return resultValue;
 }
 
-#elif defined(TARGET_ENGINE_HERMES)
+#else
 
 bool CreateContextState(napi_env env, ContextState* state) {
   state->baselineKeys.clear();
@@ -2032,7 +2047,7 @@ bool CreateContextState(napi_env env, ContextState* state) {
 napi_value RunInContextImpl(napi_env env, ContextState* state,
                             napi_value sandboxValue, const std::string& source,
                             const std::string& filename) {
-  return ThrowHermesVmUnsupportedValue(env, "Contextified execution");
+  return ThrowEngineVmUnsupportedValue(env, "Contextified execution");
 }
 
 #endif
@@ -2276,7 +2291,7 @@ napi_value ScriptConstructor(napi_env env, napi_callback_info info) {
   if (!CompileOnlyQuickJS(env, source, filename)) {
     return nullptr;
   }
-#elif defined(TARGET_ENGINE_HERMES)
+#else
   // Hermes currently executes vm.Script bodies through the generic
   // runInThisContext path at call time. Separate pre-compilation support for
   // node:vm has not been wired up yet.
@@ -2391,8 +2406,8 @@ napi_value CreateSourceTextModuleCallback(napi_env env,
     return nullptr;
   }
   return result;
-#elif defined(TARGET_ENGINE_HERMES)
-  return ThrowHermesVmUnsupportedValue(env, "vm.SourceTextModule");
+#else
+  return ThrowEngineVmUnsupportedValue(env, "vm.SourceTextModule");
 #endif
 }
 
@@ -2427,8 +2442,8 @@ napi_value CreateSyntheticModuleCallback(napi_env env,
     return nullptr;
   }
   return result;
-#elif defined(TARGET_ENGINE_HERMES)
-  return ThrowHermesVmUnsupportedValue(env, "vm.SyntheticModule");
+#else
+  return ThrowEngineVmUnsupportedValue(env, "vm.SyntheticModule");
 #endif
 }
 
@@ -2941,11 +2956,19 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
     DONT_CONTEXTIFY: kDontContextify,
     USE_MAIN_CONTEXT_DEFAULT_LOADER: kUseMainContextDefaultLoader,
   });
-  const isHermes =
-    typeof process === 'object' &&
-    process !== null &&
-    process.versions &&
-    process.versions.engine === 'hermes';
+  const engine =
+    typeof binding.engine === 'string' && binding.engine
+      ? binding.engine
+      : (
+          typeof process === 'object' &&
+          process !== null &&
+          process.versions &&
+          typeof process.versions.engine === 'string'
+            ? process.versions.engine
+            : ''
+        );
+  const usesContextExecutionFallback = !!binding.useContextExecutionFallback;
+  const usesJsModuleFallback = !!binding.useJsModuleFallback;
 
   let nextId = 1;
 
@@ -3054,7 +3077,7 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
     return { sandbox: binding.createContext({}), options: contextObject };
   }
 
-  function runHermesInContext(source, contextifiedObject, options) {
+  function runFallbackInContext(source, contextifiedObject, options) {
     const context = ensureExistingContext(contextifiedObject);
     const filename = normalizeFilename(options);
     const globalObject = globalThis;
@@ -3107,8 +3130,8 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
 
   function executeVmSource(source, contextifiedObject, options) {
     if (contextifiedObject) {
-      if (isHermes) {
-        return runHermesInContext(source, contextifiedObject, options);
+      if (usesContextExecutionFallback) {
+        return runFallbackInContext(source, contextifiedObject, options);
       }
       return binding.runInContext(source, contextifiedObject, options);
     }
@@ -3152,7 +3175,7 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
       .join(', ');
   }
 
-  function transformHermesModuleSource(sourceText) {
+  function transformFallbackModuleSource(sourceText) {
     return String(sourceText)
       .replace(
         /^\s*import\s+\{([^}]+)\}\s+from\s+['"]([^'"]+)['"]\s*;?\s*$/gm,
@@ -3221,7 +3244,7 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
     constructor(code, options) {
       const source = String(code);
       const filename = normalizeFilename(options);
-      if (!isHermes) {
+      if (!usesContextExecutionFallback) {
         const native = new NativeScriptCtor(source, options);
         nativeScript.set(this, native);
       }
@@ -3236,7 +3259,7 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
     runInContext(contextifiedObject, options) {
       const state = scriptState.get(this);
       const context = ensureExistingContext(contextifiedObject);
-      if (isHermes) {
+      if (usesContextExecutionFallback) {
         return executeVmSource(state.source, context, {
           filename: normalizeFilename(options, state.filename),
         });
@@ -3247,7 +3270,7 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
     runInNewContext(contextObject, options) {
       const resolved = resolveRunInNewContextArgs(contextObject, options);
       const state = scriptState.get(this);
-      if (isHermes) {
+      if (usesContextExecutionFallback) {
         return executeVmSource(state.source, resolved.sandbox, {
           filename: normalizeFilename(resolved.options, state.filename),
         });
@@ -3257,7 +3280,7 @@ napi_value CreatePublicVmExports(napi_env env, napi_value binding) {
 
     runInThisContext(options) {
       const state = scriptState.get(this);
-      if (isHermes) {
+      if (usesContextExecutionFallback) {
         return executeVmSource(state.source, null, {
           filename: normalizeFilename(options, state.filename),
         });
@@ -3866,7 +3889,7 @@ ${body}
         const evaluator = Function(
           '__imports',
           '__exports',
-          `'use strict';\n${transformHermesModuleSource(state.sourceText)}\nreturn __exports;`,
+          `'use strict';\n${transformFallbackModuleSource(state.sourceText)}\nreturn __exports;`,
         );
         evaluator(imports, state.exports);
         state.exportNames = Object.keys(state.exports);
@@ -3967,11 +3990,11 @@ ${body}
     }
   }
 
-  const ModuleBase = isHermes ? HermesModuleBase : NativeModuleBase;
-  const SourceTextModule = isHermes
+  const ModuleBase = usesJsModuleFallback ? HermesModuleBase : NativeModuleBase;
+  const SourceTextModule = usesJsModuleFallback
     ? HermesSourceTextModule
     : NativeSourceTextModule;
-  const SyntheticModule = isHermes
+  const SyntheticModule = usesJsModuleFallback
     ? HermesSyntheticModule
     : NativeSyntheticModule;
 
@@ -4034,9 +4057,21 @@ napi_value VM::CreateModule(napi_env env) {
   napi_value module;
   napi_value binding;
   napi_value scriptCtor;
+  napi_value engineName;
+  napi_value useContextExecutionFallback;
+  napi_value useJsModuleFallback;
 
   napi_create_object(env, &module);
   napi_create_object(env, &binding);
+  napi_create_string_utf8(env, GetVmEngineName(), NAPI_AUTO_LENGTH,
+                          &engineName);
+#if defined(TARGET_ENGINE_HERMES) || defined(TARGET_ENGINE_JSC)
+  napi_get_boolean(env, true, &useContextExecutionFallback);
+  napi_get_boolean(env, true, &useJsModuleFallback);
+#else
+  napi_get_boolean(env, false, &useContextExecutionFallback);
+  napi_get_boolean(env, false, &useJsModuleFallback);
+#endif
 
   const napi_property_descriptor scriptProperties[] = {
       napi_util::desc("runInContext", ScriptRunInContext, nullptr),
@@ -4048,6 +4083,10 @@ napi_value VM::CreateModule(napi_env env) {
                     3, scriptProperties, &scriptCtor);
 
   const napi_property_descriptor bindingProperties[] = {
+      napi_util::desc("engine", engineName),
+      napi_util::desc("useContextExecutionFallback",
+                      useContextExecutionFallback),
+      napi_util::desc("useJsModuleFallback", useJsModuleFallback),
       napi_util::desc("Script", scriptCtor),
       napi_util::desc("createContext", CreateContextCallback, nullptr),
       napi_util::desc("isContext", IsContextCallback, nullptr),
