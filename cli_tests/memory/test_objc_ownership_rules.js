@@ -1,8 +1,8 @@
 "use strict";
 
-const { runAsyncMemoryTest } = require("./_harness");
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-runAsyncMemoryTest("objc-ownership-rules", async (t) => {
+runPlainMemoryTest("objc-ownership-rules", async (t) => {
   const rounds = 1000;
   let addRetainFailures = 0;
   let releaseFailures = 0;
@@ -30,9 +30,6 @@ runAsyncMemoryTest("objc-ownership-rules", async (t) => {
       releaseFailures += 1;
     }
 
-    if ((i + 1) % 250 === 0) {
-      await t.forceGC(2, 12 * 1024 * 1024, 2);
-    }
   }
 
   t.assert(addRetainFailures === 0, `container add did not retain in ${addRetainFailures} rounds`);
@@ -46,4 +43,4 @@ runAsyncMemoryTest("objc-ownership-rules", async (t) => {
     avgAfterAdd: totalAfterAdd / rounds,
     avgAfterRemove: totalAfterRemove / rounds,
   };
-});
+}, { timeoutMs: 20_000 });

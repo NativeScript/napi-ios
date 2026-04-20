@@ -49,6 +49,14 @@ describe(module.id, function () {
             expect(p13).toBe('init');
             expect(p14).toBe(NSObject);
             expect(p15).toBe(NSObjectProtocol);
+            console.log("DBG p16 typeof=", typeof p16,
+                        "ctor=", p16 && p16.constructor && p16.constructor.name,
+                        "hasOwnClass=", Object.prototype.hasOwnProperty.call(p16, "class"),
+                        "hasPtr=", !!(p16 && p16.__ns_native_ptr),
+                        "ptrType=", typeof (p16 && p16.__ns_native_ptr),
+                        "classType=", typeof (p16 && p16.class),
+                        "className=", p16 && p16.class && p16.class.name,
+                        "protoHasClass=", Object.prototype.hasOwnProperty.call(Object.getPrototypeOf(p16), "class"));
             expect(p16.class()).toBe(NSObject.class());
 
             expect(p17.a.x).toBe(1);

@@ -1,6 +1,7 @@
 #include "ClassBuilder.h"
 #import <Foundation/Foundation.h>
 #include <objc/runtime.h>
+#include <mutex>
 #include "Closure.h"
 #include "Interop.h"
 #include "Metadata.h"
@@ -9,7 +10,6 @@
 #include "Util.h"
 #include "js_native_api.h"
 #include "node_api_util.h"
-#include <mutex>
 
 namespace nativescript {
 namespace {
@@ -387,16 +387,18 @@ NSUInteger JS_SymbolIteratorCountByEnumerating(id self, SEL _cmd, NSFastEnumerat
 }
 }  // namespace
 
-ClassBuilder::ClassBuilder(napi_env env, napi_value constructor) {
+ClassBuilder::ClassBuilder(napi_env env, napi_value constructor, Class explicitSuperClass) {
   this->env = env;
   bridgeState = ObjCBridgeState::InstanceData(env);
 
   metadataOffset = MD_SECTION_OFFSET_NULL;
 
-  napi_value superConstructor;
-  napi_get_prototype(env, constructor, &superConstructor);
-  Class superClassNative = nullptr;
-  napi_unwrap(env, superConstructor, (void**)&superClassNative);
+  Class superClassNative = explicitSuperClass;
+  if (superClassNative == nullptr) {
+    napi_value superConstructor;
+    napi_get_prototype(env, constructor, &superConstructor);
+    napi_unwrap(env, superConstructor, (void**)&superClassNative);
+  }
 
   if (superClassNative == nullptr) {
     // If the class does not inherit from a native class,
@@ -565,8 +567,7 @@ void ClassBuilder::addMethod(std::string& name, MethodDescriptor* desc, napi_val
   switch (desc->kind) {
     case kMethodDescEncoding: {
       const char* encoding = desc->encoding.c_str();
-      auto closure = new Closure(encoding, false, true);
-      closure->env = env;
+      auto closure = new Closure(env, encoding, false, true);
       if (func != nullptr)
         closure->func = make_ref(env, func);
       else
@@ -579,9 +580,8 @@ void ClassBuilder::addMethod(std::string& name, MethodDescriptor* desc, napi_val
 
     case kMethodDescSignatureOffset: {
       std::string encoding;
-      auto closure = new Closure(bridgeState->metadata, desc->signatureOffset, false, &encoding,
-                                 true, desc->isProperty);
-      closure->env = env;
+      auto closure = new Closure(env, bridgeState->metadata, desc->signatureOffset, false,
+                                 &encoding, true, desc->isProperty);
       if (func != nullptr)
         closure->func = make_ref(env, func);
       else
@@ -626,13 +626,33 @@ void ClassBuilder::build() {
       SEL selector = sel_registerName(name.c_str());
       std::string encoding;
 
-      napi_value def, params, returns;
+      napi_value def, params = nullptr, returns;
       napi_get_named_property(env, exposedMethods, name.c_str(), &def);
-      napi_get_named_property(env, def, "params", &params);
       napi_get_named_property(env, def, "returns", &returns);
 
       uint32_t paramCount = 0;
-      napi_get_array_length(env, params, &paramCount);
+      bool hasParams = false;
+      napi_has_named_property(env, def, "params", &hasParams);
+      if (hasParams) {
+        napi_get_named_property(env, def, "params", &params);
+        napi_valuetype paramsType = napi_undefined;
+        napi_typeof(env, params, &paramsType);
+        if (paramsType == napi_object) {
+          bool isArray = false;
+          napi_is_array(env, params, &isArray);
+          if (isArray) {
+            napi_get_array_length(env, params, &paramCount);
+          } else {
+            napi_throw_type_error(env, nullptr,
+                                  "ObjCExposedMethods params must be an array when provided");
+            return;
+          }
+        } else if (paramsType != napi_undefined && paramsType != napi_null) {
+          napi_throw_type_error(env, nullptr,
+                                "ObjCExposedMethods params must be an array when provided");
+          return;
+        }
+      }
 
       encoding += getEncodedType(env, returns);
       encoding += "@:";
@@ -807,7 +827,13 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
 
   // Get the native class from 'this' (the constructor function)
   Class baseNativeClass = nullptr;
-  napi_unwrap(env, thisArg, (void**)&baseNativeClass);
+  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState != nullptr) {
+    bridgeState->tryResolveBridgedClassConstructor(env, thisArg, &baseNativeClass);
+  }
+  if (baseNativeClass == nullptr) {
+    napi_unwrap(env, thisArg, (void**)&baseNativeClass);
+  }
 
   if (baseNativeClass == nullptr) {
     napi_throw_error(env, nullptr, "extend() can only be called on native class constructors");
@@ -961,6 +987,23 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
   napi_create_string_utf8(env, newClassName.c_str(), newClassName.length(), &classNameValue);
   napi_set_named_property(env, newConstructor, "ObjCClassName", classNameValue);
 
+  napi_value registryGlobal = nullptr;
+  napi_value classRegistry = nullptr;
+  bool hasClassRegistry = false;
+  napi_get_global(env, &registryGlobal);
+  napi_has_named_property(env, registryGlobal, "__nsConstructorsByObjCClassName",
+                          &hasClassRegistry);
+  if (!hasClassRegistry) {
+    napi_create_object(env, &classRegistry);
+    napi_set_named_property(env, registryGlobal, "__nsConstructorsByObjCClassName", classRegistry);
+  } else {
+    napi_get_named_property(env, registryGlobal, "__nsConstructorsByObjCClassName", &classRegistry);
+  }
+
+  if (classRegistry != nullptr) {
+    napi_set_named_property(env, classRegistry, newClassName.c_str(), newConstructor);
+  }
+
   if (shouldReuseExistingClass && existingExternalClass != nullptr) {
     napi_remove_wrap(env, newConstructor, nullptr);
     napi_wrap(env, newConstructor, (void*)existingExternalClass, nullptr, nullptr, nullptr);
@@ -968,11 +1011,11 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
   }
 
   // Use ClassBuilder to create the native class and bridge the methods
-  ClassBuilder* builder = new ClassBuilder(env, newConstructor);
+  ClassBuilder* builder = new ClassBuilder(env, newConstructor, baseNativeClass);
   builder->build();
 
   // Register the builder in the bridge state
-  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  bridgeState = ObjCBridgeState::InstanceData(env);
   bridgeState->classesByPointer[builder->nativeClass] = builder;
 
   return newConstructor;

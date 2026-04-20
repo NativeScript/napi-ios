@@ -412,6 +412,8 @@ JS_EXTERN void JS_AddIntrinsicTypedArrays(JSContext *ctx);
 JS_EXTERN void JS_AddIntrinsicPromise(JSContext *ctx);
 JS_EXTERN void JS_AddIntrinsicBigInt(JSContext *ctx);
 JS_EXTERN void JS_AddIntrinsicWeakRef(JSContext *ctx);
+JS_EXTERN void JS_KeepWeakRefTargetAlive(JSContext *ctx, JSValueConst value);
+JS_EXTERN void JS_ClearWeakRefKeepAlives(JSRuntime *rt);
 JS_EXTERN void JS_AddPerformance(JSContext *ctx);
 
 /* for equality comparisons and sameness */

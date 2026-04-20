@@ -1,8 +1,8 @@
 "use strict";
 
-const { runAsyncMemoryTest } = require("./_harness");
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-runAsyncMemoryTest("block-completion-safety", async (t) => {
+runPlainMemoryTest("block-completion-safety", async (t) => {
   const total = 120;
   let executed = 0;
   let completed = 0;
@@ -29,4 +29,3 @@ runAsyncMemoryTest("block-completion-safety", async (t) => {
     completed,
   };
 }, { timeoutMs: 10_000 });
-

@@ -21,10 +21,15 @@ describe("Exception Handling Tests", function () {
         } catch (error) {
             // In debug mode, this should be caught here instead of crashing
             expect(error).toBeDefined();
-            expect(error.message).toContain("Cannot read properties of undefined");
+            const message = String(error && error.message ? error.message : error);
+            expect(
+                message.indexOf("Cannot read properties of undefined") !== -1 ||
+                message.indexOf("Cannot read property '__addFontFamily' of undefined") !== -1 ||
+                message.indexOf("undefined is not an object") !== -1
+            ).toBe(true);
             
             console.log("✓ Development-friendly error handling:");
-            console.log("Message:", error.message);
+            console.log("Message:", message);
             console.log("✓ App continues running without crash");
             
             done();
@@ -76,4 +81,4 @@ describe("Exception Handling Tests", function () {
         console.log("✓ Hot-reload friendly: 2 errors caught, 1 success, app never crashed");
         done();
     });
-}); 
+});

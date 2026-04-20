@@ -1,41 +1,37 @@
 "use strict";
 
-const total = 5000;
-const refs = [];
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-for (let i = 0; i < total; i++) {
-  const payload = { i, bytes: new Uint8Array(128) };
-  refs.push(new WeakRef(payload));
-}
+runPlainMemoryTest("weakref-plain-script", async (t) => {
+  const total = 5000;
+  const refs = [];
 
-for (let cycle = 0; cycle < 16; cycle++) {
-  if (typeof gc === "function") {
-    gc();
-  }
-  const pressure = new Array(512);
-  for (let i = 0; i < pressure.length; i++) {
-    pressure[i] = new Uint8Array(64 * 1024);
-  }
-}
-
-setTimeout(() => {
-  if (typeof gc === "function") {
-    gc();
-  }
-
-  let alive = 0;
-  for (let i = 0; i < refs.length; i++) {
-    if (refs[i].deref()) {
-      alive += 1;
+  (function createWeakRefs() {
+    for (let i = 0; i < total; i++) {
+      const payload = { i, bytes: new Uint8Array(128) };
+      refs.push(new WeakRef(payload));
     }
-  }
+  })();
 
-  const pass = alive <= Math.floor(total * 0.1);
+  const collected = await t.forceCollectUntil(() => {
+    return t.countAliveWeakRefs(refs) <= Math.floor(total * 0.1);
+  }, {
+    timeoutMs: 10_000,
+    intervalMs: 20,
+    gcRounds: 3,
+    pressureBytes: 24 * 1024 * 1024,
+    pauseMs: 4,
+  });
 
-  console.log(`MEMTEST_RESULT:${JSON.stringify({
-    name: "weakref-plain-script",
-    pass,
-    details: { total, alive },
-    error: pass ? undefined : `WeakRef targets unexpectedly alive in plain script: ${alive}/${total}`,
-  })}`);
-}, 0);
+  const alive = t.countAliveWeakRefs(refs);
+  t.assert(
+    collected,
+    `WeakRef targets unexpectedly alive in plain script: ${alive}/${total}`,
+  );
+
+  return {
+    total,
+    alive,
+    engine: t.engine,
+  };
+}, { timeoutMs: 14_000 });

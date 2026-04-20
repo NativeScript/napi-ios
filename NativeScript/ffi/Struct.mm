@@ -14,6 +14,26 @@
 
 namespace nativescript {
 
+namespace {
+std::string buildStructTypeEncoding(StructInfo* info) {
+  if (info == nullptr || info->name == nullptr) {
+    return "";
+  }
+
+  std::string encoding = "{";
+  encoding += info->name;
+  encoding += "=";
+  for (const auto& field : info->fields) {
+    if (field.type == nullptr) {
+      return "";
+    }
+    field.type->encode(&encoding);
+  }
+  encoding += "}";
+  return encoding;
+}
+}  // namespace
+
 void ObjCBridgeState::registerStructGlobals(napi_env env, napi_value global) {
   MDSectionOffset offset = metadata->structsOffset;
   while (offset < metadata->unionsOffset) {
@@ -235,6 +255,29 @@ NAPI_FUNCTION(StructConstructor) {
   size_t argc = 1;
 
   napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, (void**)&info);
+
+  napi_valuetype thisType = napi_undefined;
+  if (jsThis == nullptr || napi_typeof(env, jsThis, &thisType) != napi_ok ||
+      (thisType != napi_object && thisType != napi_function)) {
+    napi_create_object(env, &jsThis);
+
+    if (info != nullptr) {
+      napi_value structCtor = StructObject::getJSClass(env, info);
+      napi_value structPrototype = nullptr;
+      if (structCtor != nullptr &&
+          napi_get_named_property(env, structCtor, "prototype", &structPrototype) == napi_ok &&
+          structPrototype != nullptr) {
+        napi_value global = nullptr;
+        napi_value objectCtor = nullptr;
+        napi_value setPrototypeOf = nullptr;
+        napi_get_global(env, &global);
+        napi_get_named_property(env, global, "Object", &objectCtor);
+        napi_get_named_property(env, objectCtor, "setPrototypeOf", &setPrototypeOf);
+        napi_value setPrototypeArgs[2] = {jsThis, structPrototype};
+        napi_call_function(env, objectCtor, setPrototypeOf, 2, setPrototypeArgs, nullptr);
+      }
+    }
+  }
 
   napi_value arg;
   if (argc > 0) {
@@ -504,6 +547,20 @@ napi_value StructObject::defineJSClass(napi_env env, StructInfo* info) {
       },
   };
   napi_define_properties(env, result, 2, classProps);
+
+  std::string typeEncoding = buildStructTypeEncoding(info);
+  if (!typeEncoding.empty()) {
+    napi_value typeSymbol = jsSymbolFor(env, "type");
+    napi_value typeValue = nullptr;
+    napi_create_string_utf8(env, typeEncoding.c_str(), NAPI_AUTO_LENGTH, &typeValue);
+    napi_set_property(env, result, typeSymbol, typeValue);
+
+    napi_value prototype = nullptr;
+    if (napi_get_named_property(env, result, "prototype", &prototype) == napi_ok &&
+        prototype != nullptr) {
+      napi_set_property(env, prototype, typeSymbol, typeValue);
+    }
+  }
 
   free(properties);
 

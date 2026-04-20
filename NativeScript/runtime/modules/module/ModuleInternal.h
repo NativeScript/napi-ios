@@ -8,6 +8,11 @@
 
 typedef napi_value napi_register_module_v(napi_env env, napi_value exports);
 
+#if defined(TARGET_ENGINE_QUICKJS)
+typedef struct JSContext JSContext;
+typedef struct JSModuleDef JSModuleDef;
+#endif
+
 namespace nativescript {
 class ModuleInternal {
  public:
@@ -88,6 +93,14 @@ class ModuleInternal {
   // ES Module support functions
   bool IsESModule(const std::string& path);
   napi_value LoadESModule(napi_env env, const std::string& path);
+
+#if defined(TARGET_ENGINE_QUICKJS)
+  void InitQuickJSESModuleLoader(napi_env env);
+  std::string NormalizeQuickJSImportSpecifier(const std::string& baseName,
+                                              const std::string& moduleName);
+  JSModuleDef* LoadQuickJSImportModule(JSContext* ctx,
+                                       const std::string& moduleName);
+#endif
 
   // void SaveScriptCache(napi_env env, napi_value script, const std::string&
   // path);

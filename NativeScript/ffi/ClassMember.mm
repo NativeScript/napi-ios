@@ -12,6 +12,7 @@
 #include <unordered_set>
 #include "ClassBuilder.h"
 #include "Closure.h"
+#include "Interop.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
@@ -26,13 +27,22 @@
 
 namespace nativescript {
 
+namespace {
+constexpr const char* kNativePointerProperty = "__ns_native_ptr";
+}
+
 napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo) {
   napi_value jsThis;
   ObjCClassMember* method = nullptr;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&method);
 
   id self = nil;
-  napi_status unwrapStatus = napi_unwrap(env, jsThis, (void**)&self);
+  ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+  if (state != nullptr && jsThis != nullptr) {
+    state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
+  }
+
+  napi_status unwrapStatus = self != nil ? napi_ok : napi_unwrap(env, jsThis, (void**)&self);
   if ((unwrapStatus != napi_ok || self == nil) && method != nullptr && method->cls != nullptr &&
       method->cls->nativeClass != nil) {
     self = (id)method->cls->nativeClass;
@@ -140,8 +150,6 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
             (superReadonly == readonly && sameGetter && (readonly || sameSetter))) {
           continue;
         }
-      } else if (inheritedProperty && readonly) {
-        continue;
       }
 
       auto updatedMember = ObjCClassMember(
@@ -904,7 +912,25 @@ ObjCClassMember* findInitializerForArgs(napi_env env, ObjCClassMemberMap* initia
 
 inline id assertSelf(napi_env env, napi_value jsThis, ObjCClassMember* method = nullptr) {
   id self = nil;
-  napi_status unwrapStatus = napi_unwrap(env, jsThis, (void**)&self);
+  ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+  if (state != nullptr && jsThis != nullptr) {
+    state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
+  }
+
+  napi_status unwrapStatus = self != nil ? napi_ok : napi_unwrap(env, jsThis, (void**)&self);
+
+  if ((unwrapStatus != napi_ok || self == nil) && jsThis != nullptr) {
+    napi_value nativePointerValue = nullptr;
+    if (napi_get_named_property(env, jsThis, kNativePointerProperty, &nativePointerValue) ==
+            napi_ok &&
+        Pointer::isInstance(env, nativePointerValue)) {
+      Pointer* nativePointer = Pointer::unwrap(env, nativePointerValue);
+      if (nativePointer != nullptr && nativePointer->data != nullptr) {
+        self = static_cast<id>(nativePointer->data);
+        unwrapStatus = napi_ok;
+      }
+    }
+  }
 
   if (unwrapStatus == napi_ok && self != nil) {
     return self;
@@ -968,7 +994,8 @@ ObjCClass* resolveInitMetadataClass(napi_env env, napi_value jsThis, ObjCClassMe
     if (napi_get_named_property(env, jsThis, "constructor", &constructor) == napi_ok &&
         constructor != nullptr) {
       Class constructorClass = nil;
-      if (napi_unwrap(env, constructor, (void**)&constructorClass) == napi_ok) {
+      if (state->tryResolveBridgedClassConstructor(env, constructor, &constructorClass) ||
+          napi_unwrap(env, constructor, (void**)&constructorClass) == napi_ok) {
         ObjCClass* resolved = resolveFromClass(constructorClass);
         if (resolved != nullptr) {
           return resolved;
@@ -1644,8 +1671,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
         napi_valuetype jsArgType = napi_undefined;
         if (napi_typeof(env, invocationArgs[i], &jsArgType) == napi_ok &&
             jsArgType == napi_function) {
-          auto closure = new Closure(std::string(blockEncoding), true);
-          closure->env = env;
+          auto closure = new Closure(env, std::string(blockEncoding), true);
           id block = registerBlock(env, closure, invocationArgs[i]);
           *((void**)avalues[i + 2]) = (void*)block;
           fallbackBlocksToRelease.push_back(block);

@@ -19,6 +19,11 @@ const memoryThresholdsKB = {
   "plain-script-runloop-drain": 70 * 1024,
   "mixed-stress": 90 * 1024,
   "weakref-plain-script": 40 * 1024,
+  "objc-wrapper-finalization": 50 * 1024,
+  "pointer-c-buffer-semantics": 40 * 1024,
+  "reference-lifecycle": 40 * 1024,
+  "block-callback-finalization": 40 * 1024,
+  "c-function-pointer-semantics": 40 * 1024,
 };
 
 const kMinValidRssKB = 4 * 1024;
@@ -152,18 +157,38 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
     stdoutRl.on("line", addLine);
     stderrRl.on("line", addLine);
 
-    const sampler = setInterval(async () => {
-      if (!child.pid) {
+    let samplerStopped = false;
+    let samplerTimer = null;
+
+    const queueSample = (delayMs) => {
+      if (samplerStopped) {
         return;
       }
-      const rssKB = await sampleRssKB(child.pid);
-      if (rssKB != null) {
-        rssSamples.push({
-          t: Date.now() - startedAt,
-          rssKB,
-        });
-      }
-    }, 200);
+
+      samplerTimer = setTimeout(async () => {
+        samplerTimer = null;
+
+        if (samplerStopped) {
+          return;
+        }
+
+        if (child.pid) {
+          const rssKB = await sampleRssKB(child.pid);
+          if (rssKB != null) {
+            rssSamples.push({
+              t: Date.now() - startedAt,
+              rssKB,
+            });
+          }
+        }
+
+        queueSample(200);
+      }, delayMs);
+    };
+
+    child.on("spawn", () => {
+      queueSample(200);
+    });
 
     const killer = setTimeout(() => {
       timedOut = true;
@@ -171,7 +196,10 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
     }, timeoutMs);
 
     child.on("close", (code, signal) => {
-      clearInterval(sampler);
+      samplerStopped = true;
+      if (samplerTimer != null) {
+        clearTimeout(samplerTimer);
+      }
       clearTimeout(killer);
       stdoutRl.close();
       stderrRl.close();
@@ -311,5 +339,7 @@ module.exports = {
   parseArgs,
   runSingleTest,
   sampleRssKB,
+  printRunSummary,
+  ensureExecutableSignature,
   main,
 };

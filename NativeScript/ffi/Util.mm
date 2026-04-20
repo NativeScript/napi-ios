@@ -189,6 +189,15 @@ std::string getEncodedType(napi_env env, napi_value value) {
         return structEncoding;
       }
 
+      auto bridgeState = ObjCBridgeState::InstanceData(env);
+      if (bridgeState != nullptr) {
+        id bridgedType = nil;
+        if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
+            bridgedType != nil) {
+          return "@";
+        }
+      }
+
       if (type == napi_function) {
         // Native class constructor like NSObject.
         return "@";

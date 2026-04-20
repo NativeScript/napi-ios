@@ -411,7 +411,7 @@ std::string MDTypeInfoSerde::encode(MDTypeInfo* type) {
       result = "^v";
       break;
     case mdTypeUInt8:
-      result = "B";
+      result = "C";
       break;
     case mdTypeString:
       result = "*";

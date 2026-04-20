@@ -8,6 +8,46 @@ using namespace ada;
 using namespace nativescript;
 
 namespace {
+bool EnsureConstructorThis(napi_env env, const char* constructorName,
+                           napi_value* jsThis) {
+  if (jsThis == nullptr) {
+    return false;
+  }
+
+  napi_valuetype thisType = napi_undefined;
+  if (*jsThis != nullptr && napi_typeof(env, *jsThis, &thisType) == napi_ok &&
+      (thisType == napi_object || thisType == napi_function)) {
+    return true;
+  }
+
+  napi_value global = nullptr;
+  napi_value ctor = nullptr;
+  napi_value prototype = nullptr;
+  napi_value objectCtor = nullptr;
+  napi_value setPrototypeOf = nullptr;
+
+  if (napi_create_object(env, jsThis) != napi_ok || *jsThis == nullptr) {
+    return false;
+  }
+
+  if (napi_get_global(env, &global) != napi_ok ||
+      napi_get_named_property(env, global, constructorName, &ctor) != napi_ok ||
+      ctor == nullptr ||
+      napi_get_named_property(env, ctor, "prototype", &prototype) != napi_ok ||
+      prototype == nullptr ||
+      napi_get_named_property(env, global, "Object", &objectCtor) != napi_ok ||
+      objectCtor == nullptr ||
+      napi_get_named_property(env, objectCtor, "setPrototypeOf",
+                              &setPrototypeOf) != napi_ok ||
+      setPrototypeOf == nullptr) {
+    return false;
+  }
+
+  napi_value argv[2] = {*jsThis, prototype};
+  return napi_call_function(env, objectCtor, setPrototypeOf, 2, argv,
+                            nullptr) == napi_ok;
+}
+
 URLSearchParams* GetInstance(napi_env env, napi_callback_info info) {
   NAPI_PREAMBLE
   napi_value jsThis;
@@ -25,10 +65,44 @@ URLSearchParams* GetInstance(napi_env env, napi_callback_info info) {
 }
 }  // namespace
 
-URLSearchParams::URLSearchParams(url_search_params params, url_aggregator* parent)
+URLSearchParams::URLSearchParams(url_search_params params,
+                                 url_aggregator* parent)
     : params_(params), parent_(parent) {}
 
 url_search_params* URLSearchParams::GetURLSearchParams() { return &params_; }
+
+void URLSearchParams::Reset(url_search_params params, url_aggregator* parent) {
+  params_ = std::move(params);
+  parent_ = parent;
+}
+
+napi_value URLSearchParams::Create(napi_env env, ada::url_search_params params,
+                                   ada::url_aggregator* parent) {
+  NAPI_PREAMBLE
+
+  napi_value global;
+  NAPI_GUARD(napi_get_global(env, &global)) { return nullptr; }
+
+  napi_value constructor;
+  NAPI_GUARD(
+      napi_get_named_property(env, global, "URLSearchParams", &constructor)) {
+    return nullptr;
+  }
+
+  napi_value result;
+  NAPI_GUARD(napi_new_instance(env, constructor, 0, nullptr, &result)) {
+    return nullptr;
+  }
+
+  URLSearchParams* searchParams = nullptr;
+  NAPI_GUARD(
+      napi_unwrap(env, result, reinterpret_cast<void**>(&searchParams))) {
+    return nullptr;
+  }
+
+  searchParams->Reset(std::move(params), parent);
+  return result;
+}
 
 void URLSearchParams::SyncParent() {
   if (parent_ == nullptr) {
@@ -47,17 +121,28 @@ void URLSearchParams::SyncParent() {
 napi_value URLSearchParams::New(napi_env env, napi_callback_info info) {
   NAPI_CALLBACK_BEGIN(1)
 
+  if (!EnsureConstructorThis(env, "URLSearchParams", &jsThis)) {
+    napi_throw_error(env, nullptr,
+                     "Failed to initialize URLSearchParams instance");
+    return nullptr;
+  }
+
   url_search_params params;
 
   if (argc > 0) {
+    napi_value stringValue;
+    NAPI_GUARD(napi_coerce_to_string(env, argv[0], &stringValue)) {
+      return nullptr;
+    }
+
     size_t str_size;
     NAPI_GUARD(
-        napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_size)) {
+        napi_get_value_string_utf8(env, stringValue, nullptr, 0, &str_size)) {
       return nullptr;
     }
 
     std::vector<char> buffer(str_size + 1);
-    NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], buffer.data(),
+    NAPI_GUARD(napi_get_value_string_utf8(env, stringValue, buffer.data(),
                                           str_size + 1, nullptr)) {
       return nullptr;
     }
@@ -65,9 +150,12 @@ napi_value URLSearchParams::New(napi_env env, napi_callback_info info) {
     params = url_search_params(std::string_view(buffer.data(), str_size));
   }
 
-  URLSearchParams* searchParams = new URLSearchParams(params);
-  napi_wrap(env, jsThis, searchParams, URLSearchParams::Destructor,
-            searchParams, nullptr);
+  URLSearchParams* searchParams = new URLSearchParams(std::move(params));
+  NAPI_GUARD(napi_wrap(env, jsThis, searchParams, URLSearchParams::Destructor,
+                       searchParams, nullptr)) {
+    delete searchParams;
+    return nullptr;
+  }
 
   return jsThis;
 }

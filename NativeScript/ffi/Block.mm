@@ -231,7 +231,7 @@ id registerBlock(napi_env env, Closure* closure, napi_value callback) {
   if (napiSupportsThreadsafeFunctions(bridgeState->self_dl)) {
     napi_value workName;
     napi_create_string_utf8(env, "Block", NAPI_AUTO_LENGTH, &workName);
-    napi_create_threadsafe_function(env, callback, nullptr, workName, 0, 1, nullptr, nullptr,
+    napi_create_threadsafe_function(env, nullptr, nullptr, workName, 0, 1, nullptr, nullptr,
                                     closure, Closure::callBlockFromMainThread, &closure->tsfn);
     if (closure->tsfn) napi_unref_threadsafe_function(env, closure->tsfn);
   }
@@ -301,8 +301,7 @@ NAPI_FUNCTION(registerBlock) {
 
   napi_value callback = argv[1];
 
-  auto closure = new Closure(enc, true);
-  closure->env = env;
+  auto closure = new Closure(env, enc, true);
   registerBlock(env, closure, callback);
 
   return callback;
@@ -412,6 +411,9 @@ napi_value FunctionPointer::wrapWithEncoding(napi_env env, void* function, const
 
 void FunctionPointer::finalize(napi_env env, void* finalize_data, void* finalize_hint) {
   auto ref = (FunctionPointer*)finalize_data;
+  if (ref == nullptr) {
+    return;
+  }
   if (ref->ownsCif && ref->cif != nullptr) {
     delete ref->cif;
     ref->cif = nullptr;

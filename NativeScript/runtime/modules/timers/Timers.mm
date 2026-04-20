@@ -6,8 +6,8 @@
 #import <Foundation/Foundation.h>
 #include <dispatch/dispatch.h>
 #include <objc/runtime.h>
-#include <cmath>
 #include <atomic>
+#include <cmath>
 #include "Timers.h"
 
 static std::atomic<int> gActiveTimers{0};
@@ -18,6 +18,7 @@ static std::atomic<int> gActiveTimers{0};
   napi_env env;
   napi_ref callback;
   bool activeCounted;
+  int64_t timerId;
 }
 @end
 
@@ -34,6 +35,129 @@ static std::atomic<int> gActiveTimers{0};
 
 namespace {
 const void* kTimerHandleAssociationKey = &kTimerHandleAssociationKey;
+#ifdef TARGET_ENGINE_HERMES
+const char* kInstallHermesTimerBridgeSource = R"(
+  (function (global) {
+    if (global.__nsHermesTimersInstalled) {
+      return;
+    }
+
+    global.__nsHermesTimersInstalled = true;
+
+    const callbacks = new Map();
+    let nextTimerId = 1;
+
+    function validateCallback(callback) {
+      if (typeof callback !== "function") {
+        throw new TypeError('The "callback" argument must be of type function');
+      }
+    }
+
+    function allocateTimerId() {
+      const id = nextTimerId++;
+      if (nextTimerId > 0x7fffffff) {
+        nextTimerId = 1;
+      }
+      return id;
+    }
+
+    function createTimer(nativeSetter, callback, ms) {
+      validateCallback(callback);
+      const timerId = allocateTimerId();
+      callbacks.set(timerId, callback);
+      return {
+        __timerId: timerId,
+        __nativeHandle: nativeSetter(timerId, ms),
+      };
+    }
+
+    function clearTimer(token) {
+      if (token == null) {
+        return;
+      }
+
+      if (typeof token.__timerId === "number") {
+        callbacks.delete(token.__timerId);
+      }
+
+      const nativeHandle =
+        token && typeof token === "object" && "__nativeHandle" in token
+          ? token.__nativeHandle
+          : token;
+      global.__ns__nativeClearTimer(nativeHandle);
+    }
+
+    global.__nsDispatchTimeout = function (timerId) {
+      const callback = callbacks.get(timerId);
+      callbacks.delete(timerId);
+      if (typeof callback === "function") {
+        callback();
+      }
+    };
+
+    global.__nsDispatchInterval = function (timerId) {
+      const callback = callbacks.get(timerId);
+      if (typeof callback === "function") {
+        callback();
+      }
+    };
+
+    global.__nsReleaseTimer = function (timerId) {
+      callbacks.delete(timerId);
+    };
+
+    global.__nsHermesTimerCallbackCount = function () {
+      return callbacks.size;
+    };
+
+    global.__nsHermesHasTimerCallback = function (timerId) {
+      return callbacks.has(timerId);
+    };
+
+    const setTimeoutImpl = function (callback, ms) {
+      return createTimer(global.__ns__nativeSetTimeout, callback, ms);
+    };
+
+    const setIntervalImpl = function (callback, ms) {
+      return createTimer(global.__ns__nativeSetInterval, callback, ms);
+    };
+
+    global.setTimeout = setTimeoutImpl;
+    global.setInterval = setIntervalImpl;
+    global.clearTimeout = clearTimer;
+    global.clearInterval = clearTimer;
+    global.__ns__setTimeout = setTimeoutImpl;
+    global.__ns__setInterval = setIntervalImpl;
+    global.__ns__clearTimeout = clearTimer;
+    global.__ns__clearInterval = clearTimer;
+  })(globalThis);
+)";
+
+void InstallHermesTimerBridge(napi_env env) {
+  napi_value script = nullptr;
+  napi_create_string_utf8(env, kInstallHermesTimerBridgeSource, NAPI_AUTO_LENGTH, &script);
+  napi_value result = nullptr;
+  napi_run_script(env, script, &result);
+}
+
+void DispatchHermesTimerCallback(napi_env env, const char* dispatcherName, int64_t timerId) {
+  if (env == nullptr || dispatcherName == nullptr) {
+    return;
+  }
+
+  napi_value global = nullptr;
+  napi_value dispatcher = nullptr;
+  napi_get_global(env, &global);
+  if (napi_get_named_property(env, global, dispatcherName, &dispatcher) != napi_ok ||
+      dispatcher == nullptr) {
+    return;
+  }
+
+  napi_value timerIdValue = nullptr;
+  napi_create_int64(env, timerId, &timerIdValue);
+  napi_call_function(env, global, dispatcher, 1, &timerIdValue, nullptr);
+}
+#endif
 
 void MarkTimerActive(NSTimerHandle* handle) {
   if (handle == nil) {
@@ -67,8 +191,7 @@ void AddTimerToMainRunLoop(NSTimer* timer) {
   dispatch_sync(dispatch_get_main_queue(), addTimer);
 }
 
-void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle,
-                        bool invalidateTimer = true) {
+void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle, bool invalidateTimer = true) {
   if (handle == nil) {
     return;
   }
@@ -109,8 +232,19 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle,
   }
 
   napi_env cleanupEnv = callEnv != nullptr ? callEnv : handle->env;
+#ifdef TARGET_ENGINE_HERMES
+  if (cleanupEnv != nullptr && handle->timerId != 0) {
+    DispatchHermesTimerCallback(cleanupEnv, "__nsReleaseTimer", handle->timerId);
+    handle->timerId = 0;
+  }
+#endif
   if (cleanupEnv != nullptr && callback != nullptr) {
+    uint32_t remaining = 0;
+    napi_reference_unref(cleanupEnv, callback, &remaining);
     napi_delete_reference(cleanupEnv, callback);
+#ifdef TARGET_ENGINE_HERMES
+    js_execute_pending_jobs(cleanupEnv);
+#endif
   }
 }
 }  // namespace
@@ -119,19 +253,31 @@ namespace nativescript {
 
 JS_CLASS_INIT(Timers::Init) {
   const napi_property_descriptor properties[] = {
+#ifdef TARGET_ENGINE_HERMES
+      napi_util::desc("__ns__nativeSetTimeout", SetTimeout),
+      napi_util::desc("__ns__nativeSetInterval", SetInterval),
+      napi_util::desc("__ns__nativeClearTimer", ClearTimer),
+      napi_util::desc("queueMicrotask", QueueMicrotask),
+      napi_util::desc("__ns__queueMicrotask", QueueMicrotask),
+#else
       napi_util::desc("setTimeout", SetTimeout),
       napi_util::desc("setInterval", SetInterval),
       napi_util::desc("clearTimeout", ClearTimer),
       napi_util::desc("clearInterval", ClearTimer),
+      napi_util::desc("__nsActiveTimerCount", ActiveTimerCount),
       napi_util::desc("queueMicrotask", QueueMicrotask),
       napi_util::desc("__ns__setTimeout", SetTimeout),
       napi_util::desc("__ns__setInterval", SetInterval),
       napi_util::desc("__ns__clearTimeout", ClearTimer),
       napi_util::desc("__ns__clearInterval", ClearTimer),
       napi_util::desc("__ns__queueMicrotask", QueueMicrotask),
+#endif
   };
 
-  napi_define_properties(env, global, 10, properties);
+  napi_define_properties(env, global, sizeof(properties) / sizeof(properties[0]), properties);
+#ifdef TARGET_ENGINE_HERMES
+  InstallHermesTimerBridge(env);
+#endif
 }
 
 JS_METHOD(Timers::SetTimeout) {
@@ -149,13 +295,18 @@ JS_METHOD(Timers::SetTimeout) {
 
   NSTimeInterval interval = ms / 1000;
 
-  napi_ref callback;
-  napi_create_reference(env, argv[0], 1, &callback);
-
   NSTimerHandle* handle = [[NSTimerHandle alloc] init];
   handle->env = env;
-  handle->callback = callback;
+  handle->callback = nullptr;
   handle->activeCounted = false;
+  handle->timerId = 0;
+#ifdef TARGET_ENGINE_HERMES
+  if (argc > 0) {
+    napi_get_value_int64(env, argv[0], &handle->timerId);
+  }
+#else
+  napi_create_reference(env, argv[0], 1, &handle->callback);
+#endif
   // Keep one retain owned by the JS external handle.
   [handle retain];
   MarkTimerActive(handle);
@@ -172,22 +323,35 @@ JS_METHOD(Timers::SetTimeout) {
                         [handle retain];
 
                         napi_env callbackEnv = nullptr;
+                        int64_t timerId = 0;
                         napi_ref callbackRef = nullptr;
                         @synchronized(handle) {
                           callbackEnv = handle->env;
+                          timerId = handle->timerId;
                           callbackRef = handle->callback;
                         }
 
-                        if (callbackEnv == nullptr || callbackRef == nullptr) {
+                        if (callbackEnv == nullptr) {
                           [handle release];
                           return;
                         }
 
                         NapiScope scope(callbackEnv);
-                        napi_value global, callbackValue;
-                        napi_get_global(callbackEnv, &global);
-                        napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
-                        napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
+#ifdef TARGET_ENGINE_HERMES
+                        DispatchHermesTimerCallback(callbackEnv, "__nsDispatchTimeout", timerId);
+#else
+        if (callbackRef == nullptr) {
+          [handle release];
+          return;
+        }
+        napi_value global, callbackValue;
+        napi_get_global(callbackEnv, &global);
+        napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
+        napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
+#endif
+#ifdef TARGET_ENGINE_HERMES
+                        js_execute_pending_jobs(callbackEnv);
+#endif
 
                         // One-shot timers are already in-flight here; avoid
                         // invalidating during callback teardown.
@@ -233,13 +397,18 @@ JS_METHOD(Timers::SetInterval) {
 
   NSTimeInterval interval = ms / 1000;
 
-  napi_ref callback;
-  napi_create_reference(env, argv[0], 1, &callback);
-
   NSTimerHandle* handle = [[NSTimerHandle alloc] init];
   handle->env = env;
-  handle->callback = callback;
+  handle->callback = nullptr;
   handle->activeCounted = false;
+  handle->timerId = 0;
+#ifdef TARGET_ENGINE_HERMES
+  if (argc > 0) {
+    napi_get_value_int64(env, argv[0], &handle->timerId);
+  }
+#else
+  napi_create_reference(env, argv[0], 1, &handle->callback);
+#endif
   // Keep one retain owned by the JS external handle.
   [handle retain];
   MarkTimerActive(handle);
@@ -256,22 +425,35 @@ JS_METHOD(Timers::SetInterval) {
                         [handle retain];
 
                         napi_env callbackEnv = nullptr;
+                        int64_t timerId = 0;
                         napi_ref callbackRef = nullptr;
                         @synchronized(handle) {
                           callbackEnv = handle->env;
+                          timerId = handle->timerId;
                           callbackRef = handle->callback;
                         }
 
-                        if (callbackEnv == nullptr || callbackRef == nullptr) {
+                        if (callbackEnv == nullptr) {
                           [handle release];
                           return;
                         }
 
                         NapiScope scope(callbackEnv);
-                        napi_value global, callbackValue;
-                        napi_get_global(callbackEnv, &global);
-                        napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
-                        napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
+#ifdef TARGET_ENGINE_HERMES
+                        DispatchHermesTimerCallback(callbackEnv, "__nsDispatchInterval", timerId);
+#else
+        if (callbackRef == nullptr) {
+          [handle release];
+          return;
+        }
+        napi_value global, callbackValue;
+        napi_get_global(callbackEnv, &global);
+        napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
+        napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
+#endif
+#ifdef TARGET_ENGINE_HERMES
+                        js_execute_pending_jobs(callbackEnv);
+#endif
                         [handle release];
                       }];
 
@@ -332,16 +514,13 @@ JS_METHOD(Timers::QueueMicrotask) {
   napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
 
   if (argc < 1 || argv[0] == nullptr) {
-    napi_throw_type_error(env, nullptr,
-                          "The \"callback\" argument must be of type function");
+    napi_throw_type_error(env, nullptr, "The \"callback\" argument must be of type function");
     return nullptr;
   }
 
   napi_valuetype callbackType;
-  if (napi_typeof(env, argv[0], &callbackType) != napi_ok ||
-      callbackType != napi_function) {
-    napi_throw_type_error(env, nullptr,
-                          "The \"callback\" argument must be of type function");
+  if (napi_typeof(env, argv[0], &callbackType) != napi_ok || callbackType != napi_function) {
+    napi_throw_type_error(env, nullptr, "The \"callback\" argument must be of type function");
     return nullptr;
   }
 
@@ -365,8 +544,7 @@ JS_METHOD(Timers::QueueMicrotask) {
 
   napi_value promise;
   napi_value resolveArgs[1] = {undefinedValue};
-  if (napi_call_function(env, promiseCtor, resolveFn, 1, resolveArgs, &promise) !=
-      napi_ok) {
+  if (napi_call_function(env, promiseCtor, resolveFn, 1, resolveArgs, &promise) != napi_ok) {
     return nullptr;
   }
 
@@ -383,9 +561,13 @@ JS_METHOD(Timers::QueueMicrotask) {
   return napi_util::undefined(env);
 }
 
-bool Timers::HasActiveTimers() {
-  return gActiveTimers.load(std::memory_order_relaxed) > 0;
+JS_METHOD(Timers::ActiveTimerCount) {
+  napi_value result = nullptr;
+  napi_create_int32(env, gActiveTimers.load(std::memory_order_relaxed), &result);
+  return result;
 }
+
+bool Timers::HasActiveTimers() { return gActiveTimers.load(std::memory_order_relaxed) > 0; }
 
 }  // namespace nativescript
 

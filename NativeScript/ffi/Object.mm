@@ -1,12 +1,12 @@
 #include "Object.h"
 #include <cstring>
+#include "Interop.h"
 #include "JSObject.h"
 #include "ObjCBridge.h"
 #include "js_native_api.h"
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
-#import <dispatch/dispatch.h>
 #include <objc/runtime.h>
 
 static SEL JSWrapperObjectAssociationKey = @selector(JSWrapperObjectAssociationKey);
@@ -82,11 +82,9 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
   nativescript::ObjCBridgeState* bridgeState = _bridgeState;
   uint64_t bridgeStateToken = _bridgeStateToken;
   uintptr_t objectAddress = _objectAddress;
-  dispatch_async(dispatch_get_main_queue(), ^{
-    if (nativescript::IsBridgeStateLive(bridgeState, bridgeStateToken)) {
-      bridgeState->objectRefs.erase((id)objectAddress);
-    }
-  });
+  if (nativescript::IsBridgeStateLive(bridgeState, bridgeStateToken)) {
+    bridgeState->detachObject((id)objectAddress);
+  }
 
   [super dealloc];
 }
@@ -95,11 +93,16 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 
 napi_value JS_transferOwnershipToNative(napi_env env, napi_callback_info cbinfo) {
   size_t argc = 1;
-  napi_value arg;
-  napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, nullptr);
+  napi_value arg = nullptr;
+  if (napi_get_cb_info(env, cbinfo, &argc, &arg, nullptr, nullptr) != napi_ok || argc == 0 ||
+      arg == nullptr) {
+    return nullptr;
+  }
 
   id obj = nil;
-  napi_unwrap(env, arg, (void**)&obj);
+  if (napi_unwrap(env, arg, (void**)&obj) != napi_ok || obj == nil) {
+    return nullptr;
+  }
 
   [JSWrapperObjectAssociation transferOwnership:env of:arg toNative:obj];
 
@@ -108,14 +111,114 @@ napi_value JS_transferOwnershipToNative(napi_env env, napi_callback_info cbinfo)
 
 namespace nativescript {
 
+napi_value findConstructorForObject(napi_env env, ObjCBridgeState* bridgeState, id object,
+                                    Class cls = nil);
+
+namespace {
+constexpr const char* kNativePointerProperty = "__ns_native_ptr";
+
+napi_value findConstructorForClassObject(napi_env env, ObjCBridgeState* bridgeState, Class cls,
+                                         napi_value fallback = nullptr) {
+  if (bridgeState == nullptr || cls == nil) {
+    return fallback;
+  }
+
+  auto bridgedClass = bridgeState->classesByPointer.find(cls);
+  if (bridgedClass != bridgeState->classesByPointer.end() && bridgedClass->second != nullptr) {
+    return get_ref_value(env, bridgedClass->second->constructor);
+  }
+
+  auto constructedClass = bridgeState->constructorsByPointer.find(cls);
+  if (constructedClass != bridgeState->constructorsByPointer.end()) {
+    napi_value constructor = get_ref_value(env, constructedClass->second);
+    if (constructor != nullptr) {
+      return constructor;
+    }
+  }
+
+  auto metadataClass = bridgeState->mdClassesByPointer.find(cls);
+  if (metadataClass != bridgeState->mdClassesByPointer.end()) {
+    auto bridgedMetadataClass = bridgeState->getClass(env, metadataClass->second);
+    if (bridgedMetadataClass != nullptr) {
+      return get_ref_value(env, bridgedMetadataClass->constructor);
+    }
+  }
+
+  const char* runtimeName = class_getName(cls);
+  if (runtimeName != nullptr && runtimeName[0] != '\0') {
+    napi_value global = nullptr;
+    napi_value constructor = nullptr;
+    bool hasGlobal = false;
+    napi_get_global(env, &global);
+    if (napi_has_named_property(env, global, runtimeName, &hasGlobal) == napi_ok && hasGlobal &&
+        napi_get_named_property(env, global, runtimeName, &constructor) == napi_ok &&
+        constructor != nullptr) {
+      return constructor;
+    }
+  }
+
+  napi_value resolved = findConstructorForObject(env, bridgeState, (id)cls, cls);
+  return resolved != nullptr ? resolved : fallback;
+}
+}  // namespace
+
 const char* nativeObjectProxySource = R"(
   (function (object, isArray, transferOwnershipToNative) {
     let isTransfered = false;
 
     return new Proxy(object, {
-      get (target, name) {
+      get (target, name, receiver) {
+        if (name === "superclass" && typeof target.class === "function") {
+          return target.class().superclass();
+        }
+
         if (name in target) {
-          return target[name];
+          const value = target[name];
+          if (typeof value === "function" && name !== "constructor") {
+            if ((name === "isKindOfClass" || name === "isMemberOfClass")) {
+              return function (cls, ...args) {
+                let resolvedClass = cls;
+                if (resolvedClass != null &&
+                    (typeof resolvedClass === "object" || typeof resolvedClass === "function")) {
+                  try {
+                    const runtimeName = typeof NSStringFromClass === "function"
+                      ? NSStringFromClass(resolvedClass)
+                      : null;
+                    if (typeof runtimeName === "string" && runtimeName.length > 0) {
+                      const registry = globalThis.__nsConstructorsByObjCClassName;
+                      if (registry && registry[runtimeName]) {
+                        resolvedClass = registry[runtimeName];
+                      } else if (typeof globalThis[runtimeName] !== "undefined") {
+                        resolvedClass = globalThis[runtimeName];
+                      }
+                    }
+                  } catch (_) {
+                  }
+                }
+
+                value.__ns_bound_receiver = receiver;
+                try {
+                  return Reflect.apply(value, receiver, [resolvedClass, ...args]);
+                } finally {
+                  value.__ns_bound_receiver = undefined;
+                }
+              };
+            }
+
+            return function (...args) {
+              value.__ns_bound_receiver = receiver;
+              try {
+                return Reflect.apply(value, receiver, args);
+              } finally {
+                value.__ns_bound_receiver = undefined;
+              }
+            };
+          }
+          return value;
+        }
+
+        if (typeof name === 'symbol') {
+          return undefined;
         }
 
         if (isArray) {
@@ -127,6 +230,14 @@ const char* nativeObjectProxySource = R"(
       },
 
       set (target, name, value) {
+        const isInternalProperty = typeof name === 'string' &&
+          (name === 'napi_external' || name === 'napi_typetag' || name === '__ns_native_ptr');
+
+        if (typeof name === 'symbol') {
+          target[name] = value;
+          return true;
+        }
+
         if (isArray) {
           const index = Number(name);
           if (!isNaN(index)) {
@@ -135,7 +246,7 @@ const char* nativeObjectProxySource = R"(
           }
         }
 
-        if (!(name in target) && !isTransfered) {
+        if (!isInternalProperty && !(name in target) && !isTransfered) {
           isTransfered = true;
           transferOwnershipToNative(target);
         }
@@ -182,9 +293,18 @@ void attachObjectLifecycleAssociation(napi_env env, id object) {
 }
 
 void finalize_objc_object(napi_env /*env*/, void* data, void* hint) {
-  id object = static_cast<id>(data);
-  ObjCBridgeState* bridgeState = static_cast<ObjCBridgeState*>(hint);
-  bridgeState->unregisterObject(object);
+  (void)hint;
+  JSObjectFinalizerContext* context = static_cast<JSObjectFinalizerContext*>(data);
+  if (context == nullptr) {
+    return;
+  }
+
+  ObjCBridgeState* bridgeState = context->bridgeState;
+  if (IsBridgeStateLive(bridgeState, context->bridgeStateToken)) {
+    bridgeState->unregisterObjectIfRefMatches(context->object, context->ref);
+  }
+
+  delete context;
 }
 
 napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value constructor,
@@ -195,63 +315,81 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
 
   NAPI_PREAMBLE
 
-  if (napi_value cached = findCachedObjectWrapper(env, obj); cached != nullptr) {
-    return cached;
-  }
-
-  napi_value result = nil;
-
   Class cls = object_getClass(obj);
 
   if (cls == nullptr) {
     return nullptr;
   }
 
-  bool isClass = false;
-
   if (class_isMetaClass(cls)) {
-    cls = (Class)obj;
-    isClass = true;
+    return findConstructorForClassObject(env, this, (Class)obj, constructor);
   }
 
-  if (isClass) {
-    result = constructor;
-  } else {
-    napi_value ext;
-    napi_create_external(env, nullptr, nullptr, nullptr, &ext);
-
-    NAPI_GUARD(napi_new_instance(env, constructor, 1, &ext, &result)) {
-      NAPI_THROW_LAST_ERROR
-      return nullptr;
-    }
-
-    napi_wrap(env, result, obj, nullptr, nullptr, nullptr);
-
-    if (ownership == kUnownedObject) {
-      [obj retain];
-    }
-
-    result = proxyNativeObject(env, result, obj);
-
-    // #if DEBUG
-    // napi_value global, Error, error, stack;
-    // napi_get_global(env, &global);
-    // napi_get_named_property(env, global, "Error", &Error);
-    // napi_new_instance(env, Error, 0, nullptr, &error);
-    // napi_get_named_property(env, error, "stack", &stack);
-
-    // size_t stackSize;
-    // napi_get_value_string_utf8(env, stack, nullptr, 0, &stackSize);
-    // char *stackStr = new char[stackSize + 1];
-    // napi_get_value_string_utf8(env, stack, stackStr, stackSize + 1, nullptr);
-
-    // NSString *str = [NSString stringWithFormat:@"Wrapped object <%s: %p> @ %ld # %s",
-    //       class_getName(cls), obj, [obj retainCount], stackStr];
-    // dbglog([str UTF8String]);
-
-    // delete[] stackStr;
-    // #endif
+  napi_value resolvedConstructor = constructor;
+  napi_value actualConstructor = findConstructorForObject(env, this, obj, cls);
+  if (actualConstructor != nullptr) {
+    resolvedConstructor = actualConstructor;
   }
+
+  if (napi_value cached = findCachedObjectWrapper(env, obj); cached != nullptr) {
+    return cached;
+  }
+
+  napi_value result = nil;
+  napi_value prototype;
+  NAPI_GUARD(napi_get_named_property(env, resolvedConstructor, "prototype", &prototype)) {
+    NAPI_THROW_LAST_ERROR
+    return nullptr;
+  }
+
+  NAPI_GUARD(napi_create_object(env, &result)) {
+    NAPI_THROW_LAST_ERROR
+    return nullptr;
+  }
+
+  napi_value global;
+  napi_value objectCtor;
+  napi_value setPrototypeOf;
+  napi_value argv[2] = {result, prototype};
+  napi_get_global(env, &global);
+  napi_get_named_property(env, global, "Object", &objectCtor);
+  napi_get_named_property(env, objectCtor, "setPrototypeOf", &setPrototypeOf);
+
+  NAPI_GUARD(napi_call_function(env, objectCtor, setPrototypeOf, 2, argv, nullptr)) {
+    NAPI_THROW_LAST_ERROR
+    return nullptr;
+  }
+
+  napi_wrap(env, result, obj, nullptr, nullptr, nullptr);
+  napi_value nativePointer = Pointer::create(env, obj);
+  if (nativePointer != nullptr) {
+    napi_set_named_property(env, result, kNativePointerProperty, nativePointer);
+  }
+
+  if (ownership == kUnownedObject) {
+    [obj retain];
+  }
+
+  result = proxyNativeObject(env, result, obj);
+
+  // #if DEBUG
+  // napi_value global, Error, error, stack;
+  // napi_get_global(env, &global);
+  // napi_get_named_property(env, global, "Error", &Error);
+  // napi_new_instance(env, Error, 0, nullptr, &error);
+  // napi_get_named_property(env, error, "stack", &stack);
+
+  // size_t stackSize;
+  // napi_get_value_string_utf8(env, stack, nullptr, 0, &stackSize);
+  // char *stackStr = new char[stackSize + 1];
+  // napi_get_value_string_utf8(env, stack, stackStr, stackSize + 1, nullptr);
+
+  // NSString *str = [NSString stringWithFormat:@"Wrapped object <%s: %p> @ %ld # %s",
+  //       class_getName(cls), obj, [obj retainCount], stackStr];
+  // dbglog([str UTF8String]);
+
+  // delete[] stackStr;
+  // #endif
 
   return result;
 }
@@ -259,6 +397,10 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
 napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
   if (obj == nil) {
     return nullptr;
+  }
+
+  if (napi_value jsObject = idToJsObject(env, obj); jsObject != nullptr) {
+    return jsObject;
   }
 
   auto roundTrip = getRoundTripObject(env, obj);
@@ -291,7 +433,7 @@ napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
 }
 
 napi_value findConstructorForObject(napi_env env, ObjCBridgeState* bridgeState, id object,
-                                    Class cls = nil) {
+                                    Class cls) {
   if (cls == nil) {
     cls = object_getClass(object);
   }
@@ -321,8 +463,19 @@ napi_value findConstructorForObject(napi_env env, ObjCBridgeState* bridgeState, 
     }
   }
 
-  // Look up the protocols implemented by this class, if we define those in
-  // metadata, can construct based on it.
+  Class superclass = class_getSuperclass(cls);
+  if (superclass != nullptr) {
+    napi_value superclassConstructor =
+        findConstructorForObject(env, bridgeState, object, superclass);
+    if (superclassConstructor != nullptr) {
+      return superclassConstructor;
+    }
+  }
+
+  // Look up the protocols implemented by this class if no class-based
+  // constructor could be resolved. For private runtime subclasses we prefer
+  // inheriting the public superclass surface over exposing a protocol-only
+  // shell that drops concrete class members.
   {
     unsigned int count;
     auto protocols = class_copyProtocolList(cls, &count);
@@ -357,11 +510,6 @@ napi_value findConstructorForObject(napi_env env, ObjCBridgeState* bridgeState, 
     }
   }
 
-  Class superclass = class_getSuperclass(cls);
-  if (superclass != nullptr) {
-    return findConstructorForObject(env, bridgeState, object, superclass);
-  }
-
   return nullptr;
 }
 
@@ -378,6 +526,11 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership owne
     return nullptr;
   }
 
+  Class objectClass = object_getClass(obj);
+  if (objectClass != nil && class_isMetaClass(objectClass)) {
+    return findConstructorForClassObject(env, this, (Class)obj, nullptr);
+  }
+
   auto roundTrip = getRoundTripObject(env, obj);
   if (roundTrip != nullptr) {
     return roundTrip;
@@ -392,7 +545,13 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership owne
     return get_ref_value(env, findClass->second->constructor);
   }
 
-  auto cls = object_getClass(obj);
+  auto mdFindClassByPointer = mdClassesByPointer.find((Class)obj);
+  if (mdFindClassByPointer != mdClassesByPointer.end()) {
+    auto bridgedClass = getClass(env, mdFindClassByPointer->second);
+    return bridgedClass != nullptr ? get_ref_value(env, bridgedClass->constructor) : nullptr;
+  }
+
+  auto cls = objectClass;
 
   auto mdFindByPointer = mdClassesByPointer.find(cls);
   if (mdFindByPointer != mdClassesByPointer.end()) {
@@ -442,10 +601,35 @@ void ObjCBridgeState::unregisterObject(id object) noexcept {
   // dbglog([string UTF8String]);
   // #endif
 
-  if (objectRefs.contains(object)) {
-    objectRefs.erase(object);
+  if (takeObjectRef(object) != nullptr) {
     [object release];
   }
+}
+
+bool ObjCBridgeState::unregisterObjectIfRefMatches(id object, napi_ref ref) noexcept {
+  if (takeObjectRef(object, ref) == nullptr) {
+    return false;
+  }
+
+  [object release];
+  return true;
+}
+
+void ObjCBridgeState::detachObject(id object) noexcept {
+  takeObjectRef(object);
+
+  if (object == nil) {
+    return;
+  }
+
+  NSMutableSet* trackedObjectTable = static_cast<NSMutableSet*>(trackedObjectLiveness);
+  if (trackedObjectTable == nil) {
+    return;
+  }
+
+  NSNumber* objectKey = [NSNumber numberWithUnsignedLongLong:NormalizeHandleKey((void*)object)];
+  std::lock_guard<std::mutex> lock(objectRefsMutex);
+  [trackedObjectTable removeObject:objectKey];
 }
 
 }  // namespace nativescript

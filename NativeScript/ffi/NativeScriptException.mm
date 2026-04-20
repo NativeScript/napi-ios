@@ -149,14 +149,18 @@ std::string NativeScriptException::GetErrorMessage(napi_env env, napi_value erro
 
   if (!isError) {
     napi_value err;
-    napi_coerce_to_string(env, error, &err);
+    if (napi_coerce_to_string(env, error, &err) != napi_ok || err == nullptr) {
+      return prependMessage;
+    }
     return napi_util::get_string_value(env, err);
   }
 
-  napi_value message;
-  napi_get_named_property(env, error, "message", &message);
-
-  std::string mes = napi_util::get_string_value(env, message);
+  napi_value message = nullptr;
+  std::string mes;
+  if (napi_get_named_property(env, error, "message", &message) == napi_ok &&
+      message != nullptr && napi_util::is_of_type(env, message, napi_string)) {
+    mes = napi_util::get_string_value(env, message);
+  }
 
   std::stringstream ss;
 
@@ -166,9 +170,9 @@ std::string NativeScriptException::GetErrorMessage(napi_env env, napi_value erro
 
   std::string errMessage;
   bool hasFullErrorMessage = false;
-  napi_value fullMessage;
-  napi_get_named_property(env, error, "fullMessage", &fullMessage);
-  if (napi_util::is_of_type(env, fullMessage, napi_string)) {
+  napi_value fullMessage = nullptr;
+  if (napi_get_named_property(env, error, "fullMessage", &fullMessage) == napi_ok &&
+      fullMessage != nullptr && napi_util::is_of_type(env, fullMessage, napi_string)) {
     hasFullErrorMessage = true;
     errMessage = napi_util::get_string_value(env, fullMessage);
     ss << errMessage;
@@ -191,8 +195,11 @@ std::string NativeScriptException::GetErrorStackTrace(napi_env env, napi_value e
   napi_is_error(env, error, &isError);
   if (!isError) return "";
 
-  napi_value stack;
-  napi_get_named_property(env, error, "stack", &stack);
+  napi_value stack = nullptr;
+  if (napi_get_named_property(env, error, "stack", &stack) != napi_ok || stack == nullptr ||
+      !napi_util::is_of_type(env, stack, napi_string)) {
+    return "";
+  }
 
   std::string stackStr = napi_util::get_string_value(env, stack);
   ss << stackStr;

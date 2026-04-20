@@ -92,6 +92,100 @@ static bool getJSBufferData(napi_env env, napi_value value, void** data, size_t*
   return false;
 }
 
+static uint16_t encodeFloat16(double value) {
+  if (std::isnan(value)) {
+    return 0x7e00;
+  }
+
+  if (std::isinf(value)) {
+    return std::signbit(value) ? 0xfc00 : 0x7c00;
+  }
+
+  union {
+    float f;
+    uint32_t bits;
+  } input = {static_cast<float>(value)};
+
+  const uint32_t sign = (input.bits >> 16) & 0x8000;
+  uint32_t exponent = (input.bits >> 23) & 0xff;
+  uint32_t mantissa = input.bits & 0x007fffff;
+
+  if (exponent == 0) {
+    return static_cast<uint16_t>(sign);
+  }
+
+  int32_t halfExponent = static_cast<int32_t>(exponent) - 127 + 15;
+  if (halfExponent >= 0x1f) {
+    return static_cast<uint16_t>(sign | 0x7c00);
+  }
+
+  if (halfExponent <= 0) {
+    if (halfExponent < -10) {
+      return static_cast<uint16_t>(sign);
+    }
+
+    mantissa |= 0x00800000;
+    const uint32_t shift = static_cast<uint32_t>(14 - halfExponent);
+    uint32_t halfMantissa = mantissa >> shift;
+    if (((mantissa >> (shift - 1)) & 1u) != 0) {
+      halfMantissa += 1;
+    }
+    return static_cast<uint16_t>(sign | halfMantissa);
+  }
+
+  uint32_t halfMantissa = mantissa >> 13;
+  if ((mantissa & 0x00001000) != 0) {
+    halfMantissa += 1;
+    if ((halfMantissa & 0x00000400) != 0) {
+      halfMantissa = 0;
+      halfExponent += 1;
+      if (halfExponent >= 0x1f) {
+        return static_cast<uint16_t>(sign | 0x7c00);
+      }
+    }
+  }
+
+  return static_cast<uint16_t>(sign | (static_cast<uint32_t>(halfExponent) << 10) |
+                               (halfMantissa & 0x03ff));
+}
+
+static double decodeFloat16(uint16_t bits) {
+  const uint32_t sign = (bits & 0x8000u) << 16;
+  const uint32_t exponent = (bits >> 10) & 0x1fu;
+  const uint32_t mantissa = bits & 0x03ffu;
+
+  union {
+    uint32_t bits;
+    float f;
+  } output = {0};
+
+  if (exponent == 0) {
+    if (mantissa == 0) {
+      output.bits = sign;
+      return static_cast<double>(output.f);
+    }
+
+    uint32_t normalizedMantissa = mantissa;
+    int32_t normalizedExponent = -14;
+    while ((normalizedMantissa & 0x0400u) == 0) {
+      normalizedMantissa <<= 1;
+      normalizedExponent -= 1;
+    }
+    normalizedMantissa &= 0x03ffu;
+    output.bits =
+        sign | (static_cast<uint32_t>(normalizedExponent + 127) << 23) | (normalizedMantissa << 13);
+    return static_cast<double>(output.f);
+  }
+
+  if (exponent == 0x1fu) {
+    output.bits = sign | 0x7f800000u | (mantissa << 13);
+    return static_cast<double>(output.f);
+  }
+
+  output.bits = sign | ((exponent - 15 + 127) << 23) | (mantissa << 13);
+  return static_cast<double>(output.f);
+}
+
 static const void* kNSDataJSValueAssociationKey = &kNSDataJSValueAssociationKey;
 
 static id resolveCachedHandleObject(napi_env env, void* handle) {
@@ -973,6 +1067,32 @@ class Float32TypeConv : public TypeConv {
 
 static const std::shared_ptr<Float32TypeConv> float32TypeConv = std::make_shared<Float32TypeConv>();
 
+class Float16TypeConv : public TypeConv {
+ public:
+  Float16TypeConv() {
+    type = &ffi_type_uint16;
+    kind = mdTypeF16;
+  }
+
+  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    napi_value result;
+    napi_create_double(env, decodeFloat16(*(uint16_t*)value), &result);
+    return result;
+  }
+
+  void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
+                bool* shouldFreeAny) override {
+    double val = 0;
+    napi_coerce_to_number(env, value, &value);
+    napi_get_value_double(env, value, &val);
+    *(uint16_t*)result = encodeFloat16(val);
+  }
+
+  void encode(std::string* encoding) override { *encoding += "H"; }
+};
+
+static const std::shared_ptr<Float16TypeConv> float16TypeConv = std::make_shared<Float16TypeConv>();
+
 class Float64TypeConv : public TypeConv {
  public:
   Float64TypeConv() {
@@ -1175,35 +1295,19 @@ class PointerTypeConv : public TypeConv {
     void** res = (void**)result;
 
     auto unwrapKnownNativeHandle = [&](napi_value input, void** out) -> bool {
-      auto describeValue = [&](napi_value candidate) -> std::string {
-        if (candidate == nullptr) {
-          return "(null)";
+      auto bridgeState = ObjCBridgeState::InstanceData(env);
+      if (bridgeState != nullptr) {
+        napi_valuetype inputType = napi_undefined;
+        if (napi_typeof(env, input, &inputType) == napi_ok &&
+            (inputType == napi_function || inputType == napi_object)) {
+          id bridgedType = nil;
+          if (bridgeState->tryResolveBridgedTypeConstructor(env, input, &bridgedType) &&
+              bridgedType != nil) {
+            *out = (void*)bridgedType;
+            return true;
+          }
         }
-
-        napi_value nameValue = nullptr;
-        bool hasName = false;
-        if (napi_has_named_property(env, candidate, "name", &hasName) != napi_ok || !hasName) {
-          return "(unnamed)";
-        }
-
-        if (napi_get_named_property(env, candidate, "name", &nameValue) != napi_ok) {
-          return "(unnamed)";
-        }
-
-        napi_valuetype nameType = napi_undefined;
-        if (napi_typeof(env, nameValue, &nameType) != napi_ok || nameType != napi_string) {
-          return "(unnamed)";
-        }
-
-        char buffer[512];
-        size_t length = 0;
-        if (napi_get_value_string_utf8(env, nameValue, buffer, sizeof(buffer), &length) !=
-            napi_ok) {
-          return "(unnamed)";
-        }
-
-        return std::string(buffer, length);
-      };
+      }
 
       void* wrapped = nullptr;
       napi_status unwrapStatus = napi_unwrap(env, input, &wrapped);
@@ -1211,7 +1315,6 @@ class PointerTypeConv : public TypeConv {
         return false;
       }
 
-      auto bridgeState = ObjCBridgeState::InstanceData(env);
       if (bridgeState != nullptr) {
         for (const auto& entry : bridgeState->classes) {
           auto bridgedClass = entry.second;
@@ -1301,6 +1404,15 @@ class PointerTypeConv : public TypeConv {
       }
 
       case napi_object: {
+        auto bridgeState = ObjCBridgeState::InstanceData(env);
+        if (bridgeState != nullptr) {
+          id bridgedType = nil;
+          if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
+              bridgedType != nil) {
+            *res = (void*)bridgedType;
+            return;
+          }
+        }
         if (Pointer::isInstance(env, value)) {
           Pointer* ptr = Pointer::unwrap(env, value);
           *res = ptr->data;
@@ -1320,11 +1432,15 @@ class PointerTypeConv : public TypeConv {
               resolvedType = ref->type;
             }
 
-            if (resolvedType == nullptr && ref->initValue != nullptr) {
-              napi_value initValue = get_ref_value(env, ref->initValue);
-              if (initValue != nullptr) {
+            napi_value pendingInitValue = Reference::getInitValue(env, value, ref);
+            napi_valuetype pendingInitType = napi_undefined;
+            if (pendingInitValue != nullptr) {
+              napi_typeof(env, pendingInitValue, &pendingInitType);
+            }
+            if (resolvedType == nullptr && pendingInitValue != nullptr) {
+              if (pendingInitValue != nullptr) {
                 napi_valuetype initType = napi_undefined;
-                if (napi_typeof(env, initValue, &initType) == napi_ok) {
+                if (napi_typeof(env, pendingInitValue, &initType) == napi_ok) {
                   auto makeStructType = [&](StructInfo* info) -> std::shared_ptr<TypeConv> {
                     if (info == nullptr || info->name == nullptr) {
                       return nullptr;
@@ -1346,8 +1462,8 @@ class PointerTypeConv : public TypeConv {
                   };
 
                   if (initType == napi_object) {
-                    if (StructObject::isInstance(env, initValue)) {
-                      StructObject* structObj = StructObject::unwrap(env, initValue);
+                    if (StructObject::isInstance(env, pendingInitValue)) {
+                      StructObject* structObj = StructObject::unwrap(env, pendingInitValue);
                       if (structObj != nullptr) {
                         resolvedType = makeStructType(structObj->info);
                       }
@@ -1360,13 +1476,14 @@ class PointerTypeConv : public TypeConv {
                         bool isTypedArray = false;
                         bool isArrayBuffer = false;
                         bool isDataView = false;
-                        napi_is_array(env, initValue, &isArray);
-                        napi_is_typedarray(env, initValue, &isTypedArray);
-                        napi_is_arraybuffer(env, initValue, &isArrayBuffer);
-                        napi_is_dataview(env, initValue, &isDataView);
+                        napi_is_array(env, pendingInitValue, &isArray);
+                        napi_is_typedarray(env, pendingInitValue, &isTypedArray);
+                        napi_is_arraybuffer(env, pendingInitValue, &isArrayBuffer);
+                        napi_is_dataview(env, pendingInitValue, &isDataView);
                         if (!isArray && !isTypedArray && !isArrayBuffer && !isDataView) {
                           napi_value propertyNames = nullptr;
-                          if (napi_get_property_names(env, initValue, &propertyNames) == napi_ok &&
+                          if (napi_get_property_names(env, pendingInitValue, &propertyNames) ==
+                                  napi_ok &&
                               propertyNames != nullptr) {
                             uint32_t propertyCount = 0;
                             napi_get_array_length(env, propertyNames, &propertyCount);
@@ -1399,8 +1516,8 @@ class PointerTypeConv : public TypeConv {
                               keys.insert(key);
 
                               napi_value propertyValue = nullptr;
-                              if (napi_get_property(env, initValue, keyValue, &propertyValue) ==
-                                      napi_ok &&
+                              if (napi_get_property(env, pendingInitValue, keyValue,
+                                                    &propertyValue) == napi_ok &&
                                   propertyValue != nullptr) {
                                 napi_valuetype propertyType = napi_undefined;
                                 if (napi_typeof(env, propertyValue, &propertyType) == napi_ok) {
@@ -1545,12 +1662,11 @@ class PointerTypeConv : public TypeConv {
               return;
             }
             ref->ownsData = true;
-            if (ref->initValue) {
-              napi_value initValue = get_ref_value(env, ref->initValue);
+            napi_value initValue = Reference::getInitValue(env, value, ref);
+            if (initValue != nullptr) {
               bool shouldFree;
               ref->type->toNative(env, initValue, ref->data, &shouldFree, &shouldFree);
-              napi_delete_reference(env, ref->initValue);
-              ref->initValue = nullptr;
+              Reference::clearInitValue(env, value, ref);
             }
           }
           *res = ref->data;
@@ -1563,10 +1679,6 @@ class PointerTypeConv : public TypeConv {
             *res = structObj->data;
           } else
             *res = nullptr;
-          return;
-        }
-
-        if (unwrapKnownNativeHandle(value, res)) {
           return;
         }
 
@@ -1720,8 +1832,7 @@ class BlockTypeConv : public TypeConv {
         }
 
         auto bridgeState = ObjCBridgeState::InstanceData(env);
-        auto closure = new Closure(bridgeState->metadata, signatureOffset, true);
-        closure->env = env;
+        auto closure = new Closure(env, bridgeState->metadata, signatureOffset, true);
         id block = registerBlock(env, closure, value);
         *res = (void*)block;
         *shouldFree = true;
@@ -1849,8 +1960,7 @@ class FunctionPointerTypeConv : public TypeConv {
         }
 
         auto bridgeState = ObjCBridgeState::InstanceData(env);
-        auto closure = new Closure(bridgeState->metadata, signatureOffset, false);
-        closure->env = env;
+        auto closure = new Closure(env, bridgeState->metadata, signatureOffset, false);
         closure->func = make_ref(env, value);
         napi_remove_wrap(env, value, nullptr);
         napi_ref ref;
@@ -2248,6 +2358,15 @@ class ObjCObjectTypeConv : public TypeConv {
           return;
         }
 
+        if (bridgeState != nullptr) {
+          id bridgedType = nil;
+          if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
+              bridgedType != nil) {
+            *res = bridgedType;
+            return;
+          }
+        }
+
         void* wrapped = nullptr;
         status = napi_unwrap(env, value, &wrapped);
 
@@ -2428,22 +2547,63 @@ class ObjCObjectTypeConv : public TypeConv {
             }
 
             *res = [NSMutableDictionary dictionary];
-            napi_value keys;
-            napi_get_property_names(env, value, &keys);
+            napi_value objectKeysMethod = nullptr;
+            napi_get_named_property(env, jsObject, "keys", &objectKeysMethod);
+            napi_value keys = nullptr;
+            napi_call_function(env, jsObject, objectKeysMethod, 1, &value, &keys);
             uint32_t len = 0;
             napi_get_array_length(env, keys, &len);
 
             for (uint32_t i = 0; i < len; i++) {
-              napi_value key;
+              napi_value key = nullptr;
               napi_get_element(env, keys, i, &key);
-              char buf[256];
-              size_t len = 0;
-              napi_get_value_string_utf8(env, key, buf, 256, &len);
+
+              if (key == nullptr) {
+                continue;
+              }
+
+              napi_value keyString = key;
+              napi_valuetype keyType = napi_undefined;
+              if (napi_typeof(env, key, &keyType) != napi_ok) {
+                continue;
+              }
+
+              if (keyType == napi_symbol) {
+                continue;
+              }
+
+              if (keyType != napi_string) {
+                if (napi_coerce_to_string(env, key, &keyString) != napi_ok ||
+                    keyString == nullptr) {
+                  continue;
+                }
+              }
+
+              size_t keyLength = 0;
+              if (napi_get_value_string_utf8(env, keyString, nullptr, 0, &keyLength) != napi_ok) {
+                continue;
+              }
+
+              std::vector<char> keyBuffer(keyLength + 1, '\0');
+              if (napi_get_value_string_utf8(env, keyString, keyBuffer.data(), keyBuffer.size(),
+                                             &keyLength) != napi_ok) {
+                continue;
+              }
+
+              NSString* nsKey = [NSString stringWithUTF8String:keyBuffer.data()];
+              if (nsKey == nil) {
+                continue;
+              }
+
               id obj = nil;
-              napi_value elem;
-              napi_get_property(env, value, key, &elem);
+              napi_value elem = nullptr;
+              if (napi_get_property(env, value, key, &elem) != napi_ok) {
+                continue;
+              }
               toNative(env, elem, (void*)&obj, shouldFree, shouldFreeAny);
-              if (obj != nil) [(*res) setObject:obj forKey:[NSString stringWithUTF8String:buf]];
+              if (obj != nil) {
+                [(*res) setObject:obj forKey:nsKey];
+              }
             }
 
             cacheRoundTrip(*res);
@@ -2538,7 +2698,7 @@ class ObjCNSStringObjectTypeConv : public TypeConv {
       [str getCharacters:(unichar*)chars.data() range:NSMakeRange(0, length)];
     }
     napi_value result;
-    napi_create_string_utf16(env, length > 0 ? chars.data() : nullptr, length, &result);
+    napi_create_string_utf16(env, chars.data(), length, &result);
     return result;
   }
 
@@ -2632,18 +2792,8 @@ class ObjCClassTypeConv : public TypeConv {
     }
 
     auto bridgeState = ObjCBridgeState::InstanceData(env);
-
-    ObjCClass* bridgedCls = bridgeState->classesByPointer[cls];
-
-    if (bridgedCls == nullptr) {
-      napi_value null;
-      napi_get_null(env, &null);
-      return null;
-    }
-
-    napi_value constructor = get_ref_value(env, bridgedCls->constructor);
-
-    return constructor;
+    return bridgeState != nullptr ? bridgeState->getObject(env, (id)cls, kUnownedObject, 0, nullptr)
+                                  : nullptr;
   }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
@@ -3419,6 +3569,10 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
       return float32TypeConv;
     }
 
+    case mdTypeF16: {
+      return float16TypeConv;
+    }
+
     case mdTypeDouble: {
       return float64TypeConv;
     }
@@ -3590,7 +3744,6 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
     }
 
     default:
-      std::cout << "getTypeInfo unknown type kind: " << (int)kind << std::endl;
       return pointerTypeConv;
   }
 }
@@ -3748,9 +3901,18 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value, napi_valuetyp
         }
       }
 
+      if (bridgeState != nullptr) {
+        id bridgedType = nil;
+        if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
+            bridgedType != nil) {
+          *out = bridgedType;
+          return true;
+        }
+      }
+
       void* wrapped = nullptr;
       if (napi_unwrap(env, value, &wrapped) == napi_ok) {
-        if (valueType == napi_function) {
+        if (valueType == napi_function || valueType == napi_object) {
           auto bridgeState = ObjCBridgeState::InstanceData(env);
           if (bridgeState != nullptr && wrapped != nullptr) {
             for (const auto& entry : bridgeState->classes) {

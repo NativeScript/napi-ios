@@ -64,6 +64,8 @@ inline bool typeRequiresSlowGeneratedNapiDispatch(const std::shared_ptr<TypeConv
   switch (type->kind) {
     case mdTypeUChar:
     case mdTypeUInt8:
+    case mdTypeBlock:
+    case mdTypeFunctionPointer:
       return true;
     default:
       return false;

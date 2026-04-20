@@ -93,20 +93,16 @@ void SetNamedString(napi_env env, napi_value object, const char* name, const std
 }
 
 napi_value CreateError(napi_env env, const std::string& name, const std::string& message) {
-  napi_value global;
-  napi_get_global(env, &global);
+  napi_value messageValue = napi_util::to_js_string(env, message);
+  napi_value error = nullptr;
 
-  napi_value constructor;
-  napi_status status = napi_get_named_property(env, global, name.c_str(), &constructor);
-
-  if (status != napi_ok || !napi_util::is_of_type(env, constructor, napi_function)) {
-    napi_get_named_property(env, global, "Error", &constructor);
+  if (name == "TypeError") {
+    napi_create_type_error(env, nullptr, messageValue, &error);
+  } else {
+    napi_create_error(env, nullptr, messageValue, &error);
+    SetNamedString(env, error, "name", name);
   }
 
-  napi_value arg = napi_util::to_js_string(env, message);
-  napi_value error;
-  napi_new_instance(env, constructor, 1, &arg, &error);
-  SetNamedString(env, error, "name", name);
   return error;
 }
 
@@ -507,10 +503,16 @@ napi_value FetchNative(napi_env env, napi_callback_info info) {
     napi_get_value_int64(env, argv[4], &requestId);
   }
 
+  napi_deferred deferred;
+  napi_value promise;
+  napi_create_promise(env, &deferred, &promise);
+
   NSURL* nsUrl = [NSURL URLWithString:[NSString stringWithUTF8String:url.c_str()]];
-  if (nsUrl == nil) {
-    napi_throw_type_error(env, nullptr, "Invalid URL passed to fetch");
-    return nullptr;
+  NSString* scheme = [nsUrl scheme];
+  if (nsUrl == nil || scheme == nil || [scheme length] == 0) {
+    napi_reject_deferred(env, deferred,
+                         CreateError(env, "TypeError", "Invalid URL passed to fetch"));
+    return promise;
   }
 
   NSMutableURLRequest* request =
@@ -523,15 +525,17 @@ napi_value FetchNative(napi_env env, napi_callback_info info) {
 
   NSMutableDictionary<NSString*, NSString*>* headers = [NSMutableDictionary dictionary];
   if (!ToHeaderDictionary(env, argv[2], headers)) {
-    napi_throw_type_error(env, nullptr, "Invalid headers object");
-    return nullptr;
+    napi_reject_deferred(env, deferred,
+                         CreateError(env, "TypeError", "Invalid headers object"));
+    return promise;
   }
   [request setAllHTTPHeaderFields:headers];
 
   std::vector<uint8_t> bodyBytes;
   if (!ValueToBytes(env, argv[3], bodyBytes)) {
-    napi_throw_type_error(env, nullptr, "Invalid body value");
-    return nullptr;
+    napi_reject_deferred(env, deferred,
+                         CreateError(env, "TypeError", "Invalid body value"));
+    return promise;
   }
 
   std::string methodUpper = method;
@@ -542,10 +546,6 @@ napi_value FetchNative(napi_env env, napi_callback_info info) {
     NSData* body = [NSData dataWithBytes:bodyBytes.data() length:bodyBytes.size()];
     [request setHTTPBody:body];
   }
-
-  napi_deferred deferred;
-  napi_value promise;
-  napi_create_promise(env, &deferred, &promise);
 
   auto completion = std::make_shared<FetchCompletion>();
   completion->env = env;
@@ -1401,24 +1401,31 @@ void InstallWebRuntimeScript(napi_env env) {
           request.signal.addEventListener('abort', abortListener, { once: true });
         }
 
+        const cleanupAbortListener = () => {
+            if (abortListener && request.signal && typeof request.signal.removeEventListener === 'function') {
+              request.signal.removeEventListener('abort', abortListener);
+            }
+        };
+
         return nativeFetch(
           request.url,
           request.method,
           headerObject,
           request[kBodyBuffer],
           requestId,
-        )
-          .then((nativeResponse) => {
-            const response = new Response(nativeResponse.body, {
+        ).then(
+          (nativeResponse) => {
+            cleanupAbortListener();
+            return new Response(nativeResponse.body, {
               status: nativeResponse.status,
               statusText: nativeResponse.statusText,
               headers: nativeResponse.headers,
               url: nativeResponse.url,
               redirected: nativeResponse.redirected,
             });
-            return response;
-          })
-          .catch((error) => {
+          },
+          (error) => {
+            cleanupAbortListener();
             if (error && error.name === 'AbortError') {
               throw createAbortError();
             }
@@ -1426,12 +1433,8 @@ void InstallWebRuntimeScript(napi_env env) {
               throw error;
             }
             throw new TypeError(error && error.message ? error.message : 'Network request failed');
-          })
-          .finally(() => {
-            if (abortListener && request.signal && typeof request.signal.removeEventListener === 'function') {
-              request.signal.removeEventListener('abort', abortListener);
-            }
-          });
+          },
+        );
       }
 
       class Event {
