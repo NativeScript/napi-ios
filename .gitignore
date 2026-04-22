@@ -52,10 +52,10 @@ v8_build
 .cipd/
 
 # project template
-/project-template-ios/.build_env_vars.sh
-/project-template-ios/__PROJECT_NAME__.xcodeproj/project.xcworkspace/xcshareddata/
-/project-template-vision/.build_env_vars.sh
-/project-template-vision/__PROJECT_NAME__.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
+/templates/ios/.build_env_vars.sh
+/templates/ios/__PROJECT_NAME__.xcodeproj/project.xcworkspace/xcshareddata/
+/templates/visionos/.build_env_vars.sh
+/templates/visionos/__PROJECT_NAME__.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist
 
 .cache/
 

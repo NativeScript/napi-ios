@@ -15,10 +15,13 @@
 
 namespace nativescript {
 
+class ObjCBridgeState;
+
 class Closure {
  public:
   static void callBlockFromMainThread(napi_env env, napi_value js_cb,
                                       void* context, void* data);
+  static void destroyOnOwningThread(Closure* closure);
 
   Closure(napi_env env, std::string typeEncoding, bool isBlock, bool isMethod = false);
   Closure(napi_env env, MDMetadataReader* reader, MDSectionOffset offset,
@@ -30,6 +33,8 @@ class Closure {
   void release();
 
   napi_env env = nullptr;
+  ObjCBridgeState* bridgeState = nullptr;
+  uint64_t bridgeStateToken = 0;
   napi_ref thisConstructor;
   napi_ref func = nullptr;
   bool isGetter = false;

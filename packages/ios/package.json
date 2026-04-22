@@ -1,59 +1,26 @@
 {
-  "name": "@nativescript/ios-node-api",
-  "version": "0.4.1",
-  "description": "An embeddable, engine-agnostic NativeScript runtime for iOS based on Node-API",
+  "name": "@nativescript/ios",
+  "version": "9.0.0-napi-v8.0",
+  "description": "NativeScript Runtime for iOS",
+  "keywords": [
+    "NativeScript",
+    "iOS",
+    "runtime"
+  ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NativeScript/napi-ios.git",
+    "url": "https://github.com/NativeScript/ios",
     "directory": "packages/ios"
   },
-  "typings": "index.d.ts",
-  "type": "module",
-  "files": [
-    "build/RelWithDebInfo/NativeScript.apple.node",
-    "index.d.ts",
-    "types"
-  ],
+  "author": {
+    "name": "NativeScript Team",
+    "email": "oss@nativescript.org"
+  },
   "scripts": {
-    "build": "cd ../.. && ./build_all_react_native.sh"
+    "build": "cd ../.. && ./scripts/build_all_ios.sh"
   },
-  "keywords": [
-    "iOS",
-    "NativeScript",
-    "React Native",
-    "UIKit"
+  "files": [
+    "framework"
   ],
-  "contributors": [
-    {
-      "name": "DjDeveloperr"
-    },
-    {
-      "name": "Jamie Birch"
-    },
-    {
-      "name": "Nathan Walker"
-    },
-    {
-      "name": "Eduardo Speroni"
-    },
-    {
-      "name": "NativeScript",
-      "email": "oss@nativescript.org"
-    }
-  ],
-  "license": "MIT",
-  "peerDependencies": {
-    "react-native-node-api": "*"
-  },
-  "peerDependenciesMeta": {
-    "react-native-node-api": {
-      "optional": true
-    }
-  },
-  "dependencies": {
-    "@nativescript/objc-node-api": "^1.0.0-alpha.7"
-  },
-  "devDependencies": {
-    "rimraf": "^6.0.0"
-  }
+  "license": "Apache-2.0"
 }

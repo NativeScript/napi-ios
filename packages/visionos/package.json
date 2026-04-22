@@ -1,0 +1,26 @@
+{
+  "name": "@nativescript/visionos",
+  "version": "9.0.0-napi-v8.0",
+  "description": "NativeScript Runtime for visionOS",
+  "keywords": [
+    "NativeScript",
+    "visionOS",
+    "runtime"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NativeScript/ios",
+    "directory": "packages/visionos"
+  },
+  "author": {
+    "name": "NativeScript Team",
+    "email": "oss@nativescript.org"
+  },
+  "scripts": {
+    "build": "cd ../.. && ./scripts/build_all_vision.sh"
+  },
+  "files": [
+    "framework"
+  ],
+  "license": "Apache-2.0"
+}

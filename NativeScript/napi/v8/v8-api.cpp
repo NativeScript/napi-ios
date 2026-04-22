@@ -2895,46 +2895,25 @@ napi_status NAPI_CDECL napi_create_external_arraybuffer(
     napi_finalize finalize_cb, void* finalize_hint, napi_value* result) {
   NAPI_PREAMBLE(env);
   CHECK_ARG(env, result);
+  if (byte_length > 0) {
+    CHECK_ARG(env, external_data);
+  }
 
   v8::Isolate* isolate = env->isolate;
 
-#ifdef V8_ENABLE_SANDBOX
-  // TODO: We should error out like what happens with node.js. For now, we will
-  // copy the buffer instead.
+  // The raw external-backing-store path has been a persistent source of V8
+  // ArrayBuffer GC instability in the embedded runtime. Always copy into a
+  // V8-owned backing store and keep the original finalizer contract by
+  // attaching a weak finalizer to the JS ArrayBuffer.
   auto buffer = v8::ArrayBuffer::New(isolate, byte_length);
-  std::memcpy(buffer->GetBackingStore()->Data(), external_data, byte_length);
+  if (byte_length > 0) {
+    std::memcpy(buffer->GetBackingStore()->Data(), external_data, byte_length);
+  }
 
   if (finalize_cb != nullptr) {
-    // Create a self-deleting weak reference that invokes the finalizer
-    // callback.
     v8impl::Reference::New(env, buffer, 0, v8impl::Ownership::kUserland,
                            finalize_cb, external_data, finalize_hint);
   }
-#else
-  // TODO: This code is untested
-  struct FinalizeData {
-    napi_env env;
-    napi_finalize finalize_cb;
-    void* finalize_hint;
-
-    static void Finalize(void* data, size_t length, void* deleter_data) {
-      // TODO: Is this on the right thread?
-      auto finalize_data = reinterpret_cast<FinalizeData*>(deleter_data);
-
-      if (finalize_data->finalize_cb != nullptr) {
-        finalize_data->finalize_cb(finalize_data->env, data,
-                                   finalize_data->finalize_hint);
-      }
-
-      delete finalize_data;
-    }
-  };
-
-  auto buffer = v8::ArrayBuffer::New(
-      isolate, v8::ArrayBuffer::NewBackingStore(
-                   external_data, byte_length, FinalizeData::Finalize,
-                   new FinalizeData{env, finalize_cb, finalize_hint}));
-#endif
 
   *result = v8impl::JsValueFromV8LocalValue(buffer);
 

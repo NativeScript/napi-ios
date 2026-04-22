@@ -241,9 +241,19 @@ StructInfo* getStructInfoFromUnionMetadata(napi_env env, MDMetadataReader* metad
   return structInfo;
 }
 
-void StructObject_finalize(napi_env env, void* data, void* hint) {
+namespace {
+void StructObject_finalize_now(napi_env env, void* data, void* hint) {
   auto structObject = (StructObject*)data;
   delete structObject;
+}
+}  // namespace
+
+void StructObject_finalize(napi_env env, void* data, void* hint) {
+  if (PostFinalizer(env, StructObject_finalize_now, data, hint)) {
+    return;
+  }
+
+  StructObject_finalize_now(env, data, hint);
 }
 
 NAPI_FUNCTION(StructConstructor) {
@@ -332,6 +342,11 @@ NAPI_FUNCTION(StructPropertyGetter) {
 
   if (StructObject::isInstance(env, value)) {
     napi_set_named_property(env, value, "__ns_parent_struct", jsThis);
+  } else {
+    bool isArray = false;
+    if (napi_is_array(env, value, &isArray) == napi_ok && isArray) {
+      napi_set_named_property(env, value, "__ns_parent_struct", jsThis);
+    }
   }
 
   return value;
@@ -417,6 +432,8 @@ inline StructObject::StructObject(StructInfo* info, void* data, napi_env env,
                                   napi_value backingValue) {
   this->info = info;
   this->env = env;
+  this->bridgeState = env != nullptr ? ObjCBridgeState::InstanceData(env) : nullptr;
+  this->bridgeStateToken = this->bridgeState != nullptr ? this->bridgeState->lifetimeToken : 0;
   if (data == nullptr) {
     this->data = malloc(info->size);
     memset(this->data, 0, this->info->size);
@@ -433,6 +450,8 @@ inline StructObject::StructObject(StructInfo* info, void* data, napi_env env,
 StructObject::StructObject(napi_env env, StructInfo* info, napi_value object, void* memory) {
   this->info = info;
   this->env = env;
+  this->bridgeState = env != nullptr ? ObjCBridgeState::InstanceData(env) : nullptr;
+  this->bridgeStateToken = this->bridgeState != nullptr ? this->bridgeState->lifetimeToken : 0;
 
   if (memory == nullptr) {
     this->owned = true;
@@ -457,9 +476,15 @@ StructObject::StructObject(napi_env env, StructInfo* info, napi_value object, vo
 }
 
 StructObject::~StructObject() {
-  if (this->backingRef != nullptr && this->env != nullptr) {
-    napi_delete_reference(this->env, this->backingRef);
+  if (this->backingRef != nullptr && this->env != nullptr &&
+      (this->bridgeState == nullptr ||
+       IsBridgeStateLive(this->bridgeState, this->bridgeStateToken))) {
+    DeleteReferenceOnOwningThread(this->env, this->bridgeState, this->bridgeStateToken,
+                                  this->backingRef);
   }
+  this->backingRef = nullptr;
+  this->bridgeState = nullptr;
+  this->bridgeStateToken = 0;
   if (this->owned) free(this->data);
 }
 

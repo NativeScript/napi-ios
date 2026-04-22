@@ -41,7 +41,7 @@
 - (void)dealloc {
   if (env != nullptr && ref != nullptr &&
       (bridgeState == nullptr || nativescript::IsBridgeStateLive(bridgeState, bridgeStateToken))) {
-    napi_delete_reference(env, ref);
+    nativescript::DeleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, ref);
     ref = nullptr;
   }
   bridgeState = nullptr;

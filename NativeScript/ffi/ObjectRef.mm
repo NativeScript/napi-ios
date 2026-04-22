@@ -1,4 +1,5 @@
 #include "ObjectRef.h"
+#include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
 #include "js_native_api.h"
@@ -8,7 +9,21 @@
 
 namespace nativescript {
 
-void ObjectRef_finalize(napi_env env, void* data, void* hint) { free(data); }
+namespace {
+void ObjectRef_finalize_now(napi_env env, void* data, void* hint) {
+  (void)env;
+  (void)hint;
+  free(data);
+}
+}  // namespace
+
+void ObjectRef_finalize(napi_env env, void* data, void* hint) {
+  if (PostFinalizer(env, ObjectRef_finalize_now, data, hint)) {
+    return;
+  }
+
+  ObjectRef_finalize_now(env, data, hint);
+}
 
 NAPI_FUNCTION(ObjectRef_constructor) {
   napi_value jsThis, arg;

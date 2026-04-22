@@ -33,6 +33,7 @@ class ObjCClass {
   ~ObjCClass();
 
   ObjCBridgeState* bridgeState;
+  uint64_t bridgeStateToken = 0;
   napi_env env;
   napi_ref constructor;
   napi_ref prototype;

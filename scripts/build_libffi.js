@@ -41,11 +41,26 @@ const buildTargets = [
     host: "aarch64-apple-darwin13",
     minVersionFlag: "-mmacosx-version-min=11.0",
   },
+  {
+    dir: "build_xros-arm64",
+    sdk: "xros",
+    arch: "arm64",
+    host: "aarch64-apple-darwin13",
+    minVersionFlag: "-target arm64-apple-xros2.0",
+  },
+  {
+    dir: "build_xrsimulator-arm64",
+    sdk: "xrsimulator",
+    arch: "arm64",
+    host: "aarch64-apple-darwin13",
+    minVersionFlag: "-target arm64-apple-xros2.0-simulator",
+  },
 ];
 
 async function main() {
   const libffiDir = path.resolve(__dirname, "..", "libffi");
   const libffiPath = (...parts) => path.join(libffiDir, ...parts);
+  const runtimeLibffiDir = path.resolve(__dirname, "..", "NativeScript", "libffi");
   const env = {
     ...process.env,
     CC: "clang",
@@ -118,6 +133,30 @@ async function main() {
     "build_iphonesimulator-arm64/.libs/libffi_convenience.a",
   ], { cwd: libffiDir, env });
   await combineHeaders("iphonesimulator", libffiPath);
+
+  await copySingleArchBuild({
+    buildDir: "build_xros-arm64",
+    outputDir: path.join("prebuilt", "xros-arm64"),
+    libffiPath,
+  });
+
+  await copySingleArchBuild({
+    buildDir: "build_xrsimulator-arm64",
+    outputDir: path.join("prebuilt", "xrsimulator-arm64"),
+    libffiPath,
+  });
+
+  await syncRuntimePrebuilts({
+    runtimeLibffiDir,
+    sourceLibffiPath: libffiPath,
+    targets: [
+      "iphoneos-arm64",
+      "iphonesimulator-universal",
+      "macosx-universal",
+      "xros-arm64",
+      "xrsimulator-arm64",
+    ],
+  });
 }
 
 async function configureBuildTarget(target, libffiPath, baseEnv) {
@@ -165,6 +204,33 @@ async function prepareDir(includePath) {
   const root = path.dirname(includePath);
   await fs.rm(root, { recursive: true, force: true });
   await fs.mkdir(includePath, { recursive: true });
+}
+
+async function syncRuntimePrebuilts({ runtimeLibffiDir, sourceLibffiPath, targets }) {
+  for (const target of targets) {
+    const destination = path.join(runtimeLibffiDir, target);
+    await fs.rm(destination, { recursive: true, force: true });
+    await fs.mkdir(path.dirname(destination), { recursive: true });
+    await fs.cp(sourceLibffiPath("prebuilt", target), destination, {
+      recursive: true,
+    });
+  }
+}
+
+async function copySingleArchBuild({ buildDir, outputDir, libffiPath }) {
+  await prepareDir(libffiPath(outputDir, "include"));
+  await fs.copyFile(
+    libffiPath(buildDir, "include", "ffi.h"),
+    libffiPath(outputDir, "include", "ffi.h"),
+  );
+  await fs.copyFile(
+    libffiPath(buildDir, "include", "ffitarget.h"),
+    libffiPath(outputDir, "include", "ffitarget.h"),
+  );
+  await fs.copyFile(
+    libffiPath(buildDir, ".libs", "libffi_convenience.a"),
+    libffiPath(outputDir, "libffi.a"),
+  );
 }
 
 async function combineHeaders(target, libffiPath) {

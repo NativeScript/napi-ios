@@ -9,6 +9,8 @@
 
 namespace nativescript {
 
+class ObjCBridgeState;
+
 napi_value JS_structGetter(napi_env env, napi_callback_info info);
 napi_value JS_unionGetter(napi_env env, napi_callback_info info);
 
@@ -38,6 +40,8 @@ class StructObject {
   bool owned;
   napi_env env = nullptr;
   napi_ref backingRef = nullptr;
+  ObjCBridgeState* bridgeState = nullptr;
+  uint64_t bridgeStateToken = 0;
 
   StructObject(StructInfo* info, void* data = nullptr, napi_env env = nullptr,
                napi_value backingValue = nullptr);

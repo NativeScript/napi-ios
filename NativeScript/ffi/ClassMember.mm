@@ -45,7 +45,22 @@ napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo) {
   napi_status unwrapStatus = self != nil ? napi_ok : napi_unwrap(env, jsThis, (void**)&self);
   if ((unwrapStatus != napi_ok || self == nil) && method != nullptr && method->cls != nullptr &&
       method->cls->nativeClass != nil) {
-    self = (id)method->cls->nativeClass;
+    bool canFallbackToMethodClass = true;
+    napi_valuetype jsType = napi_undefined;
+    if (jsThis != nullptr && napi_typeof(env, jsThis, &jsType) == napi_ok && jsType == napi_function) {
+      napi_value definingConstructor = get_ref_value(env, method->cls->constructor);
+      if (definingConstructor != nullptr) {
+        bool isSameConstructor = false;
+        if (napi_strict_equals(env, jsThis, definingConstructor, &isSameConstructor) == napi_ok &&
+            !isSameConstructor) {
+          canFallbackToMethodClass = false;
+        }
+      }
+    }
+
+    if (canFallbackToMethodClass) {
+      self = (id)method->cls->nativeClass;
+    }
   }
   if (self == nil) {
     napi_throw_error(env, "NativeScriptException",
@@ -940,6 +955,19 @@ inline id assertSelf(napi_env env, napi_value jsThis, ObjCClassMember* method = 
   if (method != nullptr && method->cls != nullptr && method->cls->nativeClass != nil) {
     if (method->classMethod) {
       shouldUseClassFallback = true;
+      napi_valuetype jsType = napi_undefined;
+      if (jsThis != nullptr && napi_typeof(env, jsThis, &jsType) == napi_ok &&
+          jsType == napi_function) {
+        napi_value definingConstructor = get_ref_value(env, method->cls->constructor);
+        if (definingConstructor != nullptr) {
+          bool isSameConstructor = false;
+          if (napi_strict_equals(env, jsThis, definingConstructor, &isSameConstructor) ==
+                  napi_ok &&
+              !isSameConstructor) {
+            shouldUseClassFallback = false;
+          }
+        }
+      }
     } else {
       napi_valuetype jsType = napi_undefined;
       if (napi_typeof(env, jsThis, &jsType) == napi_ok && jsType == napi_function) {

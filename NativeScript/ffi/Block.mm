@@ -42,6 +42,8 @@ constexpr int kBlockHasSignature = (1 << 30);
 struct BlockJsFunctionEntry {
   napi_ref ref = nullptr;
   napi_env env = nullptr;
+  nativescript::ObjCBridgeState* bridgeState = nullptr;
+  uint64_t bridgeStateToken = 0;
   std::thread::id jsThreadId;
   CFRunLoopRef jsRunLoop = nullptr;
 };
@@ -63,32 +65,8 @@ inline bool removeCachedBlockJsFunctionEntry(void* blockPtr, BlockJsFunctionEntr
 }
 
 inline void deleteBlockReferenceOnOwningLoop(const BlockJsFunctionEntry& entry) {
-  if (entry.ref == nullptr || entry.env == nullptr) {
-    return;
-  }
-
-  if (entry.jsThreadId == std::this_thread::get_id()) {
-    napi_delete_reference(entry.env, entry.ref);
-    return;
-  }
-
-  CFRunLoopRef runLoop = entry.jsRunLoop;
-  if (runLoop == nullptr) {
-    runLoop = CFRunLoopGetMain();
-  }
-
-  if (runLoop == nullptr) {
-    return;
-  }
-
-  CFRetain(runLoop);
-  napi_env env = entry.env;
-  napi_ref ref = entry.ref;
-  CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^{
-    napi_delete_reference(env, ref);
-    CFRelease(runLoop);
-  });
-  CFRunLoopWakeUp(runLoop);
+  nativescript::DeleteReferenceOnOwningThread(entry.env, entry.bridgeState,
+                                              entry.bridgeStateToken, entry.ref);
 }
 
 void block_copy(void* dest, void* src) {
@@ -165,6 +143,9 @@ inline void cacheBlockJsFunction(napi_env env, void* blockPtr, napi_value jsFunc
   BlockJsFunctionEntry entry;
   entry.ref = nativescript::make_ref(env, jsFunction, 0);
   entry.env = env;
+  entry.bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
+  entry.bridgeStateToken =
+      entry.bridgeState != nullptr ? entry.bridgeState->lifetimeToken : 0;
   entry.jsThreadId = closure != nullptr ? closure->jsThreadId : std::this_thread::get_id();
   entry.jsRunLoop = closure != nullptr ? closure->jsRunLoop : CFRunLoopGetCurrent();
   g_blockToJsFunction[blockPtr] = entry;
@@ -172,7 +153,8 @@ inline void cacheBlockJsFunction(napi_env env, void* blockPtr, napi_value jsFunc
 
 }  // namespace
 
-void block_finalize(napi_env env, void* data, void* hint) {
+namespace {
+void block_finalize_now(napi_env env, void* data, void* hint) {
   (void)env;
   (void)hint;
   auto block = static_cast<Block_literal_1*>(data);
@@ -191,6 +173,27 @@ void block_finalize(napi_env env, void* data, void* hint) {
   block->closure = nullptr;
 
   free(block);
+}
+ 
+void finalizeFunctionPointerNow(napi_env env, void* finalize_data, void* finalize_hint) {
+  auto ref = static_cast<nativescript::FunctionPointer*>(finalize_data);
+  if (ref == nullptr) {
+    return;
+  }
+  if (ref->ownsCif && ref->cif != nullptr) {
+    delete ref->cif;
+    ref->cif = nullptr;
+  }
+  delete ref;
+}
+}  // namespace
+
+void block_finalize(napi_env env, void* data, void* hint) {
+  if (nativescript::PostFinalizer(env, block_finalize_now, data, hint)) {
+    return;
+  }
+
+  block_finalize_now(env, data, hint);
 }
 
 namespace nativescript {
@@ -410,15 +413,11 @@ napi_value FunctionPointer::wrapWithEncoding(napi_env env, void* function, const
 }
 
 void FunctionPointer::finalize(napi_env env, void* finalize_data, void* finalize_hint) {
-  auto ref = (FunctionPointer*)finalize_data;
-  if (ref == nullptr) {
+  if (PostFinalizer(env, finalizeFunctionPointerNow, finalize_data, finalize_hint)) {
     return;
   }
-  if (ref->ownsCif && ref->cif != nullptr) {
-    delete ref->cif;
-    ref->cif = nullptr;
-  }
-  delete ref;
+
+  finalizeFunctionPointerNow(env, finalize_data, finalize_hint);
 }
 
 napi_value FunctionPointer::jsCallAsCFunction(napi_env env, napi_callback_info cbinfo) {

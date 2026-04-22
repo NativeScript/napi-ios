@@ -7,6 +7,8 @@
 
 namespace nativescript {
 
+class ObjCBridgeState;
+
 void registerInterop(napi_env env, napi_value global);
 
 napi_value interop_addMethod(napi_env env, napi_callback_info info);
@@ -76,6 +78,8 @@ class Reference {
   bool ownsData = false;
   std::shared_ptr<TypeConv> type = nullptr;
   napi_ref initValue = nullptr;
+  ObjCBridgeState* bridgeState = nullptr;
+  uint64_t bridgeStateToken = 0;
 };
 
 class FunctionReference {
@@ -89,7 +93,7 @@ class FunctionReference {
 
   static void finalize(napi_env env, void* data, void* hint);
 
-  FunctionReference(napi_env env, napi_ref ref) : env(env), ref(ref) {};
+  FunctionReference(napi_env env, napi_ref ref);
   ~FunctionReference();
 
   void* getFunctionPointer(MDSectionOffset offset, bool isBlock = false);
@@ -97,6 +101,8 @@ class FunctionReference {
   napi_env env;
   napi_ref ref;
   std::shared_ptr<Closure> closure = nullptr;
+  ObjCBridgeState* bridgeState = nullptr;
+  uint64_t bridgeStateToken = 0;
 };
 
 }  // namespace nativescript

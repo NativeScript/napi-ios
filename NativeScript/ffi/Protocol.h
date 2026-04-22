@@ -12,6 +12,8 @@ using namespace metagen;
 
 namespace nativescript {
 
+class ObjCBridgeState;
+
 NAPI_FUNCTION(protocolGetter);
 
 class ObjCProtocol {
@@ -22,6 +24,8 @@ class ObjCProtocol {
   ~ObjCProtocol();
 
   napi_env env;
+  ObjCBridgeState* bridgeState = nullptr;
+  uint64_t bridgeStateToken = 0;
   MDSectionOffset metadataOffset;
   std::string name;
   napi_ref constructor;

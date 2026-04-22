@@ -9,15 +9,19 @@
 //  - IOS_DESTINATION overrides destination argument.
 //  - IOS_TEST_SKIP_BUILD=1 skips auto-build of iOS simulator runtime artifacts.
 //  - IOS_TEST_CLEAN_BUILD=1 deletes derived data before building TestRunner.app.
+//  - IOS_TEST_ENGINE selects the runtime engine build to use when runtime
+//    artifacts need rebuilding. Supported: v8, hermes, quickjs, jsc. Defaults to v8.
 //  - IOS_SWIFT_VERSION overrides default Swift version (default: 5.0).
 //  - IOS_COMMAND_TIMEOUT_MS overrides timeout for build/install/simctl commands (default: 3 minutes).
 //  - IOS_BUILD_TIMEOUT_MS overrides timeout for xcodebuild app build (default: IOS_COMMAND_TIMEOUT_MS).
 //  - IOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
 //  - IOS_TEST_TIMEOUT_MS overrides max test runtime (default: 10 minutes).
-//  - IOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
+//  - IOS_LOG_JUNIT=1 enables streaming TKUnit/JUnit lines to console.
 //  - IOS_TESTS filters test modules (comma-separated substrings passed to app as -tests).
+//  - IOS_SPECS filters individual Jasmine specs by description substring (comma-separated, passed as -specs).
 //  - IOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval (default: 2 minutes).
 //  - IOS_TEST_LOG_STREAM=0 disables parallel simulator log stream (enabled by default).
+//  - IOS_TEST_VERBOSE_SPECS=1 enables per-spec start/done logs from the app.
 //  - IOS_SIM_LOG_LOOKBACK sets log-show window used for post-failure diagnostics (default: 45s).
 
 const fs = require("fs");
@@ -32,7 +36,7 @@ const bundleId = "com.descendra.TestRunner";
 const resultsDir = path.join(__dirname, "../build", "test-results");
 const defaultJunitPath = path.join(resultsDir, "ios-junit.xml");
 const derivedDataPath = path.join(__dirname, "../build", "derived-data", "ios-tests");
-const testRunnerAppSourcePath = path.join(__dirname, "../TestRunner", "app");
+const testRunnerAppSourcePath = path.join(__dirname, "../test/runtime/runner", "app");
 const buildStatePath = path.join(derivedDataPath, ".ios-test-build-state.json");
 const metadataGeneratorRoot = path.join(__dirname, "../metadata-generator");
 const metadataGeneratorBinary = path.join(
@@ -55,14 +59,14 @@ const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xc
 const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
 const iosBuildInputs = [
     path.join(__dirname, "../NativeScriptRuntime.xcodeproj", "project.pbxproj"),
-    path.join(__dirname, "../TestRunner", "Source Files"),
-    path.join(__dirname, "../TestRunner", "Info.plist"),
-    path.join(__dirname, "../TestFixtures"),
+    path.join(__dirname, "../test/runtime/runner", "Source Files"),
+    path.join(__dirname, "../test/runtime/runner", "Info.plist"),
+    path.join(__dirname, "../test/runtime/fixtures"),
     path.join(__dirname, "../TKLiveSync"),
     path.join(metadataGeneratorRoot, "src"),
     path.join(metadataGeneratorRoot, "include"),
     path.join(metadataGeneratorRoot, "CMakeLists.txt"),
-    path.join(__dirname, "../build_metadata_generator.sh"),
+    path.join(__dirname, "build_metadata_generator.sh"),
     metadataGeneratorBinary,
     metadataGeneratorBuildStepScript,
     nativeScriptXCFramework,
@@ -94,9 +98,12 @@ const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", 10 * 60 * 1000);
 const commandMaxBufferBytes = parsePositiveInt("IOS_COMMAND_MAX_BUFFER_BYTES", 64 * 1024 * 1024);
 const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 10 * 60 * 1000);
 const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 2 * 60 * 1000);
-const emitJunitLogs = process.env.IOS_LOG_JUNIT !== "0";
+const emitJunitLogs = process.env.IOS_LOG_JUNIT === "1";
 const requestedTests = (process.env.IOS_TESTS || "").trim();
+const requestedSpecs = (process.env.IOS_SPECS || "").trim();
+const requestedEngine = (process.env.IOS_TEST_ENGINE || "v8").trim().toLowerCase();
 const enableLiveLogStream = process.env.IOS_TEST_LOG_STREAM !== "0";
+const verboseSpecLogs = process.env.IOS_TEST_VERBOSE_SPECS === "1";
 const simulatorLogLookback = process.env.IOS_SIM_LOG_LOOKBACK || "45s";
 const consoleLogMarker = "CONSOLE LOG:";
 
@@ -500,9 +507,10 @@ function buildTKLiveSyncSimulatorXCFramework() {
 }
 
 function ensureIOSSimulatorArtifacts() {
+    const cachePath = path.join(__dirname, "../dist", "intermediates", "ios-sim", "CMakeCache.txt");
     const sourceInputs = [
         nativeScriptSourceRoot,
-        path.join(__dirname, "../build_nativescript.sh")
+        path.join(__dirname, "build_nativescript.sh")
     ];
     const sourceMtime = sourceInputs.reduce(
         (latest, inputPath) => Math.max(latest, getPathStats(inputPath).maxMtimeMs),
@@ -511,11 +519,40 @@ function ensureIOSSimulatorArtifacts() {
     const artifactMtime = getPathStats(nativeScriptXCFramework).maxMtimeMs;
     const hasNativeScriptSimulator = hasSimulatorSlice(nativeScriptXCFramework);
     const hasTKLiveSyncSimulator = hasSimulatorSlice(tkLiveSyncXCFramework);
-    const needsNativeScriptRebuild = artifactMtime === 0 || artifactMtime < sourceMtime;
+    let configuredEngine = null;
+
+    if (fs.existsSync(cachePath)) {
+        try {
+            const cache = fs.readFileSync(cachePath, "utf8");
+            const match = cache.match(/^TARGET_ENGINE:STRING=(.+)$/m);
+            if (match) {
+                configuredEngine = match[1].trim().toLowerCase();
+            }
+        } catch (_) {
+            configuredEngine = null;
+        }
+    }
+
+    const supportedEngines = new Set(["v8", "hermes", "quickjs", "jsc"]);
+    if (!supportedEngines.has(requestedEngine)) {
+        throw new Error(`Unsupported IOS_TEST_ENGINE: ${requestedEngine}`);
+    }
+
+    const needsNativeScriptRebuild =
+        artifactMtime === 0 ||
+        artifactMtime < sourceMtime ||
+        configuredEngine !== requestedEngine;
 
     if (!hasNativeScriptSimulator || needsNativeScriptRebuild) {
-        console.log("NativeScript simulator artifacts are missing or stale; running build:ios-sim...");
-        runAndRequireSuccess("npm", ["run", "build:ios-sim"]);
+        console.log(
+            `NativeScript simulator artifacts are missing, stale, or built for '${configuredEngine ?? "unknown"}'; running ${requestedEngine} build...`
+        );
+        runAndRequireSuccess(path.join(__dirname, "build_nativescript.sh"), [
+            "--no-iphone",
+            "--simulator",
+            "--no-macos",
+            `--${requestedEngine}`
+        ], buildTimeoutMs);
     }
 
     if (!hasTKLiveSyncSimulator) {
@@ -533,7 +570,7 @@ function buildTestRunnerApp(destination, swiftVersion) {
 
     ensureMetadataGeneratorBuilt();
 
-    const nativeFingerprint = createBuildFingerprint(iosBuildInputs);
+    const nativeFingerprint = `${requestedEngine}:${createBuildFingerprint(iosBuildInputs)}`;
     const existingBuildState = readBuildState();
     const canReuseBuild = process.env.IOS_TEST_CLEAN_BUILD !== "1" &&
         fs.existsSync(appPath) &&
@@ -552,6 +589,11 @@ function buildTestRunnerApp(destination, swiftVersion) {
             "-destination-timeout", "120",
             "-derivedDataPath", derivedDataPath,
             `SWIFT_VERSION=${swiftVersion}`,
+            "CODE_SIGN_STYLE=Manual",
+            "CODE_SIGNING_ALLOWED=NO",
+            "CODE_SIGNING_REQUIRED=NO",
+            "CODE_SIGN_IDENTITY=",
+            "DEVELOPMENT_TEAM=",
             "build"
         ];
         const result = cp.spawnSync("xcodebuild", args, {
@@ -839,7 +881,10 @@ async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs,
         }
 
         if (Date.now() - state.lastActivityAt >= inactivityTimeoutMs) {
-            return { junitResult: null, launchResult, timedOut: true, inactive: true };
+            const launchPid = extractLaunchPid(state.logs);
+            if (!isAppProcessRunning(udid, launchPid)) {
+                return { junitResult: null, launchResult, timedOut: true, inactive: true };
+            }
         }
 
         await sleep(250);
@@ -967,6 +1012,21 @@ function collectSimulatorProcessSnapshot(udid) {
         .filter((line) => /PID|TestRunner|launchd_sim|UIKitApplication/i.test(line));
 
     return lines.join("\n");
+}
+
+function isAppProcessRunning(udid, pid) {
+    const snapshot = collectSimulatorProcessSnapshot(udid);
+    if (!snapshot) {
+        return false;
+    }
+
+    const lines = snapshot.split(/\r?\n/).filter(Boolean);
+    if (Number.isInteger(pid)) {
+        const pidPattern = new RegExp(`\\b${pid}\\b`);
+        return lines.some((line) => pidPattern.test(line) && /TestRunner|UIKitApplication/i.test(line));
+    }
+
+    return lines.some((line) => /TestRunner|com\\.descendra\\.TestRunner|UIKitApplication:com\\.descendra\\.TestRunner/i.test(line));
 }
 
 function formatInactivityDiagnostics(udid, state, pid) {
@@ -1118,8 +1178,14 @@ async function main() {
         }
 
         const launchArgs = emitJunitLogs ? ["-logjunit"] : [];
+        if (verboseSpecLogs) {
+            launchArgs.push("-verbose-specs");
+        }
         if (requestedTests.length > 0) {
             launchArgs.push("-tests", requestedTests);
+        }
+        if (requestedSpecs.length > 0) {
+            launchArgs.push("-specs", requestedSpecs);
         }
         const useConsolePty = !enableLiveLogStream;
         const captureLaunchOutput = !enableLiveLogStream;
@@ -1199,7 +1265,7 @@ async function main() {
                 exitCode = 1;
             }
 
-            console.log(`TestRunner process ended (code=${closeResult.code}${closeResult.signal ? `, signal=${closeResult.signal}` : ""}).`);
+            console.log(`simctl launch command ended (code=${closeResult.code}${closeResult.signal ? `, signal=${closeResult.signal}` : ""}).`);
             if (!jasmineSummary) {
                 console.log("No completed junit-result.xml found; relying on runtime logs.");
             }

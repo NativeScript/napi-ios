@@ -1,10 +1,13 @@
 > [!NOTE]  
 > The instructions below detail how to get started developing NativeScript's V8-based iOS runtime, `@nativescript/ios`.
 >
-> If you are interested in building the standalone Node-API libraries, instructions for those can be found as follows:
+> Package docs:
 >
-> - `@nativescript/ios-node-api`: [packages/ios/README.md](packages/ios/README.md)
-> - `@nativescript/macos-node-api`: [packages/macos/README.md](packages/macos/README.md)
+> - `@nativescript/ios`: [packages/ios/README.md](packages/ios/README.md)
+> - `@nativescript/macos`: [packages/macos/README.md](packages/macos/README.md)
+> - `@nativescript/visionos`: [packages/visionos/README.md](packages/visionos/README.md)
+> - `@nativescript/ios-node-api`: [packages/ios-node-api/README.md](packages/ios-node-api/README.md)
+> - `@nativescript/macos-node-api`: [packages/macos-node-api/README.md](packages/macos-node-api/README.md)
 
 # Getting Started
 
@@ -35,7 +38,7 @@ cd ios
 git submodule update --init
 
 # Ensure that you have the required llvm binaries for building the metadata generator
-./download_llvm.sh
+./scripts/download_llvm.sh
 
 sudo gem install xcodeproj
 sudo gem install cocoapods
@@ -122,7 +125,7 @@ Local V8 source build and patch scripts have been removed from this repo.
 To provision V8 artifacts, use:
 
 ```bash
-./download_v8.sh
+./scripts/download_v8.sh
 ```
 
 This downloads and extracts prebuilt V8 binaries into `Frameworks/`.
@@ -132,17 +135,17 @@ This downloads and extracts prebuilt V8 binaries into `Frameworks/`.
 To provision Hermes artifacts, use:
 
 ```bash
-./download_hermes.sh
+./scripts/download_hermes.sh
 ```
 
 This downloads and extracts a prebuilt Hermes XCFramework into `Frameworks/`.
 
 # Building a Distribution Package
 
-1. Bump the version in package.json
+1. Bump the version in `packages/ios/package.json`
 
-2. Run: `npm run update-version` (*This will update the runtime headers with version info*)
+2. Run: `npm run update-version:ios` (*This will update the runtime headers with version info*)
 
-3. Build & pack: `npm run build`
+3. Build & pack: `npm run build-ios`
 
-This will create: `dist/npm/nativescript-ios-{version}.tgz` NPM package ready for publishing.
+This will create: `packages/ios/dist/nativescript-ios-{version}.tgz` NPM package ready for publishing.

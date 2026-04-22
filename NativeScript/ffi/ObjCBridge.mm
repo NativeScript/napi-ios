@@ -46,6 +46,64 @@ std::unordered_map<const ObjCBridgeState*, uint64_t> gLiveBridgeStates;
 std::atomic<uint64_t> gNextBridgeStateToken{1};
 constexpr const char* kNativePointerProperty = "__ns_native_ptr";
 
+inline void deleteReferenceNow(napi_env env, napi_ref ref, bool unrefFirst) {
+  if (env == nullptr || ref == nullptr) {
+    return;
+  }
+
+  if (unrefFirst) {
+    uint32_t remaining = 0;
+    napi_reference_unref(env, ref, &remaining);
+  }
+
+  napi_delete_reference(env, ref);
+}
+
+inline void deleteReferenceOnOwningThread(napi_env env, ObjCBridgeState* bridgeState,
+                                          uint64_t bridgeStateToken, napi_ref ref,
+                                          bool unrefFirst) {
+  if (env == nullptr || ref == nullptr) {
+    return;
+  }
+
+  if (bridgeState == nullptr) {
+    deleteReferenceNow(env, ref, unrefFirst);
+    return;
+  }
+
+  if (!IsBridgeStateLive(bridgeState, bridgeStateToken)) {
+    return;
+  }
+
+  if (bridgeState->jsThreadId == std::this_thread::get_id()) {
+#if !defined(TARGET_ENGINE_QUICKJS)
+    deleteReferenceNow(env, ref, unrefFirst);
+    return;
+#endif
+  }
+
+  CFRunLoopRef runLoop = bridgeState->jsRunLoop;
+  if (runLoop == nullptr) {
+    runLoop = CFRunLoopGetMain();
+  }
+
+  if (runLoop == nullptr) {
+    if (bridgeState->jsThreadId == std::this_thread::get_id()) {
+      deleteReferenceNow(env, ref, unrefFirst);
+    }
+    return;
+  }
+
+  CFRetain(runLoop);
+  CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^{
+    if (IsBridgeStateLive(bridgeState, bridgeStateToken)) {
+      deleteReferenceNow(env, ref, unrefFirst);
+    }
+    CFRelease(runLoop);
+  });
+  CFRunLoopWakeUp(runLoop);
+}
+
 uint64_t RegisterBridgeState(const ObjCBridgeState* bridgeState) {
   if (bridgeState == nullptr) {
     return 0;
@@ -75,6 +133,51 @@ bool IsBridgeStateLive(const ObjCBridgeState* bridgeState, uint64_t token) noexc
   std::lock_guard<std::mutex> lock(gLiveBridgeStatesMutex);
   auto find = gLiveBridgeStates.find(bridgeState);
   return find != gLiveBridgeStates.end() && find->second == token;
+}
+
+void DeleteReferenceOnOwningThread(napi_env env, ObjCBridgeState* bridgeState,
+                                   uint64_t bridgeStateToken, napi_ref ref) {
+  deleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, ref, false);
+}
+
+void ReleaseAndDeleteReferenceOnOwningThread(napi_env env, ObjCBridgeState* bridgeState,
+                                             uint64_t bridgeStateToken, napi_ref ref) {
+  deleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, ref, true);
+}
+
+bool PostFinalizer(napi_env env, napi_finalize finalize_cb, void* finalize_data,
+                   void* finalize_hint) {
+  if (env == nullptr || finalize_cb == nullptr) {
+    return false;
+  }
+
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState != nullptr && bridgeState->jsThreadId == std::this_thread::get_id()) {
+#if !defined(TARGET_ENGINE_QUICKJS)
+    finalize_cb(env, finalize_data, finalize_hint);
+    return true;
+#endif
+  }
+
+  CFRunLoopRef runLoop = bridgeState != nullptr ? bridgeState->jsRunLoop : CFRunLoopGetMain();
+  if (runLoop == nullptr) {
+    return false;
+  }
+
+  if (bridgeState == nullptr && [NSThread isMainThread]) {
+#if !defined(TARGET_ENGINE_QUICKJS)
+    finalize_cb(env, finalize_data, finalize_hint);
+    return true;
+#endif
+  }
+
+  CFRetain(runLoop);
+  CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^{
+    finalize_cb(env, finalize_data, finalize_hint);
+    CFRelease(runLoop);
+  });
+  CFRunLoopWakeUp(runLoop);
+  return true;
 }
 
 void finalize_bridge_data(napi_env env, void* data, void* hint) {
@@ -744,13 +847,13 @@ ObjCBridgeState::~ObjCBridgeState() {
 
   for (auto& frame : roundTripCacheFrames) {
     for (auto& entry : frame) {
-      deleteRef(entry.second);
+      ObjCBridgeState::releaseRoundTripEntry(env, entry.second);
     }
   }
   roundTripCacheFrames.clear();
 
   for (auto& entry : recentRoundTripCache) {
-    deleteRef(entry.second);
+    ObjCBridgeState::releaseRoundTripEntry(env, entry.second);
   }
   recentRoundTripCache.clear();
 
@@ -923,7 +1026,13 @@ NAPI_FUNCTION(getArrayBuffer) {
   napi_get_value_int64(env, argv[1], &length);
 
   napi_value arrayBuffer;
-  napi_create_external_arraybuffer(env, ptr, length, nullptr, nullptr, &arrayBuffer);
+  if (length < 0) {
+    napi_throw_error(env, nullptr, "Invalid ArrayBuffer length");
+    return nullptr;
+  }
+
+  napi_create_external_arraybuffer(env, ptr, static_cast<size_t>(length), nullptr, nullptr,
+                                   &arrayBuffer);
 
   return arrayBuffer;
 }

@@ -23,20 +23,6 @@
 			remoteGlobalIDString = 221E266D2EDCF1B40095699D;
 			remoteInfo = TestFixtures;
 		};
-		228CA1282EB9350300A4EC63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22D44B4E2E23EBDA00E2B467 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 228CA10C2EB9350000A4EC63;
-			remoteInfo = TestRunner;
-		};
-		228CA1322EB9350300A4EC63 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 22D44B4E2E23EBDA00E2B467 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 228CA10C2EB9350000A4EC63;
-			remoteInfo = TestRunner;
-		};
 		22F0A0022F00000300A4EC63 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 22D44B4E2E23EBDA00E2B467 /* Project object */;
@@ -74,11 +60,9 @@
 		221E266E2EDCF1B40095699D /* libTestFixtures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTestFixtures.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		221E26C62EDCF22B0095699D /* TKLiveSync.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TKLiveSync.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		228CA10D2EB9350000A4EC63 /* TestRunner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestRunner.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		228CA1272EB9350300A4EC63 /* TestRunnerTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestRunnerTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		228CA1312EB9350300A4EC63 /* TestRunnerUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TestRunnerUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NativeScript.xcframework; path = dist/NativeScript.xcframework; sourceTree = "<group>"; };
 		228CA3742EB9377D00A4EC63 /* TKLiveSync.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = TKLiveSync.xcframework; path = dist/TKLiveSync.xcframework; sourceTree = "<group>"; };
-		228CA7A42EB9387900A4EC63 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; name = app; path = TestRunner/app; sourceTree = "<group>"; };
+		228CA7A42EB9387900A4EC63 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; name = app; path = test/runtime/runner/app; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -92,7 +76,7 @@
 			);
 			target = 221E26C52EDCF22B0095699D /* TKLiveSync */;
 		};
-		228CA1392EB9350300A4EC63 /* Exceptions for "TestRunner" folder in "TestRunner" target */ = {
+		228CA1392EB9350300A4EC63 /* Exceptions for "test/runtime/runner" folder in "TestRunner" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				app/index.js,
@@ -298,19 +282,14 @@
 			);
 			target = 228CA10C2EB9350000A4EC63 /* TestRunner */;
 		};
-		22F0A0012F00000100A4EC63 /* Exceptions for "TestRunnerTests" folder in "TestRunnerTests" target */ = {
-			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
-			membershipExceptions = (
-				Info.plist,
-			);
-			target = 228CA1262EB9350300A4EC63 /* TestRunnerTests */;
-		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		221E266F2EDCF1B40095699D /* TestFixtures */ = {
+		221E266F2EDCF1B40095699D /* test/runtime/fixtures */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
-			path = TestFixtures;
+			exceptions = (
+			);
+			path = test/runtime/fixtures;
 			sourceTree = "<group>";
 		};
 		221E26C72EDCF22B0095699D /* TKLiveSync */ = {
@@ -321,34 +300,25 @@
 			path = TKLiveSync;
 			sourceTree = "<group>";
 		};
-		228CA10E2EB9350000A4EC63 /* TestRunner */ = {
+		228CA10E2EB9350000A4EC63 /* test/runtime/runner */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				228CA1392EB9350300A4EC63 /* Exceptions for "TestRunner" folder in "TestRunner" target */,
+				228CA1392EB9350300A4EC63 /* Exceptions for "test/runtime/runner" folder in "TestRunner" target */,
 			);
-			path = TestRunner;
-			sourceTree = "<group>";
-		};
-		228CA12A2EB9350300A4EC63 /* TestRunnerTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				22F0A0012F00000100A4EC63 /* Exceptions for "TestRunnerTests" folder in "TestRunnerTests" target */,
-			);
-			path = TestRunnerTests;
-			sourceTree = "<group>";
-		};
-		228CA1342EB9350300A4EC63 /* TestRunnerUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = TestRunnerUITests;
+			path = test/runtime/runner;
 			sourceTree = "<group>";
 		};
 		22D44BAC2E23EC5B00E2B467 /* metadata-generator */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = "metadata-generator";
 			sourceTree = "<group>";
 		};
 		22D453EB2E23F21F00E2B467 /* NativeScript */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+			);
 			path = NativeScript;
 			sourceTree = "<group>";
 		};
@@ -379,20 +349,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		228CA1242EB9350300A4EC63 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		228CA12E2EB9350300A4EC63 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -411,10 +367,8 @@
 				228CA7A42EB9387900A4EC63 /* app */,
 				22D44BAC2E23EC5B00E2B467 /* metadata-generator */,
 				22D453EB2E23F21F00E2B467 /* NativeScript */,
-				228CA10E2EB9350000A4EC63 /* TestRunner */,
-				228CA12A2EB9350300A4EC63 /* TestRunnerTests */,
-				228CA1342EB9350300A4EC63 /* TestRunnerUITests */,
-				221E266F2EDCF1B40095699D /* TestFixtures */,
+				228CA10E2EB9350000A4EC63 /* test/runtime/runner */,
+				221E266F2EDCF1B40095699D /* test/runtime/fixtures */,
 				221E26C72EDCF22B0095699D /* TKLiveSync */,
 				228CA36F2EB9365C00A4EC63 /* Frameworks */,
 				22D44BAB2E23EC5B00E2B467 /* Products */,
@@ -425,8 +379,6 @@
 			isa = PBXGroup;
 			children = (
 				228CA10D2EB9350000A4EC63 /* TestRunner.app */,
-				228CA1272EB9350300A4EC63 /* TestRunnerTests.xctest */,
-				228CA1312EB9350300A4EC63 /* TestRunnerUITests.xctest */,
 				221E266E2EDCF1B40095699D /* libTestFixtures.a */,
 				221E26C62EDCF22B0095699D /* TKLiveSync.framework */,
 			);
@@ -459,11 +411,9 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				221E266F2EDCF1B40095699D /* TestFixtures */,
+				221E266F2EDCF1B40095699D /* test/runtime/fixtures */,
 			);
 			name = TestFixtures;
-			packageProductDependencies = (
-			);
 			productName = TestFixtures;
 			productReference = 221E266E2EDCF1B40095699D /* libTestFixtures.a */;
 			productType = "com.apple.product-type.library.static";
@@ -485,8 +435,6 @@
 				221E26C72EDCF22B0095699D /* TKLiveSync */,
 			);
 			name = TKLiveSync;
-			packageProductDependencies = (
-			);
 			productName = TKLiveSync;
 			productReference = 221E26C62EDCF22B0095699D /* TKLiveSync.framework */;
 			productType = "com.apple.product-type.framework";
@@ -508,60 +456,12 @@
 				22F0A0032F00000300A4EC63 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
-				228CA10E2EB9350000A4EC63 /* TestRunner */,
+				228CA10E2EB9350000A4EC63 /* test/runtime/runner */,
 			);
 			name = TestRunner;
-			packageProductDependencies = (
-			);
 			productName = TestRunner;
 			productReference = 228CA10D2EB9350000A4EC63 /* TestRunner.app */;
 			productType = "com.apple.product-type.application";
-		};
-		228CA1262EB9350300A4EC63 /* TestRunnerTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 228CA13D2EB9350300A4EC63 /* Build configuration list for PBXNativeTarget "TestRunnerTests" */;
-			buildPhases = (
-				228CA1232EB9350300A4EC63 /* Sources */,
-				228CA1242EB9350300A4EC63 /* Frameworks */,
-				228CA1252EB9350300A4EC63 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				228CA1292EB9350300A4EC63 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				228CA12A2EB9350300A4EC63 /* TestRunnerTests */,
-			);
-			name = TestRunnerTests;
-			packageProductDependencies = (
-			);
-			productName = TestRunnerTests;
-			productReference = 228CA1272EB9350300A4EC63 /* TestRunnerTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		228CA1302EB9350300A4EC63 /* TestRunnerUITests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 228CA1402EB9350300A4EC63 /* Build configuration list for PBXNativeTarget "TestRunnerUITests" */;
-			buildPhases = (
-				228CA12D2EB9350300A4EC63 /* Sources */,
-				228CA12E2EB9350300A4EC63 /* Frameworks */,
-				228CA12F2EB9350300A4EC63 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				228CA1332EB9350300A4EC63 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				228CA1342EB9350300A4EC63 /* TestRunnerUITests */,
-			);
-			name = TestRunnerUITests;
-			packageProductDependencies = (
-			);
-			productName = TestRunnerUITests;
-			productReference = 228CA1312EB9350300A4EC63 /* TestRunnerUITests.xctest */;
-			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
 
@@ -582,14 +482,6 @@
 					228CA10C2EB9350000A4EC63 = {
 						CreatedOnToolsVersion = 26.0;
 					};
-					228CA1262EB9350300A4EC63 = {
-						CreatedOnToolsVersion = 26.0;
-						TestTargetID = 228CA10C2EB9350000A4EC63;
-					};
-					228CA1302EB9350300A4EC63 = {
-						CreatedOnToolsVersion = 26.0;
-						TestTargetID = 228CA10C2EB9350000A4EC63;
-					};
 				};
 			};
 			buildConfigurationList = 22D44B512E23EBDA00E2B467 /* Build configuration list for PBXProject "NativeScriptRuntime" */;
@@ -607,8 +499,6 @@
 			projectRoot = "";
 			targets = (
 				228CA10C2EB9350000A4EC63 /* TestRunner */,
-				228CA1262EB9350300A4EC63 /* TestRunnerTests */,
-				228CA1302EB9350300A4EC63 /* TestRunnerUITests */,
 				221E266D2EDCF1B40095699D /* TestFixtures */,
 				221E26C52EDCF22B0095699D /* TKLiveSync */,
 			);
@@ -628,20 +518,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				228CA7A52EB9387900A4EC63 /* app in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		228CA1252EB9350300A4EC63 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		228CA12F2EB9350300A4EC63 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -693,20 +569,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		228CA1232EB9350300A4EC63 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		228CA12D2EB9350300A4EC63 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -714,16 +576,6 @@
 			isa = PBXTargetDependency;
 			target = 221E266D2EDCF1B40095699D /* TestFixtures */;
 			targetProxy = 221E26BF2EDCF1D90095699D /* PBXContainerItemProxy */;
-		};
-		228CA1292EB9350300A4EC63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 228CA10C2EB9350000A4EC63 /* TestRunner */;
-			targetProxy = 228CA1282EB9350300A4EC63 /* PBXContainerItemProxy */;
-		};
-		228CA1332EB9350300A4EC63 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 228CA10C2EB9350000A4EC63 /* TestRunner */;
-			targetProxy = 228CA1322EB9350300A4EC63 /* PBXContainerItemProxy */;
 		};
 		22F0A0032F00000300A4EC63 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
@@ -782,7 +634,7 @@
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/TestFixtures/TestFixtures-Prefix.h";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/test/runtime/fixtures/TestFixtures-Prefix.h";
 				GCC_PREPROCESSOR_DEFINITIONS = (
 					"DEBUG=1",
 					"$(inherited)",
@@ -853,7 +705,7 @@
 				GCC_C_LANGUAGE_STANDARD = gnu11;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SRCROOT)/TestFixtures/TestFixtures-Prefix.h";
+				GCC_PREFIX_HEADER = "$(SRCROOT)/test/runtime/fixtures/TestFixtures-Prefix.h";
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
 				GCC_WARN_UNDECLARED_SELECTOR = YES;
@@ -979,8 +831,11 @@
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				"TARGETED_DEVICE_FAMILY[sdk=xros*]" = 7;
+				"TARGETED_DEVICE_FAMILY[sdk=xrsimulator*]" = 7;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Debug;
 		};
@@ -1080,9 +935,12 @@
 				SUPPORTS_MACCATALYST = YES;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
+				"TARGETED_DEVICE_FAMILY[sdk=xros*]" = 7;
+				"TARGETED_DEVICE_FAMILY[sdk=xrsimulator*]" = 7;
 				VALIDATE_PRODUCT = YES;
 				VERSIONING_SYSTEM = "apple-generic";
 				VERSION_INFO_PREFIX = "";
+				XROS_DEPLOYMENT_TARGET = 2.0;
 			};
 			name = Release;
 		};
@@ -1132,7 +990,7 @@
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				EXPORTED_SYMBOLS_FILE = "$(PROJECT_DIR)/TestFixtures/exported-symbols.txt";
+				EXPORTED_SYMBOLS_FILE = "$(PROJECT_DIR)/test/runtime/fixtures/exported-symbols.txt";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1150,10 +1008,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/TestFixtures",
+					"$(SRCROOT)/test/runtime/fixtures",
 					"$(SRCROOT)/NativeScript",
 				);
-				INFOPLIST_FILE = TestRunner/Info.plist;
+				INFOPLIST_FILE = test/runtime/runner/Info.plist;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Listen Music";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
@@ -1191,7 +1049,7 @@
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				STRIPFLAGS = "-s $(PROJECT_DIR)/TestFixtures/exported-symbols.txt";
+				STRIPFLAGS = "-s $(PROJECT_DIR)/test/runtime/fixtures/exported-symbols.txt";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
@@ -1245,7 +1103,7 @@
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_USER_SCRIPT_SANDBOXING = NO;
-				EXPORTED_SYMBOLS_FILE = "$(PROJECT_DIR)/TestFixtures/exported-symbols.txt";
+				EXPORTED_SYMBOLS_FILE = "$(PROJECT_DIR)/test/runtime/fixtures/exported-symbols.txt";
 				FRAMEWORK_SEARCH_PATHS = "$(inherited)";
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -1257,10 +1115,10 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
-					"$(SRCROOT)/TestFixtures",
+					"$(SRCROOT)/test/runtime/fixtures",
 					"$(SRCROOT)/NativeScript",
 				);
-				INFOPLIST_FILE = TestRunner/Info.plist;
+				INFOPLIST_FILE = test/runtime/runner/Info.plist;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Listen Music";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UIRequiredDeviceCapabilities = armv7;
@@ -1296,312 +1154,12 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				STRING_CATALOG_GENERATE_SYMBOLS = YES;
-				STRIPFLAGS = "-s $(PROJECT_DIR)/TestFixtures/exported-symbols.txt";
+				STRIPFLAGS = "-s $(PROJECT_DIR)/test/runtime/fixtures/exported-symbols.txt";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
 				SUPPORTS_MACCATALYST = NO;
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				TARGETED_DEVICE_FAMILY = "1,2";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		228CA13E2EB9350300A4EC63 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = B55DTZ6VSU;
-				ENABLE_APP_SANDBOX = YES;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = TestRunnerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.descendra.TestRunnerTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
-				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestRunner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TestRunner";
-			};
-			name = Debug;
-		};
-		228CA13F2EB9350300A4EC63 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = B55DTZ6VSU;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = NO;
-				INFOPLIST_FILE = TestRunnerTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.descendra.TestRunnerTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/TestRunner.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/TestRunner";
-				VALIDATE_PRODUCT = YES;
-			};
-			name = Release;
-		};
-		228CA1412EB9350300A4EC63 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = dwarf;
-				DEVELOPMENT_TEAM = B55DTZ6VSU;
-				ENABLE_APP_SANDBOX = YES;
-				ENABLE_HARDENED_RUNTIME = YES;
-				ENABLE_OUTGOING_NETWORK_CONNECTIONS = YES;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
-				MTL_FAST_MATH = YES;
-				ONLY_ACTIVE_ARCH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.descendra.TestRunnerUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				REGISTER_APP_GROUPS = YES;
-				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TestRunner;
-			};
-			name = Debug;
-		};
-		228CA1422EB9350300A4EC63 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
-				CLANG_ANALYZER_NONNULL = YES;
-				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
-				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
-				CLANG_ENABLE_MODULES = YES;
-				CLANG_ENABLE_OBJC_ARC = YES;
-				CLANG_ENABLE_OBJC_WEAK = YES;
-				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
-				CLANG_WARN_BOOL_CONVERSION = YES;
-				CLANG_WARN_COMMA = YES;
-				CLANG_WARN_CONSTANT_CONVERSION = YES;
-				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
-				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
-				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
-				CLANG_WARN_EMPTY_BODY = YES;
-				CLANG_WARN_ENUM_CONVERSION = YES;
-				CLANG_WARN_INFINITE_RECURSION = YES;
-				CLANG_WARN_INT_CONVERSION = YES;
-				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
-				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
-				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
-				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
-				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
-				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
-				CLANG_WARN_STRICT_PROTOTYPES = YES;
-				CLANG_WARN_SUSPICIOUS_MOVE = YES;
-				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
-				CLANG_WARN_UNREACHABLE_CODE = YES;
-				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
-				CODE_SIGN_STYLE = Automatic;
-				COPY_PHASE_STRIP = NO;
-				CURRENT_PROJECT_VERSION = 1;
-				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
-				DEVELOPMENT_TEAM = B55DTZ6VSU;
-				ENABLE_NS_ASSERTIONS = NO;
-				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
-				GCC_C_LANGUAGE_STANDARD = gnu17;
-				GCC_NO_COMMON_BLOCKS = YES;
-				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
-				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
-				GCC_WARN_UNDECLARED_SELECTOR = YES;
-				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
-				GCC_WARN_UNUSED_FUNCTION = YES;
-				GCC_WARN_UNUSED_VARIABLE = YES;
-				GENERATE_INFOPLIST_FILE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 26.0;
-				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 1.0;
-				MTL_ENABLE_DEBUG_INFO = NO;
-				MTL_FAST_MATH = YES;
-				PRODUCT_BUNDLE_IDENTIFIER = com.descendra.TestRunnerUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = iphoneos;
-				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx";
-				SUPPORTS_MACCATALYST = YES;
-				SWIFT_EMIT_LOC_STRINGS = NO;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_TARGET_NAME = TestRunner;
 				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
@@ -1646,24 +1204,6 @@
 			buildConfigurations = (
 				228CA13B2EB9350300A4EC63 /* Debug */,
 				228CA13C2EB9350300A4EC63 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		228CA13D2EB9350300A4EC63 /* Build configuration list for PBXNativeTarget "TestRunnerTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				228CA13E2EB9350300A4EC63 /* Debug */,
-				228CA13F2EB9350300A4EC63 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		228CA1402EB9350300A4EC63 /* Build configuration list for PBXNativeTarget "TestRunnerUITests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				228CA1412EB9350300A4EC63 /* Debug */,
-				228CA1422EB9350300A4EC63 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

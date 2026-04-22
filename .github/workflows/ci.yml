@@ -21,7 +21,7 @@ jobs:
         run: npm install
 
       - name: Download V8
-        run: ./download_v8.sh
+        run: ./scripts/download_v8.sh
 
       - name: Install libffi build tools
         run: brew install autoconf automake libtool texinfo

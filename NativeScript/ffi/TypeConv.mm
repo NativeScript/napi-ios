@@ -32,6 +32,10 @@
 #include <unordered_set>
 #include <vector>
 
+@interface JSWrapperObjectAssociation : NSObject
++ (void)transferOwnership:(napi_env)env of:(napi_value)value toNative:(id)object;
+@end
+
 namespace {
 
 static size_t getBufferElementSize(napi_typedarray_type type) {
@@ -186,8 +190,6 @@ static double decodeFloat16(uint16_t bits) {
   return static_cast<double>(output.f);
 }
 
-static const void* kNSDataJSValueAssociationKey = &kNSDataJSValueAssociationKey;
-
 static id resolveCachedHandleObject(napi_env env, void* handle) {
   if (env == nullptr || handle == nullptr) {
     return nil;
@@ -228,46 +230,6 @@ static id resolveCachedHandleObject(napi_env env, void* handle) {
 
 }  // namespace
 
-@interface NSDataJSValueAssociation : NSObject
-
-- (instancetype)initWithEnv:(napi_env)env
-                      value:(napi_value)value
-                bridgeState:(nativescript::ObjCBridgeState*)bridgeState;
-
-@end
-
-@implementation NSDataJSValueAssociation {
-  napi_env env_;
-  nativescript::ObjCBridgeState* bridgeState_;
-  uint64_t bridgeStateToken_;
-  napi_ref valueRef_;
-}
-
-- (instancetype)initWithEnv:(napi_env)env
-                      value:(napi_value)value
-                bridgeState:(nativescript::ObjCBridgeState*)bridgeState {
-  self = [super init];
-  if (self != nil) {
-    env_ = env;
-    bridgeState_ = bridgeState;
-    bridgeStateToken_ = bridgeState != nullptr ? bridgeState->lifetimeToken : 0;
-    valueRef_ = nativescript::make_ref(env, value);
-  }
-
-  return self;
-}
-
-- (void)dealloc {
-  if (valueRef_ != nullptr && env_ != nullptr &&
-      nativescript::IsBridgeStateLive(bridgeState_, bridgeStateToken_)) {
-    napi_delete_reference(env_, valueRef_);
-  }
-
-  [super dealloc];
-}
-
-@end
-
 namespace nativescript {
 
 namespace {
@@ -280,16 +242,14 @@ NSData* createNSDataWrapper(napi_env env, napi_value value, ObjCBridgeState* bri
     return nil;
   }
 
-  NSData* wrappedData = [NSData dataWithBytesNoCopy:data length:byteLength freeWhenDone:NO];
+  NSData* wrappedData = [NSData dataWithBytes:data length:byteLength];
   if (wrappedData == nil) {
     return nil;
   }
 
-  NSDataJSValueAssociation* association =
-      [[NSDataJSValueAssociation alloc] initWithEnv:env value:value bridgeState:bridgeState];
-  objc_setAssociatedObject(wrappedData, kNSDataJSValueAssociationKey, association,
-                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
-  [association release];
+  if (bridgeState != nullptr && bridgeState->hasRoundTripCacheFrame()) {
+    bridgeState->cacheRoundTripObject(env, wrappedData, value);
+  }
 
   return wrappedData;
 }
@@ -1856,11 +1816,21 @@ class BlockTypeConv : public TypeConv {
   void encode(std::string* encoding) override { *encoding += "^v"; }
 };
 
-void function_pointer_finalize(napi_env env, void* finalize_data, void* finalize_hint) {
+namespace {
+void function_pointer_finalize_now(napi_env env, void* finalize_data, void* finalize_hint) {
   Closure* closure = static_cast<Closure*>(finalize_hint);
   if (closure != nullptr) {
-    delete closure;
+    Closure::destroyOnOwningThread(closure);
   }
+}
+}  // namespace
+
+void function_pointer_finalize(napi_env env, void* finalize_data, void* finalize_hint) {
+  if (PostFinalizer(env, function_pointer_finalize_now, finalize_data, finalize_hint)) {
+    return;
+  }
+
+  function_pointer_finalize_now(env, finalize_data, finalize_hint);
 }
 
 class FunctionPointerTypeConv : public TypeConv {
@@ -3040,6 +3010,9 @@ class ArrayTypeConv : public TypeConv {
         napi_create_uint32(env, boolValue ? 1 : 0, &elementValue);
       }
       napi_set_element(env, result, i, elementValue);
+      if (StructObject::isInstance(env, elementValue)) {
+        napi_set_named_property(env, elementValue, "__ns_parent_struct_array", result);
+      }
     }
     return result;
   }

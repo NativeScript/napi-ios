@@ -1,6 +1,7 @@
 #ifndef nativescript_H
 #define nativescript_H
 
+#include <CoreFoundation/CFRunLoop.h>
 #include <dlfcn.h>
 #include <objc/runtime.h>
 #include <stdint.h>
@@ -8,6 +9,7 @@
 #include <map>
 #include <mutex>
 #include <string>
+#include <thread>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
@@ -42,6 +44,12 @@ struct JSObjectFinalizerContext {
 void finalize_objc_object(napi_env /*env*/, void* data, void* hint);
 bool IsBridgeStateLive(const ObjCBridgeState* bridgeState,
                        uint64_t token) noexcept;
+void DeleteReferenceOnOwningThread(napi_env env, ObjCBridgeState* bridgeState,
+                                   uint64_t bridgeStateToken, napi_ref ref);
+void ReleaseAndDeleteReferenceOnOwningThread(napi_env env, ObjCBridgeState* bridgeState,
+                                             uint64_t bridgeStateToken, napi_ref ref);
+bool PostFinalizer(napi_env env, napi_finalize finalize_cb, void* finalize_data,
+                   void* finalize_hint);
 
 // Determines how retain/release should be called when an Objective-C
 // object is exposed to JavaScript land.
@@ -57,6 +65,14 @@ typedef enum ObjectOwnership {
 
 class ObjCBridgeState {
  public:
+  struct RoundTripCacheEntry {
+    napi_ref ref = nullptr;
+    napi_value rawValue = nullptr;
+    bool persistBeyondFrame = true;
+    uintptr_t objectKey = 0;
+    uintptr_t objectClassKey = 0;
+  };
+
   ObjCBridgeState(napi_env env, const char* metadata_path = nullptr,
                   const void* metadata_ptr = nullptr);
   ~ObjCBridgeState();
@@ -166,8 +182,10 @@ class ObjCBridgeState {
     }
 
     uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    Class objectClass = object_getClass(object);
     for (const auto& entry : objectRefs) {
-      if (NormalizeHandleKey((void*)entry.first) == objectKey) {
+      if (NormalizeHandleKey((void*)entry.first) == objectKey &&
+          object_getClass(entry.first) == objectClass) {
         return true;
       }
     }
@@ -183,17 +201,51 @@ class ObjCBridgeState {
     return !roundTripCacheFrames.empty();
   }
 
+  static inline void releaseRoundTripEntry(napi_env env,
+                                           RoundTripCacheEntry& entry) {
+    if (env != nullptr && entry.ref != nullptr) {
+      napi_delete_reference(env, entry.ref);
+      entry.ref = nullptr;
+    }
+    entry.rawValue = nullptr;
+  }
+
+  static inline napi_value getRoundTripEntryValue(napi_env env,
+                                                  const RoundTripCacheEntry& entry) {
+    if (entry.rawValue != nullptr) {
+      return entry.rawValue;
+    }
+
+    return entry.ref != nullptr ? get_ref_value(env, entry.ref) : nullptr;
+  }
+
   inline void cacheRoundTripObject(napi_env env, id object, napi_value value) {
     if (object == nil || roundTripCacheFrames.empty()) {
       return;
     }
+
+    bool isArrayBuffer = false;
+    bool isTypedArray = false;
+    bool isDataView = false;
+    bool isBufferLike =
+        (napi_is_arraybuffer(env, value, &isArrayBuffer) == napi_ok && isArrayBuffer) ||
+        (napi_is_typedarray(env, value, &isTypedArray) == napi_ok && isTypedArray) ||
+        (napi_is_dataview(env, value, &isDataView) == napi_ok && isDataView);
 
     auto& frame = roundTripCacheFrames.back();
     if (frame.find(object) != frame.end()) {
       return;
     }
 
-    frame[object] = make_ref(env, value);
+    uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
+    frame[object] = RoundTripCacheEntry{
+        .ref = make_ref(env, value),
+        .rawValue = nullptr,
+        .persistBeyondFrame = !isBufferLike,
+        .objectKey = objectKey,
+        .objectClassKey = objectClassKey,
+    };
   }
 
   inline napi_value getRoundTripObject(napi_env env, id object) const {
@@ -201,43 +253,80 @@ class ObjCBridgeState {
       return nullptr;
     }
 
+    uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
+    auto matchesObject = [&](const RoundTripCacheEntry& entry) {
+      return entry.objectKey == objectKey && entry.objectClassKey == objectClassKey;
+    };
+
     if (roundTripCacheFrames.empty()) {
       auto recent = recentRoundTripCache.find(object);
-      if (recent == recentRoundTripCache.end()) {
-        uintptr_t objectKey = NormalizeHandleKey((void*)object);
-        for (const auto& entry : recentRoundTripCache) {
-          if (NormalizeHandleKey((void*)entry.first) == objectKey) {
-            return get_ref_value(env, entry.second);
-          }
-        }
-
-        return nullptr;
+      if (recent != recentRoundTripCache.end() && matchesObject(recent->second)) {
+        return getRoundTripEntryValue(env, recent->second);
       }
 
-      return get_ref_value(env, recent->second);
+      for (const auto& entry : recentRoundTripCache) {
+        if (matchesObject(entry.second)) {
+          return getRoundTripEntryValue(env, entry.second);
+        }
+      }
+
+      return nullptr;
     }
 
-    uintptr_t objectKey = NormalizeHandleKey((void*)object);
     for (auto frame = roundTripCacheFrames.rbegin();
          frame != roundTripCacheFrames.rend(); ++frame) {
       auto find = frame->find(object);
-      if (find != frame->end()) {
-        return get_ref_value(env, find->second);
+      if (find != frame->end() && matchesObject(find->second)) {
+        return getRoundTripEntryValue(env, find->second);
       }
 
       for (const auto& entry : *frame) {
-        if (NormalizeHandleKey((void*)entry.first) == objectKey) {
-          return get_ref_value(env, entry.second);
+        if (matchesObject(entry.second)) {
+          return getRoundTripEntryValue(env, entry.second);
         }
       }
     }
 
     auto recent = recentRoundTripCache.find(object);
-    if (recent != recentRoundTripCache.end()) {
-      return get_ref_value(env, recent->second);
+    if (recent != recentRoundTripCache.end() && matchesObject(recent->second)) {
+      return getRoundTripEntryValue(env, recent->second);
+    }
+
+    for (const auto& entry : recentRoundTripCache) {
+      if (matchesObject(entry.second)) {
+        return getRoundTripEntryValue(env, entry.second);
+      }
     }
 
     return nullptr;
+  }
+
+  inline void removeRoundTripObject(id object) {
+    if (object == nil) {
+      return;
+    }
+
+    uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
+    auto matchesObject = [&](const RoundTripCacheEntry& entry) {
+      return entry.objectKey == objectKey && entry.objectClassKey == objectClassKey;
+    };
+    auto removeFromMap = [&](auto& map) {
+      for (auto it = map.begin(); it != map.end();) {
+        if (matchesObject(it->second)) {
+          releaseRoundTripEntry(env, it->second);
+          it = map.erase(it);
+        } else {
+          ++it;
+        }
+      }
+    };
+
+    for (auto& frame : roundTripCacheFrames) {
+      removeFromMap(frame);
+    }
+    removeFromMap(recentRoundTripCache);
   }
 
   inline void endRoundTripCacheFrame(napi_env env) {
@@ -254,20 +343,27 @@ class ObjCBridgeState {
         if (parent.find(entry.first) == parent.end()) {
           parent[entry.first] = entry.second;
         } else {
-          napi_delete_reference(env, entry.second);
+          releaseRoundTripEntry(env, entry.second);
         }
       }
       return;
     }
 
-    for (const auto& entry : recentRoundTripCache) {
-      napi_delete_reference(env, entry.second);
+    for (auto& entry : recentRoundTripCache) {
+      releaseRoundTripEntry(env, entry.second);
     }
-    recentRoundTripCache = std::move(frame);
+    recentRoundTripCache.clear();
+    for (auto& entry : frame) {
+      if (entry.second.persistBeyondFrame) {
+        recentRoundTripCache.emplace(entry.first, entry.second);
+      } else {
+        releaseRoundTripEntry(env, entry.second);
+      }
+    }
   }
 
   inline bool tryResolveBridgedClassConstructor(napi_env env, napi_value value,
-                                                Class* out) const {
+                                                Class* out) {
     if (out == nullptr || value == nullptr) {
       return false;
     }
@@ -316,9 +412,22 @@ class ObjCBridgeState {
       return name;
     };
 
-    auto matchesConstructor = [&](ObjCClass* bridgedClass) -> bool {
-      if (bridgedClass == nullptr || bridgedClass->constructor == nullptr ||
-          bridgedClass->nativeClass == nil) {
+    auto registerResolvedRuntimeClass = [&](ObjCClass* bridgedClass,
+                                            Class runtimeClass) {
+      if (bridgedClass == nullptr || runtimeClass == nil) {
+        return;
+      }
+
+      bridgedClass->nativeClass = runtimeClass;
+      classesByPointer[runtimeClass] = bridgedClass;
+      if (bridgedClass->metadataOffset != MD_SECTION_OFFSET_NULL) {
+        mdClassesByPointer[runtimeClass] = bridgedClass->metadataOffset;
+      }
+    };
+
+    auto matchesConstructor = [&](ObjCClass* bridgedClass,
+                                  ObjCClass** unresolvedMatch) -> bool {
+      if (bridgedClass == nullptr || bridgedClass->constructor == nullptr) {
         return false;
       }
 
@@ -331,6 +440,13 @@ class ObjCBridgeState {
       if (napi_strict_equals(env, value, constructor, &isSameValue) ==
               napi_ok &&
           isSameValue) {
+        if (bridgedClass->nativeClass == nil) {
+          if (unresolvedMatch != nullptr) {
+            *unresolvedMatch = bridgedClass;
+          }
+          return false;
+        }
+
         *out = bridgedClass->nativeClass;
         return true;
       }
@@ -338,14 +454,16 @@ class ObjCBridgeState {
       return false;
     };
 
+    ObjCClass* unresolvedConstructorMatch = nullptr;
+
     for (const auto& entry : classesByPointer) {
-      if (matchesConstructor(entry.second)) {
+      if (matchesConstructor(entry.second, nullptr)) {
         return true;
       }
     }
 
     for (const auto& entry : classes) {
-      if (matchesConstructor(entry.second)) {
+      if (matchesConstructor(entry.second, &unresolvedConstructorMatch)) {
         return true;
       }
     }
@@ -366,6 +484,9 @@ class ObjCBridgeState {
 
       Class runtimeClass = objc_lookUpClass(candidateName.c_str());
       if (runtimeClass != nil) {
+        if (unresolvedConstructorMatch != nullptr) {
+          registerResolvedRuntimeClass(unresolvedConstructorMatch, runtimeClass);
+        }
         *out = runtimeClass;
         return true;
       }
@@ -516,7 +637,7 @@ class ObjCBridgeState {
   }
 
   inline bool tryResolveBridgedTypeConstructor(napi_env env, napi_value value,
-                                               id* out) const {
+                                               id* out) {
     if (out == nullptr || value == nullptr) {
       return false;
     }
@@ -565,6 +686,8 @@ class ObjCBridgeState {
  public:
   napi_env env = nullptr;
   uint64_t lifetimeToken = 0;
+  std::thread::id jsThreadId = std::this_thread::get_id();
+  CFRunLoopRef jsRunLoop = CFRunLoopGetCurrent();
   std::unordered_map<id, napi_ref> objectRefs;
   std::unordered_map<uintptr_t, napi_ref> handleObjectRefs;
 
@@ -611,8 +734,10 @@ class ObjCBridgeState {
     }
 
     uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    Class objectClass = object_getClass(object);
     for (const auto& entry : objectRefs) {
-      if (NormalizeHandleKey((void*)entry.first) != objectKey) {
+      if (NormalizeHandleKey((void*)entry.first) != objectKey ||
+          object_getClass(entry.first) != objectClass) {
         continue;
       }
 
@@ -641,8 +766,8 @@ class ObjCBridgeState {
   }
 
   std::unordered_map<MDSectionOffset, StructInfo*> structInfoCache;
-  std::vector<std::unordered_map<id, napi_ref>> roundTripCacheFrames;
-  std::unordered_map<id, napi_ref> recentRoundTripCache;
+  std::vector<std::unordered_map<id, RoundTripCacheEntry>> roundTripCacheFrames;
+  std::unordered_map<id, RoundTripCacheEntry> recentRoundTripCache;
   mutable std::mutex objectRefsMutex;
   void* trackedObjectLiveness = nullptr;
   void* objc_autoreleasePool;
