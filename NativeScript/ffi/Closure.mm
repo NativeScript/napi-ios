@@ -44,18 +44,23 @@ inline void deleteClosureOnOwningThread(Closure* closure) {
   }
 
   if (runloop != nullptr) {
+    CFRetain(runloop);
     CFRunLoopPerformBlock(runloop, kCFRunLoopCommonModes, ^{
       delete closure;
+      CFRelease(runloop);
     });
     CFRunLoopWakeUp(runloop);
     return;
   }
+
 #endif  // ENABLE_JS_RUNTIME
 
   delete closure;
 }
 
 }  // namespace
+
+void Closure::destroyOnOwningThread(Closure* closure) { deleteClosureOnOwningThread(closure); }
 
 inline bool selectorEndsWithErrorParam(SEL selector) {
   if (selector == nullptr) {
@@ -385,6 +390,8 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
 
 Closure::Closure(napi_env env, std::string encoding, bool isBlock, bool isMethod) {
   this->env = env;
+  this->bridgeState = ObjCBridgeState::InstanceData(env);
+  this->bridgeStateToken = this->bridgeState != nullptr ? this->bridgeState->lifetimeToken : 0;
   auto signature = [NSMethodSignature signatureWithObjCTypes:encoding.c_str()];
   size_t argc = signature.numberOfArguments;
 
@@ -425,6 +432,8 @@ Closure::Closure(napi_env env, std::string encoding, bool isBlock, bool isMethod
 Closure::Closure(napi_env env, MDMetadataReader* reader, MDSectionOffset offset, bool isBlock,
                  std::string* encoding, bool isMethod, bool isGetter, bool isSetter) {
   this->env = env;
+  this->bridgeState = ObjCBridgeState::InstanceData(env);
+  this->bridgeStateToken = this->bridgeState != nullptr ? this->bridgeState->lifetimeToken : 0;
   this->isGetter = isGetter;
   this->isSetter = isSetter;
 
@@ -482,17 +491,18 @@ Closure::Closure(napi_env env, MDMetadataReader* reader, MDSectionOffset offset,
 
 Closure::~Closure() {
   if (func != nullptr) {
-    if (env != nullptr) {
+    if (env != nullptr &&
+        (bridgeState == nullptr || IsBridgeStateLive(bridgeState, bridgeStateToken))) {
 #ifdef ENABLE_JS_RUNTIME
-      uint32_t remaining = 0;
-      napi_reference_unref(env, func, &remaining);
-      napi_delete_reference(env, func);
+      ReleaseAndDeleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, func);
 #else
-      napi_delete_reference(env, func);
+      DeleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, func);
 #endif
     }
     func = nullptr;
   }
+  bridgeState = nullptr;
+  bridgeStateToken = 0;
 #ifndef ENABLE_JS_RUNTIME
   if (tsfn != nullptr) {
     napi_release_threadsafe_function(tsfn, napi_tsfn_abort);

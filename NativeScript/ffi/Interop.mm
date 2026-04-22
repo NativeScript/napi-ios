@@ -283,6 +283,34 @@ inline napi_value createReferenceProxy(napi_env env, napi_value target, Referenc
   return proxy;
 }
 
+void finalizeReferenceNow(napi_env env, void* data, void* hint) {
+  (void)env;
+  (void)hint;
+  Reference* ref = (Reference*)data;
+  delete ref;
+}
+
+void finalizeFunctionReferenceNow(napi_env env, void* data, void* hint) {
+  (void)env;
+  (void)hint;
+  FunctionReference* ref = (FunctionReference*)data;
+  delete ref;
+}
+
+void finalizePointerNow(napi_env env, void* data, void* hint) {
+  (void)env;
+  (void)hint;
+  Pointer* ptr = (Pointer*)data;
+  if (ptr == nullptr) {
+    return;
+  }
+  auto it = g_pointerCache.find(pointerKey(ptr->data));
+  if (it != g_pointerCache.end()) {
+    g_pointerCache.erase(it);
+  }
+  delete ptr;
+}
+
 inline bool getCachedPointer(napi_env env, void* data, napi_value* value) {
   auto it = g_pointerCache.find(pointerKey(data));
   if (it == g_pointerCache.end()) {
@@ -1140,9 +1168,18 @@ napi_value interop_bufferFromData(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 
-  napi_value result;
+  napi_value result = nullptr;
+  void* bufferData = nullptr;
+  napi_status status =
+      napi_create_arraybuffer(env, static_cast<size_t>(data.length), &bufferData, &result);
+  if (status != napi_ok || result == nullptr) {
+    napi_throw_error(env, nullptr, "Failed to create ArrayBuffer");
+    return nullptr;
+  }
 
-  napi_create_external_arraybuffer(env, (void*)data.bytes, data.length, nullptr, nullptr, &result);
+  if (data.length > 0 && bufferData != nullptr) {
+    std::memcpy(bufferData, data.bytes, static_cast<size_t>(data.length));
+  }
 
   return result;
 }
@@ -1522,15 +1559,11 @@ napi_value Pointer::customInspect(napi_env env, napi_callback_info info) {
 }
 
 void Pointer::finalize(napi_env env, void* data, void* hint) {
-  Pointer* ptr = (Pointer*)data;
-  if (ptr == nullptr) {
+  if (PostFinalizer(env, finalizePointerNow, data, hint)) {
     return;
   }
-  auto it = g_pointerCache.find(pointerKey(ptr->data));
-  if (it != g_pointerCache.end()) {
-    g_pointerCache.erase(it);
-  }
-  delete ptr;
+
+  finalizePointerNow(env, data, hint);
 }
 
 Pointer::Pointer(void* data) { this->data = data; }
@@ -1641,6 +1674,9 @@ napi_value Reference::create(napi_env env, std::shared_ptr<TypeConv> type, void*
   }
 
   reference->env = env;
+  reference->bridgeState = ObjCBridgeState::InstanceData(env);
+  reference->bridgeStateToken =
+      reference->bridgeState != nullptr ? reference->bridgeState->lifetimeToken : 0;
   reference->type = std::move(type);
   reference->data = data;
   reference->ownsData = ownsData;
@@ -1730,6 +1766,9 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
 
   Reference* reference = new Reference();
   reference->env = env;
+  reference->bridgeState = ObjCBridgeState::InstanceData(env);
+  reference->bridgeStateToken =
+      reference->bridgeState != nullptr ? reference->bridgeState->lifetimeToken : 0;
 
   if (argc == 0) {
     // Leave it uninitialized. It can be materialized later by pointer marshalling.
@@ -1898,15 +1937,21 @@ napi_value Reference::customInspect(napi_env env, napi_callback_info info) {
 }
 
 void Reference::finalize(napi_env env, void* data, void* hint) {
-  Reference* ref = (Reference*)data;
-  delete ref;
+  if (PostFinalizer(env, finalizeReferenceNow, data, hint)) {
+    return;
+  }
+
+  finalizeReferenceNow(env, data, hint);
 }
 
 Reference::~Reference() {
-  if (initValue != nullptr && env != nullptr) {
-    napi_delete_reference(env, initValue);
+  if (initValue != nullptr && env != nullptr &&
+      (bridgeState == nullptr || IsBridgeStateLive(bridgeState, bridgeStateToken))) {
+    DeleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, initValue);
     initValue = nullptr;
   }
+  bridgeState = nullptr;
+  bridgeStateToken = 0;
   if (data != nullptr && ownsData) {
     free(data);
     data = nullptr;
@@ -1977,8 +2022,16 @@ FunctionReference* FunctionReference::unwrap(napi_env env, napi_value value) {
 }
 
 void FunctionReference::finalize(napi_env env, void* data, void* hint) {
-  FunctionReference* ref = (FunctionReference*)data;
-  delete ref;
+  if (PostFinalizer(env, finalizeFunctionReferenceNow, data, hint)) {
+    return;
+  }
+
+  finalizeFunctionReferenceNow(env, data, hint);
+}
+
+FunctionReference::FunctionReference(napi_env env, napi_ref ref) : env(env), ref(ref) {
+  bridgeState = ObjCBridgeState::InstanceData(env);
+  bridgeStateToken = bridgeState != nullptr ? bridgeState->lifetimeToken : 0;
 }
 
 napi_value FunctionReference::constructor(napi_env env, napi_callback_info info) {
@@ -2053,10 +2106,13 @@ FunctionReference::~FunctionReference() {
   if (closure != nullptr && closure->func == ref) {
     closure->func = nullptr;
   }
-  if (ref != nullptr && env != nullptr) {
-    napi_delete_reference(env, ref);
+  if (ref != nullptr && env != nullptr &&
+      (bridgeState == nullptr || IsBridgeStateLive(bridgeState, bridgeStateToken))) {
+    DeleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, ref);
     ref = nullptr;
   }
+  bridgeState = nullptr;
+  bridgeStateToken = 0;
 }
 
 void* FunctionReference::getFunctionPointer(MDSectionOffset offset, bool isBlock) {

@@ -1,7 +1,8 @@
 {
-  "name": "@nativescript/ios",
-  "description": "NativeScript Runtime for iOS",
-  "version": "9.0.0-napi-v8.0",
+  "name": "nativescript-apple-runtime-monorepo",
+  "private": true,
+  "description": "Monorepo for NativeScript Apple runtimes and related packages",
+  "version": "0.0.0",
   "keywords": [
     "NativeScript",
     "iOS",
@@ -21,21 +22,30 @@
     "scripts"
   ],
   "scripts": {
-    "build-ios": "node prepare-target ios && ./build_all_ios.sh",
-    "build-vision": "node prepare-target visionos && ./build_all_vision.sh",
-    "setup-ci": "./build_metadata_generator.sh",
-    "update-version": "./update_version.sh",
+    "build-ios": "./scripts/build_all_ios.sh",
+    "build-macos": "./scripts/build_all_macos.sh",
+    "build-vision": "./scripts/build_all_vision.sh",
+    "build-visionos": "./scripts/build_all_vision.sh",
+    "build-node-api": "./scripts/build_all_react_native.sh",
+    "pack:ios": "./scripts/build_npm_ios.sh",
+    "pack:macos": "./scripts/build_npm_macos.sh",
+    "pack:visionos": "./scripts/build_npm_vision.sh",
+    "setup-ci": "./scripts/build_metadata_generator.sh",
+    "update-version": "./scripts/update_version.sh ios",
+    "update-version:ios": "./scripts/update_version.sh ios",
+    "update-version:macos": "./scripts/update_version.sh macos",
+    "update-version:visionos": "./scripts/update_version.sh visionos",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "version": "npm run changelog && git add CHANGELOG.md",
     "build-libffi": "node scripts/build_libffi.js",
-    "build-metagen": "./build_metadata_generator.sh",
+    "build-metagen": "./scripts/build_metadata_generator.sh",
     "metagen": "node scripts/metagen.js",
-    "build": "./build_nativescript.sh",
-    "build:ios": "./build_nativescript.sh --iphone --no-simulator",
-    "build:ios-sim": "./build_nativescript.sh --no-iphone --simulator",
-    "build:macos": "./build_nativescript.sh --macos --no-iphone --no-simulator",
-    "build:macos-cli": "./build_nativescript.sh --no-iphone --no-simulator --no-macos --macos-cli --v8",
-    "build:macos-napi": "./build_nativescript.sh --no-iphone --no-simulator --macos-napi",
+    "build": "./scripts/build_nativescript.sh",
+    "build:ios": "./scripts/build_nativescript.sh --iphone --no-simulator --no-macos",
+    "build:ios-sim": "./scripts/build_nativescript.sh --no-iphone --simulator --no-macos",
+    "build:macos": "./scripts/build_nativescript.sh --macos --no-iphone --no-simulator",
+    "build:macos-cli": "./scripts/build_nativescript.sh --no-iphone --no-simulator --no-macos --macos-cli --v8",
+    "build:macos-napi": "./scripts/build_nativescript.sh --no-iphone --no-simulator --macos-napi",
     "nsr": "./dist/nsr",
     "test:macos": "node ./scripts/run-tests-macos.js ./build/test-results/macos-junit.xml",
     "test:ios": "node ./scripts/run-tests-ios.js"
@@ -49,7 +59,7 @@
     "semver": "^7.5.0"
   },
   "lint-staged": {
-    "{NativeScript,metadata-generator/src,TestFixtures}/**/*.{h,hpp,c,cpp,mm,m}": [
+    "{NativeScript,metadata-generator/src,test/runtime/fixtures}/**/*.{h,hpp,c,cpp,mm,m}": [
       "clang-format -i"
     ]
   }

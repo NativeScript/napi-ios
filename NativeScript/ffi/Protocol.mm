@@ -154,7 +154,8 @@ napi_value ObjCProtocol::jsConstructor(napi_env env, napi_callback_info cbinfo) 
 ObjCProtocol::ObjCProtocol(napi_env env, MDSectionOffset offset) {
   this->env = env;
   this->metadataOffset = offset;
-  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  bridgeState = ObjCBridgeState::InstanceData(env);
+  bridgeStateToken = bridgeState != nullptr ? bridgeState->lifetimeToken : 0;
 
   auto nameOffset = bridgeState->metadata->getOffset(offset);
   offset += sizeof(MDSectionOffset);
@@ -190,6 +191,14 @@ ObjCProtocol::ObjCProtocol(napi_env env, MDSectionOffset offset) {
   ObjCClassMember::defineMembers(env, members, membersOffset, constructor);
 }
 
-ObjCProtocol::~ObjCProtocol() { napi_delete_reference(env, constructor); }
+ObjCProtocol::~ObjCProtocol() {
+  if (env != nullptr &&
+      (bridgeState == nullptr || IsBridgeStateLive(bridgeState, bridgeStateToken))) {
+    DeleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, constructor);
+  }
+  constructor = nullptr;
+  bridgeState = nullptr;
+  bridgeStateToken = 0;
+}
 
 }  // namespace nativescript

@@ -208,8 +208,6 @@ napi_status js_execute_script(napi_env env, napi_value script, const char* file,
 }
 
 napi_status js_execute_pending_jobs(napi_env env) {
-  env->isolate->RequestGarbageCollectionForTesting(
-      v8::Isolate::kFullGarbageCollection);
   v8::platform::PumpMessageLoop(JSR::platform, env->isolate);
   env->isolate->PerformMicrotaskCheckpoint();
   env->isolate->ClearKeptObjects();

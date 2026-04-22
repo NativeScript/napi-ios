@@ -11,6 +11,7 @@
 #include "Timers.h"
 
 static std::atomic<int> gActiveTimers{0};
+struct TimerToken;
 
 @interface NSTimerHandle : NSObject {
  @public
@@ -19,14 +20,33 @@ static std::atomic<int> gActiveTimers{0};
   napi_ref callback;
   bool activeCounted;
   int64_t timerId;
+  TimerToken* token;
 }
 @end
 
+struct TimerToken {
+  std::atomic<NSTimerHandle*> handle{nil};
+  std::atomic<bool> externalAlive{true};
+};
+
 @implementation NSTimerHandle
 - (void)dealloc {
+  if (env != nullptr && callback != nullptr) {
+    uint32_t remaining = 0;
+    napi_reference_unref(env, callback, &remaining);
+    napi_delete_reference(env, callback);
+    callback = nullptr;
+  }
   if (activeCounted) {
     gActiveTimers.fetch_sub(1, std::memory_order_relaxed);
     activeCounted = false;
+  }
+  if (token != nullptr) {
+    token->handle.store(nil, std::memory_order_release);
+    if (!token->externalAlive.load(std::memory_order_acquire)) {
+      delete token;
+    }
+    token = nullptr;
   }
   timer = nil;
   [super dealloc];
@@ -200,10 +220,12 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle, bool invalidate
     @synchronized(handle) {
       if (handle->timer != nil) {
         NSTimer* rawTimer = handle->timer;
-        objc_setAssociatedObject(rawTimer, kTimerHandleAssociationKey, nil,
-                                 OBJC_ASSOCIATION_ASSIGN);
-        if (invalidateTimer && [rawTimer isValid]) {
-          [rawTimer invalidate];
+        if (invalidateTimer) {
+          objc_setAssociatedObject(rawTimer, kTimerHandleAssociationKey, nil,
+                                   OBJC_ASSOCIATION_ASSIGN);
+          if ([rawTimer isValid]) {
+            [rawTimer invalidate];
+          }
         }
         handle->timer = nil;
       }
@@ -246,6 +268,18 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle, bool invalidate
     js_execute_pending_jobs(cleanupEnv);
 #endif
   }
+}
+
+void ScheduleOneShotTimerCleanup(napi_env env, NSTimerHandle* handle) {
+  if (handle == nil) {
+    return;
+  }
+
+  [handle retain];
+  dispatch_async(dispatch_get_main_queue(), ^{
+    DisposeTimerHandle(env, handle, false);
+    [handle release];
+  });
 }
 }  // namespace
 
@@ -300,6 +334,7 @@ JS_METHOD(Timers::SetTimeout) {
   handle->callback = nullptr;
   handle->activeCounted = false;
   handle->timerId = 0;
+  handle->token = new TimerToken();
 #ifdef TARGET_ENGINE_HERMES
   if (argc > 0) {
     napi_get_value_int64(env, argv[0], &handle->timerId);
@@ -307,8 +342,6 @@ JS_METHOD(Timers::SetTimeout) {
 #else
   napi_create_reference(env, argv[0], 1, &handle->callback);
 #endif
-  // Keep one retain owned by the JS external handle.
-  [handle retain];
   MarkTimerActive(handle);
 
   NSTimer* timer = [NSTimer
@@ -353,28 +386,31 @@ JS_METHOD(Timers::SetTimeout) {
                         js_execute_pending_jobs(callbackEnv);
 #endif
 
-                        // One-shot timers are already in-flight here; avoid
-                        // invalidating during callback teardown.
-                        DisposeTimerHandle(callbackEnv, handle, false);
+                        ScheduleOneShotTimerCleanup(callbackEnv, handle);
                         [handle release];
                       }];
 
   handle->timer = timer;
+  handle->token->handle.store(handle, std::memory_order_release);
   objc_setAssociatedObject(timer, kTimerHandleAssociationKey, handle,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
   napi_value result;
   napi_create_external(
-      env, handle,
+      env, handle->token,
       [](napi_env env, void* data, void* /*hint*/) {
-        NSTimerHandle* handle = static_cast<NSTimerHandle*>(data);
-        if (handle == nil) {
+        TimerToken* token = static_cast<TimerToken*>(data);
+        if (token == nullptr) {
           return;
         }
-        [handle release];
+        token->externalAlive.store(false, std::memory_order_release);
+        NSTimerHandle* handle = token->handle.load(std::memory_order_acquire);
+        if (handle == nil) {
+          delete token;
+        }
       },
       nullptr, &result);
-  // Drop creator ownership. Remaining ownership is timer association + JS external.
+  // Drop creator ownership. Remaining ownership is the timer association.
   [handle release];
 
   AddTimerToMainRunLoop(timer);
@@ -402,6 +438,7 @@ JS_METHOD(Timers::SetInterval) {
   handle->callback = nullptr;
   handle->activeCounted = false;
   handle->timerId = 0;
+  handle->token = new TimerToken();
 #ifdef TARGET_ENGINE_HERMES
   if (argc > 0) {
     napi_get_value_int64(env, argv[0], &handle->timerId);
@@ -409,8 +446,6 @@ JS_METHOD(Timers::SetInterval) {
 #else
   napi_create_reference(env, argv[0], 1, &handle->callback);
 #endif
-  // Keep one retain owned by the JS external handle.
-  [handle retain];
   MarkTimerActive(handle);
 
   NSTimer* timer = [NSTimer
@@ -458,21 +493,26 @@ JS_METHOD(Timers::SetInterval) {
                       }];
 
   handle->timer = timer;
+  handle->token->handle.store(handle, std::memory_order_release);
   objc_setAssociatedObject(timer, kTimerHandleAssociationKey, handle,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 
   napi_value result;
   napi_create_external(
-      env, handle,
+      env, handle->token,
       [](napi_env env, void* data, void* /*hint*/) {
-        NSTimerHandle* handle = static_cast<NSTimerHandle*>(data);
-        if (handle == nil) {
+        TimerToken* token = static_cast<TimerToken*>(data);
+        if (token == nullptr) {
           return;
         }
-        [handle release];
+        token->externalAlive.store(false, std::memory_order_release);
+        NSTimerHandle* handle = token->handle.load(std::memory_order_acquire);
+        if (handle == nil) {
+          delete token;
+        }
       },
       nullptr, &result);
-  // Drop creator ownership. Remaining ownership is timer association + JS external.
+  // Drop creator ownership. Remaining ownership is the timer association.
   [handle release];
 
   AddTimerToMainRunLoop(timer);
@@ -495,9 +535,13 @@ JS_METHOD(Timers::ClearTimer) {
     return nullptr;
   }
 
-  void* rawHandle = nullptr;
-  napi_get_value_external(env, argv[0], &rawHandle);
-  NSTimerHandle* handle = static_cast<NSTimerHandle*>(rawHandle);
+  void* rawToken = nullptr;
+  napi_get_value_external(env, argv[0], &rawToken);
+  TimerToken* token = static_cast<TimerToken*>(rawToken);
+  if (token == nullptr) {
+    return nullptr;
+  }
+  NSTimerHandle* handle = token->handle.load(std::memory_order_acquire);
   if (handle == nil) {
     return nullptr;
   }

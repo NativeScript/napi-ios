@@ -5,28 +5,32 @@ let currentVersion = process.env.NPM_VERSION;
 if (!currentVersion) {
   const cmdArgs = process.argv.slice(2);
   const target = cmdArgs[0];
+  const packageJsonByTarget = {
+    ios: "../packages/ios/package.json",
+    macos: "../packages/macos/package.json",
+    visionos: "../packages/visionos/package.json",
+    "ios-node-api": "../packages/ios-node-api/package.json",
+    "macos-node-api": "../packages/macos-node-api/package.json",
+    "objc-node-api": "../packages/objc-node-api/package.json",
+  };
 
-  switch (target) {
-    case "root":
-      currentVersion = require("../package.json").version;
-      break;
-    case "macos":
-      currentVersion = require("../packages/macos/package.json").version;
-      break;
-    case "ios":
-      currentVersion = require("../packages/ios/package.json").version;
-      break;
-    default:
-      throw new Error(
-        `Unknown target "${target}". Expected one of "root", "macos", or "ios".`,
-      );
+  if (!packageJsonByTarget[target]) {
+    throw new Error(
+      `Unknown target "${target}". Expected one of ${Object.keys(packageJsonByTarget)
+        .map((name) => `"${name}"`)
+        .join(", ")}.`,
+    );
   }
+
+  currentVersion = require(packageJsonByTarget[target]).version;
 }
 
 function validateNpmTag(version) {
   const parsed = semver.parse(version);
   return (
-    parsed.prerelease.length === 0 || /^[a-zA-Z]+$/.test(parsed.prerelease[0])
+    parsed.prerelease.length === 0 ||
+    (typeof parsed.prerelease[0] === "string" &&
+      /^[a-zA-Z][0-9A-Za-z-]*$/.test(parsed.prerelease[0]))
   );
 }
 

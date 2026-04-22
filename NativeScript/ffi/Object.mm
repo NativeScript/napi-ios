@@ -16,6 +16,8 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 
 @property(nonatomic) napi_env env;
 @property(nonatomic) napi_ref ref;
+@property(nonatomic) nativescript::ObjCBridgeState* bridgeState;
+@property(nonatomic) uint64_t bridgeStateToken;
 
 + (void)transferOwnership:(napi_env)env of:(napi_value)value toNative:(id)object;
 
@@ -42,6 +44,8 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
   if (self) {
     self.env = env;
     self.ref = ref;
+    self.bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
+    self.bridgeStateToken = self.bridgeState != nullptr ? self.bridgeState->lifetimeToken : 0;
   }
   return self;
 }
@@ -52,6 +56,7 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
                                                                                         ref:ref];
   objc_setAssociatedObject(object, JSWrapperObjectAssociationKey, association,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+  [association release];
 }
 
 + (instancetype)associationFor:(id)object {
@@ -59,8 +64,17 @@ static SEL ObjCLifecycleAssociationKey = @selector(ObjCLifecycleAssociationKey);
 }
 
 - (void)dealloc {
+  if (self.env != nullptr && self.ref != nullptr &&
+      (self.bridgeState == nullptr ||
+       nativescript::IsBridgeStateLive(self.bridgeState, self.bridgeStateToken))) {
+    nativescript::DeleteReferenceOnOwningThread(self.env, self.bridgeState,
+                                                self.bridgeStateToken, self.ref);
+    self.ref = nullptr;
+  }
+  self.bridgeState = nullptr;
+  self.bridgeStateToken = 0;
+  self.env = nullptr;
   [super dealloc];
-  napi_delete_reference(self.env, self.ref);
 }
 
 @end
@@ -292,7 +306,8 @@ void attachObjectLifecycleAssociation(napi_env env, id object) {
   [association release];
 }
 
-void finalize_objc_object(napi_env /*env*/, void* data, void* hint) {
+namespace {
+void finalize_objc_object_now(napi_env /*env*/, void* data, void* hint) {
   (void)hint;
   JSObjectFinalizerContext* context = static_cast<JSObjectFinalizerContext*>(data);
   if (context == nullptr) {
@@ -305,6 +320,15 @@ void finalize_objc_object(napi_env /*env*/, void* data, void* hint) {
   }
 
   delete context;
+}
+}  // namespace
+
+void finalize_objc_object(napi_env env, void* data, void* hint) {
+  if (PostFinalizer(env, finalize_objc_object_now, data, hint)) {
+    return;
+  }
+
+  finalize_objc_object_now(env, data, hint);
 }
 
 napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value constructor,
@@ -326,6 +350,11 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
   }
 
   napi_value resolvedConstructor = constructor;
+  if (resolvedConstructor != nullptr) {
+    Class hintedClass = nil;
+    tryResolveBridgedClassConstructor(env, resolvedConstructor, &hintedClass);
+  }
+
   napi_value actualConstructor = findConstructorForObject(env, this, obj, cls);
   if (actualConstructor != nullptr) {
     resolvedConstructor = actualConstructor;
@@ -424,6 +453,15 @@ napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
   if (association != nil) {
     napi_value jsObject = get_ref_value(env, association.ref);
     if (jsObject != nullptr) {
+      bool isArrayBuffer = false;
+      bool isTypedArray = false;
+      bool isDataView = false;
+      if ((napi_is_arraybuffer(env, jsObject, &isArrayBuffer) == napi_ok && isArrayBuffer) ||
+          (napi_is_typedarray(env, jsObject, &isTypedArray) == napi_ok && isTypedArray) ||
+          (napi_is_dataview(env, jsObject, &isDataView) == napi_ok && isDataView)) {
+        return jsObject;
+      }
+
       [obj retain];
       return proxyNativeObject(env, jsObject, obj);
     }
@@ -617,6 +655,7 @@ bool ObjCBridgeState::unregisterObjectIfRefMatches(id object, napi_ref ref) noex
 
 void ObjCBridgeState::detachObject(id object) noexcept {
   takeObjectRef(object);
+  removeRoundTripObject(object);
 
   if (object == nil) {
     return;

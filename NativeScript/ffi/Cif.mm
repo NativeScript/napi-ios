@@ -66,6 +66,9 @@ inline bool typeRequiresSlowGeneratedNapiDispatch(const std::shared_ptr<TypeConv
     case mdTypeUInt8:
     case mdTypeBlock:
     case mdTypeFunctionPointer:
+    case mdTypeVector:
+    case mdTypeExtVector:
+    case mdTypeComplex:
       return true;
     default:
       return false;

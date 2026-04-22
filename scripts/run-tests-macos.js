@@ -24,7 +24,7 @@ const projectPath = path.join(__dirname, "../NativeScriptRuntime.xcodeproj");
 const scheme = "TestRunner";
 const configuration = "Debug";
 const derivedDataPath = path.join(__dirname, "../build", "derived-data", "macos-tests");
-const testRunnerAppSourcePath = path.join(__dirname, "../TestRunner", "app");
+const testRunnerAppSourcePath = path.join(__dirname, "../test/runtime/runner", "app");
 const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
 const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
 const nativeScriptSourceRoot = path.join(__dirname, "../NativeScript");
@@ -46,14 +46,14 @@ const metadataGeneratorBuildStepScript = path.join(
 const buildStatePath = path.join(derivedDataPath, ".macos-test-build-state.json");
 const macosBuildInputs = [
     path.join(__dirname, "../NativeScriptRuntime.xcodeproj", "project.pbxproj"),
-    path.join(__dirname, "../TestRunner", "Source Files"),
-    path.join(__dirname, "../TestRunner", "Info.plist"),
-    path.join(__dirname, "../TestFixtures"),
+    path.join(__dirname, "../test/runtime/runner", "Source Files"),
+    path.join(__dirname, "../test/runtime/runner", "Info.plist"),
+    path.join(__dirname, "../test/runtime/fixtures"),
     path.join(__dirname, "../TKLiveSync"),
     path.join(metadataGeneratorRoot, "src"),
     path.join(metadataGeneratorRoot, "include"),
     path.join(metadataGeneratorRoot, "CMakeLists.txt"),
-    path.join(__dirname, "../build_metadata_generator.sh"),
+    path.join(__dirname, "build_metadata_generator.sh"),
     metadataGeneratorBinary,
     metadataGeneratorBuildStepScript,
     nativeScriptXCFramework,
@@ -469,7 +469,7 @@ function ensureMacOSRuntimeArtifactsBuilt() {
     const cachePath = path.join(__dirname, "../dist", "intermediates", "macos", "CMakeCache.txt");
     const sourceInputs = [
         nativeScriptSourceRoot,
-        path.join(__dirname, "../build_nativescript.sh")
+        path.join(__dirname, "build_nativescript.sh")
     ];
 
     const sourceMtime = sourceInputs.reduce(
@@ -502,7 +502,7 @@ function ensureMacOSRuntimeArtifactsBuilt() {
 
     console.log(`NativeScript macOS artifacts are missing, stale, or built for '${configuredEngine ?? "unknown"}'; running ${requestedEngine} build...`);
     runBuildAndRequireSuccess(
-        "./build_nativescript.sh",
+        path.join(__dirname, "build_nativescript.sh"),
         ["--macos", "--no-iphone", "--no-simulator", `--${requestedEngine}`],
         commandTimeoutMs
     );

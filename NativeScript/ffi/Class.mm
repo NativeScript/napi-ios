@@ -310,7 +310,20 @@ NAPI_FUNCTION(classHasInstance) {
     if (napi_typeof(env, argv[0], &valueType) == napi_ok &&
         (valueType == napi_object || valueType == napi_function)) {
       id instance = nil;
-      if (napi_unwrap(env, argv[0], (void**)&instance) != napi_ok || instance == nil) {
+      napi_status unwrapStatus = napi_invalid_arg;
+      if (Pointer::isInstance(env, argv[0])) {
+        Pointer* pointer = Pointer::unwrap(env, argv[0]);
+        instance = pointer != nullptr ? static_cast<id>(pointer->data) : nil;
+        unwrapStatus = instance != nil ? napi_ok : napi_invalid_arg;
+      } else if (Reference::isInstance(env, argv[0])) {
+        Reference* reference = Reference::unwrap(env, argv[0]);
+        instance = reference != nullptr ? static_cast<id>(reference->data) : nil;
+        unwrapStatus = instance != nil ? napi_ok : napi_invalid_arg;
+      } else {
+        unwrapStatus = napi_unwrap(env, argv[0], (void**)&instance);
+      }
+
+      if (unwrapStatus != napi_ok || instance == nil) {
         napi_value nativePointer = nullptr;
         if (napi_get_named_property(env, argv[0], "__ns_native_ptr", &nativePointer) == napi_ok &&
             Pointer::isInstance(env, nativePointer)) {
@@ -383,8 +396,17 @@ NAPI_FUNCTION(BridgedConstructor) {
       return;
     }
 
+    if (newTarget != nullptr) {
+      // Fresh constructor receivers should not need an unwrap probe here.
+      // On V8, reentrant constructor calls from ObjC->JS block callbacks can
+      // stall inside napi_unwrap() on that receiver.
+      napi_wrap(env, jsThis, nativeObject, nullptr, nullptr, nullptr);
+      return;
+    }
+
     void* existingWrapped = nullptr;
-    if (napi_unwrap(env, jsThis, &existingWrapped) == napi_ok && existingWrapped != nullptr) {
+    napi_status unwrapStatus = napi_unwrap(env, jsThis, &existingWrapped);
+    if (unwrapStatus == napi_ok && existingWrapped != nullptr) {
       return;
     }
 
@@ -675,6 +697,7 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
   metadataOffset = offset;
 
   bridgeState = ObjCBridgeState::InstanceData(env);
+  bridgeStateToken = bridgeState != nullptr ? bridgeState->lifetimeToken : 0;
 
   bool isNativeObject = offset == MD_SECTION_OFFSET_NULL;
 
@@ -725,6 +748,7 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
   if (nativeClass != nil) {
     napi_wrap(env, constructor, (void*)nativeClass, nil, nil, nil);
     bridgeState->classesByPointer[nativeClass] = this;
+    bridgeState->mdClassesByPointer[nativeClass] = metadataOffset;
   }
 
   napi_get_named_property(env, constructor, "prototype", &prototype);
@@ -997,8 +1021,15 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 }
 
 ObjCClass::~ObjCClass() {
-  napi_delete_reference(env, constructor);
-  napi_delete_reference(env, prototype);
+  if (env != nullptr &&
+      (bridgeState == nullptr || IsBridgeStateLive(bridgeState, bridgeStateToken))) {
+    DeleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, constructor);
+    DeleteReferenceOnOwningThread(env, bridgeState, bridgeStateToken, prototype);
+  }
+  constructor = nullptr;
+  prototype = nullptr;
+  bridgeState = nullptr;
+  bridgeStateToken = 0;
 }
 
 }  // namespace nativescript
