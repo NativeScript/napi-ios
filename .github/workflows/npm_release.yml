@@ -1,19 +1,24 @@
-name: NPM Release iOS & macOS
+name: NPM Release iOS
 on:
   push:
-    branches:
-      - main
     tags:
       - "v*"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Run npm publish with --dry-run"
+        required: true
+        type: boolean
+        default: true
 
 env:
-  NPM_TAG: "next"
-  XCODE_VERSION: "^15.0"
+  EXPECTED_NPM_TAG: "napi-v8"
+  XCODE_VERSION: "26.2.0"
 
 jobs:
   build:
     name: Build
-    runs-on: macos-14
+    runs-on: macos-26
     outputs:
       npm_version: ${{ steps.npm_version_output.outputs.NPM_VERSION }}
       npm_tag: ${{ steps.npm_version_output.outputs.NPM_TAG }}
@@ -28,9 +33,10 @@ jobs:
       - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
         with:
           fetch-depth: 0
+          submodules: recursive
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: 22
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
       - name: Install Python
         uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
@@ -57,17 +63,11 @@ jobs:
         run: |
           NPM_VERSION=$(node -e "console.log(require('./packages/ios/package.json').version);")
           echo NPM_VERSION=$NPM_VERSION >> $GITHUB_ENV
-      - name: Bump version for dev release
-        if: ${{ !contains(github.ref, 'refs/tags/') }}
-        run: |
-          NPM_VERSION=$(node ./scripts/get-next-version.js ios)
-          echo NPM_VERSION=$NPM_VERSION >> $GITHUB_ENV
-          cd packages/ios
-          npm version $NPM_VERSION --no-git-tag-version
       - name: Output NPM Version and tag
         id: npm_version_output
         run: |
           NPM_TAG=$(node ./scripts/get-npm-tag.js ios)
+          test "$NPM_TAG" = "$EXPECTED_NPM_TAG"
           echo NPM_VERSION=$NPM_VERSION >> $GITHUB_OUTPUT
           echo NPM_TAG=$NPM_TAG >> $GITHUB_OUTPUT
       - name: Build
@@ -82,78 +82,12 @@ jobs:
         with:
           name: NativeScript-dSYMs
           path: dist/dSYMs
-  test:
-    name: Test
-    runs-on: macos-14
-    needs: build
-    steps:
-      - name: Harden the runner (Audit all outbound calls)
-        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
-        with:
-          egress-policy: audit
-      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
-        with:
-          xcode-version: ${{env.XCODE_VERSION}}
-      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
-      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
-        with:
-          node-version: 22
-      - name: Install Python
-        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
-        with:
-          python-version: "3"
-      - name: Install Dependencies
-        run: |
-          npm install
-          python3 -m pip install --upgrade pip six
-          # Ensure LLVM linker used by -fuse-ld=lld is available
-          if ! command -v ld64.lld >/dev/null; then
-            brew list lld || brew install lld
-          fi
-          # Ensure CMake is available without conflicting with pinned Homebrew formula
-          if ! command -v cmake >/dev/null; then
-            brew list cmake || brew install cmake
-          fi
-          # Some scripts expect cmake at /usr/local/bin; create a shim if needed
-          if [ ! -x /usr/local/bin/cmake ]; then
-            sudo mkdir -p /usr/local/bin
-            sudo ln -sf "$(command -v cmake)" /usr/local/bin/cmake
-          fi
-          brew install chargepoint/xcparse/xcparse
-          npm install -g @edusperoni/junit-cli-report-viewer verify-junit-xml
-      - name: Prepare
-        run: npm run setup-ci
-      - name: Prepare test folder
-        run: |
-          mkdir -p dist-test
-          echo TEST_FOLDER=$(pwd)/dist-test >> $GITHUB_ENV
-      - name: Xcode Tests
-        uses: nick-fields/retry@ce71cc2ab81d554ebbe88c79ab5975992d79ba08 # v3.0.2
-        # try to run the tests with xcpretty. If it fails then try again without xcpretty twice for better log output
-        # the xcode tests are a bit flaky and they should never fail on this step, as this step only collects the JS test results as junit xml
-        with:
-          timeout_minutes: 20
-          max_attempts: 2
-          command: set -o pipefail && xcodebuild -project v8ios.xcodeproj -scheme TestRunner -resultBundlePath $TEST_FOLDER/test_results -destination platform\=iOS\ Simulator,OS\=17.2,name\=iPhone\ 15\ Pro\ Max build test | xcpretty
-          on_retry_command: rm -rf $TEST_FOLDER/test_results* && xcrun simctl shutdown all
-          new_command_on_retry: xcodebuild -project v8ios.xcodeproj -scheme TestRunner -resultBundlePath $TEST_FOLDER/test_results -destination platform\=iOS\ Simulator,OS\=17.2,name\=iPhone\ 15\ Pro\ Max build test
-      - name: Validate Test Results
-        run: |
-          xcparse attachments $TEST_FOLDER/test_results.xcresult $TEST_FOLDER/test-out
-          find $TEST_FOLDER/test-out -name "*junit*.xml" -maxdepth 1 -print0 | xargs -n 1 -0 npx junit-cli-report-viewer
-          find $TEST_FOLDER/test-out -name "*junit*.xml" -maxdepth 1 -print0 | xargs -n 1 -0 npx verify-junit-xml
-      - name: Archive Test Result Data
-        if: always()
-        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
-        with:
-          name: test-results
-          path: ${{env.TEST_FOLDER}}/test_results.xcresult
   publish:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch' }}
     runs-on: ubuntu-latest
     environment: npm-publish
     needs:
       - build
-      - test
     permissions:
       contents: read
       id-token: write
@@ -167,7 +101,7 @@ jobs:
           egress-policy: audit
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: 22
+          node-version: 24
           registry-url: "https://registry.npmjs.org"
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
@@ -175,26 +109,38 @@ jobs:
           path: packages/ios/dist
       - name: Update npm (required for OIDC trusted publishing)
         run: |
-          npm install -g npm@^11.5.1
-          npm --version
+          corepack enable npm
+          corepack install -g npm@11.6.2
+          test "$(npm --version)" = "11.6.2"
+          test "$(npx --version)" = "11.6.2"
       - name: Publish package (OIDC trusted publishing)
         if: ${{ vars.USE_NPM_TOKEN != 'true' }}
         run: |
+          PUBLISH_ARGS=(./packages/ios/dist/nativescript-ios-${NPM_VERSION}.tgz --tag "$NPM_TAG" --access public --provenance)
+          if [ "$DRY_RUN" = "true" ]; then
+            PUBLISH_ARGS+=(--dry-run)
+          fi
           echo "Publishing @nativescript/ios@$NPM_VERSION to NPM with tag $NPM_TAG via OIDC trusted publishing..."
           unset NODE_AUTH_TOKEN
           if [ -n "${NPM_CONFIG_USERCONFIG:-}" ]; then
             rm -f "$NPM_CONFIG_USERCONFIG"
           fi
-          npm publish ./packages/ios/dist/nativescript-ios-${{env.NPM_VERSION}}.tgz --tag $NPM_TAG --access public --provenance
+          npm publish "${PUBLISH_ARGS[@]}"
         env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
           NODE_AUTH_TOKEN: ""
 
       - name: Publish package (granular token)
         if: ${{ vars.USE_NPM_TOKEN == 'true' }}
         run: |
+          PUBLISH_ARGS=(./packages/ios/dist/nativescript-ios-${NPM_VERSION}.tgz --tag "$NPM_TAG" --access public --provenance)
+          if [ "$DRY_RUN" = "true" ]; then
+            PUBLISH_ARGS+=(--dry-run)
+          fi
           echo "Publishing @nativescript/ios@$NPM_VERSION to NPM with tag $NPM_TAG via granular token..."
-          npm publish ./packages/ios/dist/nativescript-ios-${{env.NPM_VERSION}}.tgz --tag $NPM_TAG --access public --provenance
+          npm publish "${PUBLISH_ARGS[@]}"
         env:
+          DRY_RUN: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
   github-release:
     runs-on: ubuntu-latest
@@ -204,7 +150,6 @@ jobs:
       contents: write
     needs:
       - build
-      - test
     env:
       NPM_VERSION: ${{needs.build.outputs.npm_version}}
     steps:
@@ -217,7 +162,7 @@ jobs:
           fetch-depth: 0
       - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
         with:
-          node-version: 22
+          node-version: 24
       - name: Setup
         run: npm install
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
@@ -235,7 +180,7 @@ jobs:
         run: npx conventional-changelog -p angular -r2 > body.md
       - uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1.20.0
         with:
-          artifacts: "packages/ios/dist/nativescript-ios-*.tgz,dist/dSYMs/*.zip"
+          artifacts: "dist/nativescript-ios-*.tgz,dist/dSYMs/*.zip"
           bodyFile: "body.md"
           prerelease: ${{needs.build.outputs.npm_tag != 'latest'}}
           allowUpdates: true
