@@ -5,6 +5,16 @@ on:
       - "v*"
   workflow_dispatch:
     inputs:
+      engine:
+        description: "Runtime engine to build and dry-run publish"
+        required: true
+        type: choice
+        default: v8
+        options:
+          - v8
+          - quickjs
+          - hermes
+          - jsc
       dry_run:
         description: "Run npm publish with --dry-run"
         required: true
@@ -12,7 +22,6 @@ on:
         default: true
 
 env:
-  EXPECTED_NPM_TAG: "napi-v8"
   XCODE_VERSION: "26.2.0"
 
 jobs:
@@ -22,6 +31,7 @@ jobs:
     outputs:
       npm_version: ${{ steps.npm_version_output.outputs.NPM_VERSION }}
       npm_tag: ${{ steps.npm_version_output.outputs.NPM_TAG }}
+      build_engine: ${{ steps.npm_version_output.outputs.BUILD_ENGINE }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
@@ -61,17 +71,48 @@ jobs:
           fi
       - name: Get Current Version
         run: |
-          NPM_VERSION=$(node -e "console.log(require('./packages/ios/package.json').version);")
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ]; then
+            ENGINE="${{ inputs.engine }}"
+            NPM_VERSION=$(node -e "
+              const semver = require('semver');
+              const engine = process.argv[1];
+              const pkg = require('./packages/ios/package.json');
+              const parsed = semver.parse(pkg.version);
+              if (!parsed) {
+                throw new Error('Invalid package version: ' + pkg.version);
+              }
+              const number = Number.isInteger(parsed.prerelease[1]) ? parsed.prerelease[1] : 1;
+              console.log(parsed.format().replace(/-.*/, '') + '-napi-' + engine + '.' + number);
+            " "$ENGINE")
+            PACKAGE_VERSION="$NPM_VERSION" ./scripts/update_version.sh ios
+          else
+            NPM_VERSION=$(node -e "console.log(require('./packages/ios/package.json').version);")
+          fi
           echo NPM_VERSION=$NPM_VERSION >> $GITHUB_ENV
       - name: Output NPM Version and tag
         id: npm_version_output
         run: |
-          NPM_TAG=$(node ./scripts/get-npm-tag.js ios)
-          test "$NPM_TAG" = "$EXPECTED_NPM_TAG"
+          NPM_TAG=$(NPM_VERSION="$NPM_VERSION" node ./scripts/get-npm-tag.js ios)
+          case "$NPM_TAG" in
+            napi-v8) BUILD_ENGINE=v8 ;;
+            napi-quickjs) BUILD_ENGINE=quickjs ;;
+            napi-hermes) BUILD_ENGINE=hermes ;;
+            napi-jsc) BUILD_ENGINE=jsc ;;
+            latest) BUILD_ENGINE=v8 ;;
+            *)
+              echo "Unsupported npm tag '$NPM_TAG'. Expected latest or napi-{v8,quickjs,hermes,jsc}." >&2
+              exit 1
+              ;;
+          esac
+          if [ "$GITHUB_EVENT_NAME" = "workflow_dispatch" ] && [ "$BUILD_ENGINE" != "${{ inputs.engine }}" ]; then
+            echo "Selected engine '${{ inputs.engine }}' does not match package tag '$NPM_TAG'." >&2
+            exit 1
+          fi
           echo NPM_VERSION=$NPM_VERSION >> $GITHUB_OUTPUT
           echo NPM_TAG=$NPM_TAG >> $GITHUB_OUTPUT
+          echo BUILD_ENGINE=$BUILD_ENGINE >> $GITHUB_OUTPUT
       - name: Build
-        run: npm run build-ios
+        run: ./scripts/build_all_ios.sh --${{ steps.npm_version_output.outputs.BUILD_ENGINE }}
       - name: Upload npm package artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
