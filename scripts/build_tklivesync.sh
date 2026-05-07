@@ -31,6 +31,14 @@ mkdir -p $DIST
 
 mkdir -p $DIST/intermediates
 
+SIGNING_ARGS=(
+  CODE_SIGN_STYLE=Manual
+  CODE_SIGNING_ALLOWED=NO
+  CODE_SIGNING_REQUIRED=NO
+  CODE_SIGN_IDENTITY=
+  DEVELOPMENT_TEAM=
+)
+
 if $BUILD_SIMULATOR; then
 # generates library for simulator targets (usually includes arm64, x86_64)
 checkpoint "Building TKLiveSync for iphone simulators (multi-arch)"
@@ -41,6 +49,7 @@ xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -quiet \
                    SKIP_INSTALL=NO \
                    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+                   "${SIGNING_ARGS[@]}" \
                    -archivePath $DIST/intermediates/TKLiveSync.iphonesimulator.xcarchive
 fi
 
@@ -54,6 +63,7 @@ xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -quiet \
                    SKIP_INSTALL=NO \
                    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+                   "${SIGNING_ARGS[@]}" \
                    -archivePath $DIST/intermediates/TKLiveSync.iphoneos.xcarchive
 fi
 
@@ -67,6 +77,7 @@ xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -quiet \
                    SKIP_INSTALL=NO \
                    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+                   "${SIGNING_ARGS[@]}" \
                    -archivePath $DIST/intermediates/TKLiveSync.maccatalyst.xcarchive
 fi
 
@@ -80,6 +91,7 @@ xcodebuild archive -project NativeScriptRuntime.xcodeproj \
                    -quiet \
                    SKIP_INSTALL=NO \
                    BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+                   "${SIGNING_ARGS[@]}" \
                    -archivePath $DIST/intermediates/TKLiveSync.macos.xcarchive
 fi
 
@@ -93,6 +105,7 @@ xcodebuild build -project NativeScriptRuntime.xcodeproj \
                  -sdk xrsimulator \
                  -quiet \
                  BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+                 "${SIGNING_ARGS[@]}" \
                  ONLY_ACTIVE_ARCH=YES \
                  CONFIGURATION_BUILD_DIR="$DIST/intermediates/TKLiveSync.xrsimulator"
 
@@ -103,6 +116,7 @@ xcodebuild build -project NativeScriptRuntime.xcodeproj \
                  -sdk xros \
                  -quiet \
                  BUILD_LIBRARY_FOR_DISTRIBUTION=YES \
+                 "${SIGNING_ARGS[@]}" \
                  ONLY_ACTIVE_ARCH=YES \
                  CONFIGURATION_BUILD_DIR="$DIST/intermediates/TKLiveSync.xros"
 fi
