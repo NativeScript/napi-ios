@@ -1,6 +1,6 @@
 {
   "name": "@nativescript/ios",
-  "version": "9.0.0-napi-v8.1",
+  "version": "9.0.0-napi-v8.2",
   "description": "NativeScript Runtime for iOS",
   "keywords": [
     "NativeScript",

@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
     inputs:
       engine:
-        description: "Runtime engine to build and dry-run publish"
+        description: "Runtime engine to build and publish"
         required: true
         type: choice
         default: v8
