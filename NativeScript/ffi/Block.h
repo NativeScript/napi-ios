@@ -1,6 +1,7 @@
 #ifndef BLOCK_H
 #define BLOCK_H
 
+#include <cstdint>
 #include <cstdlib>
 
 #include "Cif.h"
@@ -15,6 +16,10 @@ class FunctionPointer {
   metagen::MDSectionOffset offset;
   Cif* cif;
   bool ownsCif = false;
+  bool dispatchLookupCached = false;
+  uint64_t dispatchLookupSignatureHash = 0;
+  uint64_t dispatchId = 0;
+  void* preparedInvoker = nullptr;
 
   static napi_value wrap(napi_env env, void* function,
                          metagen::MDSectionOffset offset, bool isBlock);

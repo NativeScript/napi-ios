@@ -189,6 +189,7 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
       function->dispatchId = 0;
       function->preparedInvoker = nullptr;
       function->napiInvoker = nullptr;
+      function->v8Invoker = nullptr;
     }
     return;
   }
@@ -204,6 +205,9 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
   function->preparedInvoker =
       reinterpret_cast<void*>(lookupCFunctionPreparedInvoker(function->dispatchId));
   function->napiInvoker = reinterpret_cast<void*>(lookupCFunctionNapiInvoker(function->dispatchId));
+#ifdef TARGET_ENGINE_V8
+  function->v8Invoker = reinterpret_cast<void*>(lookupCFunctionV8Invoker(function->dispatchId));
+#endif
   function->dispatchLookupCached = true;
 }
 
@@ -241,6 +245,7 @@ CFunction* ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
   MDFunctionFlag functionFlags = metadata->getFunctionFlag(offset + sizeof(MDSectionOffset) * 2);
 
   auto cFunction = new CFunction(dlsym(self_dl, metadata->getString(offset)));
+  cFunction->bridgeState = this;
   cFunction->cif = getCFunctionCif(env, sigOffset);
   cFunction->dispatchFlags = (functionFlags & mdFunctionReturnOwned) != 0 ? 1 : 0;
   cFunctionCache[offset] = cFunction;

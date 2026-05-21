@@ -3,6 +3,9 @@
 #include "Interop.h"
 #include "JSObject.h"
 #include "ObjCBridge.h"
+#ifdef TARGET_ENGINE_V8
+#include "V8FastNativeApi.h"
+#endif
 #include "js_native_api.h"
 #include "node_api_util.h"
 
@@ -128,6 +131,14 @@ namespace nativescript {
 napi_value findConstructorForObject(napi_env env, ObjCBridgeState* bridgeState, id object,
                                     Class cls = nil);
 
+void transferOwnershipToNative(napi_env env, napi_value value, id object) {
+  if (env == nullptr || value == nullptr || object == nil) {
+    return;
+  }
+
+  [JSWrapperObjectAssociation transferOwnership:env of:value toNative:object];
+}
+
 namespace {
 constexpr const char* kNativePointerProperty = "__ns_native_ptr";
 
@@ -186,14 +197,18 @@ const char* nativeObjectProxySource = R"(
           return target.class().superclass();
         }
 
-        if (name in target) {
-          const value = target[name];
+        const value = target[name];
+        if (value !== undefined || name in target) {
           if (typeof value === "function" && name !== "constructor") {
+            if (value.__ns_proxy_bound === true) {
+              return value;
+            }
+
+            let wrapper;
             if ((name === "isKindOfClass" || name === "isMemberOfClass")) {
-              return function (cls, ...args) {
+              wrapper = function (cls, a1, a2, a3) {
                 let resolvedClass = cls;
-                if (resolvedClass != null &&
-                    (typeof resolvedClass === "object" || typeof resolvedClass === "function")) {
+                if (resolvedClass != null && typeof resolvedClass === "object") {
                   try {
                     const runtimeName = typeof NSStringFromClass === "function"
                       ? NSStringFromClass(resolvedClass)
@@ -210,23 +225,37 @@ const char* nativeObjectProxySource = R"(
                   }
                 }
 
-                value.__ns_bound_receiver = receiver;
-                try {
-                  return Reflect.apply(value, receiver, [resolvedClass, ...args]);
-                } finally {
-                  value.__ns_bound_receiver = undefined;
+                switch (arguments.length) {
+                  case 0:
+                  case 1:
+                    return value.call(target, resolvedClass);
+                  case 2:
+                    return value.call(target, resolvedClass, a1);
+                  case 3:
+                    return value.call(target, resolvedClass, a1, a2);
+                  case 4:
+                    return value.call(target, resolvedClass, a1, a2, a3);
+                  default: {
+                    const args = Array.prototype.slice.call(arguments);
+                    args[0] = resolvedClass;
+                    return Reflect.apply(value, target, args);
+                  }
                 }
               };
+            } else {
+              wrapper = value.bind(target);
             }
 
-            return function (...args) {
-              value.__ns_bound_receiver = receiver;
-              try {
-                return Reflect.apply(value, receiver, args);
-              } finally {
-                value.__ns_bound_receiver = undefined;
-              }
-            };
+            Object.defineProperty(wrapper, "__ns_proxy_bound", { value: true });
+            try {
+              Object.defineProperty(target, name, {
+                value: wrapper,
+                configurable: true,
+                writable: true
+              });
+            } catch (_) {
+            }
+            return wrapper;
           }
           return value;
         }
@@ -371,10 +400,18 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
     return nullptr;
   }
 
+#ifdef TARGET_ENGINE_V8
+  result = CreateV8NativeWrapperObject(env);
+  if (result == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Unable to create V8 native wrapper object.");
+    return nullptr;
+  }
+#else
   NAPI_GUARD(napi_create_object(env, &result)) {
     NAPI_THROW_LAST_ERROR
     return nullptr;
   }
+#endif
 
   napi_value global;
   napi_value objectCtor;
@@ -443,6 +480,24 @@ napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
         NormalizeHandleKey(wrapped) == NormalizeHandleKey((void*)obj)) {
       return handleCached;
     }
+
+    bool hasNativePointer = false;
+    if (napi_has_named_property(env, handleCached, kNativePointerProperty, &hasNativePointer) ==
+            napi_ok &&
+        hasNativePointer) {
+      napi_value nativePointerValue = nullptr;
+      if (napi_get_named_property(env, handleCached, kNativePointerProperty, &nativePointerValue) ==
+              napi_ok &&
+          Pointer::isInstance(env, nativePointerValue)) {
+        Pointer* pointer = Pointer::unwrap(env, nativePointerValue);
+        if (pointer != nullptr &&
+            NormalizeHandleKey(pointer->data) == NormalizeHandleKey((void*)obj)) {
+          return handleCached;
+        }
+      }
+    }
+
+    return handleCached;
   }
 
   if (napi_value existing = getNormalizedObjectRef(env, obj); existing != nullptr) {

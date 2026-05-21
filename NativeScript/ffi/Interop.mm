@@ -424,11 +424,19 @@ inline bool unwrapKnownNativeHandle(napi_env env, napi_value value, void** out) 
       napi_value nativePointerValue;
       if (napi_get_named_property(env, value, kNativePointerProperty, &nativePointerValue) ==
           napi_ok) {
-        void* nativePointer = nullptr;
-        if (napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
-            nativePointer != nullptr) {
-          *out = nativePointer;
-          return true;
+        if (Pointer::isInstance(env, nativePointerValue)) {
+          Pointer* pointer = Pointer::unwrap(env, nativePointerValue);
+          if (pointer != nullptr && pointer->data != nullptr) {
+            *out = pointer->data;
+            return true;
+          }
+        } else {
+          void* nativePointer = nullptr;
+          if (napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
+              nativePointer != nullptr) {
+            *out = nativePointer;
+            return true;
+          }
         }
       }
     }

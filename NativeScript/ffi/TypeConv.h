@@ -7,6 +7,9 @@
 #include "ffi.h"
 #include "js_native_api.h"
 #include "objc/runtime.h"
+#ifdef TARGET_ENGINE_V8
+#include <v8.h>
+#endif
 
 using namespace metagen;
 
@@ -55,6 +58,19 @@ bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
 // strings.
 bool TryFastConvertNapiUInt16Argument(napi_env env, napi_value value,
                                       uint16_t* result);
+
+#ifdef TARGET_ENGINE_V8
+// V8-only variants used by generated dispatch wrappers. These skip the
+// Node-API callback/argument layer for primitive conversions and fall back to
+// the regular TypeConv path for complex values.
+bool TryFastConvertV8Argument(napi_env env, MDTypeKind kind,
+                              v8::Local<v8::Value> value, void* result);
+bool TryFastConvertV8UInt16Argument(napi_env env, v8::Local<v8::Value> value,
+                                    uint16_t* result);
+bool TryFastConvertV8ReturnValue(napi_env env, MDTypeKind kind,
+                                 const void* value,
+                                 v8::Local<v8::Value>* result);
+#endif
 
 // Cleanup function to clear thread-local struct type caches
 void clearStructTypeCaches();

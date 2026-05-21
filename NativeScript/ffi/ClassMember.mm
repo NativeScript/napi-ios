@@ -47,7 +47,8 @@ napi_value JS_NSObject_alloc(napi_env env, napi_callback_info cbinfo) {
       method->cls->nativeClass != nil) {
     bool canFallbackToMethodClass = true;
     napi_valuetype jsType = napi_undefined;
-    if (jsThis != nullptr && napi_typeof(env, jsThis, &jsType) == napi_ok && jsType == napi_function) {
+    if (jsThis != nullptr && napi_typeof(env, jsThis, &jsType) == napi_ok &&
+        jsType == napi_function) {
       napi_value definingConstructor = get_ref_value(env, method->cls->constructor);
       if (definingConstructor != nullptr) {
         bool isSameConstructor = false;
@@ -342,6 +343,9 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
           reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
       descriptor->napiInvoker =
           reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
+#ifdef TARGET_ENGINE_V8
+      descriptor->v8Invoker = reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
+#endif
       descriptor->dispatchLookupCached = true;
     }
   }
@@ -414,6 +418,10 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
               reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
           descriptor->napiInvoker =
               reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
+#ifdef TARGET_ENGINE_V8
+          descriptor->v8Invoker =
+              reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
+#endif
           descriptor->dispatchLookupCached = true;
         }
 
@@ -598,7 +606,7 @@ inline bool isNSErrorOutMethodSignature(SEL selector, Cif* cif) {
   }
 
   auto lastArgType = cif->argTypes[cif->argc - 1];
-  return lastArgType != nullptr && lastArgType->kind == mdTypePointer;
+  return lastArgType != nullptr && lastArgType->type == &ffi_type_pointer;
 }
 
 inline void throwArgumentsCountError(napi_env env, size_t actualCount, size_t expectedCount) {
@@ -961,8 +969,7 @@ inline id assertSelf(napi_env env, napi_value jsThis, ObjCClassMember* method = 
         napi_value definingConstructor = get_ref_value(env, method->cls->constructor);
         if (definingConstructor != nullptr) {
           bool isSameConstructor = false;
-          if (napi_strict_equals(env, jsThis, definingConstructor, &isSameConstructor) ==
-                  napi_ok &&
+          if (napi_strict_equals(env, jsThis, definingConstructor, &isSameConstructor) == napi_ok &&
               !isSameConstructor) {
             shouldUseClassFallback = false;
           }
@@ -1654,7 +1661,7 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
   }
 
-  if (!hasImplicitNSErrorOutArg && !usesBlockFallback) {
+  if (!isNSErrorOutMethod && !usesBlockFallback) {
     bool didDirectInvoke = false;
     if (!tryObjCNapiDispatch(env, cif, self, receiverIsClass, selectedSelector, selectedMethod,
                              selectedMethod->dispatchFlags, invocationArgs, rvalue,
@@ -1690,7 +1697,8 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
       const char* blockEncoding = blockEncodingForSelector(selectedSelectorName, i);
 
       if (hasImplicitNSErrorOutArg && i == cif->argc - 1) {
-        *((NSError***)avalues[i + 2]) = &implicitNSError;
+        NSError** implicitNSErrorOutArg = &implicitNSError;
+        *reinterpret_cast<void**>(avalues[i + 2]) = implicitNSErrorOutArg;
         continue;
       }
 

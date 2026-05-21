@@ -20,9 +20,11 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
 # Arguments
 set(TARGET_PLATFORM "macos" CACHE STRING "Target platform for the Objective-C bridge")
 set(TARGET_ENGINE "v8" CACHE STRING "Target JS engine for the NativeScript runtime")
+set(NS_GSD_BACKEND "auto" CACHE STRING "Generated signature dispatch backend: auto, v8, napi, or none")
 set(METADATA_SIZE 0 CACHE STRING "Size of embedded metadata in bytes")
 set(BUILD_CLI_BINARY OFF CACHE BOOL "Build the NativeScript CLI binary")
 set(BUILD_MACOS_NODE_API OFF CACHE BOOL "Build the NativeScript macOS Node API dylib")
+set_property(CACHE NS_GSD_BACKEND PROPERTY STRINGS auto v8 napi none)
 
 if (BUILD_MACOS_NODE_API)
   set(BUILD_FRAMEWORK OFF)
@@ -132,6 +134,26 @@ message(STATUS "TARGET_ENGINE = ${TARGET_ENGINE}")
 message(STATUS "ENABLE_JS_RUNTIME = ${ENABLE_JS_RUNTIME}")
 message(STATUS "GENERIC_NAPI = ${GENERIC_NAPI}")
 
+if(NS_GSD_BACKEND STREQUAL "auto")
+  if(TARGET_ENGINE_V8)
+    set(NS_EFFECTIVE_GSD_BACKEND "v8")
+  else()
+    set(NS_EFFECTIVE_GSD_BACKEND "napi")
+  endif()
+elseif(NS_GSD_BACKEND STREQUAL "v8" OR
+       NS_GSD_BACKEND STREQUAL "napi" OR
+       NS_GSD_BACKEND STREQUAL "none")
+  set(NS_EFFECTIVE_GSD_BACKEND "${NS_GSD_BACKEND}")
+else()
+  message(FATAL_ERROR "Unknown NS_GSD_BACKEND: ${NS_GSD_BACKEND}")
+endif()
+
+if(NS_EFFECTIVE_GSD_BACKEND STREQUAL "v8" AND NOT TARGET_ENGINE_V8)
+  message(FATAL_ERROR "NS_GSD_BACKEND=v8 requires TARGET_ENGINE=v8")
+endif()
+
+message(STATUS "NS_GSD_BACKEND = ${NS_GSD_BACKEND} (${NS_EFFECTIVE_GSD_BACKEND})")
+
 # Set up sources
 include_directories(
   ./
@@ -207,6 +229,7 @@ if(ENABLE_JS_RUNTIME)
       napi/v8/v8-module-loader.cpp
       napi/v8/jsr.cpp
       napi/v8/SimpleAllocator.cpp
+      ffi/V8FastNativeApi.mm
     )
 
   elseif(TARGET_ENGINE_HERMES)
@@ -343,6 +366,32 @@ if(TARGET_ENGINE_V8 AND TARGET_PLATFORM_IOS)
     V8_COMPRESS_POINTERS
     V8_31BIT_SMIS_ON_64BIT_ARCH
   )
+endif()
+
+if(ENABLE_JS_RUNTIME)
+  target_compile_definitions(${NAME} PRIVATE ENABLE_JS_RUNTIME)
+endif()
+
+if(TARGET_PLATFORM_MACOS)
+  target_compile_definitions(${NAME} PRIVATE TARGET_PLATFORM_MACOS)
+endif()
+
+if(TARGET_ENGINE_HERMES)
+  target_compile_definitions(${NAME} PRIVATE TARGET_ENGINE_HERMES)
+elseif(TARGET_ENGINE_V8)
+  target_compile_definitions(${NAME} PRIVATE TARGET_ENGINE_V8)
+elseif(TARGET_ENGINE_QUICKJS)
+  target_compile_definitions(${NAME} PRIVATE TARGET_ENGINE_QUICKJS)
+elseif(TARGET_ENGINE_JSC)
+  target_compile_definitions(${NAME} PRIVATE TARGET_ENGINE_JSC)
+endif()
+
+if(NS_EFFECTIVE_GSD_BACKEND STREQUAL "v8")
+  target_compile_definitions(${NAME} PRIVATE NS_GSD_BACKEND_V8=1 NS_GSD_BACKEND_NAPI=0)
+elseif(NS_EFFECTIVE_GSD_BACKEND STREQUAL "napi")
+  target_compile_definitions(${NAME} PRIVATE NS_GSD_BACKEND_V8=0 NS_GSD_BACKEND_NAPI=1)
+else()
+  target_compile_definitions(${NAME} PRIVATE NS_GSD_BACKEND_V8=0 NS_GSD_BACKEND_NAPI=0)
 endif()
 
 set(FRAMEWORK_VERSION_VALUE "${VERSION}")

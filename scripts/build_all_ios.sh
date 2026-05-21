@@ -53,7 +53,7 @@ if $EMBED_METADATA; then
   checkpoint "... All metadata generated!"
 fi
 
-"$SCRIPT_DIR/build_nativescript.sh" --no-vision $1 $2 $3 $4 $5 $6 $7 $8 $9
+"$SCRIPT_DIR/build_nativescript.sh" --no-vision "$@"
 
 if [[ "$TARGET_ENGINE" == "none" ]]; then
   # If you're building *with* --no-engine, you're trying to make an npm release
