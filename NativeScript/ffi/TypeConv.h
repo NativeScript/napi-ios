@@ -78,6 +78,32 @@ bool TryFastConvertV8ReturnValue(napi_env env, MDTypeKind kind,
 // value copied through napi_get_cb_info.
 bool TryFastConvertJSCArgument(napi_env env, MDTypeKind kind, napi_value value,
                                void* result);
+bool TryFastConvertJSCBoolArgument(napi_env env, napi_value value,
+                                   uint8_t* result);
+bool TryFastConvertJSCInt8Argument(napi_env env, napi_value value,
+                                   int8_t* result);
+bool TryFastConvertJSCUInt8Argument(napi_env env, napi_value value,
+                                    uint8_t* result);
+bool TryFastConvertJSCInt16Argument(napi_env env, napi_value value,
+                                    int16_t* result);
+bool TryFastConvertJSCUInt16Argument(napi_env env, napi_value value,
+                                     uint16_t* result);
+bool TryFastConvertJSCInt32Argument(napi_env env, napi_value value,
+                                    int32_t* result);
+bool TryFastConvertJSCUInt32Argument(napi_env env, napi_value value,
+                                     uint32_t* result);
+bool TryFastConvertJSCInt64Argument(napi_env env, napi_value value,
+                                    int64_t* result);
+bool TryFastConvertJSCUInt64Argument(napi_env env, napi_value value,
+                                     uint64_t* result);
+bool TryFastConvertJSCFloatArgument(napi_env env, napi_value value,
+                                    float* result);
+bool TryFastConvertJSCDoubleArgument(napi_env env, napi_value value,
+                                     double* result);
+bool TryFastConvertJSCSelectorArgument(napi_env env, napi_value value,
+                                       SEL* result);
+bool TryFastConvertJSCObjectArgument(napi_env env, MDTypeKind kind,
+                                     napi_value value, void* result);
 bool TryFastConvertJSCReturnValue(napi_env env, MDTypeKind kind,
                                   const void* value, napi_value* result);
 #endif

@@ -4,6 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
+#include <objc/message.h>
 #include <quickjs.h>
 #include <sys/queue.h>
 
@@ -15,9 +16,13 @@
 #include <vector>
 
 #include "CFunction.h"
+#include "ClassBuilder.h"
 #include "ClassMember.h"
+#include "EngineDirectCall.h"
 #include "MetadataReader.h"
+#include "NativeScriptException.h"
 #include "ObjCBridge.h"
+#include "SignatureDispatch.h"
 #include "TypeConv.h"
 #include "mimalloc.h"
 #include "quicks-runtime.h"
@@ -121,6 +126,30 @@ inline JSValue ToJSValue(napi_value value) {
   return value != nullptr ? *reinterpret_cast<JSValue*>(value) : JS_UNDEFINED;
 }
 
+bool tryFastUnwrapQuickJSNativeObject(napi_env env, JSValue jsValue,
+                                      void** result) {
+  if (env == nullptr || result == nullptr || !JS_IsObject(jsValue)) {
+    return false;
+  }
+
+  *result = nullptr;
+  JSPropertyDescriptor descriptor{};
+  int wrapped = JS_GetOwnProperty(env->context, &descriptor, jsValue,
+                                  env->atoms.napi_external);
+  if (wrapped <= 0) {
+    return false;
+  }
+
+  auto* externalInfo = static_cast<QuickJSFastExternalInfo*>(
+      JS_GetOpaque(descriptor.value, env->runtime->externalClassId));
+  if (externalInfo != nullptr && externalInfo->data != nullptr) {
+    *result = externalInfo->data;
+  }
+
+  JS_FreeValue(env->context, descriptor.value);
+  return *result != nullptr;
+}
+
 bool readPointerData(JSContext* context, JSValue value, void** result) {
   if (result == nullptr) {
     return false;
@@ -136,20 +165,46 @@ bool readPointerData(JSContext* context, JSValue value, void** result) {
   return true;
 }
 
-bool isCompatCFunction(napi_env env, void* data) {
-  auto* bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
-  if (bridgeState == nullptr || data == nullptr) {
-    return true;
+class QuickJSFastReturnStorage {
+ public:
+  explicit QuickJSFastReturnStorage(nativescript::Cif* cif) {
+    size_t size = 0;
+    if (cif != nullptr) {
+      size = cif->rvalueLength;
+      if (size == 0 && cif->cif.rtype != nullptr) {
+        size = cif->cif.rtype->size;
+      }
+    }
+    if (size == 0) {
+      size = sizeof(void*);
+    }
+
+    if (size <= kInlineSize) {
+      data_ = inlineBuffer_;
+      memset(data_, 0, size);
+      return;
+    }
+
+    data_ = malloc(size);
+    if (data_ != nullptr) {
+      memset(data_, 0, size);
+    }
   }
 
-  auto offset = static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(data));
-  const char* name = bridgeState->metadata->getString(offset);
-  return strcmp(name, "dispatch_async") == 0 ||
-         strcmp(name, "dispatch_get_current_queue") == 0 ||
-         strcmp(name, "dispatch_get_global_queue") == 0 ||
-         strcmp(name, "UIApplicationMain") == 0 ||
-         strcmp(name, "NSApplicationMain") == 0;
-}
+  ~QuickJSFastReturnStorage() {
+    if (data_ != nullptr && data_ != inlineBuffer_) {
+      free(data_);
+    }
+  }
+
+  bool valid() const { return data_ != nullptr; }
+  void* get() const { return data_; }
+
+ private:
+  static constexpr size_t kInlineSize = 32;
+  alignas(max_align_t) unsigned char inlineBuffer_[kInlineSize];
+  void* data_ = nullptr;
+};
 
 class QuickJSFastStackHandleScope {
  public:
@@ -189,6 +244,665 @@ class QuickJSFastStackHandleScope {
   bool closed_ = false;
 };
 
+bool makeQuickJSRawReturnValue(JSContext* context, MDTypeKind kind,
+                               const void* value, JSValue* result) {
+  if (context == nullptr || result == nullptr) {
+    return false;
+  }
+
+  switch (kind) {
+    case mdTypeVoid:
+      *result = JS_NULL;
+      return true;
+
+    case mdTypeBool:
+      if (value == nullptr) return false;
+      *result = JS_NewBool(context, *reinterpret_cast<const uint8_t*>(value) != 0);
+      return true;
+
+    case mdTypeChar: {
+      if (value == nullptr) return false;
+      const int8_t raw = *reinterpret_cast<const int8_t*>(value);
+      *result = raw == 0 || raw == 1 ? JS_NewBool(context, raw == 1)
+                                     : JS_NewInt32(context, raw);
+      return true;
+    }
+
+    case mdTypeUChar:
+    case mdTypeUInt8: {
+      if (value == nullptr) return false;
+      const uint8_t raw = *reinterpret_cast<const uint8_t*>(value);
+      *result = raw == 0 || raw == 1 ? JS_NewBool(context, raw == 1)
+                                     : JS_NewUint32(context, raw);
+      return true;
+    }
+
+    case mdTypeSShort:
+      if (value == nullptr) return false;
+      *result = JS_NewInt32(context, *reinterpret_cast<const int16_t*>(value));
+      return true;
+
+    case mdTypeUShort: {
+      if (value == nullptr) return false;
+      const uint16_t raw = *reinterpret_cast<const uint16_t*>(value);
+      if (raw >= 32 && raw <= 126) {
+        const char buffer[1] = {static_cast<char>(raw)};
+        *result = JS_NewStringLen(context, buffer, 1);
+      } else {
+        *result = JS_NewUint32(context, raw);
+      }
+      return !JS_IsException(*result);
+    }
+
+    case mdTypeSInt:
+      if (value == nullptr) return false;
+      *result = JS_NewInt32(context, *reinterpret_cast<const int32_t*>(value));
+      return true;
+
+    case mdTypeUInt:
+      if (value == nullptr) return false;
+      *result = JS_NewUint32(context, *reinterpret_cast<const uint32_t*>(value));
+      return true;
+
+    case mdTypeSLong:
+    case mdTypeSInt64: {
+      if (value == nullptr) return false;
+      const int64_t raw = *reinterpret_cast<const int64_t*>(value);
+      constexpr int64_t kMaxSafeInteger = 9007199254740991LL;
+      *result = raw > kMaxSafeInteger || raw < -kMaxSafeInteger
+                    ? JS_NewBigInt64(context, raw)
+                    : JS_NewInt64(context, raw);
+      return !JS_IsException(*result);
+    }
+
+    case mdTypeULong:
+    case mdTypeUInt64: {
+      if (value == nullptr) return false;
+      const uint64_t raw = *reinterpret_cast<const uint64_t*>(value);
+      constexpr uint64_t kMaxSafeInteger = 9007199254740991ULL;
+      *result = raw > kMaxSafeInteger
+                    ? JS_NewBigUint64(context, raw)
+                    : JS_NewInt64(context, static_cast<int64_t>(raw));
+      return !JS_IsException(*result);
+    }
+
+    case mdTypeFloat:
+      if (value == nullptr) return false;
+      *result = JS_NewFloat64(context, *reinterpret_cast<const float*>(value));
+      return !JS_IsException(*result);
+
+    case mdTypeDouble:
+      if (value == nullptr) return false;
+      *result = JS_NewFloat64(context, *reinterpret_cast<const double*>(value));
+      return !JS_IsException(*result);
+
+    default:
+      return false;
+  }
+}
+
+bool makeQuickJSNSStringValue(JSContext* context, NSString* string,
+                              JSValue* result) {
+  if (context == nullptr || result == nullptr) {
+    return false;
+  }
+
+  if (string == nil) {
+    *result = JS_NULL;
+    return true;
+  }
+
+  NSUInteger length = [string length];
+  std::vector<char16_t> chars(length > 0 ? length : 1);
+  if (length > 0) {
+    [string getCharacters:reinterpret_cast<unichar*>(chars.data())
+                    range:NSMakeRange(0, length)];
+  }
+
+  *result = JS_NewString16(context,
+                           reinterpret_cast<const uint16_t*>(chars.data()),
+                           static_cast<int>(length));
+  return !JS_IsException(*result);
+}
+
+bool makeQuickJSBoxedObjectValue(JSContext* context, id obj, JSValue* result) {
+  if (context == nullptr || result == nullptr) {
+    return false;
+  }
+
+  if (obj == nil || obj == [NSNull null]) {
+    *result = JS_NULL;
+    return true;
+  }
+
+  if ([obj isKindOfClass:[NSString class]]) {
+    return makeQuickJSNSStringValue(context, (NSString*)obj, result);
+  }
+
+  if ([obj isKindOfClass:[NSNumber class]] &&
+      ![obj isKindOfClass:[NSDecimalNumber class]]) {
+    if (CFGetTypeID((CFTypeRef)obj) == CFBooleanGetTypeID()) {
+      *result = JS_NewBool(context, [obj boolValue]);
+    } else {
+      *result = JS_NewFloat64(context, [obj doubleValue]);
+    }
+    return !JS_IsException(*result);
+  }
+
+  return false;
+}
+
+bool duplicateQuickJSNapiResult(JSContext* context, napi_value value,
+                                JSValue* result) {
+  if (context == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  *result = JS_DupValue(context, ToJSValue(value));
+  return true;
+}
+
+bool canMakeQuickJSRawReturnValue(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeVoid:
+    case mdTypeBool:
+    case mdTypeChar:
+    case mdTypeUChar:
+    case mdTypeUInt8:
+    case mdTypeSShort:
+    case mdTypeUShort:
+    case mdTypeSInt:
+    case mdTypeUInt:
+    case mdTypeSLong:
+    case mdTypeULong:
+    case mdTypeSInt64:
+    case mdTypeUInt64:
+    case mdTypeFloat:
+    case mdTypeDouble:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool isCompatCFunction(napi_env env, void* data) {
+  auto* bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr || data == nullptr) {
+    return true;
+  }
+
+  auto offset = static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(data));
+  const char* name = bridgeState->metadata->getString(offset);
+  return strcmp(name, "dispatch_async") == 0 ||
+         strcmp(name, "dispatch_get_current_queue") == 0 ||
+         strcmp(name, "dispatch_get_global_queue") == 0 ||
+         strcmp(name, "UIApplicationMain") == 0 ||
+         strcmp(name, "NSApplicationMain") == 0;
+}
+
+id resolveQuickJSSelf(napi_env env, napi_value jsThis,
+                      nativescript::ObjCClassMember* member) {
+  id self = nil;
+  auto* state = nativescript::ObjCBridgeState::InstanceData(env);
+
+  if (jsThis != nullptr) {
+    void* wrapped = nullptr;
+    if (tryFastUnwrapQuickJSNativeObject(env, ToJSValue(jsThis), &wrapped) &&
+        wrapped != nullptr) {
+      return static_cast<id>(wrapped);
+    }
+  }
+
+  if (state != nullptr && jsThis != nullptr) {
+    state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
+  }
+
+  if (self == nil && jsThis != nullptr) {
+    napi_unwrap(env, jsThis, reinterpret_cast<void**>(&self));
+  }
+
+  if (self != nil) {
+    return self;
+  }
+
+  if (member != nullptr && member->cls != nullptr &&
+      member->cls->nativeClass != nil) {
+    if (member->classMethod) {
+      return static_cast<id>(member->cls->nativeClass);
+    }
+
+    napi_valuetype jsType = napi_undefined;
+    if (jsThis != nullptr && napi_typeof(env, jsThis, &jsType) == napi_ok &&
+        jsType == napi_function) {
+      return static_cast<id>(member->cls->nativeClass);
+    }
+  }
+
+  return nil;
+}
+
+nativescript::Cif* quickJSMemberCif(
+    napi_env env, nativescript::ObjCClassMember* member,
+    nativescript::EngineDirectMemberKind kind,
+    nativescript::MethodDescriptor** descriptorOut) {
+  if (member == nullptr || descriptorOut == nullptr) {
+    return nullptr;
+  }
+
+  switch (kind) {
+    case nativescript::EngineDirectMemberKind::Method:
+      if (!member->overloads.empty()) {
+        return nullptr;
+      }
+      *descriptorOut = &member->methodOrGetter;
+      if (member->cif == nullptr) {
+        member->cif = member->bridgeState->getMethodCif(
+            env, member->methodOrGetter.signatureOffset);
+      }
+      return member->cif;
+
+    case nativescript::EngineDirectMemberKind::Getter:
+      *descriptorOut = &member->methodOrGetter;
+      if (member->cif == nullptr) {
+        member->cif = member->bridgeState->getMethodCif(
+            env, member->methodOrGetter.signatureOffset);
+      }
+      return member->cif;
+
+    case nativescript::EngineDirectMemberKind::Setter:
+      *descriptorOut = &member->setter;
+      if (member->setterCif == nullptr) {
+        member->setterCif = member->bridgeState->getMethodCif(
+            env, member->setter.signatureOffset);
+      }
+      return member->setterCif;
+  }
+}
+
+bool receiverClassRequiresQuickJSSuperCall(Class receiverClass) {
+  static thread_local Class lastReceiverClass = nil;
+  static thread_local bool lastRequiresSuperCall = false;
+  if (receiverClass == lastReceiverClass) {
+    return lastRequiresSuperCall;
+  }
+
+  static thread_local std::unordered_map<Class, bool> superCallCache;
+  auto cached = superCallCache.find(receiverClass);
+  if (cached != superCallCache.end()) {
+    lastReceiverClass = receiverClass;
+    lastRequiresSuperCall = cached->second;
+    return cached->second;
+  }
+
+  const bool requiresSuperCall =
+      receiverClass != nil &&
+      class_conformsToProtocol(receiverClass,
+                               @protocol(ObjCBridgeClassBuilderProtocol));
+  superCallCache.emplace(receiverClass, requiresSuperCall);
+  lastReceiverClass = receiverClass;
+  lastRequiresSuperCall = requiresSuperCall;
+  return requiresSuperCall;
+}
+
+inline bool selectorEndsWith(SEL selector, const char* suffix) {
+  if (selector == nullptr || suffix == nullptr) {
+    return false;
+  }
+  const char* selectorName = sel_getName(selector);
+  if (selectorName == nullptr) {
+    return false;
+  }
+
+  const size_t selectorLength = std::strlen(selectorName);
+  const size_t suffixLength = std::strlen(suffix);
+  return selectorLength >= suffixLength &&
+         std::strcmp(selectorName + selectorLength - suffixLength, suffix) == 0;
+}
+
+inline bool computeQuickJSNSErrorOutSignature(SEL selector,
+                                              nativescript::Cif* cif) {
+  if (cif == nullptr || cif->argc == 0 || cif->argTypes.empty() ||
+      !selectorEndsWith(selector, "error:")) {
+    return false;
+  }
+  auto lastArgType = cif->argTypes[cif->argc - 1];
+  return lastArgType != nullptr && lastArgType->type == &ffi_type_pointer;
+}
+
+inline bool isQuickJSNSErrorOutSignature(
+    nativescript::MethodDescriptor* descriptor, nativescript::Cif* cif) {
+  if (descriptor == nullptr) {
+    return computeQuickJSNSErrorOutSignature(nullptr, cif);
+  }
+
+  if (!descriptor->nserrorOutSignatureCached) {
+    descriptor->nserrorOutSignature =
+        computeQuickJSNSErrorOutSignature(descriptor->selector, cif);
+    descriptor->nserrorOutSignatureCached = true;
+  }
+  return descriptor->nserrorOutSignature;
+}
+
+inline bool isQuickJSBlockFallbackSelector(SEL selector) {
+  return selector == @selector(methodWithSimpleBlock:) ||
+         selector == @selector(methodRetainingBlock:) ||
+         selector == @selector(methodWithBlock:) ||
+         selector == @selector(methodWithComplexBlock:);
+}
+
+nativescript::ObjCEngineDirectInvoker ensureQuickJSObjCEngineDirectInvoker(
+    nativescript::Cif* cif, nativescript::MethodDescriptor* descriptor,
+    uint8_t dispatchFlags) {
+  if (cif == nullptr || descriptor == nullptr || cif->signatureHash == 0) {
+    return nullptr;
+  }
+
+  if (!descriptor->dispatchLookupCached ||
+      descriptor->dispatchLookupSignatureHash != cif->signatureHash ||
+      descriptor->dispatchLookupFlags != dispatchFlags) {
+    descriptor->dispatchLookupSignatureHash = cif->signatureHash;
+    descriptor->dispatchLookupFlags = dispatchFlags;
+    descriptor->dispatchId = nativescript::composeSignatureDispatchId(
+        cif->signatureHash, nativescript::SignatureCallKind::ObjCMethod,
+        dispatchFlags);
+    descriptor->preparedInvoker = reinterpret_cast<void*>(
+        nativescript::lookupObjCPreparedInvoker(descriptor->dispatchId));
+    descriptor->napiInvoker = reinterpret_cast<void*>(
+        nativescript::lookupObjCNapiInvoker(descriptor->dispatchId));
+    descriptor->engineDirectInvoker = reinterpret_cast<void*>(
+        nativescript::lookupObjCEngineDirectInvoker(descriptor->dispatchId));
+    descriptor->dispatchLookupCached = true;
+  }
+
+  return reinterpret_cast<nativescript::ObjCEngineDirectInvoker>(
+      descriptor->engineDirectInvoker);
+}
+
+nativescript::CFunctionEngineDirectInvoker
+ensureQuickJSCFunctionEngineDirectInvoker(nativescript::CFunction* function,
+                                          nativescript::Cif* cif) {
+  if (function == nullptr || cif == nullptr || cif->signatureHash == 0) {
+    if (function != nullptr) {
+      function->dispatchLookupCached = true;
+      function->dispatchLookupSignatureHash = 0;
+      function->dispatchId = 0;
+      function->preparedInvoker = nullptr;
+      function->napiInvoker = nullptr;
+      function->engineDirectInvoker = nullptr;
+      function->v8Invoker = nullptr;
+    }
+    return nullptr;
+  }
+
+  if (!function->dispatchLookupCached ||
+      function->dispatchLookupSignatureHash != cif->signatureHash) {
+    function->dispatchLookupSignatureHash = cif->signatureHash;
+    function->dispatchId = nativescript::composeSignatureDispatchId(
+        cif->signatureHash, nativescript::SignatureCallKind::CFunction,
+        function->dispatchFlags);
+    function->preparedInvoker = reinterpret_cast<void*>(
+        nativescript::lookupCFunctionPreparedInvoker(function->dispatchId));
+    function->napiInvoker = reinterpret_cast<void*>(
+        nativescript::lookupCFunctionNapiInvoker(function->dispatchId));
+    function->engineDirectInvoker = reinterpret_cast<void*>(
+        nativescript::lookupCFunctionEngineDirectInvoker(function->dispatchId));
+    function->dispatchLookupCached = true;
+  }
+
+  return reinterpret_cast<nativescript::CFunctionEngineDirectInvoker>(
+      function->engineDirectInvoker);
+}
+
+bool makeQuickJSObjCReturnValue(
+    JSContext* context, napi_env env, nativescript::ObjCClassMember* member,
+    nativescript::MethodDescriptor* descriptor, nativescript::Cif* cif,
+    id self, bool receiverIsClass, napi_value jsThis, void* rvalue,
+    bool propertyAccess, JSValue* result) {
+  if (context == nullptr || env == nullptr || member == nullptr ||
+      descriptor == nullptr || cif == nullptr || cif->returnType == nullptr ||
+      result == nullptr) {
+    return false;
+  }
+
+  if (makeQuickJSRawReturnValue(context, cif->returnType->kind, rvalue,
+                                result)) {
+    return true;
+  }
+
+  const char* selectorName = sel_getName(descriptor->selector);
+  if (selectorName != nullptr && strcmp(selectorName, "class") == 0) {
+    QuickJSFastStackHandleScope scope(env);
+    napi_value converted = nullptr;
+    if (!propertyAccess && !receiverIsClass) {
+      converted = jsThis;
+      napi_get_named_property(env, jsThis, "constructor", &converted);
+    } else {
+      id classObject = receiverIsClass ? self : (id)object_getClass(self);
+      converted =
+          member->bridgeState->getObject(env, classObject,
+                                         nativescript::kUnownedObject, 0, nullptr);
+    }
+    bool ok = duplicateQuickJSNapiResult(context, converted, result);
+    scope.close();
+    return ok;
+  }
+
+  if (cif->returnType->kind == mdTypeInstanceObject) {
+    QuickJSFastStackHandleScope scope(env);
+    napi_value constructor = jsThis;
+    if (!receiverIsClass) {
+      napi_get_named_property(env, jsThis, "constructor", &constructor);
+    }
+    id obj = *reinterpret_cast<id*>(rvalue);
+    napi_value converted = member->bridgeState->getObject(
+        env, obj, constructor,
+        member->returnOwned ? nativescript::kOwnedObject
+                            : nativescript::kUnownedObject);
+    bool ok = false;
+    if (converted != nullptr) {
+      ok = duplicateQuickJSNapiResult(context, converted, result);
+    } else {
+      *result = JS_NULL;
+      ok = true;
+    }
+    scope.close();
+    return ok;
+  }
+
+  if (cif->returnType->kind == mdTypeNSStringObject) {
+    return makeQuickJSNSStringValue(
+        context, *reinterpret_cast<NSString* const*>(rvalue), result);
+  }
+
+  if (cif->returnType->kind == mdTypeAnyObject) {
+    id obj = *reinterpret_cast<id*>(rvalue);
+    if (receiverIsClass && obj != nil) {
+      Class receiverClass = static_cast<Class>(self);
+      if ((receiverClass == [NSString class] ||
+           receiverClass == [NSMutableString class]) &&
+          selectorName != nullptr &&
+          (strcmp(selectorName, "string") == 0 ||
+           strcmp(selectorName, "stringWithString:") == 0 ||
+           strcmp(selectorName, "stringWithCapacity:") == 0)) {
+        QuickJSFastStackHandleScope scope(env);
+        napi_value converted =
+            member->bridgeState->getObject(env, obj, jsThis,
+                                           nativescript::kUnownedObject);
+        bool ok = duplicateQuickJSNapiResult(context, converted, result);
+        scope.close();
+        return ok;
+      }
+    }
+
+    if (makeQuickJSBoxedObjectValue(context, obj, result)) {
+      return true;
+    }
+  }
+
+  QuickJSFastStackHandleScope scope(env);
+  napi_value fastResult = nullptr;
+  if (nativescript::TryFastConvertEngineReturnValue(
+          env, cif->returnType->kind, rvalue, &fastResult)) {
+    bool ok = duplicateQuickJSNapiResult(context, fastResult, result);
+    scope.close();
+    return ok;
+  }
+
+  napi_value converted = cif->returnType->toJS(
+      env, rvalue, member->returnOwned ? nativescript::kReturnOwned : 0);
+  bool ok = duplicateQuickJSNapiResult(context, converted, result);
+  scope.close();
+  return ok;
+}
+
+bool makeQuickJSCFunctionReturnValue(JSContext* context, napi_env env,
+                                     nativescript::CFunction* function,
+                                     nativescript::Cif* cif, void* rvalue,
+                                     JSValue* result) {
+  if (context == nullptr || env == nullptr || cif == nullptr ||
+      cif->returnType == nullptr || result == nullptr) {
+    return false;
+  }
+
+  if (makeQuickJSRawReturnValue(context, cif->returnType->kind, rvalue,
+                                result)) {
+    return true;
+  }
+
+  if (cif->returnType->kind == mdTypeNSStringObject) {
+    return makeQuickJSNSStringValue(
+        context, *reinterpret_cast<NSString* const*>(rvalue), result);
+  }
+  if (cif->returnType->kind == mdTypeAnyObject &&
+      makeQuickJSBoxedObjectValue(context, *reinterpret_cast<id const*>(rvalue),
+                                  result)) {
+    return true;
+  }
+
+  QuickJSFastStackHandleScope scope(env);
+  napi_value fastResult = nullptr;
+  if (nativescript::TryFastConvertEngineReturnValue(
+          env, cif->returnType->kind, rvalue, &fastResult)) {
+    bool ok = duplicateQuickJSNapiResult(context, fastResult, result);
+    scope.close();
+    return ok;
+  }
+
+  uint32_t toJSFlags = nativescript::kCStringAsReference;
+  if (function != nullptr && (function->dispatchFlags & 1) != 0) {
+    toJSFlags |= nativescript::kReturnOwned;
+  }
+  napi_value converted = cif->returnType->toJS(env, rvalue, toJSFlags);
+  bool ok = duplicateQuickJSNapiResult(context, converted, result);
+  scope.close();
+  return ok;
+}
+
+bool tryCallQuickJSObjCEngineDirect(
+    JSContext* context, napi_env env, nativescript::ObjCClassMember* member,
+    napi_value jsThis, int argc, const napi_value* argv,
+    nativescript::EngineDirectMemberKind kind, JSValue* result) {
+  if (context == nullptr || env == nullptr || member == nullptr ||
+      member->bridgeState == nullptr || argc < 0 || result == nullptr) {
+    return false;
+  }
+
+  nativescript::MethodDescriptor* descriptor = nullptr;
+  nativescript::Cif* cif = quickJSMemberCif(env, member, kind, &descriptor);
+  if (cif == nullptr || cif->isVariadic || cif->signatureHash == 0 ||
+      static_cast<unsigned int>(argc) != cif->argc ||
+      cif->returnType == nullptr) {
+    return false;
+  }
+
+  auto invoker = ensureQuickJSObjCEngineDirectInvoker(
+      cif, descriptor, descriptor->dispatchFlags);
+  if (invoker == nullptr) {
+    return false;
+  }
+
+  if (isQuickJSNSErrorOutSignature(descriptor, cif) ||
+      isQuickJSBlockFallbackSelector(descriptor->selector)) {
+    return false;
+  }
+
+  id self = resolveQuickJSSelf(env, jsThis, member);
+  if (self == nil) {
+    return false;
+  }
+
+  const bool receiverIsClass = object_isClass(self);
+  Class receiverClass = receiverIsClass ? static_cast<Class>(self) : object_getClass(self);
+  if (receiverClassRequiresQuickJSSuperCall(receiverClass)) {
+    return false;
+  }
+
+  QuickJSFastReturnStorage rvalueStorage(cif);
+  if (!rvalueStorage.valid()) {
+    return false;
+  }
+
+  void* rvalue = rvalueStorage.get();
+  bool didInvoke = false;
+  @try {
+    didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
+                        descriptor->selector, argv, rvalue);
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    nativescript::NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return false;
+  }
+
+  return didInvoke &&
+         makeQuickJSObjCReturnValue(
+             context, env, member, descriptor, cif, self, receiverIsClass,
+             jsThis, rvalue, kind != nativescript::EngineDirectMemberKind::Method,
+             result);
+}
+
+bool tryCallQuickJSCFunctionEngineDirect(JSContext* context, napi_env env,
+                                         MDSectionOffset offset, int argc,
+                                         const napi_value* argv,
+                                         JSValue* result) {
+  if (context == nullptr || env == nullptr || argc < 0 || result == nullptr) {
+    return false;
+  }
+
+  auto* bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr || isCompatCFunction(env, reinterpret_cast<void*>(
+                                           static_cast<uintptr_t>(offset)))) {
+    return false;
+  }
+
+  auto* function = bridgeState->getCFunction(env, offset);
+  auto* cif = function != nullptr ? function->cif : nullptr;
+  if (function == nullptr || cif == nullptr || cif->isVariadic ||
+      cif->signatureHash == 0 || static_cast<unsigned int>(argc) != cif->argc ||
+      cif->returnType == nullptr) {
+    return false;
+  }
+
+  auto invoker = ensureQuickJSCFunctionEngineDirectInvoker(function, cif);
+  if (invoker == nullptr) {
+    return false;
+  }
+
+  bool didInvoke = false;
+  @try {
+    didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    nativescript::NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return false;
+  }
+
+  return didInvoke &&
+         makeQuickJSCFunctionReturnValue(context, env, function, cif,
+                                         cif->rvalue, result);
+}
+
 JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
                        JSValueConst* argv, int magic, JSValue* funcData) {
   napi_env env = static_cast<napi_env>(JS_GetContextOpaque(context));
@@ -219,9 +933,56 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
     napiArgs[i] = reinterpret_cast<napi_value>(&argv[i]);
   }
 
+  napi_value jsThis = reinterpret_cast<napi_value>(&effectiveThis);
+  JSValue directReturn = JS_UNDEFINED;
+  bool didUseDirectReturn = false;
+  switch (magic) {
+    case kQuickJSFastObjCMethod:
+      didUseDirectReturn = tryCallQuickJSObjCEngineDirect(
+          context, env, static_cast<nativescript::ObjCClassMember*>(data),
+          jsThis, argc, napiArgs,
+          nativescript::EngineDirectMemberKind::Method, &directReturn);
+      break;
+    case kQuickJSFastObjCGetter:
+      didUseDirectReturn = tryCallQuickJSObjCEngineDirect(
+          context, env, static_cast<nativescript::ObjCClassMember*>(data),
+          jsThis, 0, nullptr,
+          nativescript::EngineDirectMemberKind::Getter, &directReturn);
+      break;
+    case kQuickJSFastObjCSetter: {
+      JSValue undefined = JS_UNDEFINED;
+      napi_value value =
+          argc > 0 ? reinterpret_cast<napi_value>(&argv[0])
+                   : reinterpret_cast<napi_value>(&undefined);
+      didUseDirectReturn = tryCallQuickJSObjCEngineDirect(
+          context, env, static_cast<nativescript::ObjCClassMember*>(data),
+          jsThis, 1, &value,
+          nativescript::EngineDirectMemberKind::Setter, &directReturn);
+      break;
+    }
+    case kQuickJSFastCFunction:
+      didUseDirectReturn = tryCallQuickJSCFunctionEngineDirect(
+          context, env,
+          static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(data)),
+          argc, napiArgs, &directReturn);
+      break;
+    default:
+      break;
+  }
+
+  if (didUseDirectReturn) {
+    if (useGlobalValue) {
+      JS_FreeValue(context, effectiveThis);
+    }
+    if (JS_HasException(context)) {
+      JS_FreeValue(context, directReturn);
+      return JS_Throw(context, JS_GetException(context));
+    }
+    return directReturn;
+  }
+
   QuickJSFastStackHandleScope scope(env);
 
-  napi_value jsThis = reinterpret_cast<napi_value>(&effectiveThis);
   napi_value result = nullptr;
   switch (magic) {
     case kQuickJSFastObjCMethod:
@@ -252,7 +1013,8 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
 
     case kQuickJSFastCFunction:
       result = nativescript::CFunction::jsCallDirect(
-          env, static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(data)),
+          env,
+          static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(data)),
           static_cast<size_t>(argc), napiArgs);
       break;
 

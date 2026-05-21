@@ -198,6 +198,7 @@ set(SOURCE_FILES
   ffi/Variable.mm
   ffi/Object.mm
   ffi/CFunction.mm
+  ffi/EngineDirectCall.mm
   ffi/Interop.mm
   ffi/InlineFunctions.mm
   ffi/ClassBuilder.mm

@@ -9,11 +9,14 @@
 #include <cstring>
 #include <limits>
 #include <memory>
+#include <optional>
 #include <unordered_set>
 #include "ClassBuilder.h"
 #include "Closure.h"
+#include "EngineDirectCall.h"
 #include "Interop.h"
 #include "HermesFastCallbackInfo.h"
+#include "HermesFastNativeApi.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
@@ -1091,6 +1094,12 @@ class RoundTripCacheFrameGuard {
   ObjCBridgeState* bridgeState_;
 };
 
+inline bool generatedDispatchNeedsRoundTripCacheFrame(Cif* cif) {
+  return cif != nullptr &&
+         (cif->generatedDispatchHasRoundTripCacheArgument ||
+          cif->generatedDispatchUsesObjectReturnStorage);
+}
+
 namespace {
 
 inline size_t alignUpSize(size_t value, size_t alignment) {
@@ -1449,6 +1458,15 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
       args[i] = HermesFastArg(fastInfo, i);
     }
 
+    bool handledDirect = false;
+    napi_value directResult = TryCallHermesObjCMemberFast(
+        env, static_cast<ObjCClassMember*>(fastInfo->data),
+        HermesFastThisArg(fastInfo), actualArgc, args,
+        EngineDirectMemberKind::Method, &handledDirect);
+    if (handledDirect) {
+      return directResult;
+    }
+
     return jsCallDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
                         HermesFastThisArg(fastInfo), actualArgc, args);
   }
@@ -1485,8 +1503,6 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
   if (self == nullptr) {
     return nullptr;
   }
-
-  RoundTripCacheFrameGuard roundTripCacheFrame(env, method->bridgeState);
 
   const bool receiverIsClass = object_isClass(self);
   Class receiverClass = receiverIsClass ? (Class)self : [self class];
@@ -1599,6 +1615,11 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
   if (cif == nullptr) {
     napi_throw_error(env, "NativeScriptException", "Unable to resolve native call signature.");
     return nullptr;
+  }
+
+  std::optional<RoundTripCacheFrameGuard> roundTripCacheFrame;
+  if (generatedDispatchNeedsRoundTripCacheFrame(cif)) {
+    roundTripCacheFrame.emplace(env, method->bridgeState);
   }
 
   CifReturnStorage rvalueStorage(cif);
@@ -1811,6 +1832,14 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
 napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
 #ifdef TARGET_ENGINE_HERMES
   if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
+    bool handledDirect = false;
+    napi_value directResult = TryCallHermesObjCMemberFast(
+        env, static_cast<ObjCClassMember*>(fastInfo->data),
+        HermesFastThisArg(fastInfo), 0, nullptr,
+        EngineDirectMemberKind::Getter, &handledDirect);
+    if (handledDirect) {
+      return directResult;
+    }
     return jsGetterDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
                           HermesFastThisArg(fastInfo));
   }
@@ -1914,6 +1943,14 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
     } else {
       napi_get_undefined(env, &value);
     }
+    bool handledDirect = false;
+    napi_value directResult = TryCallHermesObjCMemberFast(
+        env, static_cast<ObjCClassMember*>(fastInfo->data),
+        HermesFastThisArg(fastInfo), 1, &value,
+        EngineDirectMemberKind::Setter, &handledDirect);
+    if (handledDirect) {
+      return directResult;
+    }
     return jsSetterDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
                           HermesFastThisArg(fastInfo), value);
   }
@@ -1943,12 +1980,15 @@ napi_value ObjCClassMember::jsSetterDirect(napi_env env, ObjCClassMember* method
 
   const bool receiverIsClass = object_isClass(self);
 
-  RoundTripCacheFrameGuard roundTripCacheFrame(env, method->bridgeState);
-
   Cif* cif = method->setterCif;
   if (cif == nullptr) {
     cif = method->setterCif =
         method->bridgeState->getMethodCif(env, method->setter.signatureOffset);
+  }
+
+  std::optional<RoundTripCacheFrameGuard> roundTripCacheFrame;
+  if (generatedDispatchNeedsRoundTripCacheFrame(cif)) {
+    roundTripCacheFrame.emplace(env, method->bridgeState);
   }
 
   if (cif->argc > 0) {

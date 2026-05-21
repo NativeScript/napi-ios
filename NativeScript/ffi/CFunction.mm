@@ -5,6 +5,8 @@
 #include "Block.h"
 #include "ClassMember.h"
 #include "HermesFastCallbackInfo.h"
+#include "HermesFastNativeApi.h"
+#include "EngineDirectCall.h"
 #include "Interop.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
@@ -263,6 +265,15 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
     }
     for (size_t i = 0; i < actualArgc; i++) {
       args[i] = HermesFastArg(fastInfo, i);
+    }
+
+    bool handledDirect = false;
+    napi_value directResult = TryCallHermesCFunctionFast(
+        env,
+        static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(fastInfo->data)),
+        actualArgc, args, &handledDirect);
+    if (handledDirect) {
+      return directResult;
     }
 
     return jsCallDirect(
