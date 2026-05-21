@@ -959,6 +959,92 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
   }
 }
 
+const char* engineDirectConverterMacroForKind(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeBool:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT";
+    case mdTypeChar:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT";
+    case mdTypeUChar:
+    case mdTypeUInt8:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT";
+    case mdTypeSShort:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT";
+    case mdTypeUShort:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT";
+    case mdTypeSInt:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT";
+    case mdTypeUInt:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT";
+    case mdTypeSLong:
+    case mdTypeSInt64:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT";
+    case mdTypeULong:
+    case mdTypeUInt64:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT";
+    case mdTypeFloat:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT";
+    case mdTypeDouble:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT";
+    case mdTypeSelector:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT";
+    case mdTypeClass:
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT";
+    default:
+      return "NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT";
+  }
+}
+
+bool engineDirectConverterTakesKind(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeClass:
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      return true;
+    default:
+      return engineDirectConverterMacroForKind(kind) ==
+             std::string("NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT");
+  }
+}
+
+void writeEngineDirectArgConversion(std::ostringstream& out,
+                                    const MDTypeInfo* type, size_t index) {
+  if (type == nullptr) {
+    out << "  return false;\n";
+    return;
+  }
+
+  const char* converter = engineDirectConverterMacroForKind(type->kind);
+  out << "  if (!" << converter << "(env, ";
+  if (engineDirectConverterTakesKind(type->kind)) {
+    out << "static_cast<MDTypeKind>(" << static_cast<int>(type->kind)
+        << "), ";
+  }
+  out << "argv[" << index << "], &arg" << index << ")) {\n";
+  if (argKindMayNeedCleanup(type->kind)) {
+    out << "    cif->argTypes[" << index << "]->toNative(env, argv[" << index
+        << "], &arg" << index << ", &shouldFree" << index
+        << ", &shouldFreeAny);\n";
+  } else {
+    out << "    bool ignoredShouldFree = false;\n";
+    out << "    bool ignoredShouldFreeAny = false;\n";
+    out << "    cif->argTypes[" << index << "]->toNative(env, argv[" << index
+        << "], &arg" << index
+        << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
+  }
+  out << "  }\n";
+}
+
 void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
                       const std::string& wrapperName,
                       const MDSignature* signature) {
@@ -1234,20 +1320,7 @@ void writeEngineDirectWrapper(std::ostringstream& out, DispatchKind kind,
   }
 
   for (size_t i = 0; i < argTypes.size(); i++) {
-    out << "  if (!NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT(env, "
-        << "static_cast<MDTypeKind>(" << static_cast<int>(argTypeInfos[i]->kind)
-        << "), argv[" << i << "], &arg" << i << ")) {\n";
-    if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
-      out << "    cif->argTypes[" << i << "]->toNative(env, argv[" << i
-          << "], &arg" << i << ", &shouldFree" << i << ", &shouldFreeAny);\n";
-    } else {
-      out << "    bool ignoredShouldFree = false;\n";
-      out << "    bool ignoredShouldFreeAny = false;\n";
-      out << "    cif->argTypes[" << i << "]->toNative(env, argv[" << i
-          << "], &arg" << i
-          << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
-    }
-    out << "  }\n";
+    writeEngineDirectArgConversion(out, argTypeInfos[i], i);
   }
 
   std::ostringstream callExpr;
@@ -1909,12 +1982,90 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "#if NS_GSD_BACKEND_JSC\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
                "TryFastConvertJSCArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT "
+               "TryFastConvertJSCBoolArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT "
+               "TryFastConvertJSCInt8Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT "
+               "TryFastConvertJSCUInt8Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT "
+               "TryFastConvertJSCInt16Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT "
+               "TryFastConvertJSCUInt16Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT "
+               "TryFastConvertJSCInt32Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT "
+               "TryFastConvertJSCUInt32Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT "
+               "TryFastConvertJSCInt64Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT "
+               "TryFastConvertJSCUInt64Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT "
+               "TryFastConvertJSCFloatArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT "
+               "TryFastConvertJSCDoubleArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT "
+               "TryFastConvertJSCSelectorArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT "
+               "TryFastConvertJSCObjectArgument\n";
   generated << "#elif NS_GSD_BACKEND_QUICKJS\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
                "TryFastConvertQuickJSArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeBool, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeChar, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeUInt8, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeSShort, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeUShort, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeSInt, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeUInt, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeSInt64, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeUInt64, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeFloat, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeDouble, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT(env, value, result) "
+               "TryFastConvertQuickJSArgument(env, mdTypeSelector, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT(env, kind, value, result) "
+               "TryFastConvertQuickJSArgument(env, kind, value, result)\n";
   generated << "#elif NS_GSD_BACKEND_HERMES\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
                "TryFastConvertHermesArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeBool, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeChar, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeUInt8, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeSShort, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeUShort, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeSInt, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeUInt, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeSInt64, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeUInt64, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeFloat, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeDouble, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT(env, value, result) "
+               "TryFastConvertHermesArgument(env, mdTypeSelector, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT(env, kind, value, result) "
+               "TryFastConvertHermesArgument(env, kind, value, result)\n";
   generated << "#else\n";
   generated << "#error \"No generated signature engine-direct converter selected\"\n";
   generated << "#endif\n";
@@ -1924,6 +2075,19 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
                              wrapper.second.second);
   }
   generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT\n";
   generated << "#endif\n\n";
 
   generated << "#if NS_GSD_BACKEND_V8\n";

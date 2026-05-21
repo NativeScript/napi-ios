@@ -4,6 +4,7 @@
 
 #import <Foundation/Foundation.h>
 
+#include <objc/message.h>
 #include <cmath>
 #include <cstdlib>
 #include <cstring>
@@ -12,9 +13,13 @@
 #include <vector>
 
 #include "CFunction.h"
+#include "ClassBuilder.h"
 #include "ClassMember.h"
+#include "EngineDirectCall.h"
 #include "MetadataReader.h"
+#include "NativeScriptException.h"
 #include "ObjCBridge.h"
+#include "SignatureDispatch.h"
 #include "TypeConv.h"
 #include "jsc-api.h"
 
@@ -75,6 +80,673 @@ bool isCompatCFunction(napi_env env, void* data) {
          strcmp(name, "NSApplicationMain") == 0;
 }
 
+class JSCFastReturnStorage {
+ public:
+  explicit JSCFastReturnStorage(Cif* cif) {
+    size_t size = 0;
+    if (cif != nullptr) {
+      size = cif->rvalueLength;
+      if (size == 0 && cif->cif.rtype != nullptr) {
+        size = cif->cif.rtype->size;
+      }
+    }
+    if (size == 0) {
+      size = sizeof(void*);
+    }
+
+    if (size <= kInlineSize) {
+      data_ = inlineBuffer_;
+      std::memset(data_, 0, size);
+      return;
+    }
+
+    data_ = std::malloc(size);
+    if (data_ != nullptr) {
+      std::memset(data_, 0, size);
+    }
+  }
+
+  ~JSCFastReturnStorage() {
+    if (data_ != nullptr && data_ != inlineBuffer_) {
+      std::free(data_);
+    }
+  }
+
+  bool valid() const { return data_ != nullptr; }
+  void* get() const { return data_; }
+
+ private:
+  static constexpr size_t kInlineSize = 32;
+  alignas(max_align_t) unsigned char inlineBuffer_[kInlineSize];
+  void* data_ = nullptr;
+};
+
+bool canMakeJSCRawReturnValue(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeVoid:
+    case mdTypeBool:
+    case mdTypeChar:
+    case mdTypeUChar:
+    case mdTypeUInt8:
+    case mdTypeSShort:
+    case mdTypeUShort:
+    case mdTypeSInt:
+    case mdTypeUInt:
+    case mdTypeSLong:
+    case mdTypeULong:
+    case mdTypeSInt64:
+    case mdTypeUInt64:
+    case mdTypeFloat:
+    case mdTypeDouble:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool makeJSCRawReturnValue(napi_env env, MDTypeKind kind, const void* value,
+                           JSValueRef* result) {
+  if (env == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSContextRef ctx = env->context;
+  switch (kind) {
+    case mdTypeVoid:
+      *result = JSValueMakeNull(ctx);
+      return true;
+
+    case mdTypeBool:
+      if (value == nullptr) return false;
+      *result = JSValueMakeBoolean(
+          ctx, *reinterpret_cast<const uint8_t*>(value) != 0);
+      return true;
+
+    case mdTypeChar: {
+      if (value == nullptr) return false;
+      const int8_t raw = *reinterpret_cast<const int8_t*>(value);
+      *result = raw == 0 || raw == 1 ? JSValueMakeBoolean(ctx, raw == 1)
+                                     : JSValueMakeNumber(ctx, raw);
+      return true;
+    }
+
+    case mdTypeUChar:
+    case mdTypeUInt8: {
+      if (value == nullptr) return false;
+      const uint8_t raw = *reinterpret_cast<const uint8_t*>(value);
+      *result = raw == 0 || raw == 1 ? JSValueMakeBoolean(ctx, raw == 1)
+                                     : JSValueMakeNumber(ctx, raw);
+      return true;
+    }
+
+    case mdTypeSShort:
+      if (value == nullptr) return false;
+      *result = JSValueMakeNumber(ctx, *reinterpret_cast<const int16_t*>(value));
+      return true;
+
+    case mdTypeUShort: {
+      if (value == nullptr) return false;
+      const uint16_t raw = *reinterpret_cast<const uint16_t*>(value);
+      if (raw >= 32 && raw <= 126) {
+        const char buffer[2] = {static_cast<char>(raw), '\0'};
+        *result = JSValueMakeString(ctx, ScopedJSString(buffer));
+      } else {
+        *result = JSValueMakeNumber(ctx, raw);
+      }
+      return true;
+    }
+
+    case mdTypeSInt:
+      if (value == nullptr) return false;
+      *result = JSValueMakeNumber(ctx, *reinterpret_cast<const int32_t*>(value));
+      return true;
+
+    case mdTypeUInt:
+      if (value == nullptr) return false;
+      *result = JSValueMakeNumber(ctx, *reinterpret_cast<const uint32_t*>(value));
+      return true;
+
+    case mdTypeSLong:
+    case mdTypeSInt64: {
+      if (value == nullptr) return false;
+      const int64_t raw = *reinterpret_cast<const int64_t*>(value);
+      constexpr int64_t kMaxSafeInteger = 9007199254740991LL;
+      if (raw > kMaxSafeInteger || raw < -kMaxSafeInteger) {
+        napi_value bigint = nullptr;
+        if (napi_create_bigint_int64(env, raw, &bigint) == napi_ok) {
+          *result = ToJSValue(bigint);
+          return true;
+        }
+      }
+      *result = JSValueMakeNumber(ctx, static_cast<double>(raw));
+      return true;
+    }
+
+    case mdTypeULong:
+    case mdTypeUInt64: {
+      if (value == nullptr) return false;
+      const uint64_t raw = *reinterpret_cast<const uint64_t*>(value);
+      constexpr uint64_t kMaxSafeInteger = 9007199254740991ULL;
+      if (raw > kMaxSafeInteger) {
+        napi_value bigint = nullptr;
+        if (napi_create_bigint_uint64(env, raw, &bigint) == napi_ok) {
+          *result = ToJSValue(bigint);
+          return true;
+        }
+      }
+      *result = JSValueMakeNumber(ctx, static_cast<double>(raw));
+      return true;
+    }
+
+    case mdTypeFloat:
+      if (value == nullptr) return false;
+      *result = JSValueMakeNumber(ctx, *reinterpret_cast<const float*>(value));
+      return true;
+
+    case mdTypeDouble:
+      if (value == nullptr) return false;
+      *result = JSValueMakeNumber(ctx, *reinterpret_cast<const double*>(value));
+      return true;
+
+    default:
+      return false;
+  }
+}
+
+bool makeJSCNSStringValue(napi_env env, NSString* string, JSValueRef* result) {
+  if (env == nullptr || result == nullptr) {
+    return false;
+  }
+
+  if (string == nil) {
+    *result = JSValueMakeNull(env->context);
+    return true;
+  }
+
+  NSUInteger length = [string length];
+  std::vector<char16_t> chars(length > 0 ? length : 1);
+  if (length > 0) {
+    [string getCharacters:reinterpret_cast<unichar*>(chars.data())
+                    range:NSMakeRange(0, length)];
+  }
+
+  JSStringRef jsString = JSStringCreateWithCharacters(
+      reinterpret_cast<const JSChar*>(chars.data()), length);
+  if (jsString == nullptr) {
+    return false;
+  }
+  *result = JSValueMakeString(env->context, jsString);
+  JSStringRelease(jsString);
+  return true;
+}
+
+bool makeJSCBoxedObjectValue(napi_env env, id obj, JSValueRef* result) {
+  if (env == nullptr || result == nullptr) {
+    return false;
+  }
+
+  if (obj == nil || obj == [NSNull null]) {
+    *result = JSValueMakeNull(env->context);
+    return true;
+  }
+
+  if ([obj isKindOfClass:[NSString class]]) {
+    return makeJSCNSStringValue(env, (NSString*)obj, result);
+  }
+
+  if ([obj isKindOfClass:[NSNumber class]] &&
+      ![obj isKindOfClass:[NSDecimalNumber class]]) {
+    if (CFGetTypeID((CFTypeRef)obj) == CFBooleanGetTypeID()) {
+      *result = JSValueMakeBoolean(env->context, [obj boolValue]);
+    } else {
+      *result = JSValueMakeNumber(env->context, [obj doubleValue]);
+    }
+    return true;
+  }
+
+  return false;
+}
+
+id resolveJSCSelf(napi_env env, napi_value jsThis, ObjCClassMember* member) {
+  id self = nil;
+  ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+
+  if (jsThis != nullptr) {
+    void* wrapped = nullptr;
+    if (nativescript_jsc_try_unwrap_native(env, jsThis, &wrapped) &&
+        wrapped != nullptr) {
+      return static_cast<id>(wrapped);
+    }
+  }
+
+  if (state != nullptr && jsThis != nullptr) {
+    state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
+  }
+
+  if (self == nil && jsThis != nullptr) {
+    napi_unwrap(env, jsThis, reinterpret_cast<void**>(&self));
+  }
+
+  if (self != nil) {
+    return self;
+  }
+
+  if (member != nullptr && member->cls != nullptr &&
+      member->cls->nativeClass != nil) {
+    if (member->classMethod) {
+      return static_cast<id>(member->cls->nativeClass);
+    }
+
+    napi_valuetype jsType = napi_undefined;
+    if (jsThis != nullptr && napi_typeof(env, jsThis, &jsType) == napi_ok &&
+        jsType == napi_function) {
+      return static_cast<id>(member->cls->nativeClass);
+    }
+  }
+
+  return nil;
+}
+
+Cif* jscMemberCif(napi_env env, ObjCClassMember* member,
+                  EngineDirectMemberKind kind,
+                  MethodDescriptor** descriptorOut) {
+  if (member == nullptr || descriptorOut == nullptr) {
+    return nullptr;
+  }
+
+  switch (kind) {
+    case EngineDirectMemberKind::Method:
+      if (!member->overloads.empty()) {
+        return nullptr;
+      }
+      *descriptorOut = &member->methodOrGetter;
+      if (member->cif == nullptr) {
+        member->cif = member->bridgeState->getMethodCif(
+            env, member->methodOrGetter.signatureOffset);
+      }
+      return member->cif;
+
+    case EngineDirectMemberKind::Getter:
+      *descriptorOut = &member->methodOrGetter;
+      if (member->cif == nullptr) {
+        member->cif = member->bridgeState->getMethodCif(
+            env, member->methodOrGetter.signatureOffset);
+      }
+      return member->cif;
+
+    case EngineDirectMemberKind::Setter:
+      *descriptorOut = &member->setter;
+      if (member->setterCif == nullptr) {
+        member->setterCif = member->bridgeState->getMethodCif(
+            env, member->setter.signatureOffset);
+      }
+      return member->setterCif;
+  }
+}
+
+bool receiverClassRequiresJSCSuperCall(Class receiverClass) {
+  static thread_local Class lastReceiverClass = nil;
+  static thread_local bool lastRequiresSuperCall = false;
+  if (receiverClass == lastReceiverClass) {
+    return lastRequiresSuperCall;
+  }
+
+  static thread_local std::unordered_map<Class, bool> superCallCache;
+  auto cached = superCallCache.find(receiverClass);
+  if (cached != superCallCache.end()) {
+    lastReceiverClass = receiverClass;
+    lastRequiresSuperCall = cached->second;
+    return cached->second;
+  }
+
+  const bool requiresSuperCall =
+      receiverClass != nil &&
+      class_conformsToProtocol(receiverClass,
+                               @protocol(ObjCBridgeClassBuilderProtocol));
+  superCallCache.emplace(receiverClass, requiresSuperCall);
+  lastReceiverClass = receiverClass;
+  lastRequiresSuperCall = requiresSuperCall;
+  return requiresSuperCall;
+}
+
+inline bool selectorEndsWith(SEL selector, const char* suffix) {
+  if (selector == nullptr || suffix == nullptr) {
+    return false;
+  }
+  const char* selectorName = sel_getName(selector);
+  if (selectorName == nullptr) {
+    return false;
+  }
+
+  const size_t selectorLength = std::strlen(selectorName);
+  const size_t suffixLength = std::strlen(suffix);
+  return selectorLength >= suffixLength &&
+         std::strcmp(selectorName + selectorLength - suffixLength, suffix) == 0;
+}
+
+inline bool computeJSCNSErrorOutSignature(SEL selector, Cif* cif) {
+  if (cif == nullptr || cif->argc == 0 || cif->argTypes.empty() ||
+      !selectorEndsWith(selector, "error:")) {
+    return false;
+  }
+  auto lastArgType = cif->argTypes[cif->argc - 1];
+  return lastArgType != nullptr && lastArgType->type == &ffi_type_pointer;
+}
+
+inline bool isJSCNSErrorOutSignature(MethodDescriptor* descriptor, Cif* cif) {
+  if (descriptor == nullptr) {
+    return computeJSCNSErrorOutSignature(nullptr, cif);
+  }
+
+  if (!descriptor->nserrorOutSignatureCached) {
+    descriptor->nserrorOutSignature =
+        computeJSCNSErrorOutSignature(descriptor->selector, cif);
+    descriptor->nserrorOutSignatureCached = true;
+  }
+  return descriptor->nserrorOutSignature;
+}
+
+inline bool isJSCBlockFallbackSelector(SEL selector) {
+  return selector == @selector(methodWithSimpleBlock:) ||
+         selector == @selector(methodRetainingBlock:) ||
+         selector == @selector(methodWithBlock:) ||
+         selector == @selector(methodWithComplexBlock:);
+}
+
+ObjCEngineDirectInvoker ensureJSCObjCEngineDirectInvoker(
+    Cif* cif, MethodDescriptor* descriptor, uint8_t dispatchFlags) {
+  if (cif == nullptr || descriptor == nullptr || cif->signatureHash == 0) {
+    return nullptr;
+  }
+
+  if (!descriptor->dispatchLookupCached ||
+      descriptor->dispatchLookupSignatureHash != cif->signatureHash ||
+      descriptor->dispatchLookupFlags != dispatchFlags) {
+    descriptor->dispatchLookupSignatureHash = cif->signatureHash;
+    descriptor->dispatchLookupFlags = dispatchFlags;
+    descriptor->dispatchId = composeSignatureDispatchId(
+        cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags);
+    descriptor->preparedInvoker =
+        reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
+    descriptor->napiInvoker =
+        reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
+    descriptor->engineDirectInvoker =
+        reinterpret_cast<void*>(lookupObjCEngineDirectInvoker(descriptor->dispatchId));
+    descriptor->dispatchLookupCached = true;
+  }
+
+  return reinterpret_cast<ObjCEngineDirectInvoker>(
+      descriptor->engineDirectInvoker);
+}
+
+CFunctionEngineDirectInvoker ensureJSCCFunctionEngineDirectInvoker(
+    CFunction* function, Cif* cif) {
+  if (function == nullptr || cif == nullptr || cif->signatureHash == 0) {
+    if (function != nullptr) {
+      function->dispatchLookupCached = true;
+      function->dispatchLookupSignatureHash = 0;
+      function->dispatchId = 0;
+      function->preparedInvoker = nullptr;
+      function->napiInvoker = nullptr;
+      function->engineDirectInvoker = nullptr;
+      function->v8Invoker = nullptr;
+    }
+    return nullptr;
+  }
+
+  if (!function->dispatchLookupCached ||
+      function->dispatchLookupSignatureHash != cif->signatureHash) {
+    function->dispatchLookupSignatureHash = cif->signatureHash;
+    function->dispatchId = composeSignatureDispatchId(
+        cif->signatureHash, SignatureCallKind::CFunction,
+        function->dispatchFlags);
+    function->preparedInvoker =
+        reinterpret_cast<void*>(lookupCFunctionPreparedInvoker(function->dispatchId));
+    function->napiInvoker =
+        reinterpret_cast<void*>(lookupCFunctionNapiInvoker(function->dispatchId));
+    function->engineDirectInvoker = reinterpret_cast<void*>(
+        lookupCFunctionEngineDirectInvoker(function->dispatchId));
+    function->dispatchLookupCached = true;
+  }
+
+  return reinterpret_cast<CFunctionEngineDirectInvoker>(
+      function->engineDirectInvoker);
+}
+
+bool makeJSCObjCReturnValue(napi_env env, ObjCClassMember* member,
+                            MethodDescriptor* descriptor, Cif* cif, id self,
+                            bool receiverIsClass, napi_value jsThis,
+                            void* rvalue, bool propertyAccess,
+                            JSValueRef* result) {
+  if (env == nullptr || member == nullptr || descriptor == nullptr ||
+      cif == nullptr || cif->returnType == nullptr || result == nullptr) {
+    return false;
+  }
+
+  if (makeJSCRawReturnValue(env, cif->returnType->kind, rvalue, result)) {
+    return true;
+  }
+
+  const char* selectorName = sel_getName(descriptor->selector);
+  if (selectorName != nullptr && std::strcmp(selectorName, "class") == 0) {
+    if (!propertyAccess && !receiverIsClass) {
+      napi_value constructor = jsThis;
+      napi_get_named_property(env, jsThis, "constructor", &constructor);
+      *result = ToJSValue(constructor);
+      return true;
+    }
+
+    id classObject = receiverIsClass ? self : (id)object_getClass(self);
+    napi_value converted =
+        member->bridgeState->getObject(env, classObject, kUnownedObject, 0, nullptr);
+    if (converted == nullptr) {
+      return false;
+    }
+    *result = ToJSValue(converted);
+    return true;
+  }
+
+  if (cif->returnType->kind == mdTypeInstanceObject) {
+    napi_value constructor = jsThis;
+    if (!receiverIsClass) {
+      napi_get_named_property(env, jsThis, "constructor", &constructor);
+    }
+    id obj = *reinterpret_cast<id*>(rvalue);
+    napi_value converted = member->bridgeState->getObject(
+        env, obj, constructor, member->returnOwned ? kOwnedObject : kUnownedObject);
+    *result = converted != nullptr ? ToJSValue(converted) : JSValueMakeNull(env->context);
+    return true;
+  }
+
+  if (cif->returnType->kind == mdTypeNSStringObject) {
+    return makeJSCNSStringValue(
+        env, *reinterpret_cast<NSString* const*>(rvalue), result);
+  }
+
+  if (cif->returnType->kind == mdTypeAnyObject) {
+    id obj = *reinterpret_cast<id*>(rvalue);
+    if (receiverIsClass && obj != nil) {
+      Class receiverClass = static_cast<Class>(self);
+      if ((receiverClass == [NSString class] ||
+           receiverClass == [NSMutableString class]) &&
+          selectorName != nullptr &&
+          (std::strcmp(selectorName, "string") == 0 ||
+           std::strcmp(selectorName, "stringWithString:") == 0 ||
+           std::strcmp(selectorName, "stringWithCapacity:") == 0)) {
+        napi_value converted =
+            member->bridgeState->getObject(env, obj, jsThis, kUnownedObject);
+        if (converted == nullptr) {
+          return false;
+        }
+        *result = ToJSValue(converted);
+        return true;
+      }
+    }
+
+    if (makeJSCBoxedObjectValue(env, obj, result)) {
+      return true;
+    }
+  }
+
+  napi_value fastResult = nullptr;
+  if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
+                                      &fastResult)) {
+    *result = ToJSValue(fastResult);
+    return true;
+  }
+
+  napi_value converted =
+      cif->returnType->toJS(env, rvalue, member->returnOwned ? kReturnOwned : 0);
+  if (converted == nullptr) {
+    return false;
+  }
+  *result = ToJSValue(converted);
+  return true;
+}
+
+bool makeJSCCFunctionReturnValue(napi_env env, CFunction* function, Cif* cif,
+                                 void* rvalue, JSValueRef* result) {
+  if (env == nullptr || cif == nullptr || cif->returnType == nullptr ||
+      result == nullptr) {
+    return false;
+  }
+
+  if (makeJSCRawReturnValue(env, cif->returnType->kind, rvalue, result)) {
+    return true;
+  }
+
+  if (cif->returnType->kind == mdTypeNSStringObject) {
+    return makeJSCNSStringValue(
+        env, *reinterpret_cast<NSString* const*>(rvalue), result);
+  }
+  if (cif->returnType->kind == mdTypeAnyObject &&
+      makeJSCBoxedObjectValue(env, *reinterpret_cast<id const*>(rvalue), result)) {
+    return true;
+  }
+
+  napi_value fastResult = nullptr;
+  if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
+                                      &fastResult)) {
+    *result = ToJSValue(fastResult);
+    return true;
+  }
+
+  uint32_t toJSFlags = kCStringAsReference;
+  if (function != nullptr && (function->dispatchFlags & 1) != 0) {
+    toJSFlags |= kReturnOwned;
+  }
+  napi_value converted = cif->returnType->toJS(env, rvalue, toJSFlags);
+  if (converted == nullptr) {
+    return false;
+  }
+  *result = ToJSValue(converted);
+  return true;
+}
+
+bool tryCallJSCObjCEngineDirect(napi_env env, ObjCClassMember* member,
+                                napi_value jsThis, size_t argc,
+                                const napi_value* argv,
+                                EngineDirectMemberKind kind,
+                                JSValueRef* result) {
+  if (env == nullptr || member == nullptr || member->bridgeState == nullptr ||
+      result == nullptr) {
+    return false;
+  }
+
+  MethodDescriptor* descriptor = nullptr;
+  Cif* cif = jscMemberCif(env, member, kind, &descriptor);
+  if (cif == nullptr || cif->isVariadic || cif->signatureHash == 0 ||
+      argc != cif->argc || cif->returnType == nullptr) {
+    return false;
+  }
+
+  ObjCEngineDirectInvoker invoker = ensureJSCObjCEngineDirectInvoker(
+      cif, descriptor, descriptor->dispatchFlags);
+  if (invoker == nullptr) {
+    return false;
+  }
+
+  if (isJSCNSErrorOutSignature(descriptor, cif) ||
+      isJSCBlockFallbackSelector(descriptor->selector)) {
+    return false;
+  }
+
+  id self = resolveJSCSelf(env, jsThis, member);
+  if (self == nil) {
+    return false;
+  }
+
+  const bool receiverIsClass = object_isClass(self);
+  Class receiverClass = receiverIsClass ? static_cast<Class>(self) : object_getClass(self);
+  if (receiverClassRequiresJSCSuperCall(receiverClass)) {
+    return false;
+  }
+
+  JSCFastReturnStorage rvalueStorage(cif);
+  if (!rvalueStorage.valid()) {
+    return false;
+  }
+
+  void* rvalue = rvalueStorage.get();
+  bool didInvoke = false;
+  @try {
+    didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
+                        descriptor->selector, argv, rvalue);
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return false;
+  }
+
+  return didInvoke &&
+         makeJSCObjCReturnValue(env, member, descriptor, cif, self,
+                                receiverIsClass, jsThis, rvalue,
+                                kind != EngineDirectMemberKind::Method, result);
+}
+
+bool tryCallJSCCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
+                                     size_t argc, const napi_value* argv,
+                                     JSValueRef* result) {
+  if (env == nullptr || result == nullptr) {
+    return false;
+  }
+
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr ||
+      isCompatCFunction(env, reinterpret_cast<void*>(
+                                 static_cast<uintptr_t>(offset)))) {
+    return false;
+  }
+
+  CFunction* function = bridgeState->getCFunction(env, offset);
+  Cif* cif = function != nullptr ? function->cif : nullptr;
+  if (function == nullptr || cif == nullptr || cif->isVariadic ||
+      cif->signatureHash == 0 || argc != cif->argc ||
+      cif->returnType == nullptr) {
+    return false;
+  }
+
+  CFunctionEngineDirectInvoker invoker =
+      ensureJSCCFunctionEngineDirectInvoker(function, cif);
+  if (invoker == nullptr) {
+    return false;
+  }
+
+  bool didInvoke = false;
+  @try {
+    didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return false;
+  }
+
+  return didInvoke &&
+         makeJSCCFunctionReturnValue(env, function, cif, cif->rvalue, result);
+}
+
 void initializeFastFunction(JSContextRef ctx, JSObjectRef object) {
   JSObjectRef global = JSContextGetGlobalObject(ctx);
   JSValueRef functionCtorValue =
@@ -130,6 +802,51 @@ JSValueRef callFastFunction(JSContextRef ctx, JSObjectRef function,
     argv[i] = ToNapi(arguments[i]);
   }
   napi_value jsThis = ToNapi(effectiveThis);
+  JSValueRef directResult = nullptr;
+  bool didUseDirectResult = false;
+  switch (binding->kind) {
+    case JSCFastNativeKind::ObjCMethod:
+      didUseDirectResult = tryCallJSCObjCEngineDirect(
+          env, static_cast<ObjCClassMember*>(binding->data), jsThis,
+          argumentCount, argv, EngineDirectMemberKind::Method,
+          &directResult);
+      break;
+    case JSCFastNativeKind::ObjCGetter:
+      didUseDirectResult = tryCallJSCObjCEngineDirect(
+          env, static_cast<ObjCClassMember*>(binding->data), jsThis, 0,
+          nullptr, EngineDirectMemberKind::Getter, &directResult);
+      break;
+    case JSCFastNativeKind::ObjCSetter: {
+      JSValueRef undefined = JSValueMakeUndefined(ctx);
+      napi_value value =
+          argumentCount > 0 ? ToNapi(arguments[0]) : ToNapi(undefined);
+      didUseDirectResult = tryCallJSCObjCEngineDirect(
+          env, static_cast<ObjCClassMember*>(binding->data), jsThis, 1,
+          &value, EngineDirectMemberKind::Setter, &directResult);
+      break;
+    }
+    case JSCFastNativeKind::CFunction:
+      didUseDirectResult = tryCallJSCCFunctionEngineDirect(
+          env,
+          static_cast<MDSectionOffset>(
+              reinterpret_cast<uintptr_t>(binding->data)),
+          argumentCount, argv, &directResult);
+      break;
+    default:
+      break;
+  }
+
+  if (didUseDirectResult) {
+    if (env->last_exception != nullptr) {
+      if (exception != nullptr) {
+        *exception = env->last_exception;
+      }
+      env->last_exception = nullptr;
+      return JSValueMakeUndefined(ctx);
+    }
+    return directResult != nullptr ? directResult : JSValueMakeUndefined(ctx);
+  }
+
   napi_value result = nullptr;
 
   switch (binding->kind) {
@@ -490,6 +1207,243 @@ bool tryFastConvertJSCObjectArgument(napi_env env, MDTypeKind kind,
 }
 
 }  // namespace
+
+bool TryFastConvertJSCBoolArgument(napi_env env, napi_value value,
+                                   uint8_t* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSValueRef jsValue = ToJSValue(value);
+  if (!JSValueIsBoolean(env->context, jsValue)) {
+    return false;
+  }
+  *result = JSValueToBoolean(env->context, jsValue) ? static_cast<uint8_t>(1)
+                                                    : static_cast<uint8_t>(0);
+  return true;
+}
+
+bool TryFastConvertJSCDoubleArgument(napi_env env, napi_value value,
+                                     double* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSValueRef jsValue = ToJSValue(value);
+  if (!JSValueIsNumber(env->context, jsValue)) {
+    return false;
+  }
+  JSValueRef exception = nullptr;
+  double converted = JSValueToNumber(env->context, jsValue, &exception);
+  if (exception != nullptr) {
+    env->last_exception = exception;
+    return false;
+  }
+  if (std::isnan(converted) || std::isinf(converted)) {
+    converted = 0.0;
+  }
+  *result = converted;
+  return true;
+}
+
+bool TryFastConvertJSCFloatArgument(napi_env env, napi_value value,
+                                    float* result) {
+  double converted = 0.0;
+  if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<float>(converted);
+  return true;
+}
+
+bool TryFastConvertJSCInt8Argument(napi_env env, napi_value value,
+                                   int8_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int8_t>(converted);
+  return true;
+}
+
+bool TryFastConvertJSCUInt8Argument(napi_env env, napi_value value,
+                                    uint8_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint8_t>(converted);
+  return true;
+}
+
+bool TryFastConvertJSCInt16Argument(napi_env env, napi_value value,
+                                    int16_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int16_t>(converted);
+  return true;
+}
+
+bool TryFastConvertJSCUInt16Argument(napi_env env, napi_value value,
+                                     uint16_t* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSContextRef ctx = env->context;
+  JSValueRef jsValue = ToJSValue(value);
+  if (JSValueIsString(ctx, jsValue)) {
+    JSValueRef exception = nullptr;
+    JSStringRef str = JSValueToStringCopy(ctx, jsValue, &exception);
+    if (exception != nullptr || str == nullptr) {
+      env->last_exception = exception;
+      return false;
+    }
+    const size_t length = JSStringGetLength(str);
+    if (length != 1) {
+      JSStringRelease(str);
+      napi_throw_type_error(env, nullptr, "Expected a single-character string.");
+      return false;
+    }
+    *result = static_cast<uint16_t>(JSStringGetCharactersPtr(str)[0]);
+    JSStringRelease(str);
+    return true;
+  }
+
+  double converted = 0.0;
+  if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint16_t>(converted);
+  return true;
+}
+
+bool TryFastConvertJSCInt32Argument(napi_env env, napi_value value,
+                                    int32_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int32_t>(converted);
+  return true;
+}
+
+bool TryFastConvertJSCUInt32Argument(napi_env env, napi_value value,
+                                     uint32_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint32_t>(converted);
+  return true;
+}
+
+bool TryFastConvertJSCInt64Argument(napi_env env, napi_value value,
+                                    int64_t* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSContextRef ctx = env->context;
+  JSValueRef jsValue = ToJSValue(value);
+  if (JSValueIsNumber(ctx, jsValue)) {
+    double converted = 0.0;
+    if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+      return false;
+    }
+    *result = static_cast<int64_t>(converted);
+    return true;
+  }
+
+  if (__builtin_available(macOS 15.0, iOS 18.0, *)) {
+    if (!JSValueIsBigInt(ctx, jsValue)) {
+      return false;
+    }
+    JSValueRef exception = nullptr;
+    *result = JSValueToInt64(ctx, jsValue, &exception);
+    if (exception != nullptr) {
+      env->last_exception = exception;
+      return false;
+    }
+    return true;
+  }
+
+  bool lossless = false;
+  return napi_get_value_bigint_int64(env, value, result, &lossless) == napi_ok;
+}
+
+bool TryFastConvertJSCUInt64Argument(napi_env env, napi_value value,
+                                     uint64_t* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSContextRef ctx = env->context;
+  JSValueRef jsValue = ToJSValue(value);
+  if (JSValueIsNumber(ctx, jsValue)) {
+    double converted = 0.0;
+    if (!TryFastConvertJSCDoubleArgument(env, value, &converted)) {
+      return false;
+    }
+    *result = static_cast<uint64_t>(converted);
+    return true;
+  }
+
+  if (__builtin_available(macOS 15.0, iOS 18.0, *)) {
+    if (!JSValueIsBigInt(ctx, jsValue)) {
+      return false;
+    }
+    JSValueRef exception = nullptr;
+    *result = JSValueToUInt64(ctx, jsValue, &exception);
+    if (exception != nullptr) {
+      env->last_exception = exception;
+      return false;
+    }
+    return true;
+  }
+
+  bool lossless = false;
+  return napi_get_value_bigint_uint64(env, value, result, &lossless) == napi_ok;
+}
+
+bool TryFastConvertJSCSelectorArgument(napi_env env, napi_value value,
+                                       SEL* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSValueRef jsValue = ToJSValue(value);
+  if (JSValueIsNull(env->context, jsValue) ||
+      JSValueIsUndefined(env->context, jsValue)) {
+    *result = nullptr;
+    return true;
+  }
+  if (!JSValueIsString(env->context, jsValue)) {
+    return false;
+  }
+
+  constexpr size_t kStackCapacity = 256;
+  char stackBuffer[kStackCapacity];
+  std::vector<char> heapBuffer;
+  const char* selectorName = nullptr;
+  size_t selectorLength = 0;
+  if (!readJSCStringUTF8(env, jsValue, &selectorName, &selectorLength,
+                         stackBuffer, kStackCapacity, &heapBuffer)) {
+    return false;
+  }
+  *result = cachedSelectorForName(selectorName, selectorLength);
+  return true;
+}
+
+bool TryFastConvertJSCObjectArgument(napi_env env, MDTypeKind kind,
+                                     napi_value value, void* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+  return tryFastConvertJSCObjectArgument(env, kind, ToJSValue(value), result);
+}
 
 bool TryFastConvertJSCArgument(napi_env env, MDTypeKind kind, napi_value value,
                                void* result) {
