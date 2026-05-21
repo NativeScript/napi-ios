@@ -475,6 +475,102 @@ bool isFastManagedNapiKind(MDTypeKind kind) {
   }
 }
 
+bool fastV8ArgConversionNeedsContext(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeChar:
+    case mdTypeUChar:
+    case mdTypeUInt8:
+    case mdTypeSShort:
+    case mdTypeSInt:
+    case mdTypeUInt:
+    case mdTypeSLong:
+    case mdTypeULong:
+    case mdTypeSInt64:
+    case mdTypeUInt64:
+    case mdTypeFloat:
+    case mdTypeDouble:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool canSetV8ReturnDirectly(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeVoid:
+    case mdTypeBool:
+    case mdTypeChar:
+    case mdTypeUChar:
+    case mdTypeUInt8:
+    case mdTypeSShort:
+    case mdTypeUShort:
+    case mdTypeSInt:
+    case mdTypeUInt:
+    case mdTypeSLong:
+    case mdTypeULong:
+    case mdTypeSInt64:
+    case mdTypeUInt64:
+    case mdTypeFloat:
+    case mdTypeDouble:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool canTrySetV8ObjectReturnDirectly(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      return true;
+    default:
+      return false;
+  }
+}
+
+void writeV8DirectReturnValue(std::ostringstream& out, MDTypeKind kind,
+                              const std::string& valueExpr) {
+  switch (kind) {
+    case mdTypeBool:
+      out << "  info.GetReturnValue().Set(" << valueExpr << " != 0);\n";
+      break;
+    case mdTypeChar:
+    case mdTypeSShort:
+    case mdTypeSInt:
+      out << "  info.GetReturnValue().Set(static_cast<int32_t>(" << valueExpr
+          << "));\n";
+      break;
+    case mdTypeUChar:
+    case mdTypeUInt8:
+    case mdTypeUShort:
+    case mdTypeUInt:
+      out << "  info.GetReturnValue().Set(static_cast<uint32_t>(" << valueExpr
+          << "));\n";
+      break;
+    case mdTypeSLong:
+    case mdTypeSInt64:
+      out << "  setV8DispatchInt64ReturnValue(info.GetIsolate(), info, "
+          << valueExpr << ");\n";
+      break;
+    case mdTypeULong:
+    case mdTypeUInt64:
+      out << "  setV8DispatchUInt64ReturnValue(info.GetIsolate(), info, "
+          << valueExpr << ");\n";
+      break;
+    case mdTypeFloat:
+    case mdTypeDouble:
+      out << "  info.GetReturnValue().Set(static_cast<double>(" << valueExpr
+          << "));\n";
+      break;
+    default:
+      break;
+  }
+}
+
 bool argKindMayNeedCleanup(MDTypeKind kind) {
   switch (kind) {
     case mdTypeAnyObject:
@@ -697,7 +793,7 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
   switch (type->kind) {
     case mdTypeChar: {
       out << "  int32_t tmpArg" << index << " = 0;\n";
-      out << "  if (!argv[" << index << "]->Int32Value(context).To(&tmpArg"
+      out << "  if (!info[" << index << "]->Int32Value(context).To(&tmpArg"
           << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -711,7 +807,7 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     case mdTypeUChar:
     case mdTypeUInt8: {
       out << "  uint32_t tmpArg" << index << " = 0;\n";
-      out << "  if (!argv[" << index << "]->Uint32Value(context).To(&tmpArg"
+      out << "  if (!info[" << index << "]->Uint32Value(context).To(&tmpArg"
           << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -724,7 +820,7 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     }
     case mdTypeSShort: {
       out << "  int32_t tmpArg" << index << " = 0;\n";
-      out << "  if (!argv[" << index << "]->Int32Value(context).To(&tmpArg"
+      out << "  if (!info[" << index << "]->Int32Value(context).To(&tmpArg"
           << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -736,7 +832,7 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       break;
     }
     case mdTypeUShort: {
-      out << "  if (!TryFastConvertV8UInt16Argument(env, argv[" << index
+      out << "  if (!TryFastConvertV8UInt16Argument(env, info[" << index
           << "], &arg" << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -746,7 +842,7 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       break;
     }
     case mdTypeSInt: {
-      out << "  if (!argv[" << index << "]->Int32Value(context).To(&arg"
+      out << "  if (!info[" << index << "]->Int32Value(context).To(&arg"
           << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -756,7 +852,7 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       break;
     }
     case mdTypeUInt: {
-      out << "  if (!argv[" << index << "]->Uint32Value(context).To(&arg"
+      out << "  if (!info[" << index << "]->Uint32Value(context).To(&arg"
           << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -767,11 +863,11 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     }
     case mdTypeSLong:
     case mdTypeSInt64: {
-      out << "  if (argv[" << index << "]->IsBigInt()) {\n";
+      out << "  if (info[" << index << "]->IsBigInt()) {\n";
       out << "    bool lossless" << index << " = false;\n";
-      out << "    arg" << index << " = argv[" << index
+      out << "    arg" << index << " = info[" << index
           << "].As<v8::BigInt>()->Int64Value(&lossless" << index << ");\n";
-      out << "  } else if (!argv[" << index
+      out << "  } else if (!info[" << index
           << "]->IntegerValue(context).To(&arg" << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -782,13 +878,13 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     }
     case mdTypeULong:
     case mdTypeUInt64: {
-      out << "  if (argv[" << index << "]->IsBigInt()) {\n";
+      out << "  if (info[" << index << "]->IsBigInt()) {\n";
       out << "    bool lossless" << index << " = false;\n";
-      out << "    arg" << index << " = argv[" << index
+      out << "    arg" << index << " = info[" << index
           << "].As<v8::BigInt>()->Uint64Value(&lossless" << index << ");\n";
       out << "  } else {\n";
       out << "    int64_t signedValue" << index << " = 0;\n";
-      out << "    if (!argv[" << index
+      out << "    if (!info[" << index
           << "]->IntegerValue(context).To(&signedValue" << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "      cleanupManagedArgs();\n";
@@ -802,7 +898,7 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
     }
     case mdTypeFloat: {
       out << "  double tmpArg" << index << " = 0.0;\n";
-      out << "  if (!argv[" << index << "]->NumberValue(context).To(&tmpArg"
+      out << "  if (!info[" << index << "]->NumberValue(context).To(&tmpArg"
           << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -814,7 +910,7 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       break;
     }
     case mdTypeDouble: {
-      out << "  if (!argv[" << index << "]->NumberValue(context).To(&arg"
+      out << "  if (!info[" << index << "]->NumberValue(context).To(&arg"
           << index << ")) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
@@ -828,13 +924,13 @@ void writeFastV8ArgConversion(std::ostringstream& out, const MDTypeInfo* type,
       break;
     }
     case mdTypeBool: {
-      out << "  if (!argv[" << index << "]->IsBoolean()) {\n";
+      out << "  if (!info[" << index << "]->IsBoolean()) {\n";
       if (hasCleanupArgs) {
         out << "    cleanupManagedArgs();\n";
       }
       out << "    return false;\n";
       out << "  }\n";
-      out << "  arg" << index << " = static_cast<uint8_t>(argv[" << index
+      out << "  arg" << index << " = static_cast<uint8_t>(info[" << index
           << "]->BooleanValue(info.GetIsolate()) ? 1 : 0);\n";
       break;
     }
@@ -1046,18 +1142,25 @@ void writeV8Wrapper(std::ostringstream& out, DispatchKind kind,
   out << "static inline bool " << wrapperName
       << "(napi_env env, Cif* cif, void* fnptr, ";
   if (kind == DispatchKind::ObjCMethod) {
-    out << "id self, SEL selector, ";
+    out << "id self, SEL selector, void* bridgeState, bool returnOwned, "
+           "bool receiverIsClass, bool propertyAccess, ";
   }
-  out << "const v8::FunctionCallbackInfo<v8::Value>& info, void* rvalue) {\n";
-  out << "  if (info.Length() < " << argTypes.size() << ") {\n";
-  out << "    return false;\n";
-  out << "  }\n";
-  out << "  v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();\n";
+  out << "const v8::FunctionCallbackInfo<v8::Value>& info, void* rvalue, "
+         "bool* didSetReturnValue) {\n";
   if (!argTypes.empty()) {
-    out << "  v8::Local<v8::Value> argv[" << argTypes.size() << "];\n";
-    for (size_t i = 0; i < argTypes.size(); i++) {
-      out << "  argv[" << i << "] = info[" << i << "];\n";
+    out << "  if (info.Length() < " << argTypes.size() << ") {\n";
+    out << "    return false;\n";
+    out << "  }\n";
+  }
+  bool needsContext = false;
+  for (const auto* arg : argTypeInfos) {
+    if (arg != nullptr && fastV8ArgConversionNeedsContext(arg->kind)) {
+      needsContext = true;
+      break;
     }
+  }
+  if (needsContext) {
+    out << "  v8::Local<v8::Context> context = info.GetIsolate()->GetCurrentContext();\n";
   }
 
   out << "  using Fn = " << returnType << " (*)(";
@@ -1090,6 +1193,11 @@ void writeV8Wrapper(std::ostringstream& out, DispatchKind kind,
     }
   }
   const bool hasCleanupArgs = !cleanupArgIndexes.empty();
+  const bool setsReturnDirectly =
+      canSetV8ReturnDirectly(signature->returnType->kind);
+  const bool triesObjectReturnDirectly =
+      kind == DispatchKind::ObjCMethod &&
+      canTrySetV8ObjectReturnDirectly(signature->returnType->kind);
   if (hasCleanupArgs) {
     out << "  bool shouldFreeAny = false;\n";
   }
@@ -1145,18 +1253,18 @@ void writeV8Wrapper(std::ostringstream& out, DispatchKind kind,
       writeFastV8ArgConversion(out, argTypeInfos[i], i, hasCleanupArgs);
     } else if (isFastManagedNapiKind(argTypeInfos[i]->kind)) {
       out << "  if (!TryFastConvertV8Argument(env, static_cast<MDTypeKind>("
-          << static_cast<int>(argTypeInfos[i]->kind) << "), argv[" << i
+          << static_cast<int>(argTypeInfos[i]->kind) << "), info[" << i
           << "], &arg" << i << ")) {\n";
       if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
         out << "    cif->argTypes[" << i
-            << "]->toNative(env, v8LocalValueToNapiValue(argv[" << i
+            << "]->toNative(env, v8LocalValueToNapiValue(info[" << i
             << "]), &arg" << i << ", &shouldFree" << i
             << ", &shouldFreeAny);\n";
       } else {
         out << "    ignoredShouldFree = false;\n";
         out << "    ignoredShouldFreeAny = false;\n";
         out << "    cif->argTypes[" << i
-            << "]->toNative(env, v8LocalValueToNapiValue(argv[" << i
+            << "]->toNative(env, v8LocalValueToNapiValue(info[" << i
             << "]), &arg" << i
             << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
       }
@@ -1164,14 +1272,14 @@ void writeV8Wrapper(std::ostringstream& out, DispatchKind kind,
     } else {
       if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
         out << "  cif->argTypes[" << i
-            << "]->toNative(env, v8LocalValueToNapiValue(argv[" << i
+            << "]->toNative(env, v8LocalValueToNapiValue(info[" << i
             << "]), &arg" << i << ", &shouldFree" << i
             << ", &shouldFreeAny);\n";
       } else {
         out << "  ignoredShouldFree = false;\n";
         out << "  ignoredShouldFreeAny = false;\n";
         out << "  cif->argTypes[" << i
-            << "]->toNative(env, v8LocalValueToNapiValue(argv[" << i
+            << "]->toNative(env, v8LocalValueToNapiValue(info[" << i
             << "]), &arg" << i
             << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
       }
@@ -1196,6 +1304,19 @@ void writeV8Wrapper(std::ostringstream& out, DispatchKind kind,
 
   if (returnType == "void") {
     out << "  " << callExpr.str() << ";\n";
+    out << "  *didSetReturnValue = true;\n";
+  } else if (setsReturnDirectly) {
+    out << "  nativeResult = " << callExpr.str() << ";\n";
+    writeV8DirectReturnValue(out, signature->returnType->kind, "nativeResult");
+    out << "  *didSetReturnValue = true;\n";
+  } else if (triesObjectReturnDirectly) {
+    out << "  nativeResult = " << callExpr.str() << ";\n";
+    out << "  *reinterpret_cast<" << returnType
+        << "*>(rvalue) = nativeResult;\n";
+    out << "  if (TryFastSetV8GeneratedObjCObjectReturnValue(env, info, cif, bridgeState, self, "
+           "selector, nativeResult, returnOwned, receiverIsClass, propertyAccess)) {\n";
+    out << "    *didSetReturnValue = true;\n";
+    out << "  }\n";
   } else {
     out << "  nativeResult = " << callExpr.str() << ";\n";
     out << "  *reinterpret_cast<" << returnType

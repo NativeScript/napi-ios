@@ -906,6 +906,48 @@ bool TryFastSetV8ObjectReturnValue(napi_env env,
   return true;
 }
 
+}  // namespace
+
+bool TryFastSetV8GeneratedObjCObjectReturnValue(
+    napi_env env, const v8::FunctionCallbackInfo<v8::Value>& info, Cif* cif,
+    void* bridgeState, id self, SEL selector, id value, bool returnOwned,
+    bool receiverIsClass, bool propertyAccess) {
+  (void)propertyAccess;
+  auto* state = static_cast<ObjCBridgeState*>(bridgeState);
+  if (env == nullptr || state == nullptr || cif == nullptr || cif->returnType == nullptr) {
+    return false;
+  }
+
+  if (selector == @selector(class)) {
+    return false;
+  }
+
+  switch (cif->returnType->kind) {
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeNSStringObject:
+      break;
+    default:
+      return false;
+  }
+
+  if (receiverIsClass && value != nil) {
+    Class receiverClass = (Class)self;
+    if ((receiverClass == [NSString class] || receiverClass == [NSMutableString class]) &&
+        (selector == @selector(string) ||
+         selector == @selector(stringWithString:) ||
+         selector == @selector(stringWithCapacity:))) {
+      return false;
+    }
+  }
+
+  return TryFastSetV8ObjectReturnValue(
+      env, info, state, value, returnOwned ? kOwnedObject : kUnownedObject);
+}
+
+namespace {
+
 inline size_t alignUpSize(size_t value, size_t alignment) {
   if (alignment == 0) {
     return value;
@@ -1285,28 +1327,6 @@ CFunctionV8Invoker ensureCFunctionV8Invoker(CFunction* function, Cif* cif) {
   }
 
   return reinterpret_cast<CFunctionV8Invoker>(function->v8Invoker);
-}
-
-inline bool typeKindMayUseRoundTripCache(MDTypeKind kind) {
-  switch (kind) {
-    case mdTypeAnyObject:
-    case mdTypeProtocolObject:
-    case mdTypeClassObject:
-    case mdTypeInstanceObject:
-    case mdTypeNSStringObject:
-    case mdTypeNSMutableStringObject:
-      return true;
-    default:
-      return false;
-  }
-}
-
-inline bool cifMayUseRoundTripCache(Cif* cif) {
-  if (cif == nullptr) {
-    return false;
-  }
-
-  return cif->returnType != nullptr && typeKindMayUseRoundTripCache(cif->returnType->kind);
 }
 
 inline bool selectorEndsWith(SEL selector, const char* suffix) {
@@ -2317,20 +2337,38 @@ bool invokeObjCFast(napi_env env, const v8::FunctionCallbackInfo<v8::Value>& inf
   }
   const bool hasImplicitNSErrorOutArg =
       isNSErrorOutMethod && !cif->isVariadic && actualArgc + 1 == cif->argc;
-  if (!isNSErrorOutMethod && !requiresSuperCall &&
-      tryInvokeObjCV8DirectFastPath(env, info, method, descriptor, cif, self)) {
-    return true;
+  const bool canUseGeneratedDispatch = !isNSErrorOutMethod && !requiresSuperCall;
+  ObjCV8Invoker invoker =
+      canUseGeneratedDispatch ? ensureObjCV8Invoker(cif, descriptor, descriptor->dispatchFlags)
+                              : nullptr;
+  if (invoker == nullptr) {
+    if (canUseGeneratedDispatch &&
+        tryInvokeObjCV8DirectFastPath(env, info, method, descriptor, cif, self)) {
+      return true;
+    }
+
+    return invokeObjCSlow(env, info, method, descriptor, cif, self, receiverIsClass,
+                          propertyAccess);
   }
 
-  const bool needsRoundTripCache = cifMayUseRoundTripCache(cif);
+  const bool generatedDispatchSetsReturnDirectly =
+      cif->generatedDispatchSetsV8ReturnDirectly;
+  const bool generatedDispatchUsesObjectReturnStorage =
+      !generatedDispatchSetsReturnDirectly && cif->generatedDispatchUsesObjectReturnStorage;
+  const bool needsRoundTripCache =
+      generatedDispatchUsesObjectReturnStorage &&
+      cif->generatedDispatchHasRoundTripCacheArgument;
   std::optional<RoundTripCacheFrameGuard> roundTripCacheFrame;
   if (needsRoundTripCache) {
     roundTripCacheFrame.emplace(env, method->bridgeState);
   }
 
   std::optional<V8CifReturnStorage> rvalueStorage;
+  id objectRvalue = nil;
   void* rvalue = nullptr;
-  if (cif->returnType == nullptr || cif->returnType->kind != mdTypeVoid) {
+  if (generatedDispatchUsesObjectReturnStorage) {
+    rvalue = &objectRvalue;
+  } else if (!generatedDispatchSetsReturnDirectly) {
     rvalueStorage.emplace(cif);
     if (!rvalueStorage->valid()) {
       throwV8Error(info.GetIsolate(),
@@ -2341,26 +2379,32 @@ bool invokeObjCFast(napi_env env, const v8::FunctionCallbackInfo<v8::Value>& inf
   }
 
   bool didInvoke = false;
-  ObjCV8Invoker invoker =
-      requiresSuperCall ? nullptr : ensureObjCV8Invoker(cif, descriptor, descriptor->dispatchFlags);
-  if (!isNSErrorOutMethod && invoker != nullptr) {
-    @try {
-      didInvoke = invoker(env, cif, (void*)objc_msgSend, self, descriptor->selector, info, rvalue);
-    } @catch (NSException* exception) {
-      std::string message = exception.description.UTF8String;
-      NativeScriptException nativeScriptException(message);
-      throwNativeScriptExceptionToV8(env, info.GetIsolate(), nativeScriptException);
-      return false;
-    }
+  bool didSetReturnValue = false;
+  @try {
+    didInvoke = invoker(env, cif, (void*)objc_msgSend, self, descriptor->selector,
+                        method->bridgeState, method->returnOwned, receiverIsClass,
+                        propertyAccess, info, rvalue, &didSetReturnValue);
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    NativeScriptException nativeScriptException(message);
+    throwNativeScriptExceptionToV8(env, info.GetIsolate(), nativeScriptException);
+    return false;
   }
 
   if (!didInvoke) {
+    if (canUseGeneratedDispatch &&
+        tryInvokeObjCV8DirectFastPath(env, info, method, descriptor, cif, self)) {
+      return true;
+    }
+
     return invokeObjCSlow(env, info, method, descriptor, cif, self, receiverIsClass,
                           propertyAccess);
   }
 
-  setObjCReturnValue(env, info, method, descriptor, cif, self, receiverIsClass, rvalue,
-                     propertyAccess);
+  if (!didSetReturnValue) {
+    setObjCReturnValue(env, info, method, descriptor, cif, self, receiverIsClass, rvalue,
+                       propertyAccess);
+  }
   return true;
 }
 
@@ -2557,9 +2601,10 @@ void v8CFunctionCallback(const v8::FunctionCallbackInfo<v8::Value>& info) {
   CFunctionV8Invoker invoker = ensureCFunctionV8Invoker(function, cif);
 
   bool didInvoke = false;
+  bool didSetReturnValue = false;
   if (invoker != nullptr) {
     @try {
-      didInvoke = invoker(env, cif, function->fnptr, info, cif->rvalue);
+      didInvoke = invoker(env, cif, function->fnptr, info, cif->rvalue, &didSetReturnValue);
     } @catch (NSException* exception) {
       std::string message = exception.description.UTF8String;
       NativeScriptException nativeScriptException(message);
@@ -2573,7 +2618,9 @@ void v8CFunctionCallback(const v8::FunctionCallbackInfo<v8::Value>& info) {
     return;
   }
 
-  setCFunctionReturnValue(env, info, function, cif, cif->rvalue);
+  if (!didSetReturnValue) {
+    setCFunctionReturnValue(env, info, function, cif, cif->rvalue);
+  }
 }
 
 bool isCompatLibdispatchFunction(ObjCBridgeState* bridgeState, MDSectionOffset offset) {
