@@ -10,6 +10,7 @@ if [ -z "$NO_UPDATE_VERSION" ]; then
 fi
 
 "$SCRIPT_DIR/build_metadata_generator.sh"
+npm run metagen macos
 "$SCRIPT_DIR/build_nativescript.sh" --no-catalyst --no-iphone --no-sim --macos
 "$SCRIPT_DIR/build_tklivesync.sh" --no-catalyst --no-iphone --no-sim --no-vision --macos
 "$SCRIPT_DIR/prepare_dSYMs.sh"

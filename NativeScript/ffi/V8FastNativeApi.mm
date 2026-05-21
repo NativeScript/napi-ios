@@ -1640,6 +1640,179 @@ bool tryConvertV8NSUIntegerArgument(napi_env env, v8::Local<v8::Value> value,
   return true;
 }
 
+inline void setV8Int64ReturnValue(v8::Isolate* isolate,
+                                  const v8::FunctionCallbackInfo<v8::Value>& info,
+                                  int64_t value) {
+  constexpr int64_t kMaxSafeInteger = 9007199254740991LL;
+  if (value > kMaxSafeInteger || value < -kMaxSafeInteger) {
+    info.GetReturnValue().Set(v8::BigInt::New(isolate, value));
+  } else {
+    info.GetReturnValue().Set(v8::Number::New(isolate, static_cast<double>(value)));
+  }
+}
+
+inline void setV8UInt64ReturnValue(v8::Isolate* isolate,
+                                   const v8::FunctionCallbackInfo<v8::Value>& info,
+                                   uint64_t value) {
+  constexpr uint64_t kMaxSafeInteger = 9007199254740991ULL;
+  if (value > kMaxSafeInteger) {
+    info.GetReturnValue().Set(v8::BigInt::NewFromUnsigned(isolate, value));
+  } else {
+    info.GetReturnValue().Set(v8::Number::New(isolate, static_cast<double>(value)));
+  }
+}
+
+bool tryInvokeObjCV8PrimitiveReturnWithObjectArg(
+    v8::Isolate* isolate, const v8::FunctionCallbackInfo<v8::Value>& info,
+    MDTypeKind returnKind, id self, SEL selector, id arg0) {
+  switch (returnKind) {
+    case mdTypeBool: {
+      BOOL value = reinterpret_cast<BOOL (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Boolean::New(isolate, value != NO));
+      return true;
+    }
+    case mdTypeChar: {
+      int8_t value = reinterpret_cast<int8_t (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::New(isolate, value));
+      return true;
+    }
+    case mdTypeUChar:
+    case mdTypeUInt8: {
+      uint8_t value = reinterpret_cast<uint8_t (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, value));
+      return true;
+    }
+    case mdTypeSShort: {
+      int16_t value =
+          reinterpret_cast<int16_t (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::New(isolate, value));
+      return true;
+    }
+    case mdTypeUShort: {
+      uint16_t value =
+          reinterpret_cast<uint16_t (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, value));
+      return true;
+    }
+    case mdTypeSInt: {
+      int32_t value =
+          reinterpret_cast<int32_t (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::New(isolate, value));
+      return true;
+    }
+    case mdTypeUInt: {
+      uint32_t value =
+          reinterpret_cast<uint32_t (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, value));
+      return true;
+    }
+    case mdTypeSLong:
+    case mdTypeSInt64: {
+      int64_t value =
+          reinterpret_cast<int64_t (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      setV8Int64ReturnValue(isolate, info, value);
+      return true;
+    }
+    case mdTypeULong:
+    case mdTypeUInt64: {
+      uint64_t value =
+          reinterpret_cast<uint64_t (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      setV8UInt64ReturnValue(isolate, info, value);
+      return true;
+    }
+    case mdTypeFloat: {
+      float value = reinterpret_cast<float (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Number::New(isolate, value));
+      return true;
+    }
+    case mdTypeDouble: {
+      double value = reinterpret_cast<double (*)(id, SEL, id)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Number::New(isolate, value));
+      return true;
+    }
+    default:
+      return false;
+  }
+}
+
+bool tryInvokeObjCV8PrimitiveReturnWithNSUIntegerArg(
+    v8::Isolate* isolate, const v8::FunctionCallbackInfo<v8::Value>& info,
+    MDTypeKind returnKind, id self, SEL selector, NSUInteger arg0) {
+  switch (returnKind) {
+    case mdTypeBool: {
+      BOOL value =
+          reinterpret_cast<BOOL (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Boolean::New(isolate, value != NO));
+      return true;
+    }
+    case mdTypeChar: {
+      int8_t value =
+          reinterpret_cast<int8_t (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::New(isolate, value));
+      return true;
+    }
+    case mdTypeUChar:
+    case mdTypeUInt8: {
+      uint8_t value =
+          reinterpret_cast<uint8_t (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, value));
+      return true;
+    }
+    case mdTypeSShort: {
+      int16_t value =
+          reinterpret_cast<int16_t (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::New(isolate, value));
+      return true;
+    }
+    case mdTypeUShort: {
+      uint16_t value =
+          reinterpret_cast<uint16_t (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, value));
+      return true;
+    }
+    case mdTypeSInt: {
+      int32_t value =
+          reinterpret_cast<int32_t (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::New(isolate, value));
+      return true;
+    }
+    case mdTypeUInt: {
+      uint32_t value =
+          reinterpret_cast<uint32_t (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, value));
+      return true;
+    }
+    case mdTypeSLong:
+    case mdTypeSInt64: {
+      int64_t value =
+          reinterpret_cast<int64_t (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      setV8Int64ReturnValue(isolate, info, value);
+      return true;
+    }
+    case mdTypeULong:
+    case mdTypeUInt64: {
+      uint64_t value =
+          reinterpret_cast<uint64_t (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      setV8UInt64ReturnValue(isolate, info, value);
+      return true;
+    }
+    case mdTypeFloat: {
+      float value =
+          reinterpret_cast<float (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Number::New(isolate, value));
+      return true;
+    }
+    case mdTypeDouble: {
+      double value =
+          reinterpret_cast<double (*)(id, SEL, NSUInteger)>(objc_msgSend)(self, selector, arg0);
+      info.GetReturnValue().Set(v8::Number::New(isolate, value));
+      return true;
+    }
+    default:
+      return false;
+  }
+}
+
 bool tryInvokeObjCV8DirectFastPath(napi_env env,
                                    const v8::FunctionCallbackInfo<v8::Value>& info,
                                    ObjCClassMember* method, MethodDescriptor* descriptor,
@@ -1788,6 +1961,29 @@ bool tryInvokeObjCV8DirectFastPath(napi_env env,
       return TryFastSetV8ObjectReturnValue(
           env, info, method != nullptr ? method->bridgeState : ObjCBridgeState::InstanceData(env),
           value, method != nullptr && method->returnOwned ? kOwnedObject : kUnownedObject);
+    }
+  }
+
+  if (cif->argc == 1 && static_cast<unsigned int>(info.Length()) >= 1) {
+    const MDTypeKind argKind = cif->argTypes[0]->kind;
+    if (isV8DirectObjectKind(argKind)) {
+      id arg0 = nil;
+      if (!TryFastUnwrapV8ObjectArgument(env, info[0], &arg0)) {
+        return false;
+      }
+      if (tryInvokeObjCV8PrimitiveReturnWithObjectArg(isolate, info, returnKind, self,
+                                                      descriptor->selector, arg0)) {
+        return true;
+      }
+    } else if (isV8DirectIntegerKind(argKind)) {
+      NSUInteger arg0 = 0;
+      if (!tryConvertV8NSUIntegerArgument(env, info[0], &arg0)) {
+        return false;
+      }
+      if (tryInvokeObjCV8PrimitiveReturnWithNSUIntegerArg(isolate, info, returnKind, self,
+                                                          descriptor->selector, arg0)) {
+        return true;
+      }
     }
   }
 
