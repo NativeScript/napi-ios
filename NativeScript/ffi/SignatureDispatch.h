@@ -33,6 +33,14 @@ using ObjCNapiInvoker = bool (*)(napi_env env, Cif* cif, void* fnptr, id self,
                                  void* rvalue);
 using CFunctionNapiInvoker = bool (*)(napi_env env, Cif* cif, void* fnptr,
                                       const napi_value* argv, void* rvalue);
+using ObjCEngineDirectInvoker = bool (*)(napi_env env, Cif* cif, void* fnptr,
+                                         id self, SEL selector,
+                                         const napi_value* argv,
+                                         void* rvalue);
+using CFunctionEngineDirectInvoker = bool (*)(napi_env env, Cif* cif,
+                                              void* fnptr,
+                                              const napi_value* argv,
+                                              void* rvalue);
 
 #ifdef TARGET_ENGINE_V8
 using ObjCV8Invoker = bool (*)(napi_env env, Cif* cif, void* fnptr, id self,
@@ -69,6 +77,16 @@ struct ObjCNapiDispatchEntry {
 struct CFunctionNapiDispatchEntry {
   uint64_t dispatchId;
   CFunctionNapiInvoker invoker;
+};
+
+struct ObjCEngineDirectDispatchEntry {
+  uint64_t dispatchId;
+  ObjCEngineDirectInvoker invoker;
+};
+
+struct CFunctionEngineDirectDispatchEntry {
+  uint64_t dispatchId;
+  CFunctionEngineDirectInvoker invoker;
 };
 
 #ifdef TARGET_ENGINE_V8
@@ -152,8 +170,35 @@ bool TryFastSetV8GeneratedObjCObjectReturnValue(
 #endif
 #endif
 
+#ifndef NS_GSD_BACKEND_JSC
+#ifdef TARGET_ENGINE_JSC
+#define NS_GSD_BACKEND_JSC 1
+#else
+#define NS_GSD_BACKEND_JSC 0
+#endif
+#endif
+
+#ifndef NS_GSD_BACKEND_QUICKJS
+#ifdef TARGET_ENGINE_QUICKJS
+#define NS_GSD_BACKEND_QUICKJS 1
+#else
+#define NS_GSD_BACKEND_QUICKJS 0
+#endif
+#endif
+
+#ifndef NS_GSD_BACKEND_HERMES
+#ifdef TARGET_ENGINE_HERMES
+#define NS_GSD_BACKEND_HERMES 1
+#else
+#define NS_GSD_BACKEND_HERMES 0
+#endif
+#endif
+
+#define NS_GSD_BACKEND_ENGINE_DIRECT \
+  (NS_GSD_BACKEND_JSC || NS_GSD_BACKEND_QUICKJS || NS_GSD_BACKEND_HERMES)
+
 #ifndef NS_GSD_BACKEND_NAPI
-#if NS_GSD_BACKEND_V8
+#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_ENGINE_DIRECT
 #define NS_GSD_BACKEND_NAPI 0
 #else
 #define NS_GSD_BACKEND_NAPI 1
@@ -162,6 +207,15 @@ bool TryFastSetV8GeneratedObjCObjectReturnValue(
 
 #if NS_GSD_BACKEND_V8 && !defined(TARGET_ENGINE_V8)
 #error "NS_GSD_BACKEND_V8 requires TARGET_ENGINE_V8"
+#endif
+#if NS_GSD_BACKEND_JSC && !defined(TARGET_ENGINE_JSC)
+#error "NS_GSD_BACKEND_JSC requires TARGET_ENGINE_JSC"
+#endif
+#if NS_GSD_BACKEND_QUICKJS && !defined(TARGET_ENGINE_QUICKJS)
+#error "NS_GSD_BACKEND_QUICKJS requires TARGET_ENGINE_QUICKJS"
+#endif
+#if NS_GSD_BACKEND_HERMES && !defined(TARGET_ENGINE_HERMES)
+#error "NS_GSD_BACKEND_HERMES requires TARGET_ENGINE_HERMES"
 #endif
 
 #ifndef NS_HAS_GENERATED_SIGNATURE_DISPATCH
@@ -174,6 +228,10 @@ bool TryFastSetV8GeneratedObjCObjectReturnValue(
 
 #ifndef NS_HAS_GENERATED_SIGNATURE_V8_DISPATCH
 #define NS_HAS_GENERATED_SIGNATURE_V8_DISPATCH 0
+#endif
+
+#ifndef NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH
+#define NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH 0
 #endif
 
 #if defined(__has_include)
@@ -199,6 +257,15 @@ inline constexpr ObjCNapiDispatchEntry kGeneratedObjCNapiDispatchEntries[] = {
     {0, nullptr}};
 inline constexpr CFunctionNapiDispatchEntry
     kGeneratedCFunctionNapiDispatchEntries[] = {{0, nullptr}};
+}  // namespace nativescript
+#endif
+
+#if !NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH
+namespace nativescript {
+inline constexpr ObjCEngineDirectDispatchEntry
+    kGeneratedObjCEngineDirectDispatchEntries[] = {{0, nullptr}};
+inline constexpr CFunctionEngineDirectDispatchEntry
+    kGeneratedCFunctionEngineDirectDispatchEntries[] = {{0, nullptr}};
 }  // namespace nativescript
 #endif
 
@@ -290,6 +357,26 @@ inline CFunctionNapiInvoker lookupCFunctionNapiInvoker(uint64_t dispatchId) {
   return lookupDispatchInvoker<CFunctionNapiDispatchEntry,
                                CFunctionNapiInvoker>(
       kGeneratedCFunctionNapiDispatchEntries, dispatchId);
+}
+
+inline ObjCEngineDirectInvoker lookupObjCEngineDirectInvoker(
+    uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
+  return lookupDispatchInvoker<ObjCEngineDirectDispatchEntry,
+                               ObjCEngineDirectInvoker>(
+      kGeneratedObjCEngineDirectDispatchEntries, dispatchId);
+}
+
+inline CFunctionEngineDirectInvoker lookupCFunctionEngineDirectInvoker(
+    uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
+  return lookupDispatchInvoker<CFunctionEngineDirectDispatchEntry,
+                               CFunctionEngineDirectInvoker>(
+      kGeneratedCFunctionEngineDirectDispatchEntries, dispatchId);
 }
 
 #ifdef TARGET_ENGINE_V8

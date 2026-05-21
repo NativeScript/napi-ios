@@ -42,6 +42,9 @@ for arg in $@; do
     --hermes) TARGET_ENGINE=hermes ;;
     --no-engine|--generic-napi) TARGET_ENGINE=none ;;
     --gsd-v8) NS_GSD_BACKEND=v8 ;;
+    --gsd-jsc) NS_GSD_BACKEND=jsc ;;
+    --gsd-quickjs) NS_GSD_BACKEND=quickjs ;;
+    --gsd-hermes) NS_GSD_BACKEND=hermes ;;
     --gsd-napi) NS_GSD_BACKEND=napi ;;
     --gsd-none) NS_GSD_BACKEND=none ;;
     --gsd-backend=*) NS_GSD_BACKEND="${arg#--gsd-backend=}" ;;
@@ -74,6 +77,12 @@ function effective_gsd_backend () {
         echo none
       elif [ "$TARGET_ENGINE" == "v8" ]; then
         echo v8
+      elif [ "$TARGET_ENGINE" == "jsc" ]; then
+        echo jsc
+      elif [ "$TARGET_ENGINE" == "quickjs" ]; then
+        echo quickjs
+      elif [ "$TARGET_ENGINE" == "hermes" ]; then
+        echo hermes
       else
         echo napi
       fi
