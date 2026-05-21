@@ -13,6 +13,7 @@
 #include "ClassBuilder.h"
 #include "Closure.h"
 #include "Interop.h"
+#include "HermesFastCallbackInfo.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
@@ -1419,12 +1420,50 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
 }
 
 napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
+#ifdef TARGET_ENGINE_HERMES
+  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
+    napi_value stackArgs[16];
+    std::vector<napi_value> heapArgs;
+    napi_value* args = stackArgs;
+    const size_t actualArgc = fastInfo->argc;
+    if (actualArgc > 16) {
+      heapArgs.resize(actualArgc);
+      args = heapArgs.data();
+    }
+    for (size_t i = 0; i < actualArgc; i++) {
+      args[i] = HermesFastArg(fastInfo, i);
+    }
+
+    return jsCallDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
+                        HermesFastThisArg(fastInfo), actualArgc, args);
+  }
+#endif
+
   napi_value jsThis;
-  ObjCClassMember* method;
+  ObjCClassMember* method = nullptr;
 
   size_t actualArgc = 16;
   napi_value stackArgs[16];
   napi_get_cb_info(env, cbinfo, &actualArgc, stackArgs, &jsThis, (void**)&method);
+
+  if (actualArgc > 16) {
+    std::vector<napi_value> dynamicArgs(actualArgc);
+    size_t argcRetry = actualArgc;
+    napi_get_cb_info(env, cbinfo, &argcRetry, dynamicArgs.data(), &jsThis, (void**)&method);
+    dynamicArgs.resize(argcRetry);
+    return jsCallDirect(env, method, jsThis, argcRetry, dynamicArgs.data());
+  }
+
+  return jsCallDirect(env, method, jsThis, actualArgc, stackArgs);
+}
+
+napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
+                                         napi_value jsThis, size_t actualArgc,
+                                         const napi_value* rawCallArgs) {
+  if (method == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Missing Objective-C method metadata.");
+    return nullptr;
+  }
 
   id self = assertSelf(env, jsThis, method);
 
@@ -1461,17 +1500,10 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     return resolved;
   };
 
-  const napi_value* callArgs = stackArgs;
+  const napi_value* callArgs = actualArgc > 0 ? rawCallArgs : nullptr;
   std::vector<napi_value> dynamicArgs;
-  if (actualArgc > 16) {
-    dynamicArgs.resize(actualArgc);
-    size_t argcRetry = actualArgc;
-    napi_get_cb_info(env, cbinfo, &argcRetry, dynamicArgs.data(), &jsThis, (void**)&method);
-    dynamicArgs.resize(argcRetry);
-    actualArgc = argcRetry;
-    callArgs = dynamicArgs.data();
-  } else if (!method->overloads.empty()) {
-    dynamicArgs.assign(stackArgs, stackArgs + actualArgc);
+  if (!method->overloads.empty() && actualArgc > 0 && rawCallArgs != nullptr) {
+    dynamicArgs.assign(rawCallArgs, rawCallArgs + actualArgc);
     callArgs = dynamicArgs.data();
   }
 
@@ -1756,10 +1788,27 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 }
 
 napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
+#ifdef TARGET_ENGINE_HERMES
+  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
+    return jsGetterDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
+                          HermesFastThisArg(fastInfo));
+  }
+#endif
+
   napi_value jsThis;
-  ObjCClassMember* method;
+  ObjCClassMember* method = nullptr;
 
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&method);
+
+  return jsGetterDirect(env, method, jsThis);
+}
+
+napi_value ObjCClassMember::jsGetterDirect(napi_env env, ObjCClassMember* method,
+                                           napi_value jsThis) {
+  if (method == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Missing Objective-C getter metadata.");
+    return nullptr;
+  }
 
   id self = assertSelf(env, jsThis, method);
 
@@ -1822,16 +1871,43 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
 }
 
 napi_value ObjCClassMember::jsReadOnlySetter(napi_env env, napi_callback_info cbinfo) {
+  return jsReadOnlySetterDirect(env);
+}
+
+napi_value ObjCClassMember::jsReadOnlySetterDirect(napi_env env) {
   napi_throw_error(env, nullptr, "Attempted to assign to readonly property.");
   return nullptr;
 }
 
 napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
+#ifdef TARGET_ENGINE_HERMES
+  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
+    napi_value value = nullptr;
+    if (fastInfo->argc > 0) {
+      value = HermesFastArg(fastInfo, 0);
+    } else {
+      napi_get_undefined(env, &value);
+    }
+    return jsSetterDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
+                          HermesFastThisArg(fastInfo), value);
+  }
+#endif
+
   napi_value jsThis, argv;
   size_t argc = 1;
-  ObjCClassMember* method;
+  ObjCClassMember* method = nullptr;
 
   napi_get_cb_info(env, cbinfo, &argc, &argv, &jsThis, (void**)&method);
+
+  return jsSetterDirect(env, method, jsThis, argv);
+}
+
+napi_value ObjCClassMember::jsSetterDirect(napi_env env, ObjCClassMember* method,
+                                           napi_value jsThis, napi_value value) {
+  if (method == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Missing Objective-C setter metadata.");
+    return nullptr;
+  }
 
   id self = assertSelf(env, jsThis, method);
 
@@ -1850,7 +1926,7 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
   }
 
   if (cif->argc > 0) {
-    cif->argv[0] = argv;
+    cif->argv[0] = value;
   }
 
   bool didDirectInvoke = false;
@@ -1875,7 +1951,7 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
   void* rvalue = nullptr;
 
   bool shouldFree = false;
-  cif->argTypes[0]->toNative(env, argv, avalues[2], &shouldFree, &shouldFree);
+  cif->argTypes[0]->toNative(env, value, avalues[2], &shouldFree, &shouldFree);
 
   if (!objcNativeCall(env, cif, self, receiverIsClass, &method->setter,
                       method->setter.dispatchFlags, avalues, rvalue)) {

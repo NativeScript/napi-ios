@@ -286,6 +286,7 @@ if(ENABLE_JS_RUNTIME)
       # napi
       napi/quickjs/quickjs-api.c
       napi/quickjs/jsr.cpp
+      ffi/QuickJSFastNativeApi.mm
     )
 
   elseif(TARGET_ENGINE_JSC)
@@ -298,6 +299,7 @@ if(ENABLE_JS_RUNTIME)
     set(SOURCE_FILES ${SOURCE_FILES}
       napi/jsc/jsc-api.cpp
       napi/jsc/jsr.cpp
+      ffi/JSCFastNativeApi.mm
     )
   endif()
 else()

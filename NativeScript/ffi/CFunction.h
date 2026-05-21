@@ -12,6 +12,9 @@ class ObjCBridgeState;
 class CFunction {
  public:
   static napi_value jsCall(napi_env env, napi_callback_info cbinfo);
+  static napi_value jsCallDirect(napi_env env, MDSectionOffset offset,
+                                 size_t actualArgc,
+                                 const napi_value* callArgs);
 
   CFunction(void* fnptr) : fnptr(fnptr) {}
   ~CFunction();
