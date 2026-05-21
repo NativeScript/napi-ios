@@ -16,6 +16,7 @@ CONFIG_BUILD=RelWithDebInfo
 TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 NS_GSD_BACKEND=${NS_GSD_BACKEND:=auto}
 METADATA_SIZE=${METADATA_SIZE:=0}
+GENERATED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-./NativeScript/ffi/GeneratedSignatureDispatch.inc}}
 
 for arg in $@; do
   case $arg in
@@ -65,6 +66,64 @@ QUIET=
 if ! $VERBOSE; then
   QUIET=-quiet
 fi
+
+function effective_gsd_backend () {
+  case "$NS_GSD_BACKEND" in
+    auto)
+      if [ "$TARGET_ENGINE" == "none" ]; then
+        echo none
+      elif [ "$TARGET_ENGINE" == "v8" ]; then
+        echo v8
+      else
+        echo napi
+      fi
+      ;;
+    *)
+      echo "$NS_GSD_BACKEND"
+      ;;
+  esac
+}
+
+function signature_dispatch_platform () {
+  if $BUILD_SIMULATOR; then
+    echo ios-sim
+  elif $BUILD_IPHONE; then
+    echo ios
+  elif $BUILD_MACOS || $BUILD_MACOS_CLI || $BUILD_MACOS_NODE_API; then
+    echo macos
+  elif $BUILD_VISION; then
+    echo visionos-sim
+  elif $BUILD_CATALYST; then
+    echo catalyst
+  fi
+}
+
+function ensure_signature_dispatch_bindings () {
+  local backend
+  backend=$(effective_gsd_backend)
+  if [ "$TARGET_ENGINE" == "none" ] || [ "$backend" == "none" ]; then
+    return
+  fi
+
+  if [ -f "$GENERATED_SIGNATURE_DISPATCH" ]; then
+    return
+  fi
+
+  local platform
+  platform=$(signature_dispatch_platform)
+  if [ -z "$platform" ]; then
+    return
+  fi
+
+  if [ ! -x "./metadata-generator/dist/arm64/bin/objc-metadata-generator" ]; then
+    "$SCRIPT_DIR/build_metadata_generator.sh"
+  fi
+
+  checkpoint "Generating signature dispatch bindings for $platform..."
+  npm run metagen "$platform"
+}
+
+ensure_signature_dispatch_bindings
 
 DEV_TEAM=${DEVELOPMENT_TEAM:-}
 DIST=$(PWD)/dist
