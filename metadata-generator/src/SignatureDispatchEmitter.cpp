@@ -420,6 +420,24 @@ std::string makeV8WrapperName(DispatchKind kind, size_t index) {
   return stream.str();
 }
 
+std::string makeEngineDirectWrapperName(DispatchKind kind, size_t index) {
+  std::ostringstream stream;
+  stream << "de";
+  switch (kind) {
+    case DispatchKind::ObjCMethod:
+      stream << "o";
+      break;
+    case DispatchKind::CFunction:
+      stream << "c";
+      break;
+    case DispatchKind::BlockInvoke:
+      stream << "b";
+      break;
+  }
+  stream << toBase36(index);
+  return stream.str();
+}
+
 std::string makePreparedWrapperName(DispatchKind kind, size_t index) {
   std::ostringstream stream;
   stream << "dp";
@@ -1114,6 +1132,154 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
   out << "}\n\n";
 }
 
+void writeEngineDirectWrapper(std::ostringstream& out, DispatchKind kind,
+                              const std::string& wrapperName,
+                              const MDSignature* signature) {
+  if (kind == DispatchKind::BlockInvoke) {
+    return;
+  }
+
+  std::string returnType;
+  if (!mapTypeToCpp(signature->returnType, &returnType, true)) {
+    return;
+  }
+
+  std::vector<const MDTypeInfo*> argTypeInfos;
+  std::vector<std::string> argTypes;
+  argTypes.reserve(signature->arguments.size());
+  argTypeInfos.reserve(signature->arguments.size());
+  for (const auto* arg : signature->arguments) {
+    std::string argType;
+    if (!mapTypeToCpp(arg, &argType, false)) {
+      return;
+    }
+    argTypeInfos.push_back(arg);
+    argTypes.push_back(argType);
+  }
+
+  out << "static inline bool " << wrapperName
+      << "(napi_env env, Cif* cif, void* fnptr, ";
+  if (kind == DispatchKind::ObjCMethod) {
+    out << "id self, SEL selector, ";
+  }
+  out << "const napi_value* argv, void* rvalue) {\n";
+
+  out << "  using Fn = " << returnType << " (*)(";
+  bool first = true;
+  if (kind == DispatchKind::ObjCMethod) {
+    out << "id, SEL";
+    first = false;
+  }
+  for (const auto& argType : argTypes) {
+    if (!first) {
+      out << ", ";
+    }
+    out << argType;
+    first = false;
+  }
+  out << ");\n";
+  out << "  auto fn = reinterpret_cast<Fn>(fnptr);\n";
+
+  std::vector<size_t> cleanupArgIndexes;
+  cleanupArgIndexes.reserve(argTypes.size());
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+      cleanupArgIndexes.push_back(i);
+    }
+  }
+  const bool hasCleanupArgs = !cleanupArgIndexes.empty();
+  if (hasCleanupArgs) {
+    out << "  bool shouldFreeAny = false;\n";
+  }
+  if (returnType != "void") {
+    out << "  " << returnType << " nativeResult{};\n";
+  }
+
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    out << "  " << argTypes[i] << " arg" << i << "{};\n";
+    if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+      out << "  bool shouldFree" << i << " = false;\n";
+    }
+  }
+
+  if (hasCleanupArgs) {
+    out << "  auto cleanupManagedArgs = [&]() {\n";
+    out << "    if (shouldFreeAny) {\n";
+    if (kind == DispatchKind::CFunction && returnType != "void") {
+      out << "      void* returnPointerValue = nullptr;\n";
+      out << "      if (cif->returnType != nullptr && cif->returnType->type == "
+             "&ffi_type_pointer) {\n";
+      out << "        returnPointerValue = "
+             "*reinterpret_cast<void**>(&nativeResult);\n";
+      out << "      }\n";
+    }
+    for (const auto i : cleanupArgIndexes) {
+      out << "      if (shouldFree" << i << ") {\n";
+      if (kind == DispatchKind::CFunction && returnType != "void") {
+        out << "        if (returnPointerValue != nullptr && "
+               "*reinterpret_cast<void**>(&arg"
+            << i << ") == returnPointerValue) {\n";
+        out << "        } else {\n";
+        out << "          cif->argTypes[" << i
+            << "]->free(env, *reinterpret_cast<void**>(&arg" << i << "));\n";
+        out << "        }\n";
+      } else {
+        out << "        cif->argTypes[" << i
+            << "]->free(env, *reinterpret_cast<void**>(&arg" << i << "));\n";
+      }
+      out << "      }\n";
+    }
+    out << "    }\n";
+    out << "  };\n";
+  }
+
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    out << "  if (!NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT(env, "
+        << "static_cast<MDTypeKind>(" << static_cast<int>(argTypeInfos[i]->kind)
+        << "), argv[" << i << "], &arg" << i << ")) {\n";
+    if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+      out << "    cif->argTypes[" << i << "]->toNative(env, argv[" << i
+          << "], &arg" << i << ", &shouldFree" << i << ", &shouldFreeAny);\n";
+    } else {
+      out << "    bool ignoredShouldFree = false;\n";
+      out << "    bool ignoredShouldFreeAny = false;\n";
+      out << "    cif->argTypes[" << i << "]->toNative(env, argv[" << i
+          << "], &arg" << i
+          << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
+    }
+    out << "  }\n";
+  }
+
+  std::ostringstream callExpr;
+  callExpr << "fn(";
+  bool hasAnyCallArg = false;
+  if (kind == DispatchKind::ObjCMethod) {
+    callExpr << "self, selector";
+    hasAnyCallArg = true;
+  }
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    if (hasAnyCallArg) {
+      callExpr << ", ";
+    }
+    callExpr << "arg" << i;
+    hasAnyCallArg = true;
+  }
+  callExpr << ")";
+
+  if (returnType == "void") {
+    out << "  " << callExpr.str() << ";\n";
+  } else {
+    out << "  nativeResult = " << callExpr.str() << ";\n";
+    out << "  *reinterpret_cast<" << returnType
+        << "*>(rvalue) = nativeResult;\n";
+  }
+  if (hasCleanupArgs) {
+    out << "  cleanupManagedArgs();\n";
+  }
+  out << "  return true;\n";
+  out << "}\n\n";
+}
+
 void writeV8Wrapper(std::ostringstream& out, DispatchKind kind,
                     const std::string& wrapperName,
                     const MDSignature* signature) {
@@ -1533,6 +1699,8 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       preparedWrappersByKey;
   std::unordered_map<uint64_t, std::string> objcNapiEntries;
   std::unordered_map<uint64_t, std::string> cFunctionNapiEntries;
+  std::unordered_map<uint64_t, std::string> objcEngineDirectEntries;
+  std::unordered_map<uint64_t, std::string> cFunctionEngineDirectEntries;
   std::unordered_map<uint64_t, std::string> objcV8Entries;
   std::unordered_map<uint64_t, std::string> cFunctionV8Entries;
   std::unordered_map<uint64_t, std::string> blockPreparedEntries;
@@ -1565,6 +1733,8 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       collidedDispatchIds.insert(dispatchId);
       objcNapiEntries.erase(dispatchId);
       cFunctionNapiEntries.erase(dispatchId);
+      objcEngineDirectEntries.erase(dispatchId);
+      cFunctionEngineDirectEntries.erase(dispatchId);
       objcV8Entries.erase(dispatchId);
       cFunctionV8Entries.erase(dispatchId);
       blockPreparedEntries.erase(dispatchId);
@@ -1584,10 +1754,12 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
     if (use.kind == DispatchKind::ObjCMethod) {
       wrappersByKey.emplace(wrapperKey, std::make_pair(use.kind, signature));
       objcNapiEntries.emplace(dispatchId, wrapperKey);
+      objcEngineDirectEntries.emplace(dispatchId, wrapperKey);
       objcV8Entries.emplace(dispatchId, wrapperKey);
     } else if (use.kind == DispatchKind::CFunction) {
       wrappersByKey.emplace(wrapperKey, std::make_pair(use.kind, signature));
       cFunctionNapiEntries.emplace(dispatchId, wrapperKey);
+      cFunctionEngineDirectEntries.emplace(dispatchId, wrapperKey);
       cFunctionV8Entries.emplace(dispatchId, wrapperKey);
     } else if (use.kind == DispatchKind::BlockInvoke) {
       preparedWrappersByKey.emplace(wrapperKey,
@@ -1629,6 +1801,16 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
         makeV8WrapperName(wrapper.second.first, v8WrapperIndex++));
   }
 
+  std::unordered_map<std::string, std::string> engineDirectWrapperNameByKey;
+  engineDirectWrapperNameByKey.reserve(wrappers.size());
+  size_t engineDirectWrapperIndex = 0;
+  for (const auto& wrapper : wrappers) {
+    engineDirectWrapperNameByKey.emplace(
+        wrapper.first,
+        makeEngineDirectWrapperName(wrapper.second.first,
+                                    engineDirectWrapperIndex++));
+  }
+
   std::unordered_map<std::string, std::string> preparedWrapperNameByKey;
   preparedWrapperNameByKey.reserve(preparedWrappers.size());
   size_t preparedWrapperIndex = 0;
@@ -1649,6 +1831,23 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   std::sort(
       sortedCFunctionNapiEntries.begin(), sortedCFunctionNapiEntries.end(),
       [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
+
+  std::vector<std::pair<uint64_t, std::string>> sortedObjCEngineDirectEntries(
+      objcEngineDirectEntries.begin(), objcEngineDirectEntries.end());
+  std::sort(sortedObjCEngineDirectEntries.begin(),
+            sortedObjCEngineDirectEntries.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
+
+  std::vector<std::pair<uint64_t, std::string>>
+      sortedCFunctionEngineDirectEntries(cFunctionEngineDirectEntries.begin(),
+                                         cFunctionEngineDirectEntries.end());
+  std::sort(sortedCFunctionEngineDirectEntries.begin(),
+            sortedCFunctionEngineDirectEntries.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
 
   std::vector<std::pair<uint64_t, std::string>> sortedObjCV8Entries(
       objcV8Entries.begin(), objcV8Entries.end());
@@ -1671,7 +1870,8 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   std::ostringstream generated;
   generated << "#ifndef NS_GENERATED_SIGNATURE_DISPATCH_INC\n";
   generated << "#define NS_GENERATED_SIGNATURE_DISPATCH_INC\n\n";
-  generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI\n";
+  generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI || "
+               "NS_GSD_BACKEND_ENGINE_DIRECT\n";
   generated << "#undef NS_HAS_GENERATED_SIGNATURE_DISPATCH\n";
   generated << "#define NS_HAS_GENERATED_SIGNATURE_DISPATCH 1\n";
   generated << "#endif\n";
@@ -1682,10 +1882,15 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "#if NS_GSD_BACKEND_V8\n";
   generated << "#undef NS_HAS_GENERATED_SIGNATURE_V8_DISPATCH\n";
   generated << "#define NS_HAS_GENERATED_SIGNATURE_V8_DISPATCH 1\n";
+  generated << "#endif\n";
+  generated << "#if NS_GSD_BACKEND_ENGINE_DIRECT\n";
+  generated << "#undef NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH\n";
+  generated << "#define NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH 1\n";
   generated << "#endif\n\n";
   generated << "namespace nativescript {\n\n";
 
-  generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI\n";
+  generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI || "
+               "NS_GSD_BACKEND_ENGINE_DIRECT\n";
   for (const auto& wrapper : preparedWrappers) {
     writePreparedWrapper(generated, wrapper.second.first,
                          preparedWrapperNameByKey.at(wrapper.first),
@@ -1700,6 +1905,27 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   }
   generated << "#endif\n\n";
 
+  generated << "#if NS_GSD_BACKEND_ENGINE_DIRECT\n";
+  generated << "#if NS_GSD_BACKEND_JSC\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
+               "TryFastConvertJSCArgument\n";
+  generated << "#elif NS_GSD_BACKEND_QUICKJS\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
+               "TryFastConvertQuickJSArgument\n";
+  generated << "#elif NS_GSD_BACKEND_HERMES\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
+               "TryFastConvertHermesArgument\n";
+  generated << "#else\n";
+  generated << "#error \"No generated signature engine-direct converter selected\"\n";
+  generated << "#endif\n";
+  for (const auto& wrapper : wrappers) {
+    writeEngineDirectWrapper(generated, wrapper.second.first,
+                             engineDirectWrapperNameByKey.at(wrapper.first),
+                             wrapper.second.second);
+  }
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT\n";
+  generated << "#endif\n\n";
+
   generated << "#if NS_GSD_BACKEND_V8\n";
   for (const auto& wrapper : wrappers) {
     writeV8Wrapper(generated, wrapper.second.first,
@@ -1707,7 +1933,8 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   }
   generated << "#endif\n\n";
 
-  generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI\n";
+  generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI || "
+               "NS_GSD_BACKEND_ENGINE_DIRECT\n";
   generated << "inline constexpr ObjCDispatchEntry "
                "kGeneratedObjCDispatchEntries[] = {\n";
   generated << "    {0, nullptr},\n";
@@ -1726,6 +1953,26 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
               << preparedWrapperNameByKey.at(entry.second) << "},\n";
   }
   generated << "};\n\n";
+  generated << "#endif\n\n";
+
+  generated << "#if NS_GSD_BACKEND_ENGINE_DIRECT\n";
+  generated << "inline constexpr ObjCEngineDirectDispatchEntry "
+               "kGeneratedObjCEngineDirectDispatchEntries[] = {\n";
+  generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedObjCEngineDirectEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << engineDirectWrapperNameByKey.at(entry.second) << "},\n";
+  }
+  generated << "};\n\n";
+
+  generated << "inline constexpr CFunctionEngineDirectDispatchEntry "
+               "kGeneratedCFunctionEngineDirectDispatchEntries[] = {\n";
+  generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedCFunctionEngineDirectEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << engineDirectWrapperNameByKey.at(entry.second) << "},\n";
+  }
+  generated << "};\n";
   generated << "#endif\n\n";
 
   generated << "#if NS_GSD_BACKEND_NAPI\n";

@@ -320,7 +320,7 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
     *didInvoke = false;
   }
 
-  if (cif == nullptr || cif->signatureHash == 0 || cif->skipGeneratedNapiDispatch) {
+  if (cif == nullptr || cif->signatureHash == 0) {
     return true;
   }
 
@@ -344,6 +344,8 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
           reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
       descriptor->napiInvoker =
           reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
+      descriptor->engineDirectInvoker =
+          reinterpret_cast<void*>(lookupObjCEngineDirectInvoker(descriptor->dispatchId));
 #ifdef TARGET_ENGINE_V8
       descriptor->v8Invoker = reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
 #endif
@@ -351,16 +353,27 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
     }
   }
 
-  auto invoker = descriptor != nullptr
-                     ? reinterpret_cast<ObjCNapiInvoker>(descriptor->napiInvoker)
-                     : lookupObjCNapiInvoker(composeSignatureDispatchId(
-                           cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags));
-  if (invoker == nullptr) {
+  ObjCEngineDirectInvoker engineInvoker =
+      descriptor != nullptr
+          ? reinterpret_cast<ObjCEngineDirectInvoker>(descriptor->engineDirectInvoker)
+          : lookupObjCEngineDirectInvoker(composeSignatureDispatchId(
+                cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags));
+  ObjCNapiInvoker invoker =
+      engineInvoker == nullptr && !cif->skipGeneratedNapiDispatch
+          ? (descriptor != nullptr
+                 ? reinterpret_cast<ObjCNapiInvoker>(descriptor->napiInvoker)
+                 : lookupObjCNapiInvoker(composeSignatureDispatchId(
+                       cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags)))
+          : nullptr;
+  if (engineInvoker == nullptr && invoker == nullptr) {
     return true;
   }
 
   @try {
-    if (!invoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue)) {
+    bool invoked = engineInvoker != nullptr
+                       ? engineInvoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue)
+                       : invoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue);
+    if (!invoked) {
       return false;
     }
   } @catch (NSException* exception) {
@@ -419,6 +432,8 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
               reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
           descriptor->napiInvoker =
               reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
+          descriptor->engineDirectInvoker =
+              reinterpret_cast<void*>(lookupObjCEngineDirectInvoker(descriptor->dispatchId));
 #ifdef TARGET_ENGINE_V8
           descriptor->v8Invoker =
               reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
@@ -1675,7 +1690,13 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
       }
     }
 
-    return cif->returnType->toJS(env, nativeResult, method->returnOwned ? kReturnOwned : 0);
+    napi_value fastResult = nullptr;
+    if (TryFastConvertEngineReturnValue(env, cif->returnType->kind,
+                                        nativeResult, &fastResult)) {
+      return fastResult;
+    }
+    return cif->returnType->toJS(env, nativeResult,
+                                 method->returnOwned ? kReturnOwned : 0);
   };
 
   bool usesBlockFallback = false;
@@ -1867,6 +1888,11 @@ napi_value ObjCClassMember::jsGetterDirect(napi_env env, ObjCClassMember* method
                                           method->returnOwned ? kOwnedObject : kUnownedObject);
   }
 
+  napi_value fastResult = nullptr;
+  if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
+                                      &fastResult)) {
+    return fastResult;
+  }
   return cif->returnType->toJS(env, rvalue, 0);
 }
 

@@ -33,6 +33,7 @@ class MethodDescriptor {
   uint64_t dispatchId = 0;
   void* preparedInvoker = nullptr;
   void* napiInvoker = nullptr;
+  void* engineDirectInvoker = nullptr;
   void* v8Invoker = nullptr;
   bool nserrorOutSignatureCached = false;
   bool nserrorOutSignature = false;

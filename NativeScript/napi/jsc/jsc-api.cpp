@@ -2110,6 +2110,28 @@ napi_status napi_unwrap(napi_env env, napi_value js_object, void** result) {
   return napi_ok;
 }
 
+extern "C" bool nativescript_jsc_try_unwrap_native(napi_env env,
+                                                   napi_value value,
+                                                   void** result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  *result = nullptr;
+  if (!IsJSObjectValue(env, value)) {
+    return false;
+  }
+
+  WrapperInfo* info{};
+  if (WrapperInfo::Unwrap(env, value, &info) != napi_ok ||
+      info == nullptr || info->Data() == nullptr) {
+    return false;
+  }
+
+  *result = info->Data();
+  return true;
+}
+
 napi_status napi_remove_wrap(napi_env env, napi_value js_object,
                              void** result) {
   CHECK_ENV(env);

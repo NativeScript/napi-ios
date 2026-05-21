@@ -72,6 +72,48 @@ bool TryFastConvertV8ReturnValue(napi_env env, MDTypeKind kind,
                                  v8::Local<v8::Value>* result);
 #endif
 
+#ifdef TARGET_ENGINE_JSC
+// JSC-only conversion used by generated dispatch wrappers. The value is the
+// JavaScriptCore JSValueRef carried through the fast-native callback, not a
+// value copied through napi_get_cb_info.
+bool TryFastConvertJSCArgument(napi_env env, MDTypeKind kind, napi_value value,
+                               void* result);
+bool TryFastConvertJSCReturnValue(napi_env env, MDTypeKind kind,
+                                  const void* value, napi_value* result);
+#endif
+
+#ifdef TARGET_ENGINE_QUICKJS
+// QuickJS-only conversion used by generated dispatch wrappers. The value is
+// the raw JSValue slot passed to the QuickJS C callback.
+bool TryFastConvertQuickJSArgument(napi_env env, MDTypeKind kind,
+                                   napi_value value, void* result);
+bool TryFastConvertQuickJSReturnValue(napi_env env, MDTypeKind kind,
+                                      const void* value, napi_value* result);
+#endif
+
+#ifdef TARGET_ENGINE_HERMES
+// Hermes-only conversion used by generated dispatch wrappers. The value points
+// at the PinnedHermesValue slot supplied by Hermes' native trampoline.
+bool TryFastConvertHermesArgument(napi_env env, MDTypeKind kind,
+                                  napi_value value, void* result);
+bool TryFastConvertHermesReturnValue(napi_env env, MDTypeKind kind,
+                                     const void* value, napi_value* result);
+#endif
+
+inline bool TryFastConvertEngineReturnValue(napi_env env, MDTypeKind kind,
+                                            const void* value,
+                                            napi_value* result) {
+#ifdef TARGET_ENGINE_JSC
+  return TryFastConvertJSCReturnValue(env, kind, value, result);
+#elif defined(TARGET_ENGINE_QUICKJS)
+  return TryFastConvertQuickJSReturnValue(env, kind, value, result);
+#elif defined(TARGET_ENGINE_HERMES)
+  return TryFastConvertHermesReturnValue(env, kind, value, result);
+#else
+  return false;
+#endif
+}
+
 // Cleanup function to clear thread-local struct type caches
 void clearStructTypeCaches();
 

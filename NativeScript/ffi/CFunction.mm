@@ -183,6 +183,7 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
       function->dispatchId = 0;
       function->preparedInvoker = nullptr;
       function->napiInvoker = nullptr;
+      function->engineDirectInvoker = nullptr;
       function->v8Invoker = nullptr;
     }
     return;
@@ -199,6 +200,8 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
   function->preparedInvoker =
       reinterpret_cast<void*>(lookupCFunctionPreparedInvoker(function->dispatchId));
   function->napiInvoker = reinterpret_cast<void*>(lookupCFunctionNapiInvoker(function->dispatchId));
+  function->engineDirectInvoker =
+      reinterpret_cast<void*>(lookupCFunctionEngineDirectInvoker(function->dispatchId));
 #ifdef TARGET_ENGINE_V8
   function->v8Invoker = reinterpret_cast<void*>(lookupCFunctionV8Invoker(function->dispatchId));
 #endif
@@ -309,6 +312,8 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
   ensureCFunctionDispatchLookup(func, cif);
   auto preparedInvoker = reinterpret_cast<CFunctionPreparedInvoker>(func->preparedInvoker);
   auto napiInvoker = reinterpret_cast<CFunctionNapiInvoker>(func->napiInvoker);
+  auto engineDirectInvoker =
+      reinterpret_cast<CFunctionEngineDirectInvoker>(func->engineDirectInvoker);
 
   MDFunctionFlag functionFlags =
       bridgeState->metadata->getFunctionFlag(offset + sizeof(MDSectionOffset) * 2);
@@ -337,9 +342,14 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
   const bool isMainEntrypoint =
       strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0;
 
-  if (napiInvoker != nullptr && !cif->skipGeneratedNapiDispatch && !isMainEntrypoint) {
+  if ((engineDirectInvoker != nullptr ||
+       (napiInvoker != nullptr && !cif->skipGeneratedNapiDispatch)) &&
+      !isMainEntrypoint) {
     @try {
-      if (!napiInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue)) {
+      bool invoked = engineDirectInvoker != nullptr
+                         ? engineDirectInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue)
+                         : napiInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue);
+      if (!invoked) {
         return nullptr;
       }
     } @catch (NSException* exception) {
@@ -350,6 +360,11 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
       return nullptr;
     }
 
+    napi_value fastResult = nullptr;
+    if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, cif->rvalue,
+                                        &fastResult)) {
+      return fastResult;
+    }
     return cif->returnType->toJS(env, cif->rvalue, toJSFlags);
   }
 
@@ -431,6 +446,11 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
     }
   }
 
+  napi_value fastResult = nullptr;
+  if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
+                                      &fastResult)) {
+    return fastResult;
+  }
   return cif->returnType->toJS(env, rvalue, toJSFlags);
 }
 

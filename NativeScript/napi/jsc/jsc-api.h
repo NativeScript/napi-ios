@@ -15,6 +15,10 @@
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 
+extern "C" bool nativescript_jsc_try_unwrap_native(napi_env env,
+                                                   napi_value value,
+                                                   void** result);
+
 struct napi_env__ {
   JSGlobalContextRef context{};
   JSValueRef last_exception{};
