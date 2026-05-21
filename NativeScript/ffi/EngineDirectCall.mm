@@ -93,6 +93,204 @@ class CifReturnStorage {
   void* data_ = nullptr;
 };
 
+inline size_t alignUpSize(size_t value, size_t alignment) {
+  if (alignment == 0) {
+    return value;
+  }
+  return ((value + alignment - 1) / alignment) * alignment;
+}
+
+size_t getCifArgumentStorageSize(Cif* cif, unsigned int argumentIndex,
+                                 unsigned int implicitArgumentCount) {
+  if (cif == nullptr || cif->cif.arg_types == nullptr) {
+    return sizeof(void*);
+  }
+
+  const unsigned int ffiIndex = argumentIndex + implicitArgumentCount;
+  if (ffiIndex >= cif->cif.nargs) {
+    return sizeof(void*);
+  }
+
+  ffi_type* ffiArgType = cif->cif.arg_types[ffiIndex];
+  size_t storageSize = ffiArgType != nullptr ? ffiArgType->size : 0;
+  return storageSize != 0 ? storageSize : sizeof(void*);
+}
+
+size_t getCifArgumentStorageAlign(Cif* cif, unsigned int argumentIndex,
+                                  unsigned int implicitArgumentCount) {
+  if (cif == nullptr || cif->cif.arg_types == nullptr) {
+    return alignof(void*);
+  }
+
+  const unsigned int ffiIndex = argumentIndex + implicitArgumentCount;
+  if (ffiIndex >= cif->cif.nargs) {
+    return alignof(void*);
+  }
+
+  ffi_type* ffiArgType = cif->cif.arg_types[ffiIndex];
+  size_t alignment = ffiArgType != nullptr ? ffiArgType->alignment : 0;
+  return alignment != 0 ? alignment : alignof(void*);
+}
+
+class EngineDirectArgumentStorage {
+ public:
+  EngineDirectArgumentStorage(Cif* cif, unsigned int implicitArgumentCount) {
+    if (cif == nullptr || cif->argc == 0) {
+      return;
+    }
+
+    count_ = cif->argc;
+    if (count_ <= kInlineArgCount) {
+      buffers_ = inlineBuffers_;
+    } else {
+      heapBuffers_.resize(count_, nullptr);
+      buffers_ = heapBuffers_.data();
+    }
+
+    size_t totalSize = 0;
+    for (unsigned int i = 0; i < count_; i++) {
+      const size_t storageAlign =
+          getCifArgumentStorageAlign(cif, i, implicitArgumentCount);
+      const size_t storageSize =
+          getCifArgumentStorageSize(cif, i, implicitArgumentCount);
+      totalSize = alignUpSize(totalSize, storageAlign);
+      totalSize += storageSize;
+    }
+
+    if (totalSize == 0) {
+      totalSize = sizeof(void*);
+    }
+
+    storageBase_ = totalSize <= kInlineStorageSize
+                       ? static_cast<void*>(inlineStorage_)
+                       : std::malloc(totalSize);
+    if (storageBase_ == nullptr) {
+      valid_ = false;
+      return;
+    }
+
+    std::memset(storageBase_, 0, totalSize);
+
+    size_t offset = 0;
+    for (unsigned int i = 0; i < count_; i++) {
+      const size_t storageAlign =
+          getCifArgumentStorageAlign(cif, i, implicitArgumentCount);
+      const size_t storageSize =
+          getCifArgumentStorageSize(cif, i, implicitArgumentCount);
+      offset = alignUpSize(offset, storageAlign);
+      buffers_[i] =
+          static_cast<void*>(static_cast<unsigned char*>(storageBase_) + offset);
+      offset += storageSize;
+    }
+  }
+
+  ~EngineDirectArgumentStorage() {
+    if (storageBase_ != nullptr && storageBase_ != inlineStorage_) {
+      std::free(storageBase_);
+    }
+  }
+
+  bool valid() const { return valid_; }
+
+  void* at(unsigned int index) const {
+    return index < count_ ? buffers_[index] : nullptr;
+  }
+
+ private:
+  static constexpr unsigned int kInlineArgCount = 16;
+  static constexpr size_t kInlineStorageSize = 256;
+  alignas(max_align_t) unsigned char inlineStorage_[kInlineStorageSize];
+  void* inlineBuffers_[kInlineArgCount] = {};
+  std::vector<void*> heapBuffers_;
+  void** buffers_ = inlineBuffers_;
+  unsigned int count_ = 0;
+  void* storageBase_ = nullptr;
+  bool valid_ = true;
+};
+
+void reportNativeException(napi_env env, NSException* exception) {
+  std::string message = exception.description.UTF8String;
+  NativeScriptException nativeScriptException(message);
+  nativeScriptException.ReThrowToJS(env);
+}
+
+const napi_value* prepareDynamicInvocationArgs(napi_env env, Cif* cif,
+                                               size_t actualArgc,
+                                               const napi_value* rawArgs,
+                                               napi_value* stackArgs,
+                                               size_t stackCapacity,
+                                               std::vector<napi_value>* heapArgs) {
+  if (cif == nullptr || cif->argc == 0) {
+    return nullptr;
+  }
+
+  if (actualArgc == cif->argc && rawArgs != nullptr) {
+    return rawArgs;
+  }
+
+  napi_value jsUndefined = nullptr;
+  napi_get_undefined(env, &jsUndefined);
+
+  napi_value* paddedArgs = stackArgs;
+  if (cif->argc > stackCapacity) {
+    heapArgs->assign(cif->argc, jsUndefined);
+    paddedArgs = heapArgs->data();
+  } else {
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      paddedArgs[i] = jsUndefined;
+    }
+  }
+
+  const size_t copyArgc = std::min(actualArgc, static_cast<size_t>(cif->argc));
+  if (copyArgc > 0 && rawArgs != nullptr) {
+    std::memcpy(paddedArgs, rawArgs, copyArgc * sizeof(napi_value));
+  }
+  return paddedArgs;
+}
+
+void freeObjCConvertedArguments(napi_env env, Cif* cif, void** avalues,
+                                bool* shouldFree, bool shouldFreeAny) {
+  if (!shouldFreeAny || cif == nullptr || avalues == nullptr ||
+      shouldFree == nullptr) {
+    return;
+  }
+
+  for (unsigned int i = 0; i < cif->argc; i++) {
+    if (shouldFree[i]) {
+      cif->argTypes[i]->free(env, *static_cast<void**>(avalues[i + 2]));
+    }
+  }
+}
+
+void freeCFunctionConvertedArguments(napi_env env, Cif* cif, void** avalues,
+                                     bool* shouldFree, bool shouldFreeAny,
+                                     void* rvalue) {
+  if (!shouldFreeAny || cif == nullptr || avalues == nullptr ||
+      shouldFree == nullptr) {
+    return;
+  }
+
+  void* returnPointerValue = nullptr;
+  const bool returnIsPointer =
+      cif->returnType != nullptr && cif->returnType->type == &ffi_type_pointer;
+  if (returnIsPointer && rvalue != nullptr) {
+    returnPointerValue = *static_cast<void**>(rvalue);
+  }
+
+  for (unsigned int i = 0; i < cif->argc; i++) {
+    if (!shouldFree[i]) {
+      continue;
+    }
+    if (returnPointerValue != nullptr && avalues[i] != nullptr) {
+      void* argPointerValue = *static_cast<void**>(avalues[i]);
+      if (argPointerValue == returnPointerValue) {
+        continue;
+      }
+    }
+    cif->argTypes[i]->free(env, *static_cast<void**>(avalues[i]));
+  }
+}
+
 inline bool selectorEndsWith(SEL selector, const char* suffix) {
   if (selector == nullptr || suffix == nullptr) {
     return false;
@@ -484,6 +682,196 @@ bool isCompatOrMainCFunction(ObjCBridgeState* bridgeState, MDSectionOffset offse
 
 }  // namespace
 
+bool InvokeObjCMemberEngineDirectDynamic(napi_env env, Cif* cif, id self,
+                                         bool receiverIsClass,
+                                         MethodDescriptor* descriptor,
+                                         uint8_t dispatchFlags,
+                                         size_t actualArgc,
+                                         const napi_value* rawArgs,
+                                         void* rvalue) {
+  if (env == nullptr || cif == nullptr || self == nil ||
+      descriptor == nullptr || rvalue == nullptr || cif->isVariadic) {
+    return false;
+  }
+
+  Class receiverClass = receiverIsClass ? static_cast<Class>(self)
+                                        : object_getClass(self);
+  if (receiverClassRequiresSuperCall(receiverClass)) {
+    return false;
+  }
+
+  napi_value stackPaddedArgs[16];
+  std::vector<napi_value> heapPaddedArgs;
+  const napi_value* invocationArgs = prepareDynamicInvocationArgs(
+      env, cif, actualArgc, rawArgs, stackPaddedArgs, 16, &heapPaddedArgs);
+
+  EngineDirectArgumentStorage argStorage(cif, 2);
+  if (!argStorage.valid()) {
+    napi_throw_error(env, "NativeScriptException",
+                     "Unable to allocate argument storage for Objective-C call.");
+    return false;
+  }
+
+  void* stackAvalues[32];
+  std::vector<void*> heapAvalues;
+  void** avalues = stackAvalues;
+  if (cif->cif.nargs > 32) {
+    heapAvalues.resize(cif->cif.nargs);
+    avalues = heapAvalues.data();
+  }
+
+  SEL selector = descriptor->selector;
+  avalues[0] = static_cast<void*>(&self);
+  avalues[1] = static_cast<void*>(&selector);
+
+  bool stackShouldFree[16] = {};
+  std::vector<uint8_t> heapShouldFree;
+  if (cif->argc > 16) {
+    heapShouldFree.assign(cif->argc, 0);
+  }
+
+  bool shouldFreeAny = false;
+  for (unsigned int i = 0; i < cif->argc; i++) {
+    bool shouldFreeArg = false;
+    avalues[i + 2] = argStorage.at(i);
+    if (!TryFastConvertEngineArgument(env, cif->argTypes[i]->kind,
+                                      invocationArgs[i], avalues[i + 2])) {
+      cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i + 2],
+                                 &shouldFreeArg, &shouldFreeAny);
+    }
+    if (cif->argc > 16) {
+      heapShouldFree[i] = shouldFreeArg ? 1 : 0;
+    } else {
+      stackShouldFree[i] = shouldFreeArg;
+    }
+  }
+
+  bool didInvoke = false;
+  @try {
+    auto preparedInvoker =
+        reinterpret_cast<ObjCPreparedInvoker>(descriptor->preparedInvoker);
+    if (preparedInvoker != nullptr) {
+      preparedInvoker(reinterpret_cast<void*>(objc_msgSend), avalues, rvalue);
+    } else {
+#if defined(__x86_64__)
+      const bool isStret =
+          cif->returnType != nullptr && cif->returnType->type != nullptr &&
+          cif->returnType->type->size > 16 &&
+          cif->returnType->type->type == FFI_TYPE_STRUCT;
+      ffi_call(&cif->cif,
+               isStret ? FFI_FN(objc_msgSend_stret) : FFI_FN(objc_msgSend),
+               rvalue, avalues);
+#else
+      ffi_call(&cif->cif, FFI_FN(objc_msgSend), rvalue, avalues);
+#endif
+    }
+    didInvoke = true;
+  } @catch (NSException* exception) {
+    reportNativeException(env, exception);
+  }
+
+  if (cif->argc > 16 && shouldFreeAny) {
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      if (heapShouldFree[i] != 0) {
+        cif->argTypes[i]->free(env, *static_cast<void**>(avalues[i + 2]));
+      }
+    }
+  } else {
+    freeObjCConvertedArguments(env, cif, avalues, stackShouldFree,
+                               shouldFreeAny);
+  }
+
+  return didInvoke;
+}
+
+bool InvokeCFunctionEngineDirectDynamic(napi_env env, CFunction* function,
+                                        Cif* cif, size_t actualArgc,
+                                        const napi_value* rawArgs,
+                                        void* rvalue) {
+  if (env == nullptr || function == nullptr || cif == nullptr ||
+      function->fnptr == nullptr || rvalue == nullptr || cif->isVariadic) {
+    return false;
+  }
+
+  napi_value stackPaddedArgs[16];
+  std::vector<napi_value> heapPaddedArgs;
+  const napi_value* invocationArgs = prepareDynamicInvocationArgs(
+      env, cif, actualArgc, rawArgs, stackPaddedArgs, 16, &heapPaddedArgs);
+
+  void* stackAvalues[16];
+  std::vector<void*> heapAvalues;
+  void** avalues = stackAvalues;
+  if (cif->argc > 16) {
+    heapAvalues.resize(cif->argc);
+    avalues = heapAvalues.data();
+  }
+
+  bool stackShouldFree[16] = {};
+  std::vector<uint8_t> heapShouldFree;
+  if (cif->argc > 16) {
+    heapShouldFree.reserve(cif->argc);
+  }
+  bool shouldFreeAny = false;
+
+  for (unsigned int i = 0; i < cif->argc; i++) {
+    bool shouldFreeArg = false;
+    avalues[i] = cif->avalues[i];
+    if (!TryFastConvertEngineArgument(env, cif->argTypes[i]->kind,
+                                      invocationArgs[i], avalues[i])) {
+      cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i],
+                                 &shouldFreeArg, &shouldFreeAny);
+    }
+    if (cif->argc > 16) {
+      heapShouldFree.push_back(shouldFreeArg ? 1 : 0);
+    } else {
+      stackShouldFree[i] = shouldFreeArg;
+    }
+  }
+
+  bool didInvoke = false;
+  @try {
+    auto preparedInvoker =
+        reinterpret_cast<CFunctionPreparedInvoker>(function->preparedInvoker);
+    if (preparedInvoker != nullptr) {
+      preparedInvoker(function->fnptr, avalues, rvalue);
+    } else {
+      ffi_call(&cif->cif, FFI_FN(function->fnptr), rvalue, avalues);
+    }
+    didInvoke = true;
+  } @catch (NSException* exception) {
+    reportNativeException(env, exception);
+  }
+
+  if (cif->argc > 16) {
+    if (shouldFreeAny) {
+      void* returnPointerValue = nullptr;
+      const bool returnIsPointer =
+          cif->returnType != nullptr &&
+          cif->returnType->type == &ffi_type_pointer;
+      if (returnIsPointer && rvalue != nullptr) {
+        returnPointerValue = *static_cast<void**>(rvalue);
+      }
+      for (unsigned int i = 0; i < cif->argc; i++) {
+        if (heapShouldFree[i] == 0) {
+          continue;
+        }
+        if (returnPointerValue != nullptr && avalues[i] != nullptr) {
+          void* argPointerValue = *static_cast<void**>(avalues[i]);
+          if (argPointerValue == returnPointerValue) {
+            continue;
+          }
+        }
+        cif->argTypes[i]->free(env, *static_cast<void**>(avalues[i]));
+      }
+    }
+  } else {
+    freeCFunctionConvertedArguments(env, cif, avalues, stackShouldFree,
+                                    shouldFreeAny, rvalue);
+  }
+
+  return didInvoke;
+}
+
 napi_value TryCallObjCMemberEngineDirect(napi_env env, ObjCClassMember* member,
                                          napi_value jsThis, size_t actualArgc,
                                          const napi_value* rawArgs,
@@ -559,9 +947,6 @@ napi_value TryCallObjCMemberEngineDirect(napi_env env, ObjCClassMember* member,
 
   ObjCEngineDirectInvoker invoker =
       ensureObjCEngineDirectInvoker(cif, descriptor, descriptor->dispatchFlags);
-  if (invoker == nullptr) {
-    return nullptr;
-  }
 
   std::vector<napi_value> paddedArgs;
   const napi_value* invocationArgs =
@@ -589,8 +974,14 @@ napi_value TryCallObjCMemberEngineDirect(napi_env env, ObjCClassMember* member,
   void* rvalue = rvalueStorage.get();
   bool didInvoke = false;
   @try {
-    didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
-                        descriptor->selector, invocationArgs, rvalue);
+    if (invoker != nullptr) {
+      didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
+                          descriptor->selector, invocationArgs, rvalue);
+    } else {
+      didInvoke = InvokeObjCMemberEngineDirectDynamic(
+          env, cif, self, receiverIsClass, descriptor, descriptor->dispatchFlags,
+          actualArgc, rawArgs, rvalue);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     NativeScriptException nativeScriptException(message);
@@ -628,9 +1019,6 @@ napi_value TryCallCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
 
   CFunctionEngineDirectInvoker invoker =
       ensureCFunctionEngineDirectInvoker(function, cif);
-  if (invoker == nullptr) {
-    return nullptr;
-  }
 
   std::vector<napi_value> paddedArgs;
   const napi_value* invocationArgs =
@@ -647,7 +1035,12 @@ napi_value TryCallCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
 
   bool didInvoke = false;
   @try {
-    didInvoke = invoker(env, cif, function->fnptr, invocationArgs, cif->rvalue);
+    if (invoker != nullptr) {
+      didInvoke = invoker(env, cif, function->fnptr, invocationArgs, cif->rvalue);
+    } else {
+      didInvoke = InvokeCFunctionEngineDirectDynamic(
+          env, function, cif, actualArgc, rawArgs, cif->rvalue);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     NativeScriptException nativeScriptException(message);

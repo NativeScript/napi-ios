@@ -113,6 +113,32 @@ bool TryFastConvertJSCReturnValue(napi_env env, MDTypeKind kind,
 // the raw JSValue slot passed to the QuickJS C callback.
 bool TryFastConvertQuickJSArgument(napi_env env, MDTypeKind kind,
                                    napi_value value, void* result);
+bool TryFastConvertQuickJSBoolArgument(napi_env env, napi_value value,
+                                       uint8_t* result);
+bool TryFastConvertQuickJSInt8Argument(napi_env env, napi_value value,
+                                       int8_t* result);
+bool TryFastConvertQuickJSUInt8Argument(napi_env env, napi_value value,
+                                        uint8_t* result);
+bool TryFastConvertQuickJSInt16Argument(napi_env env, napi_value value,
+                                        int16_t* result);
+bool TryFastConvertQuickJSUInt16Argument(napi_env env, napi_value value,
+                                         uint16_t* result);
+bool TryFastConvertQuickJSInt32Argument(napi_env env, napi_value value,
+                                        int32_t* result);
+bool TryFastConvertQuickJSUInt32Argument(napi_env env, napi_value value,
+                                         uint32_t* result);
+bool TryFastConvertQuickJSInt64Argument(napi_env env, napi_value value,
+                                        int64_t* result);
+bool TryFastConvertQuickJSUInt64Argument(napi_env env, napi_value value,
+                                         uint64_t* result);
+bool TryFastConvertQuickJSFloatArgument(napi_env env, napi_value value,
+                                        float* result);
+bool TryFastConvertQuickJSDoubleArgument(napi_env env, napi_value value,
+                                         double* result);
+bool TryFastConvertQuickJSSelectorArgument(napi_env env, napi_value value,
+                                           SEL* result);
+bool TryFastConvertQuickJSObjectArgument(napi_env env, MDTypeKind kind,
+                                         napi_value value, void* result);
 bool TryFastConvertQuickJSReturnValue(napi_env env, MDTypeKind kind,
                                       const void* value, napi_value* result);
 #endif
@@ -122,6 +148,32 @@ bool TryFastConvertQuickJSReturnValue(napi_env env, MDTypeKind kind,
 // at the PinnedHermesValue slot supplied by Hermes' native trampoline.
 bool TryFastConvertHermesArgument(napi_env env, MDTypeKind kind,
                                   napi_value value, void* result);
+bool TryFastConvertHermesBoolArgument(napi_env env, napi_value value,
+                                      uint8_t* result);
+bool TryFastConvertHermesInt8Argument(napi_env env, napi_value value,
+                                      int8_t* result);
+bool TryFastConvertHermesUInt8Argument(napi_env env, napi_value value,
+                                       uint8_t* result);
+bool TryFastConvertHermesInt16Argument(napi_env env, napi_value value,
+                                       int16_t* result);
+bool TryFastConvertHermesUInt16Argument(napi_env env, napi_value value,
+                                        uint16_t* result);
+bool TryFastConvertHermesInt32Argument(napi_env env, napi_value value,
+                                       int32_t* result);
+bool TryFastConvertHermesUInt32Argument(napi_env env, napi_value value,
+                                        uint32_t* result);
+bool TryFastConvertHermesInt64Argument(napi_env env, napi_value value,
+                                       int64_t* result);
+bool TryFastConvertHermesUInt64Argument(napi_env env, napi_value value,
+                                        uint64_t* result);
+bool TryFastConvertHermesFloatArgument(napi_env env, napi_value value,
+                                       float* result);
+bool TryFastConvertHermesDoubleArgument(napi_env env, napi_value value,
+                                        double* result);
+bool TryFastConvertHermesSelectorArgument(napi_env env, napi_value value,
+                                          SEL* result);
+bool TryFastConvertHermesObjectArgument(napi_env env, MDTypeKind kind,
+                                        napi_value value, void* result);
 bool TryFastConvertHermesReturnValue(napi_env env, MDTypeKind kind,
                                      const void* value, napi_value* result);
 #endif
@@ -135,6 +187,19 @@ inline bool TryFastConvertEngineReturnValue(napi_env env, MDTypeKind kind,
   return TryFastConvertQuickJSReturnValue(env, kind, value, result);
 #elif defined(TARGET_ENGINE_HERMES)
   return TryFastConvertHermesReturnValue(env, kind, value, result);
+#else
+  return false;
+#endif
+}
+
+inline bool TryFastConvertEngineArgument(napi_env env, MDTypeKind kind,
+                                         napi_value value, void* result) {
+#ifdef TARGET_ENGINE_JSC
+  return TryFastConvertJSCArgument(env, kind, value, result);
+#elif defined(TARGET_ENGINE_QUICKJS)
+  return TryFastConvertQuickJSArgument(env, kind, value, result);
+#elif defined(TARGET_ENGINE_HERMES)
+  return TryFastConvertHermesArgument(env, kind, value, result);
 #else
   return false;
 #endif

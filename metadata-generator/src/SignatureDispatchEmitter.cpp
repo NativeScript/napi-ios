@@ -2011,61 +2011,61 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "#elif NS_GSD_BACKEND_QUICKJS\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
                "TryFastConvertQuickJSArgument\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeBool, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeChar, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeUInt8, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeSShort, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeUShort, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeSInt, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeUInt, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeSInt64, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeUInt64, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeFloat, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeDouble, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT(env, value, result) "
-               "TryFastConvertQuickJSArgument(env, mdTypeSelector, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT(env, kind, value, result) "
-               "TryFastConvertQuickJSArgument(env, kind, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT "
+               "TryFastConvertQuickJSBoolArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT "
+               "TryFastConvertQuickJSInt8Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT "
+               "TryFastConvertQuickJSUInt8Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT "
+               "TryFastConvertQuickJSInt16Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT "
+               "TryFastConvertQuickJSUInt16Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT "
+               "TryFastConvertQuickJSInt32Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT "
+               "TryFastConvertQuickJSUInt32Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT "
+               "TryFastConvertQuickJSInt64Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT "
+               "TryFastConvertQuickJSUInt64Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT "
+               "TryFastConvertQuickJSFloatArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT "
+               "TryFastConvertQuickJSDoubleArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT "
+               "TryFastConvertQuickJSSelectorArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT "
+               "TryFastConvertQuickJSObjectArgument\n";
   generated << "#elif NS_GSD_BACKEND_HERMES\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
                "TryFastConvertHermesArgument\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeBool, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeChar, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeUInt8, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeSShort, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeUShort, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeSInt, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeUInt, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeSInt64, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeUInt64, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeFloat, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeDouble, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT(env, value, result) "
-               "TryFastConvertHermesArgument(env, mdTypeSelector, value, result)\n";
-  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT(env, kind, value, result) "
-               "TryFastConvertHermesArgument(env, kind, value, result)\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT "
+               "TryFastConvertHermesBoolArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT "
+               "TryFastConvertHermesInt8Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT "
+               "TryFastConvertHermesUInt8Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT "
+               "TryFastConvertHermesInt16Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT "
+               "TryFastConvertHermesUInt16Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT "
+               "TryFastConvertHermesInt32Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT "
+               "TryFastConvertHermesUInt32Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT "
+               "TryFastConvertHermesInt64Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT "
+               "TryFastConvertHermesUInt64Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT "
+               "TryFastConvertHermesFloatArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT "
+               "TryFastConvertHermesDoubleArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT "
+               "TryFastConvertHermesSelectorArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT "
+               "TryFastConvertHermesObjectArgument\n";
   generated << "#else\n";
   generated << "#error \"No generated signature engine-direct converter selected\"\n";
   generated << "#endif\n";

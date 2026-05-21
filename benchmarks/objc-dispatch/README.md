@@ -22,6 +22,10 @@ back to the dynamic prepared/`ffi_call` path. This keeps the comparison focused
 on the generated dispatch win instead of accidentally measuring a hand-written
 direct `objc_msgSend` fast path.
 
+For JSC, QuickJS, and Hermes builds, `gsd-off` follows the same rule: the
+engine-native callback and marshalling layer remains active, while only the
+generated typed invoker lookup is disabled.
+
 Examples:
 
 ```sh
@@ -36,8 +40,6 @@ Useful options:
 --legacy-repo /path/to/NativeScript/ios
 --destination "platform=iOS Simulator,id=<UDID>"
 --napi-package-tgz /path/to/nativescript-ios.tgz
---napi-v8-napi-backend-package-tgz /path/to/nativescript-ios-v8-napi-backend.tgz
 --iterations 250000
 --include-napi-gsd-off
---include-napi-v8-napi-backend
 ```

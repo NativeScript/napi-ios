@@ -952,13 +952,17 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
 #ifdef TARGET_ENGINE_V8
   napi_value result = object;
 #else
-  napi_value factory = get_ref_value(env, createNativeProxy);
-  napi_value transferOwnershipFunc = get_ref_value(env, this->transferOwnershipToNative);
-  napi_value result, global;
-  napi_value args[3] = {object, nullptr, transferOwnershipFunc};
-  napi_get_boolean(env, [nativeObject isKindOfClass:NSArray.class], &args[1]);
-  napi_get_global(env, &global);
-  napi_call_function(env, global, factory, 3, args, &result);
+  napi_value result = object;
+  const bool nativeIsArray = [nativeObject isKindOfClass:NSArray.class];
+  if (nativeIsArray) {
+    napi_value factory = get_ref_value(env, createNativeProxy);
+    napi_value transferOwnershipFunc = get_ref_value(env, this->transferOwnershipToNative);
+    napi_value global;
+    napi_value args[3] = {object, nullptr, transferOwnershipFunc};
+    napi_get_boolean(env, true, &args[1]);
+    napi_get_global(env, &global);
+    napi_call_function(env, global, factory, 3, args, &result);
+  }
 #endif
   napi_value nativePointer = Pointer::create(env, nativeObject);
   if (nativePointer != nullptr) {
