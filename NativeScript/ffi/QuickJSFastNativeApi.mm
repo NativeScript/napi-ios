@@ -133,6 +133,13 @@ bool tryFastUnwrapQuickJSNativeObject(napi_env env, JSValue jsValue,
   }
 
   *result = nullptr;
+  auto* directInfo = static_cast<QuickJSFastExternalInfo*>(
+      JS_GetOpaque(jsValue, env->runtime->napiObjectClassId));
+  if (directInfo != nullptr && directInfo->data != nullptr) {
+    *result = directInfo->data;
+    return true;
+  }
+
   JSPropertyDescriptor descriptor{};
   int wrapped = JS_GetOwnProperty(env->context, &descriptor, jsValue,
                                   env->atoms.napi_external);
@@ -148,21 +155,6 @@ bool tryFastUnwrapQuickJSNativeObject(napi_env env, JSValue jsValue,
 
   JS_FreeValue(env->context, descriptor.value);
   return *result != nullptr;
-}
-
-bool readPointerData(JSContext* context, JSValue value, void** result) {
-  if (result == nullptr) {
-    return false;
-  }
-
-  uint64_t raw = 0;
-  if (JS_ToBigUint64(context, &raw, value) != 0) {
-    *result = nullptr;
-    return false;
-  }
-
-  *result = reinterpret_cast<void*>(static_cast<uintptr_t>(raw));
-  return true;
 }
 
 class QuickJSFastReturnStorage {
@@ -809,17 +801,16 @@ bool tryCallQuickJSObjCEngineDirect(
 
   nativescript::MethodDescriptor* descriptor = nullptr;
   nativescript::Cif* cif = quickJSMemberCif(env, member, kind, &descriptor);
-  if (cif == nullptr || cif->isVariadic || cif->signatureHash == 0 ||
-      static_cast<unsigned int>(argc) != cif->argc ||
-      cif->returnType == nullptr) {
+  if (cif == nullptr || cif->isVariadic || cif->returnType == nullptr) {
     return false;
   }
 
-  auto invoker = ensureQuickJSObjCEngineDirectInvoker(
-      cif, descriptor, descriptor->dispatchFlags);
-  if (invoker == nullptr) {
-    return false;
-  }
+  const bool canUseGeneratedInvoker =
+      cif->signatureHash != 0 && static_cast<unsigned int>(argc) == cif->argc;
+  auto invoker = canUseGeneratedInvoker
+      ? ensureQuickJSObjCEngineDirectInvoker(
+            cif, descriptor, descriptor->dispatchFlags)
+      : nullptr;
 
   if (isQuickJSNSErrorOutSignature(descriptor, cif) ||
       isQuickJSBlockFallbackSelector(descriptor->selector)) {
@@ -845,8 +836,14 @@ bool tryCallQuickJSObjCEngineDirect(
   void* rvalue = rvalueStorage.get();
   bool didInvoke = false;
   @try {
-    didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
-                        descriptor->selector, argv, rvalue);
+    if (invoker != nullptr) {
+      didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
+                          descriptor->selector, argv, rvalue);
+    } else {
+      didInvoke = nativescript::InvokeObjCMemberEngineDirectDynamic(
+          env, cif, self, receiverIsClass, descriptor,
+          descriptor->dispatchFlags, static_cast<size_t>(argc), argv, rvalue);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     nativescript::NativeScriptException nativeScriptException(message);
@@ -878,19 +875,24 @@ bool tryCallQuickJSCFunctionEngineDirect(JSContext* context, napi_env env,
   auto* function = bridgeState->getCFunction(env, offset);
   auto* cif = function != nullptr ? function->cif : nullptr;
   if (function == nullptr || cif == nullptr || cif->isVariadic ||
-      cif->signatureHash == 0 || static_cast<unsigned int>(argc) != cif->argc ||
       cif->returnType == nullptr) {
     return false;
   }
 
-  auto invoker = ensureQuickJSCFunctionEngineDirectInvoker(function, cif);
-  if (invoker == nullptr) {
-    return false;
-  }
+  const bool canUseGeneratedInvoker =
+      cif->signatureHash != 0 && static_cast<unsigned int>(argc) == cif->argc;
+  auto invoker = canUseGeneratedInvoker
+      ? ensureQuickJSCFunctionEngineDirectInvoker(function, cif)
+      : nullptr;
 
   bool didInvoke = false;
   @try {
-    didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
+    if (invoker != nullptr) {
+      didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
+    } else {
+      didInvoke = nativescript::InvokeCFunctionEngineDirectDynamic(
+          env, function, cif, static_cast<size_t>(argc), argv, cif->rvalue);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     nativescript::NativeScriptException nativeScriptException(message);
@@ -910,8 +912,10 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
     return JS_UNDEFINED;
   }
 
-  void* data = nullptr;
-  if (!readPointerData(context, funcData[0], &data)) {
+  auto* externalInfo = static_cast<QuickJSFastExternalInfo*>(
+      JS_GetOpaque(funcData[0], env->runtime->externalClassId));
+  void* data = externalInfo != nullptr ? externalInfo->data : nullptr;
+  if (data == nullptr) {
     return JS_UNDEFINED;
   }
 
@@ -1041,9 +1045,33 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
   return returnValue;
 }
 
-JSValue makeFastFunction(JSContext* context, int kind, void* data) {
-  JSValue dataValue = JS_NewBigUint64(
-      context, static_cast<uint64_t>(reinterpret_cast<uintptr_t>(data)));
+JSValue makeFastFunction(napi_env env, int kind, void* data) {
+  if (env == nullptr || env->context == nullptr) {
+    return JS_EXCEPTION;
+  }
+
+  JSContext* context = env->context;
+  auto* externalInfo = static_cast<QuickJSFastExternalInfo*>(
+      mi_malloc(sizeof(QuickJSFastExternalInfo)));
+  if (externalInfo == nullptr) {
+    return JS_EXCEPTION;
+  }
+  externalInfo->data = data;
+  externalInfo->finalizeHint = nullptr;
+  externalInfo->finalizeCallback = nullptr;
+
+  JSValue dataValue =
+      JS_NewObjectClass(context, static_cast<int>(env->runtime->externalClassId));
+  if (JS_IsException(dataValue)) {
+    mi_free(externalInfo);
+    return JS_EXCEPTION;
+  }
+  if (JS_SetOpaque(dataValue, externalInfo) != 0) {
+    mi_free(externalInfo);
+    JS_FreeValue(context, dataValue);
+    return JS_EXCEPTION;
+  }
+
   JSValue functionValue =
       JS_NewCFunctionData(context, callFastNative, 0, kind, 1, &dataValue);
   JS_FreeValue(context, dataValue);
@@ -1123,6 +1151,16 @@ inline bool readQuickJSNumber(JSValue value, double* result) {
     return true;
   }
   return false;
+}
+
+inline bool readQuickJSFiniteNumber(JSValue value, double* result) {
+  if (!readQuickJSNumber(value, result)) {
+    return false;
+  }
+  if (std::isnan(*result) || std::isinf(*result)) {
+    *result = 0.0;
+  }
+  return true;
 }
 
 inline bool readQuickJSInt64(JSContext* context, JSValue value,
@@ -1251,6 +1289,13 @@ bool tryFastUnwrapQuickJSNativeObject(napi_env env, JSValue jsValue,
   }
 
   *result = nullptr;
+  auto* directInfo = static_cast<QuickJSFastExternalInfo*>(
+      JS_GetOpaque(jsValue, env->runtime->napiObjectClassId));
+  if (directInfo != nullptr && directInfo->data != nullptr) {
+    *result = directInfo->data;
+    return true;
+  }
+
   JSPropertyDescriptor descriptor{};
   int wrapped = JS_GetOwnProperty(env->context, &descriptor, jsValue,
                                   env->atoms.napi_external);
@@ -1342,125 +1387,216 @@ bool tryFastConvertQuickJSObjectArgument(napi_env env, MDTypeKind kind,
 
 }  // namespace
 
+bool TryFastConvertQuickJSBoolArgument(napi_env env, napi_value value,
+                                       uint8_t* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSValue jsValue = ToJSValue(value);
+  if (!JS_IsBool(jsValue)) {
+    return false;
+  }
+  *result = JS_VALUE_GET_BOOL(jsValue) ? static_cast<uint8_t>(1)
+                                       : static_cast<uint8_t>(0);
+  return true;
+}
+
+bool TryFastConvertQuickJSDoubleArgument(napi_env env, napi_value value,
+                                         double* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+  return readQuickJSFiniteNumber(ToJSValue(value), result);
+}
+
+bool TryFastConvertQuickJSFloatArgument(napi_env env, napi_value value,
+                                        float* result) {
+  double converted = 0.0;
+  if (!TryFastConvertQuickJSDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<float>(converted);
+  return true;
+}
+
+bool TryFastConvertQuickJSInt8Argument(napi_env env, napi_value value,
+                                       int8_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertQuickJSDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int8_t>(converted);
+  return true;
+}
+
+bool TryFastConvertQuickJSUInt8Argument(napi_env env, napi_value value,
+                                        uint8_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertQuickJSDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint8_t>(converted);
+  return true;
+}
+
+bool TryFastConvertQuickJSInt16Argument(napi_env env, napi_value value,
+                                        int16_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertQuickJSDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int16_t>(converted);
+  return true;
+}
+
+bool TryFastConvertQuickJSUInt16Argument(napi_env env, napi_value value,
+                                         uint16_t* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSValue jsValue = ToJSValue(value);
+  if (JS_IsString(jsValue)) {
+    size_t length = 0;
+    const char* str = JS_ToCStringLen(env->context, &length, jsValue);
+    if (str == nullptr) {
+      return false;
+    }
+    if (length != 1) {
+      JS_FreeCString(env->context, str);
+      napi_throw_type_error(env, nullptr, "Expected a single-character string.");
+      return false;
+    }
+    *result = static_cast<uint8_t>(str[0]);
+    JS_FreeCString(env->context, str);
+    return true;
+  }
+
+  double converted = 0.0;
+  if (!readQuickJSFiniteNumber(jsValue, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint16_t>(converted);
+  return true;
+}
+
+bool TryFastConvertQuickJSInt32Argument(napi_env env, napi_value value,
+                                        int32_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertQuickJSDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int32_t>(converted);
+  return true;
+}
+
+bool TryFastConvertQuickJSUInt32Argument(napi_env env, napi_value value,
+                                         uint32_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertQuickJSDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint32_t>(converted);
+  return true;
+}
+
+bool TryFastConvertQuickJSInt64Argument(napi_env env, napi_value value,
+                                        int64_t* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+  return readQuickJSInt64(env->context, ToJSValue(value), result);
+}
+
+bool TryFastConvertQuickJSUInt64Argument(napi_env env, napi_value value,
+                                         uint64_t* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+  return readQuickJSUInt64(env->context, ToJSValue(value), result);
+}
+
+bool TryFastConvertQuickJSSelectorArgument(napi_env env, napi_value value,
+                                           SEL* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  JSValue jsValue = ToJSValue(value);
+  if (JS_IsNull(jsValue) || JS_IsUndefined(jsValue)) {
+    *result = nullptr;
+    return true;
+  }
+  if (!JS_IsString(jsValue)) {
+    return false;
+  }
+
+  size_t length = 0;
+  const char* selectorName = JS_ToCStringLen(env->context, &length, jsValue);
+  if (selectorName == nullptr) {
+    return false;
+  }
+  *result = cachedSelectorForName(selectorName, length);
+  JS_FreeCString(env->context, selectorName);
+  return true;
+}
+
+bool TryFastConvertQuickJSObjectArgument(napi_env env, MDTypeKind kind,
+                                         napi_value value, void* result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+  return tryFastConvertQuickJSObjectArgument(env, kind, ToJSValue(value),
+                                             result);
+}
+
 bool TryFastConvertQuickJSArgument(napi_env env, MDTypeKind kind,
                                    napi_value value, void* result) {
   if (env == nullptr || value == nullptr || result == nullptr) {
     return false;
   }
 
-  JSContext* context = qjs_get_context(env);
-  if (context == nullptr) {
-    return false;
-  }
-
-  JSValue jsValue = ToJSValue(value);
   switch (kind) {
     case mdTypeBool:
-      if (!JS_IsBool(jsValue)) {
-        return false;
-      }
-      *reinterpret_cast<uint8_t*>(result) =
-          JS_VALUE_GET_BOOL(jsValue) ? static_cast<uint8_t>(1) : static_cast<uint8_t>(0);
-      return true;
-
+      return TryFastConvertQuickJSBoolArgument(
+          env, value, reinterpret_cast<uint8_t*>(result));
     case mdTypeChar:
+      return TryFastConvertQuickJSInt8Argument(
+          env, value, reinterpret_cast<int8_t*>(result));
     case mdTypeUChar:
     case mdTypeUInt8:
+      return TryFastConvertQuickJSUInt8Argument(
+          env, value, reinterpret_cast<uint8_t*>(result));
     case mdTypeSShort:
-    case mdTypeSInt:
-    case mdTypeUInt:
-    case mdTypeFloat:
-    case mdTypeDouble: {
-      double converted = 0.0;
-      if (!readQuickJSNumber(jsValue, &converted)) {
-        return false;
-      }
-      if (std::isnan(converted) || std::isinf(converted)) {
-        converted = 0.0;
-      }
-      switch (kind) {
-        case mdTypeChar:
-          *reinterpret_cast<int8_t*>(result) = static_cast<int8_t>(converted);
-          break;
-        case mdTypeUChar:
-        case mdTypeUInt8:
-          *reinterpret_cast<uint8_t*>(result) = static_cast<uint8_t>(converted);
-          break;
-        case mdTypeSShort:
-          *reinterpret_cast<int16_t*>(result) = static_cast<int16_t>(converted);
-          break;
-        case mdTypeSInt:
-          *reinterpret_cast<int32_t*>(result) = static_cast<int32_t>(converted);
-          break;
-        case mdTypeUInt:
-          *reinterpret_cast<uint32_t*>(result) = static_cast<uint32_t>(converted);
-          break;
-        case mdTypeFloat:
-          *reinterpret_cast<float*>(result) = static_cast<float>(converted);
-          break;
-        case mdTypeDouble:
-          *reinterpret_cast<double*>(result) = converted;
-          break;
-        default:
-          break;
-      }
-      return true;
-    }
-
+      return TryFastConvertQuickJSInt16Argument(
+          env, value, reinterpret_cast<int16_t*>(result));
     case mdTypeUShort:
-      if (JS_IsString(jsValue)) {
-        size_t length = 0;
-        const char* str = JS_ToCStringLen(context, &length, jsValue);
-        if (str == nullptr) {
-          return false;
-        }
-        if (length != 1) {
-          JS_FreeCString(context, str);
-          napi_throw_type_error(env, nullptr, "Expected a single-character string.");
-          return false;
-        }
-        *reinterpret_cast<uint16_t*>(result) = static_cast<uint8_t>(str[0]);
-        JS_FreeCString(context, str);
-        return true;
-      }
-      {
-        double converted = 0.0;
-        if (!readQuickJSNumber(jsValue, &converted)) {
-          return false;
-        }
-        *reinterpret_cast<uint16_t*>(result) = static_cast<uint16_t>(converted);
-        return true;
-      }
-
+      return TryFastConvertQuickJSUInt16Argument(
+          env, value, reinterpret_cast<uint16_t*>(result));
+    case mdTypeSInt:
+      return TryFastConvertQuickJSInt32Argument(
+          env, value, reinterpret_cast<int32_t*>(result));
+    case mdTypeUInt:
+      return TryFastConvertQuickJSUInt32Argument(
+          env, value, reinterpret_cast<uint32_t*>(result));
     case mdTypeSLong:
     case mdTypeSInt64:
-      return readQuickJSInt64(context, jsValue,
-                              reinterpret_cast<int64_t*>(result));
-
+      return TryFastConvertQuickJSInt64Argument(
+          env, value, reinterpret_cast<int64_t*>(result));
     case mdTypeULong:
     case mdTypeUInt64:
-      return readQuickJSUInt64(context, jsValue,
-                               reinterpret_cast<uint64_t*>(result));
-
-    case mdTypeSelector: {
-      SEL* selector = reinterpret_cast<SEL*>(result);
-      if (JS_IsNull(jsValue) || JS_IsUndefined(jsValue)) {
-        *selector = nullptr;
-        return true;
-      }
-      if (!JS_IsString(jsValue)) {
-        return false;
-      }
-      size_t length = 0;
-      const char* selectorName = JS_ToCStringLen(context, &length, jsValue);
-      if (selectorName == nullptr) {
-        return false;
-      }
-      *selector = cachedSelectorForName(selectorName, length);
-      JS_FreeCString(context, selectorName);
-      return true;
-    }
-
+      return TryFastConvertQuickJSUInt64Argument(
+          env, value, reinterpret_cast<uint64_t*>(result));
+    case mdTypeFloat:
+      return TryFastConvertQuickJSFloatArgument(
+          env, value, reinterpret_cast<float*>(result));
+    case mdTypeDouble:
+      return TryFastConvertQuickJSDoubleArgument(
+          env, value, reinterpret_cast<double*>(result));
+    case mdTypeSelector:
+      return TryFastConvertQuickJSSelectorArgument(
+          env, value, reinterpret_cast<SEL*>(result));
     case mdTypeClass:
     case mdTypeAnyObject:
     case mdTypeProtocolObject:
@@ -1468,7 +1604,7 @@ bool TryFastConvertQuickJSArgument(napi_env env, MDTypeKind kind,
     case mdTypeInstanceObject:
     case mdTypeNSStringObject:
     case mdTypeNSMutableStringObject:
-      if (tryFastConvertQuickJSObjectArgument(env, kind, jsValue, result)) {
+      if (TryFastConvertQuickJSObjectArgument(env, kind, value, result)) {
         return true;
       }
       return TryFastConvertNapiArgument(env, kind, value, result);
@@ -1626,7 +1762,7 @@ extern "C" bool nativescript_quickjs_try_define_fast_native_property(
   if (descriptor->method == nativescript::ObjCClassMember::jsCall &&
       descriptor->data != nullptr) {
     JSValue function =
-        makeFastFunction(context, kQuickJSFastObjCMethod, descriptor->data);
+        makeFastFunction(env, kQuickJSFastObjCMethod, descriptor->data);
     return !JS_IsException(function) &&
            defineFastProperty(env, object, descriptor, function,
                               JS_UNDEFINED, JS_UNDEFINED);
@@ -1636,7 +1772,7 @@ extern "C" bool nativescript_quickjs_try_define_fast_native_property(
       descriptor->data != nullptr &&
       !isCompatCFunction(env, descriptor->data)) {
     JSValue function =
-        makeFastFunction(context, kQuickJSFastCFunction, descriptor->data);
+        makeFastFunction(env, kQuickJSFastCFunction, descriptor->data);
     return !JS_IsException(function) &&
            defineFastProperty(env, object, descriptor, function,
                               JS_UNDEFINED, JS_UNDEFINED);
@@ -1645,7 +1781,7 @@ extern "C" bool nativescript_quickjs_try_define_fast_native_property(
   if (descriptor->getter == nativescript::ObjCClassMember::jsGetter &&
       descriptor->data != nullptr) {
     JSValue getter =
-        makeFastFunction(context, kQuickJSFastObjCGetter, descriptor->data);
+        makeFastFunction(env, kQuickJSFastObjCGetter, descriptor->data);
     if (JS_IsException(getter)) {
       return false;
     }
@@ -1653,13 +1789,13 @@ extern "C" bool nativescript_quickjs_try_define_fast_native_property(
     JSValue setter = JS_UNDEFINED;
     if (descriptor->setter == nativescript::ObjCClassMember::jsSetter) {
       setter =
-          makeFastFunction(context, kQuickJSFastObjCSetter, descriptor->data);
+          makeFastFunction(env, kQuickJSFastObjCSetter, descriptor->data);
       if (JS_IsException(setter)) {
         return false;
       }
     } else if (descriptor->setter ==
                nativescript::ObjCClassMember::jsReadOnlySetter) {
-      setter = makeFastFunction(context, kQuickJSFastObjCReadOnlySetter,
+      setter = makeFastFunction(env, kQuickJSFastObjCReadOnlySetter,
                                 descriptor->data);
       if (JS_IsException(setter)) {
         return false;

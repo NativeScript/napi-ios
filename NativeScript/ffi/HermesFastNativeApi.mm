@@ -49,6 +49,24 @@ inline double hermesRawToDouble(uint64_t raw) {
   return value;
 }
 
+inline bool readHermesFiniteNumber(napi_value value, double* result) {
+  if (value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  const uint64_t raw = *reinterpret_cast<const uint64_t*>(value);
+  if (!isHermesNumber(raw)) {
+    return false;
+  }
+
+  double converted = hermesRawToDouble(raw);
+  if (std::isnan(converted) || std::isinf(converted)) {
+    converted = 0.0;
+  }
+  *result = converted;
+  return true;
+}
+
 inline napi_value makeHermesRawValue(uint64_t raw) {
   static thread_local uint64_t slots[8] = {};
   static thread_local unsigned int nextSlot = 0;
@@ -638,114 +656,191 @@ bool isCompatOrMainCFunction(ObjCBridgeState* bridgeState, MDSectionOffset offse
 
 }  // namespace
 
+bool TryFastConvertHermesBoolArgument(napi_env env, napi_value value,
+                                      uint8_t* result) {
+  if (value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  const uint64_t raw = *reinterpret_cast<const uint64_t*>(value);
+  if (!isHermesBool(raw)) {
+    return false;
+  }
+  *result = (raw & kHermesBoolBit) != 0 ? static_cast<uint8_t>(1)
+                                        : static_cast<uint8_t>(0);
+  return true;
+}
+
+bool TryFastConvertHermesDoubleArgument(napi_env env, napi_value value,
+                                        double* result) {
+  return readHermesFiniteNumber(value, result);
+}
+
+bool TryFastConvertHermesFloatArgument(napi_env env, napi_value value,
+                                       float* result) {
+  double converted = 0.0;
+  if (!TryFastConvertHermesDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<float>(converted);
+  return true;
+}
+
+bool TryFastConvertHermesInt8Argument(napi_env env, napi_value value,
+                                      int8_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertHermesDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int8_t>(converted);
+  return true;
+}
+
+bool TryFastConvertHermesUInt8Argument(napi_env env, napi_value value,
+                                       uint8_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertHermesDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint8_t>(converted);
+  return true;
+}
+
+bool TryFastConvertHermesInt16Argument(napi_env env, napi_value value,
+                                       int16_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertHermesDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int16_t>(converted);
+  return true;
+}
+
+bool TryFastConvertHermesUInt16Argument(napi_env env, napi_value value,
+                                        uint16_t* result) {
+  if (value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  double converted = 0.0;
+  if (readHermesFiniteNumber(value, &converted)) {
+    *result = static_cast<uint16_t>(converted);
+    return true;
+  }
+  return TryFastConvertNapiUInt16Argument(env, value, result);
+}
+
+bool TryFastConvertHermesInt32Argument(napi_env env, napi_value value,
+                                       int32_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertHermesDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int32_t>(converted);
+  return true;
+}
+
+bool TryFastConvertHermesUInt32Argument(napi_env env, napi_value value,
+                                        uint32_t* result) {
+  double converted = 0.0;
+  if (!TryFastConvertHermesDoubleArgument(env, value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint32_t>(converted);
+  return true;
+}
+
+bool TryFastConvertHermesInt64Argument(napi_env env, napi_value value,
+                                       int64_t* result) {
+  if (value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  double converted = 0.0;
+  if (readHermesFiniteNumber(value, &converted)) {
+    *result = static_cast<int64_t>(converted);
+    return true;
+  }
+
+  bool lossless = false;
+  return napi_get_value_bigint_int64(env, value, result, &lossless) == napi_ok;
+}
+
+bool TryFastConvertHermesUInt64Argument(napi_env env, napi_value value,
+                                        uint64_t* result) {
+  if (value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  double converted = 0.0;
+  if (readHermesFiniteNumber(value, &converted)) {
+    *result = static_cast<uint64_t>(converted);
+    return true;
+  }
+
+  bool lossless = false;
+  return napi_get_value_bigint_uint64(env, value, result, &lossless) == napi_ok;
+}
+
+bool TryFastConvertHermesSelectorArgument(napi_env env, napi_value value,
+                                          SEL* result) {
+  return tryFastConvertHermesSelectorArgument(env, value, result);
+}
+
+bool TryFastConvertHermesObjectArgument(napi_env env, MDTypeKind kind,
+                                        napi_value value, void* result) {
+  if (tryFastUnwrapHermesObjectArgument(env, kind, value, result)) {
+    return true;
+  }
+  return false;
+}
+
 bool TryFastConvertHermesArgument(napi_env env, MDTypeKind kind,
                                   napi_value value, void* result) {
   if (value == nullptr || result == nullptr) {
     return false;
   }
 
-  const uint64_t raw = *reinterpret_cast<const uint64_t*>(value);
   switch (kind) {
     case mdTypeBool:
-      if (!isHermesBool(raw)) {
-        return false;
-      }
-      *reinterpret_cast<uint8_t*>(result) =
-          (raw & kHermesBoolBit) != 0 ? static_cast<uint8_t>(1) : static_cast<uint8_t>(0);
-      return true;
-
+      return TryFastConvertHermesBoolArgument(
+          env, value, reinterpret_cast<uint8_t*>(result));
     case mdTypeChar:
+      return TryFastConvertHermesInt8Argument(
+          env, value, reinterpret_cast<int8_t*>(result));
     case mdTypeUChar:
     case mdTypeUInt8:
+      return TryFastConvertHermesUInt8Argument(
+          env, value, reinterpret_cast<uint8_t*>(result));
     case mdTypeSShort:
-    case mdTypeSInt:
-    case mdTypeUInt:
-    case mdTypeFloat:
-    case mdTypeDouble: {
-      if (!isHermesNumber(raw)) {
-        return false;
-      }
-      double converted = hermesRawToDouble(raw);
-      if (std::isnan(converted) || std::isinf(converted)) {
-        converted = 0.0;
-      }
-      switch (kind) {
-        case mdTypeChar:
-          *reinterpret_cast<int8_t*>(result) = static_cast<int8_t>(converted);
-          break;
-        case mdTypeUChar:
-        case mdTypeUInt8:
-          *reinterpret_cast<uint8_t*>(result) = static_cast<uint8_t>(converted);
-          break;
-        case mdTypeSShort:
-          *reinterpret_cast<int16_t*>(result) = static_cast<int16_t>(converted);
-          break;
-        case mdTypeSInt:
-          *reinterpret_cast<int32_t*>(result) = static_cast<int32_t>(converted);
-          break;
-        case mdTypeUInt:
-          *reinterpret_cast<uint32_t*>(result) = static_cast<uint32_t>(converted);
-          break;
-        case mdTypeFloat:
-          *reinterpret_cast<float*>(result) = static_cast<float>(converted);
-          break;
-        case mdTypeDouble:
-          *reinterpret_cast<double*>(result) = converted;
-          break;
-        default:
-          break;
-      }
-      return true;
-    }
-
+      return TryFastConvertHermesInt16Argument(
+          env, value, reinterpret_cast<int16_t*>(result));
     case mdTypeUShort:
-      if (isHermesNumber(raw)) {
-        double converted = hermesRawToDouble(raw);
-        if (std::isnan(converted) || std::isinf(converted)) {
-          converted = 0.0;
-        }
-        *reinterpret_cast<uint16_t*>(result) = static_cast<uint16_t>(converted);
-        return true;
-      }
-      return TryFastConvertNapiUInt16Argument(env, value,
-                                              reinterpret_cast<uint16_t*>(result));
-
+      return TryFastConvertHermesUInt16Argument(
+          env, value, reinterpret_cast<uint16_t*>(result));
+    case mdTypeSInt:
+      return TryFastConvertHermesInt32Argument(
+          env, value, reinterpret_cast<int32_t*>(result));
+    case mdTypeUInt:
+      return TryFastConvertHermesUInt32Argument(
+          env, value, reinterpret_cast<uint32_t*>(result));
     case mdTypeSLong:
     case mdTypeSInt64:
-      if (isHermesNumber(raw)) {
-        double converted = hermesRawToDouble(raw);
-        if (std::isnan(converted) || std::isinf(converted)) {
-          converted = 0.0;
-        }
-        *reinterpret_cast<int64_t*>(result) = static_cast<int64_t>(converted);
-        return true;
-      }
-      {
-        bool lossless = false;
-        return napi_get_value_bigint_int64(env, value, reinterpret_cast<int64_t*>(result),
-                                           &lossless) == napi_ok;
-      }
-
+      return TryFastConvertHermesInt64Argument(
+          env, value, reinterpret_cast<int64_t*>(result));
     case mdTypeULong:
     case mdTypeUInt64:
-      if (isHermesNumber(raw)) {
-        double converted = hermesRawToDouble(raw);
-        if (std::isnan(converted) || std::isinf(converted)) {
-          converted = 0.0;
-        }
-        *reinterpret_cast<uint64_t*>(result) = static_cast<uint64_t>(converted);
-        return true;
-      }
-      {
-        bool lossless = false;
-        return napi_get_value_bigint_uint64(env, value, reinterpret_cast<uint64_t*>(result),
-                                            &lossless) == napi_ok;
-      }
-
+      return TryFastConvertHermesUInt64Argument(
+          env, value, reinterpret_cast<uint64_t*>(result));
+    case mdTypeFloat:
+      return TryFastConvertHermesFloatArgument(
+          env, value, reinterpret_cast<float*>(result));
+    case mdTypeDouble:
+      return TryFastConvertHermesDoubleArgument(
+          env, value, reinterpret_cast<double*>(result));
     case mdTypeSelector:
-      return tryFastConvertHermesSelectorArgument(
+      return TryFastConvertHermesSelectorArgument(
           env, value, reinterpret_cast<SEL*>(result));
-
     case mdTypeClass:
     case mdTypeAnyObject:
     case mdTypeProtocolObject:
@@ -753,7 +848,7 @@ bool TryFastConvertHermesArgument(napi_env env, MDTypeKind kind,
     case mdTypeInstanceObject:
     case mdTypeNSStringObject:
     case mdTypeNSMutableStringObject:
-      if (tryFastUnwrapHermesObjectArgument(env, kind, value, result)) {
+      if (TryFastConvertHermesObjectArgument(env, kind, value, result)) {
         return true;
       }
       return TryFastConvertNapiArgument(env, kind, value, result);
@@ -910,8 +1005,7 @@ napi_value TryCallHermesObjCMemberFast(napi_env env, ObjCClassMember* member,
 
   MethodDescriptor* descriptor = nullptr;
   Cif* cif = hermesMemberCif(env, member, kind, &descriptor);
-  if (cif == nullptr || cif->isVariadic || cif->signatureHash == 0 ||
-      cif->returnType == nullptr) {
+  if (cif == nullptr || cif->isVariadic || cif->returnType == nullptr) {
     return nullptr;
   }
 
@@ -931,11 +1025,10 @@ napi_value TryCallHermesObjCMemberFast(napi_env env, ObjCClassMember* member,
   }
 
   ObjCEngineDirectInvoker invoker =
-      ensureHermesObjCEngineDirectInvoker(cif, descriptor,
-                                          descriptor->dispatchFlags);
-  if (invoker == nullptr) {
-    return nullptr;
-  }
+      cif->signatureHash != 0
+          ? ensureHermesObjCEngineDirectInvoker(cif, descriptor,
+                                                descriptor->dispatchFlags)
+          : nullptr;
 
   id self = resolveHermesSelf(env, jsThis, member);
   if (self == nil) {
@@ -979,8 +1072,14 @@ napi_value TryCallHermesObjCMemberFast(napi_env env, ObjCClassMember* member,
   void* rvalue = rvalueStorage.get();
   bool didInvoke = false;
   @try {
-    didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
-                        descriptor->selector, invocationArgs, rvalue);
+    if (invoker != nullptr) {
+      didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
+                          descriptor->selector, invocationArgs, rvalue);
+    } else {
+      didInvoke = InvokeObjCMemberEngineDirectDynamic(
+          env, cif, self, receiverIsClass, descriptor,
+          descriptor->dispatchFlags, actualArgc, rawArgs, rvalue);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     NativeScriptException nativeScriptException(message);
@@ -1014,15 +1113,14 @@ napi_value TryCallHermesCFunctionFast(napi_env env, MDSectionOffset offset,
   CFunction* function = bridgeState->getCFunction(env, offset);
   Cif* cif = function != nullptr ? function->cif : nullptr;
   if (function == nullptr || cif == nullptr || cif->isVariadic ||
-      cif->signatureHash == 0 || cif->returnType == nullptr) {
+      cif->returnType == nullptr) {
     return nullptr;
   }
 
   CFunctionEngineDirectInvoker invoker =
-      ensureHermesCFunctionEngineDirectInvoker(function, cif);
-  if (invoker == nullptr) {
-    return nullptr;
-  }
+      cif->signatureHash != 0
+          ? ensureHermesCFunctionEngineDirectInvoker(function, cif)
+          : nullptr;
 
   napi_value stackPaddedArgs[16];
   std::vector<napi_value> heapPaddedArgs;
@@ -1040,7 +1138,12 @@ napi_value TryCallHermesCFunctionFast(napi_env env, MDSectionOffset offset,
 
   bool didInvoke = false;
   @try {
-    didInvoke = invoker(env, cif, function->fnptr, invocationArgs, cif->rvalue);
+    if (invoker != nullptr) {
+      didInvoke = invoker(env, cif, function->fnptr, invocationArgs, cif->rvalue);
+    } else {
+      didInvoke = InvokeCFunctionEngineDirectDynamic(
+          env, function, cif, actualArgc, rawArgs, cif->rvalue);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     NativeScriptException nativeScriptException(message);

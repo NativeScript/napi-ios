@@ -655,16 +655,16 @@ bool tryCallJSCObjCEngineDirect(napi_env env, ObjCClassMember* member,
 
   MethodDescriptor* descriptor = nullptr;
   Cif* cif = jscMemberCif(env, member, kind, &descriptor);
-  if (cif == nullptr || cif->isVariadic || cif->signatureHash == 0 ||
-      argc != cif->argc || cif->returnType == nullptr) {
+  if (cif == nullptr || cif->isVariadic || cif->returnType == nullptr) {
     return false;
   }
 
-  ObjCEngineDirectInvoker invoker = ensureJSCObjCEngineDirectInvoker(
-      cif, descriptor, descriptor->dispatchFlags);
-  if (invoker == nullptr) {
-    return false;
-  }
+  const bool canUseGeneratedInvoker =
+      cif->signatureHash != 0 && argc == cif->argc;
+  ObjCEngineDirectInvoker invoker = canUseGeneratedInvoker
+      ? ensureJSCObjCEngineDirectInvoker(cif, descriptor,
+                                         descriptor->dispatchFlags)
+      : nullptr;
 
   if (isJSCNSErrorOutSignature(descriptor, cif) ||
       isJSCBlockFallbackSelector(descriptor->selector)) {
@@ -690,8 +690,14 @@ bool tryCallJSCObjCEngineDirect(napi_env env, ObjCClassMember* member,
   void* rvalue = rvalueStorage.get();
   bool didInvoke = false;
   @try {
-    didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
-                        descriptor->selector, argv, rvalue);
+    if (invoker != nullptr) {
+      didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
+                          descriptor->selector, argv, rvalue);
+    } else {
+      didInvoke = InvokeObjCMemberEngineDirectDynamic(
+          env, cif, self, receiverIsClass, descriptor,
+          descriptor->dispatchFlags, argc, argv, rvalue);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     NativeScriptException nativeScriptException(message);
@@ -722,20 +728,24 @@ bool tryCallJSCCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
   CFunction* function = bridgeState->getCFunction(env, offset);
   Cif* cif = function != nullptr ? function->cif : nullptr;
   if (function == nullptr || cif == nullptr || cif->isVariadic ||
-      cif->signatureHash == 0 || argc != cif->argc ||
       cif->returnType == nullptr) {
     return false;
   }
 
-  CFunctionEngineDirectInvoker invoker =
-      ensureJSCCFunctionEngineDirectInvoker(function, cif);
-  if (invoker == nullptr) {
-    return false;
-  }
+  const bool canUseGeneratedInvoker =
+      cif->signatureHash != 0 && argc == cif->argc;
+  CFunctionEngineDirectInvoker invoker = canUseGeneratedInvoker
+      ? ensureJSCCFunctionEngineDirectInvoker(function, cif)
+      : nullptr;
 
   bool didInvoke = false;
   @try {
-    didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
+    if (invoker != nullptr) {
+      didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
+    } else {
+      didInvoke = InvokeCFunctionEngineDirectDynamic(
+          env, function, cif, argc, argv, cif->rvalue);
+    }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
     NativeScriptException nativeScriptException(message);
