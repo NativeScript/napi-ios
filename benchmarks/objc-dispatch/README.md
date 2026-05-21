@@ -16,10 +16,11 @@ The runner can execute it in three modes:
   `TestRunner` app, builds it, runs it in Simulator, then restores the app
   entry point.
 
-The default benchmark cases include calls covered by the hand-written V8 direct
-path and calls that rely on generated signature dispatch, so `gsd-on` versus
-`gsd-off` shows both the shared callback-path baseline and the GSD-specific
-delta.
+For V8 builds, `gsd-off` still uses the V8-native callback/marshalling path,
+but generated signature dispatch lookup is disabled so Objective-C calls fall
+back to the dynamic prepared/`ffi_call` path. This keeps the comparison focused
+on the generated dispatch win instead of accidentally measuring a hand-written
+direct `objc_msgSend` fast path.
 
 Examples:
 
