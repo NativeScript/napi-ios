@@ -2,9 +2,12 @@
 #define C_FUNCTION_H
 
 #include <cstdint>
+
 #include "Cif.h"
 
 namespace nativescript {
+
+class ObjCBridgeState;
 
 class CFunction {
  public:
@@ -14,6 +17,7 @@ class CFunction {
   ~CFunction();
 
   void* fnptr;
+  ObjCBridgeState* bridgeState = nullptr;
   Cif* cif = nullptr;
   uint8_t dispatchFlags = 0;
   bool dispatchLookupCached = false;
@@ -21,6 +25,7 @@ class CFunction {
   uint64_t dispatchId = 0;
   void* preparedInvoker = nullptr;
   void* napiInvoker = nullptr;
+  void* v8Invoker = nullptr;
 };
 
 }  // namespace nativescript

@@ -215,13 +215,22 @@ static id resolveCachedHandleObject(napi_env env, void* handle) {
   if (napi_has_named_property(env, cachedValue, "__ns_native_ptr", &hasNativePointer) == napi_ok &&
       hasNativePointer) {
     napi_value nativePointerValue = nullptr;
-    void* nativePointer = nullptr;
     if (napi_get_named_property(env, cachedValue, "__ns_native_ptr", &nativePointerValue) ==
-            napi_ok &&
-        napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
-        nativePointer != nullptr) {
-      bridgeState->cacheRoundTripObject(env, static_cast<id>(nativePointer), cachedValue);
-      return static_cast<id>(nativePointer);
+        napi_ok) {
+      if (nativescript::Pointer::isInstance(env, nativePointerValue)) {
+        nativescript::Pointer* pointer = nativescript::Pointer::unwrap(env, nativePointerValue);
+        if (pointer != nullptr && pointer->data != nullptr) {
+          bridgeState->cacheRoundTripObject(env, static_cast<id>(pointer->data), cachedValue);
+          return static_cast<id>(pointer->data);
+        }
+      } else {
+        void* nativePointer = nullptr;
+        if (napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
+            nativePointer != nullptr) {
+          bridgeState->cacheRoundTripObject(env, static_cast<id>(nativePointer), cachedValue);
+          return static_cast<id>(nativePointer);
+        }
+      }
     }
   }
 
@@ -1272,6 +1281,21 @@ class PointerTypeConv : public TypeConv {
       void* wrapped = nullptr;
       napi_status unwrapStatus = napi_unwrap(env, input, &wrapped);
       if (unwrapStatus != napi_ok) {
+        bool hasNativePointer = false;
+        if (napi_has_named_property(env, input, "__ns_native_ptr", &hasNativePointer) ==
+                napi_ok &&
+            hasNativePointer) {
+          napi_value nativePointerValue = nullptr;
+          if (napi_get_named_property(env, input, "__ns_native_ptr", &nativePointerValue) ==
+                  napi_ok &&
+              Pointer::isInstance(env, nativePointerValue)) {
+            Pointer* pointer = Pointer::unwrap(env, nativePointerValue);
+            if (pointer != nullptr && pointer->data != nullptr) {
+              *out = pointer->data;
+              return true;
+            }
+          }
+        }
         return false;
       }
 
@@ -2130,15 +2154,18 @@ class ObjCObjectTypeConv : public TypeConv {
           return get_ref_value(env, proto->constructor);
         }
       } else {
+        const uintptr_t objPtr = reinterpret_cast<uintptr_t>((void*)obj);
         const uintptr_t objNormalized = normalizePtr((void*)obj);
-        for (const auto& entry : bridgeState->mdProtocolsByPointer) {
-          if (normalizePtr((void*)entry.first) != objNormalized) {
-            continue;
-          }
+        if (objNormalized != objPtr) {
+          for (const auto& entry : bridgeState->mdProtocolsByPointer) {
+            if (normalizePtr((void*)entry.first) != objNormalized) {
+              continue;
+            }
 
-          auto proto = bridgeState->getProtocol(env, entry.second);
-          if (proto != nullptr) {
-            return get_ref_value(env, proto->constructor);
+            auto proto = bridgeState->getProtocol(env, entry.second);
+            if (proto != nullptr) {
+              return get_ref_value(env, proto->constructor);
+            }
           }
         }
       }

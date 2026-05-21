@@ -48,7 +48,8 @@
     "build:macos-napi": "./scripts/build_nativescript.sh --no-iphone --no-simulator --macos-napi",
     "nsr": "./dist/nsr",
     "test:macos": "node ./scripts/run-tests-macos.js ./build/test-results/macos-junit.xml",
-    "test:ios": "node ./scripts/run-tests-ios.js"
+    "test:ios": "node ./scripts/run-tests-ios.js",
+    "benchmark:objc-dispatch": "node ./benchmarks/objc-dispatch/run.js"
   },
   "license": "Apache-2.0",
   "devDependencies": {

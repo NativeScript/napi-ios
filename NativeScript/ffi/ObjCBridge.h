@@ -182,10 +182,10 @@ class ObjCBridgeState {
     }
 
     uintptr_t objectKey = NormalizeHandleKey((void*)object);
-    Class objectClass = object_getClass(object);
+    uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
     for (const auto& entry : objectRefs) {
       if (NormalizeHandleKey((void*)entry.first) == objectKey &&
-          object_getClass(entry.first) == objectClass) {
+          NormalizeHandleKey((void*)object_getClass(entry.first)) == objectClassKey) {
         return true;
       }
     }
@@ -734,10 +734,10 @@ class ObjCBridgeState {
     }
 
     uintptr_t objectKey = NormalizeHandleKey((void*)object);
-    Class objectClass = object_getClass(object);
+    uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
     for (const auto& entry : objectRefs) {
       if (NormalizeHandleKey((void*)entry.first) != objectKey ||
-          object_getClass(entry.first) != objectClass) {
+          NormalizeHandleKey((void*)object_getClass(entry.first)) != objectClassKey) {
         continue;
       }
 

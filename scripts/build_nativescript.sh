@@ -14,6 +14,7 @@ EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 CONFIG_BUILD=RelWithDebInfo
 
 TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
+NS_GSD_BACKEND=${NS_GSD_BACKEND:=auto}
 METADATA_SIZE=${METADATA_SIZE:=0}
 
 for arg in $@; do
@@ -39,6 +40,10 @@ for arg in $@; do
     --embed-metadata) EMBED_METADATA=true ;;
     --hermes) TARGET_ENGINE=hermes ;;
     --no-engine|--generic-napi) TARGET_ENGINE=none ;;
+    --gsd-v8) NS_GSD_BACKEND=v8 ;;
+    --gsd-napi) NS_GSD_BACKEND=napi ;;
+    --gsd-none) NS_GSD_BACKEND=none ;;
+    --gsd-backend=*) NS_GSD_BACKEND="${arg#--gsd-backend=}" ;;
     *) ;;
   esac
 done
@@ -102,10 +107,20 @@ function cmake_build () {
   local cache_file="$build_dir/CMakeCache.txt"
 
   if [ -f "$cache_file" ]; then
+    local needs_reconfigure=false
     local cached_engine
-    cached_engine=$(grep '^TARGET_ENGINE:STRING=' "$cache_file" | sed 's/^TARGET_ENGINE:STRING=//')
+    cached_engine=$(grep '^TARGET_ENGINE:STRING=' "$cache_file" | sed 's/^TARGET_ENGINE:STRING=//' || true)
     if [ -n "$cached_engine" ] && [ "$cached_engine" != "$TARGET_ENGINE" ]; then
       echo "Reconfiguring $platform build directory for engine '$TARGET_ENGINE' (was '$cached_engine')."
+      needs_reconfigure=true
+    fi
+    local cached_gsd_backend
+    cached_gsd_backend=$(grep '^NS_GSD_BACKEND:STRING=' "$cache_file" | sed 's/^NS_GSD_BACKEND:STRING=//' || true)
+    if [ -n "$cached_gsd_backend" ] && [ "$cached_gsd_backend" != "$NS_GSD_BACKEND" ]; then
+      echo "Reconfiguring $platform build directory for GSD backend '$NS_GSD_BACKEND' (was '$cached_gsd_backend')."
+      needs_reconfigure=true
+    fi
+    if $needs_reconfigure; then
       rm -rf "$build_dir"
     fi
   fi
@@ -122,7 +137,7 @@ function cmake_build () {
 
   fi
 
-  cmake -S=./NativeScript -B="$build_dir" -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
+  cmake -S=./NativeScript -B="$build_dir" -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DNS_GSD_BACKEND=$NS_GSD_BACKEND -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
 
   cmake --build "$build_dir" --config $CONFIG_BUILD -- \
     CODE_SIGN_STYLE=Manual \

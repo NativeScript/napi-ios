@@ -33,6 +33,9 @@ class MethodDescriptor {
   uint64_t dispatchId = 0;
   void* preparedInvoker = nullptr;
   void* napiInvoker = nullptr;
+  void* v8Invoker = nullptr;
+  bool nserrorOutSignatureCached = false;
+  bool nserrorOutSignature = false;
 
   MethodDescriptor() {}
 
@@ -62,7 +65,8 @@ struct ObjCClassMemberOverload {
   MethodDescriptor method;
   Cif* cif = nullptr;
 
-  ObjCClassMemberOverload(SEL selector, MDSectionOffset offset, uint8_t dispatchFlags)
+  ObjCClassMemberOverload(SEL selector, MDSectionOffset offset,
+                          uint8_t dispatchFlags)
       : method(selector, offset) {
     method.dispatchFlags = dispatchFlags;
   }

@@ -949,6 +949,9 @@ ObjCBridgeState::~ObjCBridgeState() {
 napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, id nativeObject) {
   NAPI_PREAMBLE
 
+#ifdef TARGET_ENGINE_V8
+  napi_value result = object;
+#else
   napi_value factory = get_ref_value(env, createNativeProxy);
   napi_value transferOwnershipFunc = get_ref_value(env, this->transferOwnershipToNative);
   napi_value result, global;
@@ -956,6 +959,7 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   napi_get_boolean(env, [nativeObject isKindOfClass:NSArray.class], &args[1]);
   napi_get_global(env, &global);
   napi_call_function(env, global, factory, 3, args, &result);
+#endif
   napi_value nativePointer = Pointer::create(env, nativeObject);
   if (nativePointer != nullptr) {
     napi_set_named_property(env, result, kNativePointerProperty, nativePointer);
@@ -978,6 +982,7 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   finalizerContext->ref = ref;
 
   storeObjectRef(nativeObject, ref);
+  cacheHandleObject(env, nativeObject, result);
   attachObjectLifecycleAssociation(env, nativeObject);
   trackObject(nativeObject);
 

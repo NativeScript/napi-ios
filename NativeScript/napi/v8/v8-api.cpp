@@ -9,6 +9,7 @@
 
 #define NAPI_EXPERIMENTAL
 
+#include "ffi/V8FastNativeApi.h"
 #include "js_native_api.h"
 #include "v8-api.h"
 #include "v8-module-loader.h"
@@ -1377,6 +1378,11 @@ napi_define_properties(napi_env env, napi_value object, size_t property_count,
 
     v8::Local<v8::Name> property_name;
     STATUS_CALL(v8impl::V8NameFromPropertyDescriptor(env, p, &property_name));
+
+    if (nativescript::V8TryDefineFastNativeProperty(env, obj, property_name,
+                                                    p)) {
+      continue;
+    }
 
     if (p->getter != nullptr || p->setter != nullptr) {
       v8::Local<v8::Function> local_getter;

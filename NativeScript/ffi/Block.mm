@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include "Interop.h"
 #include "ObjCBridge.h"
+#include "SignatureDispatch.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"
@@ -65,8 +66,32 @@ inline bool removeCachedBlockJsFunctionEntry(void* blockPtr, BlockJsFunctionEntr
 }
 
 inline void deleteBlockReferenceOnOwningLoop(const BlockJsFunctionEntry& entry) {
-  nativescript::DeleteReferenceOnOwningThread(entry.env, entry.bridgeState,
-                                              entry.bridgeStateToken, entry.ref);
+  nativescript::DeleteReferenceOnOwningThread(entry.env, entry.bridgeState, entry.bridgeStateToken,
+                                              entry.ref);
+}
+
+inline nativescript::BlockPreparedInvoker ensureFunctionPointerPreparedInvoker(
+    nativescript::FunctionPointer* ref, nativescript::SignatureCallKind kind) {
+  if (ref == nullptr || ref->cif == nullptr || ref->cif->signatureHash == 0) {
+    return nullptr;
+  }
+
+  if (!ref->dispatchLookupCached ||
+      ref->dispatchLookupSignatureHash != ref->cif->signatureHash) {
+    ref->dispatchLookupSignatureHash = ref->cif->signatureHash;
+    ref->dispatchId =
+        nativescript::composeSignatureDispatchId(ref->cif->signatureHash, kind, 0);
+    if (kind == nativescript::SignatureCallKind::BlockInvoke) {
+      ref->preparedInvoker =
+          reinterpret_cast<void*>(nativescript::lookupBlockPreparedInvoker(ref->dispatchId));
+    } else {
+      ref->preparedInvoker =
+          reinterpret_cast<void*>(nativescript::lookupCFunctionPreparedInvoker(ref->dispatchId));
+    }
+    ref->dispatchLookupCached = true;
+  }
+
+  return reinterpret_cast<nativescript::BlockPreparedInvoker>(ref->preparedInvoker);
 }
 
 void block_copy(void* dest, void* src) {
@@ -144,8 +169,7 @@ inline void cacheBlockJsFunction(napi_env env, void* blockPtr, napi_value jsFunc
   entry.ref = nativescript::make_ref(env, jsFunction, 0);
   entry.env = env;
   entry.bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
-  entry.bridgeStateToken =
-      entry.bridgeState != nullptr ? entry.bridgeState->lifetimeToken : 0;
+  entry.bridgeStateToken = entry.bridgeState != nullptr ? entry.bridgeState->lifetimeToken : 0;
   entry.jsThreadId = closure != nullptr ? closure->jsThreadId : std::this_thread::get_id();
   entry.jsRunLoop = closure != nullptr ? closure->jsRunLoop : CFRunLoopGetCurrent();
   g_blockToJsFunction[blockPtr] = entry;
@@ -174,7 +198,7 @@ void block_finalize_now(napi_env env, void* data, void* hint) {
 
   free(block);
 }
- 
+
 void finalizeFunctionPointerNow(napi_env env, void* finalize_data, void* finalize_hint) {
   auto ref = static_cast<nativescript::FunctionPointer*>(finalize_data);
   if (ref == nullptr) {
@@ -259,14 +283,23 @@ bool isObjCBlockObject(id obj) {
     return false;
   }
 
+  static thread_local std::unordered_map<Class, bool> blockClassCache;
+  auto cached = blockClassCache.find(cls);
+  if (cached != blockClassCache.end()) {
+    return cached->second;
+  }
+
   const char* className = class_getName(cls);
   if (className == nullptr) {
+    blockClassCache.emplace(cls, false);
     return false;
   }
 
   // Runtime block classes are typically internal names like
   // __NSGlobalBlock__, __NSMallocBlock__, __NSStackBlock__.
-  return className[0] == '_' && className[1] == '_' && strstr(className, "Block") != nullptr;
+  bool isBlock = className[0] == '_' && className[1] == '_' && strstr(className, "Block") != nullptr;
+  blockClassCache.emplace(cls, isBlock);
+  return isBlock;
 }
 
 const char* getObjCBlockSignature(void* blockPtr) {
@@ -444,7 +477,13 @@ napi_value FunctionPointer::jsCallAsCFunction(napi_env env, napi_callback_info c
     }
   }
 
-  ffi_call(&cif->cif, FFI_FN(ref->function), rvalue, avalues);
+  auto preparedInvoker =
+      ensureFunctionPointerPreparedInvoker(ref, SignatureCallKind::CFunction);
+  if (preparedInvoker != nullptr) {
+    preparedInvoker(ref->function, avalues, rvalue);
+  } else {
+    ffi_call(&cif->cif, FFI_FN(ref->function), rvalue, avalues);
+  }
 
   if (shouldFreeAny) {
     for (unsigned int i = 0; i < cif->argc; i++) {
@@ -484,7 +523,14 @@ napi_value FunctionPointer::jsCallAsBlock(napi_env env, napi_callback_info cbinf
     }
   }
 
-  ffi_call(&cif->cif, FFI_FN(block->invoke), rvalue, avalues);
+  BlockPreparedInvoker preparedInvoker =
+      ensureFunctionPointerPreparedInvoker(ref, SignatureCallKind::BlockInvoke);
+
+  if (preparedInvoker != nullptr) {
+    preparedInvoker(block->invoke, avalues, rvalue);
+  } else {
+    ffi_call(&cif->cif, FFI_FN(block->invoke), rvalue, avalues);
+  }
 
   if (shouldFreeAny) {
     for (unsigned int i = 0; i < cif->argc; i++) {
