@@ -36,12 +36,14 @@ using CFunctionNapiInvoker = bool (*)(napi_env env, Cif* cif, void* fnptr,
 
 #ifdef TARGET_ENGINE_V8
 using ObjCV8Invoker = bool (*)(napi_env env, Cif* cif, void* fnptr, id self,
-                               SEL selector,
+                               SEL selector, void* bridgeState, bool returnOwned,
+                               bool receiverIsClass, bool propertyAccess,
                                const v8::FunctionCallbackInfo<v8::Value>& info,
-                               void* rvalue);
+                               void* rvalue, bool* didSetReturnValue);
 using CFunctionV8Invoker =
     bool (*)(napi_env env, Cif* cif, void* fnptr,
-             const v8::FunctionCallbackInfo<v8::Value>& info, void* rvalue);
+             const v8::FunctionCallbackInfo<v8::Value>& info, void* rvalue,
+             bool* didSetReturnValue);
 #endif
 
 struct ObjCDispatchEntry {
@@ -111,6 +113,33 @@ static_assert(sizeof(v8::Local<v8::Value>) == sizeof(napi_value),
 inline napi_value v8LocalValueToNapiValue(v8::Local<v8::Value> local) {
   return reinterpret_cast<napi_value>(*local);
 }
+
+inline void setV8DispatchInt64ReturnValue(
+    v8::Isolate* isolate, const v8::FunctionCallbackInfo<v8::Value>& info,
+    int64_t value) {
+  constexpr int64_t kMaxSafeInteger = 9007199254740991LL;
+  if (value > kMaxSafeInteger || value < -kMaxSafeInteger) {
+    info.GetReturnValue().Set(v8::BigInt::New(isolate, value));
+  } else {
+    info.GetReturnValue().Set(static_cast<double>(value));
+  }
+}
+
+inline void setV8DispatchUInt64ReturnValue(
+    v8::Isolate* isolate, const v8::FunctionCallbackInfo<v8::Value>& info,
+    uint64_t value) {
+  constexpr uint64_t kMaxSafeInteger = 9007199254740991ULL;
+  if (value > kMaxSafeInteger) {
+    info.GetReturnValue().Set(v8::BigInt::NewFromUnsigned(isolate, value));
+  } else {
+    info.GetReturnValue().Set(static_cast<double>(value));
+  }
+}
+
+bool TryFastSetV8GeneratedObjCObjectReturnValue(
+    napi_env env, const v8::FunctionCallbackInfo<v8::Value>& info,
+    Cif* cif, void* bridgeState, id self, SEL selector, id value,
+    bool returnOwned, bool receiverIsClass, bool propertyAccess);
 #endif
 
 }  // namespace nativescript

@@ -75,9 +75,58 @@ inline bool typeRequiresSlowGeneratedNapiDispatch(const std::shared_ptr<TypeConv
   }
 }
 
+inline bool typeKindMayUseRoundTripCache(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      return true;
+    default:
+      return false;
+  }
+}
+
+inline bool typeKindCanSetV8ReturnDirectly(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeVoid:
+    case mdTypeBool:
+    case mdTypeChar:
+    case mdTypeUChar:
+    case mdTypeUInt8:
+    case mdTypeSShort:
+    case mdTypeUShort:
+    case mdTypeSInt:
+    case mdTypeUInt:
+    case mdTypeSLong:
+    case mdTypeULong:
+    case mdTypeSInt64:
+    case mdTypeUInt64:
+    case mdTypeFloat:
+    case mdTypeDouble:
+      return true;
+    default:
+      return false;
+  }
+}
+
 inline void updateGeneratedNapiDispatchCompatibility(Cif* cif) {
   if (cif == nullptr) {
     return;
+  }
+
+  cif->skipGeneratedNapiDispatch = false;
+  cif->generatedDispatchHasRoundTripCacheArgument = false;
+  cif->generatedDispatchUsesObjectReturnStorage = false;
+  cif->generatedDispatchSetsV8ReturnDirectly = false;
+
+  if (cif->returnType != nullptr) {
+    cif->generatedDispatchUsesObjectReturnStorage =
+        typeKindMayUseRoundTripCache(cif->returnType->kind);
+    cif->generatedDispatchSetsV8ReturnDirectly =
+        typeKindCanSetV8ReturnDirectly(cif->returnType->kind);
   }
 
   cif->skipGeneratedNapiDispatch = typeRequiresSlowGeneratedNapiDispatch(cif->returnType);
@@ -86,6 +135,9 @@ inline void updateGeneratedNapiDispatchCompatibility(Cif* cif) {
   }
 
   for (const auto& argType : cif->argTypes) {
+    if (argType != nullptr && typeKindMayUseRoundTripCache(argType->kind)) {
+      cif->generatedDispatchHasRoundTripCacheArgument = true;
+    }
     if (typeRequiresSlowGeneratedNapiDispatch(argType)) {
       cif->skipGeneratedNapiDispatch = true;
       return;

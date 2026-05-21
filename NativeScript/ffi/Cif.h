@@ -21,6 +21,9 @@ class Cif {
   bool isVariadic = false;
   uint64_t signatureHash = 0;
   bool skipGeneratedNapiDispatch = false;
+  bool generatedDispatchHasRoundTripCacheArgument = false;
+  bool generatedDispatchUsesObjectReturnStorage = false;
+  bool generatedDispatchSetsV8ReturnDirectly = false;
 
   void* rvalue;
   void** avalues;
