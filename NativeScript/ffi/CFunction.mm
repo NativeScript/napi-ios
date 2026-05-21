@@ -4,6 +4,7 @@
 #include <vector>
 #include "Block.h"
 #include "ClassMember.h"
+#include "HermesFastCallbackInfo.h"
 #include "Interop.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
@@ -81,13 +82,10 @@ inline napi_value createCompatDispatchQueueWrapperForCFunction(napi_env env,
   return Pointer::create(env, reinterpret_cast<void*>(queue));
 }
 
-inline napi_value tryCallCompatLibdispatchFunction(napi_env env, napi_callback_info cbinfo,
+inline napi_value tryCallCompatLibdispatchFunction(napi_env env, size_t argc,
+                                                   const napi_value* argv,
                                                    const char* functionName) {
   if (strcmp(functionName, "dispatch_get_global_queue") == 0) {
-    size_t argc = 2;
-    napi_value argv[2] = {nullptr, nullptr};
-    napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
-
     int64_t identifier = 0;
     if (argc > 0) {
       napi_valuetype identifierType = napi_undefined;
@@ -142,10 +140,6 @@ inline napi_value tryCallCompatLibdispatchFunction(napi_env env, napi_callback_i
   }
 
   if (strcmp(functionName, "dispatch_async") == 0) {
-    size_t argc = 2;
-    napi_value argv[2] = {nullptr, nullptr};
-    napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
-
     if (argc < 2) {
       napi_throw_type_error(env, nullptr, "dispatch_async expects a queue and callback.");
       return nullptr;
@@ -254,18 +248,59 @@ CFunction* ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
 }
 
 napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
-  void* _offset;
+#ifdef TARGET_ENGINE_HERMES
+  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
+    napi_value stackArgs[16];
+    std::vector<napi_value> heapArgs;
+    napi_value* args = stackArgs;
+    const size_t actualArgc = fastInfo->argc;
+    if (actualArgc > 16) {
+      heapArgs.resize(actualArgc);
+      args = heapArgs.data();
+    }
+    for (size_t i = 0; i < actualArgc; i++) {
+      args[i] = HermesFastArg(fastInfo, i);
+    }
 
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, &_offset);
+    return jsCallDirect(
+        env, static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(fastInfo->data)),
+        actualArgc, args);
+  }
+#endif
 
-  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  void* _offset = nullptr;
+  size_t actualArgc = 16;
+  napi_value stackArgs[16];
+
+  napi_get_cb_info(env, cbinfo, &actualArgc, stackArgs, nullptr, &_offset);
+
   MDSectionOffset offset = (MDSectionOffset)((size_t)_offset);
+
+  if (actualArgc > 16) {
+    std::vector<napi_value> dynamicArgs(actualArgc);
+    size_t retryArgc = actualArgc;
+    napi_get_cb_info(env, cbinfo, &retryArgc, dynamicArgs.data(), nullptr, nullptr);
+    dynamicArgs.resize(retryArgc);
+    return jsCallDirect(env, offset, retryArgc, dynamicArgs.data());
+  }
+
+  return jsCallDirect(env, offset, actualArgc, stackArgs);
+}
+
+napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
+                                   size_t actualArgc,
+                                   const napi_value* callArgs) {
+  auto bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Missing Objective-C bridge state.");
+    return nullptr;
+  }
 
   auto name = bridgeState->metadata->getString(offset);
 
   if (strcmp(name, "dispatch_async") == 0 || strcmp(name, "dispatch_get_current_queue") == 0 ||
       strcmp(name, "dispatch_get_global_queue") == 0) {
-    return tryCallCompatLibdispatchFunction(env, cbinfo, name);
+    return tryCallCompatLibdispatchFunction(env, actualArgc, callArgs, name);
   }
 
   auto func = bridgeState->getCFunction(env, offset);
@@ -279,23 +314,8 @@ napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
       bridgeState->metadata->getFunctionFlag(offset + sizeof(MDSectionOffset) * 2);
 
   const napi_value* invocationArgs = nullptr;
-  std::vector<napi_value> dynamicArgs;
   std::vector<napi_value> paddedArgs;
-  napi_value stackArgs[16];
   if (cif->argc > 0) {
-    size_t actualArgc = 16;
-    napi_get_cb_info(env, cbinfo, &actualArgc, stackArgs, nullptr, nullptr);
-
-    const napi_value* callArgs = stackArgs;
-    if (actualArgc > 16) {
-      dynamicArgs.resize(actualArgc);
-      size_t retryArgc = actualArgc;
-      napi_get_cb_info(env, cbinfo, &retryArgc, dynamicArgs.data(), nullptr, nullptr);
-      dynamicArgs.resize(retryArgc);
-      actualArgc = retryArgc;
-      callArgs = dynamicArgs.data();
-    }
-
     invocationArgs = callArgs;
     if (actualArgc != cif->argc) {
       napi_value jsUndefined = nullptr;

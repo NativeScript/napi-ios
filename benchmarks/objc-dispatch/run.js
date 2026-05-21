@@ -32,6 +32,7 @@ function parseArgs(argv) {
     buildTimeoutMs: 15 * 60 * 1000,
     napiPackageTgz: "",
     napiV8NapiBackendPackageTgz: "",
+    napiVariantLabel: "",
     skipBuild: false,
     compareResults: ""
   };
@@ -62,6 +63,8 @@ function parseArgs(argv) {
     else if (arg.startsWith("--napi-package-tgz=")) args.napiPackageTgz = path.resolve(arg.slice("--napi-package-tgz=".length));
     else if (arg === "--napi-v8-napi-backend-package-tgz") args.napiV8NapiBackendPackageTgz = path.resolve(next());
     else if (arg.startsWith("--napi-v8-napi-backend-package-tgz=")) args.napiV8NapiBackendPackageTgz = path.resolve(arg.slice("--napi-v8-napi-backend-package-tgz=".length));
+    else if (arg === "--napi-variant-label") args.napiVariantLabel = next();
+    else if (arg.startsWith("--napi-variant-label=")) args.napiVariantLabel = arg.slice("--napi-variant-label=".length);
     else if (arg === "--include-napi-gsd-off") args.includeNapiGsdOff = true;
     else if (arg === "--include-napi-v8-napi-backend") args.includeNapiV8NapiBackend = true;
     else if (arg === "--include-legacy-aot-off") args.includeLegacyAotOff = true;
@@ -100,6 +103,7 @@ Options:
   --napi-package-tgz PATH     @nativescript/ios package tgz for napi-ios
   --napi-v8-napi-backend-package-tgz PATH
                               @nativescript/ios tgz built with TARGET_ENGINE=v8 and NS_GSD_BACKEND=napi
+  --napi-variant-label LABEL  Prefix N-API iOS report variants with an engine/backend label
   --include-napi-gsd-off      Also run N-API with generated signature dispatch disabled
   --include-napi-v8-napi-backend
                               Also run V8 runtime compiled to use the N-API GSD/callback path
@@ -292,6 +296,21 @@ function reportLabel(report) {
   return `${report.runtime} (${report.variant})`;
 }
 
+function labeledNapiVariant(options, variant) {
+  return options.napiVariantLabel ? `${options.napiVariantLabel} ${variant}` : variant;
+}
+
+function napiVariantGroup(variant) {
+  const match = String(variant).match(/^(?:(.*)\s+)?(gsd-on|gsd-off|gsd-v8-napi-backend)$/);
+  if (!match) {
+    return null;
+  }
+  return {
+    label: match[1] || "",
+    kind: match[2]
+  };
+}
+
 function resultMap(report) {
   return new Map(report.results.map((result) => [result.name, result]));
 }
@@ -360,14 +379,36 @@ function printComparisons(reports) {
   const baseline = reports[0];
   printTotalsComparison(reports, baseline);
 
-  const napiGsdOn = reports.find((report) => report.runtime === "napi-ios" && report.variant === "gsd-on");
-  const napiGsdOff = reports.find((report) => report.runtime === "napi-ios" && report.variant === "gsd-off");
-  const napiV8NapiBackend = reports.find((report) => report.runtime === "napi-ios" && report.variant === "gsd-v8-napi-backend");
-  if (napiGsdOn && napiGsdOff) {
-    printPairComparison(napiGsdOn, napiGsdOff);
+  const napiGroups = new Map();
+  for (const report of reports) {
+    if (report.runtime !== "napi-ios") {
+      continue;
+    }
+    const group = napiVariantGroup(report.variant);
+    if (!group) {
+      continue;
+    }
+    const key = group.label;
+    if (!napiGroups.has(key)) {
+      napiGroups.set(key, new Map());
+    }
+    napiGroups.get(key).set(group.kind, report);
   }
-  if (napiGsdOn && napiV8NapiBackend) {
-    printPairComparison(napiGsdOn, napiV8NapiBackend);
+
+  let napiGsdOn = null;
+  for (const group of napiGroups.values()) {
+    const gsdOn = group.get("gsd-on");
+    const gsdOff = group.get("gsd-off");
+    const v8NapiBackend = group.get("gsd-v8-napi-backend");
+    if (gsdOn && !napiGsdOn) {
+      napiGsdOn = gsdOn;
+    }
+    if (gsdOn && gsdOff) {
+      printPairComparison(gsdOn, gsdOff);
+    }
+    if (gsdOn && v8NapiBackend) {
+      printPairComparison(gsdOn, v8NapiBackend);
+    }
   }
 
   const legacyAotOn = reports.find((report) => report.runtime === "legacy-ios" && report.variant === "aot-on");
@@ -743,7 +784,7 @@ function renamePlaceholderPaths(root, search, replacement) {
   }
 }
 
-function scaffoldNapiIOSApp(options, variant, packageTgz) {
+function scaffoldNapiIOSApp(options, variant, packageTgz, reportVariant = variant) {
   const appName = "NativeScriptDispatchBench";
   const bundleId = "org.nativescript.bench.dispatch.napi";
   const tgz = packageTgz || options.napiPackageTgz || findDefaultNapiPackage();
@@ -785,7 +826,7 @@ function scaffoldNapiIOSApp(options, variant, packageTgz) {
   ensureDir(appDir);
   fs.writeFileSync(path.join(appDir, "package.json"), JSON.stringify({ main: "index" }, null, 2) + "\n");
   fs.copyFileSync(benchmarkFile, path.join(appDir, path.basename(benchmarkFile)));
-  writeJsonRunner(path.join(appDir, "index.js"), "napi-ios", variant, options);
+  writeJsonRunner(path.join(appDir, "index.js"), "napi-ios", reportVariant, options);
 
   const zipPath = path.join(frameworkRoot, "internal/XCFrameworks.zip");
   run("unzip", ["-q", "-o", zipPath, "-d", path.join(frameworkRoot, "internal")]);
@@ -827,8 +868,8 @@ function writeInfoPlist(plistPath) {
 `);
 }
 
-async function runNapiIOS(options, variant, packageTgz) {
-  const app = scaffoldNapiIOSApp(options, variant, packageTgz);
+async function runNapiIOS(options, variant, packageTgz, reportVariant = variant) {
+  const app = scaffoldNapiIOSApp(options, variant, packageTgz, reportVariant);
   const derivedDataPath = path.join(options.workRoot, `derived-data/napi-ios-${variant}`);
   const udid = pickSimulator(options.destination);
 
@@ -881,15 +922,20 @@ async function main() {
         reports.push(runNapiNode(options, "gsd-off"));
       }
     } else if (runtime === "napi-ios") {
-      reports.push(await runNapiIOS(options, "gsd-on"));
+      reports.push(await runNapiIOS(options, "gsd-on", undefined, labeledNapiVariant(options, "gsd-on")));
       if (options.includeNapiV8NapiBackend) {
         if (!options.napiV8NapiBackendPackageTgz) {
           throw new Error("--include-napi-v8-napi-backend requires --napi-v8-napi-backend-package-tgz");
         }
-        reports.push(await runNapiIOS(options, "gsd-v8-napi-backend", options.napiV8NapiBackendPackageTgz));
+        reports.push(await runNapiIOS(
+          options,
+          "gsd-v8-napi-backend",
+          options.napiV8NapiBackendPackageTgz,
+          labeledNapiVariant(options, "gsd-v8-napi-backend")
+        ));
       }
       if (options.includeNapiGsdOff) {
-        reports.push(await runNapiIOS(options, "gsd-off"));
+        reports.push(await runNapiIOS(options, "gsd-off", undefined, labeledNapiVariant(options, "gsd-off")));
       }
     } else if (runtime === "legacy-ios") {
       reports.push(await runLegacyIOS(options, "aot-on"));

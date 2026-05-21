@@ -83,6 +83,14 @@ class ObjCClassMember {
   static napi_value jsGetter(napi_env env, napi_callback_info cbinfo);
   static napi_value jsReadOnlySetter(napi_env env, napi_callback_info cbinfo);
   static napi_value jsSetter(napi_env env, napi_callback_info cbinfo);
+  static napi_value jsCallDirect(napi_env env, ObjCClassMember* method,
+                                 napi_value jsThis, size_t actualArgc,
+                                 const napi_value* callArgs);
+  static napi_value jsGetterDirect(napi_env env, ObjCClassMember* method,
+                                   napi_value jsThis);
+  static napi_value jsSetterDirect(napi_env env, ObjCClassMember* method,
+                                   napi_value jsThis, napi_value value);
+  static napi_value jsReadOnlySetterDirect(napi_env env);
   void addOverload(SEL selector, MDSectionOffset offset, uint8_t dispatchFlags);
 
   ObjCClassMember(ObjCBridgeState* bridgeState, SEL selector,
