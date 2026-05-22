@@ -64,7 +64,7 @@ void ObjCBridgeState::registerProtocolGlobals(napi_env env, napi_value global) {
     // protocolOffsets[name] = originalOffset;
     auto objcProtocol = resolveRuntimeProtocol(name);
     if (objcProtocol != nil) {
-      mdProtocolsByPointer[objcProtocol] = originalOffset;
+      registerProtocolMetadata(objcProtocol, originalOffset);
     }
 
     while (next) {
@@ -163,6 +163,7 @@ ObjCProtocol::ObjCProtocol(napi_env env, MDSectionOffset offset) {
   nameOffset &= ~mdSectionOffsetNext;
 
   name = bridgeState->metadata->resolveString(nameOffset);
+  bridgeState->registerRuntimeProtocol(this, resolveRuntimeProtocol(name.c_str()));
 
   napi_value constructor;
   napi_define_class(env, name.c_str(), NAPI_AUTO_LENGTH, ObjCProtocol::jsConstructor, nullptr, 0,

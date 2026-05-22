@@ -1016,7 +1016,7 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
 
   // Register the builder in the bridge state
   bridgeState = ObjCBridgeState::InstanceData(env);
-  bridgeState->classesByPointer[builder->nativeClass] = builder;
+  bridgeState->registerRuntimeClass(builder, builder->nativeClass);
 
   return newConstructor;
 }

@@ -793,6 +793,14 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
     RETURN_STATUS_IF_FALSE(env, IsJSObjectValue(env, object), napi_invalid_arg);
     WrapperInfo* info{};
 
+    auto cachedInfo = env->wrapper_info_cache.find(object);
+    if (cachedInfo != env->wrapper_info_cache.end()) {
+      info = static_cast<WrapperInfo*>(cachedInfo->second);
+      RETURN_STATUS_IF_FALSE(env, info != nullptr, napi_generic_failure);
+      *result = info;
+      return napi_ok;
+    }
+
     bool hasOwnProperty = NativeInfo::GetNativeInfoKey<WrapperInfo>(
                               env->context, ToJSObject(env, object),
                               env->wrapper_info_symbol) != nullptr;
@@ -800,6 +808,7 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
     if (hasOwnProperty) {
       CHECK_NAPI(Unwrap(env, object, &info));
       RETURN_STATUS_IF_FALSE(env, info != nullptr, napi_generic_failure);
+      env->wrapper_info_cache[object] = info;
       *result = info;
       return napi_ok;
     }
@@ -813,6 +822,13 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
       NativeInfo::SetNativeInfoKey(env->context, ToJSObject(env, object),
                                    info->_class, env->wrapper_info_symbol,
                                    info);
+      info->AddFinalizer([object](WrapperInfo* info) {
+        napi_env env = info->Env();
+        if (env != nullptr) {
+          env->wrapper_info_cache.erase(object);
+        }
+      });
+      env->wrapper_info_cache[object] = info;
     }
 
     *result = info;
@@ -822,6 +838,12 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
   static napi_status Unwrap(napi_env env, napi_value object,
                             WrapperInfo** result) {
     RETURN_STATUS_IF_FALSE(env, IsJSObjectValue(env, object), napi_invalid_arg);
+    auto cachedInfo = env->wrapper_info_cache.find(object);
+    if (cachedInfo != env->wrapper_info_cache.end()) {
+      *result = static_cast<WrapperInfo*>(cachedInfo->second);
+      return napi_ok;
+    }
+
     *result = NativeInfo::GetNativeInfoKey<WrapperInfo>(
         env->context, ToJSObject(env, object), env->wrapper_info_symbol);
     return napi_ok;
