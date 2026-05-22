@@ -146,7 +146,7 @@ NAPI_FUNCTION(registerClass) {
   ClassBuilder* builder = new ClassBuilder(env, argv[0]);
   // It gets lazily built when a static method is called.
   // builder->build();
-  bridgeState->classesByPointer[builder->nativeClass] = builder;
+  bridgeState->registerRuntimeClass(builder, builder->nativeClass);
 
   return nullptr;
 }
@@ -747,8 +747,7 @@ ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
 
   if (nativeClass != nil) {
     napi_wrap(env, constructor, (void*)nativeClass, nil, nil, nil);
-    bridgeState->classesByPointer[nativeClass] = this;
-    bridgeState->mdClassesByPointer[nativeClass] = metadataOffset;
+    bridgeState->registerRuntimeClass(this, nativeClass);
   }
 
   napi_get_named_property(env, constructor, "prototype", &prototype);

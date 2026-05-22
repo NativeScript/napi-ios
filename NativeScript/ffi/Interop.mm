@@ -590,7 +590,7 @@ napi_value __extends(napi_env env, napi_callback_info info) {
   if (superClassNative != nullptr) {
     ClassBuilder* builder = new ClassBuilder(env, constructor);
     ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
-    bridgeState->classesByPointer[builder->nativeClass] = builder;
+    bridgeState->registerRuntimeClass(builder, builder->nativeClass);
   }
 
   return nullptr;

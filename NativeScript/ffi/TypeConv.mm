@@ -1232,8 +1232,9 @@ class PointerTypeConv : public TypeConv {
             MDSectionOffset metadataOffset =
                 findProtocolMetadataOffset(bridgeState->metadata, runtimeName);
             if (metadataOffset != MD_SECTION_OFFSET_NULL) {
-              bridgeState->mdProtocolsByPointer[runtimeProto] = metadataOffset;
+              bridgeState->registerProtocolMetadata(runtimeProto, metadataOffset);
               auto proto = bridgeState->getProtocol(env, metadataOffset);
+              bridgeState->registerRuntimeProtocol(proto, runtimeProto);
               if (proto != nullptr) {
                 ::free(protocols);
                 return get_ref_value(env, proto->constructor);

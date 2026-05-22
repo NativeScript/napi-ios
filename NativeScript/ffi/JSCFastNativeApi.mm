@@ -18,6 +18,7 @@
 #include "EngineDirectCall.h"
 #include "MetadataReader.h"
 #include "NativeScriptException.h"
+#include "Object.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
 #include "TypeConv.h"
@@ -1125,6 +1126,11 @@ id normalizeWrappedNativeObject(napi_env env, MDTypeKind kind, void* wrapped) {
 
   auto bridgeState = ObjCBridgeState::InstanceData(env);
   if (bridgeState != nullptr) {
+    id cachedNative = bridgeState->nativeObjectForBridgeWrapper(wrapped);
+    if (cachedNative != nil) {
+      return cachedNative;
+    }
+
     for (const auto& entry : bridgeState->classes) {
       ObjCClass* bridgedClass = entry.second;
       if (bridgedClass == wrapped && bridgedClass->nativeClass != nil) {
@@ -1205,9 +1211,12 @@ bool tryFastConvertJSCObjectArgument(napi_env env, MDTypeKind kind,
   if (kind == mdTypeClass) {
     id nativeObject = static_cast<id>(wrapped);
     if (!object_isClass(nativeObject)) {
+      nativeObject = normalizeWrappedNativeObject(env, kind, wrapped);
+    }
+    if (!object_isClass(nativeObject)) {
       return false;
     }
-    *reinterpret_cast<Class*>(result) = static_cast<Class>(wrapped);
+    *reinterpret_cast<Class*>(result) = static_cast<Class>(nativeObject);
     return true;
   }
 

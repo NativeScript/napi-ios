@@ -97,6 +97,48 @@ class ObjCBridgeState {
 #endif
   }
 
+  inline void registerRuntimeClass(ObjCClass* bridgedClass,
+                                   Class runtimeClass) {
+    if (bridgedClass == nullptr || runtimeClass == nil) {
+      return;
+    }
+
+    bridgedClass->nativeClass = runtimeClass;
+    classesByPointer[runtimeClass] = bridgedClass;
+    nativeObjectsByBridgeWrapper[bridgedClass] = (id)runtimeClass;
+    if (bridgedClass->metadataOffset != MD_SECTION_OFFSET_NULL) {
+      mdClassesByPointer[runtimeClass] = bridgedClass->metadataOffset;
+    }
+  }
+
+  inline void registerProtocolMetadata(Protocol* runtimeProtocol,
+                                       MDSectionOffset metadataOffset) {
+    if (runtimeProtocol == nil || metadataOffset == MD_SECTION_OFFSET_NULL) {
+      return;
+    }
+
+    mdProtocolsByPointer[runtimeProtocol] = metadataOffset;
+  }
+
+  inline void registerRuntimeProtocol(ObjCProtocol* bridgedProtocol,
+                                      Protocol* runtimeProtocol) {
+    if (bridgedProtocol == nullptr || runtimeProtocol == nil) {
+      return;
+    }
+
+    nativeObjectsByBridgeWrapper[bridgedProtocol] = (id)runtimeProtocol;
+    registerProtocolMetadata(runtimeProtocol, bridgedProtocol->metadataOffset);
+  }
+
+  inline id nativeObjectForBridgeWrapper(void* wrapped) const {
+    if (wrapped == nullptr) {
+      return nil;
+    }
+
+    auto cached = nativeObjectsByBridgeWrapper.find(wrapped);
+    return cached != nativeObjectsByBridgeWrapper.end() ? cached->second : nil;
+  }
+
   void registerVarGlobals(napi_env env, napi_value global);
   void registerEnumGlobals(napi_env env, napi_value global);
   void registerStructGlobals(napi_env env, napi_value global);
@@ -412,19 +454,6 @@ class ObjCBridgeState {
       return name;
     };
 
-    auto registerResolvedRuntimeClass = [&](ObjCClass* bridgedClass,
-                                            Class runtimeClass) {
-      if (bridgedClass == nullptr || runtimeClass == nil) {
-        return;
-      }
-
-      bridgedClass->nativeClass = runtimeClass;
-      classesByPointer[runtimeClass] = bridgedClass;
-      if (bridgedClass->metadataOffset != MD_SECTION_OFFSET_NULL) {
-        mdClassesByPointer[runtimeClass] = bridgedClass->metadataOffset;
-      }
-    };
-
     auto matchesConstructor = [&](ObjCClass* bridgedClass,
                                   ObjCClass** unresolvedMatch) -> bool {
       if (bridgedClass == nullptr || bridgedClass->constructor == nullptr) {
@@ -485,7 +514,7 @@ class ObjCBridgeState {
       Class runtimeClass = objc_lookUpClass(candidateName.c_str());
       if (runtimeClass != nil) {
         if (unresolvedConstructorMatch != nullptr) {
-          registerResolvedRuntimeClass(unresolvedConstructorMatch, runtimeClass);
+          registerRuntimeClass(unresolvedConstructorMatch, runtimeClass);
         }
         *out = runtimeClass;
         return true;
@@ -703,6 +732,7 @@ class ObjCBridgeState {
   std::unordered_map<Class, ObjCClass*> classesByPointer;
   std::unordered_map<Class, MDSectionOffset> mdClassesByPointer;
   std::unordered_map<Protocol*, MDSectionOffset> mdProtocolsByPointer;
+  std::unordered_map<void*, id> nativeObjectsByBridgeWrapper;
   std::unordered_map<Class, napi_ref> constructorsByPointer;
 
   std::unordered_map<std::string, Cif*> cifs;

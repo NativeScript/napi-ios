@@ -43,6 +43,10 @@ inline bool isHermesBool(uint64_t raw) {
   return (raw >> 47) == kHermesBoolETag;
 }
 
+inline uint64_t hermesRawValueBits(napi_value value) {
+  return value != nullptr ? *reinterpret_cast<const uint64_t*>(value) : 0;
+}
+
 inline double hermesRawToDouble(uint64_t raw) {
   double value = 0.0;
   std::memcpy(&value, &raw, sizeof(value));
@@ -176,9 +180,18 @@ bool tryFastUnwrapHermesObjectArgument(napi_env env, MDTypeKind kind,
   if (kind == mdTypeClass) {
     id nativeObject = static_cast<id>(wrapped);
     if (!object_isClass(nativeObject)) {
+      ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+      if (bridgeState != nullptr) {
+        id normalizedObject = bridgeState->nativeObjectForBridgeWrapper(wrapped);
+        if (normalizedObject != nil) {
+          nativeObject = normalizedObject;
+        }
+      }
+    }
+    if (!object_isClass(nativeObject)) {
       return false;
     }
-    *reinterpret_cast<Class*>(result) = static_cast<Class>(wrapped);
+    *reinterpret_cast<Class*>(result) = static_cast<Class>(nativeObject);
     return true;
   }
 
@@ -343,16 +356,51 @@ id resolveHermesSelf(napi_env env, napi_value jsThis, ObjCClassMember* method) {
   id self = nil;
   ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
 
+  struct ReceiverCacheEntry {
+    napi_env env = nullptr;
+    ObjCClassMember* method = nullptr;
+    uint64_t rawValue = 0;
+    id self = nil;
+    bool classObject = false;
+  };
+
+  static thread_local ReceiverCacheEntry lastReceiver;
+  const uint64_t rawThis = hermesRawValueBits(jsThis);
+  if (rawThis != 0 && lastReceiver.env == env &&
+      lastReceiver.method == method && lastReceiver.rawValue == rawThis &&
+      lastReceiver.self != nil &&
+      (lastReceiver.classObject ||
+       (state != nullptr && state->hasObjectRef(lastReceiver.self)))) {
+    return lastReceiver.self;
+  }
+
+  auto rememberReceiver = [&](id resolved) {
+    if (resolved == nil || rawThis == 0) {
+      return;
+    }
+
+    lastReceiver.env = env;
+    lastReceiver.method = method;
+    lastReceiver.rawValue = rawThis;
+    lastReceiver.self = resolved;
+    lastReceiver.classObject = object_isClass(resolved);
+  };
+
   napi_status unwrapStatus = napi_invalid_arg;
   if (jsThis != nullptr) {
     unwrapStatus = napi_unwrap(env, jsThis, reinterpret_cast<void**>(&self));
     if (unwrapStatus == napi_ok && self != nil) {
+      rememberReceiver(self);
       return self;
     }
   }
 
   if (state != nullptr && jsThis != nullptr) {
     state->tryResolveBridgedTypeConstructor(env, jsThis, &self);
+    if (self != nil) {
+      rememberReceiver(self);
+      return self;
+    }
   }
 
   if (self == nil && jsThis != nullptr) {
@@ -368,6 +416,7 @@ id resolveHermesSelf(napi_env env, napi_value jsThis, ObjCClassMember* method) {
   }
 
   if (self != nil) {
+    rememberReceiver(self);
     return self;
   }
 
@@ -399,6 +448,7 @@ id resolveHermesSelf(napi_env env, napi_value jsThis, ObjCClassMember* method) {
   }
 
   if (shouldUseClassFallback) {
+    rememberReceiver(static_cast<id>(method->cls->nativeClass));
     return static_cast<id>(method->cls->nativeClass);
   }
 

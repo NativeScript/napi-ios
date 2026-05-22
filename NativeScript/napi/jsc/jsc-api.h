@@ -10,6 +10,7 @@
 #include <cassert>
 #include <list>
 #include <thread>
+#include <unordered_map>
 #include <unordered_set>
 
 #include "js_native_api.h"
@@ -24,6 +25,7 @@ struct napi_env__ {
   JSValueRef last_exception{};
   napi_extended_error_info last_error{nullptr, nullptr, 0, napi_ok};
   std::unordered_set<napi_value> active_ref_values{};
+  std::unordered_map<napi_value, void*> wrapper_info_cache{};
   std::list<napi_ref> strong_refs{};
   void* instance_data{};
   napi_finalize instance_data_finalize_cb;
