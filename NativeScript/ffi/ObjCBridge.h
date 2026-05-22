@@ -6,6 +6,7 @@
 #include <objc/runtime.h>
 #include <stdint.h>
 
+#include <atomic>
 #include <map>
 #include <mutex>
 #include <string>
@@ -185,11 +186,13 @@ class ObjCBridgeState {
 
       napi_delete_reference(env, it->second);
       handleObjectRefs.erase(it);
+      bumpHandleObjectRefsGeneration();
     }
 
     napi_ref ref = nullptr;
     napi_create_reference(env, value, 0, &ref);
     handleObjectRefs[handleKey] = ref;
+    bumpHandleObjectRefsGeneration();
   }
   inline napi_value getCachedHandleObject(napi_env env, void* handle) {
     if (handle == nullptr) {
@@ -197,6 +200,47 @@ class ObjCBridgeState {
     }
 
     uintptr_t handleKey = NormalizeHandleKey(handle);
+    const uint64_t generation = currentHandleObjectRefsGeneration();
+
+    struct LastHandleObjectRef {
+      const ObjCBridgeState* bridgeState = nullptr;
+      napi_env env = nullptr;
+      uintptr_t handleKey = 0;
+      napi_ref ref = nullptr;
+      uint64_t generation = 0;
+    };
+
+    static thread_local LastHandleObjectRef lastHandleObjectRef;
+    if (lastHandleObjectRef.bridgeState == this &&
+        lastHandleObjectRef.env == env &&
+        lastHandleObjectRef.handleKey == handleKey &&
+        lastHandleObjectRef.ref != nullptr &&
+        lastHandleObjectRef.generation == generation) {
+      napi_value value = get_ref_value(env, lastHandleObjectRef.ref);
+      if (value != nullptr) {
+        return value;
+      }
+    }
+
+    static thread_local LastHandleObjectRef recentHandleObjectRefs[8];
+    static thread_local unsigned int nextRecentHandleObjectRefSlot = 0;
+    for (const auto& entry : recentHandleObjectRefs) {
+      if (entry.bridgeState != this ||
+          entry.env != env ||
+          entry.handleKey != handleKey ||
+          entry.ref == nullptr ||
+          entry.generation != generation) {
+        continue;
+      }
+
+      napi_value value = get_ref_value(env, entry.ref);
+      if (value != nullptr) {
+        lastHandleObjectRef = entry;
+        return value;
+      }
+      break;
+    }
+
     auto it = handleObjectRefs.find(handleKey);
     if (it == handleObjectRefs.end()) {
       return nullptr;
@@ -206,8 +250,23 @@ class ObjCBridgeState {
     if (value == nullptr) {
       napi_delete_reference(env, it->second);
       handleObjectRefs.erase(it);
+      bumpHandleObjectRefsGeneration();
+      if (lastHandleObjectRef.bridgeState == this &&
+          lastHandleObjectRef.handleKey == handleKey) {
+        lastHandleObjectRef = {};
+      }
+      return nullptr;
     }
 
+    lastHandleObjectRef = LastHandleObjectRef{
+        .bridgeState = this,
+        .env = env,
+        .handleKey = handleKey,
+        .ref = it->second,
+        .generation = generation,
+    };
+    recentHandleObjectRefs[nextRecentHandleObjectRefSlot++ & 7] =
+        lastHandleObjectRef;
     return value;
   }
 
@@ -233,6 +292,14 @@ class ObjCBridgeState {
     }
 
     return false;
+  }
+
+  inline uint64_t currentObjectRefsGeneration() const noexcept {
+    return objectRefsGeneration.load(std::memory_order_relaxed);
+  }
+
+  inline uint64_t currentHandleObjectRefsGeneration() const noexcept {
+    return handleObjectRefsGeneration.load(std::memory_order_relaxed);
   }
 
   inline void beginRoundTripCacheFrame(napi_env /*env*/) {
@@ -724,6 +791,7 @@ class ObjCBridgeState {
   napi_ref referenceClass = nullptr;
   napi_ref functionReferenceClass = nullptr;
   napi_ref createNativeProxy = nullptr;
+  napi_ref createNativeFastArrayIndexes = nullptr;
   napi_ref createFastEnumeratorIterator = nullptr;
   napi_ref transferOwnershipToNative = nullptr;
 
@@ -750,9 +818,18 @@ class ObjCBridgeState {
   MDMetadataReader* metadata;
 
  private:
+  inline void bumpObjectRefsGeneration() noexcept {
+    objectRefsGeneration.fetch_add(1, std::memory_order_relaxed);
+  }
+
+  inline void bumpHandleObjectRefsGeneration() noexcept {
+    handleObjectRefsGeneration.fetch_add(1, std::memory_order_relaxed);
+  }
+
   inline void storeObjectRef(id object, napi_ref ref) noexcept {
     std::lock_guard<std::mutex> lock(objectRefsMutex);
     objectRefs[object] = ref;
+    bumpObjectRefsGeneration();
   }
 
   inline napi_value getNormalizedObjectRef(napi_env env, id object) const {
@@ -792,12 +869,15 @@ class ObjCBridgeState {
 
     napi_ref ref = exact->second;
     objectRefs.erase(exact);
+    bumpObjectRefsGeneration();
     return ref;
   }
 
   std::unordered_map<MDSectionOffset, StructInfo*> structInfoCache;
   std::vector<std::unordered_map<id, RoundTripCacheEntry>> roundTripCacheFrames;
   std::unordered_map<id, RoundTripCacheEntry> recentRoundTripCache;
+  std::atomic<uint64_t> objectRefsGeneration{1};
+  std::atomic<uint64_t> handleObjectRefsGeneration{1};
   mutable std::mutex objectRefsMutex;
   void* trackedObjectLiveness = nullptr;
   void* objc_autoreleasePool;

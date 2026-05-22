@@ -190,11 +190,78 @@ napi_value findConstructorForClassObject(napi_env env, ObjCBridgeState* bridgeSt
 const char* nativeObjectProxySource = R"(
   (function (object, isArray, transferOwnershipToNative) {
     let isTransfered = false;
+    const boundMethods = Object.create(null);
+    let objectAtIndexMethod;
+    let addObjectMethod;
+    let removeObjectAtIndexMethod;
+    let setObjectAtIndexedSubscriptMethod;
+
+    function bindTargetMethod(target, name) {
+      const cached = boundMethods[name];
+      if (cached !== undefined) {
+        return cached;
+      }
+
+      const value = target[name];
+      if (typeof value !== "function") {
+        return value;
+      }
+
+      if (value.__ns_proxy_bound === true) {
+        boundMethods[name] = value;
+        return value;
+      }
+
+      const wrapper = value.bind(target);
+      Object.defineProperty(wrapper, "__ns_proxy_bound", { value: true });
+      boundMethods[name] = wrapper;
+      try {
+        Object.defineProperty(target, name, {
+          value: wrapper,
+          configurable: true,
+          writable: true
+        });
+      } catch (_) {
+      }
+      return wrapper;
+    }
 
     return new Proxy(object, {
       get (target, name, receiver) {
         if (name === "superclass" && typeof target.class === "function") {
           return target.class().superclass();
+        }
+
+        if (isArray && name === "count") {
+          return target.count;
+        }
+
+        if (isArray) {
+          switch (name) {
+            case "objectAtIndex":
+              return objectAtIndexMethod !== undefined
+                ? objectAtIndexMethod
+                : (objectAtIndexMethod = bindTargetMethod(target, name));
+            case "addObject":
+              return addObjectMethod !== undefined
+                ? addObjectMethod
+                : (addObjectMethod = bindTargetMethod(target, name));
+            case "removeObjectAtIndex":
+              return removeObjectAtIndexMethod !== undefined
+                ? removeObjectAtIndexMethod
+                : (removeObjectAtIndexMethod = bindTargetMethod(target, name));
+            case "setObjectAtIndexedSubscript":
+              return setObjectAtIndexedSubscriptMethod !== undefined
+                ? setObjectAtIndexedSubscriptMethod
+                : (setObjectAtIndexedSubscriptMethod = bindTargetMethod(target, name));
+          }
+        }
+
+        if (typeof name === "string") {
+          const boundMethod = boundMethods[name];
+          if (boundMethod !== undefined) {
+            return boundMethod;
+          }
         }
 
         const value = target[name];
@@ -247,6 +314,9 @@ const char* nativeObjectProxySource = R"(
             }
 
             Object.defineProperty(wrapper, "__ns_proxy_bound", { value: true });
+            if (typeof name === "string") {
+              boundMethods[name] = wrapper;
+            }
             try {
               Object.defineProperty(target, name, {
                 value: wrapper,
@@ -281,6 +351,27 @@ const char* nativeObjectProxySource = R"(
           return true;
         }
 
+        if (typeof name === "string" && boundMethods[name] !== undefined) {
+          delete boundMethods[name];
+        }
+
+        if (isArray) {
+          switch (name) {
+            case "objectAtIndex":
+              objectAtIndexMethod = undefined;
+              break;
+            case "addObject":
+              addObjectMethod = undefined;
+              break;
+            case "removeObjectAtIndex":
+              removeObjectAtIndexMethod = undefined;
+              break;
+            case "setObjectAtIndexedSubscript":
+              setObjectAtIndexedSubscriptMethod = undefined;
+              break;
+          }
+        }
+
         if (isArray) {
           const index = Number(name);
           if (!isNaN(index)) {
@@ -302,11 +393,68 @@ const char* nativeObjectProxySource = R"(
   })
 )";
 
+const char* nativeObjectFastArrayIndexesSource = R"(
+  (function (object, isMutableArray, maxIndexedProperties) {
+    const prototype = Object.getPrototypeOf(object);
+    const flag = isMutableArray
+      ? "__ns_mutable_array_index_accessors"
+      : "__ns_array_index_accessors";
+
+    function makeGetter(index) {
+      return function () {
+        return this.objectAtIndex(index);
+      };
+    }
+
+    function makeSetter(index) {
+      return function (value) {
+        this.setObjectAtIndexedSubscript(value, index);
+      };
+    }
+
+    if (prototype != null &&
+        !Object.prototype.hasOwnProperty.call(prototype, flag)) {
+      for (let i = 0; i < maxIndexedProperties; i++) {
+        const descriptor = {
+          configurable: true,
+          enumerable: false,
+          get: makeGetter(i)
+        };
+        if (isMutableArray) {
+          descriptor.set = makeSetter(i);
+        }
+        Object.defineProperty(prototype, i, descriptor);
+      }
+
+      Object.defineProperty(prototype, flag, {
+        configurable: false,
+        enumerable: false,
+        value: true
+      });
+    }
+
+    if (!Object.prototype.hasOwnProperty.call(object, "superclass")) {
+      Object.defineProperty(object, "superclass", {
+        configurable: true,
+        get: function () {
+          return this.class().superclass();
+        }
+      });
+    }
+
+    return object;
+  })
+)";
+
 void initProxyFactory(napi_env env, ObjCBridgeState* state) {
   napi_value script, result;
   napi_create_string_utf8(env, nativeObjectProxySource, NAPI_AUTO_LENGTH, &script);
   napi_run_script(env, script, &result);
   state->createNativeProxy = make_ref(env, result);
+
+  napi_create_string_utf8(env, nativeObjectFastArrayIndexesSource, NAPI_AUTO_LENGTH, &script);
+  napi_run_script(env, script, &result);
+  state->createNativeFastArrayIndexes = make_ref(env, result);
 
   napi_value transferOwnershipToNative;
   napi_create_function(env, "transferOwnershipToNative", NAPI_AUTO_LENGTH,

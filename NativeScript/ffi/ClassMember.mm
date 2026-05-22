@@ -352,6 +352,12 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
 #ifdef TARGET_ENGINE_V8
       descriptor->v8Invoker = reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
 #endif
+#ifdef TARGET_ENGINE_HERMES
+      descriptor->hermesDirectReturnInvoker =
+          reinterpret_cast<void*>(lookupObjCHermesDirectReturnInvoker(descriptor->dispatchId));
+      descriptor->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
+          lookupObjCHermesFrameDirectReturnInvoker(descriptor->dispatchId));
+#endif
       descriptor->dispatchLookupCached = true;
     }
   }
@@ -440,6 +446,12 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
 #ifdef TARGET_ENGINE_V8
           descriptor->v8Invoker =
               reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
+#endif
+#ifdef TARGET_ENGINE_HERMES
+          descriptor->hermesDirectReturnInvoker =
+              reinterpret_cast<void*>(lookupObjCHermesDirectReturnInvoker(descriptor->dispatchId));
+          descriptor->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
+              lookupObjCHermesFrameDirectReturnInvoker(descriptor->dispatchId));
 #endif
           descriptor->dispatchLookupCached = true;
         }
@@ -1096,8 +1108,8 @@ class RoundTripCacheFrameGuard {
 
 inline bool generatedDispatchNeedsRoundTripCacheFrame(Cif* cif) {
   return cif != nullptr &&
-         (cif->generatedDispatchHasRoundTripCacheArgument ||
-          cif->generatedDispatchUsesObjectReturnStorage);
+         cif->generatedDispatchUsesObjectReturnStorage &&
+         cif->generatedDispatchHasRoundTripCacheArgument;
 }
 
 namespace {
@@ -1446,29 +1458,32 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
 napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
 #ifdef TARGET_ENGINE_HERMES
   if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    napi_value stackArgs[16];
-    std::vector<napi_value> heapArgs;
-    napi_value* args = stackArgs;
-    const size_t actualArgc = fastInfo->argc;
-    if (actualArgc > 16) {
-      heapArgs.resize(actualArgc);
-      args = heapArgs.data();
-    }
-    for (size_t i = 0; i < actualArgc; i++) {
-      args[i] = HermesFastArg(fastInfo, i);
-    }
-
+    const size_t actualArgc = HermesFastArgc(fastInfo);
     bool handledDirect = false;
-    napi_value directResult = TryCallHermesObjCMemberFast(
-        env, static_cast<ObjCClassMember*>(fastInfo->data),
-        HermesFastThisArg(fastInfo), actualArgc, args,
+    napi_value directResult = TryCallHermesObjCMemberFastFromFrame(
+        env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
+        HermesFastThisArg(fastInfo), actualArgc, HermesFastArgsBase(fastInfo),
         EngineDirectMemberKind::Method, &handledDirect);
     if (handledDirect) {
       return directResult;
     }
 
-    return jsCallDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
-                        HermesFastThisArg(fastInfo), actualArgc, args);
+    napi_value stackArgs[16];
+    if (actualArgc <= 16) {
+      for (size_t i = 0; i < actualArgc; i++) {
+        stackArgs[i] = HermesFastArg(fastInfo, i);
+      }
+
+      return jsCallDirect(env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
+                          HermesFastThisArg(fastInfo), actualArgc, stackArgs);
+    }
+
+    std::vector<napi_value> heapArgs(actualArgc);
+    for (size_t i = 0; i < actualArgc; i++) {
+      heapArgs[i] = HermesFastArg(fastInfo, i);
+    }
+    return jsCallDirect(env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
+                        HermesFastThisArg(fastInfo), actualArgc, heapArgs.data());
   }
 #endif
 
@@ -1834,13 +1849,13 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
   if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
     bool handledDirect = false;
     napi_value directResult = TryCallHermesObjCMemberFast(
-        env, static_cast<ObjCClassMember*>(fastInfo->data),
+        env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
         HermesFastThisArg(fastInfo), 0, nullptr,
         EngineDirectMemberKind::Getter, &handledDirect);
     if (handledDirect) {
       return directResult;
     }
-    return jsGetterDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
+    return jsGetterDirect(env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
                           HermesFastThisArg(fastInfo));
   }
 #endif
@@ -1937,21 +1952,23 @@ napi_value ObjCClassMember::jsReadOnlySetterDirect(napi_env env) {
 napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
 #ifdef TARGET_ENGINE_HERMES
   if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    napi_value value = nullptr;
-    if (fastInfo->argc > 0) {
-      value = HermesFastArg(fastInfo, 0);
-    } else {
-      napi_get_undefined(env, &value);
-    }
+    const size_t actualArgc = HermesFastArgc(fastInfo);
     bool handledDirect = false;
-    napi_value directResult = TryCallHermesObjCMemberFast(
-        env, static_cast<ObjCClassMember*>(fastInfo->data),
-        HermesFastThisArg(fastInfo), 1, &value,
+    napi_value directResult = TryCallHermesObjCMemberFastFromFrame(
+        env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
+        HermesFastThisArg(fastInfo), actualArgc, HermesFastArgsBase(fastInfo),
         EngineDirectMemberKind::Setter, &handledDirect);
     if (handledDirect) {
       return directResult;
     }
-    return jsSetterDirect(env, static_cast<ObjCClassMember*>(fastInfo->data),
+
+    napi_value value = nullptr;
+    if (actualArgc > 0) {
+      value = HermesFastArg(fastInfo, 0);
+    } else {
+      napi_get_undefined(env, &value);
+    }
+    return jsSetterDirect(env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
                           HermesFastThisArg(fastInfo), value);
   }
 #endif

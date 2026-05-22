@@ -420,6 +420,43 @@ std::string makeV8WrapperName(DispatchKind kind, size_t index) {
   return stream.str();
 }
 
+std::string makeHermesDirectReturnWrapperName(DispatchKind kind, size_t index) {
+  std::ostringstream stream;
+  stream << "dh";
+  switch (kind) {
+    case DispatchKind::ObjCMethod:
+      stream << "o";
+      break;
+    case DispatchKind::CFunction:
+      stream << "c";
+      break;
+    case DispatchKind::BlockInvoke:
+      stream << "b";
+      break;
+  }
+  stream << toBase36(index);
+  return stream.str();
+}
+
+std::string makeHermesFrameDirectReturnWrapperName(DispatchKind kind,
+                                                   size_t index) {
+  std::ostringstream stream;
+  stream << "hf";
+  switch (kind) {
+    case DispatchKind::ObjCMethod:
+      stream << "o";
+      break;
+    case DispatchKind::CFunction:
+      stream << "c";
+      break;
+    case DispatchKind::BlockInvoke:
+      stream << "b";
+      break;
+  }
+  stream << toBase36(index);
+  return stream.str();
+}
+
 std::string makeEngineDirectWrapperName(DispatchKind kind, size_t index) {
   std::ostringstream stream;
   stream << "de";
@@ -536,6 +573,28 @@ bool canSetV8ReturnDirectly(MDTypeKind kind) {
   }
 }
 
+bool canSetHermesReturnDirectly(MDTypeKind kind) {
+  return canSetV8ReturnDirectly(kind);
+}
+
+bool canSetHermesObjCReturnDirectly(MDTypeKind kind) {
+  if (canSetHermesReturnDirectly(kind)) {
+    return true;
+  }
+
+  switch (kind) {
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      return true;
+    default:
+      return false;
+  }
+}
+
 bool canTrySetV8ObjectReturnDirectly(MDTypeKind kind) {
   switch (kind) {
     case mdTypeAnyObject:
@@ -585,6 +644,83 @@ void writeV8DirectReturnValue(std::ostringstream& out, MDTypeKind kind,
           << "));\n";
       break;
     default:
+      break;
+  }
+}
+
+void writeHermesDirectReturnValue(std::ostringstream& out, DispatchKind dispatchKind,
+                                  MDTypeKind kind,
+                                  const std::string& valueExpr) {
+  switch (kind) {
+    case mdTypeVoid:
+      out << "  if (!SetHermesGeneratedVoidReturn(env, result)) {\n";
+      break;
+    case mdTypeBool:
+      out << "  if (!SetHermesGeneratedBoolReturn(cif, result, " << valueExpr
+          << " != 0)) {\n";
+      break;
+    case mdTypeChar:
+      out << "  if (!SetHermesGeneratedInt8Return(cif, result, static_cast<int8_t>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeUChar:
+    case mdTypeUInt8:
+      out << "  if (!SetHermesGeneratedUInt8Return(cif, result, static_cast<uint8_t>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeSShort:
+      out << "  if (!SetHermesGeneratedInt16Return(cif, result, static_cast<int16_t>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeUShort:
+      out << "  if (!SetHermesGeneratedUInt16Return(env, cif, result, "
+             "static_cast<uint16_t>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeSInt:
+      out << "  if (!SetHermesGeneratedInt32Return(cif, result, static_cast<int32_t>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeUInt:
+      out << "  if (!SetHermesGeneratedUInt32Return(cif, result, static_cast<uint32_t>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeSLong:
+    case mdTypeSInt64:
+      out << "  if (!SetHermesGeneratedInt64Return(env, cif, result, "
+             "static_cast<int64_t>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeULong:
+    case mdTypeUInt64:
+      out << "  if (!SetHermesGeneratedUInt64Return(env, cif, result, "
+             "static_cast<uint64_t>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeFloat:
+    case mdTypeDouble:
+      out << "  if (!SetHermesGeneratedDoubleReturn(cif, result, static_cast<double>("
+          << valueExpr << "))) {\n";
+      break;
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      if (dispatchKind == DispatchKind::ObjCMethod) {
+        out << "  if (!TryFastSetHermesGeneratedObjCObjectReturnValue("
+               "env, cif, returnContext, selector, cif->returnType->kind, "
+            << valueExpr << ", result)) {\n";
+      } else {
+        out << "  if (!TryFastConvertHermesReturnValue(env, cif, "
+               "cif->returnType->kind, &"
+            << valueExpr << ", result)) {\n";
+      }
+      break;
+    default:
+      out << "  if (!TryFastConvertHermesReturnValue(env, cif, static_cast<MDTypeKind>("
+          << static_cast<int>(kind) << "), &" << valueExpr << ", result)) {\n";
       break;
   }
 }
@@ -1017,32 +1153,92 @@ bool engineDirectConverterTakesKind(MDTypeKind kind) {
   }
 }
 
+const char* hermesFrameRawConverterForKind(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeBool:
+      return "TryFastConvertHermesGeneratedBoolRawArgument";
+    case mdTypeChar:
+      return "TryFastConvertHermesGeneratedInt8RawArgument";
+    case mdTypeUChar:
+    case mdTypeUInt8:
+      return "TryFastConvertHermesGeneratedUInt8RawArgument";
+    case mdTypeSShort:
+      return "TryFastConvertHermesGeneratedInt16RawArgument";
+    case mdTypeUShort:
+      return "TryFastConvertHermesGeneratedUInt16RawArgument";
+    case mdTypeSInt:
+      return "TryFastConvertHermesGeneratedInt32RawArgument";
+    case mdTypeUInt:
+      return "TryFastConvertHermesGeneratedUInt32RawArgument";
+    case mdTypeSLong:
+    case mdTypeSInt64:
+      return "TryFastConvertHermesGeneratedInt64RawArgument";
+    case mdTypeULong:
+    case mdTypeUInt64:
+      return "TryFastConvertHermesGeneratedUInt64RawArgument";
+    case mdTypeFloat:
+      return "TryFastConvertHermesGeneratedFloatRawArgument";
+    case mdTypeDouble:
+      return "TryFastConvertHermesGeneratedDoubleRawArgument";
+    default:
+      return nullptr;
+  }
+}
+
 void writeEngineDirectArgConversion(std::ostringstream& out,
-                                    const MDTypeInfo* type, size_t index) {
+                                    const MDTypeInfo* type, size_t index,
+                                    const std::string& valueExpr = "") {
   if (type == nullptr) {
     out << "  return false;\n";
     return;
   }
 
+  const std::string argValue =
+      valueExpr.empty() ? "argv[" + std::to_string(index) + "]" : valueExpr;
   const char* converter = engineDirectConverterMacroForKind(type->kind);
   out << "  if (!" << converter << "(env, ";
   if (engineDirectConverterTakesKind(type->kind)) {
     out << "static_cast<MDTypeKind>(" << static_cast<int>(type->kind)
         << "), ";
   }
-  out << "argv[" << index << "], &arg" << index << ")) {\n";
+  out << argValue << ", &arg" << index << ")) {\n";
   if (argKindMayNeedCleanup(type->kind)) {
-    out << "    cif->argTypes[" << index << "]->toNative(env, argv[" << index
-        << "], &arg" << index << ", &shouldFree" << index
+    out << "    cif->argTypes[" << index << "]->toNative(env, " << argValue
+        << ", &arg" << index << ", &shouldFree" << index
         << ", &shouldFreeAny);\n";
   } else {
     out << "    bool ignoredShouldFree = false;\n";
     out << "    bool ignoredShouldFreeAny = false;\n";
-    out << "    cif->argTypes[" << index << "]->toNative(env, argv[" << index
-        << "], &arg" << index
+    out << "    cif->argTypes[" << index << "]->toNative(env, " << argValue
+        << ", &arg" << index
         << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
   }
   out << "  }\n";
+}
+
+void writeHermesFrameArgConversion(std::ostringstream& out,
+                                   const MDTypeInfo* type, size_t index) {
+  if (type == nullptr) {
+    out << "  return false;\n";
+    return;
+  }
+
+  if (const char* rawConverter = hermesFrameRawConverterForKind(type->kind)) {
+    out << "  if (!" << rawConverter << "(argRaw" << index << ", &arg"
+        << index << ")) {\n";
+    out << "    napi_value argValue" << index
+        << " = hermesDispatchFrameArg(argsBase, " << index << ");\n";
+    out << "    bool ignoredShouldFree = false;\n";
+    out << "    bool ignoredShouldFreeAny = false;\n";
+    out << "    cif->argTypes[" << index << "]->toNative(env, argValue"
+        << index << ", &arg" << index
+        << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
+    out << "  }\n";
+    return;
+  }
+
+  writeEngineDirectArgConversion(
+      out, type, index, "argValue" + std::to_string(index));
 }
 
 void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
@@ -1346,6 +1542,323 @@ void writeEngineDirectWrapper(std::ostringstream& out, DispatchKind kind,
     out << "  *reinterpret_cast<" << returnType
         << "*>(rvalue) = nativeResult;\n";
   }
+  if (hasCleanupArgs) {
+    out << "  cleanupManagedArgs();\n";
+  }
+  out << "  return true;\n";
+  out << "}\n\n";
+}
+
+void writeHermesDirectReturnWrapper(std::ostringstream& out, DispatchKind kind,
+                                    const std::string& wrapperName,
+                                    const MDSignature* signature) {
+  if (kind == DispatchKind::BlockInvoke || signature == nullptr ||
+      signature->returnType == nullptr) {
+    return;
+  }
+
+  const bool canSetReturnDirectly =
+      kind == DispatchKind::ObjCMethod
+          ? canSetHermesObjCReturnDirectly(signature->returnType->kind)
+          : canSetHermesReturnDirectly(signature->returnType->kind);
+  if (!canSetReturnDirectly) {
+    return;
+  }
+
+  std::string returnType;
+  if (!mapTypeToCpp(signature->returnType, &returnType, true)) {
+    return;
+  }
+
+  std::vector<const MDTypeInfo*> argTypeInfos;
+  std::vector<std::string> argTypes;
+  argTypes.reserve(signature->arguments.size());
+  argTypeInfos.reserve(signature->arguments.size());
+  for (const auto* arg : signature->arguments) {
+    std::string argType;
+    if (!mapTypeToCpp(arg, &argType, false)) {
+      return;
+    }
+    argTypeInfos.push_back(arg);
+    argTypes.push_back(argType);
+  }
+
+  out << "static inline bool " << wrapperName
+      << "(napi_env env, Cif* cif, void* fnptr, ";
+  if (kind == DispatchKind::ObjCMethod) {
+    out << "id self, SEL selector, "
+           "const HermesObjCReturnContext* returnContext, ";
+  }
+  out << "const napi_value* argv, napi_value* result) {\n";
+
+  out << "  using Fn = " << returnType << " (*)(";
+  bool first = true;
+  if (kind == DispatchKind::ObjCMethod) {
+    out << "id, SEL";
+    first = false;
+  }
+  for (const auto& argType : argTypes) {
+    if (!first) {
+      out << ", ";
+    }
+    out << argType;
+    first = false;
+  }
+  out << ");\n";
+  out << "  auto fn = reinterpret_cast<Fn>(fnptr);\n";
+
+  std::vector<size_t> cleanupArgIndexes;
+  cleanupArgIndexes.reserve(argTypes.size());
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+      cleanupArgIndexes.push_back(i);
+    }
+  }
+  const bool hasCleanupArgs = !cleanupArgIndexes.empty();
+  if (hasCleanupArgs) {
+    out << "  bool shouldFreeAny = false;\n";
+  }
+  if (returnType != "void") {
+    out << "  " << returnType << " nativeResult{};\n";
+  }
+
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    out << "  " << argTypes[i] << " arg" << i << "{};\n";
+    if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+      out << "  bool shouldFree" << i << " = false;\n";
+    }
+  }
+
+  if (hasCleanupArgs) {
+    out << "  auto cleanupManagedArgs = [&]() {\n";
+    out << "    if (shouldFreeAny) {\n";
+    if (kind == DispatchKind::CFunction && returnType != "void") {
+      out << "      void* returnPointerValue = nullptr;\n";
+      out << "      if (cif->returnType != nullptr && cif->returnType->type == "
+             "&ffi_type_pointer) {\n";
+      out << "        returnPointerValue = "
+             "*reinterpret_cast<void**>(&nativeResult);\n";
+      out << "      }\n";
+    }
+    for (const auto i : cleanupArgIndexes) {
+      out << "      if (shouldFree" << i << ") {\n";
+      if (kind == DispatchKind::CFunction && returnType != "void") {
+        out << "        if (returnPointerValue != nullptr && "
+               "*reinterpret_cast<void**>(&arg"
+            << i << ") == returnPointerValue) {\n";
+        out << "        } else {\n";
+        out << "          cif->argTypes[" << i
+            << "]->free(env, *reinterpret_cast<void**>(&arg" << i << "));\n";
+        out << "        }\n";
+      } else {
+        out << "        cif->argTypes[" << i
+            << "]->free(env, *reinterpret_cast<void**>(&arg" << i << "));\n";
+      }
+      out << "      }\n";
+    }
+    out << "    }\n";
+    out << "  };\n";
+  }
+
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    writeEngineDirectArgConversion(out, argTypeInfos[i], i);
+  }
+
+  std::ostringstream callExpr;
+  callExpr << "fn(";
+  bool hasAnyCallArg = false;
+  if (kind == DispatchKind::ObjCMethod) {
+    callExpr << "self, selector";
+    hasAnyCallArg = true;
+  }
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    if (hasAnyCallArg) {
+      callExpr << ", ";
+    }
+    callExpr << "arg" << i;
+    hasAnyCallArg = true;
+  }
+  callExpr << ")";
+
+  if (returnType == "void") {
+    out << "  " << callExpr.str() << ";\n";
+    writeHermesDirectReturnValue(out, kind, signature->returnType->kind, "");
+  } else {
+    out << "  nativeResult = " << callExpr.str() << ";\n";
+    writeHermesDirectReturnValue(out, kind, signature->returnType->kind,
+                                 "nativeResult");
+  }
+  if (hasCleanupArgs) {
+    out << "    cleanupManagedArgs();\n";
+  }
+  out << "    return false;\n";
+  out << "  }\n";
+  if (hasCleanupArgs) {
+    out << "  cleanupManagedArgs();\n";
+  }
+  out << "  return true;\n";
+  out << "}\n\n";
+}
+
+void writeHermesFrameDirectReturnWrapper(std::ostringstream& out,
+                                         DispatchKind kind,
+                                         const std::string& wrapperName,
+                                         const MDSignature* signature) {
+  if (signature == nullptr || signature->returnType == nullptr) {
+    return;
+  }
+
+  const bool canSetReturnDirectly =
+      kind == DispatchKind::ObjCMethod
+          ? canSetHermesObjCReturnDirectly(signature->returnType->kind)
+          : canSetHermesReturnDirectly(signature->returnType->kind);
+  if (!canSetReturnDirectly) {
+    return;
+  }
+
+  std::string returnType;
+  if (!mapTypeToCpp(signature->returnType, &returnType, true)) {
+    return;
+  }
+
+  std::vector<const MDTypeInfo*> argTypeInfos;
+  std::vector<std::string> argTypes;
+  argTypes.reserve(signature->arguments.size());
+  argTypeInfos.reserve(signature->arguments.size());
+  for (const auto* arg : signature->arguments) {
+    std::string argType;
+    if (!mapTypeToCpp(arg, &argType, false)) {
+      return;
+    }
+    argTypeInfos.push_back(arg);
+    argTypes.push_back(argType);
+  }
+
+  out << "static inline bool " << wrapperName
+      << "(napi_env env, Cif* cif, void* fnptr, ";
+  if (kind == DispatchKind::ObjCMethod) {
+    out << "id self, SEL selector, "
+           "const HermesObjCReturnContext* returnContext, ";
+  } else if (kind == DispatchKind::BlockInvoke) {
+    out << "void* block, ";
+  }
+  out << "const uint64_t* argsBase, napi_value* result) {\n";
+
+  out << "  using Fn = " << returnType << " (*)(";
+  bool first = true;
+  if (kind == DispatchKind::ObjCMethod) {
+    out << "id, SEL";
+    first = false;
+  } else if (kind == DispatchKind::BlockInvoke) {
+    out << "void*";
+    first = false;
+  }
+  for (const auto& argType : argTypes) {
+    if (!first) {
+      out << ", ";
+    }
+    out << argType;
+    first = false;
+  }
+  out << ");\n";
+  out << "  auto fn = reinterpret_cast<Fn>(fnptr);\n";
+
+  std::vector<size_t> cleanupArgIndexes;
+  cleanupArgIndexes.reserve(argTypes.size());
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+      cleanupArgIndexes.push_back(i);
+    }
+  }
+  const bool hasCleanupArgs = !cleanupArgIndexes.empty();
+  if (hasCleanupArgs) {
+    out << "  bool shouldFreeAny = false;\n";
+  }
+  if (returnType != "void") {
+    out << "  " << returnType << " nativeResult{};\n";
+  }
+
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    if (hermesFrameRawConverterForKind(argTypeInfos[i]->kind) != nullptr) {
+      out << "  uint64_t argRaw" << i
+          << " = hermesDispatchFrameRawArg(argsBase, " << i << ");\n";
+    } else {
+      out << "  napi_value argValue" << i
+          << " = hermesDispatchFrameArg(argsBase, " << i << ");\n";
+    }
+    out << "  " << argTypes[i] << " arg" << i << "{};\n";
+    if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
+      out << "  bool shouldFree" << i << " = false;\n";
+    }
+  }
+
+  if (hasCleanupArgs) {
+    out << "  auto cleanupManagedArgs = [&]() {\n";
+    out << "    if (shouldFreeAny) {\n";
+    if (kind != DispatchKind::ObjCMethod && returnType != "void") {
+      out << "      void* returnPointerValue = nullptr;\n";
+      out << "      if (cif->returnType != nullptr && cif->returnType->type == "
+             "&ffi_type_pointer) {\n";
+      out << "        returnPointerValue = "
+             "*reinterpret_cast<void**>(&nativeResult);\n";
+      out << "      }\n";
+    }
+    for (const auto i : cleanupArgIndexes) {
+      out << "      if (shouldFree" << i << ") {\n";
+      if (kind != DispatchKind::ObjCMethod && returnType != "void") {
+        out << "        if (returnPointerValue != nullptr && "
+               "*reinterpret_cast<void**>(&arg"
+            << i << ") == returnPointerValue) {\n";
+        out << "        } else {\n";
+        out << "          cif->argTypes[" << i
+            << "]->free(env, *reinterpret_cast<void**>(&arg" << i << "));\n";
+        out << "        }\n";
+      } else {
+        out << "        cif->argTypes[" << i
+            << "]->free(env, *reinterpret_cast<void**>(&arg" << i << "));\n";
+      }
+      out << "      }\n";
+    }
+    out << "    }\n";
+    out << "  };\n";
+  }
+
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    writeHermesFrameArgConversion(out, argTypeInfos[i], i);
+  }
+
+  std::ostringstream callExpr;
+  callExpr << "fn(";
+  bool hasAnyCallArg = false;
+  if (kind == DispatchKind::ObjCMethod) {
+    callExpr << "self, selector";
+    hasAnyCallArg = true;
+  } else if (kind == DispatchKind::BlockInvoke) {
+    callExpr << "block";
+    hasAnyCallArg = true;
+  }
+  for (size_t i = 0; i < argTypes.size(); i++) {
+    if (hasAnyCallArg) {
+      callExpr << ", ";
+    }
+    callExpr << "arg" << i;
+    hasAnyCallArg = true;
+  }
+  callExpr << ")";
+
+  if (returnType == "void") {
+    out << "  " << callExpr.str() << ";\n";
+    writeHermesDirectReturnValue(out, kind, signature->returnType->kind, "");
+  } else {
+    out << "  nativeResult = " << callExpr.str() << ";\n";
+    writeHermesDirectReturnValue(out, kind, signature->returnType->kind,
+                                 "nativeResult");
+  }
+  if (hasCleanupArgs) {
+    out << "    cleanupManagedArgs();\n";
+  }
+  out << "    return false;\n";
+  out << "  }\n";
   if (hasCleanupArgs) {
     out << "  cleanupManagedArgs();\n";
   }
@@ -1776,6 +2289,11 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   std::unordered_map<uint64_t, std::string> cFunctionEngineDirectEntries;
   std::unordered_map<uint64_t, std::string> objcV8Entries;
   std::unordered_map<uint64_t, std::string> cFunctionV8Entries;
+  std::unordered_map<uint64_t, std::string> objcHermesDirectReturnEntries;
+  std::unordered_map<uint64_t, std::string> cFunctionHermesDirectReturnEntries;
+  std::unordered_map<uint64_t, std::string> objcHermesFrameDirectReturnEntries;
+  std::unordered_map<uint64_t, std::string> cFunctionHermesFrameDirectReturnEntries;
+  std::unordered_map<uint64_t, std::string> blockHermesFrameDirectReturnEntries;
   std::unordered_map<uint64_t, std::string> blockPreparedEntries;
   std::unordered_map<uint64_t, std::string> dispatchEncoding;
   std::unordered_set<uint64_t> collidedDispatchIds;
@@ -1810,6 +2328,11 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       cFunctionEngineDirectEntries.erase(dispatchId);
       objcV8Entries.erase(dispatchId);
       cFunctionV8Entries.erase(dispatchId);
+      objcHermesDirectReturnEntries.erase(dispatchId);
+      cFunctionHermesDirectReturnEntries.erase(dispatchId);
+      objcHermesFrameDirectReturnEntries.erase(dispatchId);
+      cFunctionHermesFrameDirectReturnEntries.erase(dispatchId);
+      blockHermesFrameDirectReturnEntries.erase(dispatchId);
       blockPreparedEntries.erase(dispatchId);
       dispatchEncoding.erase(dispatchId);
       continue;
@@ -1829,15 +2352,29 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       objcNapiEntries.emplace(dispatchId, wrapperKey);
       objcEngineDirectEntries.emplace(dispatchId, wrapperKey);
       objcV8Entries.emplace(dispatchId, wrapperKey);
+      if (signature->returnType != nullptr &&
+          canSetHermesObjCReturnDirectly(signature->returnType->kind)) {
+        objcHermesDirectReturnEntries.emplace(dispatchId, wrapperKey);
+        objcHermesFrameDirectReturnEntries.emplace(dispatchId, wrapperKey);
+      }
     } else if (use.kind == DispatchKind::CFunction) {
       wrappersByKey.emplace(wrapperKey, std::make_pair(use.kind, signature));
       cFunctionNapiEntries.emplace(dispatchId, wrapperKey);
       cFunctionEngineDirectEntries.emplace(dispatchId, wrapperKey);
       cFunctionV8Entries.emplace(dispatchId, wrapperKey);
+      if (signature->returnType != nullptr &&
+          canSetHermesReturnDirectly(signature->returnType->kind)) {
+        cFunctionHermesDirectReturnEntries.emplace(dispatchId, wrapperKey);
+        cFunctionHermesFrameDirectReturnEntries.emplace(dispatchId, wrapperKey);
+      }
     } else if (use.kind == DispatchKind::BlockInvoke) {
       preparedWrappersByKey.emplace(wrapperKey,
                                     std::make_pair(use.kind, signature));
       blockPreparedEntries.emplace(dispatchId, wrapperKey);
+      if (signature->returnType != nullptr &&
+          canSetHermesReturnDirectly(signature->returnType->kind)) {
+        blockHermesFrameDirectReturnEntries.emplace(dispatchId, wrapperKey);
+      }
     }
   }
 
@@ -1872,6 +2409,37 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
     v8WrapperNameByKey.emplace(
         wrapper.first,
         makeV8WrapperName(wrapper.second.first, v8WrapperIndex++));
+  }
+
+  std::unordered_map<std::string, std::string> hermesDirectReturnWrapperNameByKey;
+  hermesDirectReturnWrapperNameByKey.reserve(wrappers.size());
+  size_t hermesDirectReturnWrapperIndex = 0;
+  for (const auto& wrapper : wrappers) {
+    hermesDirectReturnWrapperNameByKey.emplace(
+        wrapper.first,
+        makeHermesDirectReturnWrapperName(wrapper.second.first,
+                                          hermesDirectReturnWrapperIndex++));
+  }
+
+  std::unordered_map<std::string, std::string>
+      hermesFrameDirectReturnWrapperNameByKey;
+  hermesFrameDirectReturnWrapperNameByKey.reserve(wrappers.size());
+  size_t hermesFrameDirectReturnWrapperIndex = 0;
+  for (const auto& wrapper : wrappers) {
+    hermesFrameDirectReturnWrapperNameByKey.emplace(
+        wrapper.first,
+        makeHermesFrameDirectReturnWrapperName(
+            wrapper.second.first, hermesFrameDirectReturnWrapperIndex++));
+  }
+
+  std::unordered_map<std::string, std::string>
+      hermesBlockFrameDirectReturnWrapperNameByKey;
+  hermesBlockFrameDirectReturnWrapperNameByKey.reserve(preparedWrappers.size());
+  for (const auto& wrapper : preparedWrappers) {
+    hermesBlockFrameDirectReturnWrapperNameByKey.emplace(
+        wrapper.first,
+        makeHermesFrameDirectReturnWrapperName(
+            wrapper.second.first, hermesFrameDirectReturnWrapperIndex++));
   }
 
   std::unordered_map<std::string, std::string> engineDirectWrapperNameByKey;
@@ -1934,6 +2502,56 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       sortedCFunctionV8Entries.begin(), sortedCFunctionV8Entries.end(),
       [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
 
+  std::vector<std::pair<uint64_t, std::string>>
+      sortedObjCHermesDirectReturnEntries(
+          objcHermesDirectReturnEntries.begin(),
+          objcHermesDirectReturnEntries.end());
+  std::sort(sortedObjCHermesDirectReturnEntries.begin(),
+            sortedObjCHermesDirectReturnEntries.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
+
+  std::vector<std::pair<uint64_t, std::string>>
+      sortedCFunctionHermesDirectReturnEntries(
+          cFunctionHermesDirectReturnEntries.begin(),
+          cFunctionHermesDirectReturnEntries.end());
+  std::sort(sortedCFunctionHermesDirectReturnEntries.begin(),
+            sortedCFunctionHermesDirectReturnEntries.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
+
+  std::vector<std::pair<uint64_t, std::string>>
+      sortedObjCHermesFrameDirectReturnEntries(
+          objcHermesFrameDirectReturnEntries.begin(),
+          objcHermesFrameDirectReturnEntries.end());
+  std::sort(sortedObjCHermesFrameDirectReturnEntries.begin(),
+            sortedObjCHermesFrameDirectReturnEntries.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
+
+  std::vector<std::pair<uint64_t, std::string>>
+      sortedCFunctionHermesFrameDirectReturnEntries(
+          cFunctionHermesFrameDirectReturnEntries.begin(),
+          cFunctionHermesFrameDirectReturnEntries.end());
+  std::sort(sortedCFunctionHermesFrameDirectReturnEntries.begin(),
+            sortedCFunctionHermesFrameDirectReturnEntries.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
+
+  std::vector<std::pair<uint64_t, std::string>>
+      sortedBlockHermesFrameDirectReturnEntries(
+          blockHermesFrameDirectReturnEntries.begin(),
+          blockHermesFrameDirectReturnEntries.end());
+  std::sort(sortedBlockHermesFrameDirectReturnEntries.begin(),
+            sortedBlockHermesFrameDirectReturnEntries.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
+
   std::vector<std::pair<uint64_t, std::string>> sortedBlockPreparedEntries(
       blockPreparedEntries.begin(), blockPreparedEntries.end());
   std::sort(
@@ -1959,6 +2577,18 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "#if NS_GSD_BACKEND_ENGINE_DIRECT\n";
   generated << "#undef NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH\n";
   generated << "#define NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH 1\n";
+  generated << "#endif\n\n";
+  generated << "#if NS_GSD_BACKEND_HERMES\n";
+  generated << "#undef NS_HAS_GENERATED_SIGNATURE_HERMES_DIRECT_RETURN_DISPATCH\n";
+  generated << "#define NS_HAS_GENERATED_SIGNATURE_HERMES_DIRECT_RETURN_DISPATCH 1\n";
+  generated << "#undef "
+               "NS_HAS_GENERATED_SIGNATURE_HERMES_FRAME_DIRECT_RETURN_DISPATCH\n";
+  generated << "#define "
+               "NS_HAS_GENERATED_SIGNATURE_HERMES_FRAME_DIRECT_RETURN_DISPATCH 1\n";
+  generated << "#undef "
+               "NS_HAS_GENERATED_SIGNATURE_HERMES_BLOCK_FRAME_DIRECT_RETURN_DISPATCH\n";
+  generated << "#define "
+               "NS_HAS_GENERATED_SIGNATURE_HERMES_BLOCK_FRAME_DIRECT_RETURN_DISPATCH 1\n";
   generated << "#endif\n\n";
   generated << "namespace nativescript {\n\n";
 
@@ -2041,27 +2671,27 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
                "TryFastConvertHermesArgument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT "
-               "TryFastConvertHermesBoolArgument\n";
+               "TryFastConvertHermesGeneratedBoolArgument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT "
-               "TryFastConvertHermesInt8Argument\n";
+               "TryFastConvertHermesGeneratedInt8Argument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT "
-               "TryFastConvertHermesUInt8Argument\n";
+               "TryFastConvertHermesGeneratedUInt8Argument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT "
-               "TryFastConvertHermesInt16Argument\n";
+               "TryFastConvertHermesGeneratedInt16Argument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT "
-               "TryFastConvertHermesUInt16Argument\n";
+               "TryFastConvertHermesGeneratedUInt16Argument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT "
-               "TryFastConvertHermesInt32Argument\n";
+               "TryFastConvertHermesGeneratedInt32Argument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT "
-               "TryFastConvertHermesUInt32Argument\n";
+               "TryFastConvertHermesGeneratedUInt32Argument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT "
-               "TryFastConvertHermesInt64Argument\n";
+               "TryFastConvertHermesGeneratedInt64Argument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT "
-               "TryFastConvertHermesUInt64Argument\n";
+               "TryFastConvertHermesGeneratedUInt64Argument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT "
-               "TryFastConvertHermesFloatArgument\n";
+               "TryFastConvertHermesGeneratedFloatArgument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT "
-               "TryFastConvertHermesDoubleArgument\n";
+               "TryFastConvertHermesGeneratedDoubleArgument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT "
                "TryFastConvertHermesSelectorArgument\n";
   generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT "
@@ -2073,6 +2703,69 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
     writeEngineDirectWrapper(generated, wrapper.second.first,
                              engineDirectWrapperNameByKey.at(wrapper.first),
                              wrapper.second.second);
+  }
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT\n";
+  generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT\n";
+  generated << "#endif\n\n";
+
+  generated << "#if NS_GSD_BACKEND_HERMES\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT "
+               "TryFastConvertHermesArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT "
+               "TryFastConvertHermesGeneratedBoolArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT8_ARGUMENT "
+               "TryFastConvertHermesGeneratedInt8Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT8_ARGUMENT "
+               "TryFastConvertHermesGeneratedUInt8Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT16_ARGUMENT "
+               "TryFastConvertHermesGeneratedInt16Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT16_ARGUMENT "
+               "TryFastConvertHermesGeneratedUInt16Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT32_ARGUMENT "
+               "TryFastConvertHermesGeneratedInt32Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT32_ARGUMENT "
+               "TryFastConvertHermesGeneratedUInt32Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_INT64_ARGUMENT "
+               "TryFastConvertHermesGeneratedInt64Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_UINT64_ARGUMENT "
+               "TryFastConvertHermesGeneratedUInt64Argument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_FLOAT_ARGUMENT "
+               "TryFastConvertHermesGeneratedFloatArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_DOUBLE_ARGUMENT "
+               "TryFastConvertHermesGeneratedDoubleArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_SELECTOR_ARGUMENT "
+               "TryFastConvertHermesSelectorArgument\n";
+  generated << "#define NS_GSD_ENGINE_DIRECT_CONVERT_OBJECT_ARGUMENT "
+               "TryFastConvertHermesObjectArgument\n";
+  for (const auto& wrapper : wrappers) {
+    writeHermesDirectReturnWrapper(
+        generated, wrapper.second.first,
+        hermesDirectReturnWrapperNameByKey.at(wrapper.first),
+        wrapper.second.second);
+  }
+  for (const auto& wrapper : wrappers) {
+    writeHermesFrameDirectReturnWrapper(
+        generated, wrapper.second.first,
+        hermesFrameDirectReturnWrapperNameByKey.at(wrapper.first),
+        wrapper.second.second);
+  }
+  for (const auto& wrapper : preparedWrappers) {
+    writeHermesFrameDirectReturnWrapper(
+        generated, wrapper.second.first,
+        hermesBlockFrameDirectReturnWrapperNameByKey.at(wrapper.first),
+        wrapper.second.second);
   }
   generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_ARGUMENT\n";
   generated << "#undef NS_GSD_ENGINE_DIRECT_CONVERT_BOOL_ARGUMENT\n";
@@ -2135,6 +2828,58 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   for (const auto& entry : sortedCFunctionEngineDirectEntries) {
     generated << "    {" << toHexLiteral(entry.first) << ", &"
               << engineDirectWrapperNameByKey.at(entry.second) << "},\n";
+  }
+  generated << "};\n";
+  generated << "#endif\n\n";
+
+  generated << "#if NS_GSD_BACKEND_HERMES\n";
+  generated << "inline constexpr ObjCHermesDirectReturnDispatchEntry "
+               "kGeneratedObjCHermesDirectReturnDispatchEntries[] = {\n";
+  generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedObjCHermesDirectReturnEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << hermesDirectReturnWrapperNameByKey.at(entry.second)
+              << "},\n";
+  }
+  generated << "};\n\n";
+
+  generated << "inline constexpr CFunctionHermesDirectReturnDispatchEntry "
+               "kGeneratedCFunctionHermesDirectReturnDispatchEntries[] = {\n";
+  generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedCFunctionHermesDirectReturnEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << hermesDirectReturnWrapperNameByKey.at(entry.second)
+              << "},\n";
+  }
+  generated << "};\n";
+
+  generated << "inline constexpr ObjCHermesFrameDirectReturnDispatchEntry "
+               "kGeneratedObjCHermesFrameDirectReturnDispatchEntries[] = {\n";
+  generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedObjCHermesFrameDirectReturnEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << hermesFrameDirectReturnWrapperNameByKey.at(entry.second)
+              << "},\n";
+  }
+  generated << "};\n\n";
+
+  generated << "inline constexpr CFunctionHermesFrameDirectReturnDispatchEntry "
+               "kGeneratedCFunctionHermesFrameDirectReturnDispatchEntries[] = {\n";
+  generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedCFunctionHermesFrameDirectReturnEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << hermesFrameDirectReturnWrapperNameByKey.at(entry.second)
+              << "},\n";
+  }
+  generated << "};\n";
+
+  generated << "inline constexpr BlockHermesFrameDirectReturnDispatchEntry "
+               "kGeneratedBlockHermesFrameDirectReturnDispatchEntries[] = {\n";
+  generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedBlockHermesFrameDirectReturnEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << hermesBlockFrameDirectReturnWrapperNameByKey.at(entry.second)
+              << "},\n";
   }
   generated << "};\n";
   generated << "#endif\n\n";

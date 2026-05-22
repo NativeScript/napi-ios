@@ -2,6 +2,7 @@
 #define NS_HERMES_FAST_NATIVE_API_H
 
 #include <cstddef>
+#include <cstdint>
 
 #include "EngineDirectCall.h"
 #include "MetadataReader.h"
@@ -19,10 +20,19 @@ napi_value TryCallHermesObjCMemberFast(napi_env env, ObjCClassMember* member,
                                        EngineDirectMemberKind kind,
                                        bool* handled);
 
+napi_value TryCallHermesObjCMemberFastFromFrame(
+    napi_env env, ObjCClassMember* member, napi_value jsThis,
+    size_t actualArgc, const uint64_t* argsBase,
+    EngineDirectMemberKind kind, bool* handled);
+
 napi_value TryCallHermesCFunctionFast(napi_env env, MDSectionOffset offset,
                                       size_t actualArgc,
                                       const napi_value* rawArgs,
                                       bool* handled);
+
+napi_value TryCallHermesCFunctionFastFromFrame(
+    napi_env env, MDSectionOffset offset, size_t actualArgc,
+    const uint64_t* argsBase, bool* handled);
 
 }  // namespace nativescript
 

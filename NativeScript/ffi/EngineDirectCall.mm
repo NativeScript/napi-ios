@@ -28,8 +28,8 @@ constexpr const char* kNativePointerProperty = "__ns_native_ptr";
 
 inline bool needsRoundTripCacheFrame(Cif* cif) {
   return cif != nullptr &&
-         (cif->generatedDispatchHasRoundTripCacheArgument ||
-          cif->generatedDispatchUsesObjectReturnStorage);
+         cif->generatedDispatchUsesObjectReturnStorage &&
+         cif->generatedDispatchHasRoundTripCacheArgument;
 }
 
 class RoundTripCacheFrameGuard {
@@ -492,6 +492,12 @@ ObjCEngineDirectInvoker ensureObjCEngineDirectInvoker(Cif* cif,
     descriptor->v8Invoker =
         reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
 #endif
+#ifdef TARGET_ENGINE_HERMES
+    descriptor->hermesDirectReturnInvoker =
+        reinterpret_cast<void*>(lookupObjCHermesDirectReturnInvoker(descriptor->dispatchId));
+    descriptor->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
+        lookupObjCHermesFrameDirectReturnInvoker(descriptor->dispatchId));
+#endif
     descriptor->dispatchLookupCached = true;
   }
 
@@ -510,6 +516,8 @@ CFunctionEngineDirectInvoker ensureCFunctionEngineDirectInvoker(CFunction* funct
       function->napiInvoker = nullptr;
       function->engineDirectInvoker = nullptr;
       function->v8Invoker = nullptr;
+      function->hermesDirectReturnInvoker = nullptr;
+      function->hermesFrameDirectReturnInvoker = nullptr;
     }
     return nullptr;
   }
@@ -528,6 +536,12 @@ CFunctionEngineDirectInvoker ensureCFunctionEngineDirectInvoker(CFunction* funct
 #ifdef TARGET_ENGINE_V8
     function->v8Invoker =
         reinterpret_cast<void*>(lookupCFunctionV8Invoker(function->dispatchId));
+#endif
+#ifdef TARGET_ENGINE_HERMES
+    function->hermesDirectReturnInvoker =
+        reinterpret_cast<void*>(lookupCFunctionHermesDirectReturnInvoker(function->dispatchId));
+    function->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
+        lookupCFunctionHermesFrameDirectReturnInvoker(function->dispatchId));
 #endif
     function->dispatchLookupCached = true;
   }
@@ -664,20 +678,6 @@ napi_value convertCFunctionReturnValue(napi_env env, CFunction* function,
     toJSFlags |= kReturnOwned;
   }
   return cif->returnType->toJS(env, rvalue, toJSFlags);
-}
-
-bool isCompatOrMainCFunction(ObjCBridgeState* bridgeState, MDSectionOffset offset) {
-  if (bridgeState == nullptr) {
-    return true;
-  }
-
-  const char* name = bridgeState->metadata->getString(offset);
-  return name == nullptr ||
-         std::strcmp(name, "dispatch_async") == 0 ||
-         std::strcmp(name, "dispatch_get_current_queue") == 0 ||
-         std::strcmp(name, "dispatch_get_global_queue") == 0 ||
-         std::strcmp(name, "UIApplicationMain") == 0 ||
-         std::strcmp(name, "NSApplicationMain") == 0;
 }
 
 }  // namespace
@@ -1006,14 +1006,14 @@ napi_value TryCallCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
   }
 
   ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
-  if (env == nullptr || bridgeState == nullptr ||
-      isCompatOrMainCFunction(bridgeState, offset)) {
+  if (env == nullptr || bridgeState == nullptr) {
     return nullptr;
   }
 
   CFunction* function = bridgeState->getCFunction(env, offset);
   Cif* cif = function != nullptr ? function->cif : nullptr;
-  if (function == nullptr || cif == nullptr || cif->isVariadic) {
+  if (function == nullptr || function->skipEngineDirectFastPath ||
+      cif == nullptr || cif->isVariadic) {
     return nullptr;
   }
 

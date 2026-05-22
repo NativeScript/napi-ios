@@ -35,8 +35,14 @@ class MethodDescriptor {
   void* napiInvoker = nullptr;
   void* engineDirectInvoker = nullptr;
   void* v8Invoker = nullptr;
+  void* hermesDirectReturnInvoker = nullptr;
+  void* hermesFrameDirectReturnInvoker = nullptr;
   bool nserrorOutSignatureCached = false;
   bool nserrorOutSignature = false;
+#ifdef TARGET_ENGINE_HERMES
+  bool hermesBlockFallbackCached = false;
+  bool hermesBlockFallback = false;
+#endif
 
   MethodDescriptor() {}
 
@@ -128,6 +134,15 @@ class ObjCClassMember {
   bool classMethod;
   ObjCClass* cls;
   std::vector<ObjCClassMemberOverload> overloads;
+#ifdef TARGET_ENGINE_HERMES
+  napi_env hermesReceiverCacheEnv = nullptr;
+  uint64_t hermesReceiverCacheRawThis = 0;
+  id hermesReceiverCacheSelf = nil;
+  bool hermesReceiverCacheReceiverIsClass = false;
+  Class hermesReceiverCacheReceiverClass = nil;
+  bool hermesReceiverCacheRequiresSuperCall = false;
+  uint64_t hermesReceiverCacheObjectRefsGeneration = 0;
+#endif
 };
 
 }  // namespace nativescript

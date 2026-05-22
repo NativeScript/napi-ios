@@ -1,13 +1,19 @@
 #include "Block.h"
 #import <Foundation/Foundation.h>
+#include <algorithm>
 #include <cstdint>
 #include <cstring>
 #include <mutex>
+#include <string>
 #include <thread>
 #include <unordered_map>
+#include <vector>
+#include "HermesFastCallbackInfo.h"
 #include "Interop.h"
+#include "NativeScriptException.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
+#include "TypeConv.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"
@@ -73,6 +79,15 @@ inline void deleteBlockReferenceOnOwningLoop(const BlockJsFunctionEntry& entry) 
 inline nativescript::BlockPreparedInvoker ensureFunctionPointerPreparedInvoker(
     nativescript::FunctionPointer* ref, nativescript::SignatureCallKind kind) {
   if (ref == nullptr || ref->cif == nullptr || ref->cif->signatureHash == 0) {
+    if (ref != nullptr) {
+      ref->dispatchLookupCached = true;
+      ref->dispatchLookupSignatureHash = 0;
+      ref->dispatchId = 0;
+      ref->preparedInvoker = nullptr;
+#ifdef TARGET_ENGINE_HERMES
+      ref->hermesFrameDirectReturnInvoker = nullptr;
+#endif
+    }
     return nullptr;
   }
 
@@ -84,15 +99,287 @@ inline nativescript::BlockPreparedInvoker ensureFunctionPointerPreparedInvoker(
     if (kind == nativescript::SignatureCallKind::BlockInvoke) {
       ref->preparedInvoker =
           reinterpret_cast<void*>(nativescript::lookupBlockPreparedInvoker(ref->dispatchId));
+#ifdef TARGET_ENGINE_HERMES
+      ref->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
+          nativescript::lookupBlockHermesFrameDirectReturnInvoker(ref->dispatchId));
+#endif
     } else {
       ref->preparedInvoker =
           reinterpret_cast<void*>(nativescript::lookupCFunctionPreparedInvoker(ref->dispatchId));
+#ifdef TARGET_ENGINE_HERMES
+      ref->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
+          nativescript::lookupCFunctionHermesFrameDirectReturnInvoker(ref->dispatchId));
+#endif
     }
     ref->dispatchLookupCached = true;
   }
 
   return reinterpret_cast<nativescript::BlockPreparedInvoker>(ref->preparedInvoker);
 }
+
+inline const napi_value* prepareFunctionPointerInvocationArgs(napi_env env, nativescript::Cif* cif,
+                                                              size_t actualArgc,
+                                                              const napi_value* rawArgs,
+                                                              napi_value* stackArgs,
+                                                              size_t stackCapacity,
+                                                              std::vector<napi_value>* heapArgs) {
+  if (cif == nullptr || cif->argc == 0) {
+    return nullptr;
+  }
+
+  if (actualArgc == cif->argc && rawArgs != nullptr) {
+    return rawArgs;
+  }
+
+  napi_value jsUndefined = nullptr;
+  napi_get_undefined(env, &jsUndefined);
+
+  if (cif->argc <= stackCapacity) {
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      stackArgs[i] = i < actualArgc && rawArgs != nullptr ? rawArgs[i] : jsUndefined;
+    }
+    return stackArgs;
+  }
+
+  heapArgs->assign(cif->argc, jsUndefined);
+  const size_t copyArgc = std::min(actualArgc, static_cast<size_t>(cif->argc));
+  if (copyArgc > 0 && rawArgs != nullptr) {
+    memcpy(heapArgs->data(), rawArgs, copyArgc * sizeof(napi_value));
+  }
+  return heapArgs->data();
+}
+
+#ifdef TARGET_ENGINE_HERMES
+inline void copyHermesFunctionPointerFrameArgs(const uint64_t* argsBase, size_t argc,
+                                               napi_value* args) {
+  if (argsBase == nullptr || args == nullptr) {
+    return;
+  }
+  for (size_t i = 0; i < argc; i++) {
+    args[i] = nativescript::hermesDispatchFrameArg(argsBase, i);
+  }
+}
+#endif
+
+inline napi_value tryFastConvertFunctionPointerReturn(napi_env env, nativescript::Cif* cif,
+                                                      void* rvalue) {
+  napi_value fastResult = nullptr;
+  if (cif != nullptr && cif->returnType != nullptr &&
+      nativescript::TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
+                                                    &fastResult)) {
+    return fastResult;
+  }
+  return nullptr;
+}
+
+napi_value callFunctionPointerAsCFunctionDirect(napi_env env, nativescript::FunctionPointer* ref,
+                                                size_t actualArgc,
+                                                const napi_value* rawArgs) {
+  if (ref == nullptr || ref->cif == nullptr || ref->function == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Missing native function pointer.");
+    return nullptr;
+  }
+
+  auto cif = ref->cif;
+  napi_value stackInvocationArgs[16];
+  std::vector<napi_value> heapInvocationArgs;
+  const napi_value* invocationArgs = prepareFunctionPointerInvocationArgs(
+      env, cif, actualArgc, rawArgs, stackInvocationArgs, 16, &heapInvocationArgs);
+
+  void* stackAValues[16];
+  std::vector<void*> heapAValues;
+  void** avalues = stackAValues;
+  if (cif->argc > 16) {
+    heapAValues.resize(cif->argc);
+    avalues = heapAValues.data();
+  }
+
+  bool shouldFreeAny = false;
+  uint8_t stackShouldFree[16] = {};
+  std::vector<uint8_t> heapShouldFree;
+  uint8_t* shouldFree = stackShouldFree;
+  if (cif->argc > 16) {
+    heapShouldFree.assign(cif->argc, false);
+    shouldFree = heapShouldFree.data();
+  }
+
+  for (unsigned int i = 0; i < cif->argc; i++) {
+    avalues[i] = cif->avalues[i];
+    bool shouldFreeArg = false;
+    cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i], &shouldFreeArg,
+                               &shouldFreeAny);
+    shouldFree[i] = shouldFreeArg ? 1 : 0;
+  }
+
+  void* rvalue = cif->rvalue;
+  auto preparedInvoker =
+      ensureFunctionPointerPreparedInvoker(ref, nativescript::SignatureCallKind::CFunction);
+
+  @try {
+    if (preparedInvoker != nullptr) {
+      preparedInvoker(ref->function, avalues, rvalue);
+    } else {
+      ffi_call(&cif->cif, FFI_FN(ref->function), rvalue, avalues);
+    }
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    nativescript::NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return nullptr;
+  }
+
+  if (shouldFreeAny) {
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      if (shouldFree[i]) {
+        cif->argTypes[i]->free(env, *((void**)avalues[i]));
+      }
+    }
+  }
+
+  if (napi_value fastResult = tryFastConvertFunctionPointerReturn(env, cif, rvalue)) {
+    return fastResult;
+  }
+  return cif->returnType->toJS(env, rvalue);
+}
+
+napi_value callFunctionPointerAsBlockDirect(napi_env env, nativescript::FunctionPointer* ref,
+                                            size_t actualArgc,
+                                            const napi_value* rawArgs) {
+  if (ref == nullptr || ref->cif == nullptr || ref->function == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Missing native block pointer.");
+    return nullptr;
+  }
+
+  auto block = static_cast<Block_literal_1*>(ref->function);
+  if (block == nullptr || block->invoke == nullptr) {
+    napi_throw_error(env, "NativeScriptException", "Missing native block invoke pointer.");
+    return nullptr;
+  }
+
+  auto cif = ref->cif;
+  napi_value stackInvocationArgs[16];
+  std::vector<napi_value> heapInvocationArgs;
+  const napi_value* invocationArgs = prepareFunctionPointerInvocationArgs(
+      env, cif, actualArgc, rawArgs, stackInvocationArgs, 16, &heapInvocationArgs);
+
+  void* stackAValues[17];
+  std::vector<void*> heapAValues;
+  void** avalues = stackAValues;
+  if (cif->cif.nargs > 17) {
+    heapAValues.resize(cif->cif.nargs);
+    avalues = heapAValues.data();
+  }
+
+  bool shouldFreeAny = false;
+  uint8_t stackShouldFree[16] = {};
+  std::vector<uint8_t> heapShouldFree;
+  uint8_t* shouldFree = stackShouldFree;
+  if (cif->argc > 16) {
+    heapShouldFree.assign(cif->argc, false);
+    shouldFree = heapShouldFree.data();
+  }
+
+  avalues[0] = &block;
+  for (unsigned int i = 0; i < cif->argc; i++) {
+    avalues[i + 1] = cif->avalues[i];
+    bool shouldFreeArg = false;
+    cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i + 1], &shouldFreeArg,
+                               &shouldFreeAny);
+    shouldFree[i] = shouldFreeArg ? 1 : 0;
+  }
+
+  void* rvalue = cif->rvalue;
+  nativescript::BlockPreparedInvoker preparedInvoker = ensureFunctionPointerPreparedInvoker(
+      ref, nativescript::SignatureCallKind::BlockInvoke);
+
+  @try {
+    if (preparedInvoker != nullptr) {
+      preparedInvoker(block->invoke, avalues, rvalue);
+    } else {
+      ffi_call(&cif->cif, FFI_FN(block->invoke), rvalue, avalues);
+    }
+  } @catch (NSException* exception) {
+    std::string message = exception.description.UTF8String;
+    nativescript::NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return nullptr;
+  }
+
+  if (shouldFreeAny) {
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      if (shouldFree[i]) {
+        cif->argTypes[i]->free(env, *((void**)avalues[i + 1]));
+      }
+    }
+  }
+
+  if (napi_value fastResult = tryFastConvertFunctionPointerReturn(env, cif, rvalue)) {
+    return fastResult;
+  }
+  return cif->returnType->toJS(env, rvalue);
+}
+
+#ifdef TARGET_ENGINE_HERMES
+napi_value tryCallHermesFunctionPointerFastFromFrame(
+    napi_env env, nativescript::FunctionPointer* ref, bool isBlock, size_t actualArgc,
+    const uint64_t* argsBase, bool* handled) {
+  if (handled != nullptr) {
+    *handled = false;
+  }
+
+  auto cif = ref != nullptr ? ref->cif : nullptr;
+  if (env == nullptr || ref == nullptr || cif == nullptr || ref->function == nullptr ||
+      cif->isVariadic || cif->returnType == nullptr || argsBase == nullptr ||
+      actualArgc != cif->argc || cif->signatureHash == 0) {
+    return nullptr;
+  }
+
+  ensureFunctionPointerPreparedInvoker(
+      ref, isBlock ? nativescript::SignatureCallKind::BlockInvoke
+                   : nativescript::SignatureCallKind::CFunction);
+  auto frameInvoker = ref->hermesFrameDirectReturnInvoker;
+  if (frameInvoker == nullptr) {
+    return nullptr;
+  }
+
+  napi_value directResult = nullptr;
+  @try {
+    if (isBlock) {
+      auto block = static_cast<Block_literal_1*>(ref->function);
+      if (block == nullptr || block->invoke == nullptr) {
+        return nullptr;
+      }
+      auto invoker = reinterpret_cast<nativescript::BlockHermesFrameDirectReturnInvoker>(
+          frameInvoker);
+      if (invoker(env, cif, block->invoke, block, argsBase, &directResult)) {
+        if (handled != nullptr) {
+          *handled = true;
+        }
+        return directResult;
+      }
+    } else {
+      auto invoker = reinterpret_cast<nativescript::CFunctionHermesFrameDirectReturnInvoker>(
+          frameInvoker);
+      if (invoker(env, cif, ref->function, argsBase, &directResult)) {
+        if (handled != nullptr) {
+          *handled = true;
+        }
+        return directResult;
+      }
+    }
+  } @catch (NSException* exception) {
+    if (handled != nullptr) {
+      *handled = true;
+    }
+    std::string message = exception.description.UTF8String;
+    nativescript::NativeScriptException nativeScriptException(message);
+    nativeScriptException.ReThrowToJS(env);
+    return nullptr;
+  }
+
+  return nullptr;
+}
+#endif
 
 void block_copy(void* dest, void* src) {
   auto dst = static_cast<Block_literal_1*>(dest);
@@ -454,93 +741,83 @@ void FunctionPointer::finalize(napi_env env, void* finalize_data, void* finalize
 }
 
 napi_value FunctionPointer::jsCallAsCFunction(napi_env env, napi_callback_info cbinfo) {
-  FunctionPointer* ref;
-
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, (void**)&ref);
-
-  auto cif = ref->cif;
-
-  size_t argc = cif->argc;
-  napi_get_cb_info(env, cbinfo, &argc, cif->argv, nullptr, nullptr);
-
-  void* avalues[cif->argc];
-  void* rvalue = cif->rvalue;
-
-  bool shouldFreeAny = false;
-  bool shouldFree[cif->argc];
-
-  if (cif->argc > 0) {
-    for (unsigned int i = 0; i < cif->argc; i++) {
-      shouldFree[i] = false;
-      avalues[i] = cif->avalues[i];
-      cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i], &shouldFree[i], &shouldFreeAny);
+#ifdef TARGET_ENGINE_HERMES
+  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
+    auto ref = static_cast<FunctionPointer*>(HermesFastData(fastInfo));
+    const size_t actualArgc = HermesFastArgc(fastInfo);
+    bool handledDirect = false;
+    napi_value directResult = tryCallHermesFunctionPointerFastFromFrame(
+        env, ref, false, actualArgc, HermesFastArgsBase(fastInfo), &handledDirect);
+    if (handledDirect) {
+      return directResult;
     }
-  }
 
-  auto preparedInvoker =
-      ensureFunctionPointerPreparedInvoker(ref, SignatureCallKind::CFunction);
-  if (preparedInvoker != nullptr) {
-    preparedInvoker(ref->function, avalues, rvalue);
-  } else {
-    ffi_call(&cif->cif, FFI_FN(ref->function), rvalue, avalues);
-  }
-
-  if (shouldFreeAny) {
-    for (unsigned int i = 0; i < cif->argc; i++) {
-      if (shouldFree[i]) {
-        cif->argTypes[i]->free(env, *((void**)avalues[i]));
-      }
+    napi_value stackArgs[16];
+    if (actualArgc <= 16) {
+      copyHermesFunctionPointerFrameArgs(HermesFastArgsBase(fastInfo), actualArgc, stackArgs);
+      return callFunctionPointerAsCFunctionDirect(env, ref, actualArgc, stackArgs);
     }
+
+    std::vector<napi_value> heapArgs(actualArgc);
+    copyHermesFunctionPointerFrameArgs(HermesFastArgsBase(fastInfo), actualArgc,
+                                       heapArgs.data());
+    return callFunctionPointerAsCFunctionDirect(env, ref, actualArgc, heapArgs.data());
+  }
+#endif
+
+  FunctionPointer* ref = nullptr;
+  size_t actualArgc = 16;
+  napi_value stackArgs[16];
+  napi_get_cb_info(env, cbinfo, &actualArgc, stackArgs, nullptr, (void**)&ref);
+
+  if (actualArgc > 16) {
+    std::vector<napi_value> heapArgs(actualArgc);
+    size_t retryArgc = actualArgc;
+    napi_get_cb_info(env, cbinfo, &retryArgc, heapArgs.data(), nullptr, nullptr);
+    return callFunctionPointerAsCFunctionDirect(env, ref, retryArgc, heapArgs.data());
   }
 
-  return cif->returnType->toJS(env, rvalue);
+  return callFunctionPointerAsCFunctionDirect(env, ref, actualArgc, stackArgs);
 }
 
 napi_value FunctionPointer::jsCallAsBlock(napi_env env, napi_callback_info cbinfo) {
-  FunctionPointer* ref;
-
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, (void**)&ref);
-
-  Block_literal_1* block = (Block_literal_1*)ref->function;
-  auto cif = ref->cif;
-
-  size_t argc = cif->argc;
-  napi_get_cb_info(env, cbinfo, &argc, cif->argv, nullptr, nullptr);
-
-  void* avalues[cif->cif.nargs];
-  void* rvalue = cif->rvalue;
-
-  bool shouldFreeAny = false;
-  bool shouldFree[cif->argc];
-
-  avalues[0] = &block;
-
-  if (cif->argc > 0) {
-    for (unsigned int i = 0; i < cif->argc; i++) {
-      shouldFree[i] = false;
-      avalues[i + 1] = cif->avalues[i];
-      cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i + 1], &shouldFree[i], &shouldFreeAny);
+#ifdef TARGET_ENGINE_HERMES
+  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
+    auto ref = static_cast<FunctionPointer*>(HermesFastData(fastInfo));
+    const size_t actualArgc = HermesFastArgc(fastInfo);
+    bool handledDirect = false;
+    napi_value directResult = tryCallHermesFunctionPointerFastFromFrame(
+        env, ref, true, actualArgc, HermesFastArgsBase(fastInfo), &handledDirect);
+    if (handledDirect) {
+      return directResult;
     }
-  }
 
-  BlockPreparedInvoker preparedInvoker =
-      ensureFunctionPointerPreparedInvoker(ref, SignatureCallKind::BlockInvoke);
-
-  if (preparedInvoker != nullptr) {
-    preparedInvoker(block->invoke, avalues, rvalue);
-  } else {
-    ffi_call(&cif->cif, FFI_FN(block->invoke), rvalue, avalues);
-  }
-
-  if (shouldFreeAny) {
-    for (unsigned int i = 0; i < cif->argc; i++) {
-      if (shouldFree[i]) {
-        cif->argTypes[i]->free(env, *((void**)avalues[i + 1]));
-      }
+    napi_value stackArgs[16];
+    if (actualArgc <= 16) {
+      copyHermesFunctionPointerFrameArgs(HermesFastArgsBase(fastInfo), actualArgc, stackArgs);
+      return callFunctionPointerAsBlockDirect(env, ref, actualArgc, stackArgs);
     }
+
+    std::vector<napi_value> heapArgs(actualArgc);
+    copyHermesFunctionPointerFrameArgs(HermesFastArgsBase(fastInfo), actualArgc,
+                                       heapArgs.data());
+    return callFunctionPointerAsBlockDirect(env, ref, actualArgc, heapArgs.data());
+  }
+#endif
+
+  FunctionPointer* ref = nullptr;
+  size_t actualArgc = 16;
+  napi_value stackArgs[16];
+  napi_get_cb_info(env, cbinfo, &actualArgc, stackArgs, nullptr, (void**)&ref);
+
+  if (actualArgc > 16) {
+    std::vector<napi_value> heapArgs(actualArgc);
+    size_t retryArgc = actualArgc;
+    napi_get_cb_info(env, cbinfo, &retryArgc, heapArgs.data(), nullptr, nullptr);
+    return callFunctionPointerAsBlockDirect(env, ref, retryArgc, heapArgs.data());
   }
 
-  return cif->returnType->toJS(env, rvalue);
+  return callFunctionPointerAsBlockDirect(env, ref, actualArgc, stackArgs);
 }
 
 }  // namespace nativescript

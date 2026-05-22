@@ -17,6 +17,13 @@
 
 namespace nativescript {
 
+#ifndef NS_LIKELY
+#define NS_LIKELY(value) __builtin_expect(!!(value), 1)
+#endif
+#ifndef NS_UNLIKELY
+#define NS_UNLIKELY(value) __builtin_expect(!!(value), 0)
+#endif
+
 enum class SignatureCallKind : uint8_t {
   ObjCMethod = 1,
   CFunction = 2,
@@ -52,6 +59,434 @@ using CFunctionV8Invoker =
     bool (*)(napi_env env, Cif* cif, void* fnptr,
              const v8::FunctionCallbackInfo<v8::Value>& info, void* rvalue,
              bool* didSetReturnValue);
+#endif
+#ifdef TARGET_ENGINE_HERMES
+struct HermesObjCReturnContext {
+  void* bridgeState = nullptr;
+  napi_value jsThis = nullptr;
+  id self = nil;
+  Class declaredClass = nil;
+  bool returnOwned = false;
+  bool receiverIsClass = false;
+  bool classMethod = false;
+  bool propertyAccess = false;
+};
+
+using ObjCHermesDirectReturnInvoker = bool (*)(napi_env env, Cif* cif,
+                                               void* fnptr, id self,
+                                               SEL selector,
+                                               const HermesObjCReturnContext* returnContext,
+                                               const napi_value* argv,
+                                               napi_value* result);
+using CFunctionHermesDirectReturnInvoker =
+    bool (*)(napi_env env, Cif* cif, void* fnptr,
+             const napi_value* argv, napi_value* result);
+using ObjCHermesFrameDirectReturnInvoker = bool (*)(
+    napi_env env, Cif* cif, void* fnptr, id self, SEL selector,
+    const HermesObjCReturnContext* returnContext, const uint64_t* argsBase,
+    napi_value* result);
+using CFunctionHermesFrameDirectReturnInvoker = bool (*)(
+    napi_env env, Cif* cif, void* fnptr, const uint64_t* argsBase,
+    napi_value* result);
+using BlockHermesFrameDirectReturnInvoker = bool (*)(
+    napi_env env, Cif* cif, void* fnptr, void* block,
+    const uint64_t* argsBase, napi_value* result);
+
+bool TryFastSetHermesGeneratedObjCObjectReturnValue(
+    napi_env env, Cif* cif, const HermesObjCReturnContext* context,
+    SEL selector, MDTypeKind kind, id value, napi_value* result);
+
+constexpr uint64_t kHermesDispatchFirstTaggedValue = 0xfff9000000000000ULL;
+constexpr uint64_t kHermesDispatchBoolETag = 0x1fff6ULL;
+constexpr uint64_t kHermesDispatchBoolBit = 1ULL << 46;
+
+inline bool isHermesDispatchNumber(uint64_t raw) {
+  return raw < kHermesDispatchFirstTaggedValue;
+}
+
+inline bool isHermesDispatchBool(uint64_t raw) {
+  return (raw >> 47) == kHermesDispatchBoolETag;
+}
+
+inline uint64_t hermesDispatchRawValueBits(napi_value value) {
+  return value != nullptr ? *reinterpret_cast<const uint64_t*>(value) : 0;
+}
+
+inline napi_value hermesDispatchFrameArg(const uint64_t* argsBase,
+                                         size_t index) {
+  return argsBase != nullptr
+             ? reinterpret_cast<napi_value>(
+                   const_cast<uint64_t*>(argsBase - (index + 1)))
+             : nullptr;
+}
+
+inline uint64_t hermesDispatchFrameRawArg(const uint64_t* argsBase,
+                                          size_t index) {
+  return argsBase != nullptr ? *(argsBase - (index + 1)) : 0;
+}
+
+inline double hermesDispatchRawToDouble(uint64_t raw) {
+  double value = 0.0;
+  std::memcpy(&value, &raw, sizeof(value));
+  return value;
+}
+
+inline bool hermesDispatchRawDoubleIsFinite(uint64_t raw) {
+  constexpr uint64_t kExponentMask = 0x7ff0000000000000ULL;
+  return (raw & kExponentMask) != kExponentMask;
+}
+
+inline bool readHermesDispatchFiniteNumber(napi_value value, double* result) {
+  if (value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  const uint64_t raw = hermesDispatchRawValueBits(value);
+  if (!isHermesDispatchNumber(raw)) {
+    return false;
+  }
+
+  *result = hermesDispatchRawDoubleIsFinite(raw)
+                ? hermesDispatchRawToDouble(raw)
+                : 0.0;
+  return true;
+}
+
+inline bool readHermesDispatchFiniteNumberRaw(uint64_t raw, double* result) {
+  if (result == nullptr || !isHermesDispatchNumber(raw)) {
+    return false;
+  }
+
+  *result = hermesDispatchRawDoubleIsFinite(raw)
+                ? hermesDispatchRawToDouble(raw)
+                : 0.0;
+  return true;
+}
+
+inline napi_value makeHermesDispatchRawValue(Cif* cif, uint64_t raw) {
+  if (cif != nullptr) {
+    cif->hermesRawReturnSlot = raw;
+    return reinterpret_cast<napi_value>(&cif->hermesRawReturnSlot);
+  }
+
+  static thread_local uint64_t slots[64] = {};
+  static thread_local unsigned int nextSlot = 0;
+  uint64_t* slot = &slots[nextSlot++ & 63];
+  *slot = raw;
+  return reinterpret_cast<napi_value>(slot);
+}
+
+inline napi_value makeHermesDispatchRawNumberValue(Cif* cif, double value) {
+  uint64_t raw = 0;
+  std::memcpy(&raw, &value, sizeof(raw));
+  return makeHermesDispatchRawValue(cif, raw);
+}
+
+inline napi_value makeHermesDispatchRawBoolValue(Cif* cif, bool value) {
+  return makeHermesDispatchRawValue(
+      cif,
+      (kHermesDispatchBoolETag << 47) |
+      (value ? kHermesDispatchBoolBit : 0));
+}
+
+inline bool TryFastConvertHermesGeneratedBoolArgument(
+    napi_env env, napi_value value, uint8_t* result) {
+  if (value == nullptr || result == nullptr) {
+    return false;
+  }
+  const uint64_t raw = hermesDispatchRawValueBits(value);
+  if (!isHermesDispatchBool(raw)) {
+    return false;
+  }
+  *result = (raw & kHermesDispatchBoolBit) != 0 ? static_cast<uint8_t>(1)
+                                                : static_cast<uint8_t>(0);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedBoolRawArgument(uint64_t raw,
+                                                         uint8_t* result) {
+  if (result == nullptr || !isHermesDispatchBool(raw)) {
+    return false;
+  }
+  *result = (raw & kHermesDispatchBoolBit) != 0 ? static_cast<uint8_t>(1)
+                                                : static_cast<uint8_t>(0);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedDoubleArgument(
+    napi_env env, napi_value value, double* result) {
+  return readHermesDispatchFiniteNumber(value, result);
+}
+
+inline bool TryFastConvertHermesGeneratedDoubleRawArgument(uint64_t raw,
+                                                           double* result) {
+  return readHermesDispatchFiniteNumberRaw(raw, result);
+}
+
+inline bool TryFastConvertHermesGeneratedFloatArgument(
+    napi_env env, napi_value value, float* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<float>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedFloatRawArgument(uint64_t raw,
+                                                          float* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<float>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedInt8Argument(
+    napi_env env, napi_value value, int8_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int8_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedInt8RawArgument(uint64_t raw,
+                                                         int8_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<int8_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedUInt8Argument(
+    napi_env env, napi_value value, uint8_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint8_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedUInt8RawArgument(uint64_t raw,
+                                                          uint8_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint8_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedInt16Argument(
+    napi_env env, napi_value value, int16_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int16_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedInt16RawArgument(uint64_t raw,
+                                                          int16_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<int16_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedUInt16Argument(
+    napi_env env, napi_value value, uint16_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint16_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedUInt16RawArgument(uint64_t raw,
+                                                           uint16_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint16_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedInt32Argument(
+    napi_env env, napi_value value, int32_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int32_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedInt32RawArgument(uint64_t raw,
+                                                          int32_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<int32_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedUInt32Argument(
+    napi_env env, napi_value value, uint32_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint32_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedUInt32RawArgument(uint64_t raw,
+                                                           uint32_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint32_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedInt64Argument(
+    napi_env env, napi_value value, int64_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<int64_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedInt64RawArgument(uint64_t raw,
+                                                          int64_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<int64_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedUInt64Argument(
+    napi_env env, napi_value value, uint64_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumber(value, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint64_t>(converted);
+  return true;
+}
+
+inline bool TryFastConvertHermesGeneratedUInt64RawArgument(uint64_t raw,
+                                                           uint64_t* result) {
+  double converted = 0.0;
+  if (!readHermesDispatchFiniteNumberRaw(raw, &converted)) {
+    return false;
+  }
+  *result = static_cast<uint64_t>(converted);
+  return true;
+}
+
+inline bool SetHermesGeneratedVoidReturn(napi_env env, napi_value* result) {
+  return napi_get_null(env, result) == napi_ok;
+}
+
+inline bool SetHermesGeneratedBoolReturn(Cif* cif, napi_value* result,
+                                         bool value) {
+  *result = makeHermesDispatchRawBoolValue(cif, value);
+  return true;
+}
+
+inline bool SetHermesGeneratedInt8Return(Cif* cif, napi_value* result,
+                                         int8_t value) {
+  if (value == 0 || value == 1) {
+    *result = makeHermesDispatchRawBoolValue(cif, value == 1);
+  } else {
+    *result =
+        makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
+  }
+  return true;
+}
+
+inline bool SetHermesGeneratedUInt8Return(Cif* cif, napi_value* result,
+                                          uint8_t value) {
+  if (value == 0 || value == 1) {
+    *result = makeHermesDispatchRawBoolValue(cif, value == 1);
+  } else {
+    *result =
+        makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
+  }
+  return true;
+}
+
+inline bool SetHermesGeneratedInt16Return(Cif* cif, napi_value* result,
+                                          int16_t value) {
+  *result = makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
+  return true;
+}
+
+inline bool SetHermesGeneratedUInt16Return(napi_env env, Cif* cif,
+                                           napi_value* result,
+                                           uint16_t value) {
+  *result = makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
+  return true;
+}
+
+inline bool SetHermesGeneratedInt32Return(Cif* cif, napi_value* result,
+                                          int32_t value) {
+  *result = makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
+  return true;
+}
+
+inline bool SetHermesGeneratedUInt32Return(Cif* cif, napi_value* result,
+                                           uint32_t value) {
+  *result = makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
+  return true;
+}
+
+inline bool SetHermesGeneratedInt64Return(napi_env env, Cif* cif,
+                                          napi_value* result,
+                                          int64_t value) {
+  constexpr int64_t kMaxSafeInteger = 9007199254740991LL;
+  if (NS_UNLIKELY(value > kMaxSafeInteger || value < -kMaxSafeInteger)) {
+    return napi_create_bigint_int64(env, value, result) == napi_ok;
+  }
+  *result = makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
+  return true;
+}
+
+inline bool SetHermesGeneratedUInt64Return(napi_env env, Cif* cif,
+                                           napi_value* result,
+                                           uint64_t value) {
+  constexpr uint64_t kMaxSafeInteger = 9007199254740991ULL;
+  if (NS_UNLIKELY(value > kMaxSafeInteger)) {
+    return napi_create_bigint_uint64(env, value, result) == napi_ok;
+  }
+  *result = makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
+  return true;
+}
+
+inline bool SetHermesGeneratedDoubleReturn(Cif* cif, napi_value* result,
+                                           double value) {
+  *result = makeHermesDispatchRawNumberValue(cif, value);
+  return true;
+}
 #endif
 
 struct ObjCDispatchEntry {
@@ -96,8 +531,34 @@ struct ObjCV8DispatchEntry {
 };
 
 struct CFunctionV8DispatchEntry {
+    uint64_t dispatchId;
+    CFunctionV8Invoker invoker;
+};
+#endif
+#ifdef TARGET_ENGINE_HERMES
+struct ObjCHermesDirectReturnDispatchEntry {
   uint64_t dispatchId;
-  CFunctionV8Invoker invoker;
+  ObjCHermesDirectReturnInvoker invoker;
+};
+
+struct CFunctionHermesDirectReturnDispatchEntry {
+  uint64_t dispatchId;
+  CFunctionHermesDirectReturnInvoker invoker;
+};
+
+struct ObjCHermesFrameDirectReturnDispatchEntry {
+  uint64_t dispatchId;
+  ObjCHermesFrameDirectReturnInvoker invoker;
+};
+
+struct CFunctionHermesFrameDirectReturnDispatchEntry {
+  uint64_t dispatchId;
+  CFunctionHermesFrameDirectReturnInvoker invoker;
+};
+
+struct BlockHermesFrameDirectReturnDispatchEntry {
+  uint64_t dispatchId;
+  BlockHermesFrameDirectReturnInvoker invoker;
 };
 #endif
 
@@ -234,6 +695,18 @@ bool TryFastSetV8GeneratedObjCObjectReturnValue(
 #define NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH 0
 #endif
 
+#ifndef NS_HAS_GENERATED_SIGNATURE_HERMES_DIRECT_RETURN_DISPATCH
+#define NS_HAS_GENERATED_SIGNATURE_HERMES_DIRECT_RETURN_DISPATCH 0
+#endif
+
+#ifndef NS_HAS_GENERATED_SIGNATURE_HERMES_FRAME_DIRECT_RETURN_DISPATCH
+#define NS_HAS_GENERATED_SIGNATURE_HERMES_FRAME_DIRECT_RETURN_DISPATCH 0
+#endif
+
+#ifndef NS_HAS_GENERATED_SIGNATURE_HERMES_BLOCK_FRAME_DIRECT_RETURN_DISPATCH
+#define NS_HAS_GENERATED_SIGNATURE_HERMES_BLOCK_FRAME_DIRECT_RETURN_DISPATCH 0
+#endif
+
 #if defined(__has_include)
 #if __has_include("GeneratedSignatureDispatch.inc")
 #include "GeneratedSignatureDispatch.inc"
@@ -275,6 +748,35 @@ inline constexpr ObjCV8DispatchEntry kGeneratedObjCV8DispatchEntries[] = {
     {0, nullptr}};
 inline constexpr CFunctionV8DispatchEntry
     kGeneratedCFunctionV8DispatchEntries[] = {{0, nullptr}};
+}  // namespace nativescript
+#endif
+
+#if defined(TARGET_ENGINE_HERMES) && \
+    !NS_HAS_GENERATED_SIGNATURE_HERMES_DIRECT_RETURN_DISPATCH
+namespace nativescript {
+inline constexpr ObjCHermesDirectReturnDispatchEntry
+    kGeneratedObjCHermesDirectReturnDispatchEntries[] = {{0, nullptr}};
+inline constexpr CFunctionHermesDirectReturnDispatchEntry
+    kGeneratedCFunctionHermesDirectReturnDispatchEntries[] = {{0, nullptr}};
+}  // namespace nativescript
+#endif
+
+#if defined(TARGET_ENGINE_HERMES) && \
+    !NS_HAS_GENERATED_SIGNATURE_HERMES_FRAME_DIRECT_RETURN_DISPATCH
+namespace nativescript {
+inline constexpr ObjCHermesFrameDirectReturnDispatchEntry
+    kGeneratedObjCHermesFrameDirectReturnDispatchEntries[] = {{0, nullptr}};
+inline constexpr CFunctionHermesFrameDirectReturnDispatchEntry
+    kGeneratedCFunctionHermesFrameDirectReturnDispatchEntries[] = {
+        {0, nullptr}};
+}  // namespace nativescript
+#endif
+
+#if defined(TARGET_ENGINE_HERMES) && \
+    !NS_HAS_GENERATED_SIGNATURE_HERMES_BLOCK_FRAME_DIRECT_RETURN_DISPATCH
+namespace nativescript {
+inline constexpr BlockHermesFrameDirectReturnDispatchEntry
+    kGeneratedBlockHermesFrameDirectReturnDispatchEntries[] = {{0, nullptr}};
 }  // namespace nativescript
 #endif
 
@@ -394,6 +896,58 @@ inline CFunctionV8Invoker lookupCFunctionV8Invoker(uint64_t dispatchId) {
   }
   return lookupDispatchInvoker<CFunctionV8DispatchEntry, CFunctionV8Invoker>(
       kGeneratedCFunctionV8DispatchEntries, dispatchId);
+}
+#endif
+
+#ifdef TARGET_ENGINE_HERMES
+inline ObjCHermesDirectReturnInvoker lookupObjCHermesDirectReturnInvoker(
+    uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
+  return lookupDispatchInvoker<ObjCHermesDirectReturnDispatchEntry,
+                               ObjCHermesDirectReturnInvoker>(
+      kGeneratedObjCHermesDirectReturnDispatchEntries, dispatchId);
+}
+
+inline CFunctionHermesDirectReturnInvoker
+lookupCFunctionHermesDirectReturnInvoker(uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
+  return lookupDispatchInvoker<CFunctionHermesDirectReturnDispatchEntry,
+                               CFunctionHermesDirectReturnInvoker>(
+      kGeneratedCFunctionHermesDirectReturnDispatchEntries, dispatchId);
+}
+
+inline ObjCHermesFrameDirectReturnInvoker
+lookupObjCHermesFrameDirectReturnInvoker(uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
+  return lookupDispatchInvoker<ObjCHermesFrameDirectReturnDispatchEntry,
+                               ObjCHermesFrameDirectReturnInvoker>(
+      kGeneratedObjCHermesFrameDirectReturnDispatchEntries, dispatchId);
+}
+
+inline CFunctionHermesFrameDirectReturnInvoker
+lookupCFunctionHermesFrameDirectReturnInvoker(uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
+  return lookupDispatchInvoker<CFunctionHermesFrameDirectReturnDispatchEntry,
+                               CFunctionHermesFrameDirectReturnInvoker>(
+      kGeneratedCFunctionHermesFrameDirectReturnDispatchEntries, dispatchId);
+}
+
+inline BlockHermesFrameDirectReturnInvoker
+lookupBlockHermesFrameDirectReturnInvoker(uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
+  return lookupDispatchInvoker<BlockHermesFrameDirectReturnDispatchEntry,
+                               BlockHermesFrameDirectReturnInvoker>(
+      kGeneratedBlockHermesFrameDirectReturnDispatchEntries, dispatchId);
 }
 #endif
 

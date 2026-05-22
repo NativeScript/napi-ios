@@ -15,6 +15,8 @@ using namespace metagen;
 
 namespace nativescript {
 
+class Cif;
+
 typedef enum ConvertToJSFlags : uint32_t {
   kReturnOwned = 1 << 0,
   kBlockParam = 1 << 1,
@@ -174,6 +176,8 @@ bool TryFastConvertHermesSelectorArgument(napi_env env, napi_value value,
                                           SEL* result);
 bool TryFastConvertHermesObjectArgument(napi_env env, MDTypeKind kind,
                                         napi_value value, void* result);
+bool TryFastConvertHermesReturnValue(napi_env env, Cif* cif, MDTypeKind kind,
+                                     const void* value, napi_value* result);
 bool TryFastConvertHermesReturnValue(napi_env env, MDTypeKind kind,
                                      const void* value, napi_value* result);
 #endif

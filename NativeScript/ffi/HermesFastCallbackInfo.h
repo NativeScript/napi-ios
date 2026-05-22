@@ -11,12 +11,20 @@
 namespace nativescript {
 
 struct HermesFastCallbackInfo {
-  napi_env env = nullptr;
-  const uint64_t* thisArg = nullptr;
-  const uint64_t* argsBase = nullptr;
-  unsigned int argc = 0;
-  void* data = nullptr;
-  const uint64_t* newTarget = nullptr;
+  struct HostFunctionContext {
+    napi_env env = nullptr;
+    napi_callback callback = nullptr;
+    void* data = nullptr;
+  };
+
+  struct CallbackFrame {
+    const uint64_t* frameStart = nullptr;
+    const uint64_t* thisArgAndArgsBase = nullptr;
+    unsigned int argc = 0;
+  };
+
+  const HostFunctionContext* context = nullptr;
+  const CallbackFrame* frame = nullptr;
 };
 
 inline const HermesFastCallbackInfo* TryGetHermesFastCallbackInfo(
@@ -26,25 +34,42 @@ inline const HermesFastCallbackInfo* TryGetHermesFastCallbackInfo(
   }
 
   auto* info = reinterpret_cast<const HermesFastCallbackInfo*>(cbinfo);
-  if (info->env != env || info->thisArg == nullptr || info->argsBase == nullptr) {
+  if (info->context == nullptr || info->frame == nullptr ||
+      info->context->env != env || info->frame->thisArgAndArgsBase == nullptr) {
     return nullptr;
   }
 
   return info;
 }
 
+inline size_t HermesFastArgc(const HermesFastCallbackInfo* info) {
+  return info != nullptr && info->frame != nullptr ? info->frame->argc : 0;
+}
+
+inline void* HermesFastData(const HermesFastCallbackInfo* info) {
+  return info != nullptr && info->context != nullptr ? info->context->data
+                                                     : nullptr;
+}
+
 inline napi_value HermesFastThisArg(const HermesFastCallbackInfo* info) {
-  return reinterpret_cast<napi_value>(const_cast<uint64_t*>(info->thisArg));
+  return reinterpret_cast<napi_value>(
+      const_cast<uint64_t*>(info->frame->thisArgAndArgsBase));
+}
+
+inline const uint64_t* HermesFastArgsBase(const HermesFastCallbackInfo* info) {
+  return info != nullptr && info->frame != nullptr
+             ? info->frame->thisArgAndArgsBase
+             : nullptr;
 }
 
 inline napi_value HermesFastArg(const HermesFastCallbackInfo* info,
                                 size_t index) {
-  if (index >= info->argc) {
+  if (index >= HermesFastArgc(info)) {
     return nullptr;
   }
 
   return reinterpret_cast<napi_value>(
-      const_cast<uint64_t*>(info->argsBase - (index + 1)));
+      const_cast<uint64_t*>(info->frame->thisArgAndArgsBase - (index + 1)));
 }
 
 }  // namespace nativescript

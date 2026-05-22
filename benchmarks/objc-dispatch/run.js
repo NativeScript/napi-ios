@@ -554,7 +554,7 @@ function launchAndCollect(udid, bundleId, options, env = {}) {
 
     const child = childProcess.spawn(
       "xcrun",
-      ["simctl", "launch", "--console", "--terminate-running-process", udid, bundleId],
+      ["simctl", "launch", "--terminate-running-process", udid, bundleId],
       { env: launchEnv }
     );
     children.push(child);

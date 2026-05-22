@@ -20,6 +20,15 @@ namespace nativescript {
 
 namespace {
 
+inline bool isCompatOrMainCFunctionName(const char* name) {
+  return name == nullptr ||
+         strcmp(name, "dispatch_async") == 0 ||
+         strcmp(name, "dispatch_get_current_queue") == 0 ||
+         strcmp(name, "dispatch_get_global_queue") == 0 ||
+         strcmp(name, "UIApplicationMain") == 0 ||
+         strcmp(name, "NSApplicationMain") == 0;
+}
+
 inline bool unwrapCompatNativeHandleForCFunction(napi_env env, napi_value value, void** out) {
   if (value == nullptr || out == nullptr) {
     return false;
@@ -187,6 +196,8 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
       function->napiInvoker = nullptr;
       function->engineDirectInvoker = nullptr;
       function->v8Invoker = nullptr;
+      function->hermesDirectReturnInvoker = nullptr;
+      function->hermesFrameDirectReturnInvoker = nullptr;
     }
     return;
   }
@@ -206,6 +217,12 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
       reinterpret_cast<void*>(lookupCFunctionEngineDirectInvoker(function->dispatchId));
 #ifdef TARGET_ENGINE_V8
   function->v8Invoker = reinterpret_cast<void*>(lookupCFunctionV8Invoker(function->dispatchId));
+#endif
+#ifdef TARGET_ENGINE_HERMES
+  function->hermesDirectReturnInvoker =
+      reinterpret_cast<void*>(lookupCFunctionHermesDirectReturnInvoker(function->dispatchId));
+  function->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
+      lookupCFunctionHermesFrameDirectReturnInvoker(function->dispatchId));
 #endif
   function->dispatchLookupCached = true;
 }
@@ -243,10 +260,12 @@ CFunction* ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
       metadata->signaturesOffset + metadata->getOffset(offset + sizeof(MDSectionOffset));
   MDFunctionFlag functionFlags = metadata->getFunctionFlag(offset + sizeof(MDSectionOffset) * 2);
 
-  auto cFunction = new CFunction(dlsym(self_dl, metadata->getString(offset)));
+  const char* name = metadata->getString(offset);
+  auto cFunction = new CFunction(dlsym(self_dl, name));
   cFunction->bridgeState = this;
   cFunction->cif = getCFunctionCif(env, sigOffset);
   cFunction->dispatchFlags = (functionFlags & mdFunctionReturnOwned) != 0 ? 1 : 0;
+  cFunction->skipEngineDirectFastPath = isCompatOrMainCFunctionName(name);
   cFunctionCache[offset] = cFunction;
 
   return cFunction;
@@ -255,30 +274,30 @@ CFunction* ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
 napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
 #ifdef TARGET_ENGINE_HERMES
   if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    napi_value stackArgs[16];
-    std::vector<napi_value> heapArgs;
-    napi_value* args = stackArgs;
-    const size_t actualArgc = fastInfo->argc;
-    if (actualArgc > 16) {
-      heapArgs.resize(actualArgc);
-      args = heapArgs.data();
-    }
-    for (size_t i = 0; i < actualArgc; i++) {
-      args[i] = HermesFastArg(fastInfo, i);
-    }
-
+    const size_t actualArgc = HermesFastArgc(fastInfo);
+    const auto offset =
+        static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(HermesFastData(fastInfo)));
     bool handledDirect = false;
-    napi_value directResult = TryCallHermesCFunctionFast(
-        env,
-        static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(fastInfo->data)),
-        actualArgc, args, &handledDirect);
+    napi_value directResult = TryCallHermesCFunctionFastFromFrame(
+        env, offset, actualArgc, HermesFastArgsBase(fastInfo), &handledDirect);
     if (handledDirect) {
       return directResult;
     }
 
-    return jsCallDirect(
-        env, static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(fastInfo->data)),
-        actualArgc, args);
+    napi_value stackArgs[16];
+    if (actualArgc <= 16) {
+      for (size_t i = 0; i < actualArgc; i++) {
+        stackArgs[i] = HermesFastArg(fastInfo, i);
+      }
+
+      return jsCallDirect(env, offset, actualArgc, stackArgs);
+    }
+
+    std::vector<napi_value> heapArgs(actualArgc);
+    for (size_t i = 0; i < actualArgc; i++) {
+      heapArgs[i] = HermesFastArg(fastInfo, i);
+    }
+    return jsCallDirect(env, offset, actualArgc, heapArgs.data());
   }
 #endif
 
