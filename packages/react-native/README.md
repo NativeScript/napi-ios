@@ -27,6 +27,66 @@ await NativeScript.runOnUI(() => {
 });
 ```
 
+## Defining native UIKit views in JS
+
+Use `defineUIKitView()` to turn a NativeScript-created `UIView` tree into a
+normal React Native component. The package owns the RN host view; your
+definition owns the UIKit subtree. `create`, `update`, `mounted`, and `dispose`
+run through the NativeScript UI dispatcher, so UIKit calls are safe and use the
+same globals and iOS SDK types as NativeScript.
+
+```tsx
+import NativeScript, {defineUIKitView} from "@nativescript/react-native";
+import type {UIKitViewRef} from "@nativescript/react-native";
+
+NativeScript.init();
+
+type BadgeProps = {
+  title: string;
+  tone?: "blue" | "green";
+};
+
+export const NativeBadge = defineUIKitView<BadgeProps, UIView>({
+  displayName: "NativeBadge",
+  create() {
+    const view = UIView.alloc().initWithFrame(CGRectZero);
+    const label = UILabel.alloc().initWithFrame(CGRectZero);
+    label.tag = 1;
+    label.textAlignment = NSTextAlignment.Center;
+    label.textColor = UIColor.whiteColor;
+    label.autoresizingMask =
+      UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
+    view.addSubview(label);
+    return view;
+  },
+  update(view, props) {
+    view.backgroundColor =
+      props.tone === "green" ? UIColor.systemGreenColor : UIColor.systemBlueColor;
+    view.layer.cornerRadius = 12;
+    view.clipsToBounds = true;
+    const label = view.viewWithTag(1) as UILabel;
+    label.text = props.title;
+  },
+});
+
+<NativeBadge title="UIKit from JS" tone="blue" style={{height: 48}} />;
+```
+
+Forward a ref when you need imperative access:
+
+```tsx
+const badgeRef = useRef<UIKitViewRef<UIView>>(null);
+
+await badgeRef.current?.runOnUI((view) => {
+  view.alpha = 0.8;
+});
+```
+
+React Native view props such as `style`, `testID`, accessibility props, responder
+props, and `pointerEvents` go to the host component. Your own props go to the
+UIKit definition; use `nativeProps(props)` when a plugin prop should also affect
+the RN host.
+
 The published package includes generated NativeScript metadata, the libffi
 xcframework, and generated iOS SDK TypeScript declarations. Build it from the
 repository root with:

@@ -1,6 +1,7 @@
 require "json"
 
 package = JSON.parse(File.read(File.join(__dir__, "package.json")))
+fabric_enabled = ENV["RCT_NEW_ARCH_ENABLED"] == "1"
 
 folly_compiler_flags = "-DFOLLY_NO_CONFIG -DFOLLY_MOBILE=1 -DFOLLY_USE_LIBCPP=1 -DFOLLY_CFG_NO_COROUTINES=1 -Wno-comma -Wno-shorten-64-to-32"
 
@@ -19,6 +20,7 @@ Pod::Spec.new do |s|
     "ios/**/*.{h,mm}",
     "native-api-jsi/**/*.{h,mm}"
   ]
+  s.exclude_files = "ios/Fabric/**/*" unless fabric_enabled
   s.public_header_files = "ios/**/*.h"
   s.resource_bundles = {
     "NativeScriptNativeApi" => ["metadata/*.nsmd"]

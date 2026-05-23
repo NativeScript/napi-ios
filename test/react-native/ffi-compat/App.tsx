@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView, ScrollView, Text} from 'react-native';
-import NativeScript from '@nativescript/react-native';
+import NativeScript, {defineUIKitView} from '@nativescript/react-native';
 import NativeScriptNativeApi from '@nativescript/react-native/src/NativeScriptNativeApi';
 
 type TestCase = {
@@ -17,6 +17,8 @@ type TestResult = {
 const marker = 'NATIVESCRIPT_RN_FFI_COMPAT';
 let currentStep = 'startup';
 let lastGlobalAccess = '';
+const uikitPluginIdentifier = 'NativeScriptUIKitPluginView';
+const uikitPluginLabelTag = 101;
 
 function g(name: string): any {
   lastGlobalAccess = name;
@@ -64,6 +66,124 @@ function writeMarker(payload: unknown) {
   }
   console.log(`${marker} ${content}`);
 }
+
+function waitFor<T>(
+  read: () => T | undefined | null | false,
+  message: string,
+  timeoutMs = 5000,
+): Promise<T> {
+  const startedAt = Date.now();
+  return new Promise((resolve, reject) => {
+    function poll() {
+      const value = read();
+      if (value) {
+        resolve(value);
+        return;
+      }
+      if (Date.now() - startedAt > timeoutMs) {
+        reject(new Error(message));
+        return;
+      }
+      setTimeout(poll, 50);
+    }
+    poll();
+  });
+}
+
+function waitForAsync<T>(
+  read: () => Promise<T | undefined | null | false>,
+  message: string,
+  timeoutMs = 5000,
+): Promise<T> {
+  const startedAt = Date.now();
+  return new Promise((resolve, reject) => {
+    async function poll() {
+      const value = await read();
+      if (value) {
+        resolve(value);
+        return;
+      }
+      if (Date.now() - startedAt > timeoutMs) {
+        reject(new Error(message));
+        return;
+      }
+      setTimeout(poll, 50);
+    }
+    poll().catch(reject);
+  });
+}
+
+async function waitForUIKitPluginAttachment(): Promise<void> {
+  await waitForAsync(
+    async () => {
+      let attached = false;
+      await NativeScript.runOnUI(() => {
+        const view = (globalThis as any).__nativeScriptUIKitPlugin?.view;
+        attached = Boolean(view?.superview && view?.window);
+      });
+      return attached;
+    },
+    'JS-defined UIKit view was not attached to the RN tree',
+  );
+}
+
+const NativeScriptUIKitTestView = defineUIKitView<{
+  title: string;
+  tint: 'blue' | 'green';
+}>({
+  displayName: 'NativeScriptUIKitTestView',
+  create(props) {
+    const view = g('UIView').alloc().initWithFrame(
+      new (g('CGRect'))({
+        origin: {x: 0, y: 0},
+        size: {width: 160, height: 48},
+      }),
+    );
+    view.accessibilityIdentifier = uikitPluginIdentifier;
+
+    const label = g('UILabel').alloc().initWithFrame(
+      new (g('CGRect'))({
+        origin: {x: 8, y: 8},
+        size: {width: 144, height: 32},
+      }),
+    );
+    label.tag = uikitPluginLabelTag;
+    label.textAlignment = g('NSTextAlignment').Center;
+    label.textColor = g('UIColor').whiteColor;
+    view.addSubview(label);
+
+    (globalThis as any).__nativeScriptUIKitPlugin = {
+      created: true,
+      disposed: false,
+      title: '',
+      tint: props.tint,
+      view,
+    };
+    return view;
+  },
+  mounted(view, props) {
+    (globalThis as any).__nativeScriptUIKitPlugin.mounted = true;
+    (globalThis as any).__nativeScriptUIKitPlugin.nativeHandle = g(
+      'interop',
+    ).handleof(view).address;
+    (globalThis as any).__nativeScriptUIKitPlugin.title = props.title;
+  },
+  update(view, props) {
+    view.backgroundColor =
+      props.tint === 'green' ? g('UIColor').greenColor : g('UIColor').blueColor;
+    const label = view.viewWithTag(uikitPluginLabelTag);
+    label.text = props.title;
+    (globalThis as any).__nativeScriptUIKitPlugin.title = props.title;
+    (globalThis as any).__nativeScriptUIKitPlugin.tint = props.tint;
+  },
+  dispose() {
+    const state = (globalThis as any).__nativeScriptUIKitPlugin;
+    if (state) {
+      state.disposed = true;
+      state.view = null;
+    }
+  },
+});
 
 function buildTests(): TestCase[] {
   return [
@@ -273,6 +393,51 @@ function buildTests(): TestCase[] {
         assert(mainThread, 'runOnUI did not execute native calls on main thread');
       },
     },
+    {
+      name: 'mounts JS-defined UIKit views through the React Native host component',
+      async run() {
+        await waitFor(
+          () =>
+            (globalThis as any).__nativeScriptUIKitPlugin?.mounted === true &&
+            (globalThis as any).__nativeScriptUIKitPlugin?.title ===
+              'Initial UIKit title',
+          'JS-defined UIKit view did not mount',
+        );
+
+        await waitForUIKitPluginAttachment();
+        await NativeScript.runOnUI(() => {
+          const view = (globalThis as any).__nativeScriptUIKitPlugin?.view;
+          assert(view?.superview, 'JS-defined UIKit view has no host superview');
+          assert(view?.window, 'JS-defined UIKit view has no window');
+          const label = view.viewWithTag(uikitPluginLabelTag);
+          assertEqual(label.text, 'Initial UIKit title', 'initial UIKit label text');
+        });
+
+        const setTitle = (globalThis as any).__setNativeScriptUIKitTitle;
+        const setTint = (globalThis as any).__setNativeScriptUIKitTint;
+        assert(typeof setTitle === 'function', 'UIKit title setter was not installed');
+        assert(typeof setTint === 'function', 'UIKit tint setter was not installed');
+        setTitle('Updated UIKit title');
+        setTint('green');
+
+        await waitFor(
+          () =>
+            (globalThis as any).__nativeScriptUIKitPlugin?.title ===
+              'Updated UIKit title' &&
+            (globalThis as any).__nativeScriptUIKitPlugin?.tint === 'green',
+          'JS-defined UIKit view did not receive prop updates',
+        );
+
+        await waitForUIKitPluginAttachment();
+        await NativeScript.runOnUI(() => {
+          const view = (globalThis as any).__nativeScriptUIKitPlugin?.view;
+          assert(view?.superview, 'updated JS-defined UIKit view has no host superview');
+          assert(view?.window, 'updated JS-defined UIKit view has no window');
+          const label = view.viewWithTag(uikitPluginLabelTag);
+          assertEqual(label.text, 'Updated UIKit title', 'updated UIKit label text');
+        });
+      },
+    },
   ];
 }
 
@@ -343,8 +508,12 @@ async function runCompatibilitySuite() {
 
 export default function App(): React.JSX.Element {
   const [text, setText] = useState('Running NativeScript RN FFI compatibility tests...');
+  const [uikitTitle, setUIKitTitle] = useState('Initial UIKit title');
+  const [uikitTint, setUIKitTint] = useState<'blue' | 'green'>('blue');
 
   useEffect(() => {
+    (globalThis as any).__setNativeScriptUIKitTitle = setUIKitTitle;
+    (globalThis as any).__setNativeScriptUIKitTint = setUIKitTint;
     runCompatibilitySuite()
       .then((payload) => setText(JSON.stringify(payload, null, 2)))
       .catch((error) => {
@@ -356,6 +525,11 @@ export default function App(): React.JSX.Element {
     <SafeAreaView style={{flex: 1, padding: 16}}>
       <ScrollView>
         <Text selectable>{text}</Text>
+        <NativeScriptUIKitTestView
+          title={uikitTitle}
+          tint={uikitTint}
+          style={{height: 48, marginTop: 12}}
+        />
       </ScrollView>
     </SafeAreaView>
   );

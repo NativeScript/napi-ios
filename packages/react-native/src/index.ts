@@ -1,4 +1,18 @@
+import React, {
+  forwardRef,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from 'react';
+import type {
+  ForwardRefExoticComponent,
+  PropsWithoutRef,
+  RefAttributes,
+} from 'react';
+import type {ViewProps} from 'react-native';
 import NativeScriptNativeApi from './NativeScriptNativeApi';
+import NativeScriptUIViewNativeComponent from './NativeScriptUIViewNativeComponent';
 
 type NativeApiHost = {
   metadata?: {
@@ -21,6 +35,31 @@ export type InstallOptions = {
   globals?: boolean;
 };
 
+export type UIKitViewDefinition<Props extends object, NativeView = unknown> = {
+  displayName?: string;
+  create: (props: Readonly<Props & ViewProps>) => NativeView;
+  update?: (
+    view: NativeView,
+    props: Readonly<Props & ViewProps>,
+    previousProps?: Readonly<Props & ViewProps>,
+  ) => void;
+  mounted?: (view: NativeView, props: Readonly<Props & ViewProps>) => void;
+  dispose?: (view: NativeView, props: Readonly<Props & ViewProps>) => void;
+  nativeProps?: (
+    props: Readonly<Props & ViewProps>,
+  ) => Partial<ViewProps> | undefined;
+};
+
+export type UIKitViewRef<NativeView = unknown> = {
+  readonly nativeView: NativeView | null;
+  runOnUI: (callback: (view: NativeView) => void) => Promise<void>;
+};
+
+export type UIKitViewComponent<Props extends object, NativeView = unknown> =
+  ForwardRefExoticComponent<
+    PropsWithoutRef<Props & ViewProps> & RefAttributes<UIKitViewRef<NativeView>>
+  >;
+
 const nativeApiGlobalName = '__nativeScriptNativeApi';
 
 function nativeApiHost(): NativeApiHost | undefined {
@@ -35,6 +74,121 @@ function requireNativeApiHost(): NativeApiHost {
     throw new Error('NativeScript Native API JSI host object was not installed');
   }
   return api;
+}
+
+const hostViewPropNames = new Set([
+  'accessible',
+  'accessibilityActions',
+  'accessibilityElementsHidden',
+  'accessibilityHint',
+  'accessibilityIgnoresInvertColors',
+  'accessibilityLabel',
+  'accessibilityLanguage',
+  'accessibilityLiveRegion',
+  'accessibilityRole',
+  'accessibilityState',
+  'accessibilityValue',
+  'accessibilityViewIsModal',
+  'children',
+  'collapsable',
+  'focusable',
+  'hitSlop',
+  'id',
+  'importantForAccessibility',
+  'nativeID',
+  'needsOffscreenAlphaCompositing',
+  'onAccessibilityAction',
+  'onAccessibilityEscape',
+  'onAccessibilityTap',
+  'onLayout',
+  'onMagicTap',
+  'onMoveShouldSetResponder',
+  'onMoveShouldSetResponderCapture',
+  'onResponderEnd',
+  'onResponderGrant',
+  'onResponderMove',
+  'onResponderReject',
+  'onResponderRelease',
+  'onResponderStart',
+  'onResponderTerminate',
+  'onResponderTerminationRequest',
+  'onStartShouldSetResponder',
+  'onStartShouldSetResponderCapture',
+  'pointerEvents',
+  'removeClippedSubviews',
+  'renderToHardwareTextureAndroid',
+  'shouldRasterizeIOS',
+  'style',
+  'testID',
+]);
+
+function splitUIKitViewProps<Props extends object>(
+  props: Props & ViewProps,
+  definition: UIKitViewDefinition<Props>,
+): {
+  nativeProps: ViewProps;
+  pluginProps: Props & ViewProps;
+} {
+  const nativeProps: Record<string, unknown> = {};
+  const pluginProps: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(props)) {
+    if (
+      hostViewPropNames.has(key) ||
+      key.startsWith('accessibility') ||
+      key.startsWith('aria-')
+    ) {
+      nativeProps[key] = value;
+    } else {
+      pluginProps[key] = value;
+    }
+  }
+
+  Object.assign(nativeProps, definition.nativeProps?.(props));
+
+  return {
+    nativeProps: nativeProps as ViewProps,
+    pluginProps: pluginProps as Props & ViewProps,
+  };
+}
+
+function nativeHandleForUIKitView(view: unknown): string {
+  const interop = (globalThis as Record<string, any>).interop;
+  if (!interop || typeof interop.handleof !== 'function') {
+    throw new Error('NativeScript interop globals are not installed');
+  }
+
+  const pointer = interop.handleof(view);
+  if (!pointer) {
+    throw new Error('UIKit view definition returned a value without a native handle');
+  }
+
+  if (typeof pointer.toHexString === 'function') {
+    const text = pointer.toHexString();
+    if (typeof text === 'string' && text.length > 0) {
+      return text;
+    }
+  }
+
+  if (typeof pointer.address === 'string' && pointer.address.length > 0) {
+    return pointer.address;
+  }
+
+  if (typeof pointer.address === 'number') {
+    return String(pointer.address);
+  }
+
+  if (typeof pointer.toNumber === 'function') {
+    return String(pointer.toNumber());
+  }
+
+  throw new Error('UIKit view native handle could not be read');
+}
+
+function ensureNativeScriptInstalled(): void {
+  if (!isInstalled()) {
+    init();
+  }
 }
 
 function defineLazyNativeGlobal(
@@ -263,12 +417,149 @@ export function runOnUI(callback?: () => void): Promise<void> {
   return run(callback);
 }
 
+export function defineUIKitView<Props extends object, NativeView = unknown>(
+  definition: UIKitViewDefinition<Props, NativeView>,
+): UIKitViewComponent<Props, NativeView> {
+  const Component = forwardRef<UIKitViewRef<NativeView>, Props & ViewProps>(
+    function NativeScriptUIKitView(props, ref) {
+      const {nativeProps, pluginProps} = splitUIKitViewProps(props, definition);
+      const viewRef = useRef<NativeView | null>(null);
+      const propsRef = useRef(pluginProps);
+      const previousPropsRef = useRef<Readonly<Props & ViewProps> | undefined>();
+      const mountedRef = useRef(false);
+      const disposedRef = useRef(false);
+      const [nativeViewHandle, setNativeViewHandle] = useState<string>();
+      const [error, setError] = useState<Error | null>(null);
+
+      propsRef.current = pluginProps;
+
+      useImperativeHandle(
+        ref,
+        () => ({
+          get nativeView() {
+            return viewRef.current;
+          },
+          runOnUI(callback) {
+            return runOnUI(() => {
+              if (viewRef.current == null) {
+                throw new Error('UIKit view has not been created yet');
+              }
+              callback(viewRef.current);
+            });
+          },
+        }),
+        [],
+      );
+
+      useEffect(() => {
+        disposedRef.current = false;
+        let cancelled = false;
+
+        ensureNativeScriptInstalled();
+
+        runOnUI(() => {
+          const currentProps = propsRef.current;
+          const nativeView = definition.create(currentProps);
+          if (cancelled || disposedRef.current) {
+            definition.dispose?.(nativeView, currentProps);
+            const maybeView = nativeView as Record<string, unknown>;
+            if (typeof maybeView.removeFromSuperview === 'function') {
+              maybeView.removeFromSuperview();
+            }
+            return undefined;
+          }
+          viewRef.current = nativeView;
+          definition.update?.(nativeView, currentProps, undefined);
+          previousPropsRef.current = currentProps;
+          return undefined;
+        })
+          .then(() => {
+            if (cancelled || viewRef.current == null) {
+              return;
+            }
+            setNativeViewHandle(nativeHandleForUIKitView(viewRef.current));
+          })
+          .catch((reason) => {
+            setError(reason instanceof Error ? reason : new Error(String(reason)));
+          });
+
+        return () => {
+          cancelled = true;
+          disposedRef.current = true;
+          const nativeView = viewRef.current;
+          viewRef.current = null;
+          mountedRef.current = false;
+          if (nativeView == null) {
+            return;
+          }
+          runOnUI(() => {
+            definition.dispose?.(nativeView, propsRef.current);
+            const maybeView = nativeView as Record<string, unknown>;
+            if (typeof maybeView.removeFromSuperview === 'function') {
+              maybeView.removeFromSuperview();
+            }
+          }).catch((reason) => {
+            setError(reason instanceof Error ? reason : new Error(String(reason)));
+          });
+        };
+      }, [definition]);
+
+      useEffect(() => {
+        const nativeView = viewRef.current;
+        if (nativeView == null) {
+          return;
+        }
+
+        const previousProps = previousPropsRef.current;
+        const currentProps = propsRef.current;
+        previousPropsRef.current = currentProps;
+
+        runOnUI(() => {
+          definition.update?.(nativeView, currentProps, previousProps);
+        }).catch((reason) => {
+          setError(reason instanceof Error ? reason : new Error(String(reason)));
+        });
+      }, [definition, pluginProps]);
+
+      useEffect(() => {
+        const nativeView = viewRef.current;
+        if (nativeViewHandle == null || nativeView == null || mountedRef.current) {
+          return;
+        }
+
+        mountedRef.current = true;
+        runOnUI(() => {
+          if (!disposedRef.current) {
+            definition.mounted?.(nativeView, propsRef.current);
+          }
+        }).catch((reason) => {
+          setError(reason instanceof Error ? reason : new Error(String(reason)));
+        });
+      }, [definition, nativeViewHandle]);
+
+      if (error) {
+        throw error;
+      }
+
+      return React.createElement(NativeScriptUIViewNativeComponent, {
+        ...nativeProps,
+        collapsable: false,
+        nativeViewHandle,
+      });
+    },
+  );
+
+  Component.displayName = definition.displayName ?? 'NativeScriptUIKitView';
+  return Component;
+}
+
 const NativeScript = {
   init,
   install,
   installGlobals,
   isInstalled,
   defaultMetadataPath,
+  defineUIKitView,
   getRuntimeBackend,
   runOnUI,
 };

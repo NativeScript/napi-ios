@@ -38,12 +38,15 @@
   },
   "codegenConfig": {
     "name": "NativeScriptNativeApiSpec",
-    "type": "modules",
+    "type": "all",
     "jsSrcsDir": "src",
     "android": {
       "javaPackageName": "org.nativescript.nativeapi"
     },
     "ios": {
+      "componentProvider": {
+        "NativeScriptUIView": "NativeScriptUIViewComponentView"
+      },
       "modulesProvider": {
         "NativeScriptNativeApi": "NativeScriptNativeApiModuleProvider"
       }
