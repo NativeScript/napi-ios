@@ -444,6 +444,10 @@ inline bool SetHermesGeneratedInt16Return(Cif* cif, napi_value* result,
 inline bool SetHermesGeneratedUInt16Return(napi_env env, Cif* cif,
                                            napi_value* result,
                                            uint16_t value) {
+  if (value >= 32 && value <= 126) {
+    const char buffer[2] = {static_cast<char>(value), '\0'};
+    return napi_create_string_utf8(env, buffer, 1, result) == napi_ok;
+  }
   *result = makeHermesDispatchRawNumberValue(cif, static_cast<double>(value));
   return true;
 }
@@ -612,6 +616,20 @@ inline void setV8DispatchUInt64ReturnValue(
     info.GetReturnValue().Set(v8::BigInt::NewFromUnsigned(isolate, value));
   } else {
     info.GetReturnValue().Set(static_cast<double>(value));
+  }
+}
+
+inline void setV8DispatchUInt16ReturnValue(
+    v8::Isolate* isolate, const v8::FunctionCallbackInfo<v8::Value>& info,
+    uint16_t value) {
+  if (value >= 32 && value <= 126) {
+    const char buffer[2] = {static_cast<char>(value), '\0'};
+    info.GetReturnValue().Set(
+        v8::String::NewFromUtf8(isolate, buffer, v8::NewStringType::kNormal,
+                                1)
+            .ToLocalChecked());
+  } else {
+    info.GetReturnValue().Set(static_cast<uint32_t>(value));
   }
 }
 

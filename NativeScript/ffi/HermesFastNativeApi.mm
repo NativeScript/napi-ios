@@ -1855,6 +1855,10 @@ bool TryFastConvertHermesReturnValue(napi_env env, Cif* cif, MDTypeKind kind,
         return false;
       }
       const uint16_t raw = *reinterpret_cast<const uint16_t*>(value);
+      if (raw >= 32 && raw <= 126) {
+        const char buffer[2] = {static_cast<char>(raw), '\0'};
+        return napi_create_string_utf8(env, buffer, 1, result) == napi_ok;
+      }
       *result = makeHermesRawNumberValue(cif, static_cast<double>(raw));
       return true;
     }

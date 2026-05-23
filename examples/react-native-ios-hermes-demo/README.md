@@ -12,6 +12,7 @@ npm run demo-rn-ios-hermes-turbomodule
 The generated app installs the local
 `@nativescript/react-native-ios-hermes` tarball, enables Hermes and the New
 Architecture, then launches an iOS simulator app. The app installs the
-NativeScript Native API JSI host object and uses `runOnUI` to execute a small
+NativeScript Native API JSI host object, installs NativeScript-style globals
+such as `UIApplication` and `UIColor`, and uses `runOnUI` to execute a small
 UIKit tweak from JavaScript while dispatching the native UIKit calls to the main
 thread. The script waits for a simulator marker after the tweak succeeds.

@@ -103,6 +103,7 @@ enum class NativeApiSymbolKind {
 struct NativeApiSymbol {
   NativeApiSymbolKind kind;
   MDSectionOffset offset = 0;
+  MDSectionOffset superclassOffset = MD_SECTION_OFFSET_NULL;
   std::string name;
   std::string runtimeName;
 };
@@ -132,6 +133,18 @@ std::string jsifySelector(const char* selector) {
     }
   }
   return jsifiedSelector;
+}
+
+std::string setterSelectorForProperty(const std::string& property) {
+  if (property.empty()) {
+    return property;
+  }
+
+  std::string selector = "set";
+  selector += static_cast<char>(toupper(property[0]));
+  selector += property.substr(1);
+  selector += ":";
+  return selector;
 }
 
 class NativeApiJsiBridge {
@@ -192,7 +205,7 @@ class NativeApiJsiBridge {
     }
 
     auto inserted = membersByClassOffset_.emplace(
-        symbol.offset, readMembersForClass(symbol.offset));
+        symbol.offset, readMembersForClassHierarchy(symbol));
     return inserted.first->second;
   }
 
@@ -259,7 +272,8 @@ class NativeApiJsiBridge {
   }
 
   void addSymbol(NativeApiSymbolKind kind, MDSectionOffset offset,
-                 const char* name, const char* runtimeName = nullptr) {
+                 const char* name, const char* runtimeName = nullptr,
+                 MDSectionOffset superclassOffset = MD_SECTION_OFFSET_NULL) {
     if (name == nullptr || name[0] == '\0') {
       return;
     }
@@ -267,6 +281,7 @@ class NativeApiJsiBridge {
     NativeApiSymbol symbol{
         .kind = kind,
         .offset = offset,
+        .superclassOffset = superclassOffset,
         .name = name,
         .runtimeName = runtimeName != nullptr ? runtimeName : name,
     };
@@ -288,6 +303,7 @@ class NativeApiJsiBridge {
 
     symbolsByName_[symbol.name] = symbol;
     if (kind == NativeApiSymbolKind::Class) {
+      classSymbolsByOffset_[symbol.offset] = symbol;
       classSymbolsByRuntimeName_[symbol.runtimeName] = std::move(symbol);
     }
   }
@@ -380,7 +396,6 @@ class NativeApiJsiBridge {
       if (runtimeNameOffset != MD_SECTION_OFFSET_NULL) {
         runtimeName = metadata_->resolveString(runtimeNameOffset);
       }
-      addSymbol(NativeApiSymbolKind::Class, originalOffset, name, runtimeName);
 
       while (hasProtocols) {
         auto protocolOffset = metadata_->getOffset(offset);
@@ -390,6 +405,14 @@ class NativeApiJsiBridge {
 
       auto superclass = metadata_->getOffset(offset);
       offset += sizeof(superclass);
+      MDSectionOffset superclassOffset =
+          superclass & ~metagen::mdSectionOffsetNext;
+      if (superclassOffset != MD_SECTION_OFFSET_NULL) {
+        superclassOffset += metadata_->classesOffset;
+      }
+
+      addSymbol(NativeApiSymbolKind::Class, originalOffset, name, runtimeName,
+                superclassOffset);
 
       bool next = (superclass & metagen::mdSectionOffsetNext) != 0;
       while (next) {
@@ -483,10 +506,27 @@ class NativeApiJsiBridge {
     return members;
   }
 
+  std::vector<NativeApiMember> readMembersForClassHierarchy(
+      const NativeApiSymbol& symbol) const {
+    std::vector<NativeApiMember> members = readMembersForClass(symbol.offset);
+    if (symbol.superclassOffset == MD_SECTION_OFFSET_NULL) {
+      return members;
+    }
+
+    auto superclass = classSymbolsByOffset_.find(symbol.superclassOffset);
+    if (superclass != classSymbolsByOffset_.end()) {
+      const auto& inheritedMembers = membersForClass(superclass->second);
+      members.insert(members.end(), inheritedMembers.begin(),
+                     inheritedMembers.end());
+    }
+    return members;
+  }
+
   std::unique_ptr<MDMetadataReader> metadata_;
   void* selfDl_ = nullptr;
   std::unordered_map<std::string, NativeApiSymbol> symbolsByName_;
   std::unordered_map<std::string, NativeApiSymbol> classSymbolsByRuntimeName_;
+  std::unordered_map<MDSectionOffset, NativeApiSymbol> classSymbolsByOffset_;
   std::vector<std::string> classNames_;
   std::vector<std::string> functionNames_;
   std::vector<std::string> protocolNames_;
@@ -706,6 +746,13 @@ class NativeApiObjectHostObject final : public HostObject {
               });
         }
       }
+
+      SEL selector = sel_getUid(property.c_str());
+      Method method = class_getInstanceMethod(object_getClass(object_), selector);
+      if (method != nullptr && method_getNumberOfArguments(method) == 2) {
+        return callObjCSelector(runtime, bridge_, object_, false, property,
+                                nullptr, nullptr, 0);
+      }
     }
 
     return Value::undefined();
@@ -732,6 +779,15 @@ class NativeApiObjectHostObject final : public HostObject {
                          setterMember.selectorName, &setterMember, args, 1);
         return;
       }
+    }
+
+    std::string setterSelectorName = setterSelectorForProperty(property);
+    SEL selector = sel_getUid(setterSelectorName.c_str());
+    if (class_getInstanceMethod(object_getClass(object_), selector) != nullptr) {
+      Value args[] = {Value(runtime, value)};
+      callObjCSelector(runtime, bridge_, object_, false, setterSelectorName,
+                       nullptr, args, 1);
+      return;
     }
 
     throw facebook::jsi::JSError(runtime,
@@ -886,6 +942,16 @@ class NativeApiClassHostObject final : public HostObject {
             return callObjCSelector(runtime, bridge, static_cast<id>(cls), true,
                                     member.selectorName, &member, args, count);
           });
+    }
+
+    Class cls = objc_lookUpClass(symbol_.runtimeName.c_str());
+    if (cls != nil) {
+      SEL selector = sel_getUid(property.c_str());
+      Method method = class_getClassMethod(cls, selector);
+      if (method != nullptr && method_getNumberOfArguments(method) == 2) {
+        return callObjCSelector(runtime, bridge_, static_cast<id>(cls), true,
+                                property, nullptr, nullptr, 0);
+      }
     }
 
     return Value::undefined();
@@ -1417,7 +1483,17 @@ void convertJsiArgument(Runtime& runtime, const NativeApiJsiType& type,
       writeNumericArgument<int16_t>(runtime, value, target, "int16");
       break;
     case metagen::mdTypeUShort:
-      writeNumericArgument<uint16_t>(runtime, value, target, "uint16");
+      if (value.isString()) {
+        std::string text = value.asString(runtime).utf8(runtime);
+        if (text.size() != 1) {
+          throw facebook::jsi::JSError(
+              runtime, "Expected a single-character string.");
+        }
+        *static_cast<uint16_t*>(target) =
+            static_cast<uint16_t>(static_cast<unsigned char>(text[0]));
+      } else {
+        writeNumericArgument<uint16_t>(runtime, value, target, "uint16");
+      }
       break;
     case metagen::mdTypeSInt:
       writeNumericArgument<int32_t>(runtime, value, target, "int32");
@@ -1528,8 +1604,14 @@ Value convertNativeReturnValue(Runtime& runtime,
       return static_cast<double>(*static_cast<uint8_t*>(value));
     case metagen::mdTypeSShort:
       return static_cast<double>(*static_cast<int16_t*>(value));
-    case metagen::mdTypeUShort:
-      return static_cast<double>(*static_cast<uint16_t*>(value));
+    case metagen::mdTypeUShort: {
+      uint16_t raw = *static_cast<uint16_t*>(value);
+      if (raw >= 32 && raw <= 126) {
+        char buffer[2] = {static_cast<char>(raw), '\0'};
+        return String::createFromUtf8(runtime, buffer);
+      }
+      return static_cast<double>(raw);
+    }
     case metagen::mdTypeSInt:
       return static_cast<double>(*static_cast<int32_t*>(value));
     case metagen::mdTypeUInt:
@@ -1976,6 +2058,12 @@ class NativeApiHostObject final : public HostObject {
                                  static_cast<double>(symbol->offset));
             return function;
           });
+    }
+
+    if (const NativeApiSymbol* classSymbol = bridge_->findClass(property)) {
+      return Object::createFromHostObject(
+          runtime,
+          std::make_shared<NativeApiClassHostObject>(bridge_, *classSymbol));
     }
 
     if (const NativeApiSymbol* functionSymbol = bridge_->findFunction(property)) {

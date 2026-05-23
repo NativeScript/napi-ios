@@ -734,9 +734,19 @@ bool TryFastConvertV8ReturnValue(napi_env env, MDTypeKind kind, const void* valu
       *result = v8::Integer::New(isolate, *reinterpret_cast<const int16_t*>(value));
       return true;
 
-    case mdTypeUShort:
-      *result = v8::Integer::NewFromUnsigned(isolate, *reinterpret_cast<const uint16_t*>(value));
+    case mdTypeUShort: {
+      uint16_t raw = *reinterpret_cast<const uint16_t*>(value);
+      if (raw >= 32 && raw <= 126) {
+        const char buffer[2] = {static_cast<char>(raw), '\0'};
+        *result =
+            v8::String::NewFromUtf8(isolate, buffer, v8::NewStringType::kNormal,
+                                    1)
+                .ToLocalChecked();
+      } else {
+        *result = v8::Integer::NewFromUnsigned(isolate, raw);
+      }
       return true;
+    }
 
     case mdTypeSInt:
       *result = v8::Integer::New(isolate, *reinterpret_cast<const int32_t*>(value));

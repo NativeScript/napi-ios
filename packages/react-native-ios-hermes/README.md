@@ -4,17 +4,16 @@ React Native TurboModule wrapper for the NativeScript Native API JSI bridge on
 Hermes.
 
 The module exposes one small TurboModule whose `install()` method attaches the
-NativeScript Native API host object to `globalThis.__nativeScriptNativeApi`.
-The host object itself is pure JSI and is shared with the NativeScript Hermes
-runtime.
+NativeScript Native API host object to `globalThis.__nativeScriptNativeApi` and
+installs lazy NativeScript-style globals for classes and C functions. The host
+object itself is pure JSI and is shared with the NativeScript Hermes runtime.
 
 ```ts
 import NativeScriptNativeApi from "@nativescript/react-native-ios-hermes";
 
 NativeScriptNativeApi.install();
 
-const api = globalThis.__nativeScriptNativeApi;
-const NSObject = api.getClass("NSObject");
+const object = NSObject.new();
 ```
 
 For UIKit work that must happen on the main thread, pass a callback to the JSI
@@ -23,9 +22,7 @@ thread; NativeScript native calls made inside the callback are synchronously
 performed on UIKit's main thread.
 
 ```ts
-await api.runOnUI(() => {
-  const UIColor = api.getClass("UIColor");
-  const UIApplication = api.getClass("UIApplication");
+await NativeScriptNativeApi.runOnUI(() => {
   UIApplication.sharedApplication.keyWindow.tintColor = UIColor.systemPinkColor;
 });
 ```

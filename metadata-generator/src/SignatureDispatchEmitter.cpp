@@ -623,10 +623,13 @@ void writeV8DirectReturnValue(std::ostringstream& out, MDTypeKind kind,
       break;
     case mdTypeUChar:
     case mdTypeUInt8:
-    case mdTypeUShort:
     case mdTypeUInt:
       out << "  info.GetReturnValue().Set(static_cast<uint32_t>(" << valueExpr
           << "));\n";
+      break;
+    case mdTypeUShort:
+      out << "  setV8DispatchUInt16ReturnValue(info.GetIsolate(), info, "
+          << "static_cast<uint16_t>(" << valueExpr << "));\n";
       break;
     case mdTypeSLong:
     case mdTypeSInt64:

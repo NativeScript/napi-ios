@@ -50,6 +50,9 @@ import {useEffect, useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
 import NativeScriptNativeApi from '@nativescript/react-native-ios-hermes';
 
+declare const NSObject: any;
+declare const NSThread: any;
+
 const marker = 'NATIVESCRIPT_RN_TURBO_SMOKE_PASS';
 
 async function runSmoke(): Promise<string> {
@@ -60,14 +63,13 @@ async function runSmoke(): Promise<string> {
       throw new Error('NativeScript Native API JSI host object was not installed');
     }
 
-    const nsObject = api.getClass('NSObject');
+    const nsObject = NSObject;
     if (!nsObject || nsObject.available !== true) {
-      throw new Error('NSObject metadata lookup failed');
+      throw new Error('NSObject global install failed');
     }
 
     let nativeCallsRanOnMainThread = false;
-    await api.runOnUI(() => {
-      const NSThread = api.getClass('NSThread');
+    await NativeScriptNativeApi.runOnUI(() => {
       nativeCallsRanOnMainThread = NSThread?.isMainThread === true;
       if (!nativeCallsRanOnMainThread) {
         throw new Error('runOnUI did not dispatch native calls to the main thread');

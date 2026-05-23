@@ -9,14 +9,13 @@ import {
 } from 'react-native';
 import NativeScriptNativeApi from '@nativescript/react-native-ios-hermes';
 
-type NativeApiClass = Record<string, any>;
+declare const NSThread: any;
+declare const UIApplication: any;
+declare const UIColor: any;
 
 type NativeApiHost = {
-  backend: string;
+  backend?: string;
   metadata?: {classes?: number; functions?: number};
-  runOnUI: (callback?: () => void) => Promise<void>;
-  getClass(name: string): NativeApiClass | null;
-  import(path: string): boolean;
 };
 
 const uiUserInterfaceStyle = {
@@ -25,9 +24,11 @@ const uiUserInterfaceStyle = {
   dark: 2,
 };
 
-function requireNativeApi(): NativeApiHost {
+function installNativeScriptGlobals(): NativeApiHost {
   NativeScriptNativeApi.install();
-  const api = (globalThis as any).__nativeScriptNativeApi as NativeApiHost | undefined;
+  const api = (globalThis as any).__nativeScriptNativeApi as
+    | NativeApiHost
+    | undefined;
   if (!api) {
     throw new Error('NativeScript Native API JSI host object was not installed');
   }
@@ -39,41 +40,37 @@ async function applyUIKitTweaks() {
     throw new Error('This demo uses UIKit and must run on iOS');
   }
 
-  const api = requireNativeApi();
+  const api = installNativeScriptGlobals();
 
   let nativeCallsRanOnMainThread = false;
-  await api.runOnUI(() => {
-    const NSThread = api.getClass('NSThread');
-    const UIApplication = api.getClass('UIApplication');
-    const UIColor = api.getClass('UIColor');
-
-    if (!NSThread || !UIApplication || !UIColor) {
-      throw new Error('UIKit/Foundation metadata was not available');
-    }
-
+  await NativeScriptNativeApi.runOnUI(() => {
     nativeCallsRanOnMainThread = NSThread.isMainThread === true;
     if (!nativeCallsRanOnMainThread) {
       throw new Error('runOnUI did not dispatch native calls to the main thread');
     }
 
     const app = UIApplication.sharedApplication;
-    const window = app.invoke('keyWindow');
+    const window = app.keyWindow;
     if (!window) {
       throw new Error('No key UIWindow is available yet');
     }
 
     const nativeAccent = UIColor.systemPinkColor ?? UIColor.magentaColor;
-    const nativeBackdrop = UIColor.colorWithRedGreenBlueAlpha(0.04, 0.08, 0.12, 1);
+    const nativeBackdrop = UIColor.colorWithRedGreenBlueAlpha(
+      0.04,
+      0.08,
+      0.12,
+      1,
+    );
 
-    window.invoke('setTintColor:', nativeAccent);
-    window.invoke('setBackgroundColor:', nativeBackdrop);
-    window.invoke('setOverrideUserInterfaceStyle:', uiUserInterfaceStyle.dark);
+    window.tintColor = nativeAccent;
+    window.backgroundColor = nativeBackdrop;
+    window.overrideUserInterfaceStyle = uiUserInterfaceStyle.dark;
 
-    const rootController = window.invoke('rootViewController');
-    const rootView = rootController?.invoke('view');
+    const rootView = window.rootViewController?.view;
     if (rootView) {
-      rootView.invoke('setTintColor:', nativeAccent);
-      rootView.invoke('setBackgroundColor:', nativeBackdrop);
+      rootView.tintColor = nativeAccent;
+      rootView.backgroundColor = nativeBackdrop;
     }
   });
 
