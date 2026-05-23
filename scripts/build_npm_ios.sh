@@ -2,8 +2,14 @@
 set -e
 source "$(dirname "$0")/build_utils.sh"
 
-checkpoint "Preparing npm package for iOS..."
-PACKAGE_DIR="packages/ios"
+IOS_VARIANT=${IOS_VARIANT:=ios}
+
+checkpoint "Preparing npm package for $IOS_VARIANT..."
+PACKAGE_DIR="packages/$IOS_VARIANT"
+if [ ! -f "$PACKAGE_DIR/package.json" ]; then
+  echo "Expected package directory '$PACKAGE_DIR' (IOS_VARIANT=$IOS_VARIANT) to contain a package.json." >&2
+  exit 1
+fi
 OUTPUT_DIR="$PACKAGE_DIR/dist"
 STAGING_DIR="$OUTPUT_DIR/package"
 

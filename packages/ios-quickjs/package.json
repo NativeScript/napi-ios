@@ -1,0 +1,27 @@
+{
+  "name": "@nativescript/ios-quickjs",
+  "version": "0.0.2",
+  "description": "NativeScript Runtime for iOS (QuickJS engine)",
+  "keywords": [
+    "NativeScript",
+    "iOS",
+    "runtime",
+    "quickjs"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NativeScript/napi-ios",
+    "directory": "packages/ios-quickjs"
+  },
+  "author": {
+    "name": "NativeScript Team",
+    "email": "oss@nativescript.org"
+  },
+  "scripts": {
+    "build": "cd ../.. && ./scripts/build_all_ios.sh --quickjs"
+  },
+  "files": [
+    "framework"
+  ],
+  "license": "Apache-2.0"
+}

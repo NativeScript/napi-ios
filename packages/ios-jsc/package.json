@@ -1,0 +1,28 @@
+{
+  "name": "@nativescript/ios-jsc",
+  "version": "0.0.2",
+  "description": "NativeScript Runtime for iOS (JavaScriptCore engine)",
+  "keywords": [
+    "NativeScript",
+    "iOS",
+    "runtime",
+    "jsc",
+    "javascriptcore"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NativeScript/napi-ios",
+    "directory": "packages/ios-jsc"
+  },
+  "author": {
+    "name": "NativeScript Team",
+    "email": "oss@nativescript.org"
+  },
+  "scripts": {
+    "build": "cd ../.. && ./scripts/build_all_ios.sh --jsc"
+  },
+  "files": [
+    "framework"
+  ],
+  "license": "Apache-2.0"
+}

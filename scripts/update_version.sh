@@ -6,7 +6,7 @@ TARGET=${1:-ios}
 PACKAGE_VERSION_OVERRIDE=${2:-$PACKAGE_VERSION}
 
 case "$TARGET" in
-  ios|macos|visionos|ios-node-api|macos-node-api|objc-node-api)
+  ios|ios-v8|ios-hermes|ios-jsc|ios-quickjs|macos|visionos|ios-node-api|macos-node-api|objc-node-api)
     PACKAGE_JSON="packages/$TARGET/package.json"
     ;;
   *)

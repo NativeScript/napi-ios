@@ -11,6 +11,10 @@ if (!currentVersion) {
   const target = cmdArgs[0];
   const packageJsonByTarget = {
     ios: "../packages/ios/package.json",
+    "ios-v8": "../packages/ios-v8/package.json",
+    "ios-hermes": "../packages/ios-hermes/package.json",
+    "ios-jsc": "../packages/ios-jsc/package.json",
+    "ios-quickjs": "../packages/ios-quickjs/package.json",
     macos: "../packages/macos/package.json",
     visionos: "../packages/visionos/package.json",
     "ios-node-api": "../packages/ios-node-api/package.json",
