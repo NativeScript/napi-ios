@@ -23,6 +23,8 @@
   "react-native": "src/index.ts",
   "types": "src/index.d.ts",
   "files": [
+    "app.plugin.js",
+    "plugin",
     "src",
     "types",
     "ios",
@@ -33,8 +35,14 @@
     "LICENSE"
   ],
   "peerDependencies": {
+    "expo": "*",
     "react": "*",
     "react-native": ">=0.79"
+  },
+  "peerDependenciesMeta": {
+    "expo": {
+      "optional": true
+    }
   },
   "codegenConfig": {
     "name": "NativeScriptNativeApiSpec",

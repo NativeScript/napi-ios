@@ -127,3 +127,64 @@ npm run test-rn-turbomodule
        UIColor.systemPinkColor;
    });
    ```
+
+## Using the package in an Expo app
+
+Expo Go cannot load this package because it contains custom native code. Use an
+Expo development build, EAS Build, or `npx expo run:ios`.
+
+1. Install the package:
+
+   ```sh
+   npx expo install @nativescript/react-native
+   ```
+
+   When testing a local tarball:
+
+   ```sh
+   npm install /path/to/nativescript-react-native-0.0.1.tgz
+   ```
+
+2. Add the config plugin to `app.json` or `app.config.js`:
+
+   ```json
+   {
+     "expo": {
+       "plugins": ["@nativescript/react-native"]
+     }
+   }
+   ```
+
+   The plugin configures iOS for Hermes and the React Native New Architecture,
+   which are required by this JSI TurboModule.
+
+3. Prebuild and run the iOS development build:
+
+   ```sh
+   npx expo prebuild --platform ios
+   npx expo run:ios
+   ```
+
+4. Initialize NativeScript in app code before using native APIs:
+
+   ```tsx
+   import NativeScript, {defineUIKitView} from "@nativescript/react-native";
+
+   NativeScript.init();
+
+   const NativeBadge = defineUIKitView<{title: string}, UIView>({
+     create() {
+       const view = UIView.alloc().initWithFrame(CGRectZero);
+       const label = UILabel.alloc().initWithFrame(CGRectZero);
+       label.tag = 1;
+       label.textAlignment = NSTextAlignment.Center;
+       view.addSubview(label);
+       return view;
+     },
+     update(view, props) {
+       view.backgroundColor = UIColor.systemBlueColor;
+       const label = view.viewWithTag(1) as UILabel;
+       label.text = props.title;
+     },
+   });
+   ```
