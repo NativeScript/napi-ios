@@ -11,13 +11,12 @@ import NativeScript from '@nativescript/react-native';
 
 type NativeApiHost = {
   backend?: string;
-  metadata?: {classes?: number; functions?: number};
-};
-
-const uiUserInterfaceStyle = {
-  unspecified: 0,
-  light: 1,
-  dark: 2,
+  metadata?: {
+    classes?: number;
+    functions?: number;
+    constants?: number;
+    enums?: number;
+  };
 };
 
 function installNativeScriptGlobals(): NativeApiHost {
@@ -61,7 +60,7 @@ async function applyUIKitTweaks() {
 
     window.tintColor = nativeAccent;
     window.backgroundColor = nativeBackdrop;
-    window.overrideUserInterfaceStyle = uiUserInterfaceStyle.dark;
+    window.overrideUserInterfaceStyle = UIUserInterfaceStyle.Dark;
 
     const rootView = window.rootViewController?.view;
     if (rootView) {
@@ -75,6 +74,10 @@ async function applyUIKitTweaks() {
     turboBackend: NativeScript.getRuntimeBackend(),
     classes: api.metadata?.classes ?? 0,
     functions: api.metadata?.functions ?? 0,
+    constants: api.metadata?.constants ?? 0,
+    enums: api.metadata?.enums ?? 0,
+    timeoutConstant: NSURLErrorTimedOut,
+    darkStyle: UIUserInterfaceStyle.Dark,
     nativeCallsRanOnMainThread,
   };
 }

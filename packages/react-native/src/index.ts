@@ -4,6 +4,8 @@ type NativeApiHost = {
   metadata?: {
     classNames?: () => string[];
     functionNames?: () => string[];
+    constantNames?: () => string[];
+    enumNames?: () => string[];
   };
   runOnUI?: (callback?: () => void) => Promise<void>;
   [name: string]: unknown;
@@ -67,6 +69,16 @@ export function installGlobals(): boolean {
   const functionNames = api.metadata?.functionNames?.() ?? [];
   for (const name of functionNames) {
     defineLazyNativeGlobal(name, (functionName) => api[functionName]);
+  }
+
+  const constantNames = api.metadata?.constantNames?.() ?? [];
+  for (const name of constantNames) {
+    defineLazyNativeGlobal(name, (constantName) => api[constantName]);
+  }
+
+  const enumNames = api.metadata?.enumNames?.() ?? [];
+  for (const name of enumNames) {
+    defineLazyNativeGlobal(name, (enumName) => api[enumName]);
   }
 
   return true;

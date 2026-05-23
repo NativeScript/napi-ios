@@ -96,6 +96,7 @@ void performNativeInvocation(Runtime& runtime, Invocation&& invocation) {
 enum class NativeApiSymbolKind {
   Class,
   Function,
+  Constant,
   Protocol,
   Enum,
 };
@@ -147,6 +148,8 @@ std::string setterSelectorForProperty(const std::string& property) {
   return selector;
 }
 
+void skipMetadataJsiType(MDMetadataReader* metadata, MDSectionOffset* offset);
+
 class NativeApiJsiBridge {
  public:
   explicit NativeApiJsiBridge(const NativeApiJsiConfig& config)
@@ -186,13 +189,29 @@ class NativeApiJsiBridge {
                : nullptr;
   }
 
+  const NativeApiSymbol* findConstant(const std::string& name) const {
+    const NativeApiSymbol* symbol = find(name);
+    return symbol != nullptr && symbol->kind == NativeApiSymbolKind::Constant
+               ? symbol
+               : nullptr;
+  }
+
+  const NativeApiSymbol* findEnum(const std::string& name) const {
+    const NativeApiSymbol* symbol = find(name);
+    return symbol != nullptr && symbol->kind == NativeApiSymbolKind::Enum
+               ? symbol
+               : nullptr;
+  }
+
   size_t classCount() const { return classNames_.size(); }
   size_t functionCount() const { return functionNames_.size(); }
+  size_t constantCount() const { return constantNames_.size(); }
   size_t protocolCount() const { return protocolNames_.size(); }
   size_t enumCount() const { return enumNames_.size(); }
 
   const std::vector<std::string>& classNames() const { return classNames_; }
   const std::vector<std::string>& functionNames() const { return functionNames_; }
+  const std::vector<std::string>& constantNames() const { return constantNames_; }
   const std::vector<std::string>& protocolNames() const { return protocolNames_; }
   const std::vector<std::string>& enumNames() const { return enumNames_; }
   std::shared_ptr<NativeApiJsiScheduler> scheduler() const { return scheduler_; }
@@ -293,6 +312,9 @@ class NativeApiJsiBridge {
       case NativeApiSymbolKind::Function:
         functionNames_.push_back(symbol.name);
         break;
+      case NativeApiSymbolKind::Constant:
+        constantNames_.push_back(symbol.name);
+        break;
       case NativeApiSymbolKind::Protocol:
         protocolNames_.push_back(symbol.name);
         break;
@@ -313,10 +335,43 @@ class NativeApiJsiBridge {
       return;
     }
 
+    indexConstants();
     indexEnums();
     indexFunctions();
     indexProtocols();
     indexClasses();
+  }
+
+  static void skipConstantValue(MDMetadataReader* metadata,
+                                MDSectionOffset& offset,
+                                metagen::MDVariableEvalKind evalKind) {
+    switch (evalKind) {
+      case metagen::mdEvalNone:
+        skipMetadataJsiType(metadata, &offset);
+        break;
+      case metagen::mdEvalInt64:
+        offset += sizeof(int64_t);
+        break;
+      case metagen::mdEvalDouble:
+        offset += sizeof(double);
+        break;
+      case metagen::mdEvalString:
+        offset += sizeof(MDSectionOffset);
+        break;
+    }
+  }
+
+  void indexConstants() {
+    MDSectionOffset offset = metadata_->constantsOffset;
+    while (offset < metadata_->enumsOffset) {
+      MDSectionOffset originalOffset = offset;
+      addSymbol(NativeApiSymbolKind::Constant, originalOffset,
+                metadata_->getString(offset));
+      offset += sizeof(MDSectionOffset);
+      auto evalKind = metadata_->getVariableEvalKind(offset);
+      offset += sizeof(metagen::MDVariableEvalKind);
+      skipConstantValue(metadata_.get(), offset, evalKind);
+    }
   }
 
   void indexEnums() {
@@ -529,6 +584,7 @@ class NativeApiJsiBridge {
   std::unordered_map<MDSectionOffset, NativeApiSymbol> classSymbolsByOffset_;
   std::vector<std::string> classNames_;
   std::vector<std::string> functionNames_;
+  std::vector<std::string> constantNames_;
   std::vector<std::string> protocolNames_;
   std::vector<std::string> enumNames_;
   std::shared_ptr<NativeApiJsiScheduler> scheduler_;
@@ -555,6 +611,8 @@ const char* kindName(NativeApiSymbolKind kind) {
       return "class";
     case NativeApiSymbolKind::Function:
       return "function";
+    case NativeApiSymbolKind::Constant:
+      return "constant";
     case NativeApiSymbolKind::Protocol:
       return "protocol";
     case NativeApiSymbolKind::Enum:
@@ -1704,6 +1762,91 @@ Value convertNativeReturnValue(Runtime& runtime,
   }
 }
 
+bool isValidMetadataStringOffset(MDMetadataReader* metadata,
+                                 MDSectionOffset offset) {
+  if (metadata == nullptr || metadata->constantsOffset < metadata->stringsOffset) {
+    return false;
+  }
+  return offset < metadata->constantsOffset - metadata->stringsOffset;
+}
+
+Value enumToObject(Runtime& runtime, MDMetadataReader* metadata,
+                   const NativeApiSymbol& symbol) {
+  Object result(runtime);
+  if (metadata == nullptr || symbol.offset == MD_SECTION_OFFSET_NULL) {
+    return result;
+  }
+
+  MDSectionOffset offset = symbol.offset + sizeof(MDSectionOffset);
+  bool next = true;
+  while (next) {
+    auto nameOffset = metadata->getOffset(offset);
+    next = (nameOffset & metagen::mdSectionOffsetNext) != 0;
+    nameOffset &= ~metagen::mdSectionOffsetNext;
+    offset += sizeof(MDSectionOffset);
+
+    const char* memberName = metadata->resolveString(nameOffset);
+    int64_t value = metadata->getEnumValue(offset);
+    offset += sizeof(int64_t);
+    result.setProperty(runtime, memberName, static_cast<double>(value));
+  }
+  return result;
+}
+
+Value constantToValue(Runtime& runtime,
+                      const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                      const NativeApiSymbol& symbol) {
+  MDMetadataReader* metadata = bridge->metadata();
+  if (metadata == nullptr || symbol.offset == MD_SECTION_OFFSET_NULL) {
+    return Value::undefined();
+  }
+
+  MDSectionOffset offset = symbol.offset + sizeof(MDSectionOffset);
+  auto evalKind = metadata->getVariableEvalKind(offset);
+  offset += sizeof(metagen::MDVariableEvalKind);
+
+  switch (evalKind) {
+    case metagen::mdEvalInt64:
+      return static_cast<double>(metadata->getInt64(offset));
+    case metagen::mdEvalDouble:
+      return metadata->getDouble(offset);
+    case metagen::mdEvalString: {
+      auto stringOffset = metadata->getOffset(offset);
+      if (isValidMetadataStringOffset(metadata, stringOffset)) {
+        return makeString(runtime, metadata->resolveString(stringOffset));
+      }
+
+      void* symbolPtr = dlsym(bridge->selfDl(), symbol.name.c_str());
+      if (symbolPtr == nullptr) {
+        return Value::undefined();
+      }
+
+      NativeApiJsiType stringObjectType;
+      stringObjectType.kind = metagen::mdTypeNSStringObject;
+      stringObjectType.ffiType = &ffi_type_pointer;
+      stringObjectType.supported = true;
+      return convertNativeReturnValue(runtime, bridge, stringObjectType,
+                                      symbolPtr);
+    }
+    case metagen::mdEvalNone:
+      break;
+  }
+
+  MDSectionOffset typeOffset = offset;
+  NativeApiJsiType type = parseMetadataJsiType(metadata, &typeOffset);
+  if (unsupportedJsiType(type)) {
+    throw facebook::jsi::JSError(
+        runtime, "Native constant type is not supported by pure JSI: " +
+                     symbol.name);
+  }
+
+  void* symbolPtr = dlsym(bridge->selfDl(), symbol.name.c_str());
+  if (symbolPtr == nullptr) {
+    return Value::undefined();
+  }
+  return convertNativeReturnValue(runtime, bridge, type, symbolPtr);
+}
+
 void prepareJsiArguments(Runtime& runtime, const NativeApiJsiSignature& signature,
                          const Value* args, size_t count,
                          NativeApiJsiArgumentFrame& frame) {
@@ -2059,6 +2202,35 @@ class NativeApiHostObject final : public HostObject {
             return function;
           });
     }
+    if (property == "getConstant") {
+      auto bridge = bridge_;
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "getConstant"), 1,
+          [bridge](Runtime& runtime, const Value&, const Value* args,
+                   size_t count) -> Value {
+            std::string constantName =
+                readStringArg(runtime, args, count, 0, "name");
+            const NativeApiSymbol* symbol = bridge->findConstant(constantName);
+            if (symbol == nullptr) {
+              return Value::undefined();
+            }
+            return constantToValue(runtime, bridge, *symbol);
+          });
+    }
+    if (property == "getEnum") {
+      auto bridge = bridge_;
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "getEnum"), 1,
+          [bridge](Runtime& runtime, const Value&, const Value* args,
+                   size_t count) -> Value {
+            std::string enumName = readStringArg(runtime, args, count, 0, "name");
+            const NativeApiSymbol* symbol = bridge->findEnum(enumName);
+            if (symbol == nullptr) {
+              return Value::undefined();
+            }
+            return enumToObject(runtime, bridge->metadata(), *symbol);
+          });
+    }
 
     if (const NativeApiSymbol* classSymbol = bridge_->findClass(property)) {
       return Object::createFromHostObject(
@@ -2077,12 +2249,20 @@ class NativeApiHostObject final : public HostObject {
           });
     }
 
+    if (const NativeApiSymbol* constantSymbol = bridge_->findConstant(property)) {
+      return constantToValue(runtime, bridge_, *constantSymbol);
+    }
+
+    if (const NativeApiSymbol* enumSymbol = bridge_->findEnum(property)) {
+      return enumToObject(runtime, bridge_->metadata(), *enumSymbol);
+    }
+
     return Value::undefined();
   }
 
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override {
     std::vector<PropNameID> names;
-    names.reserve(9);
+    names.reserve(11);
     addPropertyName(runtime, names, "runtime");
     addPropertyName(runtime, names, "backend");
     addPropertyName(runtime, names, "metadata");
@@ -2092,6 +2272,8 @@ class NativeApiHostObject final : public HostObject {
     addPropertyName(runtime, names, "lookup");
     addPropertyName(runtime, names, "getClass");
     addPropertyName(runtime, names, "getFunction");
+    addPropertyName(runtime, names, "getConstant");
+    addPropertyName(runtime, names, "getEnum");
     return names;
   }
 
@@ -2102,6 +2284,8 @@ class NativeApiHostObject final : public HostObject {
                          static_cast<double>(bridge_->classCount()));
     metadata.setProperty(runtime, "functions",
                          static_cast<double>(bridge_->functionCount()));
+    metadata.setProperty(runtime, "constants",
+                         static_cast<double>(bridge_->constantCount()));
     metadata.setProperty(runtime, "protocols",
                          static_cast<double>(bridge_->protocolCount()));
     metadata.setProperty(runtime, "enums",
@@ -2122,6 +2306,14 @@ class NativeApiHostObject final : public HostObject {
             [bridge = bridge_](Runtime& runtime, const Value&, const Value*,
                                size_t) -> Value {
               return namesToArray(runtime, bridge->functionNames());
+            }));
+    metadata.setProperty(
+        runtime, "constantNames",
+        Function::createFromHostFunction(
+            runtime, PropNameID::forAscii(runtime, "constantNames"), 0,
+            [bridge = bridge_](Runtime& runtime, const Value&, const Value*,
+                               size_t) -> Value {
+              return namesToArray(runtime, bridge->constantNames());
             }));
     metadata.setProperty(
         runtime, "protocolNames",

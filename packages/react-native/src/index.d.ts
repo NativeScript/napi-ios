@@ -6,10 +6,13 @@ export type NativeApiHost = {
   metadata?: {
     classes?: number;
     functions?: number;
+    constants?: number;
     protocols?: number;
     enums?: number;
     classNames?: () => string[];
     functionNames?: () => string[];
+    constantNames?: () => string[];
+    enumNames?: () => string[];
   };
   runOnUI?: (callback?: () => void) => Promise<void>;
   [name: string]: unknown;

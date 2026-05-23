@@ -65,6 +65,14 @@ async function runSmoke(): Promise<string> {
       throw new Error('NSObject global install failed');
     }
 
+    if (NSURLErrorTimedOut !== -1001) {
+      throw new Error('constant global install failed');
+    }
+
+    if (NSComparisonResult.Same !== 0 || UIUserInterfaceStyle.Dark !== 2) {
+      throw new Error('enum global install failed');
+    }
+
     let nativeCallsRanOnMainThread = false;
     await NativeScript.runOnUI(() => {
       nativeCallsRanOnMainThread = NSThread?.isMainThread === true;
@@ -79,6 +87,10 @@ async function runSmoke(): Promise<string> {
       runtime: api.runtime,
       backend: api.backend,
       classes: api.metadata?.classes ?? 0,
+      constants: api.metadata?.constants ?? 0,
+      enums: api.metadata?.enums ?? 0,
+      constant: NSURLErrorTimedOut,
+      enumValue: UIUserInterfaceStyle.Dark,
       metadataPath: NativeScript.defaultMetadataPath(),
       turboBackend: NativeScript.getRuntimeBackend(),
     };

@@ -29,9 +29,9 @@ Objective-C class/object handles, and selector invocation live in the shared
 JSI implementation so they can be used by both NativeScript Hermes and a React
 Native TurboModule without going through Node-API.
 
-Current pure-JSI coverage is deliberately conservative: primitive numeric and
-boolean values, C strings, Objective-C object/class/selector/pointer handles,
-`alloc`/`new`, metadata-backed method/property lookup, and explicit selector
-dispatch. Structs, blocks, callbacks, and complex typed arrays should stay on
-the existing Node-API bridge until the JSI type layer has equivalent ownership
-and lifetime handling.
+The direct JSI backend is still moving toward full NativeScript bridge parity.
+It covers the metadata-backed Objective-C class/function/constant/enum paths
+needed by the React Native TurboModule, including NativeScript-style global
+lookup and main-thread native dispatch. Deeper interop features should be
+validated against the full NativeScript bridge until equivalent ownership and
+lifetime handling is present in the JSI layer.
