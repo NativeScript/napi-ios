@@ -1,18 +1,20 @@
-name: NPM Trusted Release (iOS engines)
+name: NPM Trusted Release
 
-# Publishes one or more engine-specific NativeScript iOS runtime packages
+# Publishes one or more NativeScript iOS npm packages
 # (@nativescript/ios-v8, @nativescript/ios-hermes, @nativescript/ios-jsc,
-# @nativescript/ios-quickjs) via npm trusted publishing (OIDC).
+# @nativescript/ios-quickjs, @nativescript/react-native) via npm trusted
+# publishing (OIDC).
 #
 # Each package must be configured on npmjs.com with a trusted publisher that
 # points at this repository + workflow + environment. With `engine: all`, the
-# workflow fans out across all four engines via a matrix.
+# workflow fans out across the four iOS engine packages via a matrix; use
+# `engine: react-native` to publish @nativescript/react-native.
 
 on:
   workflow_dispatch:
     inputs:
       engine:
-        description: "Engine to release (or 'all' to publish every engine)"
+        description: "Package to release (engine package, react-native, or 'all' for every iOS engine)"
         required: true
         type: choice
         default: v8
@@ -21,6 +23,7 @@ on:
           - hermes
           - jsc
           - quickjs
+          - react-native
           - all
       release-type:
         description: "Version bump (patch/minor/major publish to 'latest'; prerelease uses 'preid' as the dist-tag)"
@@ -44,7 +47,7 @@ on:
         default: true
 
 concurrency:
-  # Avoid overlapping publishes on the same ref/engine selection.
+  # Avoid overlapping publishes on the same ref/package selection.
   group: npm-trusted-release-${{ github.ref }}-${{ inputs.engine }}
   cancel-in-progress: false
 
@@ -53,34 +56,32 @@ env:
 
 jobs:
   matrix:
-    name: Resolve engine matrix
+    name: Resolve package matrix
     runs-on: ubuntu-latest
     outputs:
-      engines: ${{ steps.compute.outputs.engines }}
+      targets: ${{ steps.compute.outputs.targets }}
     steps:
       - name: Compute matrix
         id: compute
         run: |
           if [ "${{ inputs.engine }}" = "all" ]; then
-            echo 'engines=["v8","hermes","jsc","quickjs"]' >> "$GITHUB_OUTPUT"
+            echo 'targets=["v8","hermes","jsc","quickjs"]' >> "$GITHUB_OUTPUT"
           else
-            echo "engines=[\"${{ inputs.engine }}\"]" >> "$GITHUB_OUTPUT"
+            echo "targets=[\"${{ inputs.engine }}\"]" >> "$GITHUB_OUTPUT"
           fi
 
   build:
-    name: Build ${{ matrix.engine }}
+    name: Build ${{ matrix.target }}
     needs: matrix
     runs-on: macos-26
     strategy:
       fail-fast: false
       matrix:
-        engine: ${{ fromJson(needs.matrix.outputs.engines) }}
+        target: ${{ fromJson(needs.matrix.outputs.targets) }}
     outputs:
-      # Per-engine outputs aren't natively supported with matrices, so each job
+      # Per-target outputs aren't natively supported with matrices, so each job
       # uploads its computed metadata alongside the tarball artifact.
       placeholder: noop
-    env:
-      IOS_VARIANT: ios-${{ matrix.engine }}
     steps:
       - name: Harden the runner (Audit all outbound calls)
         uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
@@ -122,7 +123,19 @@ jobs:
           set -euo pipefail
           release_type='${{ inputs.release-type }}'
           preid='${{ inputs.preid }}'
-          pkg_dir="packages/${IOS_VARIANT}"
+          target='${{ matrix.target }}'
+          if [ "$target" = "react-native" ]; then
+            pkg_dir="packages/react-native"
+            package_name="@nativescript/react-native"
+            tarball_basename="nativescript-react-native"
+            npm_tag_target="react-native"
+          else
+            pkg_dir="packages/ios-${target}"
+            package_name="@nativescript/ios-${target}"
+            tarball_basename="nativescript-ios-${target}"
+            npm_tag_target="ios-${target}"
+            echo "IOS_VARIANT=ios-${target}" >> "$GITHUB_ENV"
+          fi
 
           pushd "$pkg_dir" >/dev/null
           if [ "$release_type" = "prerelease" ]; then
@@ -133,40 +146,54 @@ jobs:
           NPM_VERSION=$(node -e "console.log(require('./package.json').version)")
           popd >/dev/null
 
-          NPM_TAG=$(NPM_VERSION="$NPM_VERSION" node ./scripts/get-npm-tag.js "$IOS_VARIANT")
+          NPM_TAG=$(NPM_VERSION="$NPM_VERSION" node ./scripts/get-npm-tag.js "$npm_tag_target")
           echo "NPM_VERSION=$NPM_VERSION" >> "$GITHUB_OUTPUT"
           echo "NPM_TAG=$NPM_TAG" >> "$GITHUB_OUTPUT"
-          echo "Resolved $IOS_VARIANT@$NPM_VERSION (tag: $NPM_TAG)"
-      - name: Build (--${{ matrix.engine }})
-        run: ./scripts/build_all_ios.sh --${{ matrix.engine }}
+          echo "PACKAGE_DIR=$pkg_dir" >> "$GITHUB_OUTPUT"
+          echo "PACKAGE_NAME=$package_name" >> "$GITHUB_OUTPUT"
+          echo "TARBALL_BASENAME=$tarball_basename" >> "$GITHUB_OUTPUT"
+          echo "Resolved $package_name@$NPM_VERSION (tag: $NPM_TAG)"
+      - name: Build iOS engine (--${{ matrix.target }})
+        if: ${{ matrix.target != 'react-native' }}
+        run: ./scripts/build_all_ios.sh --${{ matrix.target }}
+      - name: Build @nativescript/react-native
+        if: ${{ matrix.target == 'react-native' }}
+        run: |
+          ./scripts/build_all_react_native.sh
+          ./scripts/build_react_native_turbomodule.sh
       - name: Record metadata
         shell: bash
         run: |
-          mkdir -p packages/${IOS_VARIANT}/dist
-          cat > packages/${IOS_VARIANT}/dist/release-meta.json <<EOF
+          set -euo pipefail
+          package_dir="${{ steps.bump.outputs.PACKAGE_DIR }}"
+          tarball_file="${{ steps.bump.outputs.TARBALL_BASENAME }}-${{ steps.bump.outputs.NPM_VERSION }}.tgz"
+          mkdir -p "$package_dir/dist"
+          cat > "$package_dir/dist/release-meta.json" <<EOF
           {
-            "engine": "${{ matrix.engine }}",
-            "variant": "${IOS_VARIANT}",
-            "package_name": "@nativescript/ios-${{ matrix.engine }}",
+            "target": "${{ matrix.target }}",
+            "package_dir": "$package_dir",
+            "package_name": "${{ steps.bump.outputs.PACKAGE_NAME }}",
             "version": "${{ steps.bump.outputs.NPM_VERSION }}",
-            "tag": "${{ steps.bump.outputs.NPM_TAG }}"
+            "tag": "${{ steps.bump.outputs.NPM_TAG }}",
+            "tarball": "$tarball_file"
           }
           EOF
       - name: Upload npm package artifact
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
-          name: npm-package-${{ matrix.engine }}
+          name: npm-package-${{ matrix.target }}
           path: |
-            packages/ios-${{ matrix.engine }}/dist/nativescript-ios-${{ matrix.engine }}-${{ steps.bump.outputs.NPM_VERSION }}.tgz
-            packages/ios-${{ matrix.engine }}/dist/release-meta.json
+            ${{ steps.bump.outputs.PACKAGE_DIR }}/dist/${{ steps.bump.outputs.TARBALL_BASENAME }}-${{ steps.bump.outputs.NPM_VERSION }}.tgz
+            ${{ steps.bump.outputs.PACKAGE_DIR }}/dist/release-meta.json
       - name: Upload dSYMs artifact
+        if: ${{ matrix.target != 'react-native' }}
         uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
         with:
-          name: NativeScript-dSYMs-${{ matrix.engine }}
+          name: NativeScript-dSYMs-${{ matrix.target }}
           path: dist/dSYMs
 
   publish:
-    name: Publish ${{ matrix.engine }}
+    name: Publish ${{ matrix.target }}
     needs:
       - matrix
       - build
@@ -176,7 +203,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        engine: ${{ fromJson(needs.matrix.outputs.engines) }}
+        target: ${{ fromJson(needs.matrix.outputs.targets) }}
     permissions:
       contents: read
       id-token: write
@@ -191,8 +218,8 @@ jobs:
           registry-url: "https://registry.npmjs.org"
       - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
         with:
-          name: npm-package-${{ matrix.engine }}
-          path: packages/ios-${{ matrix.engine }}/dist
+          name: npm-package-${{ matrix.target }}
+          path: npm-package/${{ matrix.target }}
       - name: Update npm (required for OIDC trusted publishing)
         run: |
           corepack enable npm
@@ -204,7 +231,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          meta="packages/ios-${{ matrix.engine }}/dist/release-meta.json"
+          meta="npm-package/${{ matrix.target }}/release-meta.json"
           if [ ! -f "$meta" ]; then
             echo "Missing release metadata at $meta" >&2
             exit 1
@@ -212,9 +239,11 @@ jobs:
           NPM_VERSION=$(node -e "console.log(require('./$meta').version)")
           NPM_TAG=$(node -e "console.log(require('./$meta').tag)")
           PACKAGE_NAME=$(node -e "console.log(require('./$meta').package_name)")
+          TARBALL=$(node -e "console.log(require('./$meta').tarball)")
           echo "NPM_VERSION=$NPM_VERSION" >> "$GITHUB_OUTPUT"
           echo "NPM_TAG=$NPM_TAG" >> "$GITHUB_OUTPUT"
           echo "PACKAGE_NAME=$PACKAGE_NAME" >> "$GITHUB_OUTPUT"
+          echo "TARBALL=$TARBALL" >> "$GITHUB_OUTPUT"
       - name: Publish package (OIDC trusted publishing)
         if: ${{ vars.USE_NPM_TOKEN != 'true' }}
         shell: bash
@@ -222,12 +251,13 @@ jobs:
           NPM_VERSION: ${{ steps.meta.outputs.NPM_VERSION }}
           NPM_TAG: ${{ steps.meta.outputs.NPM_TAG }}
           PACKAGE_NAME: ${{ steps.meta.outputs.PACKAGE_NAME }}
+          TARBALL: ${{ steps.meta.outputs.TARBALL }}
           DRY_RUN: ${{ inputs.dry-run }}
           NODE_AUTH_TOKEN: ""
         run: |
           set -euo pipefail
-          TARBALL="packages/ios-${{ matrix.engine }}/dist/nativescript-ios-${{ matrix.engine }}-${NPM_VERSION}.tgz"
-          PUBLISH_ARGS=("$TARBALL" --tag "$NPM_TAG" --access public --provenance)
+          TARBALL_PATH="npm-package/${{ matrix.target }}/${TARBALL}"
+          PUBLISH_ARGS=("$TARBALL_PATH" --tag "$NPM_TAG" --access public --provenance)
           if [ "$DRY_RUN" = "true" ]; then
             PUBLISH_ARGS+=(--dry-run)
           fi
@@ -245,12 +275,13 @@ jobs:
           NPM_VERSION: ${{ steps.meta.outputs.NPM_VERSION }}
           NPM_TAG: ${{ steps.meta.outputs.NPM_TAG }}
           PACKAGE_NAME: ${{ steps.meta.outputs.PACKAGE_NAME }}
+          TARBALL: ${{ steps.meta.outputs.TARBALL }}
           DRY_RUN: ${{ inputs.dry-run }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: |
           set -euo pipefail
-          TARBALL="packages/ios-${{ matrix.engine }}/dist/nativescript-ios-${{ matrix.engine }}-${NPM_VERSION}.tgz"
-          PUBLISH_ARGS=("$TARBALL" --tag "$NPM_TAG" --access public --provenance)
+          TARBALL_PATH="npm-package/${{ matrix.target }}/${TARBALL}"
+          PUBLISH_ARGS=("$TARBALL_PATH" --tag "$NPM_TAG" --access public --provenance)
           if [ "$DRY_RUN" = "true" ]; then
             PUBLISH_ARGS+=(--dry-run)
           fi
@@ -268,10 +299,10 @@ jobs:
     steps:
       - name: Print summary
         run: |
-          echo "Engine selection: ${{ inputs.engine }}"
+          echo "Package selection: ${{ inputs.engine }}"
           echo "Release type:     ${{ inputs.release-type }}"
           echo "Preid:            ${{ inputs.preid }}"
           echo "Dry run:          ${{ inputs.dry-run }}"
-          echo "Engines:          ${{ needs.matrix.outputs.engines }}"
+          echo "Targets:          ${{ needs.matrix.outputs.targets }}"
           echo "Build result:     ${{ needs.build.result }}"
           echo "Publish result:   ${{ needs.publish.result }}"
