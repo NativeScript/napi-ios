@@ -46,12 +46,13 @@ const fs = require('fs');
 const target = process.argv[2];
 
 fs.writeFileSync(target, `import React from 'react';
+import {useEffect, useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
 import NativeScriptNativeApi from '@nativescript/react-native-ios-hermes';
 
 const marker = 'NATIVESCRIPT_RN_TURBO_SMOKE_PASS';
 
-function runSmoke(): string {
+async function runSmoke(): Promise<string> {
   try {
     const installed = NativeScriptNativeApi.install();
     const api = (globalThis as any).__nativeScriptNativeApi;
@@ -64,8 +65,18 @@ function runSmoke(): string {
       throw new Error('NSObject metadata lookup failed');
     }
 
+    let nativeCallsRanOnMainThread = false;
+    await api.runOnUI(() => {
+      const NSThread = api.getClass('NSThread');
+      nativeCallsRanOnMainThread = NSThread?.isMainThread === true;
+      if (!nativeCallsRanOnMainThread) {
+        throw new Error('runOnUI did not dispatch native calls to the main thread');
+      }
+    });
+
     const summary = {
       installed,
+      nativeCallsRanOnMainThread,
       runtime: api.runtime,
       backend: api.backend,
       classes: api.metadata?.classes ?? 0,
@@ -81,9 +92,17 @@ function runSmoke(): string {
   }
 }
 
-const result = runSmoke();
-
 export default function App(): React.JSX.Element {
+  const [result, setResult] = useState('Running NativeScript TurboModule smoke test...');
+
+  useEffect(() => {
+    runSmoke()
+      .then(setResult)
+      .catch((error) => {
+        setResult(error instanceof Error ? error.message : String(error));
+      });
+  }, []);
+
   return (
     <SafeAreaView style={{flex: 1, alignItems: 'center', justifyContent: 'center', padding: 24}}>
       <Text selectable>{result}</Text>

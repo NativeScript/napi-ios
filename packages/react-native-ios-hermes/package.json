@@ -34,7 +34,7 @@
   ],
   "peerDependencies": {
     "react": "*",
-    "react-native": ">=0.80"
+    "react-native": ">=0.79"
   },
   "codegenConfig": {
     "name": "NativeScriptNativeApiSpec",

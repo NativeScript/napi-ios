@@ -15,6 +15,8 @@
 
 #if NATIVESCRIPT_HAS_REACT_NATIVE_CALL_INVOKER
 
+#include <dispatch/dispatch.h>
+
 namespace nativescript {
 
 class ReactNativeCallInvokerScheduler final : public NativeApiJsiScheduler {
@@ -37,7 +39,10 @@ class ReactNativeCallInvokerScheduler final : public NativeApiJsiScheduler {
       uiInvoker_->invokeAsync(std::move(task));
       return;
     }
-    invokeOnJS(std::move(task));
+    auto heapTask = std::make_shared<std::function<void()>>(std::move(task));
+    dispatch_async(dispatch_get_main_queue(), ^{
+      (*heapTask)();
+    });
   }
 
  private:

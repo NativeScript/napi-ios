@@ -3,6 +3,7 @@
 #ifdef TARGET_ENGINE_HERMES
 
 #import <Foundation/Foundation.h>
+#include <dispatch/dispatch.h>
 #include <dlfcn.h>
 #include <mach-o/dyld.h>
 #include <mach-o/getsect.h>
@@ -44,6 +45,53 @@ using metagen::MDMemberFlag;
 using metagen::MDMetadataReader;
 using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
+
+thread_local bool gDispatchNativeCallsToUI = false;
+
+class ScopedNativeApiUINativeCallDispatch final {
+ public:
+  ScopedNativeApiUINativeCallDispatch()
+      : previous_(gDispatchNativeCallsToUI) {
+    gDispatchNativeCallsToUI = true;
+  }
+
+  ~ScopedNativeApiUINativeCallDispatch() {
+    gDispatchNativeCallsToUI = previous_;
+  }
+
+ private:
+  bool previous_ = false;
+};
+
+bool shouldDispatchNativeCallToUI() {
+  return gDispatchNativeCallsToUI && ![NSThread isMainThread];
+}
+
+template <typename Invocation>
+void performNativeInvocation(Runtime& runtime, Invocation&& invocation) {
+  NSString* exceptionDescription = nil;
+  auto run = [&]() {
+    @try {
+      invocation();
+    } @catch (NSException* exception) {
+      exceptionDescription = [exception.description copy];
+    }
+  };
+
+  if (shouldDispatchNativeCallToUI()) {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      run();
+    });
+  } else {
+    run();
+  }
+
+  if (exceptionDescription != nil) {
+    std::string message = exceptionDescription.UTF8String ?: "";
+    [exceptionDescription release];
+    throw facebook::jsi::JSError(runtime, message);
+  }
+}
 
 enum class NativeApiSymbolKind {
   Class,
@@ -877,6 +925,20 @@ struct NativeApiJsiType {
   bool returnOwned = false;
 };
 
+bool isObjectiveCObjectType(const NativeApiJsiType& type) {
+  switch (type.kind) {
+    case metagen::mdTypeAnyObject:
+    case metagen::mdTypeProtocolObject:
+    case metagen::mdTypeClassObject:
+    case metagen::mdTypeInstanceObject:
+    case metagen::mdTypeNSStringObject:
+    case metagen::mdTypeNSMutableStringObject:
+      return true;
+    default:
+      return false;
+  }
+}
+
 struct NativeApiJsiSignature {
   ffi_cif cif = {};
   NativeApiJsiType returnType;
@@ -1613,15 +1675,27 @@ Value callCFunction(Runtime& runtime,
 
   std::vector<unsigned char> returnStorage(
       std::max<size_t>(signature->returnType.ffiType->size, sizeof(void*)), 0);
-  @try {
+  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
+  bool retainedReturn = false;
+  performNativeInvocation(runtime, [&]() {
     ffi_call(&signature->cif, FFI_FN(fnptr), returnStorage.data(),
              frame.values());
-  } @catch (NSException* exception) {
-    throw facebook::jsi::JSError(
-        runtime, std::string(exception.description.UTF8String ?: ""));
-  }
+    if (dispatchingNativeCallToUI &&
+        !signature->returnType.returnOwned &&
+        isObjectiveCObjectType(signature->returnType)) {
+      id object = *reinterpret_cast<id*>(returnStorage.data());
+      if (object != nil) {
+        [object retain];
+        retainedReturn = true;
+      }
+    }
+  });
 
-  return convertNativeReturnValue(runtime, bridge, signature->returnType,
+  NativeApiJsiType returnType = signature->returnType;
+  if (retainedReturn) {
+    returnType.returnOwned = true;
+  }
+  return convertNativeReturnValue(runtime, bridge, returnType,
                                   returnStorage.data());
 }
 
@@ -1679,7 +1753,9 @@ Value callObjCSelector(Runtime& runtime,
 
   std::vector<unsigned char> returnStorage(
       std::max<size_t>(signature->returnType.ffiType->size, sizeof(void*)), 0);
-  @try {
+  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
+  bool retainedReturn = false;
+  performNativeInvocation(runtime, [&]() {
 #if defined(__x86_64__)
     bool isStret = signature->returnType.ffiType->size > 16 &&
                    signature->returnType.ffiType->type == FFI_TYPE_STRUCT;
@@ -1690,12 +1766,22 @@ Value callObjCSelector(Runtime& runtime,
     ffi_call(&signature->cif, FFI_FN(objc_msgSend), returnStorage.data(),
              values.data());
 #endif
-  } @catch (NSException* exception) {
-    throw facebook::jsi::JSError(
-        runtime, std::string(exception.description.UTF8String ?: ""));
-  }
+    if (dispatchingNativeCallToUI &&
+        !signature->returnType.returnOwned &&
+        isObjectiveCObjectType(signature->returnType)) {
+      id object = *reinterpret_cast<id*>(returnStorage.data());
+      if (object != nil) {
+        [object retain];
+        retainedReturn = true;
+      }
+    }
+  });
 
-  return convertNativeReturnValue(runtime, bridge, signature->returnType,
+  NativeApiJsiType returnType = signature->returnType;
+  if (retainedReturn) {
+    returnType.returnOwned = true;
+  }
+  return convertNativeReturnValue(runtime, bridge, returnType,
                                   returnStorage.data());
 }
 
@@ -1721,9 +1807,9 @@ class NativeApiHostObject final : public HostObject {
     if (property == "runOnUI") {
       auto bridge = bridge_;
       return Function::createFromHostFunction(
-          runtime, PropNameID::forAscii(runtime, "runOnUI"), 0,
-          [bridge](Runtime& runtime, const Value&, const Value*,
-                   size_t) -> Value {
+          runtime, PropNameID::forAscii(runtime, "runOnUI"), 1,
+          [bridge](Runtime& runtime, const Value&, const Value* args,
+                   size_t count) -> Value {
             auto scheduler = bridge->scheduler();
             if (scheduler == nullptr) {
               throw facebook::jsi::JSError(
@@ -1731,6 +1817,23 @@ class NativeApiHostObject final : public HostObject {
                   "NativeApiJsi was installed without a UI scheduler.");
             }
 
+            std::shared_ptr<Function> callback;
+            if (count > 0 && !args[0].isNull() && !args[0].isUndefined()) {
+              if (!args[0].isObject()) {
+                throw facebook::jsi::JSError(
+                    runtime, "runOnUI expects a function callback.");
+              }
+
+              Object callbackObject = args[0].asObject(runtime);
+              if (!callbackObject.isFunction(runtime)) {
+                throw facebook::jsi::JSError(
+                    runtime, "runOnUI expects a function callback.");
+              }
+              callback = std::make_shared<Function>(
+                  callbackObject.asFunction(runtime));
+            }
+
+            Runtime* runtimePtr = &runtime;
             auto promiseCtor =
                 runtime.global().getPropertyAsFunction(runtime, "Promise");
             return promiseCtor.callAsConstructor(
@@ -1738,34 +1841,41 @@ class NativeApiHostObject final : public HostObject {
                 Function::createFromHostFunction(
                     runtime, PropNameID::forAscii(runtime, "runOnUIPromise"),
                     2,
-                    [scheduler](Runtime& promiseRuntime, const Value&,
-                                const Value* promiseArgs,
-                                size_t promiseArgc) -> Value {
+                    [scheduler, runtimePtr, callback](
+                        Runtime& promiseRuntime, const Value&,
+                        const Value* promiseArgs,
+                        size_t promiseArgc) -> Value {
                       if (promiseArgc < 2 || !promiseArgs[0].isObject() ||
                           !promiseArgs[1].isObject()) {
                         return Value::undefined();
                       }
 
-                      auto resolve =
-                          std::make_shared<Value>(promiseArgs[0].asObject(promiseRuntime));
-                      auto reject =
-                          std::make_shared<Value>(promiseArgs[1].asObject(promiseRuntime));
-                      scheduler->invokeOnUI([scheduler, resolve, reject,
-                                             &promiseRuntime]() {
+                      auto resolve = std::make_shared<Function>(
+                          promiseArgs[0].asObject(promiseRuntime)
+                              .asFunction(promiseRuntime));
+                      auto reject = std::make_shared<Function>(
+                          promiseArgs[1].asObject(promiseRuntime)
+                              .asFunction(promiseRuntime));
+                      if (callback == nullptr) {
+                        scheduler->invokeOnUI([scheduler, runtimePtr, resolve]() {
+                          scheduler->invokeOnJS([runtimePtr, resolve]() {
+                            resolve->call(*runtimePtr);
+                          });
+                        });
+                        return Value::undefined();
+                      }
+
+                      scheduler->invokeOnJS([runtimePtr, callback, resolve, reject]() {
                         try {
-                          scheduler->invokeOnJS([resolve, &promiseRuntime]() {
-                            resolve->asObject(promiseRuntime)
-                                .asFunction(promiseRuntime)
-                                .call(promiseRuntime);
-                          });
+                          {
+                            ScopedNativeApiUINativeCallDispatch uiDispatch;
+                            callback->call(*runtimePtr);
+                          }
+                          resolve->call(*runtimePtr);
                         } catch (const std::exception& error) {
-                          scheduler->invokeOnJS([reject, message = std::string(error.what()),
-                                                 &promiseRuntime]() {
-                            reject->asObject(promiseRuntime)
-                                .asFunction(promiseRuntime)
-                                .call(promiseRuntime,
-                                      String::createFromUtf8(promiseRuntime, message));
-                          });
+                          reject->call(
+                              *runtimePtr,
+                              String::createFromUtf8(*runtimePtr, error.what()));
                         }
                       });
 
