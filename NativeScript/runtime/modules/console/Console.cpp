@@ -2,6 +2,7 @@
 
 #include <sstream>
 #include <string>
+#include <vector>
 
 #include "ffi/NativeScriptException.h"
 #include "js_native_api.h"
@@ -34,6 +35,64 @@ extern "C" void NSLog(CFStringRef format, ...);
 
 namespace nativescript {
 
+namespace {
+
+bool readStringValue(napi_env env, napi_value value, std::string& result) {
+  if (value == nullptr) {
+    return false;
+  }
+
+  size_t length = 0;
+  if (napi_get_value_string_utf8(env, value, nullptr, 0, &length) != napi_ok) {
+    return false;
+  }
+
+  std::vector<char> buffer(length + 1);
+  size_t copied = 0;
+  if (napi_get_value_string_utf8(env, value, buffer.data(), buffer.size(),
+                                 &copied) != napi_ok) {
+    return false;
+  }
+
+  result.assign(buffer.data(), copied);
+  return true;
+}
+
+bool throwPendingException(napi_env env, const std::string& message) {
+  bool isPending = false;
+  if (napi_is_exception_pending(env, &isPending) != napi_ok || !isPending) {
+    return false;
+  }
+
+  napi_value exception = nullptr;
+  napi_get_and_clear_last_exception(env, &exception);
+
+  if (exception != nullptr &&
+      napi_util::is_of_type(env, exception, napi_object)) {
+    throw NativeScriptException(env, exception, message);
+  }
+
+  throw NativeScriptException(env, message);
+}
+
+bool coerceToString(napi_env env, napi_value value, std::string& result) {
+  napi_value stringValue = nullptr;
+  if (napi_coerce_to_string(env, value, &stringValue) != napi_ok ||
+      stringValue == nullptr) {
+    throwPendingException(env, "Error converting console argument to string");
+    return false;
+  }
+
+  if (!readStringValue(env, stringValue, result)) {
+    throwPendingException(env, "Error reading console argument string");
+    return false;
+  }
+
+  return true;
+}
+
+}  // namespace
+
 JS_CLASS_INIT(Console::Init) {
   napi_value Console, console;
 
@@ -65,17 +124,38 @@ JS_METHOD(Console::Constructor) {
 }
 
 std::string transformJSObject(napi_env env, napi_value object) {
-  napi_value toStringFunc;
+  napi_value toStringFunc = nullptr;
   bool hasToString = false;
 
   // Check if the object has a toString method
-  napi_has_named_property(env, object, "toString", &hasToString);
+  if (napi_has_named_property(env, object, "toString", &hasToString) !=
+      napi_ok) {
+    throwPendingException(env, "Error reading console object toString");
+    return "[object Object]";
+  }
+
   if (hasToString) {
-    napi_get_named_property(env, object, "toString", &toStringFunc);
-    if (napi_util::is_of_type(env, toStringFunc, napi_function)) {
-      napi_value result;
-      napi_call_function(env, object, toStringFunc, 0, nullptr, &result);
-      auto value = napi_util::get_cxx_string(env, result);
+    if (napi_get_named_property(env, object, "toString", &toStringFunc) !=
+        napi_ok) {
+      throwPendingException(env, "Error reading console object toString");
+      return "[object Object]";
+    }
+
+    if (toStringFunc != nullptr &&
+        napi_util::is_of_type(env, toStringFunc, napi_function)) {
+      napi_value result = nullptr;
+      if (napi_call_function(env, object, toStringFunc, 0, nullptr, &result) !=
+              napi_ok ||
+          result == nullptr) {
+        throwPendingException(env, "Error converting console object to string");
+        return "[object Object]";
+      }
+
+      std::string value;
+      if (!coerceToString(env, result, value)) {
+        return "[object Object]";
+      }
+
       auto hasCustomToStringImplementation =
           value.find("[object Object]") == std::string::npos;
       if (hasCustomToStringImplementation) return value;
@@ -88,29 +168,48 @@ std::string transformJSObject(napi_env env, napi_value object) {
 std::string buildStringFromArg(napi_env env, napi_value val,
                                napi_value inspectSymbol) {
   napi_valuetype type;
-  napi_typeof(env, val, &type);
+  if (napi_typeof(env, val, &type) != napi_ok) {
+    throwPendingException(env, "Error reading console argument type");
+    return "<unknown>";
+  }
 
   if (type == napi_function) {
-    napi_value funcString;
-    napi_coerce_to_string(env, val, &funcString);
-    return napi_util::get_string_value(env, funcString);
+    std::string funcString;
+    if (coerceToString(env, val, funcString)) {
+      return funcString;
+    }
+    return "<function>";
   } else if (napi_util::is_array(env, val)) {
     napi_value cachedSelf = val;
 
     // Get array length
-    uint32_t arrayLength;
-    napi_get_array_length(env, val, &arrayLength);
+    uint32_t arrayLength = 0;
+    if (napi_get_array_length(env, val, &arrayLength) != napi_ok) {
+      throwPendingException(env, "Error reading console array length");
+      return "[]";
+    }
 
     std::stringstream arrayStr;
     arrayStr << "[";
 
     for (uint32_t i = 0; i < arrayLength; i++) {
-      napi_value propertyValue;
-      napi_get_element(env, val, i, &propertyValue);
+      napi_value propertyValue = nullptr;
+      if (napi_get_element(env, val, i, &propertyValue) != napi_ok ||
+          propertyValue == nullptr) {
+        throwPendingException(env, "Error reading console array element");
+        arrayStr << "<unknown>";
+        if (i != arrayLength - 1) {
+          arrayStr << ", ";
+        }
+        continue;
+      }
 
       // Check for circular reference
       bool isStrictEqual = false;
-      napi_strict_equals(env, propertyValue, cachedSelf, &isStrictEqual);
+      if (napi_strict_equals(env, propertyValue, cachedSelf, &isStrictEqual) !=
+          napi_ok) {
+        throwPendingException(env, "Error comparing console array element");
+      }
 
       if (isStrictEqual) {
         arrayStr << "[Circular]";
@@ -132,20 +231,32 @@ std::string buildStringFromArg(napi_env env, napi_value val,
     napi_status getInspectStatus =
         napi_get_property(env, val, inspectSymbol, &inspectFunc);
     if (getInspectStatus == napi_ok &&
+        inspectFunc != nullptr &&
         napi_util::is_of_type(env, inspectFunc, napi_function)) {
-      napi_value inspectedValue;
-      napi_call_function(env, val, inspectFunc, 0, nullptr, &inspectedValue);
+      napi_value inspectedValue = nullptr;
+      if (napi_call_function(env, val, inspectFunc, 0, nullptr,
+                             &inspectedValue) != napi_ok ||
+          inspectedValue == nullptr) {
+        throwPendingException(env, "Error inspecting console object");
+        return "[object Object]";
+      }
       return buildStringFromArg(env, inspectedValue, inspectSymbol);
+    } else if (getInspectStatus != napi_ok) {
+      throwPendingException(env, "Error reading console inspect function");
     }
     return transformJSObject(env, val);
   } else if (type == napi_symbol) {
-    napi_value symString;
-    napi_coerce_to_string(env, val, &symString);
-    return "Symbol(" + napi_util::get_cxx_string(env, symString) + ")";
+    std::string symString;
+    if (coerceToString(env, val, symString)) {
+      return symString;
+    }
+    return "Symbol()";
   } else {
-    napi_value defaultToString;
-    napi_coerce_to_string(env, val, &defaultToString);
-    return napi_util::get_string_value(env, defaultToString);
+    std::string defaultToString;
+    if (coerceToString(env, val, defaultToString)) {
+      return defaultToString;
+    }
+    return "<unknown>";
   }
 }
 
