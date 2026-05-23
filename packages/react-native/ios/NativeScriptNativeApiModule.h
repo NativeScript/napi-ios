@@ -18,6 +18,7 @@ class NativeScriptNativeApiModule
   bool isInstalled(jsi::Runtime& runtime);
   std::string defaultMetadataPath(jsi::Runtime& runtime);
   std::string getRuntimeBackend(jsi::Runtime& runtime);
+  bool __writeTestMarker(jsi::Runtime& runtime, std::string content);
 
  private:
   std::shared_ptr<CallInvoker> jsInvoker_;

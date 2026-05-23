@@ -6,6 +6,7 @@ export interface Spec extends TurboModule {
   readonly isInstalled: () => boolean;
   readonly defaultMetadataPath: () => string;
   readonly getRuntimeBackend: () => string;
+  readonly __writeTestMarker: (content: string) => boolean;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('NativeScriptNativeApi');

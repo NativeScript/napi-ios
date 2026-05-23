@@ -62,6 +62,32 @@ void writeSmokeMarkerIfRequested(const char* stage) {
   [content writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
 
+bool writeSmokeMarkerContentIfRequested(const std::string& content) {
+  const char* enabled = getenv("NATIVESCRIPT_RN_TURBO_SMOKE_MARKER");
+  if (enabled == nullptr || enabled[0] == '\0') {
+    return false;
+  }
+
+  NSString* path = [NSTemporaryDirectory()
+      stringByAppendingPathComponent:@"NativeScriptNativeApiSmoke.marker"];
+  NSString* nativeContent =
+      [[NSString alloc] initWithBytes:content.data()
+                               length:content.size()
+                             encoding:NSUTF8StringEncoding];
+  if (nativeContent == nil) {
+    nativeContent = @"";
+  }
+
+  BOOL ok = [nativeContent writeToFile:path
+                            atomically:YES
+                              encoding:NSUTF8StringEncoding
+                                 error:nil];
+#if !__has_feature(objc_arc)
+  [nativeContent release];
+#endif
+  return ok == YES;
+}
+
 }  // namespace
 
 namespace facebook::react {
@@ -94,6 +120,11 @@ std::string NativeScriptNativeApiModule::defaultMetadataPath(jsi::Runtime&) {
 std::string NativeScriptNativeApiModule::getRuntimeBackend(jsi::Runtime&) {
   writeSmokeMarkerIfRequested("getRuntimeBackend");
   return "hermes-jsi";
+}
+
+bool NativeScriptNativeApiModule::__writeTestMarker(jsi::Runtime&,
+                                                    std::string content) {
+  return writeSmokeMarkerContentIfRequested(content);
 }
 
 }  // namespace facebook::react
