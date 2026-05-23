@@ -9,7 +9,7 @@ type NativeApiHost = {
   [name: string]: unknown;
 };
 
-type InstallOptions = {
+export type InstallOptions = {
   globals?: boolean;
 };
 
@@ -72,7 +72,7 @@ export function installGlobals(): boolean {
   return true;
 }
 
-export function install(
+export function init(
   metadataPath = '',
   options: InstallOptions = {},
 ): boolean {
@@ -82,6 +82,8 @@ export function install(
   }
   return installed;
 }
+
+export const install = init;
 
 export function isInstalled(): boolean {
   return NativeScriptNativeApi.isInstalled();
@@ -105,7 +107,8 @@ export function runOnUI(callback?: () => void): Promise<void> {
   return run(callback);
 }
 
-export default {
+const NativeScript = {
+  init,
   install,
   installGlobals,
   isInstalled,
@@ -113,3 +116,5 @@ export default {
   getRuntimeBackend,
   runOnUI,
 };
+
+export default NativeScript;

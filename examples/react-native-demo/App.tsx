@@ -7,11 +7,7 @@ import {
   Text,
   View,
 } from 'react-native';
-import NativeScriptNativeApi from '@nativescript/react-native-ios-hermes';
-
-declare const NSThread: any;
-declare const UIApplication: any;
-declare const UIColor: any;
+import NativeScript from '@nativescript/react-native';
 
 type NativeApiHost = {
   backend?: string;
@@ -25,7 +21,7 @@ const uiUserInterfaceStyle = {
 };
 
 function installNativeScriptGlobals(): NativeApiHost {
-  NativeScriptNativeApi.install();
+  NativeScript.init();
   const api = (globalThis as any).__nativeScriptNativeApi as
     | NativeApiHost
     | undefined;
@@ -43,7 +39,7 @@ async function applyUIKitTweaks() {
   const api = installNativeScriptGlobals();
 
   let nativeCallsRanOnMainThread = false;
-  await NativeScriptNativeApi.runOnUI(() => {
+  await NativeScript.runOnUI(() => {
     nativeCallsRanOnMainThread = NSThread.isMainThread === true;
     if (!nativeCallsRanOnMainThread) {
       throw new Error('runOnUI did not dispatch native calls to the main thread');
@@ -76,7 +72,7 @@ async function applyUIKitTweaks() {
 
   return {
     backend: api.backend,
-    turboBackend: NativeScriptNativeApi.getRuntimeBackend(),
+    turboBackend: NativeScript.getRuntimeBackend(),
     classes: api.metadata?.classes ?? 0,
     functions: api.metadata?.functions ?? 0,
     nativeCallsRanOnMainThread,
@@ -115,7 +111,7 @@ export default function App(): React.JSX.Element {
   return (
     <SafeAreaView style={styles.screen}>
       <View style={styles.panel}>
-        <Text style={styles.kicker}>NativeScript TurboModule</Text>
+        <Text style={styles.kicker}>NativeScript for React Native</Text>
         <Text style={styles.title}>Hermes JSI UIKit Demo</Text>
         <Text style={styles.status}>{status}</Text>
         <Text selectable style={styles.details}>

@@ -5,7 +5,7 @@ source "$(dirname "$0")/build_utils.sh"
 RN_VERSION=${RN_VERSION:-0.85.3}
 RN_CLI_VERSION=${RN_CLI_VERSION:-20.1.3}
 APP_NAME=${RN_SMOKE_APP_NAME:-NativeScriptNativeApiSmoke}
-APP_ROOT=${RN_SMOKE_APP_ROOT:-"$REPO_ROOT/build/react-native-ios-hermes-smoke"}
+APP_ROOT=${RN_SMOKE_APP_ROOT:-"$REPO_ROOT/build/react-native-smoke"}
 APP_DIR="$APP_ROOT/$APP_NAME"
 CONFIGURATION=${IOS_CONFIGURATION:-Release}
 FORCE_RECREATE=${RN_SMOKE_FORCE_RECREATE:-1}
@@ -15,9 +15,9 @@ MARKER="NATIVESCRIPT_RN_TURBO_SMOKE_PASS"
 BUNDLE_ID="org.reactjs.native.example.$APP_NAME"
 MARKER_FILE_NAME="NativeScriptNativeApiSmoke.marker"
 
-checkpoint "Building React Native iOS Hermes TurboModule tarball..."
-"$SCRIPT_DIR/build_react_native_ios_hermes_turbomodule.sh"
-TARBALL=$(ls -t "$REPO_ROOT/packages/react-native-ios-hermes/dist"/*.tgz | head -n 1)
+checkpoint "Building @nativescript/react-native TurboModule tarball..."
+"$SCRIPT_DIR/build_react_native_turbomodule.sh"
+TARBALL=$(ls -t "$REPO_ROOT/packages/react-native/dist"/*.tgz | head -n 1)
 
 if [[ "$FORCE_RECREATE" == "1" ]]; then
   rm -rf "$APP_DIR"
@@ -48,28 +48,25 @@ const target = process.argv[2];
 fs.writeFileSync(target, `import React from 'react';
 import {useEffect, useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
-import NativeScriptNativeApi from '@nativescript/react-native-ios-hermes';
-
-declare const NSObject: any;
-declare const NSThread: any;
+import NativeScript from '@nativescript/react-native';
 
 const marker = 'NATIVESCRIPT_RN_TURBO_SMOKE_PASS';
 
 async function runSmoke(): Promise<string> {
   try {
-    const installed = NativeScriptNativeApi.install();
+    const installed = NativeScript.init();
     const api = (globalThis as any).__nativeScriptNativeApi;
     if (!installed || !api) {
       throw new Error('NativeScript Native API JSI host object was not installed');
     }
 
     const nsObject = NSObject;
-    if (!nsObject || nsObject.available !== true) {
+    if (!nsObject || typeof nsObject.alloc !== 'function') {
       throw new Error('NSObject global install failed');
     }
 
     let nativeCallsRanOnMainThread = false;
-    await NativeScriptNativeApi.runOnUI(() => {
+    await NativeScript.runOnUI(() => {
       nativeCallsRanOnMainThread = NSThread?.isMainThread === true;
       if (!nativeCallsRanOnMainThread) {
         throw new Error('runOnUI did not dispatch native calls to the main thread');
@@ -82,8 +79,8 @@ async function runSmoke(): Promise<string> {
       runtime: api.runtime,
       backend: api.backend,
       classes: api.metadata?.classes ?? 0,
-      metadataPath: NativeScriptNativeApi.defaultMetadataPath(),
-      turboBackend: NativeScriptNativeApi.getRuntimeBackend(),
+      metadataPath: NativeScript.defaultMetadataPath(),
+      turboBackend: NativeScript.getRuntimeBackend(),
     };
 
     console.log(marker + ' ' + JSON.stringify(summary));
@@ -217,4 +214,4 @@ function poll() {
 poll();
 NODE
 
-checkpoint "React Native iOS Hermes TurboModule smoke test passed."
+checkpoint "React Native NativeScript TurboModule smoke test passed."

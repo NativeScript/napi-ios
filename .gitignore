@@ -69,7 +69,7 @@ NativeScript/ffi/GeneratedSignatureDispatch.inc
 NativeScript/ffi/GeneratedSignatureDispatch.inc.stamp
 
 # React Native TurboModule package staging
-packages/react-native-ios-hermes/dist/
-packages/react-native-ios-hermes/ios/vendor/
-packages/react-native-ios-hermes/metadata/
-packages/react-native-ios-hermes/native-api-jsi/
+packages/react-native/dist/
+packages/react-native/ios/vendor/
+packages/react-native/metadata/
+packages/react-native/native-api-jsi/

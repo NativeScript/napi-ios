@@ -5,7 +5,7 @@ source "$(dirname "$0")/build_utils.sh"
 RN_VERSION=${RN_DEMO_VERSION:-0.85.3}
 RN_CLI_VERSION=${RN_DEMO_CLI_VERSION:-20.1.3}
 APP_NAME=${RN_DEMO_APP_NAME:-NativeScriptNativeApiDemo}
-APP_ROOT=${RN_DEMO_APP_ROOT:-"$REPO_ROOT/build/react-native-ios-hermes-demo"}
+APP_ROOT=${RN_DEMO_APP_ROOT:-"$REPO_ROOT/build/react-native-demo"}
 APP_DIR="$APP_ROOT/$APP_NAME"
 CONFIGURATION=${IOS_CONFIGURATION:-Release}
 FORCE_RECREATE=${RN_DEMO_FORCE_RECREATE:-0}
@@ -16,11 +16,11 @@ LAUNCH_TIMEOUT_SECONDS=${RN_DEMO_LAUNCH_TIMEOUT_SECONDS:-90}
 BUNDLE_ID="org.reactjs.native.example.$APP_NAME"
 MARKER="NATIVESCRIPT_RN_TURBO_DEMO_PASS"
 MARKER_FILE_NAME="NativeScriptNativeApiSmoke.marker"
-DEMO_APP_TSX="$REPO_ROOT/examples/react-native-ios-hermes-demo/App.tsx"
+DEMO_APP_TSX="$REPO_ROOT/examples/react-native-demo/App.tsx"
 
-checkpoint "Building React Native iOS Hermes TurboModule tarball..."
-"$SCRIPT_DIR/build_react_native_ios_hermes_turbomodule.sh"
-TARBALL=$(ls -t "$REPO_ROOT/packages/react-native-ios-hermes/dist"/*.tgz | head -n 1)
+checkpoint "Building @nativescript/react-native TurboModule tarball..."
+"$SCRIPT_DIR/build_react_native_turbomodule.sh"
+TARBALL=$(ls -t "$REPO_ROOT/packages/react-native/dist"/*.tgz | head -n 1)
 
 if [[ "$FORCE_RECREATE" == "1" ]]; then
   rm -rf "$APP_DIR"
@@ -156,4 +156,4 @@ poll();
 NODE
 fi
 
-checkpoint "React Native iOS Hermes TurboModule demo app is ready at $APP_DIR"
+checkpoint "React Native NativeScript demo app is ready at $APP_DIR"
