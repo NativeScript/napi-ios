@@ -1,0 +1,27 @@
+{
+  "name": "@nativescript/ios-v8",
+  "version": "0.0.2",
+  "description": "NativeScript Runtime for iOS (V8 engine)",
+  "keywords": [
+    "NativeScript",
+    "iOS",
+    "runtime",
+    "v8"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NativeScript/napi-ios",
+    "directory": "packages/ios-v8"
+  },
+  "author": {
+    "name": "NativeScript Team",
+    "email": "oss@nativescript.org"
+  },
+  "scripts": {
+    "build": "cd ../.. && ./scripts/build_all_ios.sh --v8"
+  },
+  "files": [
+    "framework"
+  ],
+  "license": "Apache-2.0"
+}

@@ -8,6 +8,11 @@ BUILD_SIMULATOR=$(to_bool ${BUILD_SIMULATOR:=true})
 BUILD_MACOS=$(to_bool ${BUILD_MACOS:=false})
 EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 
+# Optional: stage into a per-engine npm package directory (e.g. packages/ios-v8).
+# Defaults to "ios" for backward compatibility with the @nativescript/ios package.
+IOS_VARIANT=${IOS_VARIANT:=ios}
+export IOS_VARIANT
+
 # See build_nativescript.sh for all supported flags. This parent script is only
 # interested in intercepting a subset of them.
 for arg in $@; do
@@ -29,7 +34,7 @@ rm -rf ./dist
 
 # Sync the embedded runtime version when building the iOS runtime package.
 if [ -z "$NO_UPDATE_VERSION" ] && [[ "$TARGET_ENGINE" != "none" ]]; then
-  "$SCRIPT_DIR/update_version.sh" ios
+  "$SCRIPT_DIR/update_version.sh" "$IOS_VARIANT"
 fi
 
 "$SCRIPT_DIR/build_metadata_generator.sh"

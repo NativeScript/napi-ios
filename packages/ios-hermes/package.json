@@ -1,0 +1,27 @@
+{
+  "name": "@nativescript/ios-hermes",
+  "version": "0.0.2",
+  "description": "NativeScript Runtime for iOS (Hermes engine)",
+  "keywords": [
+    "NativeScript",
+    "iOS",
+    "runtime",
+    "hermes"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NativeScript/napi-ios",
+    "directory": "packages/ios-hermes"
+  },
+  "author": {
+    "name": "NativeScript Team",
+    "email": "oss@nativescript.org"
+  },
+  "scripts": {
+    "build": "cd ../.. && ./scripts/build_all_ios.sh --hermes"
+  },
+  "files": [
+    "framework"
+  ],
+  "license": "Apache-2.0"
+}

@@ -1,0 +1,277 @@
+name: NPM Trusted Release (iOS engines)
+
+# Publishes one or more engine-specific NativeScript iOS runtime packages
+# (@nativescript/ios-v8, @nativescript/ios-hermes, @nativescript/ios-jsc,
+# @nativescript/ios-quickjs) via npm trusted publishing (OIDC).
+#
+# Each package must be configured on npmjs.com with a trusted publisher that
+# points at this repository + workflow + environment. With `engine: all`, the
+# workflow fans out across all four engines via a matrix.
+
+on:
+  workflow_dispatch:
+    inputs:
+      engine:
+        description: "Engine to release (or 'all' to publish every engine)"
+        required: true
+        type: choice
+        default: v8
+        options:
+          - v8
+          - hermes
+          - jsc
+          - quickjs
+          - all
+      release-type:
+        description: "Version bump (patch/minor/major publish to 'latest'; prerelease uses 'preid' as the dist-tag)"
+        required: false
+        type: choice
+        default: prerelease
+        options:
+          - prerelease
+          - patch
+          - minor
+          - major
+      preid:
+        description: "Prerelease identifier (used only when release-type=prerelease; also becomes the npm dist-tag, e.g. next | canary)"
+        required: false
+        type: string
+        default: next
+      dry-run:
+        description: "Run release steps without making changes (no git push, no publish)"
+        required: false
+        type: boolean
+        default: true
+
+concurrency:
+  # Avoid overlapping publishes on the same ref/engine selection.
+  group: npm-trusted-release-${{ github.ref }}-${{ inputs.engine }}
+  cancel-in-progress: false
+
+env:
+  XCODE_VERSION: "26.2.0"
+
+jobs:
+  matrix:
+    name: Resolve engine matrix
+    runs-on: ubuntu-latest
+    outputs:
+      engines: ${{ steps.compute.outputs.engines }}
+    steps:
+      - name: Compute matrix
+        id: compute
+        run: |
+          if [ "${{ inputs.engine }}" = "all" ]; then
+            echo 'engines=["v8","hermes","jsc","quickjs"]' >> "$GITHUB_OUTPUT"
+          else
+            echo "engines=[\"${{ inputs.engine }}\"]" >> "$GITHUB_OUTPUT"
+          fi
+
+  build:
+    name: Build ${{ matrix.engine }}
+    needs: matrix
+    runs-on: macos-26
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: ${{ fromJson(needs.matrix.outputs.engines) }}
+    outputs:
+      # Per-engine outputs aren't natively supported with matrices, so each job
+      # uploads its computed metadata alongside the tarball artifact.
+      placeholder: noop
+    env:
+      IOS_VARIANT: ios-${{ matrix.engine }}
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: audit
+      - uses: maxim-lobanov/setup-xcode@60606e260d2fc5762a71e64e74b2174e8ea3c8bd # v1.6.0
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+      - uses: actions/checkout@1af3b93b6815bc44a9784bd300feb67ff0d1eeb3 # v6.0.0
+        with:
+          fetch-depth: 0
+          submodules: recursive
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+      - name: Install Python
+        uses: actions/setup-python@83679a892e2d95755f2dac6acb0bfd1e9ac5d548 # v6.1.0
+        with:
+          python-version: "3"
+      - name: Install Dependencies
+        run: |
+          npm install
+          python3 -m pip install --upgrade pip six
+          if ! command -v ld64.lld >/dev/null; then
+            brew list lld || brew install lld
+          fi
+          if ! command -v cmake >/dev/null; then
+            brew list cmake || brew install cmake
+          fi
+          if [ ! -x /usr/local/bin/cmake ]; then
+            sudo mkdir -p /usr/local/bin
+            sudo ln -sf "$(command -v cmake)" /usr/local/bin/cmake
+          fi
+      - name: Bump version
+        id: bump
+        shell: bash
+        run: |
+          set -euo pipefail
+          release_type='${{ inputs.release-type }}'
+          preid='${{ inputs.preid }}'
+          pkg_dir="packages/${IOS_VARIANT}"
+
+          pushd "$pkg_dir" >/dev/null
+          if [ "$release_type" = "prerelease" ]; then
+            npm version prerelease --preid "$preid" --no-git-tag-version >/dev/null
+          else
+            npm version "$release_type" --no-git-tag-version >/dev/null
+          fi
+          NPM_VERSION=$(node -e "console.log(require('./package.json').version)")
+          popd >/dev/null
+
+          NPM_TAG=$(NPM_VERSION="$NPM_VERSION" node ./scripts/get-npm-tag.js "$IOS_VARIANT")
+          echo "NPM_VERSION=$NPM_VERSION" >> "$GITHUB_OUTPUT"
+          echo "NPM_TAG=$NPM_TAG" >> "$GITHUB_OUTPUT"
+          echo "Resolved $IOS_VARIANT@$NPM_VERSION (tag: $NPM_TAG)"
+      - name: Build (--${{ matrix.engine }})
+        run: ./scripts/build_all_ios.sh --${{ matrix.engine }}
+      - name: Record metadata
+        shell: bash
+        run: |
+          mkdir -p packages/${IOS_VARIANT}/dist
+          cat > packages/${IOS_VARIANT}/dist/release-meta.json <<EOF
+          {
+            "engine": "${{ matrix.engine }}",
+            "variant": "${IOS_VARIANT}",
+            "package_name": "@nativescript/ios-${{ matrix.engine }}",
+            "version": "${{ steps.bump.outputs.NPM_VERSION }}",
+            "tag": "${{ steps.bump.outputs.NPM_TAG }}"
+          }
+          EOF
+      - name: Upload npm package artifact
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: npm-package-${{ matrix.engine }}
+          path: |
+            packages/ios-${{ matrix.engine }}/dist/nativescript-ios-${{ matrix.engine }}-${{ steps.bump.outputs.NPM_VERSION }}.tgz
+            packages/ios-${{ matrix.engine }}/dist/release-meta.json
+      - name: Upload dSYMs artifact
+        uses: actions/upload-artifact@330a01c490aca151604b8cf639adc76d48f6c5d4 # v5.0.0
+        with:
+          name: NativeScript-dSYMs-${{ matrix.engine }}
+          path: dist/dSYMs
+
+  publish:
+    name: Publish ${{ matrix.engine }}
+    needs:
+      - matrix
+      - build
+    runs-on: ubuntu-latest
+    environment:
+      name: ${{ inputs.dry-run && 'npm-publish-dry-run' || 'npm-publish' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        engine: ${{ fromJson(needs.matrix.outputs.engines) }}
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Harden the runner (Audit all outbound calls)
+        uses: step-security/harden-runner@95d9a5deda9de15063e7595e9719c11c38c90ae2 # v2.13.2
+        with:
+          egress-policy: audit
+      - uses: actions/setup-node@2028fbc5c25fe9cf00d9f06a71cc4710d4507903 # v6.0.0
+        with:
+          node-version: 24
+          registry-url: "https://registry.npmjs.org"
+      - uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: npm-package-${{ matrix.engine }}
+          path: packages/ios-${{ matrix.engine }}/dist
+      - name: Update npm (required for OIDC trusted publishing)
+        run: |
+          corepack enable npm
+          corepack install -g npm@11.6.2
+          test "$(npm --version)" = "11.6.2"
+          test "$(npx --version)" = "11.6.2"
+      - name: Read release metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+          meta="packages/ios-${{ matrix.engine }}/dist/release-meta.json"
+          if [ ! -f "$meta" ]; then
+            echo "Missing release metadata at $meta" >&2
+            exit 1
+          fi
+          NPM_VERSION=$(node -e "console.log(require('./$meta').version)")
+          NPM_TAG=$(node -e "console.log(require('./$meta').tag)")
+          PACKAGE_NAME=$(node -e "console.log(require('./$meta').package_name)")
+          echo "NPM_VERSION=$NPM_VERSION" >> "$GITHUB_OUTPUT"
+          echo "NPM_TAG=$NPM_TAG" >> "$GITHUB_OUTPUT"
+          echo "PACKAGE_NAME=$PACKAGE_NAME" >> "$GITHUB_OUTPUT"
+      - name: Publish package (OIDC trusted publishing)
+        if: ${{ vars.USE_NPM_TOKEN != 'true' }}
+        shell: bash
+        env:
+          NPM_VERSION: ${{ steps.meta.outputs.NPM_VERSION }}
+          NPM_TAG: ${{ steps.meta.outputs.NPM_TAG }}
+          PACKAGE_NAME: ${{ steps.meta.outputs.PACKAGE_NAME }}
+          DRY_RUN: ${{ inputs.dry-run }}
+          NODE_AUTH_TOKEN: ""
+        run: |
+          set -euo pipefail
+          TARBALL="packages/ios-${{ matrix.engine }}/dist/nativescript-ios-${{ matrix.engine }}-${NPM_VERSION}.tgz"
+          PUBLISH_ARGS=("$TARBALL" --tag "$NPM_TAG" --access public --provenance)
+          if [ "$DRY_RUN" = "true" ]; then
+            PUBLISH_ARGS+=(--dry-run)
+          fi
+          echo "Publishing ${PACKAGE_NAME}@${NPM_VERSION} (tag: $NPM_TAG, dry-run: $DRY_RUN) via OIDC trusted publishing..."
+          unset NODE_AUTH_TOKEN
+          rm -f ~/.npmrc || true
+          if [ -n "${NPM_CONFIG_USERCONFIG:-}" ]; then
+            rm -f "$NPM_CONFIG_USERCONFIG" || true
+          fi
+          npm publish "${PUBLISH_ARGS[@]}"
+      - name: Publish package (granular token fallback)
+        if: ${{ vars.USE_NPM_TOKEN == 'true' }}
+        shell: bash
+        env:
+          NPM_VERSION: ${{ steps.meta.outputs.NPM_VERSION }}
+          NPM_TAG: ${{ steps.meta.outputs.NPM_TAG }}
+          PACKAGE_NAME: ${{ steps.meta.outputs.PACKAGE_NAME }}
+          DRY_RUN: ${{ inputs.dry-run }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+        run: |
+          set -euo pipefail
+          TARBALL="packages/ios-${{ matrix.engine }}/dist/nativescript-ios-${{ matrix.engine }}-${NPM_VERSION}.tgz"
+          PUBLISH_ARGS=("$TARBALL" --tag "$NPM_TAG" --access public --provenance)
+          if [ "$DRY_RUN" = "true" ]; then
+            PUBLISH_ARGS+=(--dry-run)
+          fi
+          echo "Publishing ${PACKAGE_NAME}@${NPM_VERSION} (tag: $NPM_TAG, dry-run: $DRY_RUN) via granular token..."
+          npm publish "${PUBLISH_ARGS[@]}"
+
+  summary:
+    name: Release summary
+    if: always()
+    needs:
+      - matrix
+      - build
+      - publish
+    runs-on: ubuntu-latest
+    steps:
+      - name: Print summary
+        run: |
+          echo "Engine selection: ${{ inputs.engine }}"
+          echo "Release type:     ${{ inputs.release-type }}"
+          echo "Preid:            ${{ inputs.preid }}"
+          echo "Dry run:          ${{ inputs.dry-run }}"
+          echo "Engines:          ${{ needs.matrix.outputs.engines }}"
+          echo "Build result:     ${{ needs.build.result }}"
+          echo "Publish result:   ${{ needs.publish.result }}"
