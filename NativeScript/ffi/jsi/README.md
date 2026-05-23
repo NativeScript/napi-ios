@@ -31,7 +31,17 @@ Native TurboModule without going through Node-API.
 
 The direct JSI backend is still moving toward full NativeScript bridge parity.
 It covers the metadata-backed Objective-C class/function/constant/enum paths
-needed by the React Native TurboModule, including NativeScript-style global
-lookup and main-thread native dispatch. Deeper interop features should be
-validated against the full NativeScript bridge until equivalent ownership and
-lifetime handling is present in the JSI layer.
+needed by the React Native TurboModule, plus metadata-backed structs/unions,
+primitive array/vector value marshalling, JS blocks, C function pointer
+callbacks, protocol wrappers, pointer/reference helpers, and the core `interop`
+helpers (`Pointer`, `Reference`, `sizeof`, `alloc`, `free`, `adopt`,
+`handleof`, `stringFromCString`, `bufferFromData`, and `addProtocol`). Struct
+and union constructors, plus protocol symbols, are installed on `globalThis`
+along with `interop` so common NativeScript-style calls such as
+`CGRect({ origin, size })`, `interop.sizeof(CGRect)`, and
+`interop.handleof(value)` work through JSI.
+
+The remaining parity work is class-builder heavy: `interop.addMethod` and
+JavaScript-defined Objective-C subclasses still need the full method IMP
+installation layer before pure JSI can be considered fully compatible with the
+Node-API bridge.
