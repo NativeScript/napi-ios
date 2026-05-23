@@ -19,6 +19,7 @@
 #include "ClassBuilder.h"
 #include "ClassMember.h"
 #include "EngineDirectCall.h"
+#include "Interop.h"
 #include "MetadataReader.h"
 #include "NativeScriptException.h"
 #include "ObjCBridge.h"
@@ -120,6 +121,34 @@ enum QuickJSFastNativeKind : int {
   kQuickJSFastObjCSetter = 3,
   kQuickJSFastObjCReadOnlySetter = 4,
   kQuickJSFastCFunction = 5,
+};
+
+inline bool needsRoundTripCacheFrame(nativescript::Cif* cif) {
+  return cif != nullptr && cif->generatedDispatchHasRoundTripCacheArgument;
+}
+
+class QuickJSFastRoundTripCacheFrameGuard {
+ public:
+  QuickJSFastRoundTripCacheFrameGuard(
+      napi_env env, nativescript::ObjCBridgeState* bridgeState,
+      nativescript::Cif* cif)
+      : env_(env), bridgeState_(bridgeState),
+        active_(needsRoundTripCacheFrame(cif) && bridgeState != nullptr) {
+    if (active_) {
+      bridgeState_->beginRoundTripCacheFrame(env_);
+    }
+  }
+
+  ~QuickJSFastRoundTripCacheFrameGuard() {
+    if (active_) {
+      bridgeState_->endRoundTripCacheFrame(env_);
+    }
+  }
+
+ private:
+  napi_env env_ = nullptr;
+  nativescript::ObjCBridgeState* bridgeState_ = nullptr;
+  bool active_ = false;
 };
 
 inline JSValue ToJSValue(napi_value value) {
@@ -686,10 +715,15 @@ bool makeQuickJSObjCReturnValue(
       napi_get_named_property(env, jsThis, "constructor", &constructor);
     }
     id obj = *reinterpret_cast<id*>(rvalue);
-    napi_value converted = member->bridgeState->getObject(
-        env, obj, constructor,
-        member->returnOwned ? nativescript::kOwnedObject
-                            : nativescript::kUnownedObject);
+    napi_value converted =
+        obj != nil ? member->bridgeState->findCachedObjectWrapper(env, obj)
+                   : nullptr;
+    if (converted == nullptr) {
+      converted = member->bridgeState->getObject(
+          env, obj, constructor,
+          member->returnOwned ? nativescript::kOwnedObject
+                              : nativescript::kUnownedObject);
+    }
     bool ok = false;
     if (converted != nullptr) {
       ok = duplicateQuickJSNapiResult(context, converted, result);
@@ -724,6 +758,19 @@ bool makeQuickJSObjCReturnValue(
         scope.close();
         return ok;
       }
+    }
+
+    if (obj != nil && ![obj isKindOfClass:[NSString class]] &&
+        ![obj isKindOfClass:[NSNumber class]] &&
+        ![obj isKindOfClass:[NSNull class]]) {
+      QuickJSFastStackHandleScope scope(env);
+      napi_value cached = member->bridgeState->findCachedObjectWrapper(env, obj);
+      if (cached != nullptr) {
+        bool ok = duplicateQuickJSNapiResult(context, cached, result);
+        scope.close();
+        return ok;
+      }
+      scope.close();
     }
 
     if (makeQuickJSBoxedObjectValue(context, obj, result)) {
@@ -834,6 +881,8 @@ bool tryCallQuickJSObjCEngineDirect(
   }
 
   void* rvalue = rvalueStorage.get();
+  QuickJSFastRoundTripCacheFrameGuard roundTripCacheFrame(
+      env, member->bridgeState, cif);
   bool didInvoke = false;
   @try {
     if (invoker != nullptr) {
@@ -886,6 +935,8 @@ bool tryCallQuickJSCFunctionEngineDirect(JSContext* context, napi_env env,
       : nullptr;
 
   bool didInvoke = false;
+  QuickJSFastRoundTripCacheFrameGuard roundTripCacheFrame(
+      env, bridgeState, cif);
   @try {
     if (invoker != nullptr) {
       didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
@@ -1555,8 +1606,44 @@ bool TryFastConvertQuickJSObjectArgument(napi_env env, MDTypeKind kind,
   if (env == nullptr || value == nullptr || result == nullptr) {
     return false;
   }
-  return tryFastConvertQuickJSObjectArgument(env, kind, ToJSValue(value),
-                                             result);
+  if (Pointer::isInstance(env, value) || Reference::isInstance(env, value)) {
+    if (TryFastConvertNapiArgument(env, kind, value, result)) {
+      return true;
+    }
+    if (kind == mdTypeClass) {
+      void* data = nullptr;
+      if (Pointer::isInstance(env, value)) {
+        Pointer* pointer = Pointer::unwrap(env, value);
+        data = pointer != nullptr ? pointer->data : nullptr;
+      } else {
+        Reference* reference = Reference::unwrap(env, value);
+        data = reference != nullptr ? reference->data : nullptr;
+      }
+      id nativeObject = static_cast<id>(data);
+      if (nativeObject != nil && object_isClass(nativeObject)) {
+        *reinterpret_cast<Class*>(result) = static_cast<Class>(nativeObject);
+        return true;
+      }
+    }
+    return false;
+  }
+  if (tryFastConvertQuickJSObjectArgument(env, kind, ToJSValue(value),
+                                          result)) {
+    if (kind != mdTypeClass) {
+      napi_valuetype valueType = napi_undefined;
+      if (napi_typeof(env, value, &valueType) == napi_ok &&
+          valueType == napi_object) {
+        id nativeObject = *reinterpret_cast<id*>(result);
+        ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+        if (nativeObject != nil && bridgeState != nullptr &&
+            bridgeState->hasRoundTripCacheFrame()) {
+          bridgeState->cacheRoundTripObject(env, nativeObject, value);
+        }
+      }
+    }
+    return true;
+  }
+  return TryFastConvertNapiArgument(env, kind, value, result);
 }
 
 bool TryFastConvertQuickJSArgument(napi_env env, MDTypeKind kind,

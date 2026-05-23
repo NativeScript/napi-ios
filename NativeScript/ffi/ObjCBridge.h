@@ -42,6 +42,17 @@ struct JSObjectFinalizerContext {
   napi_ref ref;
 };
 
+struct HandleObjectRef {
+  napi_ref ref = nullptr;
+  bool ownsRef = false;
+};
+
+struct RecentObjectWrapperRef {
+  uintptr_t objectKey = 0;
+  uintptr_t objectClassKey = 0;
+  napi_ref ref = nullptr;
+};
+
 void finalize_objc_object(napi_env /*env*/, void* data, void* hint);
 bool IsBridgeStateLive(const ObjCBridgeState* bridgeState,
                        uint64_t token) noexcept;
@@ -167,6 +178,13 @@ class ObjCBridgeState {
                        MDSectionOffset classOffset = 0,
                        std::vector<MDSectionOffset>* protocolOffsets = nullptr);
   napi_value findCachedObjectWrapper(napi_env env, id object);
+  inline void deleteOwnedHandleObjectRef(napi_env env, HandleObjectRef& entry) {
+    if (entry.ownsRef && env != nullptr && entry.ref != nullptr) {
+      napi_delete_reference(env, entry.ref);
+    }
+    entry.ref = nullptr;
+    entry.ownsRef = false;
+  }
   inline void cacheHandleObject(napi_env env, void* handle, napi_value value) {
     if (handle == nullptr || value == nullptr) {
       return;
@@ -175,7 +193,7 @@ class ObjCBridgeState {
     uintptr_t handleKey = NormalizeHandleKey(handle);
     auto it = handleObjectRefs.find(handleKey);
     if (it != handleObjectRefs.end()) {
-      auto existing = get_ref_value(env, it->second);
+      auto existing = get_ref_value(env, it->second.ref);
       if (existing != nullptr) {
         bool isSameValue = false;
         if (napi_strict_equals(env, existing, value, &isSameValue) == napi_ok &&
@@ -184,14 +202,34 @@ class ObjCBridgeState {
         }
       }
 
-      napi_delete_reference(env, it->second);
+      deleteOwnedHandleObjectRef(env, it->second);
       handleObjectRefs.erase(it);
       bumpHandleObjectRefsGeneration();
     }
 
     napi_ref ref = nullptr;
     napi_create_reference(env, value, 0, &ref);
-    handleObjectRefs[handleKey] = ref;
+    handleObjectRefs[handleKey] = HandleObjectRef{ref, true};
+    bumpHandleObjectRefsGeneration();
+  }
+  inline void cacheHandleObjectRef(void* handle, napi_ref ref) {
+    if (handle == nullptr || ref == nullptr) {
+      return;
+    }
+
+    uintptr_t handleKey = NormalizeHandleKey(handle);
+    auto it = handleObjectRefs.find(handleKey);
+    if (it != handleObjectRefs.end()) {
+      if (it->second.ref == ref) {
+        return;
+      }
+
+      deleteOwnedHandleObjectRef(env, it->second);
+      handleObjectRefs.erase(it);
+      bumpHandleObjectRefsGeneration();
+    }
+
+    handleObjectRefs[handleKey] = HandleObjectRef{ref, false};
     bumpHandleObjectRefsGeneration();
   }
   inline napi_value getCachedHandleObject(napi_env env, void* handle) {
@@ -246,9 +284,9 @@ class ObjCBridgeState {
       return nullptr;
     }
 
-    auto value = get_ref_value(env, it->second);
+    auto value = get_ref_value(env, it->second.ref);
     if (value == nullptr) {
-      napi_delete_reference(env, it->second);
+      deleteOwnedHandleObjectRef(env, it->second);
       handleObjectRefs.erase(it);
       bumpHandleObjectRefsGeneration();
       if (lastHandleObjectRef.bridgeState == this &&
@@ -262,12 +300,129 @@ class ObjCBridgeState {
         .bridgeState = this,
         .env = env,
         .handleKey = handleKey,
-        .ref = it->second,
+        .ref = it->second.ref,
         .generation = generation,
     };
     recentHandleObjectRefs[nextRecentHandleObjectRefSlot++ & 7] =
         lastHandleObjectRef;
     return value;
+  }
+  inline bool ownsCachedHandleObjectRef(void* handle) const noexcept {
+    if (handle == nullptr) {
+      return false;
+    }
+
+    auto it = handleObjectRefs.find(NormalizeHandleKey(handle));
+    return it != handleObjectRefs.end() && it->second.ownsRef;
+  }
+  inline void removeCachedHandleObject(napi_env env, void* handle) noexcept {
+    if (handle == nullptr) {
+      return;
+    }
+
+    uintptr_t handleKey = NormalizeHandleKey(handle);
+    auto it = handleObjectRefs.find(handleKey);
+    if (it == handleObjectRefs.end()) {
+      return;
+    }
+
+    deleteOwnedHandleObjectRef(env, it->second);
+    handleObjectRefs.erase(it);
+    bumpHandleObjectRefsGeneration();
+  }
+  inline void deleteRecentObjectWrapperRef(napi_env env,
+                                           RecentObjectWrapperRef& entry) {
+    if (env != nullptr && entry.ref != nullptr) {
+      napi_delete_reference(env, entry.ref);
+    }
+    entry = {};
+  }
+  inline void cacheRecentObjectWrapper(napi_env env, id object,
+                                       napi_value value) {
+    if (env == nullptr || object == nil || value == nullptr) {
+      return;
+    }
+
+    const uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    const uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
+    for (auto& entry : recentObjectWrappers) {
+      if (entry.objectKey != objectKey || entry.objectClassKey != objectClassKey) {
+        continue;
+      }
+
+      napi_value existing = get_ref_value(env, entry.ref);
+      if (existing != nullptr) {
+        bool isSameValue = false;
+        if (napi_strict_equals(env, existing, value, &isSameValue) == napi_ok &&
+            isSameValue) {
+          return;
+        }
+      }
+
+      deleteRecentObjectWrapperRef(env, entry);
+      napi_create_reference(env, value, 1, &entry.ref);
+      entry.objectKey = objectKey;
+      entry.objectClassKey = objectClassKey;
+      return;
+    }
+
+    RecentObjectWrapperRef entry{
+        .objectKey = objectKey,
+        .objectClassKey = objectClassKey,
+        .ref = nullptr,
+    };
+    napi_create_reference(env, value, 1, &entry.ref);
+
+    static constexpr size_t kRecentObjectWrapperLimit = 16;
+    if (recentObjectWrappers.size() < kRecentObjectWrapperLimit) {
+      recentObjectWrappers.push_back(entry);
+      return;
+    }
+
+    RecentObjectWrapperRef& replaced =
+        recentObjectWrappers[nextRecentObjectWrapperSlot++ % kRecentObjectWrapperLimit];
+    deleteRecentObjectWrapperRef(env, replaced);
+    replaced = entry;
+  }
+  inline napi_value getRecentObjectWrapper(napi_env env, id object) {
+    if (env == nullptr || object == nil) {
+      return nullptr;
+    }
+
+    const uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    const uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
+    for (auto it = recentObjectWrappers.begin(); it != recentObjectWrappers.end();) {
+      if (it->objectKey != objectKey || it->objectClassKey != objectClassKey) {
+        ++it;
+        continue;
+      }
+
+      napi_value value = get_ref_value(env, it->ref);
+      if (value != nullptr) {
+        return value;
+      }
+
+      deleteRecentObjectWrapperRef(env, *it);
+      it = recentObjectWrappers.erase(it);
+    }
+
+    return nullptr;
+  }
+  inline void removeRecentObjectWrapper(napi_env env, id object) noexcept {
+    if (env == nullptr || object == nil) {
+      return;
+    }
+
+    const uintptr_t objectKey = NormalizeHandleKey((void*)object);
+    const uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
+    for (auto it = recentObjectWrappers.begin(); it != recentObjectWrappers.end();) {
+      if (it->objectKey == objectKey && it->objectClassKey == objectClassKey) {
+        deleteRecentObjectWrapperRef(env, *it);
+        it = recentObjectWrappers.erase(it);
+      } else {
+        ++it;
+      }
+    }
   }
 
   void unregisterObject(id object) noexcept;
@@ -785,7 +940,9 @@ class ObjCBridgeState {
   std::thread::id jsThreadId = std::this_thread::get_id();
   CFRunLoopRef jsRunLoop = CFRunLoopGetCurrent();
   std::unordered_map<id, napi_ref> objectRefs;
-  std::unordered_map<uintptr_t, napi_ref> handleObjectRefs;
+  std::unordered_map<uintptr_t, HandleObjectRef> handleObjectRefs;
+  std::vector<RecentObjectWrapperRef> recentObjectWrappers;
+  size_t nextRecentObjectWrapperSlot = 0;
 
   napi_ref pointerClass = nullptr;
   napi_ref referenceClass = nullptr;

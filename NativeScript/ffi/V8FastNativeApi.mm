@@ -498,6 +498,11 @@ bool TryFastUnwrapV8ObjectArgument(napi_env env, v8::Local<v8::Value> value, id*
     id nativeObject = tryReadWrappedReference(env, object);
     if (nativeObject != nil) {
       *result = nativeObject;
+      ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+      if (bridgeState != nullptr && bridgeState->hasRoundTripCacheFrame()) {
+        bridgeState->cacheRoundTripObject(env, nativeObject,
+                                          v8impl::JsValueFromV8LocalValue(value));
+      }
       return true;
     }
   }
@@ -510,6 +515,11 @@ bool TryFastUnwrapV8ObjectArgument(napi_env env, v8::Local<v8::Value> value, id*
     id nativeObject = tryUnwrapV8NativeObject(env, value);
     if (nativeObject != nil) {
       *result = nativeObject;
+      ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+      if (bridgeState != nullptr && bridgeState->hasRoundTripCacheFrame()) {
+        bridgeState->cacheRoundTripObject(env, nativeObject,
+                                          v8impl::JsValueFromV8LocalValue(value));
+      }
       return true;
     }
   }
@@ -888,11 +898,8 @@ bool TryFastSetV8ObjectReturnValue(napi_env env,
     return true;
   }
 
-  napi_value cached = bridgeState->getCachedHandleObject(env, (void*)value);
-  if (cached == nullptr) {
-    cached = bridgeState->findCachedObjectWrapper(env, value);
-  }
-  if (cached != nullptr) {
+  if (napi_value cached = bridgeState->findCachedObjectWrapper(env, value);
+      cached != nullptr) {
     info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(cached));
     return true;
   }
@@ -1721,11 +1728,8 @@ void setObjCReturnValue(napi_env env, const v8::FunctionCallbackInfo<v8::Value>&
     if (obj != nil) {
       ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
       if (state != nullptr) {
-        napi_value cached = state->getCachedHandleObject(env, (void*)obj);
-        if (cached == nullptr) {
-          cached = state->findCachedObjectWrapper(env, obj);
-        }
-        if (cached != nullptr) {
+        if (napi_value cached = state->findCachedObjectWrapper(env, obj);
+            cached != nullptr) {
           info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(cached));
           return;
         }
@@ -1760,11 +1764,8 @@ void setObjCReturnValue(napi_env env, const v8::FunctionCallbackInfo<v8::Value>&
         ![obj isKindOfClass:[NSNumber class]] && ![obj isKindOfClass:[NSNull class]]) {
       ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
       if (state != nullptr) {
-        napi_value cached = state->getCachedHandleObject(env, (void*)obj);
-        if (cached == nullptr) {
-          cached = state->findCachedObjectWrapper(env, obj);
-        }
-        if (cached != nullptr) {
+        if (napi_value cached = state->findCachedObjectWrapper(env, obj);
+            cached != nullptr) {
           info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(cached));
           return;
         }
@@ -1885,9 +1886,7 @@ bool invokeObjCFast(napi_env env, const v8::FunctionCallbackInfo<v8::Value>& inf
       cif->generatedDispatchSetsV8ReturnDirectly;
   const bool generatedDispatchUsesObjectReturnStorage =
       !generatedDispatchSetsReturnDirectly && cif->generatedDispatchUsesObjectReturnStorage;
-  const bool needsRoundTripCache =
-      generatedDispatchUsesObjectReturnStorage &&
-      cif->generatedDispatchHasRoundTripCacheArgument;
+  const bool needsRoundTripCache = cif->generatedDispatchHasRoundTripCacheArgument;
   std::optional<RoundTripCacheFrameGuard> roundTripCacheFrame;
   if (needsRoundTripCache) {
     roundTripCacheFrame.emplace(env, method->bridgeState);

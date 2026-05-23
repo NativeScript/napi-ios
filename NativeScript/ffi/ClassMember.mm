@@ -12,6 +12,7 @@
 #include <optional>
 #include <unordered_set>
 #include "ClassBuilder.h"
+#include "CallbackThreading.h"
 #include "Closure.h"
 #include "EngineDirectCall.h"
 #include "Interop.h"
@@ -379,6 +380,7 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
   }
 
   @try {
+    NativeCallRuntimeUnlockScope unlockRuntime(env);
     bool invoked = engineInvoker != nullptr
                        ? engineInvoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue)
                        : invoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue);
@@ -461,6 +463,7 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
                            : lookupObjCPreparedInvoker(composeSignatureDispatchId(
                                  cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags));
         if (invoker != nullptr) {
+          NativeCallRuntimeUnlockScope unlockRuntime(env);
           invoker((void*)objc_msgSend, avalues, rvalue);
           return true;
         }
@@ -468,11 +471,14 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
 
 #if defined(__x86_64__)
       if (isStret) {
+        NativeCallRuntimeUnlockScope unlockRuntime(env);
         ffi_call(&cif->cif, FFI_FN(objc_msgSend_stret), rvalue, avalues);
       } else {
+        NativeCallRuntimeUnlockScope unlockRuntime(env);
         ffi_call(&cif->cif, FFI_FN(objc_msgSend), rvalue, avalues);
       }
 #else
+      NativeCallRuntimeUnlockScope unlockRuntime(env);
       ffi_call(&cif->cif, FFI_FN(objc_msgSend), rvalue, avalues);
 #endif
     } else {
@@ -483,11 +489,14 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
       avalues[0] = (void*)&superobjPtr;
 #if defined(__x86_64__)
       if (isStret) {
+        NativeCallRuntimeUnlockScope unlockRuntime(env);
         ffi_call(&cif->cif, FFI_FN(objc_msgSendSuper_stret), rvalue, avalues);
       } else {
+        NativeCallRuntimeUnlockScope unlockRuntime(env);
         ffi_call(&cif->cif, FFI_FN(objc_msgSendSuper), rvalue, avalues);
       }
 #else
+      NativeCallRuntimeUnlockScope unlockRuntime(env);
       ffi_call(&cif->cif, FFI_FN(objc_msgSendSuper), rvalue, avalues);
 #endif
     }
@@ -1107,9 +1116,7 @@ class RoundTripCacheFrameGuard {
 };
 
 inline bool generatedDispatchNeedsRoundTripCacheFrame(Cif* cif) {
-  return cif != nullptr &&
-         cif->generatedDispatchUsesObjectReturnStorage &&
-         cif->generatedDispatchHasRoundTripCacheArgument;
+  return cif != nullptr && cif->generatedDispatchHasRoundTripCacheArgument;
 }
 
 namespace {
@@ -1707,6 +1714,15 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
         napi_get_named_property(env, jsThis, "constructor", &constructor);
       }
       id obj = *((id*)nativeResult);
+      if (obj != nil) {
+        ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+        if (state != nullptr) {
+          if (napi_value cached = state->findCachedObjectWrapper(env, obj);
+              cached != nullptr) {
+            return cached;
+          }
+        }
+      }
       return method->bridgeState->getObject(env, obj, constructor,
                                             method->returnOwned ? kOwnedObject : kUnownedObject);
     }
@@ -1928,6 +1944,15 @@ napi_value ObjCClassMember::jsGetterDirect(napi_env env, ObjCClassMember* method
       napi_get_named_property(env, jsThis, "constructor", &constructor);
     }
     id obj = *((id*)rvalue);
+    if (obj != nil) {
+      ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
+      if (state != nullptr) {
+        if (napi_value cached = state->findCachedObjectWrapper(env, obj);
+            cached != nullptr) {
+          return cached;
+        }
+      }
+    }
     return method->bridgeState->getObject(env, obj, constructor,
                                           method->returnOwned ? kOwnedObject : kUnownedObject);
   }

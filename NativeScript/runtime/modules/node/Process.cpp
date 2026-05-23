@@ -186,6 +186,9 @@ napi_value CreateVersionsObject(napi_env env) {
 #elif defined(TARGET_ENGINE_QUICKJS)
   napi_set_named_property(env, versions, "engine",
                           napi_util::to_js_string(env, "quickjs"));
+#elif defined(TARGET_ENGINE_JSC)
+  napi_set_named_property(env, versions, "engine",
+                          napi_util::to_js_string(env, "jsc"));
 #endif
 
   napi_set_named_property(env, versions, "nativescript",

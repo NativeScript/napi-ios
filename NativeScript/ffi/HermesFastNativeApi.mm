@@ -17,6 +17,7 @@
 #include <vector>
 
 #include "CFunction.h"
+#include "CallbackThreading.h"
 #include "Class.h"
 #include "ClassBuilder.h"
 #include "ClassMember.h"
@@ -509,15 +510,19 @@ bool tryFastUnwrapHermesObjectArgument(napi_env env, MDTypeKind kind,
   }
 
   id nativeObject = static_cast<id>(wrapped);
+  if (bridgeState == nullptr) {
+    bridgeState = ObjCBridgeState::InstanceData(env);
+  }
+  if (bridgeState != nullptr && bridgeState->hasRoundTripCacheFrame()) {
+    bridgeState->cacheRoundTripObject(env, nativeObject, value);
+  }
   rememberObjectArgument(nativeObject, nullptr);
   *reinterpret_cast<id*>(result) = nativeObject;
   return true;
 }
 
 inline bool needsRoundTripCacheFrame(Cif* cif) {
-  return cif != nullptr &&
-         cif->generatedDispatchUsesObjectReturnStorage &&
-         cif->generatedDispatchHasRoundTripCacheArgument;
+  return cif != nullptr && cif->generatedDispatchHasRoundTripCacheArgument;
 }
 
 class HermesFastRoundTripCacheFrameGuard {
@@ -1255,11 +1260,8 @@ napi_value makeHermesObjCReturnValue(napi_env env, ObjCClassMember* member,
     if (obj != nil) {
       ObjCBridgeState* state = member->bridgeState;
       if (state != nullptr) {
-        napi_value cached = state->getCachedHandleObject(env, static_cast<void*>(obj));
-        if (cached == nullptr) {
-          cached = state->findCachedObjectWrapper(env, obj);
-        }
-        if (cached != nullptr) {
+        if (napi_value cached = state->findCachedObjectWrapper(env, obj);
+            cached != nullptr) {
           return cached;
         }
       }
@@ -1288,11 +1290,8 @@ napi_value makeHermesObjCReturnValue(napi_env env, ObjCClassMember* member,
     if (obj != nil && !recognizedFoundationObject) {
       ObjCBridgeState* state = member->bridgeState;
       if (state != nullptr) {
-        napi_value cached = state->getCachedHandleObject(env, static_cast<void*>(obj));
-        if (cached == nullptr) {
-          cached = state->findCachedObjectWrapper(env, obj);
-        }
-        if (cached != nullptr) {
+        if (napi_value cached = state->findCachedObjectWrapper(env, obj);
+            cached != nullptr) {
           return cached;
         }
       }
@@ -1398,12 +1397,8 @@ bool TryFastSetHermesGeneratedObjCObjectReturnValue(
     }
 
     if (value != nil) {
-      napi_value cached =
-          bridgeState->getCachedHandleObject(env, static_cast<void*>(value));
-      if (cached == nullptr) {
-        cached = bridgeState->findCachedObjectWrapper(env, value);
-      }
-      if (cached != nullptr) {
+      if (napi_value cached = bridgeState->findCachedObjectWrapper(env, value);
+          cached != nullptr) {
         *result = cached;
         return true;
       }
@@ -1447,12 +1442,8 @@ bool TryFastSetHermesGeneratedObjCObjectReturnValue(
     }
 
     if (value != nil && !recognizedFoundationObject) {
-      napi_value cached =
-          bridgeState->getCachedHandleObject(env, static_cast<void*>(value));
-      if (cached == nullptr) {
-        cached = bridgeState->findCachedObjectWrapper(env, value);
-      }
-      if (cached != nullptr) {
+      if (napi_value cached = bridgeState->findCachedObjectWrapper(env, value);
+          cached != nullptr) {
         *result = cached;
         return true;
       }
@@ -2017,6 +2008,7 @@ napi_value TryCallHermesObjCMemberFastImpl(
       returnContext = &returnContextStorage;
     }
     @try {
+      NativeCallRuntimeUnlockScope unlockRuntime(env);
       if (frameDirectReturnInvoker(
               env, cif, reinterpret_cast<void*>(objc_msgSend), self,
               descriptor->selector, returnContext, hermesArgsBase,
@@ -2089,6 +2081,7 @@ napi_value TryCallHermesObjCMemberFastImpl(
       returnContext = &returnContextStorage;
     }
     @try {
+      NativeCallRuntimeUnlockScope unlockRuntime(env);
       if (directReturnInvoker(
               env, cif, reinterpret_cast<void*>(objc_msgSend), self,
               descriptor->selector, returnContext, directArgs,
@@ -2130,6 +2123,7 @@ napi_value TryCallHermesObjCMemberFastImpl(
   bool didInvoke = false;
   @try {
     const napi_value* invocationArgs = getPreparedInvocationArgs();
+    NativeCallRuntimeUnlockScope unlockRuntime(env);
     if (invoker != nullptr) {
       didInvoke = invoker(env, cif, reinterpret_cast<void*>(objc_msgSend), self,
                           descriptor->selector, invocationArgs, rvalue);
@@ -2212,6 +2206,7 @@ napi_value TryCallHermesCFunctionFastImpl(
 
     napi_value directResult = nullptr;
     @try {
+      NativeCallRuntimeUnlockScope unlockRuntime(env);
       if (frameDirectReturnInvoker(env, cif, function->fnptr, hermesArgsBase,
                                    &directResult)) {
         return directResult;
@@ -2270,6 +2265,7 @@ napi_value TryCallHermesCFunctionFastImpl(
       const napi_value* directArgs =
           hasExactInvocationArgs ? exactInvocationArgs
                                  : getPreparedInvocationArgs();
+      NativeCallRuntimeUnlockScope unlockRuntime(env);
       if (directReturnInvoker(env, cif, function->fnptr, directArgs,
                               &directResult)) {
         return directResult;
@@ -2296,6 +2292,7 @@ napi_value TryCallHermesCFunctionFastImpl(
           : nullptr;
   @try {
     const napi_value* invocationArgs = getPreparedInvocationArgs();
+    NativeCallRuntimeUnlockScope unlockRuntime(env);
     if (invoker != nullptr) {
       didInvoke = invoker(env, cif, function->fnptr, invocationArgs, cif->rvalue);
     } else {

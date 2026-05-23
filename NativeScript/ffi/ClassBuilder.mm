@@ -128,6 +128,58 @@ const char* kInstallSuperAccessorSource = R"(
   })
 	)";
 
+const char* kInstallClassFromStringAliasSource = R"(
+  (function (global) {
+    if (global.__nsClassFromStringAliasInstalled === true) {
+      return;
+    }
+
+    const original = global.NSClassFromString;
+    if (typeof original !== "function") {
+      return;
+    }
+
+    Object.defineProperty(global, "__nsOriginalNSClassFromString", {
+      configurable: true,
+      enumerable: false,
+      writable: false,
+      value: original
+    });
+
+    Object.defineProperty(global, "NSClassFromString", {
+      configurable: true,
+      enumerable: true,
+      writable: true,
+      value: function (name) {
+        const cls = original.call(this, name);
+        if (cls != null) {
+          try {
+            const registry = global.__nsConstructorsByObjCClassName;
+            const stringFromClass = global.NSStringFromClass;
+            if (registry != null && typeof stringFromClass === "function") {
+              const runtimeName = stringFromClass(cls);
+              const constructor = registry[runtimeName];
+              if (constructor != null) {
+                return constructor;
+              }
+            }
+          } catch (_) {
+          }
+        }
+
+        return cls;
+      }
+    });
+
+    Object.defineProperty(global, "__nsClassFromStringAliasInstalled", {
+      configurable: true,
+      enumerable: false,
+      writable: false,
+      value: true
+    });
+  })
+)";
+
 const char* NSFastEnumerationMethodEncoding() {
   static const char* encoding = nullptr;
   if (encoding == nullptr) {
@@ -856,24 +908,6 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
     }
   }
 
-  bool hasOwnOverrides = false;
-  napi_value overridePropertyNames = nullptr;
-  napi_get_all_property_names(env, args[0], napi_key_own_only, napi_key_skip_symbols,
-                              napi_key_numbers_to_strings, &overridePropertyNames);
-  uint32_t overridePropertyCount = 0;
-  napi_get_array_length(env, overridePropertyNames, &overridePropertyCount);
-  hasOwnOverrides = overridePropertyCount > 0;
-
-  bool hasExposedMethodsOption = false;
-  bool hasProtocolsOption = false;
-  if (hasOptionsObject) {
-    napi_has_named_property(env, options, "exposedMethods", &hasExposedMethodsOption);
-    napi_has_named_property(env, options, "protocols", &hasProtocolsOption);
-  }
-
-  bool shouldReuseExistingClass = false;
-  Class existingExternalClass = nullptr;
-
   // Create a class name.
   napi_value baseClassName;
   napi_get_named_property(env, thisArg, "name", &baseClassName);
@@ -902,22 +936,23 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
   }
 
   std::string newClassName;
+  bool shouldAliasRequestedName = false;
   if (!requestedName.empty()) {
     newClassName = requestedName;
     Class existingClass = objc_lookUpClass(newClassName.c_str());
-    if (existingClass != nullptr &&
-        class_conformsToProtocol(existingClass, @protocol(ObjCBridgeClassBuilderProtocol))) {
+    auto nextAvailableClassName = [](const std::string& baseName) {
       size_t suffix = 1;
       std::string candidate;
       do {
-        candidate = requestedName + std::to_string(suffix++);
+        candidate = baseName + std::to_string(suffix++);
       } while (objc_lookUpClass(candidate.c_str()) != nullptr);
-      newClassName = candidate;
-    } else if (existingClass != nullptr && !hasOwnOverrides && !hasExposedMethodsOption &&
-               !hasProtocolsOption) {
-      // Name-only extensions should resolve to an existing external class when present.
-      shouldReuseExistingClass = true;
-      existingExternalClass = existingClass;
+      return candidate;
+    };
+    if (existingClass != nullptr) {
+      newClassName = nextAvailableClassName(requestedName);
+      shouldAliasRequestedName =
+          !class_conformsToProtocol(existingClass,
+                                    @protocol(ObjCBridgeClassBuilderProtocol));
     }
   } else {
     newClassName = baseClassNameBuf;
@@ -1000,14 +1035,27 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
     napi_get_named_property(env, registryGlobal, "__nsConstructorsByObjCClassName", &classRegistry);
   }
 
-  if (classRegistry != nullptr) {
-    napi_set_named_property(env, classRegistry, newClassName.c_str(), newConstructor);
+  napi_value installClassFromStringAliasScript = nullptr;
+  napi_value installClassFromStringAlias = nullptr;
+  if (napi_create_string_utf8(env, kInstallClassFromStringAliasSource, NAPI_AUTO_LENGTH,
+                              &installClassFromStringAliasScript) == napi_ok &&
+      napi_run_script(env, installClassFromStringAliasScript, &installClassFromStringAlias) ==
+          napi_ok &&
+      installClassFromStringAlias != nullptr) {
+    napi_value aliasArgs[] = {registryGlobal};
+    if (napi_call_function(env, registryGlobal, installClassFromStringAlias, 1, aliasArgs,
+                           nullptr) != napi_ok) {
+      clearPendingException(env);
+    }
+  } else {
+    clearPendingException(env);
   }
 
-  if (shouldReuseExistingClass && existingExternalClass != nullptr) {
-    napi_remove_wrap(env, newConstructor, nullptr);
-    napi_wrap(env, newConstructor, (void*)existingExternalClass, nullptr, nullptr, nullptr);
-    return newConstructor;
+  if (classRegistry != nullptr) {
+    napi_set_named_property(env, classRegistry, newClassName.c_str(), newConstructor);
+    if (shouldAliasRequestedName && !requestedName.empty()) {
+      napi_set_named_property(env, classRegistry, requestedName.c_str(), newConstructor);
+    }
   }
 
   // Use ClassBuilder to create the native class and bridge the methods

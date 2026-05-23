@@ -273,6 +273,7 @@ if(ENABLE_JS_RUNTIME)
     set(SOURCE_FILES
       ${SOURCE_FILES}
       napi/hermes/jsr.cpp
+      ffi/jsi/NativeApiJsi.mm
       ffi/HermesFastNativeApi.mm
     )
 

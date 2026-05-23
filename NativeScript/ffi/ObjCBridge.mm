@@ -861,9 +861,16 @@ ObjCBridgeState::~ObjCBridgeState() {
   recentRoundTripCache.clear();
 
   for (auto& entry : handleObjectRefs) {
-    deleteRef(entry.second);
+    if (entry.second.ownsRef) {
+      deleteRef(entry.second.ref);
+    }
   }
   handleObjectRefs.clear();
+
+  for (auto& entry : recentObjectWrappers) {
+    deleteRef(entry.ref);
+  }
+  recentObjectWrappers.clear();
 
   std::unordered_set<napi_ref> classAndProtocolConstructorRefs;
   classAndProtocolConstructorRefs.reserve(classes.size() + protocols.size());
@@ -1025,7 +1032,8 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   finalizerContext->ref = ref;
 
   storeObjectRef(nativeObject, ref);
-  cacheHandleObject(env, nativeObject, result);
+  cacheHandleObjectRef(nativeObject, ref);
+  cacheRecentObjectWrapper(env, nativeObject, result);
   attachObjectLifecycleAssociation(env, nativeObject);
   trackObject(nativeObject);
 

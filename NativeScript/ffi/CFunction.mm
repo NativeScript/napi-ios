@@ -3,6 +3,7 @@
 #include <cstring>
 #include <vector>
 #include "Block.h"
+#include "CallbackThreading.h"
 #include "ClassMember.h"
 #include "HermesFastCallbackInfo.h"
 #include "HermesFastNativeApi.h"
@@ -376,6 +377,7 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
        (napiInvoker != nullptr && !cif->skipGeneratedNapiDispatch)) &&
       !isMainEntrypoint) {
     @try {
+      NativeCallRuntimeUnlockScope unlockRuntime(env);
       bool invoked = engineDirectInvoker != nullptr
                          ? engineDirectInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue)
                          : napiInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue);
@@ -443,6 +445,7 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
 #endif
 
   @try {
+    NativeCallRuntimeUnlockScope unlockRuntime(env);
     if (preparedInvoker != nullptr) {
       preparedInvoker(func->fnptr, avalues, rvalue);
     } else {

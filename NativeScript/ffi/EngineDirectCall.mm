@@ -27,9 +27,7 @@ namespace {
 constexpr const char* kNativePointerProperty = "__ns_native_ptr";
 
 inline bool needsRoundTripCacheFrame(Cif* cif) {
-  return cif != nullptr &&
-         cif->generatedDispatchUsesObjectReturnStorage &&
-         cif->generatedDispatchHasRoundTripCacheArgument;
+  return cif != nullptr && cif->generatedDispatchHasRoundTripCacheArgument;
 }
 
 class RoundTripCacheFrameGuard {
@@ -603,11 +601,8 @@ napi_value convertObjCReturnValue(napi_env env, ObjCClassMember* member,
     if (obj != nil) {
       ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
       if (state != nullptr) {
-        napi_value cached = state->getCachedHandleObject(env, static_cast<void*>(obj));
-        if (cached == nullptr) {
-          cached = state->findCachedObjectWrapper(env, obj);
-        }
-        if (cached != nullptr) {
+        if (napi_value cached = state->findCachedObjectWrapper(env, obj);
+            cached != nullptr) {
           return cached;
         }
       }
@@ -641,11 +636,8 @@ napi_value convertObjCReturnValue(napi_env env, ObjCClassMember* member,
         ![obj isKindOfClass:[NSNull class]]) {
       ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
       if (state != nullptr) {
-        napi_value cached = state->getCachedHandleObject(env, static_cast<void*>(obj));
-        if (cached == nullptr) {
-          cached = state->findCachedObjectWrapper(env, obj);
-        }
-        if (cached != nullptr) {
+        if (napi_value cached = state->findCachedObjectWrapper(env, obj);
+            cached != nullptr) {
           return cached;
         }
       }

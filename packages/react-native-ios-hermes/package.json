@@ -1,0 +1,52 @@
+{
+  "name": "@nativescript/react-native-ios-hermes",
+  "version": "0.0.1",
+  "description": "React Native TurboModule for NativeScript Native API access on Hermes",
+  "keywords": [
+    "NativeScript",
+    "React Native",
+    "TurboModule",
+    "Hermes",
+    "JSI",
+    "iOS"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NativeScript/napi-ios",
+    "directory": "packages/react-native-ios-hermes"
+  },
+  "author": {
+    "name": "NativeScript Team",
+    "email": "oss@nativescript.org"
+  },
+  "license": "Apache-2.0",
+  "main": "src/index.ts",
+  "react-native": "src/index.ts",
+  "types": "src/index.ts",
+  "files": [
+    "src",
+    "ios",
+    "metadata",
+    "native-api-jsi",
+    "NativeScriptNativeApi.podspec",
+    "README.md",
+    "LICENSE"
+  ],
+  "peerDependencies": {
+    "react": "*",
+    "react-native": ">=0.80"
+  },
+  "codegenConfig": {
+    "name": "NativeScriptNativeApiSpec",
+    "type": "modules",
+    "jsSrcsDir": "src",
+    "android": {
+      "javaPackageName": "org.nativescript.nativeapi"
+    },
+    "ios": {
+      "modulesProvider": {
+        "NativeScriptNativeApi": "NativeScriptNativeApiModuleProvider"
+      }
+    }
+  }
+}

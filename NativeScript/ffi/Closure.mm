@@ -1,5 +1,6 @@
 #include "Closure.h"
 #include "AutoreleasePool.h"
+#include "CallbackThreading.h"
 #include "Metadata.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
@@ -262,7 +263,7 @@ void JSFunctionCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   napi_env env = closure->env;
 
 #ifdef ENABLE_JS_RUNTIME
-  NapiScope scope(env);
+  NativeCallbackScope scope(env);
 #endif
 
   napi_value func = get_ref_value(env, closure->func);
@@ -314,7 +315,9 @@ void Closure::callBlockFromMainThread(napi_env env, napi_value js_cb, void* cont
 
   JSCallbackInner(closure, func, thisArg, argv, ctx->cif->nargs - 1, nullptr, ctx->ret);
 #ifdef TARGET_ENGINE_HERMES
-  js_execute_pending_jobs(env);
+  if (!isNativeCallerThreadCallbackActive()) {
+    js_execute_pending_jobs(env);
+  }
 #endif
   if (ctx->useCondvar) {
     {
@@ -347,9 +350,9 @@ void JSBlockCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
   ctx.done = false;
   ctx.useCondvar = false;
 
-  if (currentThreadId == closure->jsThreadId) {
+  if (currentThreadId == closure->jsThreadId || shouldInvokeCallbackOnNativeCallerThread()) {
 #ifdef ENABLE_JS_RUNTIME
-    NapiScope scope(env);
+    NativeCallbackScope scope(env);
 #endif
     Closure::callBlockFromMainThread(env, get_ref_value(env, closure->func), closure, &ctx);
   } else {

@@ -38,6 +38,41 @@
 
 namespace {
 
+static napi_value findRegisteredClassConstructor(napi_env env, Class cls) {
+  if (env == nullptr || cls == nil) {
+    return nullptr;
+  }
+
+  const char* runtimeName = class_getName(cls);
+  if (runtimeName == nullptr || runtimeName[0] == '\0') {
+    return nullptr;
+  }
+
+  napi_value global = nullptr;
+  napi_value classRegistry = nullptr;
+  bool hasClassRegistry = false;
+  if (napi_get_global(env, &global) != napi_ok || global == nullptr ||
+      napi_has_named_property(env, global, "__nsConstructorsByObjCClassName",
+                              &hasClassRegistry) != napi_ok ||
+      !hasClassRegistry ||
+      napi_get_named_property(env, global, "__nsConstructorsByObjCClassName",
+                              &classRegistry) != napi_ok ||
+      classRegistry == nullptr) {
+    return nullptr;
+  }
+
+  bool hasConstructor = false;
+  napi_value constructor = nullptr;
+  if (napi_has_named_property(env, classRegistry, runtimeName, &hasConstructor) == napi_ok &&
+      hasConstructor &&
+      napi_get_named_property(env, classRegistry, runtimeName, &constructor) == napi_ok &&
+      constructor != nullptr) {
+    return constructor;
+  }
+
+  return nullptr;
+}
+
 static size_t getBufferElementSize(napi_typedarray_type type) {
   switch (type) {
     case napi_int8_array:
@@ -2141,12 +2176,19 @@ class ObjCObjectTypeConv : public TypeConv {
       return null;
     }
 
-    auto bridgeState = ObjCBridgeState::InstanceData(env);
+	    auto bridgeState = ObjCBridgeState::InstanceData(env);
 
-    if (bridgeState != nullptr) {
-      auto normalizePtr = [](void* ptr) -> uintptr_t {
-        return normalizeRuntimePointer(reinterpret_cast<uintptr_t>(ptr));
-      };
+	    if (bridgeState != nullptr) {
+	      if (object_isClass(obj)) {
+	        if (napi_value constructor = findRegisteredClassConstructor(env, (Class)obj);
+	            constructor != nullptr) {
+	          return constructor;
+	        }
+	      }
+
+	      auto normalizePtr = [](void* ptr) -> uintptr_t {
+	        return normalizeRuntimePointer(reinterpret_cast<uintptr_t>(ptr));
+	      };
 
       auto protocolIt = bridgeState->mdProtocolsByPointer.find((Protocol*)obj);
       if (protocolIt != bridgeState->mdProtocolsByPointer.end()) {
@@ -2640,6 +2682,7 @@ class ObjCObjectTypeConv : public TypeConv {
         }
 
         *res = (id)wrapped;
+        cacheRoundTrip(*res);
         return;
 
         break;
@@ -2780,19 +2823,24 @@ class ObjCClassTypeConv : public TypeConv {
     kind = mdTypeClass;
   }
 
-  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    Class cls = *((Class*)value);
+	  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+	    Class cls = *((Class*)value);
 
-    if (cls == nullptr) {
-      napi_value null;
-      napi_get_null(env, &null);
-      return null;
-    }
+	    if (cls == nullptr) {
+	      napi_value null;
+	      napi_get_null(env, &null);
+	      return null;
+	    }
 
-    auto bridgeState = ObjCBridgeState::InstanceData(env);
-    return bridgeState != nullptr ? bridgeState->getObject(env, (id)cls, kUnownedObject, 0, nullptr)
-                                  : nullptr;
-  }
+	    if (napi_value constructor = findRegisteredClassConstructor(env, cls);
+	        constructor != nullptr) {
+	      return constructor;
+	    }
+
+	    auto bridgeState = ObjCBridgeState::InstanceData(env);
+	    return bridgeState != nullptr ? bridgeState->getObject(env, (id)cls, kUnownedObject, 0, nullptr)
+	                                  : nullptr;
+	  }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
@@ -3944,6 +3992,7 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value, napi_valuetyp
         }
 
         *out = (id)wrapped;
+        cacheRoundTrip(*out);
         return true;
       }
 

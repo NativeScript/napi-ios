@@ -17,6 +17,7 @@ TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 NS_GSD_BACKEND=${NS_GSD_BACKEND:=auto}
 METADATA_SIZE=${METADATA_SIZE:=0}
 GENERATED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-./NativeScript/ffi/GeneratedSignatureDispatch.inc}}
+GENERATED_SIGNATURE_DISPATCH_STAMP="${GENERATED_SIGNATURE_DISPATCH}.stamp"
 
 for arg in $@; do
   case $arg in
@@ -70,6 +71,22 @@ if ! $VERBOSE; then
   QUIET=-quiet
 fi
 
+function assemble_node_api_xcframework () {
+  local output_dir="$1"
+  shift
+
+  if command -v deno >/dev/null 2>&1; then
+    deno run -A ./scripts/build_xcframework.mts --output "$output_dir" "$@"
+    return
+  fi
+
+  if [ ! -d "$SCRIPT_DIR/node_modules/react-native-node-api" ] || [ ! -d "$SCRIPT_DIR/node_modules/yargs-parser" ]; then
+    npm --prefix "$SCRIPT_DIR" install --no-audit --no-fund
+  fi
+
+  node ./scripts/build_xcframework.mts --output "$output_dir" "$@"
+}
+
 function effective_gsd_backend () {
   case "$NS_GSD_BACKEND" in
     auto)
@@ -93,34 +110,31 @@ function effective_gsd_backend () {
   esac
 }
 
-function signature_dispatch_platform () {
-  if $BUILD_SIMULATOR; then
-    echo ios-sim
-  elif $BUILD_IPHONE; then
-    echo ios
-  elif $BUILD_MACOS || $BUILD_MACOS_CLI || $BUILD_MACOS_NODE_API; then
-    echo macos
-  elif $BUILD_VISION; then
-    echo visionos-sim
-  elif $BUILD_CATALYST; then
-    echo catalyst
-  fi
+function signature_dispatch_stamp () {
+  local platform="$1"
+  local backend
+  backend=$(effective_gsd_backend)
+  printf "platform=%s\nbackend=%s\ntarget_engine=%s\nmetadata_size=%s\n" \
+    "$platform" "$backend" "$TARGET_ENGINE" "$METADATA_SIZE"
 }
 
 function ensure_signature_dispatch_bindings () {
+  local platform="$1"
   local backend
   backend=$(effective_gsd_backend)
   if [ "$TARGET_ENGINE" == "none" ] || [ "$backend" == "none" ]; then
     return
   fi
 
-  if [ -f "$GENERATED_SIGNATURE_DISPATCH" ]; then
+  if [ -z "$platform" ]; then
     return
   fi
 
-  local platform
-  platform=$(signature_dispatch_platform)
-  if [ -z "$platform" ]; then
+  local expected_stamp
+  expected_stamp=$(signature_dispatch_stamp "$platform")
+  if [ -f "$GENERATED_SIGNATURE_DISPATCH" ] && \
+     [ -f "$GENERATED_SIGNATURE_DISPATCH_STAMP" ] && \
+     [ "$(cat "$GENERATED_SIGNATURE_DISPATCH_STAMP")" == "$expected_stamp" ]; then
     return
   fi
 
@@ -128,11 +142,11 @@ function ensure_signature_dispatch_bindings () {
     "$SCRIPT_DIR/build_metadata_generator.sh"
   fi
 
-  checkpoint "Generating signature dispatch bindings for $platform..."
-  npm run metagen "$platform"
+  checkpoint "Generating signature dispatch bindings for $platform ($backend)..."
+  NS_SIGNATURE_BINDINGS_CPP_PATH="$GENERATED_SIGNATURE_DISPATCH" npm run metagen "$platform"
+  mkdir -p "$(dirname "$GENERATED_SIGNATURE_DISPATCH_STAMP")"
+  printf "%s" "$expected_stamp" > "$GENERATED_SIGNATURE_DISPATCH_STAMP"
 }
-
-ensure_signature_dispatch_bindings
 
 DEV_TEAM=${DEVELOPMENT_TEAM:-}
 DIST=$(PWD)/dist
@@ -156,6 +170,8 @@ function cmake_build () {
     platform="macos"
     is_macos_napi=true
   fi
+
+  ensure_signature_dispatch_bindings "$platform"
 
   local libffi_build_dir=
   case "$platform" in
@@ -306,7 +322,7 @@ if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
     # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
     OUTPUT_DIR="packages/ios-node-api/build/$CONFIG_BUILD/NativeScript.apple.node"
     rm -rf $OUTPUT_DIR
-    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+    assemble_node_api_xcframework "$OUTPUT_DIR" "${XCFRAMEWORKS[@]}"
   else
     checkpoint "Creating NativeScript.xcframework"
 
@@ -329,7 +345,7 @@ if $BUILD_MACOS; then
     # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
     OUTPUT_DIR="packages/macos-node-api/build/$CONFIG_BUILD/NativeScript.apple.node"
     rm -rf $OUTPUT_DIR
-    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+    assemble_node_api_xcframework "$OUTPUT_DIR" "${XCFRAMEWORKS[@]}"
   fi
 fi
 

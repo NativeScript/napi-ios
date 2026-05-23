@@ -192,6 +192,26 @@ void MarkTimerActive(NSTimerHandle* handle) {
   }
 }
 
+bool MarkTimerInactive(NSTimerHandle* handle) {
+  if (handle == nil) {
+    return false;
+  }
+
+  bool didDeactivate = false;
+  @synchronized(handle) {
+    if (handle->activeCounted) {
+      handle->activeCounted = false;
+      didDeactivate = true;
+    }
+  }
+
+  if (didDeactivate) {
+    gActiveTimers.fetch_sub(1, std::memory_order_relaxed);
+  }
+
+  return didDeactivate;
+}
+
 void AddTimerToMainRunLoop(NSTimer* timer) {
   if (timer == nil) {
     return;
@@ -239,19 +259,12 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle, bool invalidate
   }
 
   napi_ref callback = nullptr;
-  bool shouldDecrementActiveCount = false;
   @synchronized(handle) {
-    if (handle->activeCounted) {
-      handle->activeCounted = false;
-      shouldDecrementActiveCount = true;
-    }
     callback = handle->callback;
     handle->callback = nullptr;
   }
 
-  if (shouldDecrementActiveCount) {
-    gActiveTimers.fetch_sub(1, std::memory_order_relaxed);
-  }
+  MarkTimerInactive(handle);
 
   napi_env cleanupEnv = callEnv != nullptr ? callEnv : handle->env;
 #ifdef TARGET_ENGINE_HERMES
@@ -370,6 +383,7 @@ JS_METHOD(Timers::SetTimeout) {
                         }
 
                         NapiScope scope(callbackEnv);
+                        MarkTimerInactive(handle);
 #ifdef TARGET_ENGINE_HERMES
                         DispatchHermesTimerCallback(callbackEnv, "__nsDispatchTimeout", timerId);
 #else

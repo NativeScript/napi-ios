@@ -275,19 +275,21 @@ const char* nativeObjectProxySource = R"(
             if ((name === "isKindOfClass" || name === "isMemberOfClass")) {
               wrapper = function (cls, a1, a2, a3) {
                 let resolvedClass = cls;
-                if (resolvedClass != null && typeof resolvedClass === "object") {
+                const resolvedClassType = typeof resolvedClass;
+                if (resolvedClass != null &&
+                    (resolvedClassType === "object" || resolvedClassType === "function")) {
                   try {
                     const runtimeName = typeof NSStringFromClass === "function"
                       ? NSStringFromClass(resolvedClass)
                       : null;
-                    if (typeof runtimeName === "string" && runtimeName.length > 0) {
-                      const registry = globalThis.__nsConstructorsByObjCClassName;
-                      if (registry && registry[runtimeName]) {
-                        resolvedClass = registry[runtimeName];
-                      } else if (typeof globalThis[runtimeName] !== "undefined") {
-                        resolvedClass = globalThis[runtimeName];
-                      }
-                    }
+	                    if (typeof runtimeName === "string" && runtimeName.length > 0) {
+	                      const registry = globalThis.__nsConstructorsByObjCClassName;
+	                      if (registry && registry[runtimeName]) {
+	                        resolvedClass = registry[runtimeName];
+	                      } else if (typeof globalThis[runtimeName] !== "undefined") {
+	                        resolvedClass = globalThis[runtimeName];
+	                      }
+	                    }
                   } catch (_) {
                   }
                 }
@@ -622,7 +624,12 @@ napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
     return roundTrip;
   }
 
+  if (napi_value recentWrapper = getRecentObjectWrapper(env, obj); recentWrapper != nullptr) {
+    return recentWrapper;
+  }
+
   if (napi_value handleCached = getCachedHandleObject(env, (void*)obj); handleCached != nullptr) {
+    bool isRawHandleRoundTrip = ownsCachedHandleObjectRef((void*)obj);
     void* wrapped = nullptr;
     if (napi_unwrap(env, handleCached, &wrapped) == napi_ok &&
         NormalizeHandleKey(wrapped) == NormalizeHandleKey((void*)obj)) {
@@ -645,7 +652,11 @@ napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
       }
     }
 
-    return handleCached;
+    if (isRawHandleRoundTrip) {
+      return handleCached;
+    }
+
+    removeCachedHandleObject(env, (void*)obj);
   }
 
   if (napi_value existing = getNormalizedObjectRef(env, obj); existing != nullptr) {
@@ -843,6 +854,8 @@ void ObjCBridgeState::unregisterObject(id object) noexcept {
   // #endif
 
   if (takeObjectRef(object) != nullptr) {
+    removeRecentObjectWrapper(env, object);
+    removeCachedHandleObject(env, (void*)object);
     [object release];
   }
 }
@@ -852,6 +865,8 @@ bool ObjCBridgeState::unregisterObjectIfRefMatches(id object, napi_ref ref) noex
     return false;
   }
 
+  removeRecentObjectWrapper(env, object);
+  removeCachedHandleObject(env, (void*)object);
   [object release];
   return true;
 }
@@ -859,6 +874,8 @@ bool ObjCBridgeState::unregisterObjectIfRefMatches(id object, napi_ref ref) noex
 void ObjCBridgeState::detachObject(id object) noexcept {
   takeObjectRef(object);
   removeRoundTripObject(object);
+  removeRecentObjectWrapper(env, object);
+  removeCachedHandleObject(env, (void*)object);
 
   if (object == nil) {
     return;

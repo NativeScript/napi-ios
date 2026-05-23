@@ -241,6 +241,7 @@ loadTest("./Promises");
 loadTest("./Modules");
 //
 loadTest("./RuntimeImplementedAPIs");
+loadTest("./NativeApiJsiTests");
 loadTest("./WebNodeBuiltins");
 loadTest("./VMTests");
 

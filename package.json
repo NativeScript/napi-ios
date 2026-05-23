@@ -27,6 +27,8 @@
     "build-vision": "./scripts/build_all_vision.sh",
     "build-visionos": "./scripts/build_all_vision.sh",
     "build-node-api": "./scripts/build_all_react_native.sh",
+    "build-rn-ios-hermes-turbomodule": "./scripts/build_react_native_ios_hermes_turbomodule.sh",
+    "test-rn-ios-hermes-turbomodule": "./scripts/test_react_native_ios_hermes_turbomodule.sh",
     "pack:ios": "./scripts/build_npm_ios.sh",
     "pack:macos": "./scripts/build_npm_macos.sh",
     "pack:visionos": "./scripts/build_npm_vision.sh",

@@ -56,20 +56,6 @@ if $EMBED_METADATA; then
   fi
 
   checkpoint "... All metadata generated!"
-elif [[ "$TARGET_ENGINE" != "none" ]]; then
-  GSD_PLATFORM=
-  if $BUILD_SIMULATOR; then
-    GSD_PLATFORM=ios-sim
-  elif $BUILD_IPHONE; then
-    GSD_PLATFORM=ios
-  elif $BUILD_MACOS; then
-    GSD_PLATFORM=macos
-  fi
-
-  if [ -n "$GSD_PLATFORM" ]; then
-    checkpoint "Generating signature dispatch bindings for $GSD_PLATFORM..."
-    npm run metagen "$GSD_PLATFORM"
-  fi
 fi
 
 "$SCRIPT_DIR/build_nativescript.sh" --no-vision "$@"

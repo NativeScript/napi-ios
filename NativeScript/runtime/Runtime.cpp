@@ -12,6 +12,9 @@
 #ifdef TARGET_ENGINE_V8
 #include "v8-api.h"
 #endif  // TARGET_ENGINE_V8
+#ifdef TARGET_ENGINE_HERMES
+#include "ffi/jsi/NativeApiJsi.h"
+#endif  // TARGET_ENGINE_HERMES
 #include <CoreFoundation/CFRunLoop.h>
 
 #include "NativeScript.h"
@@ -360,6 +363,15 @@ void Runtime::Init(bool isWorker) {
 
   const char* metadata_path = std::getenv("NS_METADATA_PATH");
   nativescript_init(env_, metadata_path, RuntimeConfig.MetadataPtr);
+
+#ifdef TARGET_ENGINE_HERMES
+  if (auto* jsiRuntime = js_get_jsi_runtime(env_)) {
+    NativeApiJsiConfig nativeApiJsiConfig;
+    nativeApiJsiConfig.metadataPath = metadata_path;
+    nativeApiJsiConfig.metadataPtr = RuntimeConfig.MetadataPtr;
+    InstallNativeApiJSI(*jsiRuntime, nativeApiJsiConfig);
+  }
+#endif  // TARGET_ENGINE_HERMES
 
   napi_close_handle_scope(env_, scope);
 }

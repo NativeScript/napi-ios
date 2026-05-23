@@ -43,6 +43,7 @@ _functionWithSelector
 _functionWithShort
 _functionWithShortPtr
 _functionWithSimpleFunctionPointer
+_functionWithSimpleFunctionPointerOnBackground
 _functionWithStructPtr
 _functionWithUChar
 _functionWithUCharPtr

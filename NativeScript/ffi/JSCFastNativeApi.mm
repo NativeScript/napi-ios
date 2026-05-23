@@ -16,6 +16,7 @@
 #include "ClassBuilder.h"
 #include "ClassMember.h"
 #include "EngineDirectCall.h"
+#include "Interop.h"
 #include "MetadataReader.h"
 #include "NativeScriptException.h"
 #include "Object.h"
@@ -33,6 +34,33 @@ enum class JSCFastNativeKind : uint8_t {
   ObjCSetter = 3,
   ObjCReadOnlySetter = 4,
   CFunction = 5,
+};
+
+inline bool needsRoundTripCacheFrame(Cif* cif) {
+  return cif != nullptr && cif->generatedDispatchHasRoundTripCacheArgument;
+}
+
+class JSCFastRoundTripCacheFrameGuard {
+ public:
+  JSCFastRoundTripCacheFrameGuard(napi_env env, ObjCBridgeState* bridgeState,
+                                  Cif* cif)
+      : env_(env), bridgeState_(bridgeState),
+        active_(needsRoundTripCacheFrame(cif) && bridgeState != nullptr) {
+    if (active_) {
+      bridgeState_->beginRoundTripCacheFrame(env_);
+    }
+  }
+
+  ~JSCFastRoundTripCacheFrameGuard() {
+    if (active_) {
+      bridgeState_->endRoundTripCacheFrame(env_);
+    }
+  }
+
+ private:
+  napi_env env_ = nullptr;
+  ObjCBridgeState* bridgeState_ = nullptr;
+  bool active_ = false;
 };
 
 struct JSCFastNativeBinding {
@@ -553,8 +581,13 @@ bool makeJSCObjCReturnValue(napi_env env, ObjCClassMember* member,
       napi_get_named_property(env, jsThis, "constructor", &constructor);
     }
     id obj = *reinterpret_cast<id*>(rvalue);
-    napi_value converted = member->bridgeState->getObject(
-        env, obj, constructor, member->returnOwned ? kOwnedObject : kUnownedObject);
+    napi_value converted =
+        obj != nil ? member->bridgeState->findCachedObjectWrapper(env, obj)
+                   : nullptr;
+    if (converted == nullptr) {
+      converted = member->bridgeState->getObject(
+          env, obj, constructor, member->returnOwned ? kOwnedObject : kUnownedObject);
+    }
     *result = converted != nullptr ? ToJSValue(converted) : JSValueMakeNull(env->context);
     return true;
   }
@@ -580,6 +613,16 @@ bool makeJSCObjCReturnValue(napi_env env, ObjCClassMember* member,
           return false;
         }
         *result = ToJSValue(converted);
+        return true;
+      }
+    }
+
+    if (obj != nil && ![obj isKindOfClass:[NSString class]] &&
+        ![obj isKindOfClass:[NSNumber class]] &&
+        ![obj isKindOfClass:[NSNull class]]) {
+      napi_value cached = member->bridgeState->findCachedObjectWrapper(env, obj);
+      if (cached != nullptr) {
+        *result = ToJSValue(cached);
         return true;
       }
     }
@@ -689,6 +732,8 @@ bool tryCallJSCObjCEngineDirect(napi_env env, ObjCClassMember* member,
   }
 
   void* rvalue = rvalueStorage.get();
+  JSCFastRoundTripCacheFrameGuard roundTripCacheFrame(
+      env, member->bridgeState, cif);
   bool didInvoke = false;
   @try {
     if (invoker != nullptr) {
@@ -740,6 +785,7 @@ bool tryCallJSCCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
       : nullptr;
 
   bool didInvoke = false;
+  JSCFastRoundTripCacheFrameGuard roundTripCacheFrame(env, bridgeState, cif);
   @try {
     if (invoker != nullptr) {
       didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
@@ -791,6 +837,21 @@ JSValueRef callFastFunction(JSContextRef ctx, JSObjectRef function,
                             JSValueRef* exception) {
   auto* binding =
       static_cast<JSCFastNativeBinding*>(JSObjectGetPrivate(function));
+  if (binding == nullptr) {
+    napi_env env = napi_env__::get(const_cast<JSGlobalContextRef>(ctx));
+    if (env != nullptr) {
+      JSValueRef bindingValue =
+          JSObjectGetPropertyForKey(ctx, function, env->function_info_symbol,
+                                    nullptr);
+      if (bindingValue != nullptr && JSValueIsObject(ctx, bindingValue)) {
+        JSObjectRef bindingObject = JSValueToObject(ctx, bindingValue, nullptr);
+        if (bindingObject != nullptr) {
+          binding = static_cast<JSCFastNativeBinding*>(
+              JSObjectGetPrivate(bindingObject));
+        }
+      }
+    }
+  }
   if (binding == nullptr || binding->env == nullptr) {
     return JSValueMakeUndefined(ctx);
   }
@@ -911,22 +972,38 @@ void finalizeFastFunction(JSObjectRef object) {
 JSClassRef fastFunctionClass() {
   static JSClassRef cls = [] {
     JSClassDefinition definition = kJSClassDefinitionEmpty;
-    definition.className = "NativeScriptFastNativeFunction";
-    definition.initialize = initializeFastFunction;
-    definition.callAsFunction = callFastFunction;
+    definition.className = "NativeScriptFastNativeBinding";
     definition.finalize = finalizeFastFunction;
     return JSClassCreate(&definition);
   }();
   return cls;
 }
 
-JSObjectRef makeFastFunction(napi_env env, JSCFastNativeKind kind,
-                             void* data) {
+JSObjectRef makeFastFunction(napi_env env, JSCFastNativeKind kind, void* data,
+                             const char* name) {
   auto* binding = new JSCFastNativeBinding{env, kind, data};
-  JSObjectRef function = JSObjectMake(env->context, fastFunctionClass(), binding);
+  ScopedJSString functionName(name != nullptr ? name : "");
+  JSObjectRef function = JSObjectMakeFunctionWithCallback(
+      env->context, name != nullptr ? static_cast<JSStringRef>(functionName)
+                                    : nullptr,
+      callFastFunction);
   if (function == nullptr) {
     delete binding;
+    return nullptr;
   }
+
+  JSObjectRef bindingObject =
+      JSObjectMake(env->context, fastFunctionClass(), binding);
+  if (bindingObject == nullptr) {
+    delete binding;
+    return nullptr;
+  }
+  JSObjectSetPropertyForKey(env->context, function, env->function_info_symbol,
+                            bindingObject,
+                            kJSPropertyAttributeDontEnum |
+                                kJSPropertyAttributeReadOnly |
+                                kJSPropertyAttributeDontDelete,
+                            nullptr);
   return function;
 }
 
@@ -1461,7 +1538,43 @@ bool TryFastConvertJSCObjectArgument(napi_env env, MDTypeKind kind,
   if (env == nullptr || value == nullptr || result == nullptr) {
     return false;
   }
-  return tryFastConvertJSCObjectArgument(env, kind, ToJSValue(value), result);
+  if (Pointer::isInstance(env, value) || Reference::isInstance(env, value)) {
+    if (TryFastConvertNapiArgument(env, kind, value, result)) {
+      return true;
+    }
+    if (kind == mdTypeClass) {
+      void* data = nullptr;
+      if (Pointer::isInstance(env, value)) {
+        Pointer* pointer = Pointer::unwrap(env, value);
+        data = pointer != nullptr ? pointer->data : nullptr;
+      } else {
+        Reference* reference = Reference::unwrap(env, value);
+        data = reference != nullptr ? reference->data : nullptr;
+      }
+      id nativeObject = static_cast<id>(data);
+      if (nativeObject != nil && object_isClass(nativeObject)) {
+        *reinterpret_cast<Class*>(result) = static_cast<Class>(nativeObject);
+        return true;
+      }
+    }
+    return false;
+  }
+  if (tryFastConvertJSCObjectArgument(env, kind, ToJSValue(value), result)) {
+    if (kind != mdTypeClass) {
+      napi_valuetype valueType = napi_undefined;
+      if (napi_typeof(env, value, &valueType) == napi_ok &&
+          valueType == napi_object) {
+        id nativeObject = *reinterpret_cast<id*>(result);
+        ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+        if (nativeObject != nil && bridgeState != nullptr &&
+            bridgeState->hasRoundTripCacheFrame()) {
+          bridgeState->cacheRoundTripObject(env, nativeObject, value);
+        }
+      }
+    }
+    return true;
+  }
+  return TryFastConvertNapiArgument(env, kind, value, result);
 }
 
 bool TryFastConvertJSCArgument(napi_env env, MDTypeKind kind, napi_value value,
@@ -1641,7 +1754,7 @@ bool TryFastConvertJSCArgument(napi_env env, MDTypeKind kind, napi_value value,
     case mdTypeInstanceObject:
     case mdTypeNSStringObject:
     case mdTypeNSMutableStringObject:
-      if (tryFastConvertJSCObjectArgument(env, kind, jsValue, result)) {
+      if (TryFastConvertJSCObjectArgument(env, kind, value, result)) {
         return true;
       }
       return TryFastConvertNapiArgument(env, kind, value, result);
@@ -1803,7 +1916,8 @@ bool JSCTryDefineFastNativeProperty(
   if (descriptor->method == ObjCClassMember::jsCall &&
       descriptor->data != nullptr) {
     JSObjectRef function = makeFastFunction(
-        env, JSCFastNativeKind::ObjCMethod, descriptor->data);
+        env, JSCFastNativeKind::ObjCMethod, descriptor->data,
+        descriptor->utf8name);
     return function != nullptr &&
            defineProperty(env, object, descriptor, propertyName, function,
                           nullptr, nullptr);
@@ -1812,7 +1926,8 @@ bool JSCTryDefineFastNativeProperty(
   if (descriptor->method == CFunction::jsCall && descriptor->data != nullptr &&
       !isCompatCFunction(env, descriptor->data)) {
     JSObjectRef function = makeFastFunction(
-        env, JSCFastNativeKind::CFunction, descriptor->data);
+        env, JSCFastNativeKind::CFunction, descriptor->data,
+        descriptor->utf8name);
     return function != nullptr &&
            defineProperty(env, object, descriptor, propertyName, function,
                           nullptr, nullptr);
@@ -1821,14 +1936,15 @@ bool JSCTryDefineFastNativeProperty(
   if (descriptor->getter == ObjCClassMember::jsGetter &&
       descriptor->data != nullptr) {
     JSObjectRef getter = makeFastFunction(
-        env, JSCFastNativeKind::ObjCGetter, descriptor->data);
+        env, JSCFastNativeKind::ObjCGetter, descriptor->data,
+        descriptor->utf8name);
     JSObjectRef setter = nullptr;
     if (descriptor->setter == ObjCClassMember::jsSetter) {
       setter = makeFastFunction(env, JSCFastNativeKind::ObjCSetter,
-                                descriptor->data);
+                                descriptor->data, descriptor->utf8name);
     } else if (descriptor->setter == ObjCClassMember::jsReadOnlySetter) {
       setter = makeFastFunction(env, JSCFastNativeKind::ObjCReadOnlySetter,
-                                descriptor->data);
+                                descriptor->data, descriptor->utf8name);
     } else if (descriptor->setter != nullptr) {
       return false;
     }
