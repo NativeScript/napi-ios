@@ -218,19 +218,25 @@ set(FFI_DIRECT_SOURCE_FILES
 )
 
 set(FFI_V8_SOURCE_FILES
+  ffi/v8/V8FastConversion.mm
   ffi/v8/V8FastNativeApi.mm
+  ffi/v8/V8FastNativeWrapper.mm
 )
 
 set(FFI_HERMES_SOURCE_FILES
   ffi/hermes/jsi/NativeApiJsi.mm
+  ffi/hermes/HermesFastConversion.mm
   ffi/hermes/HermesFastNativeApi.mm
 )
 
 set(FFI_QUICKJS_SOURCE_FILES
+  ffi/quickjs/QuickJSFastConversion.mm
   ffi/quickjs/QuickJSFastNativeApi.mm
+  ffi/quickjs/QuickJSFastReturn.mm
 )
 
 set(FFI_JSC_SOURCE_FILES
+  ffi/jsc/JSCFastConversion.mm
   ffi/jsc/JSCFastNativeApi.mm
 )
 
