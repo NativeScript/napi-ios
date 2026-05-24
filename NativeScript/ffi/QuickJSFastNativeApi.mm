@@ -273,7 +273,7 @@ bool makeQuickJSRawReturnValue(JSContext* context, MDTypeKind kind,
 
   switch (kind) {
     case mdTypeVoid:
-      *result = JS_NULL;
+      *result = JS_UNDEFINED;
       return true;
 
     case mdTypeBool:
@@ -937,12 +937,17 @@ bool tryCallQuickJSCFunctionEngineDirect(JSContext* context, napi_env env,
   bool didInvoke = false;
   QuickJSFastRoundTripCacheFrameGuard roundTripCacheFrame(
       env, bridgeState, cif);
+  QuickJSFastReturnStorage rvalueStorage(cif);
+  if (!rvalueStorage.valid()) {
+    return false;
+  }
+  void* rvalue = rvalueStorage.get();
   @try {
     if (invoker != nullptr) {
-      didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
+      didInvoke = invoker(env, cif, function->fnptr, argv, rvalue);
     } else {
       didInvoke = nativescript::InvokeCFunctionEngineDirectDynamic(
-          env, function, cif, static_cast<size_t>(argc), argv, cif->rvalue);
+          env, function, cif, static_cast<size_t>(argc), argv, rvalue);
     }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
@@ -952,8 +957,8 @@ bool tryCallQuickJSCFunctionEngineDirect(JSContext* context, napi_env env,
   }
 
   return didInvoke &&
-         makeQuickJSCFunctionReturnValue(context, env, function, cif,
-                                         cif->rvalue, result);
+         makeQuickJSCFunctionReturnValue(context, env, function, cif, rvalue,
+                                         result);
 }
 
 JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
@@ -1034,6 +1039,10 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
       return JS_Throw(context, JS_GetException(context));
     }
     return directReturn;
+  }
+  if (JS_HasException(context)) {
+    JSValue staleException = JS_GetException(context);
+    JS_FreeValue(context, staleException);
   }
 
   QuickJSFastStackHandleScope scope(env);
@@ -1723,7 +1732,7 @@ bool TryFastConvertQuickJSReturnValue(napi_env env, MDTypeKind kind,
   JSValue jsValue = JS_UNDEFINED;
   switch (kind) {
     case mdTypeVoid:
-      jsValue = JS_NULL;
+      jsValue = JS_UNDEFINED;
       break;
 
     case mdTypeBool:

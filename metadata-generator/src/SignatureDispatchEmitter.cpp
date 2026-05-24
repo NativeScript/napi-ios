@@ -654,6 +654,7 @@ void writeV8DirectReturnValue(std::ostringstream& out, MDTypeKind kind,
 void writeHermesDirectReturnValue(std::ostringstream& out, DispatchKind dispatchKind,
                                   MDTypeKind kind,
                                   const std::string& valueExpr) {
+  // Emits an open failure branch; the caller appends cleanup and `return false`.
   switch (kind) {
     case mdTypeVoid:
       out << "  if (!SetHermesGeneratedVoidReturn(env, result)) {\n";

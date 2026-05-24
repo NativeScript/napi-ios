@@ -212,7 +212,7 @@ class ObjCBridgeState {
     handleObjectRefs[handleKey] = HandleObjectRef{ref, true};
     bumpHandleObjectRefsGeneration();
   }
-  inline void cacheHandleObjectRef(void* handle, napi_ref ref) {
+  inline void cacheHandleObjectRef(napi_env env, void* handle, napi_ref ref) {
     if (handle == nullptr || ref == nullptr) {
       return;
     }

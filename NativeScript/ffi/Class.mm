@@ -599,14 +599,14 @@ class FastEnumerationIterator {
                                                              objects:self->stackbuf
                                                                count:16];
 
-    for (NSUInteger index = 0; index < count; index++) {
+    for (uint32_t index = 0; index < static_cast<uint32_t>(count); index++) {
       id obj = self->state.itemsPtr[index];
       napi_value jsObj = bridgeState->getObject(env, obj);
       napi_set_element(env, stackArray, index, jsObj);
     }
 
     napi_value result;
-    napi_create_int32(env, count, &result);
+    napi_create_uint32(env, static_cast<uint32_t>(count), &result);
 
     return result;
   }

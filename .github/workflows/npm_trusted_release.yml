@@ -58,22 +58,35 @@ jobs:
   matrix:
     name: Resolve package matrix
     runs-on: ubuntu-latest
+    permissions: {}
     outputs:
       targets: ${{ steps.compute.outputs.targets }}
     steps:
       - name: Compute matrix
         id: compute
+        env:
+          ENGINE: ${{ inputs.engine }}
         run: |
-          if [ "${{ inputs.engine }}" = "all" ]; then
-            echo 'targets=["v8","hermes","jsc","quickjs"]' >> "$GITHUB_OUTPUT"
-          else
-            echo "targets=[\"${{ inputs.engine }}\"]" >> "$GITHUB_OUTPUT"
-          fi
+          set -euo pipefail
+          case "$ENGINE" in
+            all)
+              echo 'targets=["v8","hermes","jsc","quickjs"]' >> "$GITHUB_OUTPUT"
+              ;;
+            v8|hermes|jsc|quickjs|react-native)
+              printf 'targets=["%s"]\n' "$ENGINE" >> "$GITHUB_OUTPUT"
+              ;;
+            *)
+              echo "Unsupported engine: $ENGINE" >&2
+              exit 1
+              ;;
+          esac
 
   build:
     name: Build ${{ matrix.target }}
     needs: matrix
     runs-on: macos-26
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
@@ -119,11 +132,15 @@ jobs:
       - name: Bump version
         id: bump
         shell: bash
+        env:
+          RELEASE_TYPE: ${{ inputs.release-type }}
+          PREID: ${{ inputs.preid }}
+          TARGET: ${{ matrix.target }}
         run: |
           set -euo pipefail
-          release_type='${{ inputs.release-type }}'
-          preid='${{ inputs.preid }}'
-          target='${{ matrix.target }}'
+          release_type="$RELEASE_TYPE"
+          preid="$PREID"
+          target="$TARGET"
           if [ "$target" = "react-native" ]; then
             pkg_dir="packages/react-native"
             package_name="@nativescript/react-native"
@@ -155,7 +172,9 @@ jobs:
           echo "Resolved $package_name@$NPM_VERSION (tag: $NPM_TAG)"
       - name: Build iOS engine (--${{ matrix.target }})
         if: ${{ matrix.target != 'react-native' }}
-        run: ./scripts/build_all_ios.sh --${{ matrix.target }}
+        env:
+          TARGET: ${{ matrix.target }}
+        run: ./scripts/build_all_ios.sh "--${TARGET}"
       - name: Build @nativescript/react-native
         if: ${{ matrix.target == 'react-native' }}
         run: |
@@ -163,18 +182,25 @@ jobs:
           ./scripts/build_react_native_turbomodule.sh
       - name: Record metadata
         shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
+          PACKAGE_DIR: ${{ steps.bump.outputs.PACKAGE_DIR }}
+          PACKAGE_NAME: ${{ steps.bump.outputs.PACKAGE_NAME }}
+          NPM_VERSION: ${{ steps.bump.outputs.NPM_VERSION }}
+          NPM_TAG: ${{ steps.bump.outputs.NPM_TAG }}
+          TARBALL_BASENAME: ${{ steps.bump.outputs.TARBALL_BASENAME }}
         run: |
           set -euo pipefail
-          package_dir="${{ steps.bump.outputs.PACKAGE_DIR }}"
-          tarball_file="${{ steps.bump.outputs.TARBALL_BASENAME }}-${{ steps.bump.outputs.NPM_VERSION }}.tgz"
+          package_dir="$PACKAGE_DIR"
+          tarball_file="${TARBALL_BASENAME}-${NPM_VERSION}.tgz"
           mkdir -p "$package_dir/dist"
           cat > "$package_dir/dist/release-meta.json" <<EOF
           {
-            "target": "${{ matrix.target }}",
+            "target": "$TARGET",
             "package_dir": "$package_dir",
-            "package_name": "${{ steps.bump.outputs.PACKAGE_NAME }}",
-            "version": "${{ steps.bump.outputs.NPM_VERSION }}",
-            "tag": "${{ steps.bump.outputs.NPM_TAG }}",
+            "package_name": "$PACKAGE_NAME",
+            "version": "$NPM_VERSION",
+            "tag": "$NPM_TAG",
             "tarball": "$tarball_file"
           }
           EOF
@@ -229,9 +255,11 @@ jobs:
       - name: Read release metadata
         id: meta
         shell: bash
+        env:
+          TARGET: ${{ matrix.target }}
         run: |
           set -euo pipefail
-          meta="npm-package/${{ matrix.target }}/release-meta.json"
+          meta="npm-package/${TARGET}/release-meta.json"
           if [ ! -f "$meta" ]; then
             echo "Missing release metadata at $meta" >&2
             exit 1
@@ -252,11 +280,12 @@ jobs:
           NPM_TAG: ${{ steps.meta.outputs.NPM_TAG }}
           PACKAGE_NAME: ${{ steps.meta.outputs.PACKAGE_NAME }}
           TARBALL: ${{ steps.meta.outputs.TARBALL }}
+          TARGET: ${{ matrix.target }}
           DRY_RUN: ${{ inputs.dry-run }}
           NODE_AUTH_TOKEN: ""
         run: |
           set -euo pipefail
-          TARBALL_PATH="npm-package/${{ matrix.target }}/${TARBALL}"
+          TARBALL_PATH="npm-package/${TARGET}/${TARBALL}"
           PUBLISH_ARGS=("$TARBALL_PATH" --tag "$NPM_TAG" --access public --provenance)
           if [ "$DRY_RUN" = "true" ]; then
             PUBLISH_ARGS+=(--dry-run)
@@ -276,11 +305,12 @@ jobs:
           NPM_TAG: ${{ steps.meta.outputs.NPM_TAG }}
           PACKAGE_NAME: ${{ steps.meta.outputs.PACKAGE_NAME }}
           TARBALL: ${{ steps.meta.outputs.TARBALL }}
+          TARGET: ${{ matrix.target }}
           DRY_RUN: ${{ inputs.dry-run }}
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
         run: |
           set -euo pipefail
-          TARBALL_PATH="npm-package/${{ matrix.target }}/${TARBALL}"
+          TARBALL_PATH="npm-package/${TARGET}/${TARBALL}"
           PUBLISH_ARGS=("$TARBALL_PATH" --tag "$NPM_TAG" --access public --provenance)
           if [ "$DRY_RUN" = "true" ]; then
             PUBLISH_ARGS+=(--dry-run)
@@ -296,13 +326,22 @@ jobs:
       - build
       - publish
     runs-on: ubuntu-latest
+    permissions: {}
     steps:
       - name: Print summary
+        env:
+          PACKAGE_SELECTION: ${{ inputs.engine }}
+          RELEASE_TYPE: ${{ inputs.release-type }}
+          PREID: ${{ inputs.preid }}
+          DRY_RUN: ${{ inputs.dry-run }}
+          TARGETS: ${{ needs.matrix.outputs.targets }}
+          BUILD_RESULT: ${{ needs.build.result }}
+          PUBLISH_RESULT: ${{ needs.publish.result }}
         run: |
-          echo "Package selection: ${{ inputs.engine }}"
-          echo "Release type:     ${{ inputs.release-type }}"
-          echo "Preid:            ${{ inputs.preid }}"
-          echo "Dry run:          ${{ inputs.dry-run }}"
-          echo "Targets:          ${{ needs.matrix.outputs.targets }}"
-          echo "Build result:     ${{ needs.build.result }}"
-          echo "Publish result:   ${{ needs.publish.result }}"
+          echo "Package selection: $PACKAGE_SELECTION"
+          echo "Release type:     $RELEASE_TYPE"
+          echo "Preid:            $PREID"
+          echo "Dry run:          $DRY_RUN"
+          echo "Targets:          $TARGETS"
+          echo "Build result:     $BUILD_RESULT"
+          echo "Publish result:   $PUBLISH_RESULT"

@@ -30,6 +30,32 @@ function installNativeScriptGlobals(): NativeApiHost {
   return api;
 }
 
+function getActiveUIKitWindow() {
+  const app = UIApplication.sharedApplication;
+  const scenes = app.connectedScenes?.allObjects;
+  if (scenes) {
+    for (let i = 0; i < scenes.count; i++) {
+      const scene = scenes.objectAtIndex(i);
+      if (
+        scene instanceof UIWindowScene &&
+        scene.activationState === UISceneActivationState.ForegroundActive
+      ) {
+        const windows = scene.windows;
+        for (let j = 0; j < windows.count; j++) {
+          const window = windows.objectAtIndex(j);
+          if (window.isKeyWindow) {
+            return window;
+          }
+        }
+        if (windows.count > 0) {
+          return windows.objectAtIndex(0);
+        }
+      }
+    }
+  }
+  return app.keyWindow;
+}
+
 async function applyUIKitTweaks() {
   if (Platform.OS !== 'ios') {
     throw new Error('This demo uses UIKit and must run on iOS');
@@ -44,8 +70,7 @@ async function applyUIKitTweaks() {
       throw new Error('runOnUI did not dispatch native calls to the main thread');
     }
 
-    const app = UIApplication.sharedApplication;
-    const window = app.keyWindow;
+    const window = getActiveUIKitWindow();
     if (!window) {
       throw new Error('No key UIWindow is available yet');
     }

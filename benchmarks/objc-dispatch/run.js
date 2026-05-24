@@ -5,6 +5,7 @@ const childProcess = require("child_process");
 const fs = require("fs");
 const os = require("os");
 const path = require("path");
+const { pathToFileURL } = require("url");
 
 const repoRoot = path.resolve(__dirname, "../..");
 const benchmarkFile = path.join(__dirname, "objc-dispatch-benchmarks.js");
@@ -458,7 +459,7 @@ function runNapiNode(options, variant) {
 }
 
 function pathToFileUrl(filePath) {
-  return new URL(`file://${filePath}`).href;
+  return pathToFileURL(filePath).href;
 }
 
 function destinationToUdid(destination) {
@@ -572,6 +573,9 @@ function launchAndCollect(udid, bundleId, options, env = {}) {
     }, options.timeoutMs);
 
     function settleWithReport(report) {
+      if (settled) {
+        return;
+      }
       settled = true;
       clearTimeout(timeout);
       for (const activeChild of children) {
@@ -608,15 +612,27 @@ function launchAndCollect(udid, bundleId, options, env = {}) {
         }
       });
     }
-    child.on("exit", (code) => {
+    child.on("exit", (code, signal) => {
       if (!settled) {
         if (output.includes(marker)) {
           try {
             settleWithReport(parseBenchmarkOutput(output));
+            return;
           } catch (_) {
             // The unified log stream may still deliver the actual message after
             // simctl launch exits.
           }
+        }
+        if (code !== 0 || signal) {
+          settled = true;
+          clearTimeout(timeout);
+          for (const activeChild of children) {
+            activeChild.kill("SIGTERM");
+          }
+          childProcess.spawnSync("xcrun", ["simctl", "terminate", udid, bundleId], { stdio: "ignore" });
+          reject(new Error(
+            `simctl launch for ${bundleId} exited with code ${code ?? "unknown"}${signal ? ` (signal ${signal})` : ""} before emitting ${marker}.\n${output}`
+          ));
         }
       }
     });

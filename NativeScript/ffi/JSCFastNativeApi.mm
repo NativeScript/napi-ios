@@ -182,7 +182,7 @@ bool makeJSCRawReturnValue(napi_env env, MDTypeKind kind, const void* value,
   JSContextRef ctx = env->context;
   switch (kind) {
     case mdTypeVoid:
-      *result = JSValueMakeNull(ctx);
+      *result = JSValueMakeUndefined(ctx);
       return true;
 
     case mdTypeBool:
@@ -786,12 +786,17 @@ bool tryCallJSCCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
 
   bool didInvoke = false;
   JSCFastRoundTripCacheFrameGuard roundTripCacheFrame(env, bridgeState, cif);
+  JSCFastReturnStorage rvalueStorage(cif);
+  if (!rvalueStorage.valid()) {
+    return false;
+  }
+  void* rvalue = rvalueStorage.get();
   @try {
     if (invoker != nullptr) {
-      didInvoke = invoker(env, cif, function->fnptr, argv, cif->rvalue);
+      didInvoke = invoker(env, cif, function->fnptr, argv, rvalue);
     } else {
       didInvoke = InvokeCFunctionEngineDirectDynamic(
-          env, function, cif, argc, argv, cif->rvalue);
+          env, function, cif, argc, argv, rvalue);
     }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
@@ -800,8 +805,7 @@ bool tryCallJSCCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
     return false;
   }
 
-  return didInvoke &&
-         makeJSCCFunctionReturnValue(env, function, cif, cif->rvalue, result);
+  return didInvoke && makeJSCCFunctionReturnValue(env, function, cif, rvalue, result);
 }
 
 void initializeFastFunction(JSContextRef ctx, JSObjectRef object) {
@@ -918,6 +922,7 @@ JSValueRef callFastFunction(JSContextRef ctx, JSObjectRef function,
     }
     return directResult != nullptr ? directResult : JSValueMakeUndefined(ctx);
   }
+  env->last_exception = nullptr;
 
   napi_value result = nullptr;
 
@@ -1774,7 +1779,7 @@ bool TryFastConvertJSCReturnValue(napi_env env, MDTypeKind kind,
   JSValueRef jsValue = nullptr;
   switch (kind) {
     case mdTypeVoid:
-      jsValue = JSValueMakeNull(ctx);
+      jsValue = JSValueMakeUndefined(ctx);
       break;
 
     case mdTypeBool:

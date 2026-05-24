@@ -1026,12 +1026,19 @@ napi_value TryCallCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
   }
 
   bool didInvoke = false;
+  CifReturnStorage rvalueStorage(cif);
+  if (!rvalueStorage.valid()) {
+    napi_throw_error(env, "NativeScriptException",
+                     "Unable to allocate C function return storage.");
+    return nullptr;
+  }
+  void* rvalue = rvalueStorage.get();
   @try {
     if (invoker != nullptr) {
-      didInvoke = invoker(env, cif, function->fnptr, invocationArgs, cif->rvalue);
+      didInvoke = invoker(env, cif, function->fnptr, invocationArgs, rvalue);
     } else {
       didInvoke = InvokeCFunctionEngineDirectDynamic(
-          env, function, cif, actualArgc, rawArgs, cif->rvalue);
+          env, function, cif, actualArgc, rawArgs, rvalue);
     }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
@@ -1044,7 +1051,7 @@ napi_value TryCallCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
     return nullptr;
   }
 
-  return convertCFunctionReturnValue(env, function, cif, cif->rvalue);
+  return convertCFunctionReturnValue(env, function, cif, rvalue);
 }
 
 }  // namespace nativescript

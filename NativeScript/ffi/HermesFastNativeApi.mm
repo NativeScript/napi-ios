@@ -226,9 +226,9 @@ bool tryFastConvertHermesStringToNSStringArgument(napi_env env,
     }
 
     *result =
-        [[NSMutableString alloc]
+        [[[NSMutableString alloc]
             initWithCharacters:reinterpret_cast<const unichar*>(utf16Buffer)
-                        length:utf16Length];
+                        length:utf16Length] autorelease];
     return true;
   }
 
@@ -1606,7 +1606,8 @@ bool TryFastConvertHermesInt64Argument(napi_env env, napi_value value,
   }
 
   bool lossless = false;
-  return napi_get_value_bigint_int64(env, value, result, &lossless) == napi_ok;
+  return napi_get_value_bigint_int64(env, value, result, &lossless) == napi_ok &&
+         lossless;
 }
 
 bool TryFastConvertHermesUInt64Argument(napi_env env, napi_value value,
@@ -1622,7 +1623,8 @@ bool TryFastConvertHermesUInt64Argument(napi_env env, napi_value value,
   }
 
   bool lossless = false;
-  return napi_get_value_bigint_uint64(env, value, result, &lossless) == napi_ok;
+  return napi_get_value_bigint_uint64(env, value, result, &lossless) == napi_ok &&
+         lossless;
 }
 
 bool TryFastConvertHermesSelectorArgument(napi_env env, napi_value value,
@@ -1636,7 +1638,9 @@ bool TryFastConvertHermesObjectArgument(napi_env env, MDTypeKind kind,
     return false;
   }
 
-  if (kind != mdTypeClass) {
+  const bool isNSStringKind =
+      kind == mdTypeNSStringObject || kind == mdTypeNSMutableStringObject;
+  if (kind != mdTypeClass && !isNSStringKind) {
     const uint64_t raw = hermesRawValueBits(value);
     if (isHermesBool(raw)) {
       *reinterpret_cast<id*>(result) =
@@ -2354,17 +2358,25 @@ napi_value TryCallHermesCFunctionFastImpl(
       !cif->skipGeneratedNapiDispatch && cif->signatureHash != 0
           ? ensureHermesCFunctionEngineDirectInvoker(function, cif)
           : nullptr;
+  HermesFastReturnStorage returnStorage(cif);
+  void* perCallRValue = returnStorage.get();
+  if (!returnStorage.valid()) {
+    napi_throw_error(env, "NativeScriptException",
+                     "Unable to allocate C function return storage.");
+    return nullptr;
+  }
   @try {
     const napi_value* invocationArgs = getPreparedInvocationArgs();
     NativeCallRuntimeUnlockScope unlockRuntime(env);
     if (invoker != nullptr) {
-      didInvoke = invoker(env, cif, function->fnptr, invocationArgs, cif->rvalue);
+      didInvoke =
+          invoker(env, cif, function->fnptr, invocationArgs, perCallRValue);
     } else {
       const napi_value* dynamicArgs =
           rawArgs != nullptr ? rawArgs : invocationArgs;
       const size_t dynamicArgc = rawArgs != nullptr ? actualArgc : cif->argc;
       didInvoke = InvokeCFunctionEngineDirectDynamic(
-          env, function, cif, dynamicArgc, dynamicArgs, cif->rvalue);
+          env, function, cif, dynamicArgc, dynamicArgs, perCallRValue);
     }
   } @catch (NSException* exception) {
     std::string message = exception.description.UTF8String;
@@ -2377,7 +2389,7 @@ napi_value TryCallHermesCFunctionFastImpl(
     return nullptr;
   }
 
-  return makeHermesCFunctionReturnValue(env, function, cif, cif->rvalue);
+  return makeHermesCFunctionReturnValue(env, function, cif, perCallRValue);
 }
 
 napi_value TryCallHermesCFunctionFast(napi_env env, MDSectionOffset offset,

@@ -2176,19 +2176,19 @@ class ObjCObjectTypeConv : public TypeConv {
       return null;
     }
 
-	    auto bridgeState = ObjCBridgeState::InstanceData(env);
+    auto bridgeState = ObjCBridgeState::InstanceData(env);
 
-	    if (bridgeState != nullptr) {
-	      if (object_isClass(obj)) {
-	        if (napi_value constructor = findRegisteredClassConstructor(env, (Class)obj);
-	            constructor != nullptr) {
-	          return constructor;
-	        }
-	      }
+    if (bridgeState != nullptr) {
+      if (object_isClass(obj)) {
+        if (napi_value constructor = findRegisteredClassConstructor(env, (Class)obj);
+            constructor != nullptr) {
+          return constructor;
+        }
+      }
 
-	      auto normalizePtr = [](void* ptr) -> uintptr_t {
-	        return normalizeRuntimePointer(reinterpret_cast<uintptr_t>(ptr));
-	      };
+      auto normalizePtr = [](void* ptr) -> uintptr_t {
+        return normalizeRuntimePointer(reinterpret_cast<uintptr_t>(ptr));
+      };
 
       auto protocolIt = bridgeState->mdProtocolsByPointer.find((Protocol*)obj);
       if (protocolIt != bridgeState->mdProtocolsByPointer.end()) {
@@ -2197,18 +2197,15 @@ class ObjCObjectTypeConv : public TypeConv {
           return get_ref_value(env, proto->constructor);
         }
       } else {
-        const uintptr_t objPtr = reinterpret_cast<uintptr_t>((void*)obj);
         const uintptr_t objNormalized = normalizePtr((void*)obj);
-        if (objNormalized != objPtr) {
-          for (const auto& entry : bridgeState->mdProtocolsByPointer) {
-            if (normalizePtr((void*)entry.first) != objNormalized) {
-              continue;
-            }
+        for (const auto& entry : bridgeState->mdProtocolsByPointer) {
+          if (normalizePtr((void*)entry.first) != objNormalized) {
+            continue;
+          }
 
-            auto proto = bridgeState->getProtocol(env, entry.second);
-            if (proto != nullptr) {
-              return get_ref_value(env, proto->constructor);
-            }
+          auto proto = bridgeState->getProtocol(env, entry.second);
+          if (proto != nullptr) {
+            return get_ref_value(env, proto->constructor);
           }
         }
       }

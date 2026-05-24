@@ -52,6 +52,10 @@ inline void* HermesFastData(const HermesFastCallbackInfo* info) {
 }
 
 inline napi_value HermesFastThisArg(const HermesFastCallbackInfo* info) {
+  if (info == nullptr || info->frame == nullptr ||
+      info->frame->thisArgAndArgsBase == nullptr) {
+    return nullptr;
+  }
   return reinterpret_cast<napi_value>(
       const_cast<uint64_t*>(info->frame->thisArgAndArgsBase));
 }

@@ -12,10 +12,6 @@ using namespace facebook::react;
   NativeScriptUIView* _containerView;
 }
 
-+ (void)load {
-  [super load];
-}
-
 - (instancetype)initWithFrame:(CGRect)frame {
   if (self = [super initWithFrame:frame]) {
     static const auto defaultProps = std::make_shared<const NativeScriptUIViewProps>();

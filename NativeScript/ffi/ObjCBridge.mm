@@ -1032,7 +1032,7 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   finalizerContext->ref = ref;
 
   storeObjectRef(nativeObject, ref);
-  cacheHandleObjectRef(nativeObject, ref);
+  cacheHandleObjectRef(env, nativeObject, ref);
   cacheRecentObjectWrapper(env, nativeObject, result);
   attachObjectLifecycleAssociation(env, nativeObject);
   trackObject(nativeObject);

@@ -16,6 +16,7 @@
 #if NATIVESCRIPT_HAS_REACT_NATIVE_CALL_INVOKER
 
 #include <dispatch/dispatch.h>
+#include <stdexcept>
 
 namespace nativescript {
 
@@ -24,14 +25,15 @@ class ReactNativeCallInvokerScheduler final : public NativeApiJsiScheduler {
   ReactNativeCallInvokerScheduler(
       std::shared_ptr<facebook::react::CallInvoker> jsInvoker,
       std::shared_ptr<facebook::react::CallInvoker> uiInvoker)
-      : jsInvoker_(std::move(jsInvoker)), uiInvoker_(std::move(uiInvoker)) {}
+      : jsInvoker_(std::move(jsInvoker)), uiInvoker_(std::move(uiInvoker)) {
+    if (!jsInvoker_) {
+      throw std::invalid_argument(
+          "NativeScript React Native JSI scheduler requires a JS CallInvoker");
+    }
+  }
 
   void invokeOnJS(std::function<void()> task) override {
-    if (jsInvoker_) {
-      jsInvoker_->invokeAsync(std::move(task));
-      return;
-    }
-    task();
+    jsInvoker_->invokeAsync(std::move(task));
   }
 
   void invokeOnUI(std::function<void()> task) override {

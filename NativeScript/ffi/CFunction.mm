@@ -1,6 +1,9 @@
 #include "CFunction.h"
 #include <dispatch/dispatch.h>
+#include <cstdlib>
+#include <cstdint>
 #include <cstring>
+#include <memory>
 #include <vector>
 #include "Block.h"
 #include "CallbackThreading.h"
@@ -29,6 +32,62 @@ inline bool isCompatOrMainCFunctionName(const char* name) {
          strcmp(name, "UIApplicationMain") == 0 ||
          strcmp(name, "NSApplicationMain") == 0;
 }
+
+class CFunctionInvocationFrame final {
+ public:
+  explicit CFunctionInvocationFrame(Cif* cif)
+      : avalues_(cif != nullptr ? cif->argc : 0, nullptr),
+        argumentStorage_(cif != nullptr ? cif->argc : 0, nullptr) {
+    if (cif == nullptr) {
+      return;
+    }
+
+    const size_t rvalueLength = cif->rvalueLength > 0 ? cif->rvalueLength : 1;
+    rvalue_ = std::malloc(rvalueLength);
+    if (rvalue_ == nullptr) {
+      return;
+    }
+
+    valid_ = true;
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      ffi_type* argType =
+          cif->cif.arg_types != nullptr ? cif->cif.arg_types[i] : nullptr;
+      const size_t argLength =
+          argType != nullptr && argType->size > 0 ? argType->size : 1;
+      void* storage = std::malloc(argLength);
+      if (storage == nullptr) {
+        valid_ = false;
+        return;
+      }
+      argumentStorage_[i] = storage;
+      avalues_[i] = storage;
+    }
+  }
+
+  ~CFunctionInvocationFrame() {
+    for (void* storage : argumentStorage_) {
+      if (storage != nullptr) {
+        std::free(storage);
+      }
+    }
+    if (rvalue_ != nullptr) {
+      std::free(rvalue_);
+    }
+  }
+
+  CFunctionInvocationFrame(const CFunctionInvocationFrame&) = delete;
+  CFunctionInvocationFrame& operator=(const CFunctionInvocationFrame&) = delete;
+
+  bool isValid() const { return valid_ && rvalue_ != nullptr; }
+  void* rvalue() const { return rvalue_; }
+  void** avalues() { return avalues_.empty() ? nullptr : avalues_.data(); }
+
+ private:
+  bool valid_ = false;
+  void* rvalue_ = nullptr;
+  std::vector<void*> avalues_;
+  std::vector<void*> argumentStorage_;
+};
 
 inline bool unwrapCompatNativeHandleForCFunction(napi_env env, napi_value value, void** out) {
   if (value == nullptr || out == nullptr) {
@@ -374,6 +433,13 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
 
   const bool isMainEntrypoint =
       strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0;
+  auto invocationFrame = std::make_shared<CFunctionInvocationFrame>(cif);
+  if (!invocationFrame->isValid()) {
+    napi_throw_error(env, "NativeScriptException",
+                     "Unable to allocate C function invocation storage.");
+    return nullptr;
+  }
+  void* rvalue = invocationFrame->rvalue();
 
   if ((engineDirectInvoker != nullptr ||
        (napiInvoker != nullptr && !cif->skipGeneratedNapiDispatch)) &&
@@ -381,8 +447,8 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
     @try {
       NativeCallRuntimeUnlockScope unlockRuntime(env);
       bool invoked = engineDirectInvoker != nullptr
-                         ? engineDirectInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue)
-                         : napiInvoker(env, cif, func->fnptr, invocationArgs, cif->rvalue);
+                         ? engineDirectInvoker(env, cif, func->fnptr, invocationArgs, rvalue)
+                         : napiInvoker(env, cif, func->fnptr, invocationArgs, rvalue);
       if (!invoked) {
         return nullptr;
       }
@@ -395,38 +461,32 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
     }
 
     napi_value fastResult = nullptr;
-    if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, cif->rvalue,
+    if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
                                         &fastResult)) {
       return fastResult;
     }
-    return cif->returnType->toJS(env, cif->rvalue, toJSFlags);
+    return cif->returnType->toJS(env, rvalue, toJSFlags);
   }
 
-  void* avalues[cif->argc];
-  void* rvalue = cif->rvalue;
+  void** avalues = invocationFrame->avalues();
 
   bool shouldFreeAny = false;
-  bool shouldFree[cif->argc];
+  std::vector<uint8_t> shouldFree(cif->argc, 0);
 
   if (cif->argc > 0) {
     for (unsigned int i = 0; i < cif->argc; i++) {
-      shouldFree[i] = false;
-      avalues[i] = cif->avalues[i];
-      cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i], &shouldFree[i],
+      bool argShouldFree = false;
+      cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i], &argShouldFree,
                                  &shouldFreeAny);
+      shouldFree[i] = argShouldFree ? 1 : 0;
     }
   }
 
 #ifdef ENABLE_JS_RUNTIME
   if (isMainEntrypoint) {
-    void** avaluesPtr = new void*[cif->argc];
-    memcpy(avaluesPtr, avalues, cif->argc * sizeof(void*));
-
-    Tasks::Register([env, cif, func, preparedInvoker, rvalue, avaluesPtr]() {
-      void* avalues[cif->argc];
-      memcpy(avalues, avaluesPtr, cif->argc * sizeof(void*));
-      delete[] avaluesPtr;
-
+    Tasks::Register([env, cif, func, preparedInvoker, invocationFrame]() {
+      void** avalues = invocationFrame->avalues();
+      void* rvalue = invocationFrame->rvalue();
       @try {
         if (preparedInvoker != nullptr) {
           preparedInvoker(func->fnptr, avalues, rvalue);

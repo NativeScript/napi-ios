@@ -146,9 +146,11 @@ inline bool readHermesDispatchFiniteNumber(napi_value value, double* result) {
     return false;
   }
 
-  *result = hermesDispatchRawDoubleIsFinite(raw)
-                ? hermesDispatchRawToDouble(raw)
-                : 0.0;
+  if (!hermesDispatchRawDoubleIsFinite(raw)) {
+    return false;
+  }
+
+  *result = hermesDispatchRawToDouble(raw);
   return true;
 }
 
@@ -157,9 +159,11 @@ inline bool readHermesDispatchFiniteNumberRaw(uint64_t raw, double* result) {
     return false;
   }
 
-  *result = hermesDispatchRawDoubleIsFinite(raw)
-                ? hermesDispatchRawToDouble(raw)
-                : 0.0;
+  if (!hermesDispatchRawDoubleIsFinite(raw)) {
+    return false;
+  }
+
+  *result = hermesDispatchRawToDouble(raw);
   return true;
 }
 
