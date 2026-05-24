@@ -1,4 +1,5 @@
 #import <TargetConditionals.h>
+#import <CommonCrypto/CommonDigest.h>
 
 #if TARGET_OS_OSX
 #import <AppKit/AppKit.h>

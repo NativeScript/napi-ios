@@ -116,6 +116,7 @@ function rn_build_ios_app() {
     -sdk iphonesimulator \
     -destination "platform=iOS Simulator,id=$udid" \
     -derivedDataPath "$app_dir/ios/build/DerivedData" \
+    ONLY_ACTIVE_ARCH=YES \
     build | tee "$app_root/xcodebuild.log" &
   local build_pid=$!
 

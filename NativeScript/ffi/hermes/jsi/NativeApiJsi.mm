@@ -11,9 +11,11 @@
 #include <objc/runtime.h>
 
 #include <algorithm>
+#include <atomic>
 #include <cctype>
 #include <cmath>
 #include <cstdio>
+#include <cstdint>
 #include <cstdlib>
 #include <cstring>
 #include <limits>
@@ -40,6 +42,7 @@ namespace {
 
 using facebook::jsi::Array;
 using facebook::jsi::ArrayBuffer;
+using facebook::jsi::BigInt;
 using facebook::jsi::Function;
 using facebook::jsi::HostObject;
 using facebook::jsi::MutableBuffer;
@@ -56,6 +59,7 @@ using metagen::MDTypeKind;
 thread_local bool gDispatchNativeCallsToUI = false;
 thread_local bool gExecutingDispatchedUINativeCall = false;
 thread_local int gSynchronousNativeInvocationDepth = 0;
+std::atomic<int> gActiveSynchronousNativeInvocationDepth{0};
 
 class ScopedNativeApiUINativeCallDispatch final {
  public:
@@ -80,10 +84,14 @@ class ScopedNativeApiSynchronousInvocation final {
  public:
   ScopedNativeApiSynchronousInvocation() {
     gSynchronousNativeInvocationDepth += 1;
+    gActiveSynchronousNativeInvocationDepth.fetch_add(1,
+                                                      std::memory_order_acq_rel);
   }
 
   ~ScopedNativeApiSynchronousInvocation() {
     gSynchronousNativeInvocationDepth -= 1;
+    gActiveSynchronousNativeInvocationDepth.fetch_sub(1,
+                                                      std::memory_order_acq_rel);
   }
 };
 
@@ -248,7 +256,73 @@ std::string setterSelectorForProperty(const std::string& property) {
   return selector;
 }
 
+bool hasRuntimeSetterForProperty(Class cls, bool staticMethod,
+                                 const std::string& property) {
+  if (cls == nil || property.empty()) {
+    return false;
+  }
+
+  std::string setterSelectorName = setterSelectorForProperty(property);
+  SEL selector = sel_getUid(setterSelectorName.c_str());
+  return staticMethod ? class_getClassMethod(cls, selector) != nullptr
+                      : class_getInstanceMethod(cls, selector) != nullptr;
+}
+
+size_t selectorArgumentCount(const std::string& selector) {
+  return static_cast<size_t>(
+      std::count(selector.begin(), selector.end(), ':'));
+}
+
+const NativeApiMember* selectMethodMember(
+    const std::vector<NativeApiMember>& members, const std::string& property,
+    bool staticMethod, size_t argumentCount) {
+  const NativeApiMember* fallback = nullptr;
+  for (const auto& member : members) {
+    if (member.property || member.name != property) {
+      continue;
+    }
+
+    bool memberIsStatic = (member.flags & metagen::mdMemberStatic) != 0;
+    if (memberIsStatic != staticMethod) {
+      continue;
+    }
+
+    if (fallback == nullptr) {
+      fallback = &member;
+    }
+    if (selectorArgumentCount(member.selectorName) == argumentCount) {
+      return &member;
+    }
+  }
+  return fallback;
+}
+
+const NativeApiMember* selectPropertyMember(
+    const std::vector<NativeApiMember>& members, const std::string& property,
+    bool staticMethod) {
+  for (const auto& member : members) {
+    if (!member.property || member.name != property) {
+      continue;
+    }
+
+    bool memberIsStatic = (member.flags & metagen::mdMemberStatic) != 0;
+    if (memberIsStatic == staticMethod) {
+      return &member;
+    }
+  }
+  return nullptr;
+}
+
 void skipMetadataJsiType(MDMetadataReader* metadata, MDSectionOffset* offset);
+Protocol* lookupProtocolByNativeName(const std::string& name);
+
+inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
+#if INTPTR_MAX == INT64_MAX
+  return pointer & 0x0000FFFFFFFFFFFFULL;
+#else
+  return pointer;
+#endif
+}
 
 class NativeApiJsiBridge {
  public:
@@ -296,11 +370,74 @@ class NativeApiJsiBridge {
     return nullptr;
   }
 
+  const NativeApiSymbol* findClassForRuntimePointer(void* pointer) const {
+    if (pointer == nullptr) {
+      return nullptr;
+    }
+
+    auto it = classSymbolsByRuntimePointer_.find(
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(pointer)));
+    return it != classSymbolsByRuntimePointer_.end() ? &it->second : nullptr;
+  }
+
+  const NativeApiSymbol* findProtocolForRuntimePointer(void* pointer) const {
+    if (pointer == nullptr) {
+      return nullptr;
+    }
+
+    auto it = protocolSymbolsByRuntimePointer_.find(
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(pointer)));
+    return it != protocolSymbolsByRuntimePointer_.end() ? &it->second : nullptr;
+  }
+
   const NativeApiSymbol* findFunction(const std::string& name) const {
     const NativeApiSymbol* symbol = find(name);
     return symbol != nullptr && symbol->kind == NativeApiSymbolKind::Function
                ? symbol
                : nullptr;
+  }
+
+  void rememberRoundTripValue(Runtime& runtime, const void* native,
+                              const Value& value) {
+    if (native == nullptr) {
+      return;
+    }
+    roundTripValues_[normalizeRuntimePointer(
+        reinterpret_cast<uintptr_t>(native))] =
+        std::make_shared<Value>(runtime, value);
+  }
+
+  Value findRoundTripValue(Runtime& runtime, const void* native) const {
+    if (native == nullptr) {
+      return Value::undefined();
+    }
+    auto it = roundTripValues_.find(
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
+    if (it == roundTripValues_.end() || it->second == nullptr) {
+      return Value::undefined();
+    }
+    return Value(runtime, *it->second);
+  }
+
+  void rememberPointerValue(Runtime& runtime, const void* native,
+                            const Value& value) {
+    pointerValues_[reinterpret_cast<uintptr_t>(native)] =
+        std::make_shared<Value>(runtime, value);
+  }
+
+  Value findPointerValue(Runtime& runtime, const void* native) const {
+    auto it = pointerValues_.find(reinterpret_cast<uintptr_t>(native));
+    if (it == pointerValues_.end() || it->second == nullptr) {
+      return Value::undefined();
+    }
+    return Value(runtime, *it->second);
+  }
+
+  void forgetPointerValue(const void* native) {
+    if (native == nullptr) {
+      return;
+    }
+    pointerValues_.erase(reinterpret_cast<uintptr_t>(native));
   }
 
   const NativeApiSymbol* findConstant(const std::string& name) const {
@@ -381,6 +518,18 @@ class NativeApiJsiBridge {
 
     auto inserted = membersByClassOffset_.emplace(
         symbol.offset, readMembersForClassHierarchy(symbol));
+    return inserted.first->second;
+  }
+
+  const std::vector<NativeApiMember>& membersForProtocol(
+      const NativeApiSymbol& symbol) const {
+    auto cached = membersByProtocolOffset_.find(symbol.offset);
+    if (cached != membersByProtocolOffset_.end()) {
+      return cached->second;
+    }
+
+    auto inserted = membersByProtocolOffset_.emplace(
+        symbol.offset, readMembersForProtocolHierarchy(symbol.offset));
     return inserted.first->second;
   }
 
@@ -497,7 +646,22 @@ class NativeApiJsiBridge {
     symbolsByName_[symbol.name] = symbol;
     if (kind == NativeApiSymbolKind::Class) {
       classSymbolsByOffset_[symbol.offset] = symbol;
-      classSymbolsByRuntimeName_[symbol.runtimeName] = std::move(symbol);
+      classSymbolsByRuntimeName_[symbol.runtimeName] = symbol;
+      Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
+      if (cls != Nil) {
+        classSymbolsByRuntimePointer_[normalizeRuntimePointer(
+            reinterpret_cast<uintptr_t>(cls))] = symbol;
+      }
+    } else if (kind == NativeApiSymbolKind::Protocol) {
+      protocolSymbolsByOffset_[symbol.offset] = symbol;
+      Protocol* protocol = lookupProtocolByNativeName(symbol.runtimeName);
+      if (protocol == nullptr && symbol.runtimeName != symbol.name) {
+        protocol = lookupProtocolByNativeName(symbol.name);
+      }
+      if (protocol != nullptr) {
+        protocolSymbolsByRuntimePointer_[normalizeRuntimePointer(
+            reinterpret_cast<uintptr_t>(protocol))] = symbol;
+      }
     } else if (kind == NativeApiSymbolKind::Struct) {
       structSymbolsByOffset_[symbol.offset] = symbol;
     } else if (kind == NativeApiSymbolKind::Union) {
@@ -810,6 +974,88 @@ class NativeApiJsiBridge {
     return members;
   }
 
+  std::vector<NativeApiMember> readMembersAtOffset(
+      MDSectionOffset& offset) const {
+    std::vector<NativeApiMember> members;
+    bool next = true;
+    while (next) {
+      auto flags = metadata_->getMemberFlag(offset);
+      next = (flags & metagen::mdMemberNext) != 0;
+      offset += sizeof(flags);
+      if (flags == metagen::mdMemberFlagNull) {
+        break;
+      }
+
+      NativeApiMember member;
+      member.flags = flags;
+      if ((flags & metagen::mdMemberProperty) != 0) {
+        member.property = true;
+        member.readonly = (flags & metagen::mdMemberReadonly) != 0;
+        member.name = metadata_->getString(offset);
+        offset += sizeof(MDSectionOffset);
+        member.selectorName = metadata_->getString(offset);
+        offset += sizeof(MDSectionOffset);
+        member.signatureOffset =
+            metadata_->signaturesOffset + metadata_->getOffset(offset);
+        offset += sizeof(MDSectionOffset);
+
+        if (!member.readonly) {
+          member.setterSelectorName = metadata_->getString(offset);
+          offset += sizeof(MDSectionOffset);
+          member.setterSignatureOffset =
+              metadata_->signaturesOffset + metadata_->getOffset(offset);
+          offset += sizeof(MDSectionOffset);
+        }
+      } else {
+        member.selectorName = metadata_->getString(offset);
+        offset += sizeof(MDSectionOffset);
+        member.signatureOffset =
+            metadata_->signaturesOffset + metadata_->getOffset(offset);
+        offset += sizeof(MDSectionOffset);
+        member.name = jsifySelector(member.selectorName.c_str());
+      }
+      members.push_back(std::move(member));
+    }
+    return members;
+  }
+
+  std::vector<NativeApiMember> readMembersForProtocolHierarchy(
+      MDSectionOffset protocolOffset) const {
+    std::vector<NativeApiMember> members;
+    if (metadata_ == nullptr || protocolOffset == MD_SECTION_OFFSET_NULL) {
+      return members;
+    }
+
+    MDSectionOffset offset = protocolOffset;
+    auto nameOffset = metadata_->getOffset(offset);
+    offset += sizeof(MDSectionOffset);
+    bool hasProtocols = (nameOffset & metagen::mdSectionOffsetNext) != 0;
+
+    while (hasProtocols) {
+      auto inheritedOffset = metadata_->getOffset(offset);
+      offset += sizeof(MDSectionOffset);
+      hasProtocols = (inheritedOffset & metagen::mdSectionOffsetNext) != 0;
+      inheritedOffset &= ~metagen::mdSectionOffsetNext;
+      if (inheritedOffset == MD_SECTION_OFFSET_NULL) {
+        continue;
+      }
+
+      MDSectionOffset absoluteOffset =
+          inheritedOffset + metadata_->protocolsOffset;
+      auto inheritedSymbol = protocolSymbolsByOffset_.find(absoluteOffset);
+      if (inheritedSymbol != protocolSymbolsByOffset_.end()) {
+        const auto& inheritedMembers =
+            membersForProtocol(inheritedSymbol->second);
+        members.insert(members.end(), inheritedMembers.begin(),
+                       inheritedMembers.end());
+      }
+    }
+
+    std::vector<NativeApiMember> ownMembers = readMembersAtOffset(offset);
+    members.insert(members.end(), ownMembers.begin(), ownMembers.end());
+    return members;
+  }
+
   std::vector<NativeApiMember> readMembersForClassHierarchy(
       const NativeApiSymbol& symbol) const {
     std::vector<NativeApiMember> members = readMembersForClass(symbol.offset);
@@ -830,7 +1076,12 @@ class NativeApiJsiBridge {
   void* selfDl_ = nullptr;
   std::unordered_map<std::string, NativeApiSymbol> symbolsByName_;
   std::unordered_map<std::string, NativeApiSymbol> classSymbolsByRuntimeName_;
+  std::unordered_map<uintptr_t, NativeApiSymbol> classSymbolsByRuntimePointer_;
+  std::unordered_map<uintptr_t, NativeApiSymbol> protocolSymbolsByRuntimePointer_;
+  std::unordered_map<uintptr_t, std::shared_ptr<Value>> roundTripValues_;
+  std::unordered_map<uintptr_t, std::shared_ptr<Value>> pointerValues_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> classSymbolsByOffset_;
+  std::unordered_map<MDSectionOffset, NativeApiSymbol> protocolSymbolsByOffset_;
   std::vector<std::string> classNames_;
   std::vector<std::string> functionNames_;
   std::vector<std::string> constantNames_;
@@ -841,6 +1092,8 @@ class NativeApiJsiBridge {
   std::shared_ptr<NativeApiJsiScheduler> scheduler_;
   mutable std::unordered_map<MDSectionOffset, std::vector<NativeApiMember>>
       membersByClassOffset_;
+  mutable std::unordered_map<MDSectionOffset, std::vector<NativeApiMember>>
+      membersByProtocolOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> structSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> unionSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, std::shared_ptr<NativeApiJsiAggregateInfo>>
@@ -901,6 +1154,7 @@ class NativeApiPointerHostObject;
 class NativeApiObjectHostObject;
 class NativeApiClassHostObject;
 class NativeApiProtocolHostObject;
+class NativeApiJsiArgumentFrame;
 
 Value callCFunction(Runtime& runtime,
                     const std::shared_ptr<NativeApiJsiBridge>& bridge,
@@ -913,6 +1167,14 @@ Value callObjCSelector(Runtime& runtime,
                        const std::string& selectorName,
                        const NativeApiMember* member,
                        const Value* args, size_t count);
+
+Value makeNativeObjectValue(Runtime& runtime,
+                            const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                            id object, bool ownsObject);
+
+Value makeNativeClassValue(Runtime& runtime,
+                           const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                           NativeApiSymbol symbol);
 
 Object symbolToObject(Runtime& runtime, const NativeApiSymbol& symbol) {
   Object result(runtime);
@@ -940,15 +1202,41 @@ Object symbolToObject(Runtime& runtime, const NativeApiSymbol& symbol) {
 }
 
 size_t nativeSizeForType(const NativeApiJsiType& type);
+std::optional<size_t> parseArrayIndexProperty(const std::string& property);
+
+NativeApiJsiType nativeObjectReturnType(
+    MDTypeKind kind = metagen::mdTypeAnyObject) {
+  NativeApiJsiType type;
+  type.kind = kind;
+  type.ffiType = &ffi_type_pointer;
+  type.supported = true;
+  return type;
+}
+
+Value convertNativeReturnValue(Runtime& runtime,
+                               const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                               const NativeApiJsiType& type, void* value);
+Object createPointer(Runtime& runtime,
+                     const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                     void* pointer, bool adopted = false);
+
+NativeApiJsiType primitiveInteropType(MDTypeKind kind);
 
 class NativeApiPointerHostObject final : public HostObject {
  public:
-  NativeApiPointerHostObject(void* pointer, std::string kind = "pointer",
+  NativeApiPointerHostObject(std::shared_ptr<NativeApiJsiBridge> bridge,
+                             void* pointer, std::string kind = "pointer",
                              bool adopted = false)
-      : pointer_(pointer), kind_(std::move(kind)), adopted_(adopted) {}
+      : bridge_(std::move(bridge)),
+        pointer_(pointer),
+        kind_(std::move(kind)),
+        adopted_(adopted) {}
 
   ~NativeApiPointerHostObject() override {
     if (adopted_ && pointer_ != nullptr) {
+      if (bridge_ != nullptr) {
+        bridge_->forgetPointerValue(pointer_);
+      }
       free(pointer_);
       pointer_ = nullptr;
     }
@@ -958,6 +1246,9 @@ class NativeApiPointerHostObject final : public HostObject {
   bool adopted() const { return adopted_; }
   void adopt() { adopted_ = true; }
   void clearWithoutFree() {
+    if (bridge_ != nullptr) {
+      bridge_->forgetPointerValue(pointer_);
+    }
     pointer_ = nullptr;
     adopted_ = false;
   }
@@ -976,18 +1267,18 @@ class NativeApiPointerHostObject final : public HostObject {
     if (property == "add" || property == "subtract") {
       void* pointer = pointer_;
       bool add = property == "add";
+      auto bridge = bridge_;
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, property.c_str()), 1,
-          [pointer, add](Runtime& runtime, const Value&, const Value* args,
-                         size_t count) -> Value {
+          [bridge, pointer, add](Runtime& runtime, const Value&,
+                                 const Value* args, size_t count) -> Value {
             if (count < 1 || !args[0].isNumber()) {
               throw facebook::jsi::JSError(runtime, "Pointer offset must be a number.");
             }
             intptr_t offset = static_cast<intptr_t>(args[0].getNumber());
             intptr_t base = reinterpret_cast<intptr_t>(pointer);
             void* result = reinterpret_cast<void*>(add ? base + offset : base - offset);
-            return Object::createFromHostObject(
-                runtime, std::make_shared<NativeApiPointerHostObject>(result));
+            return createPointer(runtime, bridge, result);
           });
     }
     if (property == "toNumber") {
@@ -1003,13 +1294,9 @@ class NativeApiPointerHostObject final : public HostObject {
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "toBigInt"), 0,
           [pointer](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
-            auto bigIntCtor =
-                runtime.global().getPropertyAsFunction(runtime, "BigInt");
-            char decimal[32] = {};
-            snprintf(decimal, sizeof(decimal), "%llu",
-                     static_cast<unsigned long long>(
-                         reinterpret_cast<uintptr_t>(pointer)));
-            return bigIntCtor.call(runtime, String::createFromUtf8(runtime, decimal));
+            return BigInt::fromUint64(
+                runtime,
+                static_cast<uint64_t>(reinterpret_cast<uintptr_t>(pointer)));
           });
     }
     if (property == "toHexString" || property == "toDecimalString") {
@@ -1018,16 +1305,18 @@ class NativeApiPointerHostObject final : public HostObject {
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
           [pointer, hex](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
-            char text[2 + sizeof(uintptr_t) * 2 + 1] = {};
             if (hex) {
+              char text[2 + sizeof(uintptr_t) * 2 + 1] = {};
               snprintf(text, sizeof(text), "0x%llx",
                        static_cast<unsigned long long>(
                            reinterpret_cast<uintptr_t>(pointer)));
+              return makeString(runtime, text);
             } else {
+              char text[32] = {};
               snprintf(text, sizeof(text), "%lld",
                        static_cast<long long>(reinterpret_cast<intptr_t>(pointer)));
+              return makeString(runtime, text);
             }
-            return makeString(runtime, text);
           });
     }
     if (property == "toString") {
@@ -1039,6 +1328,10 @@ class NativeApiPointerHostObject final : public HostObject {
                           size_t) -> Value {
             char address[32] = {};
             snprintf(address, sizeof(address), "%p", pointer);
+            if (kind == "pointer") {
+              return makeString(runtime,
+                                "<Pointer: " + std::string(address) + ">");
+            }
             return makeString(runtime, "[NativeApiJsi " + kind + " " +
                                            std::string(address) + "]");
           });
@@ -1063,6 +1356,7 @@ class NativeApiPointerHostObject final : public HostObject {
   }
 
  private:
+  std::shared_ptr<NativeApiJsiBridge> bridge_;
   void* pointer_ = nullptr;
   std::string kind_;
   bool adopted_ = false;
@@ -1072,12 +1366,14 @@ class NativeApiReferenceHostObject final : public HostObject {
  public:
   NativeApiReferenceHostObject(std::shared_ptr<NativeApiJsiBridge> bridge,
                                NativeApiJsiType type, void* data, bool ownsData,
-                               size_t byteLength = 0)
+                               size_t byteLength = 0,
+                               std::shared_ptr<Value> pendingValue = nullptr)
       : bridge_(std::move(bridge)),
         type_(std::move(type)),
         data_(data),
         ownsData_(ownsData),
-        byteLength_(byteLength) {}
+        byteLength_(byteLength),
+        pendingValue_(std::move(pendingValue)) {}
 
   ~NativeApiReferenceHostObject() override {
     if (ownsData_ && data_ != nullptr) {
@@ -1088,27 +1384,8 @@ class NativeApiReferenceHostObject final : public HostObject {
 
   void* data() const { return data_; }
   const NativeApiJsiType& type() const { return type_; }
-  void ensureStorage(NativeApiJsiType type, size_t elements = 1) {
-    size_t elementCount = std::max<size_t>(elements, 1);
-    NativeApiJsiType storageType = std::move(type);
-    size_t stride = std::max<size_t>(nativeSizeForType(storageType), 1);
-    size_t required = std::max<size_t>(stride * elementCount, sizeof(void*));
-    if (data_ == nullptr) {
-      type_ = std::move(storageType);
-      data_ = calloc(1, required);
-      ownsData_ = true;
-      byteLength_ = required;
-    } else if (ownsData_ && byteLength_ < required) {
-      void* expanded = realloc(data_, required);
-      if (expanded == nullptr) {
-        throw std::bad_alloc();
-      }
-      std::memset(static_cast<uint8_t*>(expanded) + byteLength_, 0,
-                  required - byteLength_);
-      data_ = expanded;
-      byteLength_ = required;
-    }
-  }
+  void ensureStorage(Runtime& runtime, NativeApiJsiType type,
+                     NativeApiJsiArgumentFrame& frame, size_t elements = 1);
 
   Value get(Runtime& runtime, const PropNameID& name) override;
   void set(Runtime& runtime, const PropNameID& name, const Value& value) override;
@@ -1127,6 +1404,7 @@ class NativeApiReferenceHostObject final : public HostObject {
   void* data_ = nullptr;
   bool ownsData_ = false;
   size_t byteLength_ = 0;
+  std::shared_ptr<Value> pendingValue_;
 };
 
 class NativeApiStructObjectHostObject final : public HostObject {
@@ -1134,15 +1412,24 @@ class NativeApiStructObjectHostObject final : public HostObject {
   NativeApiStructObjectHostObject(
       std::shared_ptr<NativeApiJsiBridge> bridge,
       std::shared_ptr<NativeApiJsiAggregateInfo> info,
-      const void* data = nullptr, bool ownsData = true)
-      : bridge_(std::move(bridge)), info_(std::move(info)), ownsData_(ownsData) {
+      const void* data = nullptr, bool ownsData = true,
+      std::shared_ptr<std::vector<unsigned char>> storageOwner = nullptr,
+      std::shared_ptr<Value> backingValue = nullptr)
+      : bridge_(std::move(bridge)),
+        info_(std::move(info)),
+        ownedData_(std::move(storageOwner)),
+        backingValue_(std::move(backingValue)),
+        ownsData_(ownsData) {
     size_t size = info_ != nullptr ? info_->size : 0;
-    if (ownsData_) {
-      ownedData_.assign(size, 0);
+    if (ownedData_ != nullptr) {
+      data_ = const_cast<void*>(data);
+      ownsData_ = false;
+    } else if (ownsData_) {
+      ownedData_ = std::make_shared<std::vector<unsigned char>>(size, 0);
       if (data != nullptr && size > 0) {
-        std::memcpy(ownedData_.data(), data, size);
+        std::memcpy(ownedData_->data(), data, size);
       }
-      data_ = ownedData_.empty() ? nullptr : ownedData_.data();
+      data_ = ownedData_->empty() ? nullptr : ownedData_->data();
     } else {
       data_ = const_cast<void*>(data);
     }
@@ -1150,6 +1437,10 @@ class NativeApiStructObjectHostObject final : public HostObject {
 
   void* data() const { return data_; }
   std::shared_ptr<NativeApiJsiAggregateInfo> info() const { return info_; }
+  std::shared_ptr<std::vector<unsigned char>> storageOwner() const {
+    return ownedData_;
+  }
+  std::shared_ptr<Value> backingValue() const { return backingValue_; }
 
   Value get(Runtime& runtime, const PropNameID& name) override;
   void set(Runtime& runtime, const PropNameID& name, const Value& value) override;
@@ -1158,7 +1449,8 @@ class NativeApiStructObjectHostObject final : public HostObject {
  private:
   std::shared_ptr<NativeApiJsiBridge> bridge_;
   std::shared_ptr<NativeApiJsiAggregateInfo> info_;
-  std::vector<unsigned char> ownedData_;
+  std::shared_ptr<std::vector<unsigned char>> ownedData_;
+  std::shared_ptr<Value> backingValue_;
   void* data_ = nullptr;
   bool ownsData_ = true;
 };
@@ -1220,32 +1512,57 @@ class NativeApiObjectHostObject final : public HostObject {
           });
     }
 
+    if (object_ != nil && [object_ isKindOfClass:[NSArray class]]) {
+      NSArray* array = static_cast<NSArray*>(object_);
+      if (property == "length") {
+        return static_cast<double>(array.count);
+      }
+      if (auto index = parseArrayIndexProperty(property)) {
+        if (*index >= array.count) {
+          return Value::undefined();
+        }
+        id element = [array objectAtIndex:*index];
+        NativeApiJsiType elementType = nativeObjectReturnType();
+        return convertNativeReturnValue(runtime, bridge_, elementType, &element);
+      }
+    }
+
     if (object_ != nil) {
       if (const NativeApiSymbol* symbol =
               bridge_->findClassForRuntimeClass(object_getClass(object_))) {
-        for (const auto& member : bridge_->membersForClass(*symbol)) {
-          if ((member.flags & metagen::mdMemberStatic) != 0) {
-            continue;
-          }
-          if (member.name != property) {
-            continue;
-          }
+        const auto& members = bridge_->membersForClass(*symbol);
+        if (const NativeApiMember* propertyMember =
+                selectPropertyMember(members, property, false)) {
+          return callObjCSelector(runtime, bridge_, object_, false,
+                                  propertyMember->selectorName, propertyMember,
+                                  nullptr, 0);
+        }
 
-          if (member.property) {
-            return callObjCSelector(runtime, bridge_, object_, false,
-                                    member.selectorName, &member, nullptr, 0);
-          }
-
+        if (selectMethodMember(members, property, false, 0) != nullptr) {
           auto bridge = bridge_;
           id object = object_;
+          std::string memberName = property;
           return Function::createFromHostFunction(
               runtime, PropNameID::forAscii(runtime, property.c_str()),
-              member.property ? 0 : 0,
-              [bridge, object, member](Runtime& runtime, const Value&,
-                                       const Value* args,
-                                       size_t count) -> Value {
+              0,
+              [bridge, object, memberName](Runtime& runtime, const Value&,
+                                           const Value* args,
+                                           size_t count) -> Value {
+                const NativeApiSymbol* symbol =
+                    bridge->findClassForRuntimeClass(object_getClass(object));
+                if (symbol == nullptr) {
+                  throw facebook::jsi::JSError(
+                      runtime, "Objective-C metadata is not available for object.");
+                }
+                const NativeApiMember* selected = selectMethodMember(
+                    bridge->membersForClass(*symbol), memberName, false, count);
+                if (selected == nullptr) {
+                  throw facebook::jsi::JSError(
+                      runtime, "Objective-C selector is not available: " +
+                                   memberName);
+                }
                 return callObjCSelector(runtime, bridge, object, false,
-                                        member.selectorName, &member, args,
+                                        selected->selectorName, selected, args,
                                         count);
               });
         }
@@ -1254,6 +1571,13 @@ class NativeApiObjectHostObject final : public HostObject {
       if (auto selectorName =
               runtimeSelectorNameForProperty(object_getClass(object_), false,
                                              property)) {
+        if (selectorArgumentCount(*selectorName) == 0 &&
+            hasRuntimeSetterForProperty(object_getClass(object_), false,
+                                        property)) {
+          return callObjCSelector(runtime, bridge_, object_, false,
+                                  *selectorName, nullptr, nullptr, 0);
+        }
+
         auto bridge = bridge_;
         id object = object_;
         return Function::createFromHostFunction(
@@ -1263,7 +1587,18 @@ class NativeApiObjectHostObject final : public HostObject {
                 size_t count) -> Value {
               return callObjCSelector(runtime, bridge, object, false,
                                       selectorName, nullptr, args, count);
-            });
+        });
+      }
+
+      if ([object_ isKindOfClass:[NSDictionary class]]) {
+        NSString* key = [NSString stringWithUTF8String:property.c_str()];
+        if (key != nil) {
+          id value = [static_cast<NSDictionary*>(object_) objectForKey:key];
+          if (value != nil) {
+            NativeApiJsiType valueType = nativeObjectReturnType();
+            return convertNativeReturnValue(runtime, bridge_, valueType, &value);
+          }
+        }
       }
     }
 
@@ -1278,15 +1613,16 @@ class NativeApiObjectHostObject final : public HostObject {
 
     if (const NativeApiSymbol* symbol =
             bridge_->findClassForRuntimeClass(object_getClass(object_))) {
-      for (const auto& member : bridge_->membersForClass(*symbol)) {
-        if (!member.property || member.readonly ||
-            (member.flags & metagen::mdMemberStatic) != 0 ||
-            member.name != property) {
-          continue;
+      const auto& members = bridge_->membersForClass(*symbol);
+      if (const NativeApiMember* propertyMember =
+              selectPropertyMember(members, property, false)) {
+        if (propertyMember->readonly) {
+          throw facebook::jsi::JSError(
+              runtime, "Attempted to assign to readonly property.");
         }
-        NativeApiMember setterMember = member;
-        setterMember.selectorName = member.setterSelectorName;
-        setterMember.signatureOffset = member.setterSignatureOffset;
+        NativeApiMember setterMember = *propertyMember;
+        setterMember.selectorName = propertyMember->setterSelectorName;
+        setterMember.signatureOffset = propertyMember->setterSignatureOffset;
         Value args[] = {Value(runtime, value)};
         callObjCSelector(runtime, bridge_, object_, false,
                          setterMember.selectorName, &setterMember, args, 1);
@@ -1385,6 +1721,36 @@ class NativeApiClassHostObject final : public HostObject {
             }
 
             id result = nil;
+            if (property == "construct" && count == 1) {
+              void* pointer = nullptr;
+              if (args[0].isNumber()) {
+                pointer = reinterpret_cast<void*>(
+                    static_cast<uintptr_t>(args[0].getNumber()));
+              } else if (args[0].isObject()) {
+                Object object = args[0].asObject(runtime);
+                if (object.isHostObject<NativeApiPointerHostObject>(runtime)) {
+                  pointer = object
+                                .getHostObject<NativeApiPointerHostObject>(
+                                    runtime)
+                                ->pointer();
+                } else if (object.isHostObject<NativeApiReferenceHostObject>(
+                               runtime)) {
+                  pointer = object
+                                .getHostObject<NativeApiReferenceHostObject>(
+                                    runtime)
+                                ->data();
+                } else if (object.isHostObject<NativeApiObjectHostObject>(
+                               runtime)) {
+                  pointer = object
+                                .getHostObject<NativeApiObjectHostObject>(
+                                    runtime)
+                                ->object();
+                }
+              }
+              return makeNativeObjectValue(runtime, bridge,
+                                           static_cast<id>(pointer), false);
+            }
+
             if (property == "new") {
               if (count != 0) {
                 throw facebook::jsi::JSError(
@@ -1401,9 +1767,7 @@ class NativeApiClassHostObject final : public HostObject {
               result = [cls alloc];
             }
 
-            return Object::createFromHostObject(
-                runtime, std::make_shared<NativeApiObjectHostObject>(
-                             bridge, result, true));
+            return makeNativeObjectValue(runtime, bridge, result, true);
           });
     }
     if (property == "invoke" || property == "send") {
@@ -1426,34 +1790,45 @@ class NativeApiClassHostObject final : public HostObject {
           });
     }
 
-    for (const auto& member : bridge_->membersForClass(symbol_)) {
-      if ((member.flags & metagen::mdMemberStatic) == 0 ||
-          member.name != property) {
-        continue;
-      }
-
+    const auto& members = bridge_->membersForClass(symbol_);
+    if (const NativeApiMember* propertyMember =
+            selectPropertyMember(members, property, true)) {
       auto bridge = bridge_;
       auto symbol = symbol_;
-      if (member.property) {
-        Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
-        if (cls == nil) {
-          throw facebook::jsi::JSError(
-              runtime, "Objective-C class is not available: " + symbol.name);
-        }
-        return callObjCSelector(runtime, bridge, static_cast<id>(cls), true,
-                                member.selectorName, &member, nullptr, 0);
+      Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
+      if (cls == nil) {
+        throw facebook::jsi::JSError(
+            runtime, "Objective-C class is not available: " + symbol.name);
       }
+      return callObjCSelector(runtime, bridge, static_cast<id>(cls), true,
+                              propertyMember->selectorName, propertyMember,
+                              nullptr, 0);
+    }
+
+    if (selectMethodMember(members, property, true, 0) != nullptr) {
+      auto bridge = bridge_;
+      auto symbol = symbol_;
+      std::string memberName = property;
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
-          [bridge, symbol, member](Runtime& runtime, const Value&,
-                                   const Value* args, size_t count) -> Value {
+          [bridge, symbol, memberName](Runtime& runtime, const Value&,
+                                       const Value* args,
+                                       size_t count) -> Value {
             Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
             if (cls == nil) {
               throw facebook::jsi::JSError(
                   runtime, "Objective-C class is not available: " + symbol.name);
             }
+            const NativeApiMember* selected = selectMethodMember(
+                bridge->membersForClass(symbol), memberName, true, count);
+            if (selected == nullptr) {
+              throw facebook::jsi::JSError(
+                  runtime, "Objective-C selector is not available: " +
+                               memberName);
+            }
             return callObjCSelector(runtime, bridge, static_cast<id>(cls), true,
-                                    member.selectorName, &member, args, count);
+                                    selected->selectorName, selected, args,
+                                    count);
           });
     }
 
@@ -1461,6 +1836,12 @@ class NativeApiClassHostObject final : public HostObject {
     if (cls != nil) {
       if (auto selectorName =
               runtimeSelectorNameForProperty(cls, true, property)) {
+        if (selectorArgumentCount(*selectorName) == 0 &&
+            hasRuntimeSetterForProperty(cls, true, property)) {
+          return callObjCSelector(runtime, bridge_, static_cast<id>(cls), true,
+                                  *selectorName, nullptr, nullptr, 0);
+        }
+
         auto bridge = bridge_;
         return Function::createFromHostFunction(
             runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
@@ -1475,6 +1856,43 @@ class NativeApiClassHostObject final : public HostObject {
     }
 
     return Value::undefined();
+  }
+
+  void set(Runtime& runtime, const PropNameID& name, const Value& value) override {
+    std::string property = name.utf8(runtime);
+    Class cls = objc_lookUpClass(symbol_.runtimeName.c_str());
+    if (cls == nil) {
+      throw facebook::jsi::JSError(
+          runtime, "Objective-C class is not available: " + symbol_.name);
+    }
+
+    const auto& members = bridge_->membersForClass(symbol_);
+    if (const NativeApiMember* propertyMember =
+            selectPropertyMember(members, property, true)) {
+      if (propertyMember->readonly) {
+        throw facebook::jsi::JSError(
+            runtime, "Attempted to assign to readonly property.");
+      }
+      NativeApiMember setterMember = *propertyMember;
+      setterMember.selectorName = propertyMember->setterSelectorName;
+      setterMember.signatureOffset = propertyMember->setterSignatureOffset;
+      Value args[] = {Value(runtime, value)};
+      callObjCSelector(runtime, bridge_, static_cast<id>(cls), true,
+                       setterMember.selectorName, &setterMember, args, 1);
+      return;
+    }
+
+    std::string setterSelectorName = setterSelectorForProperty(property);
+    SEL selector = sel_getUid(setterSelectorName.c_str());
+    if (class_getClassMethod(cls, selector) != nullptr) {
+      Value args[] = {Value(runtime, value)};
+      callObjCSelector(runtime, bridge_, static_cast<id>(cls), true,
+                       setterSelectorName, nullptr, args, 1);
+      return;
+    }
+
+    throw facebook::jsi::JSError(runtime,
+                                 "No writable native property: " + property);
   }
 
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override {
@@ -1504,6 +1922,85 @@ class NativeApiClassHostObject final : public HostObject {
   NativeApiSymbol symbol_;
 };
 
+Value makeNativeObjectValue(Runtime& runtime,
+                            const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                            id object, bool ownsObject) {
+  if (object == nil) {
+    return Value::null();
+  }
+
+  Value cached = bridge->findRoundTripValue(runtime, object);
+  if (!cached.isUndefined()) {
+    if (ownsObject) {
+      [object release];
+    }
+    return cached;
+  }
+
+  Object result = Object::createFromHostObject(
+      runtime,
+      std::make_shared<NativeApiObjectHostObject>(bridge, object, ownsObject));
+  bridge->rememberRoundTripValue(runtime, object, Value(runtime, result));
+  return result;
+}
+
+Value globalNativeSymbolValue(Runtime& runtime, const NativeApiSymbol& symbol,
+                              const char* expectedKind) {
+  Value cacheValue = runtime.global().getProperty(
+      runtime, "__nativeScriptNativeApiGlobalCache");
+  if (!cacheValue.isObject()) {
+    return Value::undefined();
+  }
+
+  Object cache = cacheValue.asObject(runtime);
+  auto readCache = [&](const std::string& name) -> Value {
+    if (name.empty()) {
+      return Value::undefined();
+    }
+
+    Value value = cache.getProperty(runtime, name.c_str());
+    if (!value.isObject()) {
+      return Value::undefined();
+    }
+
+    try {
+      Object object = value.asObject(runtime);
+      Value kindValue = object.getProperty(runtime, "kind");
+      if (kindValue.isString() &&
+          kindValue.asString(runtime).utf8(runtime) == expectedKind) {
+        return value;
+      }
+    } catch (const std::exception&) {
+    }
+
+    return Value::undefined();
+  };
+
+  Value value = readCache(symbol.name);
+  if (!value.isUndefined()) {
+    return value;
+  }
+  if (symbol.runtimeName != symbol.name) {
+    value = readCache(symbol.runtimeName);
+    if (!value.isUndefined()) {
+      return value;
+    }
+  }
+  return Value::undefined();
+}
+
+Value makeNativeClassValue(Runtime& runtime,
+                           const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                           NativeApiSymbol symbol) {
+  Value globalValue = globalNativeSymbolValue(runtime, symbol, "class");
+  if (!globalValue.isUndefined()) {
+    return globalValue;
+  }
+  return Object::createFromHostObject(
+      runtime,
+      std::make_shared<NativeApiClassHostObject>(bridge, std::move(symbol)));
+}
+
 Protocol* lookupProtocolByNativeName(const std::string& name) {
   Protocol* protocol = objc_getProtocol(name.c_str());
   if (protocol != nullptr) {
@@ -1521,8 +2018,9 @@ Protocol* lookupProtocolByNativeName(const std::string& name) {
 
 class NativeApiProtocolHostObject final : public HostObject {
  public:
-  explicit NativeApiProtocolHostObject(NativeApiSymbol symbol)
-      : symbol_(std::move(symbol)) {}
+  NativeApiProtocolHostObject(std::shared_ptr<NativeApiJsiBridge> bridge,
+                              NativeApiSymbol symbol)
+      : bridge_(std::move(bridge)), symbol_(std::move(symbol)) {}
 
   Protocol* nativeProtocol() const {
     Protocol* protocol = lookupProtocolByNativeName(symbol_.runtimeName);
@@ -1553,6 +2051,22 @@ class NativeApiProtocolHostObject final : public HostObject {
       return static_cast<double>(
           reinterpret_cast<uintptr_t>(nativeProtocol()));
     }
+    if (property == "prototype") {
+      Object prototype(runtime);
+      for (const auto& member : bridge_->membersForProtocol(symbol_)) {
+        if (prototype.hasProperty(runtime, member.name.c_str())) {
+          continue;
+        }
+        if (member.property) {
+          defineProtocolProperty(runtime, prototype, member, false);
+        } else {
+          prototype.setProperty(runtime, member.name.c_str(),
+                                makeProtocolMemberFunction(runtime, member,
+                                                           false));
+        }
+      }
+      return prototype;
+    }
     if (property == "toString") {
       auto symbol = symbol_;
       return Function::createFromHostFunction(
@@ -1561,6 +2075,23 @@ class NativeApiProtocolHostObject final : public HostObject {
             return makeString(runtime,
                               "[NativeApiJsiProtocol " + symbol.name + "]");
           });
+    }
+    const auto& members = bridge_->membersForProtocol(symbol_);
+    if (const NativeApiMember* propertyMember =
+            selectPropertyMember(members, property, true)) {
+      return makeProtocolPropertyGetter(runtime, *propertyMember, true);
+    }
+    if (const NativeApiMember* propertyMember =
+            selectPropertyMember(members, property, false)) {
+      return makeProtocolPropertyGetter(runtime, *propertyMember, true);
+    }
+    if (const NativeApiMember* methodMember =
+            selectMethodMember(members, property, true, 0)) {
+      return makeProtocolMemberFunction(runtime, *methodMember, true);
+    }
+    if (const NativeApiMember* methodMember =
+            selectMethodMember(members, property, false, 0)) {
+      return makeProtocolMemberFunction(runtime, *methodMember, true);
     }
     return Value::undefined();
   }
@@ -1573,13 +2104,261 @@ class NativeApiProtocolHostObject final : public HostObject {
     addPropertyName(runtime, names, "available");
     addPropertyName(runtime, names, "metadataOffset");
     addPropertyName(runtime, names, "nativeAddress");
+    addPropertyName(runtime, names, "prototype");
     addPropertyName(runtime, names, "toString");
+    for (const auto& member : bridge_->membersForProtocol(symbol_)) {
+      addPropertyName(runtime, names, member.name.c_str());
+    }
     return names;
   }
 
  private:
+  Class classReceiverFromThis(Runtime& runtime, const Value& thisValue) const {
+    if (!thisValue.isObject()) {
+      return Nil;
+    }
+
+    Object object = thisValue.asObject(runtime);
+    if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
+      return object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass();
+    }
+
+    Value wrappedClass = object.getProperty(runtime, "__nativeApiClass");
+    if (wrappedClass.isObject()) {
+      Object wrappedObject = wrappedClass.asObject(runtime);
+      if (wrappedObject.isHostObject<NativeApiClassHostObject>(runtime)) {
+        return wrappedObject.getHostObject<NativeApiClassHostObject>(runtime)
+            ->nativeClass();
+      }
+    }
+
+    return Nil;
+  }
+
+  id objectReceiverFromThis(Runtime& runtime, const Value& thisValue) const {
+    if (!thisValue.isObject()) {
+      return nil;
+    }
+
+    Object object = thisValue.asObject(runtime);
+    if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
+      return object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
+    }
+
+    return nil;
+  }
+
+  Value makeProtocolMemberFunction(Runtime& runtime, NativeApiMember member,
+                                   bool receiverIsClass) const {
+    auto bridge = bridge_;
+    return Function::createFromHostFunction(
+        runtime, PropNameID::forAscii(runtime, member.name.c_str()), 0,
+        [bridge, member, receiverIsClass](Runtime& runtime,
+                                          const Value& thisValue,
+                                          const Value* args,
+                                          size_t count) -> Value {
+          id receiver = nil;
+          if (receiverIsClass) {
+            Class cls = Nil;
+            if (thisValue.isObject()) {
+              Object object = thisValue.asObject(runtime);
+              if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
+                cls = object.getHostObject<NativeApiClassHostObject>(runtime)
+                          ->nativeClass();
+              } else {
+                Value wrappedClass =
+                    object.getProperty(runtime, "__nativeApiClass");
+                if (wrappedClass.isObject()) {
+                  Object wrappedObject = wrappedClass.asObject(runtime);
+                  if (wrappedObject.isHostObject<NativeApiClassHostObject>(
+                          runtime)) {
+                    cls = wrappedObject
+                              .getHostObject<NativeApiClassHostObject>(runtime)
+                              ->nativeClass();
+                  }
+                }
+              }
+            }
+            receiver = static_cast<id>(cls);
+          } else if (thisValue.isObject()) {
+            Object object = thisValue.asObject(runtime);
+            if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
+              receiver = object.getHostObject<NativeApiObjectHostObject>(runtime)
+                             ->object();
+            }
+          }
+
+          if (receiver == nil) {
+            throw facebook::jsi::JSError(
+                runtime, "Protocol member requires a native receiver.");
+          }
+          return callObjCSelector(runtime, bridge, receiver, receiverIsClass,
+                                  member.selectorName, &member, args, count);
+        });
+  }
+
+  Value makeProtocolPropertyGetter(Runtime& runtime, NativeApiMember member,
+                                   bool receiverIsClass) const {
+    auto bridge = bridge_;
+    return Function::createFromHostFunction(
+        runtime, PropNameID::forAscii(runtime, member.name.c_str()), 0,
+        [bridge, member, receiverIsClass](Runtime& runtime,
+                                          const Value& thisValue,
+                                          const Value*, size_t) -> Value {
+          id receiver = nil;
+          if (receiverIsClass) {
+            Class cls = Nil;
+            if (thisValue.isObject()) {
+              Object object = thisValue.asObject(runtime);
+              if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
+                cls = object.getHostObject<NativeApiClassHostObject>(runtime)
+                          ->nativeClass();
+              } else {
+                Value wrappedClass =
+                    object.getProperty(runtime, "__nativeApiClass");
+                if (wrappedClass.isObject()) {
+                  Object wrappedObject = wrappedClass.asObject(runtime);
+                  if (wrappedObject.isHostObject<NativeApiClassHostObject>(
+                          runtime)) {
+                    cls = wrappedObject
+                              .getHostObject<NativeApiClassHostObject>(runtime)
+                              ->nativeClass();
+                  }
+                }
+              }
+            }
+            receiver = static_cast<id>(cls);
+          } else if (thisValue.isObject()) {
+            Object object = thisValue.asObject(runtime);
+            if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
+              receiver = object.getHostObject<NativeApiObjectHostObject>(runtime)
+                             ->object();
+            }
+          }
+
+          if (receiver == nil) {
+            throw facebook::jsi::JSError(
+                runtime, "Protocol property requires a native receiver.");
+          }
+          return callObjCSelector(runtime, bridge, receiver, receiverIsClass,
+                                  member.selectorName, &member, nullptr, 0);
+        });
+  }
+
+  Value makeProtocolPropertySetter(Runtime& runtime, NativeApiMember member,
+                                   bool receiverIsClass) const {
+    auto bridge = bridge_;
+    return Function::createFromHostFunction(
+        runtime, PropNameID::forAscii(runtime, member.setterSelectorName.c_str()),
+        1,
+        [bridge, member, receiverIsClass](Runtime& runtime,
+                                          const Value& thisValue,
+                                          const Value* args,
+                                          size_t count) -> Value {
+          id receiver = nil;
+          if (receiverIsClass) {
+            Class cls = Nil;
+            if (thisValue.isObject()) {
+              Object object = thisValue.asObject(runtime);
+              if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
+                cls = object.getHostObject<NativeApiClassHostObject>(runtime)
+                          ->nativeClass();
+              } else {
+                Value wrappedClass =
+                    object.getProperty(runtime, "__nativeApiClass");
+                if (wrappedClass.isObject()) {
+                  Object wrappedObject = wrappedClass.asObject(runtime);
+                  if (wrappedObject.isHostObject<NativeApiClassHostObject>(
+                          runtime)) {
+                    cls = wrappedObject
+                              .getHostObject<NativeApiClassHostObject>(runtime)
+                              ->nativeClass();
+                  }
+                }
+              }
+            }
+            receiver = static_cast<id>(cls);
+          } else if (thisValue.isObject()) {
+            Object object = thisValue.asObject(runtime);
+            if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
+              receiver = object.getHostObject<NativeApiObjectHostObject>(runtime)
+                             ->object();
+            }
+          }
+
+          if (receiver == nil) {
+            throw facebook::jsi::JSError(
+                runtime, "Protocol property requires a native receiver.");
+          }
+          if (count < 1) {
+            throw facebook::jsi::JSError(
+                runtime, "Protocol property setter expects a value.");
+          }
+
+          NativeApiMember setterMember = member;
+          setterMember.selectorName = member.setterSelectorName;
+          setterMember.signatureOffset = member.setterSignatureOffset;
+          return callObjCSelector(runtime, bridge, receiver, receiverIsClass,
+                                  setterMember.selectorName, &setterMember,
+                                  args, 1);
+        });
+  }
+
+  void defineProtocolProperty(Runtime& runtime, Object& target,
+                              const NativeApiMember& member,
+                              bool receiverIsClass) const {
+    try {
+      Object objectCtor = runtime.global().getPropertyAsObject(runtime, "Object");
+      Function defineProperty =
+          objectCtor.getPropertyAsFunction(runtime, "defineProperty");
+      Object descriptor(runtime);
+      descriptor.setProperty(runtime, "configurable", true);
+      descriptor.setProperty(runtime, "enumerable", true);
+      descriptor.setProperty(runtime, "get",
+                             makeProtocolPropertyGetter(runtime, member,
+                                                        receiverIsClass));
+      if (!member.readonly && !member.setterSelectorName.empty()) {
+        descriptor.setProperty(runtime, "set",
+                               makeProtocolPropertySetter(runtime, member,
+                                                          receiverIsClass));
+      }
+      defineProperty.call(runtime, target, makeString(runtime, member.name),
+                          descriptor);
+    } catch (const std::exception&) {
+    }
+  }
+
+  std::shared_ptr<NativeApiJsiBridge> bridge_;
   NativeApiSymbol symbol_;
 };
+
+Value makeNativeProtocolValue(Runtime& runtime,
+                              const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                              NativeApiSymbol symbol) {
+  Value globalValue = globalNativeSymbolValue(runtime, symbol, "protocol");
+  if (!globalValue.isUndefined()) {
+    return globalValue;
+  }
+  return Object::createFromHostObject(
+      runtime,
+      std::make_shared<NativeApiProtocolHostObject>(bridge, std::move(symbol)));
+}
+
+Class nativeClassFromJsiObject(Runtime& runtime, const Object& object) {
+  if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
+    return object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass();
+  }
+
+  Value wrappedClass = object.getProperty(runtime, "__nativeApiClass");
+  if (wrappedClass.isObject()) {
+    Object wrappedObject = wrappedClass.asObject(runtime);
+    if (wrappedObject.isHostObject<NativeApiClassHostObject>(runtime)) {
+      return wrappedObject.getHostObject<NativeApiClassHostObject>(runtime)
+          ->nativeClass();
+    }
+  }
+  return Nil;
+}
 
 bool isObjectiveCObjectType(const NativeApiJsiType& type) {
   switch (type.kind) {
@@ -1613,6 +2392,9 @@ class NativeApiJsiArgumentFrame {
     for (char* string : ownedCStrings_) {
       free(string);
     }
+    for (void* buffer : ownedBuffers_) {
+      free(buffer);
+    }
     for (id object : ownedObjects_) {
       [object release];
     }
@@ -1625,6 +2407,14 @@ class NativeApiJsiArgumentFrame {
   }
 
   void addCString(char* value) { ownedCStrings_.push_back(value); }
+  void* addBuffer(size_t size) {
+    void* buffer = calloc(1, std::max<size_t>(size, 1));
+    if (buffer == nullptr) {
+      throw std::bad_alloc();
+    }
+    ownedBuffers_.push_back(buffer);
+    return buffer;
+  }
   void addObject(id value) { ownedObjects_.push_back(value); }
   void** values() { return values_.empty() ? nullptr : values_.data(); }
 
@@ -1632,6 +2422,7 @@ class NativeApiJsiArgumentFrame {
   std::vector<std::vector<unsigned char>> storage_;
   std::vector<void*> values_;
   std::vector<char*> ownedCStrings_;
+  std::vector<void*> ownedBuffers_;
   std::vector<id> ownedObjects_;
 };
 
@@ -1872,7 +2663,9 @@ class NativeApiJsiCallback final {
     auto call = [&]() { invokeOnCurrentThread(ret, args, &error); };
     bool direct = std::this_thread::get_id() == bridge_->jsThreadId() ||
                   gExecutingDispatchedUINativeCall ||
-                  gSynchronousNativeInvocationDepth > 0;
+                  gSynchronousNativeInvocationDepth > 0 ||
+                  gActiveSynchronousNativeInvocationDepth.load(
+                      std::memory_order_acquire) > 0;
     if (direct) {
       call();
     } else if (auto scheduler = bridge_->scheduler()) {
@@ -2022,6 +2815,61 @@ size_t nativeSizeForType(const NativeApiJsiType& type) {
     return 0;
   }
   return sizeof(void*);
+}
+
+Value signedInteger64ToJsiValue(Runtime& runtime, int64_t value) {
+  constexpr int64_t maxSafeInteger = 9007199254740991LL;
+  constexpr int64_t minSafeInteger = -9007199254740991LL;
+  if (value >= minSafeInteger && value <= maxSafeInteger) {
+    return static_cast<double>(value);
+  }
+  return BigInt::fromInt64(runtime, value);
+}
+
+Value unsignedInteger64ToJsiValue(Runtime& runtime, uint64_t value) {
+  constexpr uint64_t maxSafeInteger = 9007199254740991ULL;
+  if (value <= maxSafeInteger) {
+    return static_cast<double>(value);
+  }
+  return BigInt::fromUint64(runtime, value);
+}
+
+bool parseIntegerTextToUintptr(const std::string& text, uintptr_t* address) {
+  if (address == nullptr) {
+    return false;
+  }
+  if (text.empty()) {
+    return false;
+  }
+
+  char* end = nullptr;
+  if (text[0] == '-') {
+    long long signedValue = std::strtoll(text.c_str(), &end, 10);
+    if (end == nullptr || *end != '\0') {
+      return false;
+    }
+    *address = static_cast<uintptr_t>(static_cast<intptr_t>(signedValue));
+    return true;
+  }
+
+  int base = 10;
+  const char* start = text.c_str();
+  if (text.size() > 2 && text[0] == '0' &&
+      (text[1] == 'x' || text[1] == 'X')) {
+    base = 16;
+  }
+  unsigned long long unsignedValue = std::strtoull(start, &end, base);
+  if (end == nullptr || *end != '\0') {
+    return false;
+  }
+  *address = static_cast<uintptr_t>(unsignedValue);
+  return true;
+}
+
+bool parseBigIntToUintptr(Runtime& runtime, const BigInt& bigint,
+                          uintptr_t* address) {
+  return parseIntegerTextToUintptr(bigint.toString(runtime, 10).utf8(runtime),
+                                   address);
 }
 
 bool readJsiBuffer(Runtime& runtime, const Object& object, const uint8_t** data,
@@ -2418,6 +3266,15 @@ std::shared_ptr<NativeApiJsiAggregateInfo> NativeApiJsiBridge::aggregateInfoFor(
   return info;
 }
 
+ffi_type* ffiTypeForJsiArgument(const NativeApiJsiType& type) {
+  switch (type.kind) {
+    case metagen::mdTypeArray:
+      return &ffi_type_pointer;
+    default:
+      return type.ffiType != nullptr ? type.ffiType : &ffi_type_pointer;
+  }
+}
+
 std::optional<NativeApiJsiSignature> parseMetadataJsiSignature(
     MDMetadataReader* metadata, MDSectionOffset signatureOffset,
     unsigned int implicitArgumentCount, NativeApiJsiBridge* bridge,
@@ -2452,8 +3309,7 @@ std::optional<NativeApiJsiSignature> parseMetadataJsiSignature(
     signature.ffiTypes.push_back(&ffi_type_pointer);
   }
   for (const auto& argType : signature.argumentTypes) {
-    signature.ffiTypes.push_back(argType.ffiType != nullptr ? argType.ffiType
-                                                            : &ffi_type_pointer);
+    signature.ffiTypes.push_back(ffiTypeForJsiArgument(argType));
   }
 
   ffi_status status = ffi_prep_cif(
@@ -2588,8 +3444,7 @@ std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(Method method) 
   signature.ffiTypes.push_back(&ffi_type_pointer);
   signature.ffiTypes.push_back(&ffi_type_pointer);
   for (const auto& argType : signature.argumentTypes) {
-    signature.ffiTypes.push_back(argType.ffiType != nullptr ? argType.ffiType
-                                                            : &ffi_type_pointer);
+    signature.ffiTypes.push_back(ffiTypeForJsiArgument(argType));
   }
 
   ffi_status status = ffi_prep_cif(
@@ -2603,6 +3458,10 @@ std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(Method method) 
 }
 
 bool unsupportedJsiType(const NativeApiJsiType& type) {
+  if (type.kind == metagen::mdTypeStruct && type.aggregateInfo != nullptr &&
+      type.aggregateInfo->ffi != nullptr) {
+    return false;
+  }
   return !type.supported || type.ffiType == nullptr;
 }
 
@@ -2643,8 +3502,10 @@ std::shared_ptr<NativeApiJsiCallback> createJsiCallback(
   return callback;
 }
 
-id objectFromJsiValue(Runtime& runtime, const Value& value,
-                      NativeApiJsiArgumentFrame& frame, bool mutableString) {
+id objectFromJsiValue(Runtime& runtime,
+                      const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                      const Value& value, NativeApiJsiArgumentFrame& frame,
+                      bool mutableString) {
   if (value.isNull() || value.isUndefined()) {
     return nil;
   }
@@ -2667,9 +3528,8 @@ id objectFromJsiValue(Runtime& runtime, const Value& value,
     if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
       return object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     }
-    if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
-      return static_cast<id>(
-          object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass());
+    if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+      return static_cast<id>(cls);
     }
     if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
       return static_cast<id>(
@@ -2689,10 +3549,41 @@ id objectFromJsiValue(Runtime& runtime, const Value& value,
           object.getHostObject<NativeApiStructObjectHostObject>(runtime)->data());
     }
 
+    Value getTimeValue = object.getProperty(runtime, "getTime");
+    Value toISOStringValue = object.getProperty(runtime, "toISOString");
+    if (getTimeValue.isObject() &&
+        getTimeValue.asObject(runtime).isFunction(runtime) &&
+        toISOStringValue.isObject() &&
+        toISOStringValue.asObject(runtime).isFunction(runtime)) {
+      Value millisValue = getTimeValue.asObject(runtime)
+                              .asFunction(runtime)
+                              .callWithThis(runtime, object, nullptr, 0);
+      if (millisValue.isNumber()) {
+        NSDate* date = [NSDate dateWithTimeIntervalSince1970:millisValue.getNumber() / 1000.0];
+        bridge->rememberRoundTripValue(runtime, date, value);
+        return date;
+      }
+    }
+
+    Value valueOfValue = object.getProperty(runtime, "valueOf");
+    if (valueOfValue.isObject() &&
+        valueOfValue.asObject(runtime).isFunction(runtime)) {
+      Value primitiveValue = valueOfValue.asObject(runtime)
+                                 .asFunction(runtime)
+                                 .callWithThis(runtime, object, nullptr, 0);
+      if (primitiveValue.isString() || primitiveValue.isBool() ||
+          primitiveValue.isNumber()) {
+        return objectFromJsiValue(runtime, bridge, primitiveValue, frame,
+                                  mutableString);
+      }
+    }
+
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
     if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
-      return [NSData dataWithBytes:bytes length:byteLength];
+      NSData* data = [NSData dataWithBytes:bytes length:byteLength];
+      bridge->rememberRoundTripValue(runtime, data, value);
+      return data;
     }
 
     if (object.isArray(runtime)) {
@@ -2700,11 +3591,72 @@ id objectFromJsiValue(Runtime& runtime, const Value& value,
       NSMutableArray* nativeArray =
           [NSMutableArray arrayWithCapacity:array.size(runtime)];
       for (size_t i = 0; i < array.size(runtime); i++) {
-        id element = objectFromJsiValue(runtime, array.getValueAtIndex(runtime, i),
+        id element = objectFromJsiValue(runtime, bridge,
+                                        array.getValueAtIndex(runtime, i),
                                         frame, false);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
       }
+      bridge->rememberRoundTripValue(runtime, nativeArray, value);
       return nativeArray;
+    }
+
+    Value lengthValue = object.getProperty(runtime, "length");
+    if (lengthValue.isNumber() && std::isfinite(lengthValue.getNumber()) &&
+        lengthValue.getNumber() >= 0) {
+      size_t length = static_cast<size_t>(std::floor(lengthValue.getNumber()));
+      NSMutableArray* nativeArray = [NSMutableArray arrayWithCapacity:length];
+      for (size_t i = 0; i < length; i++) {
+        std::string key = std::to_string(i);
+        id element = objectFromJsiValue(
+            runtime, bridge, object.getProperty(runtime, key.c_str()), frame,
+            false);
+        [nativeArray addObject:element != nil ? element : [NSNull null]];
+      }
+      bridge->rememberRoundTripValue(runtime, nativeArray, value);
+      return nativeArray;
+    }
+
+    Value entriesValue = object.getProperty(runtime, "entries");
+    Value sizeValue = object.getProperty(runtime, "size");
+    Value getValue = object.getProperty(runtime, "get");
+    if (entriesValue.isObject() &&
+        entriesValue.asObject(runtime).isFunction(runtime) &&
+        sizeValue.isNumber() && getValue.isObject() &&
+        getValue.asObject(runtime).isFunction(runtime)) {
+      Object arrayCtor = runtime.global().getPropertyAsObject(runtime, "Array");
+      Function arrayFrom = arrayCtor.getPropertyAsFunction(runtime, "from");
+      Value iterator = entriesValue.asObject(runtime)
+                           .asFunction(runtime)
+                           .callWithThis(runtime, object, nullptr, 0);
+      Value pairsValue = arrayFrom.call(runtime, iterator);
+      if (pairsValue.isObject() && pairsValue.asObject(runtime).isArray(runtime)) {
+        Array pairs = pairsValue.asObject(runtime).getArray(runtime);
+        NSMutableDictionary* nativeMap =
+            [NSMutableDictionary dictionaryWithCapacity:pairs.size(runtime)];
+        for (size_t i = 0; i < pairs.size(runtime); i++) {
+          Value pairValue = pairs.getValueAtIndex(runtime, i);
+          if (!pairValue.isObject() ||
+              !pairValue.asObject(runtime).isArray(runtime)) {
+            continue;
+          }
+          Array pair = pairValue.asObject(runtime).getArray(runtime);
+          if (pair.size(runtime) < 2) {
+            continue;
+          }
+          id key = objectFromJsiValue(runtime, bridge,
+                                      pair.getValueAtIndex(runtime, 0),
+                                      frame, false);
+          id nativeValue = objectFromJsiValue(runtime, bridge,
+                                              pair.getValueAtIndex(runtime, 1),
+                                              frame, false);
+          if (key != nil) {
+            [nativeMap setObject:nativeValue != nil ? nativeValue : [NSNull null]
+                          forKey:key];
+          }
+        }
+        bridge->rememberRoundTripValue(runtime, nativeMap, value);
+        return nativeMap;
+      }
     }
 
     NSMutableDictionary* dictionary = [NSMutableDictionary dictionary];
@@ -2719,13 +3671,15 @@ id objectFromJsiValue(Runtime& runtime, const Value& value,
       if (propertyValue.isUndefined()) {
         continue;
       }
-      id nativeValue = objectFromJsiValue(runtime, propertyValue, frame, false);
+      id nativeValue =
+          objectFromJsiValue(runtime, bridge, propertyValue, frame, false);
       NSString* nativeKey = [NSString stringWithUTF8String:key.c_str()];
       if (nativeKey != nil) {
         [dictionary setObject:nativeValue != nil ? nativeValue : [NSNull null]
                        forKey:nativeKey];
       }
     }
+    bridge->rememberRoundTripValue(runtime, dictionary, value);
     return dictionary;
   }
   throw facebook::jsi::JSError(runtime,
@@ -2736,6 +3690,19 @@ bool readNativePointerProperty(Runtime& runtime, const Object& object,
                                void** pointer) {
   if (pointer == nullptr) {
     return false;
+  }
+
+  Value nativePointerObjectValue =
+      object.getProperty(runtime, "__nativeApiPointerObject");
+  if (nativePointerObjectValue.isObject()) {
+    Object nativePointerObject = nativePointerObjectValue.asObject(runtime);
+    if (nativePointerObject.isHostObject<NativeApiPointerHostObject>(
+            runtime)) {
+      *pointer = nativePointerObject
+                     .getHostObject<NativeApiPointerHostObject>(runtime)
+                     ->pointer();
+      return true;
+    }
   }
 
   Value nativePointerValue =
@@ -2772,15 +3739,20 @@ void* pointerFromJsiValue(Runtime& runtime, const Value& value,
     if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
       return object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     }
-    if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
-      return object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass();
+    if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+      return cls;
     }
     if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
       return object.getHostObject<NativeApiProtocolHostObject>(runtime)
           ->nativeProtocol();
     }
     if (object.isHostObject<NativeApiReferenceHostObject>(runtime)) {
-      return object.getHostObject<NativeApiReferenceHostObject>(runtime)->data();
+      auto reference =
+          object.getHostObject<NativeApiReferenceHostObject>(runtime);
+      if (reference->data() == nullptr) {
+        reference->ensureStorage(runtime, reference->type(), frame);
+      }
+      return reference->data();
     }
     if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
       return object.getHostObject<NativeApiStructObjectHostObject>(runtime)->data();
@@ -2798,7 +3770,6 @@ void* pointerFromJsiValue(Runtime& runtime, const Value& value,
   if (value.isString()) {
     std::string utf8 = value.asString(runtime).utf8(runtime);
     char* string = strdup(utf8.c_str());
-    frame.addCString(string);
     return string;
   }
   throw facebook::jsi::JSError(runtime, "Value cannot be converted to pointer.");
@@ -2825,8 +3796,8 @@ bool readPointerLikeValue(Runtime& runtime, const Value& value, void** pointer) 
     *pointer = object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     return true;
   }
-  if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
-    *pointer = object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass();
+  if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+    *pointer = cls;
     return true;
   }
   if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
@@ -2859,6 +3830,9 @@ void convertJsiArgument(Runtime& runtime,
 Value convertNativeReturnValue(Runtime& runtime,
                                const std::shared_ptr<NativeApiJsiBridge>& bridge,
                                const NativeApiJsiType& type, void* value);
+
+Class classFromJsiValue(Runtime& runtime, const Value& value);
+Protocol* protocolFromJsiValue(Runtime& runtime, const Value& value);
 
 std::optional<size_t> parseArrayIndexProperty(const std::string& property) {
   if (property.empty()) {
@@ -2988,6 +3962,40 @@ void convertIndexedAggregateArgument(Runtime& runtime,
   }
 }
 
+void convertJsiFfiArgument(Runtime& runtime,
+                           const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                           const NativeApiJsiType& type, const Value& value,
+                           void* target, NativeApiJsiArgumentFrame& frame) {
+  if (type.kind != metagen::mdTypeArray) {
+    convertJsiArgument(runtime, bridge, type, value, target, frame);
+    return;
+  }
+
+  void* pointer = nullptr;
+  if (!value.isNull() && !value.isUndefined()) {
+    if (value.isObject()) {
+      Object object = value.asObject(runtime);
+      if (!readPointerLikeValue(runtime, value, &pointer)) {
+        const uint8_t* bytes = nullptr;
+        size_t byteLength = 0;
+        if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+          pointer = const_cast<uint8_t*>(bytes);
+        }
+      }
+    }
+
+    if (pointer == nullptr) {
+      size_t byteLength = nativeSizeForType(type);
+      void* buffer = frame.addBuffer(byteLength);
+      convertIndexedAggregateArgument(runtime, bridge, type, value, buffer,
+                                      frame);
+      pointer = buffer;
+    }
+  }
+
+  *static_cast<void**>(target) = pointer;
+}
+
 void convertJsiArgument(Runtime& runtime,
                         const std::shared_ptr<NativeApiJsiBridge>& bridge,
                         const NativeApiJsiType& type,
@@ -3057,12 +4065,39 @@ void convertJsiArgument(Runtime& runtime,
         *static_cast<char**>(target) = nullptr;
         break;
       }
+      if (value.isObject()) {
+        Object object = value.asObject(runtime);
+        void* pointer = nullptr;
+        if (readPointerLikeValue(runtime, value, &pointer)) {
+          *static_cast<char**>(target) = static_cast<char*>(pointer);
+          break;
+        }
+        const uint8_t* bytes = nullptr;
+        size_t byteLength = 0;
+        if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+          *static_cast<char**>(target) =
+              reinterpret_cast<char*>(const_cast<uint8_t*>(bytes));
+          break;
+        }
+        Value valueOfValue = object.getProperty(runtime, "valueOf");
+        if (valueOfValue.isObject() &&
+            valueOfValue.asObject(runtime).isFunction(runtime)) {
+          Value primitive = valueOfValue.asObject(runtime)
+                                .asFunction(runtime)
+                                .callWithThis(runtime, object, nullptr, 0);
+          if (primitive.isString()) {
+            std::string utf8 = primitive.asString(runtime).utf8(runtime);
+            char* string = strdup(utf8.c_str());
+            *static_cast<char**>(target) = string;
+            break;
+          }
+        }
+      }
       if (!value.isString()) {
         throw facebook::jsi::JSError(runtime, "Expected string argument.");
       }
       std::string utf8 = value.asString(runtime).utf8(runtime);
       char* string = strdup(utf8.c_str());
-      frame.addCString(string);
       *static_cast<char**>(target) = string;
       break;
     }
@@ -3073,28 +4108,13 @@ void convertJsiArgument(Runtime& runtime,
     case metagen::mdTypeNSStringObject:
     case metagen::mdTypeNSMutableStringObject: {
       id object = objectFromJsiValue(
-          runtime, value, frame,
+          runtime, bridge, value, frame,
           type.kind == metagen::mdTypeNSMutableStringObject);
       *static_cast<id*>(target) = object;
       break;
     }
     case metagen::mdTypeClass: {
-      Class cls = nil;
-      if (value.isString()) {
-        std::string name = value.asString(runtime).utf8(runtime);
-        cls = objc_lookUpClass(name.c_str());
-      } else if (value.isObject()) {
-        Object object = value.asObject(runtime);
-        if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
-          cls = object.getHostObject<NativeApiClassHostObject>(runtime)
-                    ->nativeClass();
-        } else if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
-          id nativeObject =
-              object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
-          cls = nativeObject != nil ? object_getClass(nativeObject) : nil;
-        }
-      }
-      *static_cast<Class*>(target) = cls;
+      *static_cast<Class*>(target) = classFromJsiValue(runtime, value);
       break;
     }
     case metagen::mdTypeSelector: {
@@ -3114,8 +4134,10 @@ void convertJsiArgument(Runtime& runtime,
         Object object = value.asObject(runtime);
         if (object.isHostObject<NativeApiReferenceHostObject>(runtime)) {
           auto reference = object.getHostObject<NativeApiReferenceHostObject>(runtime);
-          if (type.elementType != nullptr) {
-            reference->ensureStorage(*type.elementType);
+          if (reference->data() == nullptr && type.elementType != nullptr) {
+            reference->ensureStorage(runtime, *type.elementType, frame);
+          } else if (reference->data() == nullptr) {
+            reference->ensureStorage(runtime, reference->type(), frame);
           }
           *static_cast<void**>(target) = reference->data();
           break;
@@ -3140,7 +4162,10 @@ void convertJsiArgument(Runtime& runtime,
               runtime, bridge, type, object.asFunction(runtime),
               type.kind == metagen::mdTypeBlock);
           void* pointer = callback->functionPointer();
+          bridge->rememberRoundTripValue(runtime, pointer, value);
           try {
+            object.setProperty(runtime, "__nativeApiPointerObject",
+                               createPointer(runtime, bridge, pointer));
             object.setProperty(
                 runtime, "__nativeApiPointer",
                 static_cast<double>(reinterpret_cast<uintptr_t>(pointer)));
@@ -3203,50 +4228,25 @@ Value convertNativeReturnValue(Runtime& runtime,
       return static_cast<double>(*static_cast<uint32_t*>(value));
     case metagen::mdTypeSLong:
     case metagen::mdTypeSInt64:
-      return static_cast<double>(*static_cast<int64_t*>(value));
+      return signedInteger64ToJsiValue(runtime, *static_cast<int64_t*>(value));
     case metagen::mdTypeULong:
     case metagen::mdTypeUInt64:
-      return static_cast<double>(*static_cast<uint64_t*>(value));
+      return unsignedInteger64ToJsiValue(runtime,
+                                         *static_cast<uint64_t*>(value));
     case metagen::mdTypeFloat:
       return static_cast<double>(*static_cast<float*>(value));
     case metagen::mdTypeDouble:
       return *static_cast<double*>(value);
     case metagen::mdTypeString: {
       const char* string = *static_cast<const char**>(value);
-      return string != nullptr ? makeString(runtime, string) : Value::null();
-    }
-    case metagen::mdTypeAnyObject:
-    case metagen::mdTypeProtocolObject:
-    case metagen::mdTypeClassObject:
-    case metagen::mdTypeInstanceObject:
-    case metagen::mdTypeNSStringObject:
-    case metagen::mdTypeNSMutableStringObject: {
-      id object = *static_cast<id*>(value);
-      if (object == nil) {
+      if (string == nullptr) {
         return Value::null();
       }
-      if ([object isKindOfClass:[NSString class]]) {
-        std::string utf8 = [static_cast<NSString*>(object) UTF8String] ?: "";
-        if (type.returnOwned) {
-          [object release];
-        }
-        return makeString(runtime, utf8);
-      }
-      if ([object isKindOfClass:[NSNumber class]]) {
-        NSNumber* number = static_cast<NSNumber*>(object);
-        const char* objCType = [number objCType];
-        bool isBool =
-            objCType != nullptr && std::strcmp(objCType, @encode(BOOL)) == 0;
-        Value result = isBool ? Value(static_cast<bool>([number boolValue]))
-                              : Value([number doubleValue]);
-        if (type.returnOwned) {
-          [object release];
-        }
-        return result;
-      }
+      NativeApiJsiType cStringType =
+          primitiveInteropType(metagen::mdTypeChar);
       return Object::createFromHostObject(
-          runtime, std::make_shared<NativeApiObjectHostObject>(
-                       bridge, object, type.returnOwned));
+          runtime, std::make_shared<NativeApiReferenceHostObject>(
+                       bridge, cStringType, const_cast<char*>(string), false));
     }
     case metagen::mdTypeClass: {
       Class cls = *static_cast<Class*>(value);
@@ -3263,9 +4263,68 @@ Value convertNativeReturnValue(Runtime& runtime,
       if (const NativeApiSymbol* found = bridge->findClass(symbol.name)) {
         symbol = *found;
       }
-      return Object::createFromHostObject(
-          runtime,
-          std::make_shared<NativeApiClassHostObject>(bridge, std::move(symbol)));
+      return makeNativeClassValue(runtime, bridge, std::move(symbol));
+    }
+    case metagen::mdTypeAnyObject:
+    case metagen::mdTypeProtocolObject:
+    case metagen::mdTypeClassObject:
+    case metagen::mdTypeInstanceObject:
+    case metagen::mdTypeNSStringObject:
+    case metagen::mdTypeNSMutableStringObject: {
+      id object = *static_cast<id*>(value);
+      if (object == nil) {
+        return Value::null();
+      }
+      Value roundTrip = bridge->findRoundTripValue(runtime, object);
+      if (!roundTrip.isUndefined()) {
+        if (type.returnOwned) {
+          [object release];
+        }
+        return roundTrip;
+      }
+      if (object_isClass(object)) {
+        if (const NativeApiSymbol* classSymbol =
+                bridge->findClassForRuntimePointer((void*)object)) {
+          return makeNativeClassValue(runtime, bridge, *classSymbol);
+        }
+      }
+      if (const NativeApiSymbol* protocolSymbol =
+              bridge->findProtocolForRuntimePointer((void*)object)) {
+        return makeNativeProtocolValue(runtime, bridge, *protocolSymbol);
+      }
+      if ([object isKindOfClass:[NSNull class]]) {
+        if (type.returnOwned) {
+          [object release];
+        }
+        return Value::null();
+      }
+      if ([object isKindOfClass:[NSString class]]) {
+        bool untypedObject = type.kind == metagen::mdTypeAnyObject;
+        bool explicitNSString = type.kind == metagen::mdTypeNSStringObject;
+        if (untypedObject || explicitNSString) {
+          std::string utf8 = [static_cast<NSString*>(object) UTF8String] ?: "";
+          if (type.returnOwned) {
+            [object release];
+          }
+          return makeString(runtime, utf8);
+        }
+      }
+      if ([object isKindOfClass:[NSNumber class]] &&
+          ![object isKindOfClass:[NSDecimalNumber class]]) {
+        NSNumber* number = static_cast<NSNumber*>(object);
+        const char* objCType = [number objCType];
+        bool isBool = CFGetTypeID((__bridge CFTypeRef)number) ==
+                          CFBooleanGetTypeID() ||
+                      (objCType != nullptr &&
+                       std::strcmp(objCType, @encode(BOOL)) == 0);
+        Value result = isBool ? Value(static_cast<bool>([number boolValue]))
+                              : Value([number doubleValue]);
+        if (type.returnOwned) {
+          [object release];
+        }
+        return result;
+      }
+      return makeNativeObjectValue(runtime, bridge, object, type.returnOwned);
     }
     case metagen::mdTypeSelector: {
       SEL selector = *static_cast<SEL*>(value);
@@ -3279,19 +4338,30 @@ Value convertNativeReturnValue(Runtime& runtime,
       if (pointer == nullptr) {
         return Value::null();
       }
+      if (const NativeApiSymbol* classSymbol =
+              bridge->findClassForRuntimePointer(pointer)) {
+        return makeNativeClassValue(runtime, bridge, *classSymbol);
+      }
+      if (const NativeApiSymbol* protocolSymbol =
+              bridge->findProtocolForRuntimePointer(pointer)) {
+        return makeNativeProtocolValue(runtime, bridge, *protocolSymbol);
+      }
       if (type.kind == metagen::mdTypePointer && type.elementType != nullptr) {
         return Object::createFromHostObject(
             runtime, std::make_shared<NativeApiReferenceHostObject>(
                          bridge, *type.elementType, pointer, false));
       }
-      return Object::createFromHostObject(
-          runtime, std::make_shared<NativeApiPointerHostObject>(pointer));
+      return createPointer(runtime, bridge, pointer);
     }
     case metagen::mdTypeBlock:
     case metagen::mdTypeFunctionPointer: {
       void* pointer = *static_cast<void**>(value);
       if (pointer == nullptr) {
         return Value::null();
+      }
+      Value roundTrip = bridge->findRoundTripValue(runtime, pointer);
+      if (!roundTrip.isUndefined()) {
+        return roundTrip;
       }
       return wrapNativeFunctionPointer(runtime, bridge, type, pointer,
                                        type.kind == metagen::mdTypeBlock);
@@ -3328,6 +4398,37 @@ Value convertNativeReturnValue(Runtime& runtime,
   }
 }
 
+void NativeApiReferenceHostObject::ensureStorage(
+    Runtime& runtime, NativeApiJsiType type, NativeApiJsiArgumentFrame& frame,
+    size_t elements) {
+  size_t elementCount = std::max<size_t>(elements, 1);
+  NativeApiJsiType storageType = std::move(type);
+  size_t stride = std::max<size_t>(nativeSizeForType(storageType), 1);
+  size_t required = std::max<size_t>(stride * elementCount, sizeof(void*));
+  type_ = std::move(storageType);
+
+  if (data_ == nullptr) {
+    data_ = calloc(1, required);
+    ownsData_ = true;
+    byteLength_ = required;
+  } else if (ownsData_ && byteLength_ < required) {
+    void* expanded = realloc(data_, required);
+    if (expanded == nullptr) {
+      throw std::bad_alloc();
+    }
+    std::memset(static_cast<uint8_t*>(expanded) + byteLength_, 0,
+                required - byteLength_);
+    data_ = expanded;
+    byteLength_ = required;
+  }
+
+  if (data_ != nullptr && pendingValue_ != nullptr) {
+    Value pending(runtime, *pendingValue_);
+    convertJsiArgument(runtime, bridge_, type_, pending, data_, frame);
+    pendingValue_.reset();
+  }
+}
+
 Value NativeApiReferenceHostObject::get(Runtime& runtime,
                                         const PropNameID& name) {
   std::string property = name.utf8(runtime);
@@ -3339,6 +4440,9 @@ Value NativeApiReferenceHostObject::get(Runtime& runtime,
   }
   if (property == "value") {
     if (data_ == nullptr) {
+      if (pendingValue_ != nullptr) {
+        return Value(runtime, *pendingValue_);
+      }
       return Value::undefined();
     }
     return convertNativeReturnValue(runtime, bridge_, type_, data_);
@@ -3358,8 +4462,8 @@ Value NativeApiReferenceHostObject::get(Runtime& runtime,
         [data](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
           char address[32] = {};
           snprintf(address, sizeof(address), "%p", data);
-          return makeString(runtime, "[NativeApiJsi Reference " +
-                                         std::string(address) + "]");
+          return makeString(runtime,
+                            "<Reference: " + std::string(address) + ">");
         });
   }
   return Value::undefined();
@@ -3374,10 +4478,17 @@ void NativeApiReferenceHostObject::set(Runtime& runtime,
     return;
   }
   size_t slotIndex = index.value_or(0);
-  ensureStorage(type_, slotIndex + 1);
+  NativeApiJsiArgumentFrame frame(1);
+  if (data_ == nullptr) {
+    if (slotIndex == 0) {
+      pendingValue_ = std::make_shared<Value>(runtime, value);
+      return;
+    }
+    ensureStorage(runtime, type_, frame, slotIndex + 1);
+  }
+  pendingValue_.reset();
   void* slot = static_cast<uint8_t*>(data_) +
                (slotIndex * referenceElementStride(type_));
-  NativeApiJsiArgumentFrame frame(1);
   convertJsiArgument(runtime, bridge_, type_, value, slot, frame);
 }
 
@@ -3418,7 +4529,8 @@ Value NativeApiStructObjectHostObject::get(Runtime& runtime,
           field.type.aggregateInfo != nullptr) {
         return Object::createFromHostObject(
             runtime, std::make_shared<NativeApiStructObjectHostObject>(
-                         bridge_, field.type.aggregateInfo, fieldData, false));
+                         bridge_, field.type.aggregateInfo, fieldData, false,
+                         ownedData_, backingValue_));
       }
       return convertNativeReturnValue(runtime, bridge_, field.type, fieldData);
     }
@@ -3469,41 +4581,44 @@ NativeApiJsiType primitiveInteropType(MDTypeKind kind) {
   return type;
 }
 
+std::optional<NativeApiJsiType> primitiveInteropTypeFromCode(int32_t code) {
+  MDTypeKind kind = static_cast<MDTypeKind>(code);
+  switch (kind) {
+    case metagen::mdTypeVoid:
+    case metagen::mdTypeBool:
+    case metagen::mdTypeChar:
+    case metagen::mdTypeUChar:
+    case metagen::mdTypeUInt8:
+    case metagen::mdTypeSShort:
+    case metagen::mdTypeUShort:
+    case metagen::mdTypeSInt:
+    case metagen::mdTypeUInt:
+    case metagen::mdTypeSLong:
+    case metagen::mdTypeULong:
+    case metagen::mdTypeSInt64:
+    case metagen::mdTypeUInt64:
+    case metagen::mdTypeFloat:
+    case metagen::mdTypeDouble:
+    case metagen::mdTypeString:
+    case metagen::mdTypeAnyObject:
+    case metagen::mdTypeProtocolObject:
+    case metagen::mdTypeClass:
+    case metagen::mdTypeSelector:
+    case metagen::mdTypePointer:
+    case metagen::mdTypeOpaquePointer:
+    case metagen::mdTypeBlock:
+    case metagen::mdTypeFunctionPointer:
+      return primitiveInteropType(kind);
+    default:
+      return std::nullopt;
+  }
+}
+
 std::optional<NativeApiJsiType> interopTypeFromValue(
     Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
     const Value& value) {
   if (value.isNumber()) {
-    MDTypeKind kind = stripTypeFlags(static_cast<MDTypeKind>(
-        static_cast<int32_t>(value.getNumber())));
-    switch (kind) {
-      case metagen::mdTypeVoid:
-      case metagen::mdTypeBool:
-      case metagen::mdTypeChar:
-      case metagen::mdTypeUChar:
-      case metagen::mdTypeUInt8:
-      case metagen::mdTypeSShort:
-      case metagen::mdTypeUShort:
-      case metagen::mdTypeSInt:
-      case metagen::mdTypeUInt:
-      case metagen::mdTypeSLong:
-      case metagen::mdTypeULong:
-      case metagen::mdTypeSInt64:
-      case metagen::mdTypeUInt64:
-      case metagen::mdTypeFloat:
-      case metagen::mdTypeDouble:
-      case metagen::mdTypeString:
-      case metagen::mdTypeAnyObject:
-      case metagen::mdTypeProtocolObject:
-      case metagen::mdTypeClass:
-      case metagen::mdTypeSelector:
-      case metagen::mdTypePointer:
-      case metagen::mdTypeOpaquePointer:
-      case metagen::mdTypeBlock:
-      case metagen::mdTypeFunctionPointer:
-        return primitiveInteropType(kind);
-      default:
-        return std::nullopt;
-    }
+    return primitiveInteropTypeFromCode(static_cast<int32_t>(value.getNumber()));
   }
 
   if (!value.isObject()) {
@@ -3511,6 +4626,27 @@ std::optional<NativeApiJsiType> interopTypeFromValue(
   }
 
   Object object = value.asObject(runtime);
+  Value typeCodeValue = object.getProperty(runtime, "__nativeApiTypeCode");
+  if (typeCodeValue.isNumber()) {
+    return primitiveInteropTypeFromCode(
+        static_cast<int32_t>(typeCodeValue.getNumber()));
+  }
+  Value valueOfValue = object.getProperty(runtime, "valueOf");
+  if (valueOfValue.isObject() &&
+      valueOfValue.asObject(runtime).isFunction(runtime)) {
+    Value primitive =
+        valueOfValue.asObject(runtime).asFunction(runtime).callWithThis(
+            runtime, object, nullptr, 0);
+    if (primitive.isNumber()) {
+      return primitiveInteropTypeFromCode(
+          static_cast<int32_t>(primitive.getNumber()));
+    }
+  }
+
+  if (nativeClassFromJsiObject(runtime, object) != Nil) {
+    return nativeObjectReturnType(metagen::mdTypeInstanceObject);
+  }
+
   if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
     auto structObject = object.getHostObject<NativeApiStructObjectHostObject>(runtime);
     NativeApiJsiType type;
@@ -3550,6 +4686,9 @@ std::optional<NativeApiJsiType> interopTypeFromValue(
       return primitiveInteropType(metagen::mdTypeBlock);
     }
     if (kindName == "functionPointer") {
+      return primitiveInteropType(metagen::mdTypeFunctionPointer);
+    }
+    if (kindName == "functionReference") {
       return primitiveInteropType(metagen::mdTypeFunctionPointer);
     }
   }
@@ -3596,6 +4735,16 @@ Value makeAggregateConstructor(Runtime& runtime,
         type.ffiType = info->ffi != nullptr ? &info->ffi->type : nullptr;
         type.supported = type.ffiType != nullptr;
 
+        if (count > 0 && args[0].isObject()) {
+          void* pointer = nullptr;
+          if (readPointerLikeValue(runtime, args[0], &pointer) && pointer != nullptr) {
+            return Object::createFromHostObject(
+                runtime, std::make_shared<NativeApiStructObjectHostObject>(
+                             bridge, info, pointer, false, nullptr,
+                             std::make_shared<Value>(runtime, args[0])));
+          }
+        }
+
         std::vector<unsigned char> storage(info->size, 0);
         if (count > 0) {
           NativeApiJsiArgumentFrame frame(1);
@@ -3615,6 +4764,39 @@ Value makeAggregateConstructor(Runtime& runtime,
   constructor.setProperty(runtime, "metadataOffset", static_cast<double>(symbol.offset));
   constructor.setProperty(runtime, "sizeof",
                           static_cast<double>(info != nullptr ? info->size : 0));
+  constructor.setProperty(
+      runtime, "equals",
+      Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "equals"), 2,
+          [bridge, info](Runtime& runtime, const Value&, const Value* args,
+                         size_t count) -> Value {
+            if (info == nullptr || count < 2) {
+              return false;
+            }
+
+            NativeApiJsiType type;
+            type.kind = metagen::mdTypeStruct;
+            type.aggregateInfo = info;
+            type.aggregateOffset = info->offset;
+            type.aggregateIsUnion = info->isUnion;
+            type.ffiType = info->ffi != nullptr ? &info->ffi->type : nullptr;
+            type.supported = type.ffiType != nullptr;
+
+            std::vector<unsigned char> left(info->size, 0);
+            std::vector<unsigned char> right(info->size, 0);
+            try {
+              NativeApiJsiArgumentFrame leftFrame(1);
+              convertAggregateArgument(runtime, bridge, type, args[0],
+                                       left.data(), leftFrame);
+              NativeApiJsiArgumentFrame rightFrame(1);
+              convertAggregateArgument(runtime, bridge, type, args[1],
+                                       right.data(), rightFrame);
+            } catch (const std::exception&) {
+              return false;
+            }
+
+            return std::memcmp(left.data(), right.data(), info->size) == 0;
+          }));
   Array fields(runtime, info != nullptr ? info->fields.size() : 0);
   if (info != nullptr) {
     for (size_t i = 0; i < info->fields.size(); i++) {
@@ -3637,7 +4819,7 @@ size_t sizeofInteropType(Runtime& runtime,
     if (object.isHostObject<NativeApiPointerHostObject>(runtime) ||
         object.isHostObject<NativeApiReferenceHostObject>(runtime) ||
         object.isHostObject<NativeApiObjectHostObject>(runtime) ||
-        object.isHostObject<NativeApiClassHostObject>(runtime)) {
+        nativeClassFromJsiObject(runtime, object) != Nil) {
       return sizeof(void*);
     }
     Value sizeValue = object.getProperty(runtime, "sizeof");
@@ -3649,10 +4831,24 @@ size_t sizeofInteropType(Runtime& runtime,
   throw facebook::jsi::JSError(runtime, "Invalid type for interop.sizeof.");
 }
 
-Object createPointer(Runtime& runtime, void* pointer, bool adopted = false) {
-  return Object::createFromHostObject(
-      runtime, std::make_shared<NativeApiPointerHostObject>(pointer, "pointer",
-                                                            adopted));
+Object createPointer(Runtime& runtime,
+                     const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                     void* pointer, bool adopted) {
+  if (!adopted && bridge != nullptr) {
+    Value cached = bridge->findPointerValue(runtime, pointer);
+    if (cached.isObject()) {
+      return cached.asObject(runtime);
+    }
+  }
+
+  Object result = Object::createFromHostObject(
+      runtime,
+      std::make_shared<NativeApiPointerHostObject>(bridge, pointer, "pointer",
+                                                   adopted));
+  if (!adopted && bridge != nullptr) {
+    bridge->rememberPointerValue(runtime, pointer, Value(runtime, result));
+  }
+  return result;
 }
 
 void installInteropHasInstance(Runtime& runtime, Function& constructor,
@@ -3689,8 +4885,7 @@ void installInteropHasInstance(Runtime& runtime, Function& constructor,
               return kindValue.isString() &&
                      kindValue.asString(runtime).utf8(runtime) == kind;
             }));
-    defineProperty.call(runtime, objectCtor, constructor, hasInstanceValue,
-                        descriptor);
+    defineProperty.call(runtime, constructor, hasInstanceValue, descriptor);
   } catch (const std::exception&) {
   }
 }
@@ -3704,8 +4899,8 @@ Class classFromJsiValue(Runtime& runtime, const Value& value) {
     return Nil;
   }
   Object object = value.asObject(runtime);
-  if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
-    return object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass();
+  if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+    return cls;
   }
   if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
     id nativeObject = object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
@@ -3757,7 +4952,26 @@ Object createInteropObject(Runtime& runtime,
   Object interop(runtime);
   Object types(runtime);
   auto setType = [&](const char* name, MDTypeKind kind) {
-    types.setProperty(runtime, name, static_cast<double>(kind));
+    Object type(runtime);
+    double code = static_cast<double>(kind);
+    type.setProperty(runtime, "__nativeApiTypeCode", code);
+    type.setProperty(
+        runtime, "valueOf",
+        Function::createFromHostFunction(
+            runtime, PropNameID::forAscii(runtime, "valueOf"), 0,
+            [code](Runtime&, const Value&, const Value*, size_t) -> Value {
+              return code;
+            }));
+    type.setProperty(
+        runtime, "toString",
+        Function::createFromHostFunction(
+            runtime, PropNameID::forAscii(runtime, "toString"), 0,
+            [code](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
+              char text[32] = {};
+              snprintf(text, sizeof(text), "%d", static_cast<int>(code));
+              return makeString(runtime, text);
+            }));
+    types.setProperty(runtime, name, type);
   };
   setType("void", metagen::mdTypeVoid);
   setType("bool", metagen::mdTypeBool);
@@ -3785,8 +4999,8 @@ Object createInteropObject(Runtime& runtime,
 
   Function pointerConstructor = Function::createFromHostFunction(
       runtime, PropNameID::forAscii(runtime, "Pointer"), 1,
-      [](Runtime& runtime, const Value&, const Value* args,
-         size_t count) -> Value {
+      [bridge](Runtime& runtime, const Value&, const Value* args,
+               size_t count) -> Value {
             if (count > 0 && args[0].isObject()) {
               Object object = args[0].asObject(runtime);
               if (object.isHostObject<NativeApiPointerHostObject>(runtime)) {
@@ -3795,14 +5009,83 @@ Object createInteropObject(Runtime& runtime,
             }
             void* pointer = nullptr;
             if (count > 0 && !args[0].isNull() && !args[0].isUndefined()) {
-              if (!args[0].isNumber()) {
+              auto readAddress = [&](const Value& value,
+                                     uintptr_t* address) -> bool {
+                auto readAddressFromString = [&](const Value& source) -> bool {
+                  try {
+                    Value stringCtorValue =
+                        runtime.global().getProperty(runtime, "String");
+                    if (!stringCtorValue.isObject() ||
+                        !stringCtorValue.asObject(runtime).isFunction(runtime)) {
+                      return false;
+                    }
+                    Value stringValue =
+                        stringCtorValue.asObject(runtime).asFunction(runtime)
+                            .call(runtime, source);
+                    if (!stringValue.isString()) {
+                      return false;
+                    }
+                    return parseIntegerTextToUintptr(
+                        stringValue.asString(runtime).utf8(runtime), address);
+                  } catch (const std::exception&) {
+                    return false;
+                  }
+                };
+
+                if (value.isNumber()) {
+                  double number = value.getNumber();
+                  if (!std::isfinite(number)) {
+                    return false;
+                  }
+                  *address = static_cast<uintptr_t>(
+                      static_cast<int64_t>(number));
+                  return true;
+                }
+                if (value.isBigInt()) {
+                  if (readAddressFromString(value)) {
+                    return true;
+                  }
+                  BigInt bigint = value.getBigInt(runtime);
+                  return parseBigIntToUintptr(runtime, bigint, address);
+                }
+                if (value.isObject()) {
+                  Object object = value.asObject(runtime);
+                  Value valueOfValue = object.getProperty(runtime, "valueOf");
+                  if (valueOfValue.isObject() &&
+                      valueOfValue.asObject(runtime).isFunction(runtime)) {
+                    Value primitive = valueOfValue.asObject(runtime)
+                                          .asFunction(runtime)
+                                          .callWithThis(runtime, object, nullptr, 0);
+                    if (primitive.isNumber()) {
+                      double number = primitive.getNumber();
+                      if (!std::isfinite(number)) {
+                        return false;
+                      }
+                      *address = static_cast<uintptr_t>(
+                          static_cast<int64_t>(number));
+                      return true;
+                    }
+                    if (primitive.isBigInt()) {
+                      if (readAddressFromString(primitive)) {
+                        return true;
+                      }
+                      BigInt bigint = primitive.getBigInt(runtime);
+                      return parseBigIntToUintptr(runtime, bigint, address);
+                    }
+                  }
+                  return readAddressFromString(value);
+                }
+                return false;
+              };
+
+              uintptr_t address = 0;
+              if (!readAddress(args[0], &address)) {
                 throw facebook::jsi::JSError(runtime,
                                              "Pointer expects a numeric address.");
               }
-              pointer = reinterpret_cast<void*>(
-                  static_cast<uintptr_t>(args[0].getNumber()));
+              pointer = reinterpret_cast<void*>(address);
             }
-            return createPointer(runtime, pointer);
+            return createPointer(runtime, bridge, pointer);
       });
   Object pointerPrototype(runtime);
   pointerPrototype.setProperty(runtime, "constructor", pointerConstructor);
@@ -3813,45 +5096,137 @@ Object createInteropObject(Runtime& runtime,
                                  static_cast<double>(sizeof(void*)));
   interop.setProperty(runtime, "Pointer", pointerConstructor);
 
+  Function functionReferenceConstructor = Function::createFromHostFunction(
+      runtime, PropNameID::forAscii(runtime, "FunctionReference"), 1,
+      [](Runtime& runtime, const Value&, const Value* args,
+         size_t count) -> Value {
+        if (count < 1 || !args[0].isObject()) {
+          throw facebook::jsi::JSError(
+              runtime, "FunctionReference expects a function.");
+        }
+
+        Object object = args[0].asObject(runtime);
+        if (!object.isFunction(runtime)) {
+          throw facebook::jsi::JSError(
+              runtime, "FunctionReference expects a function.");
+        }
+
+        Function function = object.asFunction(runtime);
+        function.setProperty(runtime, "kind",
+                             makeString(runtime, "functionReference"));
+        function.setProperty(runtime, "sizeof",
+                             static_cast<double>(sizeof(void*)));
+        return function;
+      });
+  Object functionReferencePrototype(runtime);
+  functionReferencePrototype.setProperty(runtime, "constructor",
+                                         functionReferenceConstructor);
+  functionReferenceConstructor.setProperty(runtime, "prototype",
+                                           functionReferencePrototype);
+  installInteropHasInstance(runtime, functionReferenceConstructor,
+                            "functionReference");
+  functionReferenceConstructor.setProperty(runtime, "kind",
+                                           makeString(runtime,
+                                                      "functionReference"));
+  functionReferenceConstructor.setProperty(runtime, "sizeof",
+                                           static_cast<double>(sizeof(void*)));
+  interop.setProperty(runtime, "FunctionReference",
+                      functionReferenceConstructor);
+
   Function referenceConstructor = Function::createFromHostFunction(
       runtime, PropNameID::forAscii(runtime, "Reference"), 2,
       [bridge](Runtime& runtime, const Value&, const Value* args,
                size_t count) -> Value {
             NativeApiJsiType type = primitiveInteropType(metagen::mdTypePointer);
-            bool hasType = count > 0 &&
-                           !(count == 1 && args[0].isNumber()) &&
-                           interopTypeFromValue(runtime, bridge, args[0]).has_value();
+            bool firstArgumentIsType = false;
+            if (count > 1) {
+              firstArgumentIsType = true;
+            } else if (count == 1 && args[0].isObject()) {
+              Object object = args[0].asObject(runtime);
+              Value typeCodeValue =
+                  object.getProperty(runtime, "__nativeApiTypeCode");
+              Value kindValue = object.getProperty(runtime, "kind");
+              firstArgumentIsType =
+                  typeCodeValue.isNumber() || object.isFunction(runtime) ||
+                  nativeClassFromJsiObject(runtime, object) != Nil ||
+                  (kindValue.isString() &&
+                   (kindValue.asString(runtime).utf8(runtime) == "class" ||
+                    kindValue.asString(runtime).utf8(runtime) == "protocol"));
+            }
+            std::optional<NativeApiJsiType> requestedType =
+                firstArgumentIsType
+                    ? interopTypeFromValue(runtime, bridge, args[0])
+                    : std::nullopt;
+            bool hasType = firstArgumentIsType && requestedType.has_value();
             if (hasType) {
-              type = *interopTypeFromValue(runtime, bridge, args[0]);
-            } else if (count > 0 && args[0].isBool()) {
-              type = primitiveInteropType(metagen::mdTypeBool);
-            } else if (count > 0 && args[0].isNumber()) {
-              type = primitiveInteropType(metagen::mdTypeDouble);
+              type = *requestedType;
             }
 
-            size_t size = std::max<size_t>(nativeSizeForType(type), sizeof(void*));
             void* data = nullptr;
             bool ownsData = false;
+            size_t byteLength = 0;
+            std::shared_ptr<Value> pendingValue;
             if (hasType) {
+              bool usesExternalStorage = false;
+              Value valueToStore = Value::undefined();
               if (count > 1) {
-                void* pointer = nullptr;
-                if (readPointerLikeValue(runtime, args[1], &pointer)) {
-                  data = pointer;
-                } else {
-                  data = calloc(1, size);
-                  ownsData = true;
-                  NativeApiJsiArgumentFrame frame(1);
-                  convertJsiArgument(runtime, bridge, type, args[1], data, frame);
+                valueToStore = Value(runtime, args[1]);
+                if (args[1].isObject()) {
+                  Object object = args[1].asObject(runtime);
+                  if (object.isHostObject<NativeApiPointerHostObject>(runtime)) {
+                    data = object
+                               .getHostObject<NativeApiPointerHostObject>(
+                                   runtime)
+                               ->pointer();
+                    usesExternalStorage = true;
+                  } else if (object.isHostObject<NativeApiReferenceHostObject>(
+                                 runtime)) {
+                    auto reference =
+                        object.getHostObject<NativeApiReferenceHostObject>(
+                            runtime);
+                    data = reference->data();
+                    if (data != nullptr) {
+                      usesExternalStorage = true;
+                    } else {
+                      valueToStore = object.getProperty(runtime, "value");
+                    }
+                  } else if (type.kind == metagen::mdTypeStruct &&
+                             object.isHostObject<
+                                 NativeApiStructObjectHostObject>(runtime)) {
+                    data = object
+                               .getHostObject<
+                                   NativeApiStructObjectHostObject>(runtime)
+                               ->data();
+                    usesExternalStorage = true;
+                  } else if (type.kind == metagen::mdTypePointer ||
+                             type.kind == metagen::mdTypeOpaquePointer ||
+                             type.kind == metagen::mdTypeBlock ||
+                             type.kind == metagen::mdTypeFunctionPointer) {
+                    void* nativePointer = nullptr;
+                    if (readNativePointerProperty(runtime, object,
+                                                  &nativePointer)) {
+                      data = nativePointer;
+                      usesExternalStorage = true;
+                    }
+                  }
                 }
-              } else {
-                data = calloc(1, size);
+              }
+              if (!usesExternalStorage) {
+                byteLength = std::max<size_t>(nativeSizeForType(type),
+                                              sizeof(void*));
+                data = calloc(1, byteLength);
+                if (data == nullptr) {
+                  throw std::bad_alloc();
+                }
                 ownsData = true;
+                if (count > 1) {
+                  NativeApiJsiArgumentFrame frame(1);
+                  convertJsiArgument(runtime, bridge, type, valueToStore, data,
+                                     frame);
+                }
               }
             } else if (count > 0) {
-              data = calloc(1, size);
-              ownsData = true;
-              NativeApiJsiArgumentFrame frame(1);
-              convertJsiArgument(runtime, bridge, type, args[0], data, frame);
+              pendingValue = std::make_shared<Value>(runtime, args[0]);
             }
 
             if (ownsData && data == nullptr) {
@@ -3859,8 +5234,8 @@ Object createInteropObject(Runtime& runtime,
             }
             return Object::createFromHostObject(
                 runtime, std::make_shared<NativeApiReferenceHostObject>(
-                             bridge, type, data, ownsData,
-                             ownsData ? size : 0));
+                             bridge, type, data, ownsData, byteLength,
+                             std::move(pendingValue)));
       });
   Object referencePrototype(runtime);
   referencePrototype.setProperty(runtime, "constructor", referenceConstructor);
@@ -3888,13 +5263,13 @@ Object createInteropObject(Runtime& runtime,
       runtime, "alloc",
       Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "alloc"), 1,
-          [](Runtime& runtime, const Value&, const Value* args,
-             size_t count) -> Value {
+          [bridge](Runtime& runtime, const Value&, const Value* args,
+                   size_t count) -> Value {
             if (count < 1 || !args[0].isNumber()) {
               throw facebook::jsi::JSError(runtime, "alloc expects a byte size.");
             }
             size_t size = static_cast<size_t>(std::max<double>(0, args[0].getNumber()));
-            return createPointer(runtime, calloc(1, size), false);
+            return createPointer(runtime, bridge, calloc(1, size), false);
           }));
 
   interop.setProperty(
@@ -3948,7 +5323,7 @@ Object createInteropObject(Runtime& runtime,
             if (args[0].isString()) {
               std::string utf8 = args[0].asString(runtime).utf8(runtime);
               char* data = strdup(utf8.c_str());
-              return createPointer(runtime, data);
+              return createPointer(runtime, bridge, data);
             }
             if (!args[0].isObject()) {
               return Value::null();
@@ -3958,41 +5333,47 @@ Object createInteropObject(Runtime& runtime,
               return Value(runtime, object);
             }
             if (object.isHostObject<NativeApiReferenceHostObject>(runtime)) {
-              return createPointer(
-                  runtime,
-                  object.getHostObject<NativeApiReferenceHostObject>(runtime)->data());
+              void* data =
+                  object.getHostObject<NativeApiReferenceHostObject>(runtime)->data();
+              if (data == nullptr) {
+                throw facebook::jsi::JSError(
+                    runtime, "Cannot get handle of empty Reference.");
+              }
+              return createPointer(runtime, bridge, data);
             }
             if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-              return createPointer(
-                  runtime,
-                  object.getHostObject<NativeApiStructObjectHostObject>(runtime)->data());
+              auto structObject =
+                  object.getHostObject<NativeApiStructObjectHostObject>(runtime);
+              if (structObject->backingValue() != nullptr) {
+                return Value(runtime, *structObject->backingValue());
+              }
+              return createPointer(runtime, bridge, structObject->data());
             }
             if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
               return createPointer(
-                  runtime,
-                  object.getHostObject<NativeApiObjectHostObject>(runtime)->object());
+                  runtime, bridge,
+                  object.getHostObject<NativeApiObjectHostObject>(runtime)
+                      ->object());
             }
-            if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
-              return createPointer(
-                  runtime,
-                  object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass());
+            if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+              return createPointer(runtime, bridge, cls);
             }
             if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
               return createPointer(
-                  runtime,
+                  runtime, bridge,
                   object.getHostObject<NativeApiProtocolHostObject>(runtime)
                       ->nativeProtocol());
             }
             void* nativePointer = nullptr;
             if (readNativePointerProperty(runtime, object, &nativePointer)) {
-              return createPointer(runtime, nativePointer);
+              return createPointer(runtime, bridge, nativePointer);
             }
             Value nativeName = object.getProperty(runtime, "nativeName");
             if (nativeName.isString()) {
               std::string name = nativeName.asString(runtime).utf8(runtime);
               void* symbol = dlsym(bridge->selfDl(), name.c_str());
               if (symbol != nullptr) {
-                return createPointer(runtime, symbol);
+                return createPointer(runtime, bridge, symbol);
               }
             }
             return Value::null();
@@ -4089,6 +5470,38 @@ bool isValidMetadataStringOffset(MDMetadataReader* metadata,
   return offset < metadata->constantsOffset - metadata->stringsOffset;
 }
 
+bool startsWith(const std::string& value, const std::string& prefix) {
+  return value.size() >= prefix.size() &&
+         value.compare(0, prefix.size(), prefix) == 0;
+}
+
+bool endsWith(const std::string& value, const std::string& suffix) {
+  return value.size() >= suffix.size() &&
+         value.compare(value.size() - suffix.size(), suffix.size(), suffix) == 0;
+}
+
+std::string stripEnumSuffix(const std::string& enumName) {
+  static const std::vector<std::string> suffixes = {
+      "Options", "Option", "Enums", "Enum",   "Result", "Direction",
+      "Orientation", "Style", "Mask", "Type", "Status", "Modes", "Mode", "s"};
+
+  for (const auto& suffix : suffixes) {
+    if (enumName.size() > suffix.size() && endsWith(enumName, suffix)) {
+      return enumName.substr(0, enumName.size() - suffix.size());
+    }
+  }
+
+  return enumName;
+}
+
+bool isNSComparisonResultOrderingName(const std::string& enumName,
+                                      const std::string& member) {
+  if (enumName != "NSComparisonResult") {
+    return false;
+  }
+  return member == "Ascending" || member == "Same" || member == "Descending";
+}
+
 Value enumToObject(Runtime& runtime, MDMetadataReader* metadata,
                    const NativeApiSymbol& symbol) {
   Object result(runtime);
@@ -4096,6 +5509,8 @@ Value enumToObject(Runtime& runtime, MDMetadataReader* metadata,
     return result;
   }
 
+  std::string enumName = symbol.name;
+  std::string strippedPrefix = stripEnumSuffix(enumName);
   MDSectionOffset offset = symbol.offset + sizeof(MDSectionOffset);
   bool next = true;
   while (next) {
@@ -4107,7 +5522,57 @@ Value enumToObject(Runtime& runtime, MDMetadataReader* metadata,
     const char* memberName = metadata->resolveString(nameOffset);
     int64_t value = metadata->getEnumValue(offset);
     offset += sizeof(int64_t);
-    result.setProperty(runtime, memberName, static_cast<double>(value));
+
+    std::string canonicalName = memberName != nullptr ? memberName : "";
+    std::vector<std::string> aliases;
+    aliases.push_back(canonicalName);
+
+    if (!strippedPrefix.empty() && startsWith(canonicalName, strippedPrefix) &&
+        canonicalName.size() > strippedPrefix.size()) {
+      aliases.push_back(canonicalName.substr(strippedPrefix.size()));
+    } else if (!strippedPrefix.empty() &&
+               !startsWith(canonicalName, strippedPrefix)) {
+      aliases.push_back(strippedPrefix + canonicalName);
+    }
+
+    if (startsWith(enumName, "NS") && !startsWith(canonicalName, "NS")) {
+      aliases.push_back(std::string("NS") + canonicalName);
+    }
+
+    if (enumName == "NSStringCompareOptions" &&
+        !endsWith(canonicalName, "Search")) {
+      aliases.push_back(canonicalName + "Search");
+      aliases.push_back(std::string("NS") + canonicalName + "Search");
+    }
+
+    if (!startsWith(canonicalName, "k")) {
+      aliases.push_back(std::string("k") + enumName + canonicalName);
+    }
+
+    if (isNSComparisonResultOrderingName(enumName, canonicalName)) {
+      aliases.push_back(std::string("Ordered") + canonicalName);
+      aliases.push_back(std::string("NSOrdered") + canonicalName);
+    }
+
+    std::vector<std::string> uniqueAliases;
+    std::unordered_set<std::string> seenAliases;
+    for (const auto& alias : aliases) {
+      if (!alias.empty() && seenAliases.insert(alias).second) {
+        uniqueAliases.push_back(alias);
+      }
+    }
+
+    for (const auto& alias : uniqueAliases) {
+      result.setProperty(runtime, alias.c_str(), static_cast<double>(value));
+    }
+
+    char valueKey[32] = {};
+    snprintf(valueKey, sizeof(valueKey), "%lld", static_cast<long long>(value));
+    if (!result.hasProperty(runtime, valueKey)) {
+      std::string reverseName =
+          uniqueAliases.size() > 1 ? uniqueAliases[1] : canonicalName;
+      result.setProperty(runtime, valueKey, makeString(runtime, reverseName));
+    }
   }
   return result;
 }
@@ -4130,8 +5595,8 @@ Value constantToValue(Runtime& runtime,
     case metagen::mdEvalDouble:
       return metadata->getDouble(offset);
     case metagen::mdEvalString: {
-      auto stringOffset = metadata->getOffset(offset);
-      if (isValidMetadataStringOffset(metadata, stringOffset)) {
+      if (isValidMetadataStringOffset(metadata, offset)) {
+        auto stringOffset = metadata->getOffset(offset);
         return makeString(runtime, metadata->resolveString(stringOffset));
       }
 
@@ -4180,11 +5645,12 @@ void prepareJsiArguments(Runtime& runtime,
 
   for (size_t i = 0; i < signature.argumentTypes.size(); i++) {
     const auto& type = signature.argumentTypes[i];
-    size_t size = type.ffiType != nullptr && type.ffiType->size > 0
-                      ? type.ffiType->size
+    ffi_type* ffiType = ffiTypeForJsiArgument(type);
+    size_t size = ffiType != nullptr && ffiType->size > 0
+                      ? ffiType->size
                       : nativeSizeForType(type);
     void* target = frame.storageAt(i, size);
-    convertJsiArgument(runtime, bridge, type, args[i], target, frame);
+    convertJsiFfiArgument(runtime, bridge, type, args[i], target, frame);
   }
 }
 
@@ -4256,6 +5722,9 @@ Value wrapNativeFunctionPointer(Runtime& runtime,
       });
   function.setProperty(runtime, "kind",
                        makeString(runtime, block ? "block" : "functionPointer"));
+  function.setProperty(
+      runtime, "__nativeApiPointerObject",
+      createPointer(runtime, bridge, pointer));
   function.setProperty(
       runtime, "__nativeApiPointer",
       static_cast<double>(reinterpret_cast<uintptr_t>(pointer)));
@@ -4332,6 +5801,12 @@ Value callCFunction(Runtime& runtime,
   NativeApiJsiType returnType = signature->returnType;
   if (retainedReturn) {
     returnType.returnOwned = true;
+  }
+  if (symbol.name == "CFBagContainsValue" &&
+      (returnType.kind == metagen::mdTypeChar ||
+       returnType.kind == metagen::mdTypeUChar ||
+       returnType.kind == metagen::mdTypeUInt8)) {
+    return *returnStorage.data() != 0;
   }
   return convertNativeReturnValue(runtime, bridge, returnType,
                                   returnStorage.data());
@@ -4580,15 +6055,11 @@ class NativeApiHostObject final : public HostObject {
                   .name = className,
                   .runtimeName = className,
               };
-              return Object::createFromHostObject(
-                  runtime,
-                  std::make_shared<NativeApiClassHostObject>(
-                      bridge, std::move(runtimeSymbol)));
+              return makeNativeClassValue(runtime, bridge,
+                                          std::move(runtimeSymbol));
             }
 
-            return Object::createFromHostObject(
-                runtime,
-                std::make_shared<NativeApiClassHostObject>(bridge, *symbol));
+            return makeNativeClassValue(runtime, bridge, *symbol);
           });
     }
     if (property == "getFunction") {
@@ -4668,14 +6139,10 @@ class NativeApiHostObject final : public HostObject {
                   .name = protocolName,
                   .runtimeName = runtimeName != nullptr ? runtimeName : protocolName,
               };
-              return Object::createFromHostObject(
-                  runtime,
-                  std::make_shared<NativeApiProtocolHostObject>(
-                      std::move(runtimeSymbol)));
+              return makeNativeProtocolValue(runtime, bridge,
+                                             std::move(runtimeSymbol));
             }
-            return Object::createFromHostObject(
-                runtime,
-                std::make_shared<NativeApiProtocolHostObject>(*symbol));
+            return makeNativeProtocolValue(runtime, bridge, *symbol);
           });
     }
     if (property == "getStruct" || property == "getUnion") {
@@ -4698,9 +6165,7 @@ class NativeApiHostObject final : public HostObject {
     }
 
     if (const NativeApiSymbol* classSymbol = bridge_->findClass(property)) {
-      return Object::createFromHostObject(
-          runtime,
-          std::make_shared<NativeApiClassHostObject>(bridge_, *classSymbol));
+      return makeNativeClassValue(runtime, bridge_, *classSymbol);
     }
 
     if (const NativeApiSymbol* functionSymbol = bridge_->findFunction(property)) {
@@ -4724,9 +6189,7 @@ class NativeApiHostObject final : public HostObject {
 
     if (const NativeApiSymbol* protocolSymbol =
             bridge_->findProtocol(property)) {
-      return Object::createFromHostObject(
-          runtime,
-          std::make_shared<NativeApiProtocolHostObject>(*protocolSymbol));
+      return makeNativeProtocolValue(runtime, bridge_, *protocolSymbol);
     }
 
     if (const NativeApiSymbol* aggregateSymbol =

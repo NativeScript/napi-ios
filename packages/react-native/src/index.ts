@@ -61,6 +61,9 @@ export type UIKitViewComponent<Props extends object, NativeView = unknown> =
   >;
 
 const nativeApiGlobalName = '__nativeScriptNativeApi';
+const nativeApiGlobalCacheName = '__nativeScriptNativeApiGlobalCache';
+const nativeApiTypeCodeKey = '__nativeApiTypeCode';
+const nativeClassWrappers = new WeakMap<object, unknown>();
 
 function nativeApiHost(): NativeApiHost | undefined {
   return (globalThis as Record<string, unknown>)[nativeApiGlobalName] as
@@ -74,6 +77,30 @@ function requireNativeApiHost(): NativeApiHost {
     throw new Error('NativeScript Native API JSI host object was not installed');
   }
   return api;
+}
+
+function nativeApiGlobalCache(): Record<string, unknown> {
+  const globalObject = globalThis as Record<string, unknown>;
+  const existing = globalObject[nativeApiGlobalCacheName];
+  if (existing && typeof existing === 'object') {
+    return existing as Record<string, unknown>;
+  }
+
+  const cache: Record<string, unknown> = Object.create(null);
+  Object.defineProperty(globalThis, nativeApiGlobalCacheName, {
+    configurable: false,
+    enumerable: false,
+    writable: false,
+    value: cache,
+  });
+  return cache;
+}
+
+function cacheNativeGlobal(name: string, value: unknown): void {
+  if (!name || value === undefined) {
+    return;
+  }
+  nativeApiGlobalCache()[name] = value;
 }
 
 const hostViewPropNames = new Set([
@@ -196,7 +223,16 @@ function defineLazyNativeGlobal(
   resolve: (name: string) => unknown,
   force = false,
 ) {
-  if (!name || (!force && Object.prototype.hasOwnProperty.call(globalThis, name))) {
+  if (!name) {
+    return;
+  }
+
+  if (!force && Object.prototype.hasOwnProperty.call(globalThis, name)) {
+    try {
+      cacheNativeGlobal(name, (globalThis as Record<string, unknown>)[name]);
+    } catch {
+      // Some host globals throw when read; leave those uncached.
+    }
     return;
   }
 
@@ -206,6 +242,7 @@ function defineLazyNativeGlobal(
       enumerable: false,
       get() {
         const value = resolve(name);
+        cacheNativeGlobal(name, value);
         Object.defineProperty(globalThis, name, {
           configurable: true,
           enumerable: false,
@@ -218,6 +255,7 @@ function defineLazyNativeGlobal(
   } catch {
     const value = resolve(name);
     if (value !== undefined) {
+      cacheNativeGlobal(name, value);
       Object.defineProperty(globalThis, name, {
         configurable: true,
         enumerable: false,
@@ -237,7 +275,34 @@ function wrapAggregateConstructor(nativeConstructor: unknown): unknown {
     return nativeConstructor(initialValue);
   };
 
-  for (const key of ['kind', 'runtimeName', 'metadataOffset', 'sizeof', 'fields']) {
+  try {
+    const hasInstance = Symbol.hasInstance;
+    Object.defineProperty(aggregate, hasInstance, {
+      configurable: true,
+      enumerable: false,
+      value(value: unknown) {
+        if (!value || typeof value !== 'object') {
+          return false;
+        }
+        const actual = value as Record<string, unknown>;
+        return (
+          actual.kind === (nativeConstructor as Record<string, unknown>).kind &&
+          actual.name === (nativeConstructor as Record<string, unknown>).runtimeName
+        );
+      },
+    });
+  } catch {
+    // Older runtimes can expose Symbol.hasInstance as read-only.
+  }
+
+  for (const key of [
+    'kind',
+    'runtimeName',
+    'metadataOffset',
+    'sizeof',
+    'fields',
+    'equals',
+  ]) {
     try {
       Object.defineProperty(aggregate, key, {
         configurable: true,
@@ -251,6 +316,90 @@ function wrapAggregateConstructor(nativeConstructor: unknown): unknown {
   }
 
   return aggregate;
+}
+
+function wrapNativeClass(nativeClass: unknown): unknown {
+  if (
+    !nativeClass ||
+    (typeof nativeClass !== 'object' && typeof nativeClass !== 'function')
+  ) {
+    return nativeClass;
+  }
+
+  const cached = nativeClassWrappers.get(nativeClass as object);
+  if (cached) {
+    return cached;
+  }
+
+  const constructable = function NativeScriptNativeClass(...args: unknown[]) {
+    const cls = nativeClass as Record<string, any>;
+    if (args.length > 0 && typeof cls.construct === 'function') {
+      return cls.construct(...args);
+    }
+    if (typeof cls.alloc !== 'function') {
+      throw new Error('Native class cannot be allocated');
+    }
+    const instance = cls.alloc();
+    if (instance && typeof instance.init === 'function') {
+      return instance.init();
+    }
+    return instance;
+  };
+
+  Object.defineProperty(constructable, '__nativeApiClass', {
+    configurable: false,
+    enumerable: false,
+    writable: false,
+    value: nativeClass,
+  });
+
+  try {
+    const hasInstance = Symbol.hasInstance;
+    Object.defineProperty(constructable, hasInstance, {
+      configurable: true,
+      enumerable: false,
+      value(value: unknown) {
+        if (!value || typeof value !== 'object') {
+          return false;
+        }
+
+        const cls = nativeClass as Record<string, any>;
+        try {
+          if (typeof (value as Record<string, any>).isKindOfClass === 'function') {
+            return Boolean((value as Record<string, any>).isKindOfClass(constructable));
+          }
+        } catch {
+          // Fall through to class-name equality for host objects that cannot
+          // dispatch isKindOfClass from this thread.
+        }
+
+        const expectedName = cls.runtimeName ?? cls.name;
+        const actualName = (value as Record<string, unknown>).className;
+        return typeof expectedName === 'string' && actualName === expectedName;
+      },
+    });
+  } catch {
+    // Older runtimes can expose Symbol.hasInstance as read-only.
+  }
+
+  const wrapper = new Proxy(constructable, {
+    get(target, property, receiver) {
+      if (property in target) {
+        return Reflect.get(target, property, receiver);
+      }
+      return (nativeClass as Record<PropertyKey, unknown>)[property];
+    },
+    set(_target, property, value) {
+      (nativeClass as Record<PropertyKey, unknown>)[property] = value;
+      return true;
+    },
+    has(target, property) {
+      return property in target || property in (nativeClass as object);
+    },
+  });
+
+  nativeClassWrappers.set(nativeClass as object, wrapper);
+  return wrapper;
 }
 
 function wrapInteropFactory(
@@ -283,14 +432,17 @@ function wrapInteropFactory(
 
   try {
     const hasInstance = Symbol.hasInstance;
-    const nativeHasInstance = (nativeFactory as Record<symbol, unknown>)[hasInstance];
-    if (typeof nativeHasInstance === 'function') {
-      Object.defineProperty(constructable, hasInstance, {
-        configurable: true,
-        enumerable: false,
-        value: nativeHasInstance,
-      });
-    }
+    Object.defineProperty(constructable, hasInstance, {
+      configurable: true,
+      enumerable: false,
+      value(value: unknown) {
+        return (
+          Boolean(value) &&
+          typeof value === 'object' &&
+          (value as Record<string, unknown>).kind === properties.kind
+        );
+      },
+    });
   } catch {
     // Older runtimes can expose Symbol.hasInstance as read-only.
   }
@@ -346,6 +498,71 @@ function installInteropConstructors(): void {
     kind: 'reference',
     sizeof: pointerSize,
   });
+  interop.FunctionReference = wrapInteropFactory(interop.FunctionReference, {
+    kind: 'functionReference',
+    sizeof: pointerSize,
+  });
+
+  const types = interop.types as Record<string, unknown> | undefined;
+  if (types && typeof types === 'object') {
+    for (const [name, value] of Object.entries(types)) {
+      if (typeof value !== 'number') {
+        continue;
+      }
+      const boxed = {
+        valueOf: () => value,
+        toString: () => String(value),
+      } as Record<string, unknown>;
+      Object.defineProperty(boxed, nativeApiTypeCodeKey, {
+        configurable: false,
+        enumerable: false,
+        writable: false,
+        value,
+      });
+      types[name] = boxed;
+    }
+  }
+}
+
+function defineInlineFunction(name: string, value: Function): void {
+  if (Object.prototype.hasOwnProperty.call(globalThis, name)) {
+    return;
+  }
+  Object.defineProperty(globalThis, name, {
+    configurable: true,
+    enumerable: false,
+    writable: true,
+    value,
+  });
+}
+
+function installInlineFunctions(): void {
+  const makePoint = (x: number, y: number) => ({x, y});
+  const makeSize = (width: number, height: number) => ({width, height});
+  const makeRect = (x: number, y: number, width: number, height: number) => ({
+    origin: {x, y},
+    size: {width, height},
+  });
+
+  defineInlineFunction('CGPointMake', makePoint);
+  defineInlineFunction('NSMakePoint', makePoint);
+  defineInlineFunction('CGSizeMake', makeSize);
+  defineInlineFunction('NSMakeSize', makeSize);
+  defineInlineFunction('CGRectMake', makeRect);
+  defineInlineFunction('NSMakeRect', makeRect);
+  defineInlineFunction('NSMakeRange', (location: number, length: number) => ({
+    location,
+    length,
+  }));
+  defineInlineFunction(
+    'UIEdgeInsetsMake',
+    (top: number, left: number, bottom: number, right: number) => ({
+      top,
+      left,
+      bottom,
+      right,
+    }),
+  );
 }
 
 export function installGlobals(): boolean {
@@ -356,7 +573,7 @@ export function installGlobals(): boolean {
 
   const classNames = api.metadata?.classNames?.() ?? [];
   for (const name of classNames) {
-    defineLazyNativeGlobal(name, (className) => api[className]);
+    defineLazyNativeGlobal(name, (className) => wrapNativeClass(api[className]));
   }
 
   const functionNames = api.metadata?.functionNames?.() ?? [];
@@ -379,7 +596,22 @@ export function installGlobals(): boolean {
 
   const enumNames = api.metadata?.enumNames?.() ?? [];
   for (const name of enumNames) {
-    defineLazyNativeGlobal(name, (enumName) => api[enumName]);
+    const resolveEnum = (enumName: string) => api.getEnum?.(enumName) ?? api[enumName];
+    defineLazyNativeGlobal(name, resolveEnum);
+
+    const enumValue = resolveEnum(name);
+    if (!enumValue || typeof enumValue !== 'object') {
+      continue;
+    }
+    for (const memberName of Object.keys(enumValue)) {
+      if (/^-?\d+$/.test(memberName)) {
+        continue;
+      }
+      defineLazyNativeGlobal(
+        memberName,
+        () => (enumValue as Record<string, unknown>)[memberName],
+      );
+    }
   }
 
   const structNames = api.metadata?.structNames?.() ?? [];
@@ -412,6 +644,7 @@ export function init(
   const installed = NativeScriptNativeApi.install(metadataPath);
   if (installed) {
     installInteropConstructors();
+    installInlineFunctions();
   }
   if (installed && options.globals !== false) {
     installGlobals();
