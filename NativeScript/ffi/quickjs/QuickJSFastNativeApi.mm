@@ -1572,18 +1572,25 @@ bool TryFastConvertQuickJSUInt16Argument(napi_env env, napi_value value,
 
   JSValue jsValue = ToJSValue(value);
   if (JS_IsString(jsValue)) {
-    size_t length = 0;
-    const char* str = JS_ToCStringLen(env->context, &length, jsValue);
+    size_t byteLength = 0;
+    const char* str = JS_ToCStringLen(env->context, &byteLength, jsValue);
     if (str == nullptr) {
       return false;
     }
-    if (length != 1) {
-      JS_FreeCString(env->context, str);
+
+    NSString* string = [[NSString alloc] initWithBytes:str
+                                                length:byteLength
+                                              encoding:NSUTF8StringEncoding];
+    JS_FreeCString(env->context, str);
+
+    if (string == nil || [string length] != 1) {
+      [string release];
       napi_throw_type_error(env, nullptr, "Expected a single-character string.");
       return false;
     }
-    *result = static_cast<uint8_t>(str[0]);
-    JS_FreeCString(env->context, str);
+
+    *result = static_cast<uint16_t>([string characterAtIndex:0]);
+    [string release];
     return true;
   }
 
