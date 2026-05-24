@@ -14,7 +14,7 @@
 #include <sstream>
 
 #include "JsV8InspectorClient.h"
-#include "NativeScriptException.h"
+#include "ffi/napi/NativeScriptException.h"
 #include "Runtime.h"
 
 namespace tns {

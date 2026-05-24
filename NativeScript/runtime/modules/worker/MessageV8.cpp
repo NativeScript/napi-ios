@@ -10,7 +10,7 @@
 
 #include "MessageV8.h"
 
-#include "ffi/NativeScriptException.h"
+#include "ffi/napi/NativeScriptException.h"
 #include "v8-api.h"
 
 using namespace v8;

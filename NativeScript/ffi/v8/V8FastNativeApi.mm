@@ -19,15 +19,15 @@
 #include <unordered_map>
 #include <vector>
 
-#include "CFunction.h"
-#include "ClassBuilder.h"
-#include "ClassMember.h"
-#include "Interop.h"
-#include "Object.h"
-#include "ObjCBridge.h"
+#include "ffi/napi/CFunction.h"
+#include "ffi/napi/ClassBuilder.h"
+#include "ffi/napi/ClassMember.h"
+#include "ffi/napi/Interop.h"
+#include "ffi/napi/Object.h"
+#include "ffi/napi/ObjCBridge.h"
 #include "SignatureDispatch.h"
-#include "TypeConv.h"
-#include "ffi/NativeScriptException.h"
+#include "ffi/napi/TypeConv.h"
+#include "ffi/napi/NativeScriptException.h"
 #include "v8-api.h"
 
 namespace nativescript {

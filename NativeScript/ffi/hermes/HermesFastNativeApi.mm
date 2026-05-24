@@ -16,16 +16,16 @@
 #include <unordered_map>
 #include <vector>
 
-#include "CFunction.h"
-#include "CallbackThreading.h"
-#include "Class.h"
-#include "ClassBuilder.h"
-#include "ClassMember.h"
-#include "Interop.h"
-#include "NativeScriptException.h"
-#include "ObjCBridge.h"
+#include "ffi/napi/CFunction.h"
+#include "ffi/napi/CallbackThreading.h"
+#include "ffi/napi/Class.h"
+#include "ffi/napi/ClassBuilder.h"
+#include "ffi/napi/ClassMember.h"
+#include "ffi/napi/Interop.h"
+#include "ffi/napi/NativeScriptException.h"
+#include "ffi/napi/ObjCBridge.h"
 #include "SignatureDispatch.h"
-#include "TypeConv.h"
+#include "ffi/napi/TypeConv.h"
 
 namespace nativescript {
 namespace {

@@ -9,7 +9,7 @@
 
 #define NAPI_EXPERIMENTAL
 
-#include "ffi/V8FastNativeApi.h"
+#include "ffi/v8/V8FastNativeApi.h"
 #include "js_native_api.h"
 #include "v8-api.h"
 #include "v8-module-loader.h"

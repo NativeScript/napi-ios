@@ -4,7 +4,7 @@
 #include <sys/queue.h>
 
 #include "js_native_api.h"
-#include "ffi/QuickJSFastNativeApi.h"
+#include "ffi/quickjs/QuickJSFastNativeApi.h"
 #include "libbf.h"
 #include "quicks-runtime.h"
 

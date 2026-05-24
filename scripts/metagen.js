@@ -316,7 +316,7 @@ async function main() {
   const signatureBindingsPath =
     process.env.NS_SIGNATURE_BINDINGS_CPP_PATH ||
     process.env.TNS_SIGNATURE_BINDINGS_CPP_PATH ||
-    path.resolve(__dirname, "..", "NativeScript", "ffi", "GeneratedSignatureDispatch.inc");
+    path.resolve(__dirname, "..", "NativeScript", "ffi", "shared", "GeneratedSignatureDispatch.inc");
   await fsp.rm(typesDir, { recursive: true, force: true });
   await fsp.mkdir(typesDir, { recursive: true });
   await fsp.mkdir(metadataDir, { recursive: true });

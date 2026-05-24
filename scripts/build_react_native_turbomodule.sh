@@ -36,9 +36,9 @@ mkdir -p \
   "$PACKAGE_DIR/types/objc-node-api" \
   "$PACK_DESTINATION"
 
-cp NativeScript/ffi/jsi/NativeApiJsi.h "$PACKAGE_DIR/native-api-jsi/"
-cp NativeScript/ffi/jsi/NativeApiJsi.mm "$PACKAGE_DIR/native-api-jsi/"
-cp NativeScript/ffi/jsi/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/hermes/jsi/NativeApiJsi.h "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/hermes/jsi/NativeApiJsi.mm "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/hermes/jsi/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api-jsi/"
 cp metadata-generator/include/Metadata.h "$PACKAGE_DIR/native-api-jsi/metadata/include/"
 cp metadata-generator/include/MetadataReader.h "$PACKAGE_DIR/native-api-jsi/metadata/include/"
 cp NativeScript/libffi/iphonesimulator-universal/include/ffi.h "$PACKAGE_DIR/ios/vendor/libffi/include/"

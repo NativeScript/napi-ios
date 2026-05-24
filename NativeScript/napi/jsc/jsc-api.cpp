@@ -15,7 +15,7 @@
 #include <thread>
 #include <vector>
 
-#include "ffi/JSCFastNativeApi.h"
+#include "ffi/jsc/JSCFastNativeApi.h"
 
 struct napi_callback_info__ {
   napi_value newTarget;

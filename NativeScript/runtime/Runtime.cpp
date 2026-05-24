@@ -13,7 +13,7 @@
 #include "v8-api.h"
 #endif  // TARGET_ENGINE_V8
 #ifdef TARGET_ENGINE_HERMES
-#include "ffi/jsi/NativeApiJsi.h"
+#include "ffi/hermes/jsi/NativeApiJsi.h"
 #endif  // TARGET_ENGINE_HERMES
 #include <CoreFoundation/CFRunLoop.h>
 

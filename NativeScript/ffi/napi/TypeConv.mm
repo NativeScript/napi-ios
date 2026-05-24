@@ -8,7 +8,7 @@
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "ffi.h"
-#include "ffi/Struct.h"
+#include "Struct.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"

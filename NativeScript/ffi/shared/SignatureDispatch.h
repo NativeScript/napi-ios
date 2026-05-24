@@ -9,7 +9,7 @@
 #include <cstdlib>
 #include <cstring>
 
-#include "Cif.h"
+#include "ffi/napi/Cif.h"
 #include "js_native_api.h"
 #ifdef TARGET_ENGINE_V8
 #include <v8.h>

@@ -15,8 +15,8 @@
 #include "Interop.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
-#include "ffi/NativeScriptException.h"
-#include "ffi/Tasks.h"
+#include "NativeScriptException.h"
+#include "Tasks.h"
 #ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"
 #endif
@@ -24,6 +24,17 @@
 namespace nativescript {
 
 namespace {
+
+size_t getCifReturnStorageSize(Cif* cif) {
+  size_t size = 0;
+  if (cif != nullptr) {
+    size = cif->rvalueLength;
+    if (size == 0 && cif->cif.rtype != nullptr) {
+      size = cif->cif.rtype->size;
+    }
+  }
+  return size != 0 ? size : sizeof(void*);
+}
 
 inline bool isCompatOrMainCFunctionName(const char* name) {
   return name == nullptr ||
@@ -37,16 +48,7 @@ inline bool isCompatOrMainCFunctionName(const char* name) {
 class CFunctionReturnStorage final {
  public:
   explicit CFunctionReturnStorage(Cif* cif) {
-    size_t size = 0;
-    if (cif != nullptr) {
-      size = cif->rvalueLength;
-      if (size == 0 && cif->cif.rtype != nullptr) {
-        size = cif->cif.rtype->size;
-      }
-    }
-    if (size == 0) {
-      size = sizeof(void*);
-    }
+    const size_t size = getCifReturnStorageSize(cif);
 
     if (size <= kInlineSize) {
       rvalue_ = inlineBuffer_;
@@ -87,8 +89,7 @@ class CFunctionInvocationFrame final {
       return;
     }
 
-    const size_t rvalueLength = cif->rvalueLength > 0 ? cif->rvalueLength : 1;
-    rvalue_ = std::malloc(rvalueLength);
+    rvalue_ = std::malloc(getCifReturnStorageSize(cif));
     if (rvalue_ == nullptr) {
       return;
     }

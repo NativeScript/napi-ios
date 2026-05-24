@@ -175,35 +175,69 @@ message(STATUS "NS_GSD_BACKEND = ${NS_GSD_BACKEND} (${NS_EFFECTIVE_GSD_BACKEND})
 # Set up sources
 include_directories(
   ./
+  ffi/shared
+  ffi/v8
+  ffi/hermes
+  ffi/jsc
+  ffi/quickjs
   ../metadata-generator/include
   napi/common
   libffi/${LIBFFI_BUILD}/include
 )
 
+set(FFI_SHARED_SOURCE_FILES
+  ffi/shared/Tasks.cpp
+)
+
+set(FFI_NAPI_SOURCE_FILES
+  ffi/napi/AutoreleasePool.mm
+  ffi/napi/Protocol.mm
+  ffi/napi/ObjCBridge.mm
+  ffi/napi/Block.mm
+  ffi/napi/Class.mm
+  ffi/napi/Closure.mm
+  ffi/napi/ClassMember.mm
+  ffi/napi/Cif.mm
+  ffi/napi/TypeConv.mm
+  ffi/napi/Util.mm
+  ffi/napi/Struct.mm
+  ffi/napi/ObjectRef.mm
+  ffi/napi/JSObject.mm
+  ffi/napi/Enum.mm
+  ffi/napi/Variable.mm
+  ffi/napi/Object.mm
+  ffi/napi/CFunction.mm
+  ffi/napi/Interop.mm
+  ffi/napi/InlineFunctions.mm
+  ffi/napi/ClassBuilder.mm
+  ffi/napi/NativeScriptException.mm
+)
+
+set(FFI_DIRECT_SOURCE_FILES
+  ffi/shared/EngineDirectCall.mm
+)
+
+set(FFI_V8_SOURCE_FILES
+  ffi/v8/V8FastNativeApi.mm
+)
+
+set(FFI_HERMES_SOURCE_FILES
+  ffi/hermes/jsi/NativeApiJsi.mm
+  ffi/hermes/HermesFastNativeApi.mm
+)
+
+set(FFI_QUICKJS_SOURCE_FILES
+  ffi/quickjs/QuickJSFastNativeApi.mm
+)
+
+set(FFI_JSC_SOURCE_FILES
+  ffi/jsc/JSCFastNativeApi.mm
+)
+
 set(SOURCE_FILES
-  ffi/AutoreleasePool.mm
-  ffi/Protocol.mm
-  ffi/ObjCBridge.mm
-  ffi/Block.mm
-  ffi/Class.mm
-  ffi/Closure.mm
-  ffi/ClassMember.mm
-  ffi/Cif.mm
-  ffi/TypeConv.mm
-  ffi/Util.mm
-  ffi/Struct.mm
-  ffi/ObjectRef.mm
-  ffi/JSObject.mm
-  ffi/Enum.mm
-  ffi/Variable.mm
-  ffi/Object.mm
-  ffi/CFunction.mm
-  ffi/EngineDirectCall.mm
-  ffi/Interop.mm
-  ffi/InlineFunctions.mm
-  ffi/ClassBuilder.mm
-  ffi/NativeScriptException.mm
-  ffi/Tasks.cpp
+  ${FFI_SHARED_SOURCE_FILES}
+  ${FFI_NAPI_SOURCE_FILES}
+  ${FFI_DIRECT_SOURCE_FILES}
 )
 
 if(ENABLE_JS_RUNTIME)
@@ -248,7 +282,7 @@ if(ENABLE_JS_RUNTIME)
       napi/v8/v8-module-loader.cpp
       napi/v8/jsr.cpp
       napi/v8/SimpleAllocator.cpp
-      ffi/V8FastNativeApi.mm
+      ${FFI_V8_SOURCE_FILES}
     )
 
   elseif(TARGET_ENGINE_HERMES)
@@ -273,8 +307,7 @@ if(ENABLE_JS_RUNTIME)
     set(SOURCE_FILES
       ${SOURCE_FILES}
       napi/hermes/jsr.cpp
-      ffi/jsi/NativeApiJsi.mm
-      ffi/HermesFastNativeApi.mm
+      ${FFI_HERMES_SOURCE_FILES}
     )
 
   elseif(TARGET_ENGINE_QUICKJS)
@@ -307,7 +340,7 @@ if(ENABLE_JS_RUNTIME)
       # napi
       napi/quickjs/quickjs-api.c
       napi/quickjs/jsr.cpp
-      ffi/QuickJSFastNativeApi.mm
+      ${FFI_QUICKJS_SOURCE_FILES}
     )
 
   elseif(TARGET_ENGINE_JSC)
@@ -320,7 +353,7 @@ if(ENABLE_JS_RUNTIME)
     set(SOURCE_FILES ${SOURCE_FILES}
       napi/jsc/jsc-api.cpp
       napi/jsc/jsr.cpp
-      ffi/JSCFastNativeApi.mm
+      ${FFI_JSC_SOURCE_FILES}
     )
   endif()
 else()

@@ -95,8 +95,8 @@ const junitEndTag = "</testsuites>";
 const consoleLogMarker = "CONSOLE LOG:";
 const crashReportsDir = path.join(os.homedir(), "Library", "Logs", "DiagnosticReports");
 const generatedRuntimeBuildOutputs = new Set([
-    path.join(nativeScriptSourceRoot, "ffi", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "GeneratedSignatureDispatch.inc.stamp")
+    path.join(nativeScriptSourceRoot, "ffi", "shared", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "shared", "GeneratedSignatureDispatch.inc.stamp")
 ]);
 
 function parseArgs() {

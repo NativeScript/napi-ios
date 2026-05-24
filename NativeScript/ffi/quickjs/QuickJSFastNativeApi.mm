@@ -15,16 +15,16 @@
 #include <unordered_map>
 #include <vector>
 
-#include "CFunction.h"
-#include "ClassBuilder.h"
-#include "ClassMember.h"
+#include "ffi/napi/CFunction.h"
+#include "ffi/napi/ClassBuilder.h"
+#include "ffi/napi/ClassMember.h"
 #include "EngineDirectCall.h"
-#include "Interop.h"
+#include "ffi/napi/Interop.h"
 #include "MetadataReader.h"
-#include "NativeScriptException.h"
-#include "ObjCBridge.h"
+#include "ffi/napi/NativeScriptException.h"
+#include "ffi/napi/ObjCBridge.h"
 #include "SignatureDispatch.h"
-#include "TypeConv.h"
+#include "ffi/napi/TypeConv.h"
 #include "mimalloc.h"
 #include "quicks-runtime.h"
 

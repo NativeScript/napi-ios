@@ -1,6 +1,6 @@
 
 #include <CoreFoundation/CFRunLoop.h>
-#include "ffi/NativeScriptException.h"
+#include "ffi/napi/NativeScriptException.h"
 #include "jsr_common.h"
 #include "native_api_util.h"
 #include "robin_hood.h"

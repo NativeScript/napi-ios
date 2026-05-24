@@ -2,7 +2,7 @@
 #include <Foundation/NSObjCRuntime.h>
 #include <memory>
 #include <string>
-#include "ffi/NativeScriptException.h"
+#include "ffi/napi/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "jsr.h"
