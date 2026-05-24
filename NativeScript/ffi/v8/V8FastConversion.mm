@@ -270,7 +270,6 @@ bool TryFastConvertV8UInt16Argument(napi_env env, v8::Local<v8::Value> value, ui
   if (value->IsString()) {
     v8::String::Value chars(env->isolate, value);
     if (chars.length() != 1) {
-      throwV8Error(env->isolate, "Expected a single-character string.");
       *result = 0;
       return false;
     }
@@ -336,7 +335,11 @@ bool TryFastConvertV8Argument(napi_env env, MDTypeKind kind, v8::Local<v8::Value
     case mdTypeSInt64:
       if (value->IsBigInt()) {
         bool lossless = false;
-        *reinterpret_cast<int64_t*>(result) = value.As<v8::BigInt>()->Int64Value(&lossless);
+        int64_t converted = value.As<v8::BigInt>()->Int64Value(&lossless);
+        if (!lossless) {
+          return false;
+        }
+        *reinterpret_cast<int64_t*>(result) = converted;
         return true;
       }
       return value->IntegerValue(env->context()).To(reinterpret_cast<int64_t*>(result));
@@ -345,8 +348,11 @@ bool TryFastConvertV8Argument(napi_env env, MDTypeKind kind, v8::Local<v8::Value
     case mdTypeUInt64:
       if (value->IsBigInt()) {
         bool lossless = false;
-        *reinterpret_cast<uint64_t*>(result) =
-            value.As<v8::BigInt>()->Uint64Value(&lossless);
+        uint64_t converted = value.As<v8::BigInt>()->Uint64Value(&lossless);
+        if (!lossless) {
+          return false;
+        }
+        *reinterpret_cast<uint64_t*>(result) = converted;
         return true;
       } else {
         int64_t converted = 0;

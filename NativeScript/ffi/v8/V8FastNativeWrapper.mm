@@ -84,9 +84,12 @@ NS_V8_INTERCEPTED nativeWrapperNamedSetter(
     }
   }
 
-  definePlainValueProperty(info.GetIsolate()->GetCurrentContext(), holder,
-                           property, value);
-  NS_V8_RETURN_YES;
+  if (definePlainValueProperty(info.GetIsolate()->GetCurrentContext(), holder,
+                               property, value)) {
+    NS_V8_RETURN_YES;
+  }
+
+  NS_V8_RETURN_NO;
 }
 
 NS_V8_INTERCEPTED nativeWrapperIndexedGetter(

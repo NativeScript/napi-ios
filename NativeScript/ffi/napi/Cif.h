@@ -24,7 +24,6 @@ class Cif {
   bool generatedDispatchHasRoundTripCacheArgument = false;
   bool generatedDispatchUsesObjectReturnStorage = false;
   bool generatedDispatchSetsV8ReturnDirectly = false;
-  uint64_t hermesRawReturnSlot = 0;
 
   void* rvalue;
   void** avalues;

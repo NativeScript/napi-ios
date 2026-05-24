@@ -163,7 +163,25 @@ id resolveSelf(napi_env env, v8::Local<v8::Value> jsThisValue, ObjCClassMember* 
   if (method != nullptr && method->cls != nullptr && method->cls->nativeClass != nil) {
     if (method->classMethod) {
       shouldUseClassFallback = true;
-    } else if (!jsThisValue.IsEmpty() && jsThisValue->IsFunction()) {
+    }
+
+    if (!jsThisValue.IsEmpty() && jsThisValue->IsFunction() && jsThis != nullptr) {
+      bool isSameConstructor = true;
+      napi_value definingConstructor = nullptr;
+      if (method->cls->constructor != nullptr) {
+        napi_get_reference_value(env, method->cls->constructor,
+                                 &definingConstructor);
+      }
+      if (definingConstructor != nullptr &&
+          napi_strict_equals(env, jsThis, definingConstructor,
+                             &isSameConstructor) == napi_ok &&
+          !isSameConstructor) {
+        shouldUseClassFallback = false;
+      } else {
+        shouldUseClassFallback = true;
+      }
+    } else if (!method->classMethod && !jsThisValue.IsEmpty() &&
+               jsThisValue->IsFunction()) {
       shouldUseClassFallback = true;
     }
   }

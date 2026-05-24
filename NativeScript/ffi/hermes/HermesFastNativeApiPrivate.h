@@ -76,11 +76,7 @@ inline bool readHermesFiniteNumber(napi_value value, double* result) {
 }
 
 inline napi_value makeHermesRawValue(Cif* cif, uint64_t raw) {
-  if (cif != nullptr) {
-    cif->hermesRawReturnSlot = raw;
-    return reinterpret_cast<napi_value>(&cif->hermesRawReturnSlot);
-  }
-
+  (void)cif;
   static thread_local uint64_t slots[64] = {};
   static thread_local unsigned int nextSlot = 0;
   uint64_t* slot = &slots[nextSlot++ & 63];

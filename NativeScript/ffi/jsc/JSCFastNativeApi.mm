@@ -46,13 +46,34 @@ id resolveJSCSelf(napi_env env, napi_value jsThis, ObjCClassMember* member) {
 
   if (member != nullptr && member->cls != nullptr &&
       member->cls->nativeClass != nil) {
-    if (member->classMethod) {
-      return static_cast<id>(member->cls->nativeClass);
-    }
-
+    bool shouldUseClassFallback = member->classMethod;
     napi_valuetype jsType = napi_undefined;
     if (jsThis != nullptr && napi_typeof(env, jsThis, &jsType) == napi_ok &&
         jsType == napi_function) {
+      bool isSameConstructor = true;
+      napi_value definingConstructor = nullptr;
+      if (member->cls->constructor != nullptr) {
+        napi_get_reference_value(env, member->cls->constructor,
+                                 &definingConstructor);
+      }
+      if (definingConstructor != nullptr &&
+          napi_strict_equals(env, jsThis, definingConstructor,
+                             &isSameConstructor) == napi_ok &&
+          !isSameConstructor) {
+        shouldUseClassFallback = false;
+      } else {
+        shouldUseClassFallback = true;
+      }
+    }
+
+    if (member->classMethod) {
+      if (shouldUseClassFallback) {
+        return static_cast<id>(member->cls->nativeClass);
+      }
+      return nil;
+    }
+
+    if (shouldUseClassFallback) {
       return static_cast<id>(member->cls->nativeClass);
     }
   }

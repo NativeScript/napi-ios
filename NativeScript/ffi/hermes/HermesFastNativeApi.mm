@@ -586,10 +586,6 @@ napi_value TryCallHermesObjCMemberFastImpl(
           : nullptr;
 
   if (frameDirectReturnInvoker != nullptr) {
-    if (handled != nullptr) {
-      *handled = true;
-    }
-
     EngineDirectRoundTripCacheFrameGuard roundTripCacheFrame(
         env, member->bridgeState, needsRoundTripFrame);
 
@@ -611,6 +607,9 @@ napi_value TryCallHermesObjCMemberFastImpl(
               env, cif, reinterpret_cast<void*>(objc_msgSend), self,
               descriptor->selector, returnContext, hermesArgsBase,
               &directResult)) {
+        if (handled != nullptr) {
+          *handled = true;
+        }
         return directResult;
       }
     } @catch (NSException* exception) {
@@ -656,10 +655,6 @@ napi_value TryCallHermesObjCMemberFastImpl(
           : nullptr;
 
   if (directReturnInvoker != nullptr) {
-    if (handled != nullptr) {
-      *handled = true;
-    }
-
     EngineDirectRoundTripCacheFrameGuard roundTripCacheFrame(
         env, member->bridgeState, needsRoundTripFrame);
 
@@ -684,6 +679,9 @@ napi_value TryCallHermesObjCMemberFastImpl(
               env, cif, reinterpret_cast<void*>(objc_msgSend), self,
               descriptor->selector, returnContext, directArgs,
               &directResult)) {
+        if (handled != nullptr) {
+          *handled = true;
+        }
         return directResult;
       }
     } @catch (NSException* exception) {
@@ -702,10 +700,6 @@ napi_value TryCallHermesObjCMemberFastImpl(
       *handled = true;
     }
     return nullptr;
-  }
-
-  if (handled != nullptr) {
-    *handled = true;
   }
 
   EngineDirectRoundTripCacheFrameGuard roundTripCacheFrame(
@@ -742,6 +736,10 @@ napi_value TryCallHermesObjCMemberFastImpl(
 
   if (!didInvoke) {
     return nullptr;
+  }
+
+  if (handled != nullptr) {
+    *handled = true;
   }
 
   return makeHermesObjCReturnValue(
@@ -803,10 +801,6 @@ napi_value TryCallHermesCFunctionFastImpl(
           : nullptr;
 
   if (frameDirectReturnInvoker != nullptr) {
-    if (handled != nullptr) {
-      *handled = true;
-    }
-
     EngineDirectRoundTripCacheFrameGuard roundTripCacheFrame(
         env, bridgeState, needsRoundTripCacheFrame(cif));
 
@@ -815,6 +809,9 @@ napi_value TryCallHermesCFunctionFastImpl(
       NativeCallRuntimeUnlockScope unlockRuntime(env);
       if (frameDirectReturnInvoker(env, cif, function->fnptr, hermesArgsBase,
                                    &directResult)) {
+        if (handled != nullptr) {
+          *handled = true;
+        }
         return directResult;
       }
     } @catch (NSException* exception) {
@@ -859,10 +856,6 @@ napi_value TryCallHermesCFunctionFastImpl(
           : nullptr;
 
   if (directReturnInvoker != nullptr) {
-    if (handled != nullptr) {
-      *handled = true;
-    }
-
     EngineDirectRoundTripCacheFrameGuard roundTripCacheFrame(
         env, bridgeState, needsRoundTripCacheFrame(cif));
 
@@ -874,6 +867,9 @@ napi_value TryCallHermesCFunctionFastImpl(
       NativeCallRuntimeUnlockScope unlockRuntime(env);
       if (directReturnInvoker(env, cif, function->fnptr, directArgs,
                               &directResult)) {
+        if (handled != nullptr) {
+          *handled = true;
+        }
         return directResult;
       }
     } @catch (NSException* exception) {
@@ -882,10 +878,6 @@ napi_value TryCallHermesCFunctionFastImpl(
       nativeScriptException.ReThrowToJS(env);
       return nullptr;
     }
-  }
-
-  if (handled != nullptr) {
-    *handled = true;
   }
 
   EngineDirectRoundTripCacheFrameGuard roundTripCacheFrame(
@@ -925,6 +917,10 @@ napi_value TryCallHermesCFunctionFastImpl(
 
   if (!didInvoke) {
     return nullptr;
+  }
+
+  if (handled != nullptr) {
+    *handled = true;
   }
 
   return makeHermesCFunctionReturnValue(env, function, cif, perCallRValue);

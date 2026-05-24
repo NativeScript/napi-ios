@@ -28,6 +28,40 @@ bool isCompatCFunction(napi_env env, void* data) {
          strcmp(name, "NSApplicationMain") == 0;
 }
 
+id normalizeQuickJSWrappedReceiver(napi_env env, void* wrapped) {
+  if (wrapped == nullptr) {
+    return nil;
+  }
+
+  auto* state = nativescript::ObjCBridgeState::InstanceData(env);
+  if (state != nullptr) {
+    id nativeObject = state->nativeObjectForBridgeWrapper(wrapped);
+    if (nativeObject != nil) {
+      return nativeObject;
+    }
+
+    for (const auto& entry : state->classes) {
+      auto* bridgedClass = entry.second;
+      if (bridgedClass == wrapped && bridgedClass->nativeClass != nil) {
+        return static_cast<id>(bridgedClass->nativeClass);
+      }
+    }
+
+    for (const auto& entry : state->protocols) {
+      auto* bridgedProtocol = entry.second;
+      if (bridgedProtocol == wrapped) {
+        if (Protocol* runtimeProtocol =
+                objc_getProtocol(bridgedProtocol->name.c_str())) {
+          return static_cast<id>(runtimeProtocol);
+        }
+        break;
+      }
+    }
+  }
+
+  return static_cast<id>(wrapped);
+}
+
 id resolveQuickJSSelf(napi_env env, napi_value jsThis,
                       nativescript::ObjCClassMember* member) {
   id self = nil;
@@ -38,7 +72,7 @@ id resolveQuickJSSelf(napi_env env, napi_value jsThis,
     if (nativescript::TryUnwrapQuickJSNativeObjectFast(
             env, ToJSValue(jsThis), &wrapped) &&
         wrapped != nullptr) {
-      return static_cast<id>(wrapped);
+      return normalizeQuickJSWrappedReceiver(env, wrapped);
     }
   }
 
@@ -56,13 +90,34 @@ id resolveQuickJSSelf(napi_env env, napi_value jsThis,
 
   if (member != nullptr && member->cls != nullptr &&
       member->cls->nativeClass != nil) {
-    if (member->classMethod) {
-      return static_cast<id>(member->cls->nativeClass);
-    }
-
+    bool shouldUseClassFallback = member->classMethod;
     napi_valuetype jsType = napi_undefined;
     if (jsThis != nullptr && napi_typeof(env, jsThis, &jsType) == napi_ok &&
         jsType == napi_function) {
+      bool isSameConstructor = true;
+      napi_value definingConstructor = nullptr;
+      if (member->cls->constructor != nullptr) {
+        napi_get_reference_value(env, member->cls->constructor,
+                                 &definingConstructor);
+      }
+      if (definingConstructor != nullptr &&
+          napi_strict_equals(env, jsThis, definingConstructor,
+                             &isSameConstructor) == napi_ok &&
+          !isSameConstructor) {
+        shouldUseClassFallback = false;
+      } else {
+        shouldUseClassFallback = true;
+      }
+    }
+
+    if (member->classMethod) {
+      if (shouldUseClassFallback) {
+        return static_cast<id>(member->cls->nativeClass);
+      }
+      return nil;
+    }
+
+    if (shouldUseClassFallback) {
       return static_cast<id>(member->cls->nativeClass);
     }
   }
