@@ -1,5 +1,6 @@
 #include "CFunction.h"
 #include <dispatch/dispatch.h>
+#include <cstddef>
 #include <cstdlib>
 #include <cstdint>
 #include <cstring>
@@ -32,6 +33,50 @@ inline bool isCompatOrMainCFunctionName(const char* name) {
          strcmp(name, "UIApplicationMain") == 0 ||
          strcmp(name, "NSApplicationMain") == 0;
 }
+
+class CFunctionReturnStorage final {
+ public:
+  explicit CFunctionReturnStorage(Cif* cif) {
+    size_t size = 0;
+    if (cif != nullptr) {
+      size = cif->rvalueLength;
+      if (size == 0 && cif->cif.rtype != nullptr) {
+        size = cif->cif.rtype->size;
+      }
+    }
+    if (size == 0) {
+      size = sizeof(void*);
+    }
+
+    if (size <= kInlineSize) {
+      rvalue_ = inlineBuffer_;
+      std::memset(rvalue_, 0, size);
+      return;
+    }
+
+    rvalue_ = std::malloc(size);
+    if (rvalue_ != nullptr) {
+      std::memset(rvalue_, 0, size);
+    }
+  }
+
+  ~CFunctionReturnStorage() {
+    if (rvalue_ != nullptr && rvalue_ != inlineBuffer_) {
+      std::free(rvalue_);
+    }
+  }
+
+  CFunctionReturnStorage(const CFunctionReturnStorage&) = delete;
+  CFunctionReturnStorage& operator=(const CFunctionReturnStorage&) = delete;
+
+  bool isValid() const { return rvalue_ != nullptr; }
+  void* rvalue() const { return rvalue_; }
+
+ private:
+  static constexpr size_t kInlineSize = 32;
+  alignas(max_align_t) unsigned char inlineBuffer_[kInlineSize];
+  void* rvalue_ = nullptr;
+};
 
 class CFunctionInvocationFrame final {
  public:
@@ -433,17 +478,18 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
 
   const bool isMainEntrypoint =
       strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0;
-  auto invocationFrame = std::make_shared<CFunctionInvocationFrame>(cif);
-  if (!invocationFrame->isValid()) {
-    napi_throw_error(env, "NativeScriptException",
-                     "Unable to allocate C function invocation storage.");
-    return nullptr;
-  }
-  void* rvalue = invocationFrame->rvalue();
 
   if ((engineDirectInvoker != nullptr ||
        (napiInvoker != nullptr && !cif->skipGeneratedNapiDispatch)) &&
       !isMainEntrypoint) {
+    CFunctionReturnStorage returnStorage(cif);
+    if (!returnStorage.isValid()) {
+      napi_throw_error(env, "NativeScriptException",
+                       "Unable to allocate C function return storage.");
+      return nullptr;
+    }
+
+    void* rvalue = returnStorage.rvalue();
     @try {
       NativeCallRuntimeUnlockScope unlockRuntime(env);
       bool invoked = engineDirectInvoker != nullptr
@@ -468,6 +514,13 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
     return cif->returnType->toJS(env, rvalue, toJSFlags);
   }
 
+  auto invocationFrame = std::make_shared<CFunctionInvocationFrame>(cif);
+  if (!invocationFrame->isValid()) {
+    napi_throw_error(env, "NativeScriptException",
+                     "Unable to allocate C function invocation storage.");
+    return nullptr;
+  }
+  void* rvalue = invocationFrame->rvalue();
   void** avalues = invocationFrame->avalues();
 
   bool shouldFreeAny = false;

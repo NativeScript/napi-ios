@@ -123,6 +123,22 @@ enum QuickJSFastNativeKind : int {
   kQuickJSFastCFunction = 5,
 };
 
+enum class QuickJSEngineDirectResult {
+  NotHandled,
+  Handled,
+  Failed,
+};
+
+JSValue throwQuickJSPendingException(JSContext* context, const char* message) {
+  if (context == nullptr) {
+    return JS_EXCEPTION;
+  }
+  if (JS_HasException(context)) {
+    return JS_Throw(context, JS_GetException(context));
+  }
+  return JS_ThrowInternalError(context, "%s", message);
+}
+
 inline bool needsRoundTripCacheFrame(nativescript::Cif* cif) {
   return cif != nullptr && cif->generatedDispatchHasRoundTripCacheArgument;
 }
@@ -837,19 +853,19 @@ bool makeQuickJSCFunctionReturnValue(JSContext* context, napi_env env,
   return ok;
 }
 
-bool tryCallQuickJSObjCEngineDirect(
+QuickJSEngineDirectResult tryCallQuickJSObjCEngineDirect(
     JSContext* context, napi_env env, nativescript::ObjCClassMember* member,
     napi_value jsThis, int argc, const napi_value* argv,
     nativescript::EngineDirectMemberKind kind, JSValue* result) {
   if (context == nullptr || env == nullptr || member == nullptr ||
       member->bridgeState == nullptr || argc < 0 || result == nullptr) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   nativescript::MethodDescriptor* descriptor = nullptr;
   nativescript::Cif* cif = quickJSMemberCif(env, member, kind, &descriptor);
   if (cif == nullptr || cif->isVariadic || cif->returnType == nullptr) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   const bool canUseGeneratedInvoker =
@@ -861,23 +877,23 @@ bool tryCallQuickJSObjCEngineDirect(
 
   if (isQuickJSNSErrorOutSignature(descriptor, cif) ||
       isQuickJSBlockFallbackSelector(descriptor->selector)) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   id self = resolveQuickJSSelf(env, jsThis, member);
   if (self == nil) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   const bool receiverIsClass = object_isClass(self);
   Class receiverClass = receiverIsClass ? static_cast<Class>(self) : object_getClass(self);
   if (receiverClassRequiresQuickJSSuperCall(receiverClass)) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   QuickJSFastReturnStorage rvalueStorage(cif);
   if (!rvalueStorage.valid()) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   void* rvalue = rvalueStorage.get();
@@ -897,35 +913,44 @@ bool tryCallQuickJSObjCEngineDirect(
     std::string message = exception.description.UTF8String;
     nativescript::NativeScriptException nativeScriptException(message);
     nativeScriptException.ReThrowToJS(env);
-    return false;
+    return QuickJSEngineDirectResult::Failed;
   }
 
-  return didInvoke &&
-         makeQuickJSObjCReturnValue(
-             context, env, member, descriptor, cif, self, receiverIsClass,
-             jsThis, rvalue, kind != nativescript::EngineDirectMemberKind::Method,
-             result);
+  if (!didInvoke) {
+    if (invoker == nullptr && JS_HasException(context)) {
+      return QuickJSEngineDirectResult::Failed;
+    }
+    return QuickJSEngineDirectResult::NotHandled;
+  }
+
+  if (!makeQuickJSObjCReturnValue(
+          context, env, member, descriptor, cif, self, receiverIsClass,
+          jsThis, rvalue, kind != nativescript::EngineDirectMemberKind::Method,
+          result)) {
+    return QuickJSEngineDirectResult::Failed;
+  }
+
+  return QuickJSEngineDirectResult::Handled;
 }
 
-bool tryCallQuickJSCFunctionEngineDirect(JSContext* context, napi_env env,
-                                         MDSectionOffset offset, int argc,
-                                         const napi_value* argv,
-                                         JSValue* result) {
+QuickJSEngineDirectResult tryCallQuickJSCFunctionEngineDirect(
+    JSContext* context, napi_env env, MDSectionOffset offset, int argc,
+    const napi_value* argv, JSValue* result) {
   if (context == nullptr || env == nullptr || argc < 0 || result == nullptr) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   auto* bridgeState = nativescript::ObjCBridgeState::InstanceData(env);
   if (bridgeState == nullptr || isCompatCFunction(env, reinterpret_cast<void*>(
                                            static_cast<uintptr_t>(offset)))) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   auto* function = bridgeState->getCFunction(env, offset);
   auto* cif = function != nullptr ? function->cif : nullptr;
   if (function == nullptr || cif == nullptr || cif->isVariadic ||
       cif->returnType == nullptr) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
 
   const bool canUseGeneratedInvoker =
@@ -939,7 +964,7 @@ bool tryCallQuickJSCFunctionEngineDirect(JSContext* context, napi_env env,
       env, bridgeState, cif);
   QuickJSFastReturnStorage rvalueStorage(cif);
   if (!rvalueStorage.valid()) {
-    return false;
+    return QuickJSEngineDirectResult::NotHandled;
   }
   void* rvalue = rvalueStorage.get();
   @try {
@@ -953,12 +978,22 @@ bool tryCallQuickJSCFunctionEngineDirect(JSContext* context, napi_env env,
     std::string message = exception.description.UTF8String;
     nativescript::NativeScriptException nativeScriptException(message);
     nativeScriptException.ReThrowToJS(env);
-    return false;
+    return QuickJSEngineDirectResult::Failed;
   }
 
-  return didInvoke &&
-         makeQuickJSCFunctionReturnValue(context, env, function, cif, rvalue,
-                                         result);
+  if (!didInvoke) {
+    if (invoker == nullptr && JS_HasException(context)) {
+      return QuickJSEngineDirectResult::Failed;
+    }
+    return QuickJSEngineDirectResult::NotHandled;
+  }
+
+  if (!makeQuickJSCFunctionReturnValue(context, env, function, cif, rvalue,
+                                       result)) {
+    return QuickJSEngineDirectResult::Failed;
+  }
+
+  return QuickJSEngineDirectResult::Handled;
 }
 
 JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
@@ -995,16 +1030,17 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
 
   napi_value jsThis = reinterpret_cast<napi_value>(&effectiveThis);
   JSValue directReturn = JS_UNDEFINED;
-  bool didUseDirectReturn = false;
+  QuickJSEngineDirectResult directResult =
+      QuickJSEngineDirectResult::NotHandled;
   switch (magic) {
     case kQuickJSFastObjCMethod:
-      didUseDirectReturn = tryCallQuickJSObjCEngineDirect(
+      directResult = tryCallQuickJSObjCEngineDirect(
           context, env, static_cast<nativescript::ObjCClassMember*>(data),
           jsThis, argc, napiArgs,
           nativescript::EngineDirectMemberKind::Method, &directReturn);
       break;
     case kQuickJSFastObjCGetter:
-      didUseDirectReturn = tryCallQuickJSObjCEngineDirect(
+      directResult = tryCallQuickJSObjCEngineDirect(
           context, env, static_cast<nativescript::ObjCClassMember*>(data),
           jsThis, 0, nullptr,
           nativescript::EngineDirectMemberKind::Getter, &directReturn);
@@ -1014,14 +1050,14 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
       napi_value value =
           argc > 0 ? reinterpret_cast<napi_value>(&argv[0])
                    : reinterpret_cast<napi_value>(&undefined);
-      didUseDirectReturn = tryCallQuickJSObjCEngineDirect(
+      directResult = tryCallQuickJSObjCEngineDirect(
           context, env, static_cast<nativescript::ObjCClassMember*>(data),
           jsThis, 1, &value,
           nativescript::EngineDirectMemberKind::Setter, &directReturn);
       break;
     }
     case kQuickJSFastCFunction:
-      didUseDirectReturn = tryCallQuickJSCFunctionEngineDirect(
+      directResult = tryCallQuickJSCFunctionEngineDirect(
           context, env,
           static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(data)),
           argc, napiArgs, &directReturn);
@@ -1030,7 +1066,7 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
       break;
   }
 
-  if (didUseDirectReturn) {
+  if (directResult == QuickJSEngineDirectResult::Handled) {
     if (useGlobalValue) {
       JS_FreeValue(context, effectiveThis);
     }
@@ -1040,6 +1076,16 @@ JSValue callFastNative(JSContext* context, JSValueConst thisValue, int argc,
     }
     return directReturn;
   }
+
+  if (directResult == QuickJSEngineDirectResult::Failed) {
+    if (useGlobalValue) {
+      JS_FreeValue(context, effectiveThis);
+    }
+    JS_FreeValue(context, directReturn);
+    return throwQuickJSPendingException(
+        context, "NativeScript fast native call failed.");
+  }
+
   if (JS_HasException(context)) {
     JSValue staleException = JS_GetException(context);
     JS_FreeValue(context, staleException);

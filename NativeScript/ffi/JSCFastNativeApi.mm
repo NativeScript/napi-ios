@@ -36,6 +36,12 @@ enum class JSCFastNativeKind : uint8_t {
   CFunction = 5,
 };
 
+enum class JSCEngineDirectResult {
+  NotHandled,
+  Handled,
+  Failed,
+};
+
 inline bool needsRoundTripCacheFrame(Cif* cif) {
   return cif != nullptr && cif->generatedDispatchHasRoundTripCacheArgument;
 }
@@ -687,20 +693,18 @@ bool makeJSCCFunctionReturnValue(napi_env env, CFunction* function, Cif* cif,
   return true;
 }
 
-bool tryCallJSCObjCEngineDirect(napi_env env, ObjCClassMember* member,
-                                napi_value jsThis, size_t argc,
-                                const napi_value* argv,
-                                EngineDirectMemberKind kind,
-                                JSValueRef* result) {
+JSCEngineDirectResult tryCallJSCObjCEngineDirect(
+    napi_env env, ObjCClassMember* member, napi_value jsThis, size_t argc,
+    const napi_value* argv, EngineDirectMemberKind kind, JSValueRef* result) {
   if (env == nullptr || member == nullptr || member->bridgeState == nullptr ||
       result == nullptr) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   MethodDescriptor* descriptor = nullptr;
   Cif* cif = jscMemberCif(env, member, kind, &descriptor);
   if (cif == nullptr || cif->isVariadic || cif->returnType == nullptr) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   const bool canUseGeneratedInvoker =
@@ -712,23 +716,23 @@ bool tryCallJSCObjCEngineDirect(napi_env env, ObjCClassMember* member,
 
   if (isJSCNSErrorOutSignature(descriptor, cif) ||
       isJSCBlockFallbackSelector(descriptor->selector)) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   id self = resolveJSCSelf(env, jsThis, member);
   if (self == nil) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   const bool receiverIsClass = object_isClass(self);
   Class receiverClass = receiverIsClass ? static_cast<Class>(self) : object_getClass(self);
   if (receiverClassRequiresJSCSuperCall(receiverClass)) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   JSCFastReturnStorage rvalueStorage(cif);
   if (!rvalueStorage.valid()) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   void* rvalue = rvalueStorage.get();
@@ -748,34 +752,44 @@ bool tryCallJSCObjCEngineDirect(napi_env env, ObjCClassMember* member,
     std::string message = exception.description.UTF8String;
     NativeScriptException nativeScriptException(message);
     nativeScriptException.ReThrowToJS(env);
-    return false;
+    return JSCEngineDirectResult::Failed;
   }
 
-  return didInvoke &&
-         makeJSCObjCReturnValue(env, member, descriptor, cif, self,
-                                receiverIsClass, jsThis, rvalue,
-                                kind != EngineDirectMemberKind::Method, result);
+  if (!didInvoke) {
+    if (invoker == nullptr && env->last_exception != nullptr) {
+      return JSCEngineDirectResult::Failed;
+    }
+    return JSCEngineDirectResult::NotHandled;
+  }
+
+  if (!makeJSCObjCReturnValue(env, member, descriptor, cif, self,
+                              receiverIsClass, jsThis, rvalue,
+                              kind != EngineDirectMemberKind::Method, result)) {
+    return JSCEngineDirectResult::Failed;
+  }
+
+  return JSCEngineDirectResult::Handled;
 }
 
-bool tryCallJSCCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
-                                     size_t argc, const napi_value* argv,
-                                     JSValueRef* result) {
+JSCEngineDirectResult tryCallJSCCFunctionEngineDirect(
+    napi_env env, MDSectionOffset offset, size_t argc, const napi_value* argv,
+    JSValueRef* result) {
   if (env == nullptr || result == nullptr) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
   if (bridgeState == nullptr ||
       isCompatCFunction(env, reinterpret_cast<void*>(
                                  static_cast<uintptr_t>(offset)))) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   CFunction* function = bridgeState->getCFunction(env, offset);
   Cif* cif = function != nullptr ? function->cif : nullptr;
   if (function == nullptr || cif == nullptr || cif->isVariadic ||
       cif->returnType == nullptr) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
 
   const bool canUseGeneratedInvoker =
@@ -788,7 +802,7 @@ bool tryCallJSCCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
   JSCFastRoundTripCacheFrameGuard roundTripCacheFrame(env, bridgeState, cif);
   JSCFastReturnStorage rvalueStorage(cif);
   if (!rvalueStorage.valid()) {
-    return false;
+    return JSCEngineDirectResult::NotHandled;
   }
   void* rvalue = rvalueStorage.get();
   @try {
@@ -802,10 +816,21 @@ bool tryCallJSCCFunctionEngineDirect(napi_env env, MDSectionOffset offset,
     std::string message = exception.description.UTF8String;
     NativeScriptException nativeScriptException(message);
     nativeScriptException.ReThrowToJS(env);
-    return false;
+    return JSCEngineDirectResult::Failed;
   }
 
-  return didInvoke && makeJSCCFunctionReturnValue(env, function, cif, rvalue, result);
+  if (!didInvoke) {
+    if (invoker == nullptr && env->last_exception != nullptr) {
+      return JSCEngineDirectResult::Failed;
+    }
+    return JSCEngineDirectResult::NotHandled;
+  }
+
+  if (!makeJSCCFunctionReturnValue(env, function, cif, rvalue, result)) {
+    return JSCEngineDirectResult::Failed;
+  }
+
+  return JSCEngineDirectResult::Handled;
 }
 
 void initializeFastFunction(JSContextRef ctx, JSObjectRef object) {
@@ -879,16 +904,16 @@ JSValueRef callFastFunction(JSContextRef ctx, JSObjectRef function,
   }
   napi_value jsThis = ToNapi(effectiveThis);
   JSValueRef directResult = nullptr;
-  bool didUseDirectResult = false;
+  JSCEngineDirectResult directCallResult = JSCEngineDirectResult::NotHandled;
   switch (binding->kind) {
     case JSCFastNativeKind::ObjCMethod:
-      didUseDirectResult = tryCallJSCObjCEngineDirect(
+      directCallResult = tryCallJSCObjCEngineDirect(
           env, static_cast<ObjCClassMember*>(binding->data), jsThis,
           argumentCount, argv, EngineDirectMemberKind::Method,
           &directResult);
       break;
     case JSCFastNativeKind::ObjCGetter:
-      didUseDirectResult = tryCallJSCObjCEngineDirect(
+      directCallResult = tryCallJSCObjCEngineDirect(
           env, static_cast<ObjCClassMember*>(binding->data), jsThis, 0,
           nullptr, EngineDirectMemberKind::Getter, &directResult);
       break;
@@ -896,13 +921,13 @@ JSValueRef callFastFunction(JSContextRef ctx, JSObjectRef function,
       JSValueRef undefined = JSValueMakeUndefined(ctx);
       napi_value value =
           argumentCount > 0 ? ToNapi(arguments[0]) : ToNapi(undefined);
-      didUseDirectResult = tryCallJSCObjCEngineDirect(
+      directCallResult = tryCallJSCObjCEngineDirect(
           env, static_cast<ObjCClassMember*>(binding->data), jsThis, 1,
           &value, EngineDirectMemberKind::Setter, &directResult);
       break;
     }
     case JSCFastNativeKind::CFunction:
-      didUseDirectResult = tryCallJSCCFunctionEngineDirect(
+      directCallResult = tryCallJSCCFunctionEngineDirect(
           env,
           static_cast<MDSectionOffset>(
               reinterpret_cast<uintptr_t>(binding->data)),
@@ -912,7 +937,7 @@ JSValueRef callFastFunction(JSContextRef ctx, JSObjectRef function,
       break;
   }
 
-  if (didUseDirectResult) {
+  if (directCallResult == JSCEngineDirectResult::Handled) {
     if (env->last_exception != nullptr) {
       if (exception != nullptr) {
         *exception = env->last_exception;
@@ -922,6 +947,19 @@ JSValueRef callFastFunction(JSContextRef ctx, JSObjectRef function,
     }
     return directResult != nullptr ? directResult : JSValueMakeUndefined(ctx);
   }
+
+  if (directCallResult == JSCEngineDirectResult::Failed) {
+    if (env->last_exception == nullptr) {
+      napi_throw_error(env, "NativeScriptException",
+                       "NativeScript fast native call failed.");
+    }
+    if (exception != nullptr) {
+      *exception = env->last_exception;
+    }
+    env->last_exception = nullptr;
+    return JSValueMakeUndefined(ctx);
+  }
+
   env->last_exception = nullptr;
 
   napi_value result = nullptr;
