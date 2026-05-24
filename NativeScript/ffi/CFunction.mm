@@ -344,7 +344,9 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
   auto preparedInvoker = reinterpret_cast<CFunctionPreparedInvoker>(func->preparedInvoker);
   auto napiInvoker = reinterpret_cast<CFunctionNapiInvoker>(func->napiInvoker);
   auto engineDirectInvoker =
-      reinterpret_cast<CFunctionEngineDirectInvoker>(func->engineDirectInvoker);
+      !cif->skipGeneratedNapiDispatch
+          ? reinterpret_cast<CFunctionEngineDirectInvoker>(func->engineDirectInvoker)
+          : nullptr;
 
   MDFunctionFlag functionFlags =
       bridgeState->metadata->getFunctionFlag(offset + sizeof(MDSectionOffset) * 2);

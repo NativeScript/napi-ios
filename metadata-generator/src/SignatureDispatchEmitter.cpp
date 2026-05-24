@@ -744,6 +744,40 @@ bool argKindMayNeedCleanup(MDTypeKind kind) {
   }
 }
 
+enum class HermesDirectReturnCallSite {
+  FastCallback,
+  Frame,
+};
+
+bool canUseHermesDirectReturnWrapper(DispatchKind kind,
+                                     const MDSignature* signature,
+                                     HermesDirectReturnCallSite callSite) {
+  if (callSite == HermesDirectReturnCallSite::FastCallback &&
+      kind == DispatchKind::BlockInvoke) {
+    return false;
+  }
+
+  if (signature == nullptr || signature->returnType == nullptr) {
+    return false;
+  }
+
+  const bool canSetReturnDirectly =
+      kind == DispatchKind::ObjCMethod
+          ? canSetHermesObjCReturnDirectly(signature->returnType->kind)
+          : canSetHermesReturnDirectly(signature->returnType->kind);
+  if (!canSetReturnDirectly) {
+    return false;
+  }
+
+  for (const auto* arg : signature->arguments) {
+    if (arg == nullptr || argKindMayNeedCleanup(arg->kind)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 std::string makeWrapperShapeKey(DispatchKind kind,
                                 const MDSignature* signature) {
   if (signature == nullptr) {
@@ -1555,16 +1589,8 @@ void writeEngineDirectWrapper(std::ostringstream& out, DispatchKind kind,
 void writeHermesDirectReturnWrapper(std::ostringstream& out, DispatchKind kind,
                                     const std::string& wrapperName,
                                     const MDSignature* signature) {
-  if (kind == DispatchKind::BlockInvoke || signature == nullptr ||
-      signature->returnType == nullptr) {
-    return;
-  }
-
-  const bool canSetReturnDirectly =
-      kind == DispatchKind::ObjCMethod
-          ? canSetHermesObjCReturnDirectly(signature->returnType->kind)
-          : canSetHermesReturnDirectly(signature->returnType->kind);
-  if (!canSetReturnDirectly) {
+  if (!canUseHermesDirectReturnWrapper(
+          kind, signature, HermesDirectReturnCallSite::FastCallback)) {
     return;
   }
 
@@ -1707,15 +1733,8 @@ void writeHermesFrameDirectReturnWrapper(std::ostringstream& out,
                                          DispatchKind kind,
                                          const std::string& wrapperName,
                                          const MDSignature* signature) {
-  if (signature == nullptr || signature->returnType == nullptr) {
-    return;
-  }
-
-  const bool canSetReturnDirectly =
-      kind == DispatchKind::ObjCMethod
-          ? canSetHermesObjCReturnDirectly(signature->returnType->kind)
-          : canSetHermesReturnDirectly(signature->returnType->kind);
-  if (!canSetReturnDirectly) {
+  if (!canUseHermesDirectReturnWrapper(kind, signature,
+                                       HermesDirectReturnCallSite::Frame)) {
     return;
   }
 
@@ -2355,9 +2374,12 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       objcNapiEntries.emplace(dispatchId, wrapperKey);
       objcEngineDirectEntries.emplace(dispatchId, wrapperKey);
       objcV8Entries.emplace(dispatchId, wrapperKey);
-      if (signature->returnType != nullptr &&
-          canSetHermesObjCReturnDirectly(signature->returnType->kind)) {
+      if (canUseHermesDirectReturnWrapper(
+              use.kind, signature, HermesDirectReturnCallSite::FastCallback)) {
         objcHermesDirectReturnEntries.emplace(dispatchId, wrapperKey);
+      }
+      if (canUseHermesDirectReturnWrapper(
+              use.kind, signature, HermesDirectReturnCallSite::Frame)) {
         objcHermesFrameDirectReturnEntries.emplace(dispatchId, wrapperKey);
       }
     } else if (use.kind == DispatchKind::CFunction) {
@@ -2365,17 +2387,20 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       cFunctionNapiEntries.emplace(dispatchId, wrapperKey);
       cFunctionEngineDirectEntries.emplace(dispatchId, wrapperKey);
       cFunctionV8Entries.emplace(dispatchId, wrapperKey);
-      if (signature->returnType != nullptr &&
-          canSetHermesReturnDirectly(signature->returnType->kind)) {
+      if (canUseHermesDirectReturnWrapper(
+              use.kind, signature, HermesDirectReturnCallSite::FastCallback)) {
         cFunctionHermesDirectReturnEntries.emplace(dispatchId, wrapperKey);
+      }
+      if (canUseHermesDirectReturnWrapper(
+              use.kind, signature, HermesDirectReturnCallSite::Frame)) {
         cFunctionHermesFrameDirectReturnEntries.emplace(dispatchId, wrapperKey);
       }
     } else if (use.kind == DispatchKind::BlockInvoke) {
       preparedWrappersByKey.emplace(wrapperKey,
                                     std::make_pair(use.kind, signature));
       blockPreparedEntries.emplace(dispatchId, wrapperKey);
-      if (signature->returnType != nullptr &&
-          canSetHermesReturnDirectly(signature->returnType->kind)) {
+      if (canUseHermesDirectReturnWrapper(
+              use.kind, signature, HermesDirectReturnCallSite::Frame)) {
         blockHermesFrameDirectReturnEntries.emplace(dispatchId, wrapperKey);
       }
     }

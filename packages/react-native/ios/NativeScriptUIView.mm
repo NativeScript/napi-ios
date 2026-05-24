@@ -12,7 +12,7 @@ static UIView* NativeScriptUIViewFromHandle(NSString* handle) {
 
   char* end = nullptr;
   unsigned long long address = strtoull(text, &end, 0);
-  if (address == 0 || end == text) {
+  if (address == 0 || end == text || (end != nullptr && *end != '\0')) {
     return nil;
   }
 

@@ -94,6 +94,10 @@ const junitPrefix = "TKUnit: ";
 const junitEndTag = "</testsuites>";
 const consoleLogMarker = "CONSOLE LOG:";
 const crashReportsDir = path.join(os.homedir(), "Library", "Logs", "DiagnosticReports");
+const generatedRuntimeBuildOutputs = new Set([
+    path.join(nativeScriptSourceRoot, "ffi", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "GeneratedSignatureDispatch.inc.stamp")
+]);
 
 function parseArgs() {
     const args = process.argv.slice(2).filter(Boolean);
@@ -136,6 +140,9 @@ function getPathStats(targetPath) {
 
     while (queue.length > 0) {
         const currentPath = queue.pop();
+        if (generatedRuntimeBuildOutputs.has(currentPath)) {
+            continue;
+        }
         let stats;
         try {
             stats = fs.lstatSync(currentPath);
@@ -469,6 +476,12 @@ function ensureMacOSRuntimeArtifactsBuilt() {
     const cachePath = path.join(__dirname, "../dist", "intermediates", "macos", "CMakeCache.txt");
     const sourceInputs = [
         nativeScriptSourceRoot,
+        path.join(metadataGeneratorRoot, "src"),
+        path.join(metadataGeneratorRoot, "include"),
+        path.join(metadataGeneratorRoot, "CMakeLists.txt"),
+        metadataGeneratorBinary,
+        metadataGeneratorBuildStepScript,
+        path.join(__dirname, "build_metadata_generator.sh"),
         path.join(__dirname, "build_nativescript.sh")
     ];
 

@@ -9,6 +9,7 @@
 #include <atomic>
 #include <cmath>
 #include "Timers.h"
+#include "ffi/CallbackThreading.h"
 
 static std::atomic<int> gActiveTimers{0};
 struct TimerToken;
@@ -212,7 +213,23 @@ bool MarkTimerInactive(NSTimerHandle* handle) {
   return didDeactivate;
 }
 
-void AddTimerToMainRunLoop(NSTimer* timer) {
+bool shouldAvoidMainQueueSyncWhileHoldingHermesLock(napi_env env) {
+#ifdef TARGET_ENGINE_HERMES
+  if ([NSThread isMainThread]) {
+    return false;
+  }
+
+  // A native-caller-thread callback already owns the Hermes JS lock. A
+  // synchronous hop to main can deadlock if the main run loop is draining jobs.
+  return nativescript::isNativeCallerThreadCallbackActive() ||
+         (env != nullptr && js_current_env_lock_depth(env) > 0);
+#else
+  (void)env;
+  return false;
+#endif
+}
+
+void AddTimerToMainRunLoop(napi_env env, NSTimer* timer) {
   if (timer == nil) {
     return;
   }
@@ -225,6 +242,15 @@ void AddTimerToMainRunLoop(NSTimer* timer) {
 
   if ([NSThread isMainThread]) {
     addTimer();
+    return;
+  }
+
+  if (shouldAvoidMainQueueSyncWhileHoldingHermesLock(env)) {
+    [timer retain];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      addTimer();
+      [timer release];
+    });
     return;
   }
 
@@ -254,6 +280,13 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle, bool invalidate
 
   if ([NSThread isMainThread]) {
     disposeTimer();
+  } else if (shouldAvoidMainQueueSyncWhileHoldingHermesLock(
+                 callEnv != nullptr ? callEnv : handle->env)) {
+    [handle retain];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      disposeTimer();
+      [handle release];
+    });
   } else {
     dispatch_sync(dispatch_get_main_queue(), disposeTimer);
   }
@@ -427,7 +460,7 @@ JS_METHOD(Timers::SetTimeout) {
   // Drop creator ownership. Remaining ownership is the timer association.
   [handle release];
 
-  AddTimerToMainRunLoop(timer);
+  AddTimerToMainRunLoop(env, timer);
 
   return result;
 }
@@ -529,7 +562,7 @@ JS_METHOD(Timers::SetInterval) {
   // Drop creator ownership. Remaining ownership is the timer association.
   [handle release];
 
-  AddTimerToMainRunLoop(timer);
+  AddTimerToMainRunLoop(env, timer);
 
   return result;
 }

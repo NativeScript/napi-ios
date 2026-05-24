@@ -269,6 +269,32 @@ function wrapInteropFactory(
     return (nativeFactory as (...args: unknown[]) => unknown)(...args);
   };
 
+  try {
+    const nativePrototype = (nativeFactory as {prototype?: unknown}).prototype;
+    if (
+      nativePrototype &&
+      (typeof nativePrototype === 'object' || typeof nativePrototype === 'function')
+    ) {
+      constructable.prototype = nativePrototype;
+    }
+  } catch {
+    // Keep construction working even if the host function exposes a fixed prototype.
+  }
+
+  try {
+    const hasInstance = Symbol.hasInstance;
+    const nativeHasInstance = (nativeFactory as Record<symbol, unknown>)[hasInstance];
+    if (typeof nativeHasInstance === 'function') {
+      Object.defineProperty(constructable, hasInstance, {
+        configurable: true,
+        enumerable: false,
+        value: nativeHasInstance,
+      });
+    }
+  } catch {
+    // Older runtimes can expose Symbol.hasInstance as read-only.
+  }
+
   for (const [key, value] of Object.entries(properties)) {
     try {
       Object.defineProperty(constructable, key, {

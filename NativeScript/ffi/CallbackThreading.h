@@ -21,14 +21,6 @@ inline thread_local int native_caller_thread_callback_depth = 0;
 
 }  // namespace detail
 
-inline bool shouldInvokeCallbackOnNativeCallerThread() {
-#if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
-  return true;
-#else
-  return false;
-#endif
-}
-
 inline bool isNativeCallRuntimeUnlockedForCallbacks() {
 #if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
   return detail::native_call_unlocked_runtime_count.load(
@@ -41,6 +33,15 @@ inline bool isNativeCallRuntimeUnlockedForCallbacks() {
 inline bool isNativeCallerThreadCallbackActive() {
 #if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
   return detail::native_caller_thread_callback_depth > 0;
+#else
+  return false;
+#endif
+}
+
+inline bool shouldInvokeCallbackOnNativeCallerThread() {
+#if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
+  return isNativeCallRuntimeUnlockedForCallbacks() ||
+         isNativeCallerThreadCallbackActive();
 #else
   return false;
 #endif
@@ -114,15 +115,19 @@ class NativeCallbackScope final {
  public:
   explicit NativeCallbackScope(napi_env env) : env_(env) {
 #if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
-    if (isNativeCallRuntimeUnlockedForCallbacks()) {
-      auto it = JSR::env_to_jsr_cache.find(env_);
-      if (it != JSR::env_to_jsr_cache.end() && it->second != nullptr) {
-        jsr_ = it->second;
-        jsr_->js_mutex.lock();
-        detail::native_caller_thread_callback_depth += 1;
-        napi_open_handle_scope(env_, &napiHandleScope_);
-        return;
-      }
+    if (isNativeCallerThreadCallbackActive() ||
+        js_current_env_lock_depth(env_) > 0) {
+      napi_open_handle_scope(env_, &napiHandleScope_);
+      return;
+    }
+
+    auto it = JSR::env_to_jsr_cache.find(env_);
+    if (it != JSR::env_to_jsr_cache.end() && it->second != nullptr) {
+      jsr_ = it->second;
+      jsr_->lock();
+      detail::native_caller_thread_callback_depth += 1;
+      napi_open_handle_scope(env_, &napiHandleScope_);
+      return;
     }
 #endif
 #if defined(ENABLE_JS_RUNTIME)
@@ -139,7 +144,7 @@ class NativeCallbackScope final {
     }
     if (jsr_ != nullptr) {
       detail::native_caller_thread_callback_depth -= 1;
-      jsr_->js_mutex.unlock();
+      jsr_->unlock();
     }
 #endif
   }

@@ -525,6 +525,50 @@ inline bool needsRoundTripCacheFrame(Cif* cif) {
   return cif != nullptr && cif->generatedDispatchHasRoundTripCacheArgument;
 }
 
+inline bool canUseHermesFrameArgument(MDTypeKind kind) {
+  switch (kind) {
+    case mdTypeBool:
+    case mdTypeChar:
+    case mdTypeUChar:
+    case mdTypeUInt8:
+    case mdTypeSShort:
+    case mdTypeUShort:
+    case mdTypeSInt:
+    case mdTypeUInt:
+    case mdTypeSLong:
+    case mdTypeULong:
+    case mdTypeSInt64:
+    case mdTypeUInt64:
+    case mdTypeFloat:
+    case mdTypeDouble:
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+    case mdTypeClass:
+    case mdTypeSelector:
+      return true;
+    default:
+      return false;
+  }
+}
+
+inline bool canUseHermesFrameArguments(Cif* cif) {
+  if (cif == nullptr) {
+    return false;
+  }
+
+  for (const auto& argType : cif->argTypes) {
+    if (argType == nullptr || !canUseHermesFrameArgument(argType->kind)) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 class HermesFastRoundTripCacheFrameGuard {
  public:
   HermesFastRoundTripCacheFrameGuard(napi_env env, ObjCBridgeState* bridgeState,
@@ -1952,6 +1996,10 @@ napi_value TryCallHermesObjCMemberFastImpl(
     return nullptr;
   }
 
+  if (hermesArgsBase != nullptr && !canUseHermesFrameArguments(cif)) {
+    return nullptr;
+  }
+
   if (isNSErrorOutMethodSignature(descriptor, cif)) {
     if (!cif->isVariadic &&
         (actualArgc > cif->argc || actualArgc + 1 < cif->argc)) {
@@ -1960,6 +2008,10 @@ napi_value TryCallHermesObjCMemberFastImpl(
         *handled = true;
       }
     }
+    return nullptr;
+  }
+
+  if (!cif->isVariadic && actualArgc != cif->argc) {
     return nullptr;
   }
 
@@ -2118,7 +2170,7 @@ napi_value TryCallHermesObjCMemberFastImpl(
       env, member->bridgeState, needsRoundTripFrame);
 
   ObjCEngineDirectInvoker invoker =
-      cif->signatureHash != 0
+      !cif->skipGeneratedNapiDispatch && cif->signatureHash != 0
           ? ensureHermesObjCEngineDirectInvoker(cif, descriptor,
                                                 descriptor->dispatchFlags)
           : nullptr;
@@ -2190,6 +2242,14 @@ napi_value TryCallHermesCFunctionFastImpl(
   Cif* cif = function != nullptr ? function->cif : nullptr;
   if (function == nullptr || function->skipEngineDirectFastPath ||
       cif == nullptr || cif->isVariadic || cif->returnType == nullptr) {
+    return nullptr;
+  }
+
+  if (hermesArgsBase != nullptr && !canUseHermesFrameArguments(cif)) {
+    return nullptr;
+  }
+
+  if (actualArgc != cif->argc) {
     return nullptr;
   }
 
@@ -2291,7 +2351,7 @@ napi_value TryCallHermesCFunctionFastImpl(
 
   bool didInvoke = false;
   CFunctionEngineDirectInvoker invoker =
-      cif->signatureHash != 0
+      !cif->skipGeneratedNapiDispatch && cif->signatureHash != 0
           ? ensureHermesCFunctionEngineDirectInvoker(function, cif)
           : nullptr;
   @try {

@@ -363,11 +363,14 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
     }
   }
 
-  ObjCEngineDirectInvoker engineInvoker =
-      descriptor != nullptr
-          ? reinterpret_cast<ObjCEngineDirectInvoker>(descriptor->engineDirectInvoker)
-          : lookupObjCEngineDirectInvoker(composeSignatureDispatchId(
-                cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags));
+  ObjCEngineDirectInvoker engineInvoker = nullptr;
+  if (!cif->skipGeneratedNapiDispatch) {
+    engineInvoker =
+        descriptor != nullptr
+            ? reinterpret_cast<ObjCEngineDirectInvoker>(descriptor->engineDirectInvoker)
+            : lookupObjCEngineDirectInvoker(composeSignatureDispatchId(
+                  cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags));
+  }
   ObjCNapiInvoker invoker =
       engineInvoker == nullptr && !cif->skipGeneratedNapiDispatch
           ? (descriptor != nullptr
@@ -1474,23 +1477,6 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
     if (handledDirect) {
       return directResult;
     }
-
-    napi_value stackArgs[16];
-    if (actualArgc <= 16) {
-      for (size_t i = 0; i < actualArgc; i++) {
-        stackArgs[i] = HermesFastArg(fastInfo, i);
-      }
-
-      return jsCallDirect(env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
-                          HermesFastThisArg(fastInfo), actualArgc, stackArgs);
-    }
-
-    std::vector<napi_value> heapArgs(actualArgc);
-    for (size_t i = 0; i < actualArgc; i++) {
-      heapArgs[i] = HermesFastArg(fastInfo, i);
-    }
-    return jsCallDirect(env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
-                        HermesFastThisArg(fastInfo), actualArgc, heapArgs.data());
   }
 #endif
 
@@ -1565,6 +1551,20 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
   if (selectedCif == nullptr) {
     selectedCif = method->bridgeState->getMethodCif(env, method->methodOrGetter.signatureOffset);
     method->cif = selectedCif;
+  }
+
+  if (selectedCif != nullptr && !selectedCif->isVariadic &&
+      selectedCif->argc != actualArgc) {
+    Method runtimeMethod = receiverIsClass
+                               ? class_getClassMethod(receiverClass, selectedMethod->selector)
+                               : class_getInstanceMethod(receiverClass, selectedMethod->selector);
+    if (runtimeMethod != nullptr) {
+      Cif* runtimeCif = method->bridgeState->getMethodCif(env, runtimeMethod);
+      if (runtimeCif != nullptr && runtimeCif->argc == actualArgc) {
+        selectedCif = runtimeCif;
+        method->cif = selectedCif;
+      }
+    }
   }
 
   if (!method->overloads.empty()) {
@@ -1871,8 +1871,6 @@ napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
     if (handledDirect) {
       return directResult;
     }
-    return jsGetterDirect(env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
-                          HermesFastThisArg(fastInfo));
   }
 #endif
 
@@ -1986,15 +1984,6 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
     if (handledDirect) {
       return directResult;
     }
-
-    napi_value value = nullptr;
-    if (actualArgc > 0) {
-      value = HermesFastArg(fastInfo, 0);
-    } else {
-      napi_get_undefined(env, &value);
-    }
-    return jsSetterDirect(env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
-                          HermesFastThisArg(fastInfo), value);
   }
 #endif
 

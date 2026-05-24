@@ -114,8 +114,11 @@ function signature_dispatch_stamp () {
   local platform="$1"
   local backend
   backend=$(effective_gsd_backend)
-  printf "platform=%s\nbackend=%s\ntarget_engine=%s\nmetadata_size=%s\n" \
-    "$platform" "$backend" "$TARGET_ENGINE" "$METADATA_SIZE"
+  local generator_hash
+  generator_hash=$(find ./metadata-generator/src ./metadata-generator/include ./metadata-generator/CMakeLists.txt \
+    -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}')
+  printf "platform=%s\nbackend=%s\ntarget_engine=%s\nmetadata_size=%s\ngenerator_hash=%s\n" \
+    "$platform" "$backend" "$TARGET_ENGINE" "$METADATA_SIZE" "$generator_hash"
 }
 
 function ensure_signature_dispatch_bindings () {

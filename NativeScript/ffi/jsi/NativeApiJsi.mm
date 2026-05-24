@@ -11,7 +11,6 @@
 #include <objc/runtime.h>
 
 #include <algorithm>
-#include <atomic>
 #include <cctype>
 #include <cmath>
 #include <cstdio>
@@ -56,7 +55,7 @@ using metagen::MDTypeKind;
 
 thread_local bool gDispatchNativeCallsToUI = false;
 thread_local bool gExecutingDispatchedUINativeCall = false;
-std::atomic<int> gSynchronousNativeInvocationDepth{0};
+thread_local int gSynchronousNativeInvocationDepth = 0;
 
 class ScopedNativeApiUINativeCallDispatch final {
  public:
@@ -80,11 +79,11 @@ bool shouldDispatchNativeCallToUI() {
 class ScopedNativeApiSynchronousInvocation final {
  public:
   ScopedNativeApiSynchronousInvocation() {
-    gSynchronousNativeInvocationDepth.fetch_add(1, std::memory_order_acq_rel);
+    gSynchronousNativeInvocationDepth += 1;
   }
 
   ~ScopedNativeApiSynchronousInvocation() {
-    gSynchronousNativeInvocationDepth.fetch_sub(1, std::memory_order_acq_rel);
+    gSynchronousNativeInvocationDepth -= 1;
   }
 };
 
@@ -1873,8 +1872,7 @@ class NativeApiJsiCallback final {
     auto call = [&]() { invokeOnCurrentThread(ret, args, &error); };
     bool direct = std::this_thread::get_id() == bridge_->jsThreadId() ||
                   gExecutingDispatchedUINativeCall ||
-                  gSynchronousNativeInvocationDepth.load(
-                      std::memory_order_acquire) > 0;
+                  gSynchronousNativeInvocationDepth > 0;
     if (direct) {
       call();
     } else if (auto scheduler = bridge_->scheduler()) {
@@ -3657,6 +3655,46 @@ Object createPointer(Runtime& runtime, void* pointer, bool adopted = false) {
                                                             adopted));
 }
 
+void installInteropHasInstance(Runtime& runtime, Function& constructor,
+                               const char* kind) {
+  Value symbolCtorValue = runtime.global().getProperty(runtime, "Symbol");
+  if (!symbolCtorValue.isObject()) {
+    return;
+  }
+
+  Object symbolCtor = symbolCtorValue.asObject(runtime);
+  Value hasInstanceValue = symbolCtor.getProperty(runtime, "hasInstance");
+  if (!hasInstanceValue.isSymbol()) {
+    return;
+  }
+
+  try {
+    Object objectCtor = runtime.global().getPropertyAsObject(runtime, "Object");
+    Function defineProperty =
+        objectCtor.getPropertyAsFunction(runtime, "defineProperty");
+    Object descriptor(runtime);
+    descriptor.setProperty(runtime, "configurable", true);
+    descriptor.setProperty(
+        runtime, "value",
+        Function::createFromHostFunction(
+            runtime, PropNameID::forAscii(runtime, "Symbol.hasInstance"), 1,
+            [kind = std::string(kind)](Runtime& runtime, const Value&,
+                                       const Value* args, size_t count) -> Value {
+              if (count < 1 || !args[0].isObject()) {
+                return false;
+              }
+
+              Object object = args[0].asObject(runtime);
+              Value kindValue = object.getProperty(runtime, "kind");
+              return kindValue.isString() &&
+                     kindValue.asString(runtime).utf8(runtime) == kind;
+            }));
+    defineProperty.call(runtime, objectCtor, constructor, hasInstanceValue,
+                        descriptor);
+  } catch (const std::exception&) {
+  }
+}
+
 Class classFromJsiValue(Runtime& runtime, const Value& value) {
   if (value.isString()) {
     std::string name = value.asString(runtime).utf8(runtime);
@@ -3766,6 +3804,10 @@ Object createInteropObject(Runtime& runtime,
             }
             return createPointer(runtime, pointer);
       });
+  Object pointerPrototype(runtime);
+  pointerPrototype.setProperty(runtime, "constructor", pointerConstructor);
+  pointerConstructor.setProperty(runtime, "prototype", pointerPrototype);
+  installInteropHasInstance(runtime, pointerConstructor, "pointer");
   pointerConstructor.setProperty(runtime, "kind", makeString(runtime, "pointer"));
   pointerConstructor.setProperty(runtime, "sizeof",
                                  static_cast<double>(sizeof(void*)));
@@ -3820,6 +3862,10 @@ Object createInteropObject(Runtime& runtime,
                              bridge, type, data, ownsData,
                              ownsData ? size : 0));
       });
+  Object referencePrototype(runtime);
+  referencePrototype.setProperty(runtime, "constructor", referenceConstructor);
+  referenceConstructor.setProperty(runtime, "prototype", referencePrototype);
+  installInteropHasInstance(runtime, referenceConstructor, "reference");
   referenceConstructor.setProperty(runtime, "kind",
                                    makeString(runtime, "reference"));
   referenceConstructor.setProperty(runtime, "sizeof",
@@ -4846,9 +4892,13 @@ void InstallNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
                                ? config.globalName
                                : "__nativeScriptNativeApi";
   Object api = CreateNativeApiJSI(runtime, config);
-  runtime.global().setProperty(runtime, globalName, api);
-  runtime.global().setProperty(runtime, "interop",
-                               api.getProperty(runtime, "interop"));
+  Object global = runtime.global();
+  global.setProperty(runtime, globalName, api);
+
+  Value existingInterop = global.getProperty(runtime, "interop");
+  if (existingInterop.isUndefined() || existingInterop.isNull()) {
+    global.setProperty(runtime, "interop", api.getProperty(runtime, "interop"));
+  }
   InstallAggregateGlobals(runtime, api, "protocolNames");
 }
 

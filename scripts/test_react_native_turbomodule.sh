@@ -1,6 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 source "$(dirname "$0")/build_utils.sh"
+source "$SCRIPT_DIR/react_native_app_utils.sh"
 
 RN_VERSION=${RN_VERSION:-0.85.3}
 RN_CLI_VERSION=${RN_CLI_VERSION:-20.1.3}
@@ -15,30 +16,15 @@ MARKER="NATIVESCRIPT_RN_TURBO_SMOKE_PASS"
 BUNDLE_ID="org.reactjs.native.example.$APP_NAME"
 MARKER_FILE_NAME="NativeScriptNativeApiSmoke.marker"
 
-checkpoint "Building @nativescript/react-native TurboModule tarball..."
-"$SCRIPT_DIR/build_react_native_turbomodule.sh"
-TARBALL=$(ls -t "$REPO_ROOT/packages/react-native/dist"/*.tgz | head -n 1)
+rn_build_turbo_tarball
+TARBALL=$(rn_latest_turbo_tarball)
 
 if [[ "$FORCE_RECREATE" == "1" ]]; then
   rm -rf "$APP_DIR"
 fi
 
-if [[ ! -d "$APP_DIR" ]]; then
-  checkpoint "Creating React Native smoke app ($RN_VERSION)..."
-  mkdir -p "$APP_ROOT"
-  npx --yes "@react-native-community/cli@$RN_CLI_VERSION" init "$APP_NAME" \
-    --version "$RN_VERSION" \
-    --directory "$APP_DIR" \
-    --skip-git-init \
-    --install-pods false \
-    --pm npm
-fi
-
-checkpoint "Installing local TurboModule tarball into smoke app..."
-(
-  cd "$APP_DIR"
-  npm install "$TARBALL"
-)
+rn_create_app_if_missing "$APP_DIR" "$APP_ROOT" "$APP_NAME" "$RN_VERSION" "$RN_CLI_VERSION" "React Native smoke app"
+rn_install_turbo_tarball "$APP_DIR" "$TARBALL" "smoke app"
 
 checkpoint "Writing smoke app entrypoint..."
 node - "$APP_DIR/App.tsx" <<'NODE'
@@ -123,107 +109,13 @@ export default function App(): React.JSX.Element {
 `);
 NODE
 
-checkpoint "Installing CocoaPods for smoke app..."
-(
-  cd "$APP_DIR/ios"
-  if [[ -f Gemfile ]]; then
-    bundle install
-    RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 bundle exec pod install
-  else
-    RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 pod install
-  fi
-)
-
-UDID=$(node <<'NODE'
-const cp = require('child_process');
-const devices = JSON.parse(cp.execFileSync('xcrun', ['simctl', 'list', 'devices', 'available', '--json'], {encoding: 'utf8'}));
-const runtimes = Object.keys(devices.devices).filter((runtime) => runtime.includes('iOS')).sort().reverse();
-for (const runtime of runtimes) {
-  const booted = devices.devices[runtime].find((device) => device.state === 'Booted' && device.name.includes('iPhone'));
-  if (booted) {
-    console.log(booted.udid);
-    process.exit(0);
-  }
-}
-for (const runtime of runtimes) {
-  const candidate = devices.devices[runtime].find((device) => device.name.includes('iPhone'));
-  if (candidate) {
-    console.log(candidate.udid);
-    process.exit(0);
-  }
-}
-process.exit(1);
-NODE
-)
-
-if [[ -z "$UDID" ]]; then
-  echo "No available iOS simulator found." >&2
-  exit 1
-fi
-
-checkpoint "Building smoke app for simulator..."
-xcrun simctl boot "$UDID" >/dev/null 2>&1 || true
-xcrun simctl bootstatus "$UDID" -b
-
-xcodebuild \
-  -workspace "$APP_DIR/ios/$APP_NAME.xcworkspace" \
-  -scheme "$APP_NAME" \
-  -configuration "$CONFIGURATION" \
-  -sdk iphonesimulator \
-  -destination "platform=iOS Simulator,id=$UDID" \
-  -derivedDataPath "$APP_DIR/ios/build/DerivedData" \
-  build | tee "$APP_ROOT/xcodebuild.log" &
-BUILD_PID=$!
-
-SECONDS_WAITED=0
-while kill -0 "$BUILD_PID" >/dev/null 2>&1; do
-  if [[ "$SECONDS_WAITED" -ge "$BUILD_TIMEOUT_SECONDS" ]]; then
-    kill "$BUILD_PID" >/dev/null 2>&1 || true
-    echo "Smoke app build timed out after ${BUILD_TIMEOUT_SECONDS}s." >&2
-    exit 1
-  fi
-  sleep 5
-  SECONDS_WAITED=$((SECONDS_WAITED + 5))
-done
-wait "$BUILD_PID"
-
-APP_BUNDLE=$(find "$APP_DIR/ios/build/DerivedData/Build/Products/$CONFIGURATION-iphonesimulator" -maxdepth 1 -name "$APP_NAME.app" -print -quit)
-if [[ -z "$APP_BUNDLE" ]]; then
-  echo "Built app bundle not found." >&2
-  exit 1
-fi
+rn_install_pods "$APP_DIR" "smoke app"
+UDID=$(rn_require_ios_simulator)
+rn_build_ios_app "$APP_DIR" "$APP_ROOT" "$APP_NAME" "$CONFIGURATION" "$UDID" "$BUILD_TIMEOUT_SECONDS" "smoke app"
+APP_BUNDLE="$RN_APP_BUNDLE"
 
 checkpoint "Launching smoke app and waiting for TurboModule marker..."
-xcrun simctl install "$UDID" "$APP_BUNDLE"
-DATA_CONTAINER=$(xcrun simctl get_app_container "$UDID" "$BUNDLE_ID" data)
-MARKER_FILE="$DATA_CONTAINER/tmp/$MARKER_FILE_NAME"
-rm -f "$MARKER_FILE"
-
-SIMCTL_CHILD_NATIVESCRIPT_RN_TURBO_SMOKE_MARKER=1 \
-  xcrun simctl launch --terminate-running-process "$UDID" "$BUNDLE_ID"
-
-node - "$MARKER_FILE" "$MARKER" "$LAUNCH_TIMEOUT_SECONDS" <<'NODE'
-const fs = require('fs');
-const [markerFile, marker, timeoutSecondsText] = process.argv.slice(2);
-const timeoutMs = Number(timeoutSecondsText) * 1000;
-const startedAt = Date.now();
-
-function poll() {
-  if (fs.existsSync(markerFile)) {
-    const content = fs.readFileSync(markerFile, 'utf8');
-    console.log(`${marker} ${JSON.stringify({markerFile, content: content.trim()})}`);
-    process.exit(0);
-  }
-
-  if (Date.now() - startedAt > timeoutMs) {
-    console.error(`Timed out waiting for ${marker} file at ${markerFile}.`);
-    process.exit(1);
-  }
-
-  setTimeout(poll, 2000);
-}
-
-poll();
-NODE
+MARKER_FILE=$(rn_launch_app_with_marker "$UDID" "$APP_BUNDLE" "$BUNDLE_ID" "$MARKER_FILE_NAME")
+rn_wait_for_marker_file "$MARKER_FILE" "$MARKER" "$LAUNCH_TIMEOUT_SECONDS"
 
 checkpoint "React Native NativeScript TurboModule smoke test passed."
