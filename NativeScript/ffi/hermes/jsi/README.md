@@ -5,18 +5,18 @@ API access.
 
 The backend is split by FFI responsibility:
 
-- `NativeApiJsiBridge.inc` owns metadata indexing, symbol lookup, scheduler
+- `../../shared/jsi/NativeApiJsiBridge.h` owns metadata indexing, symbol lookup, scheduler
   state, and bridge lifetime caches.
-- `NativeApiJsiHostObjects.inc` owns class, object, protocol, pointer,
+- `../../shared/jsi/NativeApiJsiHostObjects.h` owns class, object, protocol, pointer,
   reference, struct, and union host objects.
-- `NativeApiJsiCallbacks.inc` owns signatures, libffi callback trampolines,
+- `../../shared/jsi/NativeApiJsiCallbacks.h` owns signatures, libffi callback trampolines,
   JS blocks, and native function pointer callback lifetime.
-- `NativeApiJsiConversion.inc` owns JSI/native type conversion and the
+- `../../shared/jsi/NativeApiJsiConversion.h` owns JSI/native type conversion and the
   `interop` helper surface.
-- `NativeApiJsiInvocation.inc` owns constants, enums, C function calls,
+- `../../shared/jsi/NativeApiJsiInvocation.h` owns constants, enums, C function calls,
   function pointer calls, and Objective-C selector dispatch.
-- `NativeApiJsiHostObject.inc` owns the public API host object exposed to JS.
-- `NativeApiJsiInstall.inc` owns runtime/global installation.
+- `../../shared/jsi/NativeApiJsiHostObject.h` owns the public API host object exposed to JS.
+- `../../shared/jsi/NativeApiJsiInstall.h` owns runtime/global installation.
 
 The core installer is engine-host agnostic:
 

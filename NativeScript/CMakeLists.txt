@@ -239,20 +239,37 @@ set(FFI_NAPI_SOURCE_FILES
   ffi/napi/ClassBuilder.mm
 )
 
+set(FFI_DIRECT_SHARED_SOURCE_FILES
+  ffi/shared/direct/EmbeddedMetadata.mm
+)
+
 set(FFI_HERMES_DIRECT_SOURCE_FILES
+  ${FFI_DIRECT_SHARED_SOURCE_FILES}
   ffi/hermes/jsi/NativeApiJsi.mm
 )
 
 set(FFI_V8_DIRECT_SOURCE_FILES
+  ${FFI_DIRECT_SHARED_SOURCE_FILES}
   ffi/v8/NativeApiV8.mm
+  ffi/v8/NativeApiV8HostObjects.mm
+  ffi/v8/NativeApiV8Runtime.mm
+  ffi/v8/NativeApiV8Value.mm
 )
 
 set(FFI_JSC_DIRECT_SOURCE_FILES
+  ${FFI_DIRECT_SHARED_SOURCE_FILES}
   ffi/jsc/NativeApiJSC.mm
+  ffi/jsc/NativeApiJSCHostObjects.mm
+  ffi/jsc/NativeApiJSCRuntime.mm
+  ffi/jsc/NativeApiJSCValue.mm
 )
 
 set(FFI_QUICKJS_DIRECT_SOURCE_FILES
+  ${FFI_DIRECT_SHARED_SOURCE_FILES}
+  ffi/quickjs/NativeApiQuickJSHostObjects.mm
   ffi/quickjs/NativeApiQuickJS.mm
+  ffi/quickjs/NativeApiQuickJSRuntime.mm
+  ffi/quickjs/NativeApiQuickJSValue.mm
 )
 
 set(SOURCE_FILES

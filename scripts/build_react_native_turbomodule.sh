@@ -29,6 +29,7 @@ rm -rf \
   "$PACKAGE_DIR/ios/vendor" \
   "$PACKAGE_DIR/types"
 mkdir -p \
+  "$PACKAGE_DIR/native-api-jsi/jsi" \
   "$PACKAGE_DIR/native-api-jsi/metadata/include" \
   "$PACKAGE_DIR/metadata" \
   "$PACKAGE_DIR/ios/vendor/libffi/include" \
@@ -38,7 +39,7 @@ mkdir -p \
 
 cp NativeScript/ffi/hermes/jsi/NativeApiJsi.h "$PACKAGE_DIR/native-api-jsi/"
 cp NativeScript/ffi/hermes/jsi/NativeApiJsi.mm "$PACKAGE_DIR/native-api-jsi/"
-cp NativeScript/ffi/hermes/jsi/NativeApiJsi*.inc "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/shared/jsi/NativeApiJsi*.h "$PACKAGE_DIR/native-api-jsi/jsi/"
 cp NativeScript/ffi/hermes/jsi/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api-jsi/"
 cp metadata-generator/include/Metadata.h "$PACKAGE_DIR/native-api-jsi/metadata/include/"
 cp metadata-generator/include/MetadataReader.h "$PACKAGE_DIR/native-api-jsi/metadata/include/"

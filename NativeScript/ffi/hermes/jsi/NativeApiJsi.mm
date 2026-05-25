@@ -14,8 +14,8 @@
 #include <atomic>
 #include <cctype>
 #include <cmath>
-#include <cstdio>
 #include <cstdint>
+#include <cstdio>
 #include <cstdlib>
 #include <cstring>
 #include <limits>
@@ -29,9 +29,9 @@
 #include <unordered_set>
 #include <vector>
 
-#include "ffi.h"
 #include "Metadata.h"
 #include "MetadataReader.h"
+#include "ffi.h"
 
 @protocol NativeApiJsiClassBuilderProtocol
 @end
@@ -60,22 +60,24 @@ using metagen::MDMetadataReader;
 using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
-#include "NativeApiJsiBridge.inc"
-#include "NativeApiJsiHostObjects.inc"
-#include "NativeApiJsiCallbacks.inc"
-#include "NativeApiJsiConversion.inc"
-#include "NativeApiJsiInvocation.inc"
-#include "NativeApiJsiClassBuilder.inc"
-#include "NativeApiJsiHostObject.inc"
+// clang-format off
+#include "jsi/NativeApiJsiBridge.h"
+#include "jsi/NativeApiJsiHostObjects.h"
+#include "jsi/NativeApiJsiCallbacks.h"
+#include "jsi/NativeApiJsiConversion.h"
+#include "jsi/NativeApiJsiInvocation.h"
+#include "jsi/NativeApiJsiClassBuilder.h"
+#include "jsi/NativeApiJsiHostObject.h"
+// clang-format on
 
 }  // namespace
 
-#include "NativeApiJsiInstall.inc"
+#include "jsi/NativeApiJsiInstall.h"
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApiJSI(
-    facebook::jsi::Runtime* runtime, const char* metadataPath) {
+extern "C" void NativeScriptInstallNativeApiJSI(facebook::jsi::Runtime* runtime,
+                                                const char* metadataPath) {
   if (runtime == nullptr) {
     return;
   }
@@ -83,6 +85,5 @@ extern "C" void NativeScriptInstallNativeApiJSI(
   config.metadataPath = metadataPath;
   nativescript::InstallNativeApiJSI(*runtime, config);
 }
-
 
 #endif  // TARGET_ENGINE_HERMES
