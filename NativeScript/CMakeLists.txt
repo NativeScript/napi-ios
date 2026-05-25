@@ -139,7 +139,7 @@ message(STATUS "GENERIC_NAPI = ${GENERIC_NAPI}")
 if(NS_FFI_BACKEND STREQUAL "auto")
   if(GENERIC_NAPI OR TARGET_ENGINE_NONE)
     set(NS_EFFECTIVE_FFI_BACKEND "napi")
-  elseif(TARGET_ENGINE_HERMES)
+  elseif(TARGET_ENGINE_HERMES OR TARGET_ENGINE_V8 OR TARGET_ENGINE_JSC OR TARGET_ENGINE_QUICKJS)
     set(NS_EFFECTIVE_FFI_BACKEND "direct")
   else()
     set(NS_EFFECTIVE_FFI_BACKEND "napi")
@@ -153,13 +153,6 @@ endif()
 if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct" AND
    (GENERIC_NAPI OR TARGET_ENGINE_NONE OR BUILD_MACOS_NODE_API))
   message(FATAL_ERROR "NS_FFI_BACKEND=direct requires an embedded JS runtime build")
-endif()
-
-if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct" AND NOT TARGET_ENGINE_HERMES)
-  message(FATAL_ERROR
-    "NS_FFI_BACKEND=direct is currently implemented for TARGET_ENGINE=hermes. "
-    "Use NS_FFI_BACKEND=napi for the pure Node-API FFI path until the direct "
-    "entrypoint for this engine lands.")
 endif()
 
 message(STATUS "NS_FFI_BACKEND = ${NS_FFI_BACKEND} (${NS_EFFECTIVE_FFI_BACKEND})")
@@ -250,6 +243,18 @@ set(FFI_HERMES_DIRECT_SOURCE_FILES
   ffi/hermes/jsi/NativeApiJsi.mm
 )
 
+set(FFI_V8_DIRECT_SOURCE_FILES
+  ffi/v8/NativeApiV8.mm
+)
+
+set(FFI_JSC_DIRECT_SOURCE_FILES
+  ffi/jsc/NativeApiJSC.mm
+)
+
+set(FFI_QUICKJS_DIRECT_SOURCE_FILES
+  ffi/quickjs/NativeApiQuickJS.mm
+)
+
 set(SOURCE_FILES
   ${FFI_SHARED_SOURCE_FILES}
   runtime/NativeScriptException.mm
@@ -305,6 +310,13 @@ if(ENABLE_JS_RUNTIME)
       napi/v8/jsr.cpp
       napi/v8/SimpleAllocator.cpp
     )
+
+    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct")
+      set(SOURCE_FILES
+        ${SOURCE_FILES}
+        ${FFI_V8_DIRECT_SOURCE_FILES}
+      )
+    endif()
 
   elseif(TARGET_ENGINE_HERMES)
     set(HERMES_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/hermes-headers")
@@ -369,6 +381,13 @@ if(ENABLE_JS_RUNTIME)
       napi/quickjs/jsr.cpp
     )
 
+    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct")
+      set(SOURCE_FILES
+        ${SOURCE_FILES}
+        ${FFI_QUICKJS_DIRECT_SOURCE_FILES}
+      )
+    endif()
+
   elseif(TARGET_ENGINE_JSC)
     include_directories(
       napi/jsc
@@ -380,6 +399,13 @@ if(ENABLE_JS_RUNTIME)
       napi/jsc/jsc-api.cpp
       napi/jsc/jsr.cpp
     )
+
+    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct")
+      set(SOURCE_FILES
+        ${SOURCE_FILES}
+        ${FFI_JSC_DIRECT_SOURCE_FILES}
+      )
+    endif()
 
   endif()
 else()

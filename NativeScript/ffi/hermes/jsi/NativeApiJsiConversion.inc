@@ -494,7 +494,8 @@ void convertAggregateArgument(Runtime& runtime,
 
   Object object = value.asObject(runtime);
   for (const auto& field : type.aggregateInfo->fields) {
-    if (!object.hasProperty(runtime, field.name.c_str())) {
+    bool hasField = object.hasProperty(runtime, field.name.c_str());
+    if (!hasField) {
       continue;
     }
     Value fieldValue = object.getProperty(runtime, field.name.c_str());
@@ -718,7 +719,25 @@ void convertJsiArgument(Runtime& runtime,
           } else if (reference->data() == nullptr) {
             reference->ensureStorage(runtime, reference->type(), frame);
           }
-          *static_cast<void**>(target) = reference->data();
+          void* pointer = reference->data();
+          frame.rememberRoundTripValue(bridge, runtime, pointer, value);
+          *static_cast<void**>(target) = pointer;
+          break;
+        }
+        if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
+          void* pointer =
+              object.getHostObject<NativeApiStructObjectHostObject>(runtime)
+                  ->data();
+          frame.rememberRoundTripValue(bridge, runtime, pointer, value);
+          *static_cast<void**>(target) = pointer;
+          break;
+        }
+        const uint8_t* bytes = nullptr;
+        size_t byteLength = 0;
+        if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+          void* pointer = const_cast<uint8_t*>(bytes);
+          frame.rememberRoundTripValue(bridge, runtime, pointer, value);
+          *static_cast<void**>(target) = pointer;
           break;
         }
       }
@@ -741,7 +760,12 @@ void convertJsiArgument(Runtime& runtime,
               runtime, bridge, type, object.asFunction(runtime),
               type.kind == metagen::mdTypeBlock);
           void* pointer = callback->functionPointer();
-          bridge->rememberRoundTripValue(runtime, pointer, value);
+          if (type.kind == metagen::mdTypeBlock) {
+            frame.addLifetime(callback);
+            frame.rememberRoundTripValue(bridge, runtime, pointer, value);
+          } else {
+            bridge->rememberRoundTripValue(runtime, pointer, value);
+          }
           try {
             object.setProperty(runtime, "__nativeApiPointerObject",
                                createPointer(runtime, bridge, pointer));
@@ -924,9 +948,15 @@ Value convertNativeReturnValue(Runtime& runtime,
         return makeNativeProtocolValue(runtime, bridge, *protocolSymbol);
       }
       if (type.kind == metagen::mdTypePointer && type.elementType != nullptr) {
+        std::shared_ptr<Value> backingValue;
+        Value roundTrip = bridge->findRoundTripValue(runtime, pointer);
+        if (!roundTrip.isUndefined()) {
+          backingValue = std::make_shared<Value>(runtime, roundTrip);
+        }
         return Object::createFromHostObject(
             runtime, std::make_shared<NativeApiReferenceHostObject>(
-                         bridge, *type.elementType, pointer, false));
+                         bridge, *type.elementType, pointer, false, 0, nullptr,
+                         std::move(backingValue)));
       }
       return createPointer(runtime, bridge, pointer);
     }

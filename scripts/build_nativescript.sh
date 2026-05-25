@@ -123,7 +123,7 @@ function effective_ffi_backend () {
 
   case "$NS_FFI_BACKEND" in
     auto)
-      if [ "$TARGET_ENGINE" == "hermes" ]; then
+      if [[ "$TARGET_ENGINE" == "hermes" || "$TARGET_ENGINE" == "v8" || "$TARGET_ENGINE" == "jsc" || "$TARGET_ENGINE" == "quickjs" ]]; then
         echo direct
       else
         echo napi

@@ -11,11 +11,18 @@
 #include "runtime/Util.h"
 #include "runtime/modules/RuntimeModules.h"
 #ifdef TARGET_ENGINE_V8
+#include "ffi/v8/NativeApiV8.h"
 #include "v8-api.h"
 #endif  // TARGET_ENGINE_V8
 #ifdef TARGET_ENGINE_HERMES
 #include "ffi/hermes/jsi/NativeApiJsi.h"
 #endif  // TARGET_ENGINE_HERMES
+#ifdef TARGET_ENGINE_JSC
+#include "ffi/jsc/NativeApiJSC.h"
+#endif  // TARGET_ENGINE_JSC
+#ifdef TARGET_ENGINE_QUICKJS
+#include "ffi/quickjs/NativeApiQuickJS.h"
+#endif  // TARGET_ENGINE_QUICKJS
 #include <CoreFoundation/CFRunLoop.h>
 #include <cstdlib>
 #include <functional>
@@ -481,6 +488,31 @@ void Runtime::Init(bool isWorker) {
   nativescript_init(env_, metadata_path, RuntimeConfig.MetadataPtr);
 #endif
 
+#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_V8)
+  {
+    NativeApiV8Config nativeApiV8Config;
+    nativeApiV8Config.metadataPath = metadata_path;
+    nativeApiV8Config.metadataPtr = RuntimeConfig.MetadataPtr;
+    nativeApiV8Config.installGlobalSymbols = true;
+    nativeApiV8Config.nativeCallbackInvoker =
+        [env = env_](std::function<void()> task) {
+          NapiScope scope(env);
+          task();
+        };
+    nativeApiV8Config.jsThreadCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              false);
+        };
+    InstallNativeApiV8(env_->isolate, env_->context(), nativeApiV8Config);
+  }
+#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_V8
+
 #if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_HERMES)
   if (auto* jsiRuntime = js_get_jsi_runtime(env_)) {
     NativeApiJsiConfig nativeApiJsiConfig;
@@ -509,6 +541,56 @@ void Runtime::Init(bool isWorker) {
     InstallNativeApiJSI(*jsiRuntime, nativeApiJsiConfig);
   }
 #endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_HERMES
+
+#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_JSC)
+  {
+    NativeApiJSCConfig nativeApiJSCConfig;
+    nativeApiJSCConfig.metadataPath = metadata_path;
+    nativeApiJSCConfig.metadataPtr = RuntimeConfig.MetadataPtr;
+    nativeApiJSCConfig.installGlobalSymbols = true;
+    nativeApiJSCConfig.nativeCallbackInvoker =
+        [env = env_](std::function<void()> task) {
+          NapiScope scope(env);
+          task();
+        };
+    nativeApiJSCConfig.jsThreadCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              false);
+        };
+    InstallNativeApiJSC(env_->context, nativeApiJSCConfig);
+  }
+#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_JSC
+
+#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_QUICKJS)
+  {
+    NativeApiQuickJSConfig nativeApiQuickJSConfig;
+    nativeApiQuickJSConfig.metadataPath = metadata_path;
+    nativeApiQuickJSConfig.metadataPtr = RuntimeConfig.MetadataPtr;
+    nativeApiQuickJSConfig.installGlobalSymbols = true;
+    nativeApiQuickJSConfig.nativeCallbackInvoker =
+        [env = env_](std::function<void()> task) {
+          NapiScope scope(env);
+          task();
+        };
+    nativeApiQuickJSConfig.jsThreadCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              false);
+        };
+    InstallNativeApiQuickJS(qjs_get_context(env_), nativeApiQuickJSConfig);
+  }
+#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_QUICKJS
 
   napi_close_handle_scope(env_, scope);
 }

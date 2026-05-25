@@ -150,7 +150,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
     return undefined;
   }
 
-  function defineLazyGlobal(name, resolve, force) {
+  function defineLazyGlobal(name, resolve, force, nativeKind) {
     if (!name) {
       return;
     }
@@ -160,6 +160,16 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
       } catch (_) {
       }
       return;
+    }
+    var nativeDefineLazyGlobal = api.__defineLazyGlobal;
+    if (nativeKind && typeof nativeDefineLazyGlobal === 'function' &&
+        typeof globalThis.__nativeScriptResolveNativeApiLazyGlobal === 'function') {
+      try {
+        if (nativeDefineLazyGlobal(name, nativeKind, !!force)) {
+          return;
+        }
+      } catch (_) {
+      }
     }
     try {
       Object.defineProperty(globalThis, name, {
@@ -721,9 +731,13 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
               configurable: true,
               enumerable: false,
               get: receiverIsClass
-                ? (function(name) {
-                    return function() { return nativeClass[name]; };
-                  })(member.name)
+                ? (function(name, selectorName) {
+                    return function() {
+                      return selectorName
+                        ? nativeClass.invoke(selectorName)
+                        : nativeClass[name];
+                    };
+                  })(member.name, member.selectorName)
                 : (function(name) {
                     return function() {
                       return api.__invokeBase(nativeClass, this, name);
@@ -732,9 +746,14 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
             };
             if (!member.readonly) {
               descriptor.set = receiverIsClass
-                ? (function(name) {
-                    return function(value) { nativeClass[name] = value; };
-                  })(member.name)
+                ? (function(name, setterSelectorName) {
+                    return function(value) {
+                      if (setterSelectorName) {
+                        return nativeClass.invoke(setterSelectorName, value);
+                      }
+                      nativeClass[name] = value;
+                    };
+                  })(member.name, member.setterSelectorName)
                 : (function(name) {
                     return function(value) {
                       return api.__invokeBase(nativeClass, this, name, value);
@@ -898,11 +917,9 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
                 property === 'name') {
               return Reflect.get(target, property, receiver);
             }
-            if (property in nativeClass) {
-              var nativeValue = nativeClass[property];
-              if (nativeValue !== undefined) {
-                return nativeValue;
-              }
+            var nativeValue = nativeClass[property];
+            if (nativeValue !== undefined) {
+              return nativeValue;
             }
             var reflected = Reflect.get(target, property, receiver);
             if (reflected !== undefined || property in target) {
@@ -1388,32 +1405,62 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
   var protocolNameSet = nameSet(protocolNameList);
   var enumNameSet = nameSet(enumNameList);
 
+  function resolveNativeApiEnum(enumName) {
+    return (api.getEnum && api.getEnum(enumName)) || api[enumName];
+  }
+
+  Object.defineProperty(globalThis, '__nativeScriptResolveNativeApiLazyGlobal', {
+    configurable: false,
+    enumerable: false,
+    writable: false,
+    value: function(name, kind) {
+      var value;
+      if (kind === 'class') {
+        value = wrapNativeClass(api[name]);
+      } else if (kind === 'function' || kind === 'constant') {
+        value = api[name];
+      } else if (kind === 'protocol') {
+        value = (api.getProtocol && api.getProtocol(name)) || api[name];
+      } else if (kind === 'enum') {
+        value = resolveNativeApiEnum(name);
+      } else if (kind === 'struct') {
+        value = wrapAggregateConstructor((api.getStruct && api.getStruct(name)) || api[name]);
+      } else if (kind === 'union') {
+        value = wrapAggregateConstructor((api.getUnion && api.getUnion(name)) || api[name]);
+      } else if (kind && kind.indexOf('enumMember:') === 0) {
+        var enumValue = resolveNativeApiEnum(kind.slice('enumMember:'.length));
+        value = enumValue && enumValue[name];
+      } else {
+        value = api[name];
+      }
+      cacheGlobal(name, value);
+      return value;
+    }
+  });
+
   classNameList.forEach(function(name) {
     defineLazyGlobal(name, function(className) {
       return wrapNativeClass(api[className]);
-    });
+    }, false, 'class');
   });
   functionNameList.forEach(function(name) {
     defineLazyGlobal(name, function(functionName) {
       return api[functionName];
-    });
+    }, false, 'function');
   });
   constantNameList.forEach(function(name) {
     defineLazyGlobal(name, function(constantName) {
       return api[constantName];
-    });
+    }, false, 'constant');
   });
   protocolNameList.forEach(function(name) {
     defineLazyGlobal(name, function(protocolName) {
       return (api.getProtocol && api.getProtocol(protocolName)) || api[protocolName];
-    });
+    }, false, 'protocol');
   });
   enumNameList.forEach(function(name) {
-    var resolveEnum = function(enumName) {
-      return (api.getEnum && api.getEnum(enumName)) || api[enumName];
-    };
-    defineLazyGlobal(name, resolveEnum);
-    var enumValue = resolveEnum(name);
+    defineLazyGlobal(name, resolveNativeApiEnum, false, 'enum');
+    var enumValue = resolveNativeApiEnum(name);
     if (!enumValue || typeof enumValue !== 'object') {
       return;
     }
@@ -1423,7 +1470,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
       }
       defineLazyGlobal(memberName, function() {
         return enumValue[memberName];
-      });
+      }, false, 'enumMember:' + name);
     });
   });
   names('structNames').forEach(function(name) {
@@ -1432,7 +1479,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
       !!protocolNameSet[name] || !!enumNameSet[name];
     defineLazyGlobal(name, function(structName) {
       return wrapAggregateConstructor((api.getStruct && api.getStruct(structName)) || api[structName]);
-    }, !conflictsWithValue);
+    }, !conflictsWithValue, 'struct');
   });
   names('unionNames').forEach(function(name) {
     var conflictsWithValue =
@@ -1440,7 +1487,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
       !!protocolNameSet[name] || !!enumNameSet[name];
     defineLazyGlobal(name, function(unionName) {
       return wrapAggregateConstructor((api.getUnion && api.getUnion(unionName)) || api[unionName]);
-    }, !conflictsWithValue);
+    }, !conflictsWithValue, 'union');
   });
 
   if (typeof globalThis.UIColor === 'undefined' &&

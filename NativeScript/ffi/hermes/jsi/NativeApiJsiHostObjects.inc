@@ -166,13 +166,15 @@ class NativeApiReferenceHostObject final : public HostObject {
   NativeApiReferenceHostObject(std::shared_ptr<NativeApiJsiBridge> bridge,
                                NativeApiJsiType type, void* data, bool ownsData,
                                size_t byteLength = 0,
-                               std::shared_ptr<Value> pendingValue = nullptr)
+                               std::shared_ptr<Value> pendingValue = nullptr,
+                               std::shared_ptr<Value> backingValue = nullptr)
       : bridge_(std::move(bridge)),
         type_(std::move(type)),
         data_(data),
         ownsData_(ownsData),
         byteLength_(byteLength),
-        pendingValue_(std::move(pendingValue)) {}
+        pendingValue_(std::move(pendingValue)),
+        backingValue_(std::move(backingValue)) {}
 
   ~NativeApiReferenceHostObject() override {
     if (ownsData_ && data_ != nullptr) {
@@ -204,6 +206,7 @@ class NativeApiReferenceHostObject final : public HostObject {
   bool ownsData_ = false;
   size_t byteLength_ = 0;
   std::shared_ptr<Value> pendingValue_;
+  std::shared_ptr<Value> backingValue_;
 };
 
 class NativeApiStructObjectHostObject final : public HostObject {
@@ -1047,6 +1050,8 @@ class NativeApiClassHostObject final : public HostObject {
             static_cast<double>(selectorArgumentCount(member.selectorName)));
         descriptor.setProperty(runtime, "property", member.property);
         descriptor.setProperty(runtime, "readonly", member.readonly);
+        descriptor.setProperty(runtime, "setterSelectorName",
+                               makeString(runtime, member.setterSelectorName));
         result.setValueAtIndex(runtime, index++, descriptor);
       }
       Array compact(runtime, index);

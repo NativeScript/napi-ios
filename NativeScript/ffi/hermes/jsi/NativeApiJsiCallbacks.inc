@@ -12,6 +12,19 @@ bool isObjectiveCObjectType(const NativeApiJsiType& type) {
   }
 }
 
+#ifndef NATIVESCRIPT_NATIVE_API_RETAIN_RUNTIME
+std::shared_ptr<Runtime> retainNativeApiJsiRuntime(Runtime& runtime) {
+  return std::shared_ptr<Runtime>(&runtime, [](Runtime*) {});
+}
+#endif
+
+#ifndef NATIVESCRIPT_NATIVE_API_RUNTIME_SCOPE
+class NativeApiJsiRuntimeScope final {
+ public:
+  explicit NativeApiJsiRuntimeScope(Runtime&) {}
+};
+#endif
+
 struct NativeApiJsiSignature {
   ffi_cif cif = {};
   NativeApiJsiType returnType;
@@ -60,6 +73,12 @@ class NativeApiJsiArgumentFrame {
     for (id object : ownedObjects_) {
       [object release];
     }
+    for (const auto& entry : temporaryRoundTripValues_) {
+      if (entry.first != nullptr) {
+        entry.first->forgetRoundTripValue(entry.second);
+      }
+    }
+    ownedLifetimes_.clear();
   }
 
   void* storageAt(size_t index, size_t size) {
@@ -78,6 +97,20 @@ class NativeApiJsiArgumentFrame {
     return buffer;
   }
   void addObject(id value) { ownedObjects_.push_back(value); }
+  void addLifetime(std::shared_ptr<void> value) {
+    if (value != nullptr) {
+      ownedLifetimes_.push_back(std::move(value));
+    }
+  }
+  void rememberRoundTripValue(
+      const std::shared_ptr<NativeApiJsiBridge>& bridge, Runtime& runtime,
+      const void* native, const Value& value) {
+    if (bridge == nullptr || native == nullptr) {
+      return;
+    }
+    bridge->rememberRoundTripValue(runtime, native, value);
+    temporaryRoundTripValues_.push_back({bridge, native});
+  }
   void** values() { return values_.empty() ? nullptr : values_.data(); }
 
  private:
@@ -86,6 +119,9 @@ class NativeApiJsiArgumentFrame {
   std::vector<char*> ownedCStrings_;
   std::vector<void*> ownedBuffers_;
   std::vector<id> ownedObjects_;
+  std::vector<std::shared_ptr<void>> ownedLifetimes_;
+  std::vector<std::pair<std::shared_ptr<NativeApiJsiBridge>, const void*>>
+      temporaryRoundTripValues_;
 };
 
 class NativeApiMutableBuffer final : public MutableBuffer {
@@ -143,17 +179,16 @@ constexpr int kNativeApiJsiBlockHasCopyDispose = (1 << 25);
 constexpr int kNativeApiJsiBlockRefCountOne = (1 << 1);
 constexpr int kNativeApiJsiBlockHasSignature = (1 << 30);
 
-void* nativeApiJsiMallocBlockIsa() {
-  static void* isa = dlsym(RTLD_DEFAULT, "_NSConcreteMallocBlock");
+void* nativeApiJsiStackBlockIsa() {
+  static void* isa = dlsym(RTLD_DEFAULT, "_NSConcreteStackBlock");
   if (isa == nullptr) {
-    isa = dlsym(RTLD_DEFAULT, "_NSConcreteStackBlock");
+    isa = dlsym(RTLD_DEFAULT, "_NSConcreteMallocBlock");
   }
   return isa;
 }
 
-void nativeApiJsiBlockCopy(void*, void*) {}
-
-void nativeApiJsiBlockDispose(void*) {}
+void nativeApiJsiBlockCopy(void* dst, void* src);
+void nativeApiJsiBlockDispose(void* src);
 
 std::string objcEncodingForJsiType(const NativeApiJsiType& type) {
   switch (type.kind) {
@@ -263,13 +298,15 @@ void nativeApiJsiCallbackTrampoline(ffi_cif* cif, void* ret, void* args[],
 
 std::atomic<int> gActiveNativeThreadJsiCallbacks{0};
 
-class NativeApiJsiCallback final {
+class NativeApiJsiCallback final
+    : public std::enable_shared_from_this<NativeApiJsiCallback> {
  public:
   NativeApiJsiCallback(Runtime& runtime,
                        std::shared_ptr<NativeApiJsiBridge> bridge,
                        std::shared_ptr<NativeApiJsiSignature> signature,
                        Function function, bool block, bool bindThis = false)
-      : runtime_(&runtime),
+      : runtimeOwner_(retainNativeApiJsiRuntime(runtime)),
+        runtime_(runtimeOwner_.get()),
         bridge_(std::move(bridge)),
         signature_(std::move(signature)),
         function_(std::make_shared<Function>(std::move(function))),
@@ -304,10 +341,8 @@ class NativeApiJsiCallback final {
       descriptor_->signature = blockSignature_.c_str();
 
       blockLiteral_ = std::make_unique<NativeApiJsiBlockLiteral>();
-      blockLiteral_->isa = nativeApiJsiMallocBlockIsa();
-      blockLiteral_->flags = kNativeApiJsiBlockNeedsFree |
-                             kNativeApiJsiBlockHasCopyDispose |
-                             kNativeApiJsiBlockRefCountOne |
+      blockLiteral_->isa = nativeApiJsiStackBlockIsa();
+      blockLiteral_->flags = kNativeApiJsiBlockHasCopyDispose |
                              kNativeApiJsiBlockHasSignature;
       blockLiteral_->invoke = executable_;
       blockLiteral_->descriptor = descriptor_.get();
@@ -330,6 +365,50 @@ class NativeApiJsiCallback final {
   }
 
   const NativeApiJsiSignature& signature() const { return *signature_; }
+
+  void retainBlockCopy(const void* blockPointer) {
+    if (!block_) {
+      return;
+    }
+    auto self = shared_from_this();
+    if (bridge_ != nullptr && runtime_ != nullptr && function_ != nullptr &&
+        blockPointer != nullptr) {
+      bridge_->rememberRoundTripValue(*runtime_, blockPointer,
+                                      Value(*runtime_, *function_));
+    }
+    std::lock_guard<std::mutex> lock(retainedBlockCopiesMutex_);
+    retainedBlockCopies_.push_back({blockPointer, std::move(self)});
+  }
+
+  void releaseBlockCopy(const void* blockPointer) {
+    if (!block_) {
+      return;
+    }
+    std::shared_ptr<NativeApiJsiCallback> keepAlive;
+    try {
+      keepAlive = shared_from_this();
+    } catch (const std::bad_weak_ptr&) {
+      return;
+    }
+    std::lock_guard<std::mutex> lock(retainedBlockCopiesMutex_);
+    auto it = retainedBlockCopies_.end();
+    if (blockPointer != nullptr) {
+      it = std::find_if(
+          retainedBlockCopies_.begin(), retainedBlockCopies_.end(),
+          [blockPointer](const RetainedBlockCopy& retained) {
+            return retained.blockPointer == blockPointer;
+          });
+    }
+    if (it == retainedBlockCopies_.end() && !retainedBlockCopies_.empty()) {
+      it = retainedBlockCopies_.end() - 1;
+    }
+    if (it != retainedBlockCopies_.end()) {
+      if (bridge_ != nullptr && it->blockPointer != nullptr) {
+        bridge_->forgetRoundTripValue(it->blockPointer);
+      }
+      retainedBlockCopies_.erase(it);
+    }
+  }
 
   void invoke(void* ret, void* args[]) {
     if (runtime_ == nullptr || function_ == nullptr || signature_ == nullptr) {
@@ -406,6 +485,7 @@ class NativeApiJsiCallback final {
  private:
   void invokeOnCurrentThread(void* ret, void* args[], std::string* error) {
     try {
+      NativeApiJsiRuntimeScope runtimeScope(*runtime_);
       size_t nativeArgOffset = signature_->implicitArgumentCount;
       std::vector<Value> jsArgs;
       jsArgs.reserve(signature_->argumentTypes.size());
@@ -538,6 +618,7 @@ class NativeApiJsiCallback final {
     }
   }
 
+  std::shared_ptr<Runtime> runtimeOwner_;
   Runtime* runtime_ = nullptr;
   std::shared_ptr<NativeApiJsiBridge> bridge_;
   std::shared_ptr<NativeApiJsiSignature> signature_;
@@ -549,7 +630,34 @@ class NativeApiJsiCallback final {
   std::string blockSignature_;
   std::unique_ptr<NativeApiJsiBlockDescriptor> descriptor_;
   std::unique_ptr<NativeApiJsiBlockLiteral> blockLiteral_;
+  struct RetainedBlockCopy {
+    const void* blockPointer = nullptr;
+    std::shared_ptr<NativeApiJsiCallback> lifetime;
+  };
+  std::mutex retainedBlockCopiesMutex_;
+  std::vector<RetainedBlockCopy> retainedBlockCopies_;
 };
+
+void nativeApiJsiBlockCopy(void* dst, void* src) {
+  auto* dstBlock = static_cast<NativeApiJsiBlockLiteral*>(dst);
+  auto* srcBlock = static_cast<NativeApiJsiBlockLiteral*>(src);
+  if (dstBlock == nullptr || srcBlock == nullptr ||
+      srcBlock->callback == nullptr) {
+    return;
+  }
+  dstBlock->callback = srcBlock->callback;
+  static_cast<NativeApiJsiCallback*>(srcBlock->callback)
+      ->retainBlockCopy(dstBlock);
+}
+
+void nativeApiJsiBlockDispose(void* src) {
+  auto* block = static_cast<NativeApiJsiBlockLiteral*>(src);
+  if (block == nullptr || block->callback == nullptr) {
+    return;
+  }
+  static_cast<NativeApiJsiCallback*>(block->callback)->releaseBlockCopy(block);
+  block->callback = nullptr;
+}
 
 void nativeApiJsiCallbackTrampoline(ffi_cif*, void* ret, void* args[],
                                     void* data) {
@@ -1108,7 +1216,8 @@ const char* skipObjCTypeQualifiers(const char* encoding) {
   return encoding;
 }
 
-NativeApiJsiType parseObjCEncodedJsiType(const char* encoding) {
+NativeApiJsiType parseObjCEncodedJsiType(
+    const char* encoding, NativeApiJsiBridge* bridge = nullptr) {
   encoding = skipObjCTypeQualifiers(encoding);
   NativeApiJsiType type;
 
@@ -1177,10 +1286,46 @@ NativeApiJsiType parseObjCEncodedJsiType(const char* encoding) {
       break;
     case '^':
       type.kind = metagen::mdTypePointer;
-      break;
+      type.elementType = std::make_shared<NativeApiJsiType>(
+          parseObjCEncodedJsiType(encoding + 1, bridge));
+      type.ffiType = &ffi_type_pointer;
+      type.supported = true;
+      return type;
     case '{':
+    case '(': {
+      type.kind = metagen::mdTypeStruct;
+      const char* nameStart = encoding + 1;
+      const char* nameEnd = nameStart;
+      while (*nameEnd != '\0' && *nameEnd != '=' && *nameEnd != '}'
+             && *nameEnd != ')') {
+        nameEnd++;
+      }
+      if (bridge != nullptr && nameEnd > nameStart) {
+        std::string aggregateName(nameStart,
+                                  static_cast<size_t>(nameEnd - nameStart));
+        const NativeApiSymbol* symbol =
+            *encoding == '(' ? bridge->findUnion(aggregateName)
+                             : bridge->findStruct(aggregateName);
+        if (symbol == nullptr) {
+          symbol = bridge->findAggregate(aggregateName);
+        }
+        if (symbol != nullptr) {
+          type.aggregateOffset = symbol->offset;
+          type.aggregateIsUnion = symbol->kind == NativeApiSymbolKind::Union;
+          type.aggregateInfo = bridge->aggregateInfoFor(*symbol);
+          type.ffiType =
+              type.aggregateInfo != nullptr && type.aggregateInfo->ffi != nullptr
+                  ? &type.aggregateInfo->ffi->type
+                  : nullptr;
+          type.supported = type.ffiType != nullptr;
+          return type;
+        }
+      }
+      type.supported = false;
+      type.ffiType = nullptr;
+      return type;
+    }
     case '[':
-    case '(':
       type.kind = metagen::mdTypeStruct;
       type.supported = false;
       type.ffiType = nullptr;
@@ -1195,7 +1340,8 @@ NativeApiJsiType parseObjCEncodedJsiType(const char* encoding) {
   return type;
 }
 
-std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(Method method) {
+std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(
+    Method method, NativeApiJsiBridge* bridge = nullptr) {
   if (method == nullptr) {
     return std::nullopt;
   }
@@ -1204,7 +1350,7 @@ std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(Method method) 
   signature.implicitArgumentCount = 2;
 
   char* returnEncoding = method_copyReturnType(method);
-  signature.returnType = parseObjCEncodedJsiType(returnEncoding);
+  signature.returnType = parseObjCEncodedJsiType(returnEncoding, bridge);
   if (returnEncoding != nullptr) {
     free(returnEncoding);
   }
@@ -1212,7 +1358,7 @@ std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(Method method) 
   unsigned int totalArgc = method_getNumberOfArguments(method);
   for (unsigned int i = 2; i < totalArgc; i++) {
     char* argEncoding = method_copyArgumentType(method, i);
-    signature.argumentTypes.push_back(parseObjCEncodedJsiType(argEncoding));
+    signature.argumentTypes.push_back(parseObjCEncodedJsiType(argEncoding, bridge));
     if (argEncoding != nullptr) {
       free(argEncoding);
     }
@@ -1303,7 +1449,9 @@ std::shared_ptr<NativeApiJsiCallback> createJsiCallback(
       std::make_shared<NativeApiJsiSignature>(std::move(*parsed));
   auto callback = std::make_shared<NativeApiJsiCallback>(
       runtime, bridge, std::move(signature), std::move(function), block);
-  bridge->retainJsiLifetime(callback);
+  if (!block) {
+    bridge->retainJsiLifetime(callback);
+  }
   return callback;
 }
 

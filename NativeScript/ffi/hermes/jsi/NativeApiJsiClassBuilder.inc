@@ -8,6 +8,7 @@ std::string readOptionalStringProperty(Runtime& runtime, const Object& object,
 }
 
 struct NativeApiJsiClassBuilderRegistration {
+  std::shared_ptr<Runtime> runtimeOwner;
   Runtime* runtime = nullptr;
   std::shared_ptr<NativeApiJsiBridge> bridge;
 };
@@ -30,8 +31,10 @@ void rememberNativeApiJsiClassBuilder(
     return;
   }
   std::lock_guard<std::mutex> lock(gNativeApiJsiClassBuilderMutex);
+  auto runtimeOwner = retainNativeApiJsiRuntime(runtime);
   gNativeApiJsiClassBuilders[cls] = NativeApiJsiClassBuilderRegistration{
-      .runtime = &runtime,
+      .runtimeOwner = runtimeOwner,
+      .runtime = runtimeOwner.get(),
       .bridge = bridge,
   };
 }
@@ -102,6 +105,7 @@ NSUInteger nativeApiJsiSymbolIteratorCountByEnumerating(
   }
 
   Runtime& runtime = *registration->runtime;
+  NativeApiJsiRuntimeScope runtimeScope(runtime);
   auto bridge = registration->bridge;
   try {
     Value receiver = makeNativeObjectValue(runtime, bridge, self, false);

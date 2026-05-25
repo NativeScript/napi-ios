@@ -394,7 +394,7 @@ Value callObjCSelector(Runtime& runtime,
         (member->flags & metagen::mdMemberReturnOwned) != 0);
   }
   if (!signature) {
-    signature = parseObjCMethodJsiSignature(method);
+    signature = parseObjCMethodJsiSignature(method, bridge.get());
   }
 
   if (!signature || !signature->prepared || signature->variadic ||

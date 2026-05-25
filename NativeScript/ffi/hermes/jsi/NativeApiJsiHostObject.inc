@@ -1,3 +1,11 @@
+#ifndef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS
+inline bool InstallNativeApiEngineLazyGlobal(
+    Runtime&, std::shared_ptr<NativeApiJsiBridge>, const std::string&,
+    const std::string&, bool) {
+  return false;
+}
+#endif
+
 class NativeApiHostObject final : public HostObject {
  public:
   explicit NativeApiHostObject(std::shared_ptr<NativeApiJsiBridge> bridge)
@@ -20,6 +28,21 @@ class NativeApiHostObject final : public HostObject {
     if (property == "interop") {
       return createInteropObject(runtime, bridge_);
     }
+#ifdef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS
+    if (property == "__defineLazyGlobal") {
+      auto bridge = bridge_;
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "__defineLazyGlobal"), 3,
+          [bridge](Runtime& runtime, const Value&, const Value* args,
+                   size_t count) -> Value {
+            std::string name = readStringArg(runtime, args, count, 0, "name");
+            std::string kind = readStringArg(runtime, args, count, 1, "kind");
+            bool force = count > 2 && args[2].isBool() && args[2].getBool();
+            return InstallNativeApiEngineLazyGlobal(runtime, bridge, name, kind,
+                                                    force);
+          });
+    }
+#endif
     if (property == "__fastEnumeration") {
       auto bridge = bridge_;
       return Function::createFromHostFunction(
@@ -416,6 +439,9 @@ class NativeApiHostObject final : public HostObject {
     addPropertyName(runtime, names, "metadata");
     addPropertyName(runtime, names, "hasScheduler");
     addPropertyName(runtime, names, "interop");
+#ifdef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS
+    addPropertyName(runtime, names, "__defineLazyGlobal");
+#endif
     addPropertyName(runtime, names, "runOnUI");
     addPropertyName(runtime, names, "import");
     addPropertyName(runtime, names, "lookup");
