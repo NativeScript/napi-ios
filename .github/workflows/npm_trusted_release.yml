@@ -35,6 +35,10 @@ on:
           - patch
           - minor
           - major
+      version:
+        description: "Exact npm version to publish; overrides release-type/preid. Use a prerelease version for preview publishes, e.g. 9.0.0-preview.0"
+        required: false
+        type: string
       preid:
         description: "Prerelease identifier (used only when release-type=prerelease; also becomes the npm dist-tag, e.g. next | canary)"
         required: false
@@ -134,11 +138,13 @@ jobs:
         shell: bash
         env:
           RELEASE_TYPE: ${{ inputs.release-type }}
+          PACKAGE_VERSION: ${{ inputs.version }}
           PREID: ${{ inputs.preid }}
           TARGET: ${{ matrix.target }}
         run: |
           set -euo pipefail
           release_type="$RELEASE_TYPE"
+          package_version="$PACKAGE_VERSION"
           preid="$PREID"
           target="$TARGET"
           if [ "$target" = "react-native" ]; then
@@ -155,7 +161,9 @@ jobs:
           fi
 
           pushd "$pkg_dir" >/dev/null
-          if [ "$release_type" = "prerelease" ]; then
+          if [ -n "$package_version" ]; then
+            npm version "$package_version" --no-git-tag-version >/dev/null
+          elif [ "$release_type" = "prerelease" ]; then
             npm version prerelease --preid "$preid" --no-git-tag-version >/dev/null
           else
             npm version "$release_type" --no-git-tag-version >/dev/null
@@ -164,6 +172,10 @@ jobs:
           popd >/dev/null
 
           NPM_TAG=$(NPM_VERSION="$NPM_VERSION" node ./scripts/get-npm-tag.js "$npm_tag_target")
+          if [ -n "$package_version" ] && [ "$release_type" = "prerelease" ] && [ "$NPM_TAG" = "latest" ]; then
+            echo "Exact prerelease publishes must include a prerelease identifier (for example 9.0.0-preview.0)." >&2
+            exit 1
+          fi
           echo "NPM_VERSION=$NPM_VERSION" >> "$GITHUB_OUTPUT"
           echo "NPM_TAG=$NPM_TAG" >> "$GITHUB_OUTPUT"
           echo "PACKAGE_DIR=$pkg_dir" >> "$GITHUB_OUTPUT"
@@ -332,6 +344,7 @@ jobs:
         env:
           PACKAGE_SELECTION: ${{ inputs.engine }}
           RELEASE_TYPE: ${{ inputs.release-type }}
+          PACKAGE_VERSION: ${{ inputs.version }}
           PREID: ${{ inputs.preid }}
           DRY_RUN: ${{ inputs.dry-run }}
           TARGETS: ${{ needs.matrix.outputs.targets }}
@@ -340,6 +353,7 @@ jobs:
         run: |
           echo "Package selection: $PACKAGE_SELECTION"
           echo "Release type:     $RELEASE_TYPE"
+          echo "Exact version:    $PACKAGE_VERSION"
           echo "Preid:            $PREID"
           echo "Dry run:          $DRY_RUN"
           echo "Targets:          $TARGETS"
