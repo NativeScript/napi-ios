@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "ffi/napi/NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "js_native_api.h"
 #include "native_api_util.h"
 #include "runtime/RuntimeConfig.h"

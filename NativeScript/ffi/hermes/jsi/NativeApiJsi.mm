@@ -50,6 +50,7 @@ using facebook::jsi::Object;
 using facebook::jsi::PropNameID;
 using facebook::jsi::Runtime;
 using facebook::jsi::String;
+using facebook::jsi::StringBuffer;
 using facebook::jsi::Value;
 using metagen::MDMemberFlag;
 using metagen::MDMetadataReader;
@@ -6350,6 +6351,424 @@ void InstallAggregateGlobals(Runtime& runtime, Object& api, const char* namesFun
   }
 }
 
+std::string jsStringLiteral(const char* value) {
+  std::string result = "'";
+  if (value != nullptr) {
+    for (const char* current = value; *current != '\0'; current++) {
+      switch (*current) {
+        case '\\':
+          result += "\\\\";
+          break;
+        case '\'':
+          result += "\\'";
+          break;
+        case '\n':
+          result += "\\n";
+          break;
+        case '\r':
+          result += "\\r";
+          break;
+        case '\t':
+          result += "\\t";
+          break;
+        default:
+          result += *current;
+          break;
+      }
+    }
+  }
+  result += "'";
+  return result;
+}
+
+void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) {
+  static const char* GlobalInstaller = R"JSI_GLOBALS(
+(function(nativeApiGlobalName) {
+  'use strict';
+  var api = globalThis[nativeApiGlobalName];
+  if (!api || api.__nativeScriptGlobalsInstalled) {
+    return;
+  }
+
+  var cacheName = '__nativeScriptNativeApiGlobalCache';
+  var typeCodeKey = '__nativeApiTypeCode';
+  var classWrappers = typeof WeakMap === 'function' ? new WeakMap() : null;
+
+  function globalCache() {
+    var existing = globalThis[cacheName];
+    if (existing && typeof existing === 'object') {
+      return existing;
+    }
+    var cache = Object.create(null);
+    Object.defineProperty(globalThis, cacheName, {
+      configurable: false,
+      enumerable: false,
+      writable: false,
+      value: cache
+    });
+    return cache;
+  }
+
+  function cacheGlobal(name, value) {
+    if (name && value !== undefined) {
+      globalCache()[name] = value;
+    }
+  }
+
+  function defineLazyGlobal(name, resolve, force) {
+    if (!name) {
+      return;
+    }
+    if (!force && Object.prototype.hasOwnProperty.call(globalThis, name)) {
+      try {
+        cacheGlobal(name, globalThis[name]);
+      } catch (_) {
+      }
+      return;
+    }
+    try {
+      Object.defineProperty(globalThis, name, {
+        configurable: true,
+        enumerable: false,
+        get: function() {
+          var value = resolve(name);
+          cacheGlobal(name, value);
+          Object.defineProperty(globalThis, name, {
+            configurable: true,
+            enumerable: false,
+            writable: false,
+            value: value
+          });
+          return value;
+        }
+      });
+    } catch (_) {
+      var value = resolve(name);
+      if (value !== undefined) {
+        cacheGlobal(name, value);
+        Object.defineProperty(globalThis, name, {
+          configurable: true,
+          enumerable: false,
+          writable: false,
+          value: value
+        });
+      }
+    }
+  }
+
+  function wrapAggregateConstructor(nativeConstructor) {
+    if (typeof nativeConstructor !== 'function') {
+      return nativeConstructor;
+    }
+    var aggregate = function NativeScriptAggregate(initialValue) {
+      return nativeConstructor(initialValue);
+    };
+    try {
+      Object.defineProperty(aggregate, Symbol.hasInstance, {
+        configurable: true,
+        enumerable: false,
+        value: function(value) {
+          return !!value &&
+            typeof value === 'object' &&
+            value.kind === nativeConstructor.kind &&
+            value.name === nativeConstructor.runtimeName;
+        }
+      });
+    } catch (_) {
+    }
+    ['kind', 'runtimeName', 'metadataOffset', 'sizeof', 'fields', 'equals'].forEach(function(key) {
+      try {
+        Object.defineProperty(aggregate, key, {
+          configurable: true,
+          enumerable: false,
+          writable: false,
+          value: nativeConstructor[key]
+        });
+      } catch (_) {
+      }
+    });
+    return aggregate;
+  }
+
+  function wrapNativeClass(nativeClass) {
+    if (!nativeClass || (typeof nativeClass !== 'object' && typeof nativeClass !== 'function')) {
+      return nativeClass;
+    }
+    if (classWrappers) {
+      var cached = classWrappers.get(nativeClass);
+      if (cached) {
+        return cached;
+      }
+    }
+    var constructable = function NativeScriptNativeClass() {
+      var args = Array.prototype.slice.call(arguments);
+      if (args.length > 0 && typeof nativeClass.construct === 'function') {
+        return nativeClass.construct.apply(nativeClass, args);
+      }
+      if (typeof nativeClass.alloc !== 'function') {
+        throw new Error('Native class cannot be allocated');
+      }
+      var instance = nativeClass.alloc();
+      if (instance && typeof instance.init === 'function') {
+        return instance.init();
+      }
+      return instance;
+    };
+    Object.defineProperty(constructable, '__nativeApiClass', {
+      configurable: false,
+      enumerable: false,
+      writable: false,
+      value: nativeClass
+    });
+    try {
+      Object.defineProperty(constructable, Symbol.hasInstance, {
+        configurable: true,
+        enumerable: false,
+        value: function(value) {
+          if (!value || typeof value !== 'object') {
+            return false;
+          }
+          try {
+            if (typeof value.isKindOfClass === 'function') {
+              return !!value.isKindOfClass(constructable);
+            }
+          } catch (_) {
+          }
+          var expectedName = nativeClass.runtimeName || nativeClass.name;
+          return typeof expectedName === 'string' && value.className === expectedName;
+        }
+      });
+    } catch (_) {
+    }
+    var wrapper = typeof Proxy === 'function'
+      ? new Proxy(constructable, {
+          get: function(target, property, receiver) {
+            if (property in target) {
+              return Reflect.get(target, property, receiver);
+            }
+            return nativeClass[property];
+          },
+          set: function(target, property, value, receiver) {
+            if (receiver && receiver !== target) {
+              Object.defineProperty(receiver, property, {
+                configurable: true,
+                enumerable: true,
+                writable: true,
+                value: value
+              });
+              return true;
+            }
+            try {
+              nativeClass[property] = value;
+              return true;
+            } catch (_) {
+            }
+            return Reflect.set(target, property, value, receiver);
+          },
+          has: function(target, property) {
+            return property in target || property in nativeClass;
+          }
+        })
+      : constructable;
+    if (classWrappers) {
+      classWrappers.set(nativeClass, wrapper);
+    }
+    return wrapper;
+  }
+
+  function wrapInteropFactory(nativeFactory, properties) {
+    if (typeof nativeFactory !== 'function' || nativeFactory.__nativeScriptConstructable) {
+      return nativeFactory;
+    }
+    var constructable = function NativeScriptInteropValue() {
+      return nativeFactory.apply(undefined, arguments);
+    };
+    try {
+      if (nativeFactory.prototype) {
+        constructable.prototype = nativeFactory.prototype;
+      }
+    } catch (_) {
+    }
+    try {
+      Object.defineProperty(constructable, Symbol.hasInstance, {
+        configurable: true,
+        enumerable: false,
+        value: function(value) {
+          return !!value && typeof value === 'object' && value.kind === properties.kind;
+        }
+      });
+    } catch (_) {
+    }
+    Object.keys(properties).forEach(function(key) {
+      try {
+        Object.defineProperty(constructable, key, {
+          configurable: true,
+          enumerable: false,
+          writable: false,
+          value: properties[key]
+        });
+      } catch (_) {
+      }
+    });
+    Object.defineProperty(constructable, '__nativeScriptConstructable', {
+      configurable: false,
+      enumerable: false,
+      writable: false,
+      value: true
+    });
+    return constructable;
+  }
+
+  function installInteropConstructors() {
+    var interop = globalThis.interop;
+    if (!interop || typeof interop !== 'object') {
+      return;
+    }
+    var pointerSize;
+    try {
+      if (typeof interop.sizeof === 'function' && interop.types && interop.types.pointer !== undefined) {
+        pointerSize = interop.sizeof(interop.types.pointer);
+      }
+    } catch (_) {
+      pointerSize = undefined;
+    }
+    interop.Pointer = wrapInteropFactory(interop.Pointer, { kind: 'pointer', sizeof: pointerSize });
+    interop.Reference = wrapInteropFactory(interop.Reference, { kind: 'reference', sizeof: pointerSize });
+    interop.FunctionReference = wrapInteropFactory(
+      interop.FunctionReference,
+      { kind: 'functionReference', sizeof: pointerSize }
+    );
+    if (interop.types && typeof interop.types === 'object') {
+      Object.keys(interop.types).forEach(function(name) {
+        var value = interop.types[name];
+        if (typeof value !== 'number') {
+          return;
+        }
+        var boxed = {
+          valueOf: function() { return value; },
+          toString: function() { return String(value); }
+        };
+        Object.defineProperty(boxed, typeCodeKey, {
+          configurable: false,
+          enumerable: false,
+          writable: false,
+          value: value
+        });
+        interop.types[name] = boxed;
+      });
+    }
+  }
+
+  function defineInlineFunction(name, value) {
+    if (Object.prototype.hasOwnProperty.call(globalThis, name)) {
+      return;
+    }
+    Object.defineProperty(globalThis, name, {
+      configurable: true,
+      enumerable: false,
+      writable: true,
+      value: value
+    });
+  }
+
+  function installInlineFunctions() {
+    var makePoint = function(x, y) { return { x: x, y: y }; };
+    var makeSize = function(width, height) { return { width: width, height: height }; };
+    var makeRect = function(x, y, width, height) {
+      return { origin: { x: x, y: y }, size: { width: width, height: height } };
+    };
+    defineInlineFunction('CGPointMake', makePoint);
+    defineInlineFunction('NSMakePoint', makePoint);
+    defineInlineFunction('CGSizeMake', makeSize);
+    defineInlineFunction('NSMakeSize', makeSize);
+    defineInlineFunction('CGRectMake', makeRect);
+    defineInlineFunction('NSMakeRect', makeRect);
+    defineInlineFunction('NSMakeRange', function(location, length) {
+      return { location: location, length: length };
+    });
+    defineInlineFunction('UIEdgeInsetsMake', function(top, left, bottom, right) {
+      return { top: top, left: left, bottom: bottom, right: right };
+    });
+  }
+
+  function names(kind) {
+    var metadata = api.metadata;
+    var fn = metadata && metadata[kind];
+    return typeof fn === 'function' ? fn() : [];
+  }
+
+  names('classNames').forEach(function(name) {
+    defineLazyGlobal(name, function(className) {
+      return wrapNativeClass(api[className]);
+    });
+  });
+  names('functionNames').forEach(function(name) {
+    defineLazyGlobal(name, function(functionName) {
+      return api[functionName];
+    });
+  });
+  names('constantNames').forEach(function(name) {
+    defineLazyGlobal(name, function(constantName) {
+      return api[constantName];
+    });
+  });
+  names('protocolNames').forEach(function(name) {
+    defineLazyGlobal(name, function(protocolName) {
+      return (api.getProtocol && api.getProtocol(protocolName)) || api[protocolName];
+    });
+  });
+  names('enumNames').forEach(function(name) {
+    var resolveEnum = function(enumName) {
+      return (api.getEnum && api.getEnum(enumName)) || api[enumName];
+    };
+    defineLazyGlobal(name, resolveEnum);
+    var enumValue = resolveEnum(name);
+    if (!enumValue || typeof enumValue !== 'object') {
+      return;
+    }
+    Object.keys(enumValue).forEach(function(memberName) {
+      if (/^-?\d+$/.test(memberName)) {
+        return;
+      }
+      defineLazyGlobal(memberName, function() {
+        return enumValue[memberName];
+      });
+    });
+  });
+  names('structNames').forEach(function(name) {
+    defineLazyGlobal(name, function(structName) {
+      return wrapAggregateConstructor((api.getStruct && api.getStruct(structName)) || api[structName]);
+    }, true);
+  });
+  names('unionNames').forEach(function(name) {
+    defineLazyGlobal(name, function(unionName) {
+      return wrapAggregateConstructor((api.getUnion && api.getUnion(unionName)) || api[unionName]);
+    }, true);
+  });
+
+  installInteropConstructors();
+  installInlineFunctions();
+
+  try {
+    Object.defineProperty(api, '__nativeScriptGlobalsInstalled', {
+      configurable: false,
+      enumerable: false,
+      writable: false,
+      value: true
+    });
+  } catch (_) {
+  }
+})
+)JSI_GLOBALS";
+
+  std::string script(GlobalInstaller);
+  script += "(";
+  script += jsStringLiteral(globalName);
+  script += ");";
+  runtime.evaluateJavaScript(std::make_shared<StringBuffer>(std::move(script)),
+                             "NativeApiJsiGlobals.js");
+}
+
 void InstallNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
   const char* globalName = config.globalName != nullptr && config.globalName[0] != '\0'
                                ? config.globalName
@@ -6362,7 +6781,11 @@ void InstallNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
   if (existingInterop.isUndefined() || existingInterop.isNull()) {
     global.setProperty(runtime, "interop", api.getProperty(runtime, "interop"));
   }
-  InstallAggregateGlobals(runtime, api, "protocolNames");
+  if (config.installGlobalSymbols) {
+    InstallNativeApiJsiGlobalSymbols(runtime, globalName);
+  } else {
+    InstallAggregateGlobals(runtime, api, "protocolNames");
+  }
 }
 
 }  // namespace nativescript

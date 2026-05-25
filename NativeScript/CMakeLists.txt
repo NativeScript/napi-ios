@@ -20,10 +20,12 @@ set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${COMMON_FLAGS}")
 # Arguments
 set(TARGET_PLATFORM "macos" CACHE STRING "Target platform for the Objective-C bridge")
 set(TARGET_ENGINE "v8" CACHE STRING "Target JS engine for the NativeScript runtime")
+set(NS_FFI_BACKEND "auto" CACHE STRING "FFI backend: auto, napi, or direct")
 set(NS_GSD_BACKEND "auto" CACHE STRING "Generated signature dispatch backend: auto, v8, jsc, quickjs, hermes, napi, or none")
 set(METADATA_SIZE 0 CACHE STRING "Size of embedded metadata in bytes")
 set(BUILD_CLI_BINARY OFF CACHE BOOL "Build the NativeScript CLI binary")
 set(BUILD_MACOS_NODE_API OFF CACHE BOOL "Build the NativeScript macOS Node API dylib")
+set_property(CACHE NS_FFI_BACKEND PROPERTY STRINGS auto napi direct)
 set_property(CACHE NS_GSD_BACKEND PROPERTY STRINGS auto v8 jsc quickjs hermes napi none)
 
 if (BUILD_MACOS_NODE_API)
@@ -134,8 +136,45 @@ message(STATUS "TARGET_ENGINE = ${TARGET_ENGINE}")
 message(STATUS "ENABLE_JS_RUNTIME = ${ENABLE_JS_RUNTIME}")
 message(STATUS "GENERIC_NAPI = ${GENERIC_NAPI}")
 
+if(NS_FFI_BACKEND STREQUAL "auto")
+  if(GENERIC_NAPI OR TARGET_ENGINE_NONE)
+    set(NS_EFFECTIVE_FFI_BACKEND "napi")
+  elseif(TARGET_ENGINE_HERMES)
+    set(NS_EFFECTIVE_FFI_BACKEND "direct")
+  else()
+    set(NS_EFFECTIVE_FFI_BACKEND "napi")
+  endif()
+elseif(NS_FFI_BACKEND STREQUAL "napi" OR NS_FFI_BACKEND STREQUAL "direct")
+  set(NS_EFFECTIVE_FFI_BACKEND "${NS_FFI_BACKEND}")
+else()
+  message(FATAL_ERROR "Unknown NS_FFI_BACKEND: ${NS_FFI_BACKEND}")
+endif()
+
+if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct" AND
+   (GENERIC_NAPI OR TARGET_ENGINE_NONE OR BUILD_MACOS_NODE_API))
+  message(FATAL_ERROR "NS_FFI_BACKEND=direct requires an embedded JS runtime build")
+endif()
+
+if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct" AND NOT TARGET_ENGINE_HERMES)
+  message(FATAL_ERROR
+    "NS_FFI_BACKEND=direct is currently implemented for TARGET_ENGINE=hermes. "
+    "Use NS_FFI_BACKEND=napi for the pure Node-API FFI path until the direct "
+    "entrypoint for this engine lands.")
+endif()
+
+message(STATUS "NS_FFI_BACKEND = ${NS_FFI_BACKEND} (${NS_EFFECTIVE_FFI_BACKEND})")
+
+if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct" AND
+   NOT (NS_GSD_BACKEND STREQUAL "auto" OR NS_GSD_BACKEND STREQUAL "none"))
+  message(FATAL_ERROR
+    "NS_GSD_BACKEND is only used by the Node-API FFI backend. "
+    "Use NS_GSD_BACKEND=auto or none with NS_FFI_BACKEND=direct.")
+endif()
+
 if(NS_GSD_BACKEND STREQUAL "auto")
-  if(TARGET_ENGINE_V8)
+  if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct")
+    set(NS_EFFECTIVE_GSD_BACKEND "none")
+  elseif(TARGET_ENGINE_V8)
     set(NS_EFFECTIVE_GSD_BACKEND "v8")
   elseif(TARGET_ENGINE_JSC)
     set(NS_EFFECTIVE_GSD_BACKEND "jsc")
@@ -176,14 +215,21 @@ message(STATUS "NS_GSD_BACKEND = ${NS_GSD_BACKEND} (${NS_EFFECTIVE_GSD_BACKEND})
 include_directories(
   ./
   ffi/shared
-  ffi/v8
-  ffi/hermes
-  ffi/jsc
-  ffi/quickjs
+  ffi/hermes/jsi
   ../metadata-generator/include
   napi/common
   libffi/${LIBFFI_BUILD}/include
 )
+
+if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
+  include_directories(
+    ffi/napi/engine/shared
+    ffi/napi/engine/v8
+    ffi/napi/engine/hermes
+    ffi/napi/engine/jsc
+    ffi/napi/engine/quickjs
+  )
+endif()
 
 set(FFI_SHARED_SOURCE_FILES
   ffi/shared/Tasks.cpp
@@ -210,41 +256,50 @@ set(FFI_NAPI_SOURCE_FILES
   ffi/napi/Interop.mm
   ffi/napi/InlineFunctions.mm
   ffi/napi/ClassBuilder.mm
-  ffi/napi/NativeScriptException.mm
 )
 
-set(FFI_DIRECT_SOURCE_FILES
-  ffi/shared/EngineDirectCall.mm
+set(FFI_NAPI_ENGINE_SOURCE_FILES
+  ffi/napi/engine/shared/EngineDirectCall.mm
 )
 
-set(FFI_V8_SOURCE_FILES
-  ffi/v8/V8FastConversion.mm
-  ffi/v8/V8FastNativeApi.mm
-  ffi/v8/V8FastNativeWrapper.mm
+set(FFI_NAPI_V8_SOURCE_FILES
+  ffi/napi/engine/v8/V8FastConversion.mm
+  ffi/napi/engine/v8/V8FastNativeApi.mm
+  ffi/napi/engine/v8/V8FastNativeWrapper.mm
 )
 
-set(FFI_HERMES_SOURCE_FILES
+set(FFI_HERMES_DIRECT_SOURCE_FILES
   ffi/hermes/jsi/NativeApiJsi.mm
-  ffi/hermes/HermesFastConversion.mm
-  ffi/hermes/HermesFastNativeApi.mm
 )
 
-set(FFI_QUICKJS_SOURCE_FILES
-  ffi/quickjs/QuickJSFastConversion.mm
-  ffi/quickjs/QuickJSFastNativeApi.mm
-  ffi/quickjs/QuickJSFastReturn.mm
+set(FFI_NAPI_HERMES_SOURCE_FILES
+  ffi/napi/engine/hermes/HermesFastConversion.mm
+  ffi/napi/engine/hermes/HermesFastNativeApi.mm
 )
 
-set(FFI_JSC_SOURCE_FILES
-  ffi/jsc/JSCFastConversion.mm
-  ffi/jsc/JSCFastNativeApi.mm
+set(FFI_NAPI_QUICKJS_SOURCE_FILES
+  ffi/napi/engine/quickjs/QuickJSFastConversion.mm
+  ffi/napi/engine/quickjs/QuickJSFastNativeApi.mm
+  ffi/napi/engine/quickjs/QuickJSFastReturn.mm
+)
+
+set(FFI_NAPI_JSC_SOURCE_FILES
+  ffi/napi/engine/jsc/JSCFastConversion.mm
+  ffi/napi/engine/jsc/JSCFastNativeApi.mm
 )
 
 set(SOURCE_FILES
   ${FFI_SHARED_SOURCE_FILES}
-  ${FFI_NAPI_SOURCE_FILES}
-  ${FFI_DIRECT_SOURCE_FILES}
+  runtime/NativeScriptException.mm
 )
+
+if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
+  set(SOURCE_FILES
+    ${SOURCE_FILES}
+    ${FFI_NAPI_SOURCE_FILES}
+    ${FFI_NAPI_ENGINE_SOURCE_FILES}
+  )
+endif()
 
 if(ENABLE_JS_RUNTIME)
   set(SOURCE_FILES
@@ -288,8 +343,14 @@ if(ENABLE_JS_RUNTIME)
       napi/v8/v8-module-loader.cpp
       napi/v8/jsr.cpp
       napi/v8/SimpleAllocator.cpp
-      ${FFI_V8_SOURCE_FILES}
     )
+
+    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
+      set(SOURCE_FILES
+        ${SOURCE_FILES}
+        ${FFI_NAPI_V8_SOURCE_FILES}
+      )
+    endif()
 
   elseif(TARGET_ENGINE_HERMES)
     set(HERMES_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/hermes-headers")
@@ -313,8 +374,19 @@ if(ENABLE_JS_RUNTIME)
     set(SOURCE_FILES
       ${SOURCE_FILES}
       napi/hermes/jsr.cpp
-      ${FFI_HERMES_SOURCE_FILES}
     )
+
+    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
+      set(SOURCE_FILES
+        ${SOURCE_FILES}
+        ${FFI_NAPI_HERMES_SOURCE_FILES}
+      )
+    else()
+      set(SOURCE_FILES
+        ${SOURCE_FILES}
+        ${FFI_HERMES_DIRECT_SOURCE_FILES}
+      )
+    endif()
 
   elseif(TARGET_ENGINE_QUICKJS)
     set(MI_BUILD_OBJECT OFF)
@@ -346,8 +418,14 @@ if(ENABLE_JS_RUNTIME)
       # napi
       napi/quickjs/quickjs-api.c
       napi/quickjs/jsr.cpp
-      ${FFI_QUICKJS_SOURCE_FILES}
     )
+
+    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
+      set(SOURCE_FILES
+        ${SOURCE_FILES}
+        ${FFI_NAPI_QUICKJS_SOURCE_FILES}
+      )
+    endif()
 
   elseif(TARGET_ENGINE_JSC)
     include_directories(
@@ -359,8 +437,14 @@ if(ENABLE_JS_RUNTIME)
     set(SOURCE_FILES ${SOURCE_FILES}
       napi/jsc/jsc-api.cpp
       napi/jsc/jsr.cpp
-      ${FFI_JSC_SOURCE_FILES}
     )
+
+    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
+      set(SOURCE_FILES
+        ${SOURCE_FILES}
+        ${FFI_NAPI_JSC_SOURCE_FILES}
+      )
+    endif()
   endif()
 else()
   include_directories(
@@ -453,6 +537,8 @@ set(NS_GSD_BACKEND_JSC_VALUE 0)
 set(NS_GSD_BACKEND_QUICKJS_VALUE 0)
 set(NS_GSD_BACKEND_HERMES_VALUE 0)
 set(NS_GSD_BACKEND_NAPI_VALUE 0)
+set(NS_FFI_BACKEND_DIRECT_VALUE 0)
+set(NS_FFI_BACKEND_NAPI_VALUE 0)
 
 if(NS_EFFECTIVE_GSD_BACKEND STREQUAL "v8")
   set(NS_GSD_BACKEND_V8_VALUE 1)
@@ -466,12 +552,20 @@ elseif(NS_EFFECTIVE_GSD_BACKEND STREQUAL "napi")
   set(NS_GSD_BACKEND_NAPI_VALUE 1)
 endif()
 
+if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct")
+  set(NS_FFI_BACKEND_DIRECT_VALUE 1)
+elseif(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
+  set(NS_FFI_BACKEND_NAPI_VALUE 1)
+endif()
+
 target_compile_definitions(${NAME} PRIVATE
   NS_GSD_BACKEND_V8=${NS_GSD_BACKEND_V8_VALUE}
   NS_GSD_BACKEND_JSC=${NS_GSD_BACKEND_JSC_VALUE}
   NS_GSD_BACKEND_QUICKJS=${NS_GSD_BACKEND_QUICKJS_VALUE}
   NS_GSD_BACKEND_HERMES=${NS_GSD_BACKEND_HERMES_VALUE}
   NS_GSD_BACKEND_NAPI=${NS_GSD_BACKEND_NAPI_VALUE}
+  NS_FFI_BACKEND_DIRECT=${NS_FFI_BACKEND_DIRECT_VALUE}
+  NS_FFI_BACKEND_NAPI=${NS_FFI_BACKEND_NAPI_VALUE}
 )
 
 set(FRAMEWORK_VERSION_VALUE "${VERSION}")

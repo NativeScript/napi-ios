@@ -25,7 +25,7 @@
 #include "Util.h"
 #include "Block.h"
 #include "Class.h"
-#include "NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"

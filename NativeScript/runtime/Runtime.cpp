@@ -116,6 +116,26 @@ void Runtime::Init(bool isWorker) {
   napi_set_named_property(env_, global, "global", global);
 
   const char* CompatScript = R"(
+    if (typeof globalThis.__extends !== "function") {
+      var __extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function(d, b) { d.__proto__ = b; }) ||
+        function(d, b) {
+          for (var p in b) {
+            if (Object.prototype.hasOwnProperty.call(b, p)) {
+              d[p] = b[p];
+            }
+          }
+        };
+      globalThis.__extends = function(d, b) {
+        if (typeof b !== "function" && b !== null) {
+          throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        }
+        __extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }
+
     if (typeof globalThis.__decorate !== "function") {
       globalThis.__decorate = function(decorators, target, key, desc) {
         var c = arguments.length;
@@ -362,16 +382,19 @@ void Runtime::Init(bool isWorker) {
 #endif
 
   const char* metadata_path = std::getenv("NS_METADATA_PATH");
+#if NS_FFI_BACKEND_NAPI
   nativescript_init(env_, metadata_path, RuntimeConfig.MetadataPtr);
+#endif
 
-#ifdef TARGET_ENGINE_HERMES
+#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_HERMES)
   if (auto* jsiRuntime = js_get_jsi_runtime(env_)) {
     NativeApiJsiConfig nativeApiJsiConfig;
     nativeApiJsiConfig.metadataPath = metadata_path;
     nativeApiJsiConfig.metadataPtr = RuntimeConfig.MetadataPtr;
+    nativeApiJsiConfig.installGlobalSymbols = true;
     InstallNativeApiJSI(*jsiRuntime, nativeApiJsiConfig);
   }
-#endif  // TARGET_ENGINE_HERMES
+#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_HERMES
 
   napi_close_handle_scope(env_, scope);
 }

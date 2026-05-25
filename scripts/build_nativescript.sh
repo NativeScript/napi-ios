@@ -14,9 +14,10 @@ EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 CONFIG_BUILD=RelWithDebInfo
 
 TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
+NS_FFI_BACKEND=${NS_FFI_BACKEND:=auto}
 NS_GSD_BACKEND=${NS_GSD_BACKEND:=auto}
 METADATA_SIZE=${METADATA_SIZE:=0}
-GENERATED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-./NativeScript/ffi/shared/GeneratedSignatureDispatch.inc}}
+GENERATED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-./NativeScript/ffi/napi/engine/shared/GeneratedSignatureDispatch.inc}}
 GENERATED_SIGNATURE_DISPATCH_STAMP="${GENERATED_SIGNATURE_DISPATCH}.stamp"
 
 for arg in $@; do
@@ -42,6 +43,9 @@ for arg in $@; do
     --embed-metadata) EMBED_METADATA=true ;;
     --hermes) TARGET_ENGINE=hermes ;;
     --no-engine|--generic-napi) TARGET_ENGINE=none ;;
+    --ffi-direct) NS_FFI_BACKEND=direct ;;
+    --ffi-napi) NS_FFI_BACKEND=napi ;;
+    --ffi-backend=*) NS_FFI_BACKEND="${arg#--ffi-backend=}" ;;
     --gsd-v8) NS_GSD_BACKEND=v8 ;;
     --gsd-jsc) NS_GSD_BACKEND=jsc ;;
     --gsd-quickjs) NS_GSD_BACKEND=quickjs ;;
@@ -88,6 +92,13 @@ function assemble_node_api_xcframework () {
 }
 
 function effective_gsd_backend () {
+  local is_macos_napi="${1:-false}"
+
+  if [ "$(effective_ffi_backend "$is_macos_napi")" == "direct" ]; then
+    echo none
+    return
+  fi
+
   case "$NS_GSD_BACKEND" in
     auto)
       if [ "$TARGET_ENGINE" == "none" ]; then
@@ -110,21 +121,47 @@ function effective_gsd_backend () {
   esac
 }
 
+function effective_ffi_backend () {
+  local is_macos_napi="${1:-false}"
+
+  if $is_macos_napi || [ "$TARGET_ENGINE" == "none" ]; then
+    echo napi
+    return
+  fi
+
+  case "$NS_FFI_BACKEND" in
+    auto)
+      if [ "$TARGET_ENGINE" == "hermes" ]; then
+        echo direct
+      else
+        echo napi
+      fi
+      ;;
+    *)
+      echo "$NS_FFI_BACKEND"
+      ;;
+  esac
+}
+
 function signature_dispatch_stamp () {
   local platform="$1"
+  local is_macos_napi="${2:-false}"
   local backend
-  backend=$(effective_gsd_backend)
+  backend=$(effective_gsd_backend "$is_macos_napi")
+  local ffi_backend
+  ffi_backend=$(effective_ffi_backend "$is_macos_napi")
   local generator_hash
   generator_hash=$(find ./metadata-generator/src ./metadata-generator/include ./metadata-generator/CMakeLists.txt \
     -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}')
-  printf "platform=%s\nbackend=%s\ntarget_engine=%s\nmetadata_size=%s\ngenerator_hash=%s\n" \
-    "$platform" "$backend" "$TARGET_ENGINE" "$METADATA_SIZE" "$generator_hash"
+  printf "platform=%s\nbackend=%s\nffi_backend=%s\ntarget_engine=%s\nmetadata_size=%s\ngenerator_hash=%s\n" \
+    "$platform" "$backend" "$ffi_backend" "$TARGET_ENGINE" "$METADATA_SIZE" "$generator_hash"
 }
 
 function ensure_signature_dispatch_bindings () {
   local platform="$1"
+  local is_macos_napi="${2:-false}"
   local backend
-  backend=$(effective_gsd_backend)
+  backend=$(effective_gsd_backend "$is_macos_napi")
   if [ "$TARGET_ENGINE" == "none" ] || [ "$backend" == "none" ]; then
     return
   fi
@@ -134,7 +171,7 @@ function ensure_signature_dispatch_bindings () {
   fi
 
   local expected_stamp
-  expected_stamp=$(signature_dispatch_stamp "$platform")
+  expected_stamp=$(signature_dispatch_stamp "$platform" "$is_macos_napi")
   if [ -f "$GENERATED_SIGNATURE_DISPATCH" ] && \
      [ -f "$GENERATED_SIGNATURE_DISPATCH_STAMP" ] && \
      [ "$(cat "$GENERATED_SIGNATURE_DISPATCH_STAMP")" == "$expected_stamp" ]; then
@@ -174,7 +211,7 @@ function cmake_build () {
     is_macos_napi=true
   fi
 
-  ensure_signature_dispatch_bindings "$platform"
+  ensure_signature_dispatch_bindings "$platform" "$is_macos_napi"
 
   local libffi_build_dir=
   case "$platform" in
@@ -207,6 +244,12 @@ function cmake_build () {
       echo "Reconfiguring $platform build directory for GSD backend '$NS_GSD_BACKEND' (was '$cached_gsd_backend')."
       needs_reconfigure=true
     fi
+    local cached_ffi_backend
+    cached_ffi_backend=$(grep '^NS_FFI_BACKEND:STRING=' "$cache_file" | sed 's/^NS_FFI_BACKEND:STRING=//' || true)
+    if [ -n "$cached_ffi_backend" ] && [ "$cached_ffi_backend" != "$NS_FFI_BACKEND" ]; then
+      echo "Reconfiguring $platform build directory for FFI backend '$NS_FFI_BACKEND' (was '$cached_ffi_backend')."
+      needs_reconfigure=true
+    fi
     if $needs_reconfigure; then
       rm -rf "$build_dir"
     fi
@@ -224,7 +267,7 @@ function cmake_build () {
 
   fi
 
-  cmake -S=./NativeScript -B="$build_dir" -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DNS_GSD_BACKEND=$NS_GSD_BACKEND -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
+  cmake -S=./NativeScript -B="$build_dir" -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DNS_FFI_BACKEND=$NS_FFI_BACKEND -DNS_GSD_BACKEND=$NS_GSD_BACKEND -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
 
   cmake --build "$build_dir" --config $CONFIG_BUILD -- \
     CODE_SIGN_STYLE=Manual \

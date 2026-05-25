@@ -20,6 +20,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Check FFI backend boundaries
+        run: npm run check:ffi-boundaries
+
       - name: Download V8
         run: ./scripts/download_v8.sh
 

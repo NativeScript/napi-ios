@@ -31,7 +31,7 @@
 #include "ffi/napi/ObjCBridge.h"
 #include "SignatureDispatch.h"
 #include "ffi/napi/TypeConv.h"
-#include "ffi/napi/NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "v8-api.h"
 
 namespace nativescript {

@@ -1,4 +1,4 @@
-#include "NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #import <Foundation/Foundation.h>
 #include <sstream>
 #include "js_native_api.h"

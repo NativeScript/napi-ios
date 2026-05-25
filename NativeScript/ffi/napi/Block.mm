@@ -10,7 +10,7 @@
 #include <vector>
 #include "HermesFastCallbackInfo.h"
 #include "Interop.h"
-#include "NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
 #include "TypeConv.h"

@@ -21,6 +21,7 @@ struct NativeApiJsiConfig {
   const void* metadataPtr = nullptr;
   const char* globalName = "__nativeScriptNativeApi";
   std::shared_ptr<NativeApiJsiScheduler> scheduler = nullptr;
+  bool installGlobalSymbols = false;
 };
 
 facebook::jsi::Object CreateNativeApiJSI(

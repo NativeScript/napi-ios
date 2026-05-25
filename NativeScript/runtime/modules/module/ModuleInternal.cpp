@@ -15,7 +15,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "ffi/napi/NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "native_api_util.h"
 #include "runtime/RuntimeConfig.h"
 #include "runtime/Util.h"

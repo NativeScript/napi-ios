@@ -26,7 +26,7 @@
 #include "ffi/napi/ClassMember.h"
 #include "ffi/napi/Interop.h"
 #include "InvocationSupport.h"
-#include "ffi/napi/NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "ffi/napi/ObjCBridge.h"
 #include "SignatureDispatch.h"
 #include "ffi/napi/TypeConv.h"

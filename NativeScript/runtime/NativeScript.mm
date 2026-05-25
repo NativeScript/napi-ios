@@ -1,7 +1,7 @@
 #include "NativeScript.h"
 #include "Runtime.h"
 #include "RuntimeConfig.h"
-#include "ffi/napi/NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "ffi/shared/Tasks.h"
 #include "js_native_api.h"
 #include "jsr.h"

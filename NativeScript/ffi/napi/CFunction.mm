@@ -15,7 +15,7 @@
 #include "Interop.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
-#include "NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "Tasks.h"
 #ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"

@@ -22,7 +22,7 @@
 #include "InvocationSupport.h"
 #include "ffi/napi/Interop.h"
 #include "MetadataReader.h"
-#include "ffi/napi/NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "ffi/napi/Object.h"
 #include "ffi/napi/ObjCBridge.h"
 #include "SignatureDispatch.h"

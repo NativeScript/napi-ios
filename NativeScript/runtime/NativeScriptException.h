@@ -1,5 +1,5 @@
-#ifndef NativeScriptException_h
-#define NativeScriptException_h
+#ifndef NATIVESCRIPT_RUNTIME_NATIVE_SCRIPT_EXCEPTION_H
+#define NATIVESCRIPT_RUNTIME_NATIVE_SCRIPT_EXCEPTION_H
 
 #include <string>
 
@@ -49,4 +49,4 @@ class NativeScriptException {
 
 }  // namespace nativescript
 
-#endif /* NativeScriptException_h */
+#endif  // NATIVESCRIPT_RUNTIME_NATIVE_SCRIPT_EXCEPTION_H

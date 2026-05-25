@@ -1,5 +1,5 @@
-#ifndef NS_FFI_SHARED_INVOCATION_SUPPORT_H
-#define NS_FFI_SHARED_INVOCATION_SUPPORT_H
+#ifndef NS_FFI_NAPI_ENGINE_INVOCATION_SUPPORT_H
+#define NS_FFI_NAPI_ENGINE_INVOCATION_SUPPORT_H
 
 #include <cstddef>
 #include <cstdlib>
@@ -86,4 +86,4 @@ class EngineDirectReturnStorage {
 
 }  // namespace nativescript
 
-#endif  // NS_FFI_SHARED_INVOCATION_SUPPORT_H
+#endif  // NS_FFI_NAPI_ENGINE_INVOCATION_SUPPORT_H
