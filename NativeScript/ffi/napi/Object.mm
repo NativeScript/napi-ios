@@ -3,9 +3,6 @@
 #include "Interop.h"
 #include "JSObject.h"
 #include "ObjCBridge.h"
-#ifdef TARGET_ENGINE_V8
-#include "V8FastNativeApi.h"
-#endif
 #include "js_native_api.h"
 #include "node_api_util.h"
 
@@ -395,68 +392,11 @@ const char* nativeObjectProxySource = R"(
   })
 )";
 
-const char* nativeObjectFastArrayIndexesSource = R"(
-  (function (object, isMutableArray, maxIndexedProperties) {
-    const prototype = Object.getPrototypeOf(object);
-    const flag = isMutableArray
-      ? "__ns_mutable_array_index_accessors"
-      : "__ns_array_index_accessors";
-
-    function makeGetter(index) {
-      return function () {
-        return this.objectAtIndex(index);
-      };
-    }
-
-    function makeSetter(index) {
-      return function (value) {
-        this.setObjectAtIndexedSubscript(value, index);
-      };
-    }
-
-    if (prototype != null &&
-        !Object.prototype.hasOwnProperty.call(prototype, flag)) {
-      for (let i = 0; i < maxIndexedProperties; i++) {
-        const descriptor = {
-          configurable: true,
-          enumerable: false,
-          get: makeGetter(i)
-        };
-        if (isMutableArray) {
-          descriptor.set = makeSetter(i);
-        }
-        Object.defineProperty(prototype, i, descriptor);
-      }
-
-      Object.defineProperty(prototype, flag, {
-        configurable: false,
-        enumerable: false,
-        value: true
-      });
-    }
-
-    if (!Object.prototype.hasOwnProperty.call(object, "superclass")) {
-      Object.defineProperty(object, "superclass", {
-        configurable: true,
-        get: function () {
-          return this.class().superclass();
-        }
-      });
-    }
-
-    return object;
-  })
-)";
-
 void initProxyFactory(napi_env env, ObjCBridgeState* state) {
   napi_value script, result;
   napi_create_string_utf8(env, nativeObjectProxySource, NAPI_AUTO_LENGTH, &script);
   napi_run_script(env, script, &result);
   state->createNativeProxy = make_ref(env, result);
-
-  napi_create_string_utf8(env, nativeObjectFastArrayIndexesSource, NAPI_AUTO_LENGTH, &script);
-  napi_run_script(env, script, &result);
-  state->createNativeFastArrayIndexes = make_ref(env, result);
 
   napi_value transferOwnershipToNative;
   napi_create_function(env, "transferOwnershipToNative", NAPI_AUTO_LENGTH,
@@ -550,18 +490,10 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
     return nullptr;
   }
 
-#ifdef TARGET_ENGINE_V8
-  result = CreateV8NativeWrapperObject(env);
-  if (result == nullptr) {
-    napi_throw_error(env, "NativeScriptException", "Unable to create V8 native wrapper object.");
-    return nullptr;
-  }
-#else
   NAPI_GUARD(napi_create_object(env, &result)) {
     NAPI_THROW_LAST_ERROR
     return nullptr;
   }
-#endif
 
   napi_value global;
   napi_value objectCtor;

@@ -3,6 +3,21 @@
 This directory contains the Hermes-first JSI entrypoint for NativeScript Native
 API access.
 
+The backend is split by FFI responsibility:
+
+- `NativeApiJsiBridge.inc` owns metadata indexing, symbol lookup, scheduler
+  state, and bridge lifetime caches.
+- `NativeApiJsiHostObjects.inc` owns class, object, protocol, pointer,
+  reference, struct, and union host objects.
+- `NativeApiJsiCallbacks.inc` owns signatures, libffi callback trampolines,
+  JS blocks, and native function pointer callback lifetime.
+- `NativeApiJsiConversion.inc` owns JSI/native type conversion and the
+  `interop` helper surface.
+- `NativeApiJsiInvocation.inc` owns constants, enums, C function calls,
+  function pointer calls, and Objective-C selector dispatch.
+- `NativeApiJsiHostObject.inc` owns the public API host object exposed to JS.
+- `NativeApiJsiInstall.inc` owns runtime/global installation.
+
 The core installer is engine-host agnostic:
 
 ```cpp
@@ -41,7 +56,7 @@ along with `interop` so common NativeScript-style calls such as
 `CGRect({ origin, size })`, `interop.sizeof(CGRect)`, and
 `interop.handleof(value)` work through JSI.
 
-The remaining parity work is class-builder heavy: `interop.addMethod` and
-JavaScript-defined Objective-C subclasses still need the full method IMP
-installation layer before pure JSI can be considered fully compatible with the
-Node-API bridge.
+The remaining RN FFI-suite skip is the explicit `interop.addMethod` decorator
+hook. JavaScript-defined Objective-C subclasses created through `.extend(...)`
+use the JSI class-builder path and are covered by the React Native compatibility
+suite.

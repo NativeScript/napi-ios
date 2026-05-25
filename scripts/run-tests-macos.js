@@ -15,6 +15,8 @@
 //  - MACOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval after launch (default: 45 seconds).
 //  - MACOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
 //  - MACOS_TESTS filters test modules (comma-separated substrings passed as -tests).
+//  - MACOS_TEST_SPECS filters spec names (comma-separated substrings passed as -specs).
+//  - MACOS_TEST_VERBOSE_SPECS=1 prints Jasmine spec start/done markers.
 
 const fs = require("fs");
 const path = require("path");
@@ -89,6 +91,8 @@ const testTimeoutMs = parseTimeoutMs("MACOS_TEST_TIMEOUT_MS", 2 * 60 * 1000);
 const inactivityTimeoutMs = parseTimeoutMs("MACOS_TEST_INACTIVITY_TIMEOUT_MS", 45 * 1000);
 const emitJunitLogs = process.env.MACOS_LOG_JUNIT !== "0";
 const requestedTests = (process.env.MACOS_TESTS || "").trim();
+const requestedSpecs = (process.env.MACOS_TEST_SPECS || "").trim();
+const verboseSpecs = process.env.MACOS_TEST_VERBOSE_SPECS === "1";
 const requestedEngine = (process.env.MACOS_TEST_ENGINE || "v8").trim().toLowerCase();
 const requestedFfiBackend = (process.env.MACOS_TEST_FFI_BACKEND || "auto").trim().toLowerCase();
 
@@ -98,8 +102,8 @@ const junitEndTag = "</testsuites>";
 const consoleLogMarker = "CONSOLE LOG:";
 const crashReportsDir = path.join(os.homedir(), "Library", "Logs", "DiagnosticReports");
 const generatedRuntimeBuildOutputs = new Set([
-    path.join(nativeScriptSourceRoot, "ffi", "napi", "engine", "shared", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "napi", "engine", "shared", "GeneratedSignatureDispatch.inc.stamp")
+    path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc.stamp")
 ]);
 
 function parseArgs() {
@@ -629,8 +633,14 @@ function main() {
     }
 
     const runArgs = ["-logjunit"];
+    if (verboseSpecs) {
+        runArgs.push("-verbose-specs");
+    }
     if (requestedTests.length > 0) {
         runArgs.push("-tests", requestedTests);
+    }
+    if (requestedSpecs.length > 0) {
+        runArgs.push("-specs", requestedSpecs);
     }
 
     console.log(`Launching app and streaming logs: ${appBinaryPath} ${runArgs.join(" ")}`);

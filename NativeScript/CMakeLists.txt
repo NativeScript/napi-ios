@@ -174,14 +174,6 @@ endif()
 if(NS_GSD_BACKEND STREQUAL "auto")
   if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct")
     set(NS_EFFECTIVE_GSD_BACKEND "none")
-  elseif(TARGET_ENGINE_V8)
-    set(NS_EFFECTIVE_GSD_BACKEND "v8")
-  elseif(TARGET_ENGINE_JSC)
-    set(NS_EFFECTIVE_GSD_BACKEND "jsc")
-  elseif(TARGET_ENGINE_QUICKJS)
-    set(NS_EFFECTIVE_GSD_BACKEND "quickjs")
-  elseif(TARGET_ENGINE_HERMES)
-    set(NS_EFFECTIVE_GSD_BACKEND "hermes")
   else()
     set(NS_EFFECTIVE_GSD_BACKEND "napi")
   endif()
@@ -208,6 +200,13 @@ endif()
 if(NS_EFFECTIVE_GSD_BACKEND STREQUAL "hermes" AND NOT TARGET_ENGINE_HERMES)
   message(FATAL_ERROR "NS_GSD_BACKEND=hermes requires TARGET_ENGINE=hermes")
 endif()
+if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi" AND
+   NOT (NS_EFFECTIVE_GSD_BACKEND STREQUAL "napi" OR
+        NS_EFFECTIVE_GSD_BACKEND STREQUAL "none"))
+  message(FATAL_ERROR
+    "NS_FFI_BACKEND=napi is the pure Node-API FFI backend and only supports "
+    "NS_GSD_BACKEND=napi or none.")
+endif()
 
 message(STATUS "NS_GSD_BACKEND = ${NS_GSD_BACKEND} (${NS_EFFECTIVE_GSD_BACKEND})")
 
@@ -215,21 +214,10 @@ message(STATUS "NS_GSD_BACKEND = ${NS_GSD_BACKEND} (${NS_EFFECTIVE_GSD_BACKEND})
 include_directories(
   ./
   ffi/shared
-  ffi/hermes/jsi
   ../metadata-generator/include
   napi/common
   libffi/${LIBFFI_BUILD}/include
 )
-
-if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
-  include_directories(
-    ffi/napi/engine/shared
-    ffi/napi/engine/v8
-    ffi/napi/engine/hermes
-    ffi/napi/engine/jsc
-    ffi/napi/engine/quickjs
-  )
-endif()
 
 set(FFI_SHARED_SOURCE_FILES
   ffi/shared/Tasks.cpp
@@ -258,34 +246,8 @@ set(FFI_NAPI_SOURCE_FILES
   ffi/napi/ClassBuilder.mm
 )
 
-set(FFI_NAPI_ENGINE_SOURCE_FILES
-  ffi/napi/engine/shared/EngineDirectCall.mm
-)
-
-set(FFI_NAPI_V8_SOURCE_FILES
-  ffi/napi/engine/v8/V8FastConversion.mm
-  ffi/napi/engine/v8/V8FastNativeApi.mm
-  ffi/napi/engine/v8/V8FastNativeWrapper.mm
-)
-
 set(FFI_HERMES_DIRECT_SOURCE_FILES
   ffi/hermes/jsi/NativeApiJsi.mm
-)
-
-set(FFI_NAPI_HERMES_SOURCE_FILES
-  ffi/napi/engine/hermes/HermesFastConversion.mm
-  ffi/napi/engine/hermes/HermesFastNativeApi.mm
-)
-
-set(FFI_NAPI_QUICKJS_SOURCE_FILES
-  ffi/napi/engine/quickjs/QuickJSFastConversion.mm
-  ffi/napi/engine/quickjs/QuickJSFastNativeApi.mm
-  ffi/napi/engine/quickjs/QuickJSFastReturn.mm
-)
-
-set(FFI_NAPI_JSC_SOURCE_FILES
-  ffi/napi/engine/jsc/JSCFastConversion.mm
-  ffi/napi/engine/jsc/JSCFastNativeApi.mm
 )
 
 set(SOURCE_FILES
@@ -297,7 +259,6 @@ if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
   set(SOURCE_FILES
     ${SOURCE_FILES}
     ${FFI_NAPI_SOURCE_FILES}
-    ${FFI_NAPI_ENGINE_SOURCE_FILES}
   )
 endif()
 
@@ -345,13 +306,6 @@ if(ENABLE_JS_RUNTIME)
       napi/v8/SimpleAllocator.cpp
     )
 
-    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
-      set(SOURCE_FILES
-        ${SOURCE_FILES}
-        ${FFI_NAPI_V8_SOURCE_FILES}
-      )
-    endif()
-
   elseif(TARGET_ENGINE_HERMES)
     set(HERMES_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/hermes-headers")
 
@@ -376,12 +330,7 @@ if(ENABLE_JS_RUNTIME)
       napi/hermes/jsr.cpp
     )
 
-    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
-      set(SOURCE_FILES
-        ${SOURCE_FILES}
-        ${FFI_NAPI_HERMES_SOURCE_FILES}
-      )
-    else()
+    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "direct")
       set(SOURCE_FILES
         ${SOURCE_FILES}
         ${FFI_HERMES_DIRECT_SOURCE_FILES}
@@ -420,13 +369,6 @@ if(ENABLE_JS_RUNTIME)
       napi/quickjs/jsr.cpp
     )
 
-    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
-      set(SOURCE_FILES
-        ${SOURCE_FILES}
-        ${FFI_NAPI_QUICKJS_SOURCE_FILES}
-      )
-    endif()
-
   elseif(TARGET_ENGINE_JSC)
     include_directories(
       napi/jsc
@@ -439,12 +381,6 @@ if(ENABLE_JS_RUNTIME)
       napi/jsc/jsr.cpp
     )
 
-    if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
-      set(SOURCE_FILES
-        ${SOURCE_FILES}
-        ${FFI_NAPI_JSC_SOURCE_FILES}
-      )
-    endif()
   endif()
 else()
   include_directories(

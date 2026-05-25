@@ -4,7 +4,6 @@
 #include <sys/queue.h>
 
 #include "js_native_api.h"
-#include "QuickJSFastNativeApi.h"
 #include "libbf.h"
 #include "quicks-runtime.h"
 
@@ -2845,11 +2844,6 @@ napi_status napi_delete_element(napi_env env, napi_value object, uint32_t index,
 
 static inline void napi_set_property_descriptor(
     napi_env env, napi_value object, napi_property_descriptor descriptor) {
-  if (nativescript_quickjs_try_define_fast_native_property(env, object,
-                                                           &descriptor)) {
-    return;
-  }
-
   JSAtom key;
 
   if (descriptor.name) {

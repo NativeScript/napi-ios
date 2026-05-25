@@ -23,7 +23,6 @@ class Cif {
   bool skipGeneratedNapiDispatch = false;
   bool generatedDispatchHasRoundTripCacheArgument = false;
   bool generatedDispatchUsesObjectReturnStorage = false;
-  bool generatedDispatchSetsV8ReturnDirectly = false;
 
   void* rvalue;
   void** avalues;

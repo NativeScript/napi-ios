@@ -948,7 +948,6 @@ class ObjCBridgeState {
   napi_ref referenceClass = nullptr;
   napi_ref functionReferenceClass = nullptr;
   napi_ref createNativeProxy = nullptr;
-  napi_ref createNativeFastArrayIndexes = nullptr;
   napi_ref createFastEnumeratorIterator = nullptr;
   napi_ref transferOwnershipToNative = nullptr;
 

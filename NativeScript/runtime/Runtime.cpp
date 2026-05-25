@@ -8,6 +8,7 @@
 #include "js_native_api_types.h"
 #include "jsr.h"
 #include "jsr_common.h"
+#include "runtime/Util.h"
 #include "runtime/modules/RuntimeModules.h"
 #ifdef TARGET_ENGINE_V8
 #include "v8-api.h"
@@ -16,6 +17,8 @@
 #include "ffi/hermes/jsi/NativeApiJsi.h"
 #endif  // TARGET_ENGINE_HERMES
 #include <CoreFoundation/CFRunLoop.h>
+#include <cstdlib>
+#include <functional>
 
 #include "NativeScript.h"
 #include "robin_hood.h"
@@ -41,6 +44,53 @@ Runtime* Runtime::GetRuntime(napi_env env) {
   }
   return nullptr;
 }
+
+#ifdef TARGET_ENGINE_HERMES
+class HermesRuntimeUnlockScope final {
+ public:
+  explicit HermesRuntimeUnlockScope(napi_env env) {
+    auto it = JSR::env_to_jsr_cache.find(env);
+    jsr_ = it != JSR::env_to_jsr_cache.end() ? it->second : nullptr;
+    if (jsr_ == nullptr) {
+      return;
+    }
+
+    unlockedDepth_ = js_current_env_lock_depth(env);
+    for (int i = 0; i < unlockedDepth_; i++) {
+      jsr_->unlock();
+    }
+    if (unlockedDepth_ == 0 && jsr_->runtime != nullptr) {
+      jsr_->runtime->unlock();
+      unlockedRuntime_ = true;
+    }
+  }
+
+  ~HermesRuntimeUnlockScope() {
+    if (unlockedRuntime_ && jsr_ != nullptr && jsr_->runtime != nullptr) {
+      jsr_->runtime->lock();
+    }
+    if (jsr_ != nullptr) {
+      for (int i = 0; i < unlockedDepth_; i++) {
+        jsr_->lock();
+      }
+    }
+  }
+
+  HermesRuntimeUnlockScope(const HermesRuntimeUnlockScope&) = delete;
+  HermesRuntimeUnlockScope& operator=(const HermesRuntimeUnlockScope&) = delete;
+
+ private:
+  JSR* jsr_ = nullptr;
+  int unlockedDepth_ = 0;
+  bool unlockedRuntime_ = false;
+};
+
+void InvokeWithUnlockedHermesRuntime(napi_env env,
+                                     const std::function<void()>& task) {
+  HermesRuntimeUnlockScope scope(env);
+  task();
+}
+#endif  // TARGET_ENGINE_HERMES
 
 Runtime::Runtime() {
   currentRuntime_ = this;
@@ -283,10 +333,51 @@ void Runtime::Init(bool isWorker) {
         // Ensure that Promise callbacks are executed on the
         // same thread on which they were created
         (() => {
+            const runLoopQueues = [];
+
+            function getRunLoopQueue(runloop) {
+                for (let i = 0; i < runLoopQueues.length; i++) {
+                    if (runLoopQueues[i].runloop === runloop) {
+                        return runLoopQueues[i];
+                    }
+                }
+
+                const queue = {
+                    runloop,
+                    pending: false,
+                    callbacks: [],
+                    drain() {
+                        queue.pending = false;
+                        const callbacks = queue.callbacks.splice(0);
+                        for (let i = 0; i < callbacks.length; i++) {
+                            callbacks[i]();
+                        }
+                        if (queue.callbacks.length > 0 && !queue.pending) {
+                            queue.pending = true;
+                            CFRunLoopPerformBlock(queue.runloop, kCFRunLoopDefaultMode, queue.drain);
+                            CFRunLoopWakeUp(queue.runloop);
+                        }
+                    }
+                };
+                runLoopQueues.push(queue);
+                return queue;
+            }
+
+            function scheduleOnRunLoop(queue, callback) {
+                queue.callbacks.push(callback);
+                if (queue.pending) {
+                    return;
+                }
+                queue.pending = true;
+                CFRunLoopPerformBlock(queue.runloop, kCFRunLoopDefaultMode, queue.drain);
+                CFRunLoopWakeUp(queue.runloop);
+            }
+
             global.Promise = new Proxy(global.Promise, {
                 construct: function(target, args) {
                     let origFunc = args[0];
                     let runloop = CFRunLoopGetCurrent();
+                    let runloopQueue = getRunLoopQueue(runloop);
 
                     let promise = new target(function(resolve, reject) {
                         function isFulfilled() {
@@ -301,27 +392,31 @@ void Runtime::Init(bool isWorker) {
                             if (isFulfilled()) {
                                 return;
                             }
-                            const resolveCall = resolve.bind(this, value);
+                            const resolveFn = resolve;
+                            const resolveCall = function() {
+                                resolveFn(value);
+                            };
                             if (runloop === CFRunLoopGetCurrent()) {
                                 markFulfilled();
                                 resolveCall();
                             } else {
-                                CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, resolveCall);
-                                CFRunLoopWakeUp(runloop);
                                 markFulfilled();
+                                scheduleOnRunLoop(runloopQueue, resolveCall);
                             }
                         }, reason => {
                             if (isFulfilled()) {
                                 return;
                             }
-                            const rejectCall = reject.bind(this, reason);
+                            const rejectFn = reject;
+                            const rejectCall = function() {
+                                rejectFn(reason);
+                            };
                             if (runloop === CFRunLoopGetCurrent()) {
                                 markFulfilled();
                                 rejectCall();
                             } else {
-                                CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, rejectCall);
-                                CFRunLoopWakeUp(runloop);
                                 markFulfilled();
+                                scheduleOnRunLoop(runloopQueue, rejectCall);
                             }
                         });
                     });
@@ -392,6 +487,25 @@ void Runtime::Init(bool isWorker) {
     nativeApiJsiConfig.metadataPath = metadata_path;
     nativeApiJsiConfig.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiJsiConfig.installGlobalSymbols = true;
+    nativeApiJsiConfig.nativeInvocationInvoker =
+        [env = env_](std::function<void()> task) {
+          InvokeWithUnlockedHermesRuntime(env, task);
+        };
+    nativeApiJsiConfig.nativeCallbackInvoker =
+        [env = env_](std::function<void()> task) {
+          NapiScope scope(env);
+          task();
+        };
+    nativeApiJsiConfig.jsThreadCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              false);
+        };
     InstallNativeApiJSI(*jsiRuntime, nativeApiJsiConfig);
   }
 #endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_HERMES

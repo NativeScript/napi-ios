@@ -23,16 +23,11 @@ class CFunction {
   ObjCBridgeState* bridgeState = nullptr;
   Cif* cif = nullptr;
   uint8_t dispatchFlags = 0;
-  bool skipEngineDirectFastPath = false;
   bool dispatchLookupCached = false;
   uint64_t dispatchLookupSignatureHash = 0;
   uint64_t dispatchId = 0;
   void* preparedInvoker = nullptr;
   void* napiInvoker = nullptr;
-  void* engineDirectInvoker = nullptr;
-  void* v8Invoker = nullptr;
-  void* hermesDirectReturnInvoker = nullptr;
-  void* hermesFrameDirectReturnInvoker = nullptr;
 };
 
 }  // namespace nativescript

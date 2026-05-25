@@ -9,9 +9,6 @@
 #include "Block.h"
 #include "CallbackThreading.h"
 #include "ClassMember.h"
-#include "HermesFastCallbackInfo.h"
-#include "HermesFastNativeApi.h"
-#include "EngineDirectCall.h"
 #include "Interop.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
@@ -34,15 +31,6 @@ size_t getCifReturnStorageSize(Cif* cif) {
     }
   }
   return size != 0 ? size : sizeof(void*);
-}
-
-inline bool isCompatOrMainCFunctionName(const char* name) {
-  return name == nullptr ||
-         strcmp(name, "dispatch_async") == 0 ||
-         strcmp(name, "dispatch_get_current_queue") == 0 ||
-         strcmp(name, "dispatch_get_global_queue") == 0 ||
-         strcmp(name, "UIApplicationMain") == 0 ||
-         strcmp(name, "NSApplicationMain") == 0;
 }
 
 class CFunctionReturnStorage final {
@@ -300,10 +288,6 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
       function->dispatchId = 0;
       function->preparedInvoker = nullptr;
       function->napiInvoker = nullptr;
-      function->engineDirectInvoker = nullptr;
-      function->v8Invoker = nullptr;
-      function->hermesDirectReturnInvoker = nullptr;
-      function->hermesFrameDirectReturnInvoker = nullptr;
     }
     return;
   }
@@ -319,17 +303,6 @@ inline void ensureCFunctionDispatchLookup(CFunction* function, Cif* cif) {
   function->preparedInvoker =
       reinterpret_cast<void*>(lookupCFunctionPreparedInvoker(function->dispatchId));
   function->napiInvoker = reinterpret_cast<void*>(lookupCFunctionNapiInvoker(function->dispatchId));
-  function->engineDirectInvoker =
-      reinterpret_cast<void*>(lookupCFunctionEngineDirectInvoker(function->dispatchId));
-#ifdef TARGET_ENGINE_V8
-  function->v8Invoker = reinterpret_cast<void*>(lookupCFunctionV8Invoker(function->dispatchId));
-#endif
-#ifdef TARGET_ENGINE_HERMES
-  function->hermesDirectReturnInvoker =
-      reinterpret_cast<void*>(lookupCFunctionHermesDirectReturnInvoker(function->dispatchId));
-  function->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
-      lookupCFunctionHermesFrameDirectReturnInvoker(function->dispatchId));
-#endif
   function->dispatchLookupCached = true;
 }
 
@@ -371,42 +344,12 @@ CFunction* ObjCBridgeState::getCFunction(napi_env env, MDSectionOffset offset) {
   cFunction->bridgeState = this;
   cFunction->cif = getCFunctionCif(env, sigOffset);
   cFunction->dispatchFlags = (functionFlags & mdFunctionReturnOwned) != 0 ? 1 : 0;
-  cFunction->skipEngineDirectFastPath = isCompatOrMainCFunctionName(name);
   cFunctionCache[offset] = cFunction;
 
   return cFunction;
 }
 
 napi_value CFunction::jsCall(napi_env env, napi_callback_info cbinfo) {
-#ifdef TARGET_ENGINE_HERMES
-  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    const size_t actualArgc = HermesFastArgc(fastInfo);
-    const auto offset =
-        static_cast<MDSectionOffset>(reinterpret_cast<uintptr_t>(HermesFastData(fastInfo)));
-    bool handledDirect = false;
-    napi_value directResult = TryCallHermesCFunctionFastFromFrame(
-        env, offset, actualArgc, HermesFastArgsBase(fastInfo), &handledDirect);
-    if (handledDirect) {
-      return directResult;
-    }
-
-    napi_value stackArgs[16];
-    if (actualArgc <= 16) {
-      for (size_t i = 0; i < actualArgc; i++) {
-        stackArgs[i] = HermesFastArg(fastInfo, i);
-      }
-
-      return jsCallDirect(env, offset, actualArgc, stackArgs);
-    }
-
-    std::vector<napi_value> heapArgs(actualArgc);
-    for (size_t i = 0; i < actualArgc; i++) {
-      heapArgs[i] = HermesFastArg(fastInfo, i);
-    }
-    return jsCallDirect(env, offset, actualArgc, heapArgs.data());
-  }
-#endif
-
   void* _offset = nullptr;
   size_t actualArgc = 16;
   napi_value stackArgs[16];
@@ -448,10 +391,6 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
   ensureCFunctionDispatchLookup(func, cif);
   auto preparedInvoker = reinterpret_cast<CFunctionPreparedInvoker>(func->preparedInvoker);
   auto napiInvoker = reinterpret_cast<CFunctionNapiInvoker>(func->napiInvoker);
-  auto engineDirectInvoker =
-      !cif->skipGeneratedNapiDispatch
-          ? reinterpret_cast<CFunctionEngineDirectInvoker>(func->engineDirectInvoker)
-          : nullptr;
 
   MDFunctionFlag functionFlags =
       bridgeState->metadata->getFunctionFlag(offset + sizeof(MDSectionOffset) * 2);
@@ -480,8 +419,7 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
   const bool isMainEntrypoint =
       strcmp(name, "UIApplicationMain") == 0 || strcmp(name, "NSApplicationMain") == 0;
 
-  if ((engineDirectInvoker != nullptr ||
-       (napiInvoker != nullptr && !cif->skipGeneratedNapiDispatch)) &&
+  if (napiInvoker != nullptr && !cif->skipGeneratedNapiDispatch &&
       !isMainEntrypoint) {
     CFunctionReturnStorage returnStorage(cif);
     if (!returnStorage.isValid()) {
@@ -493,24 +431,16 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
     void* rvalue = returnStorage.rvalue();
     @try {
       NativeCallRuntimeUnlockScope unlockRuntime(env);
-      bool invoked = engineDirectInvoker != nullptr
-                         ? engineDirectInvoker(env, cif, func->fnptr, invocationArgs, rvalue)
-                         : napiInvoker(env, cif, func->fnptr, invocationArgs, rvalue);
+      bool invoked = napiInvoker(env, cif, func->fnptr, invocationArgs, rvalue);
       if (!invoked) {
         return nullptr;
       }
     } @catch (NSException* exception) {
       std::string message = exception.description.UTF8String;
-      NSLog(@"ObjC->JS: Exception in CFunction (direct): %s", message.c_str());
+      NSLog(@"ObjC->JS: Exception in CFunction (napi): %s", message.c_str());
       nativescript::NativeScriptException nativeScriptException(message);
       nativeScriptException.ReThrowToJS(env);
       return nullptr;
-    }
-
-    napi_value fastResult = nullptr;
-    if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
-                                        &fastResult)) {
-      return fastResult;
     }
     return cif->returnType->toJS(env, rvalue, toJSFlags);
   }
@@ -595,11 +525,6 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
     }
   }
 
-  napi_value fastResult = nullptr;
-  if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
-                                      &fastResult)) {
-    return fastResult;
-  }
   return cif->returnType->toJS(env, rvalue, toJSFlags);
 }
 

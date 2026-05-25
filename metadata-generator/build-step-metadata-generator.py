@@ -172,7 +172,7 @@ yaml_output_folder = env_or_none("NS_DEBUG_METADATA_PATH") or env_or_none("TNS_D
 strict_includes = env_or_none("NS_DEBUG_METADATA_STRICT_INCLUDES") or env_or_none("TNS_DEBUG_METADATA_STRICT_INCLUDES")
 signature_bindings_cpp_path = env_or_none("NS_SIGNATURE_BINDINGS_CPP_PATH") or env_or_none("TNS_SIGNATURE_BINDINGS_CPP_PATH")
 if signature_bindings_cpp_path is None:
-    default_signature_bindings_path = os.path.join(src_root, "NativeScript", "ffi", "napi", "engine", "shared", "GeneratedSignatureDispatch.inc")
+    default_signature_bindings_path = os.path.join(src_root, "NativeScript", "ffi", "napi", "GeneratedSignatureDispatch.inc")
     if os.path.isdir(os.path.dirname(default_signature_bindings_path)):
         signature_bindings_cpp_path = default_signature_bindings_path
 

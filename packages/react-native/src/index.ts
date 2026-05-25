@@ -641,7 +641,8 @@ export function init(
   metadataPath = '',
   options: InstallOptions = {},
 ): boolean {
-  const installed = NativeScriptNativeApi.install(metadataPath);
+  const installed = NativeScriptNativeApi.isInstalled()
+    || NativeScriptNativeApi.install(metadataPath);
   if (installed) {
     installInteropConstructors();
     installInlineFunctions();

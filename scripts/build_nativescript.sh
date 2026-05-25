@@ -17,7 +17,7 @@ TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 NS_FFI_BACKEND=${NS_FFI_BACKEND:=auto}
 NS_GSD_BACKEND=${NS_GSD_BACKEND:=auto}
 METADATA_SIZE=${METADATA_SIZE:=0}
-GENERATED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-./NativeScript/ffi/napi/engine/shared/GeneratedSignatureDispatch.inc}}
+GENERATED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-./NativeScript/ffi/napi/GeneratedSignatureDispatch.inc}}
 GENERATED_SIGNATURE_DISPATCH_STAMP="${GENERATED_SIGNATURE_DISPATCH}.stamp"
 
 for arg in $@; do
@@ -103,14 +103,6 @@ function effective_gsd_backend () {
     auto)
       if [ "$TARGET_ENGINE" == "none" ]; then
         echo none
-      elif [ "$TARGET_ENGINE" == "v8" ]; then
-        echo v8
-      elif [ "$TARGET_ENGINE" == "jsc" ]; then
-        echo jsc
-      elif [ "$TARGET_ENGINE" == "quickjs" ]; then
-        echo quickjs
-      elif [ "$TARGET_ENGINE" == "hermes" ]; then
-        echo hermes
       else
         echo napi
       fi

@@ -14,10 +14,7 @@
 #include "ClassBuilder.h"
 #include "CallbackThreading.h"
 #include "Closure.h"
-#include "EngineDirectCall.h"
 #include "Interop.h"
-#include "HermesFastCallbackInfo.h"
-#include "HermesFastNativeApi.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
@@ -348,45 +345,24 @@ inline bool tryObjCNapiDispatch(napi_env env, Cif* cif, id self, bool classMetho
           reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
       descriptor->napiInvoker =
           reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
-      descriptor->engineDirectInvoker =
-          reinterpret_cast<void*>(lookupObjCEngineDirectInvoker(descriptor->dispatchId));
-#ifdef TARGET_ENGINE_V8
-      descriptor->v8Invoker = reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
-#endif
-#ifdef TARGET_ENGINE_HERMES
-      descriptor->hermesDirectReturnInvoker =
-          reinterpret_cast<void*>(lookupObjCHermesDirectReturnInvoker(descriptor->dispatchId));
-      descriptor->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
-          lookupObjCHermesFrameDirectReturnInvoker(descriptor->dispatchId));
-#endif
       descriptor->dispatchLookupCached = true;
     }
   }
 
-  ObjCEngineDirectInvoker engineInvoker = nullptr;
-  if (!cif->skipGeneratedNapiDispatch) {
-    engineInvoker =
-        descriptor != nullptr
-            ? reinterpret_cast<ObjCEngineDirectInvoker>(descriptor->engineDirectInvoker)
-            : lookupObjCEngineDirectInvoker(composeSignatureDispatchId(
-                  cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags));
-  }
   ObjCNapiInvoker invoker =
-      engineInvoker == nullptr && !cif->skipGeneratedNapiDispatch
+      !cif->skipGeneratedNapiDispatch
           ? (descriptor != nullptr
                  ? reinterpret_cast<ObjCNapiInvoker>(descriptor->napiInvoker)
                  : lookupObjCNapiInvoker(composeSignatureDispatchId(
                        cif->signatureHash, SignatureCallKind::ObjCMethod, dispatchFlags)))
           : nullptr;
-  if (engineInvoker == nullptr && invoker == nullptr) {
+  if (invoker == nullptr) {
     return true;
   }
 
   @try {
     NativeCallRuntimeUnlockScope unlockRuntime(env);
-    bool invoked = engineInvoker != nullptr
-                       ? engineInvoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue)
-                       : invoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue);
+    bool invoked = invoker(env, cif, (void*)objc_msgSend, self, selector, argv, rvalue);
     if (!invoked) {
       return false;
     }
@@ -446,18 +422,6 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
               reinterpret_cast<void*>(lookupObjCPreparedInvoker(descriptor->dispatchId));
           descriptor->napiInvoker =
               reinterpret_cast<void*>(lookupObjCNapiInvoker(descriptor->dispatchId));
-          descriptor->engineDirectInvoker =
-              reinterpret_cast<void*>(lookupObjCEngineDirectInvoker(descriptor->dispatchId));
-#ifdef TARGET_ENGINE_V8
-          descriptor->v8Invoker =
-              reinterpret_cast<void*>(lookupObjCV8Invoker(descriptor->dispatchId));
-#endif
-#ifdef TARGET_ENGINE_HERMES
-          descriptor->hermesDirectReturnInvoker =
-              reinterpret_cast<void*>(lookupObjCHermesDirectReturnInvoker(descriptor->dispatchId));
-          descriptor->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
-              lookupObjCHermesFrameDirectReturnInvoker(descriptor->dispatchId));
-#endif
           descriptor->dispatchLookupCached = true;
         }
 
@@ -1466,20 +1430,6 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
 }
 
 napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
-#ifdef TARGET_ENGINE_HERMES
-  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    const size_t actualArgc = HermesFastArgc(fastInfo);
-    bool handledDirect = false;
-    napi_value directResult = TryCallHermesObjCMemberFastFromFrame(
-        env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
-        HermesFastThisArg(fastInfo), actualArgc, HermesFastArgsBase(fastInfo),
-        EngineDirectMemberKind::Method, &handledDirect);
-    if (handledDirect) {
-      return directResult;
-    }
-  }
-#endif
-
   napi_value jsThis;
   ObjCClassMember* method = nullptr;
 
@@ -1742,11 +1692,6 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
       }
     }
 
-    napi_value fastResult = nullptr;
-    if (TryFastConvertEngineReturnValue(env, cif->returnType->kind,
-                                        nativeResult, &fastResult)) {
-      return fastResult;
-    }
     return cif->returnType->toJS(env, nativeResult,
                                  method->returnOwned ? kReturnOwned : 0);
   };
@@ -1861,19 +1806,6 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
 }
 
 napi_value ObjCClassMember::jsGetter(napi_env env, napi_callback_info cbinfo) {
-#ifdef TARGET_ENGINE_HERMES
-  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    bool handledDirect = false;
-    napi_value directResult = TryCallHermesObjCMemberFast(
-        env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
-        HermesFastThisArg(fastInfo), 0, nullptr,
-        EngineDirectMemberKind::Getter, &handledDirect);
-    if (handledDirect) {
-      return directResult;
-    }
-  }
-#endif
-
   napi_value jsThis;
   ObjCClassMember* method = nullptr;
 
@@ -1955,11 +1887,6 @@ napi_value ObjCClassMember::jsGetterDirect(napi_env env, ObjCClassMember* method
                                           method->returnOwned ? kOwnedObject : kUnownedObject);
   }
 
-  napi_value fastResult = nullptr;
-  if (TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
-                                      &fastResult)) {
-    return fastResult;
-  }
   return cif->returnType->toJS(env, rvalue, 0);
 }
 
@@ -1973,20 +1900,6 @@ napi_value ObjCClassMember::jsReadOnlySetterDirect(napi_env env) {
 }
 
 napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
-#ifdef TARGET_ENGINE_HERMES
-  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    const size_t actualArgc = HermesFastArgc(fastInfo);
-    bool handledDirect = false;
-    napi_value directResult = TryCallHermesObjCMemberFastFromFrame(
-        env, static_cast<ObjCClassMember*>(HermesFastData(fastInfo)),
-        HermesFastThisArg(fastInfo), actualArgc, HermesFastArgsBase(fastInfo),
-        EngineDirectMemberKind::Setter, &handledDirect);
-    if (handledDirect) {
-      return directResult;
-    }
-  }
-#endif
-
   napi_value jsThis, argv;
   size_t argc = 1;
   ObjCClassMember* method = nullptr;

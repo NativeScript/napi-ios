@@ -8,7 +8,6 @@
 #include <thread>
 #include <unordered_map>
 #include <vector>
-#include "HermesFastCallbackInfo.h"
 #include "Interop.h"
 #include "runtime/NativeScriptException.h"
 #include "ObjCBridge.h"
@@ -84,9 +83,6 @@ inline nativescript::BlockPreparedInvoker ensureFunctionPointerPreparedInvoker(
       ref->dispatchLookupSignatureHash = 0;
       ref->dispatchId = 0;
       ref->preparedInvoker = nullptr;
-#ifdef TARGET_ENGINE_HERMES
-      ref->hermesFrameDirectReturnInvoker = nullptr;
-#endif
     }
     return nullptr;
   }
@@ -99,17 +95,9 @@ inline nativescript::BlockPreparedInvoker ensureFunctionPointerPreparedInvoker(
     if (kind == nativescript::SignatureCallKind::BlockInvoke) {
       ref->preparedInvoker =
           reinterpret_cast<void*>(nativescript::lookupBlockPreparedInvoker(ref->dispatchId));
-#ifdef TARGET_ENGINE_HERMES
-      ref->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
-          nativescript::lookupBlockHermesFrameDirectReturnInvoker(ref->dispatchId));
-#endif
     } else {
       ref->preparedInvoker =
           reinterpret_cast<void*>(nativescript::lookupCFunctionPreparedInvoker(ref->dispatchId));
-#ifdef TARGET_ENGINE_HERMES
-      ref->hermesFrameDirectReturnInvoker = reinterpret_cast<void*>(
-          nativescript::lookupCFunctionHermesFrameDirectReturnInvoker(ref->dispatchId));
-#endif
     }
     ref->dispatchLookupCached = true;
   }
@@ -147,29 +135,6 @@ inline const napi_value* prepareFunctionPointerInvocationArgs(napi_env env, nati
     memcpy(heapArgs->data(), rawArgs, copyArgc * sizeof(napi_value));
   }
   return heapArgs->data();
-}
-
-#ifdef TARGET_ENGINE_HERMES
-inline void copyHermesFunctionPointerFrameArgs(const uint64_t* argsBase, size_t argc,
-                                               napi_value* args) {
-  if (argsBase == nullptr || args == nullptr) {
-    return;
-  }
-  for (size_t i = 0; i < argc; i++) {
-    args[i] = nativescript::hermesDispatchFrameArg(argsBase, i);
-  }
-}
-#endif
-
-inline napi_value tryFastConvertFunctionPointerReturn(napi_env env, nativescript::Cif* cif,
-                                                      void* rvalue) {
-  napi_value fastResult = nullptr;
-  if (cif != nullptr && cif->returnType != nullptr &&
-      nativescript::TryFastConvertEngineReturnValue(env, cif->returnType->kind, rvalue,
-                                                    &fastResult)) {
-    return fastResult;
-  }
-  return nullptr;
 }
 
 napi_value callFunctionPointerAsCFunctionDirect(napi_env env, nativescript::FunctionPointer* ref,
@@ -236,9 +201,6 @@ napi_value callFunctionPointerAsCFunctionDirect(napi_env env, nativescript::Func
     }
   }
 
-  if (napi_value fastResult = tryFastConvertFunctionPointerReturn(env, cif, rvalue)) {
-    return fastResult;
-  }
   return cif->returnType->toJS(env, rvalue);
 }
 
@@ -313,73 +275,8 @@ napi_value callFunctionPointerAsBlockDirect(napi_env env, nativescript::Function
     }
   }
 
-  if (napi_value fastResult = tryFastConvertFunctionPointerReturn(env, cif, rvalue)) {
-    return fastResult;
-  }
   return cif->returnType->toJS(env, rvalue);
 }
-
-#ifdef TARGET_ENGINE_HERMES
-napi_value tryCallHermesFunctionPointerFastFromFrame(
-    napi_env env, nativescript::FunctionPointer* ref, bool isBlock, size_t actualArgc,
-    const uint64_t* argsBase, bool* handled) {
-  if (handled != nullptr) {
-    *handled = false;
-  }
-
-  auto cif = ref != nullptr ? ref->cif : nullptr;
-  if (env == nullptr || ref == nullptr || cif == nullptr || ref->function == nullptr ||
-      cif->isVariadic || cif->returnType == nullptr || argsBase == nullptr ||
-      actualArgc != cif->argc || cif->signatureHash == 0) {
-    return nullptr;
-  }
-
-  ensureFunctionPointerPreparedInvoker(
-      ref, isBlock ? nativescript::SignatureCallKind::BlockInvoke
-                   : nativescript::SignatureCallKind::CFunction);
-  auto frameInvoker = ref->hermesFrameDirectReturnInvoker;
-  if (frameInvoker == nullptr) {
-    return nullptr;
-  }
-
-  napi_value directResult = nullptr;
-  @try {
-    if (isBlock) {
-      auto block = static_cast<Block_literal_1*>(ref->function);
-      if (block == nullptr || block->invoke == nullptr) {
-        return nullptr;
-      }
-      auto invoker = reinterpret_cast<nativescript::BlockHermesFrameDirectReturnInvoker>(
-          frameInvoker);
-      if (invoker(env, cif, block->invoke, block, argsBase, &directResult)) {
-        if (handled != nullptr) {
-          *handled = true;
-        }
-        return directResult;
-      }
-    } else {
-      auto invoker = reinterpret_cast<nativescript::CFunctionHermesFrameDirectReturnInvoker>(
-          frameInvoker);
-      if (invoker(env, cif, ref->function, argsBase, &directResult)) {
-        if (handled != nullptr) {
-          *handled = true;
-        }
-        return directResult;
-      }
-    }
-  } @catch (NSException* exception) {
-    if (handled != nullptr) {
-      *handled = true;
-    }
-    std::string message = exception.description.UTF8String;
-    nativescript::NativeScriptException nativeScriptException(message);
-    nativeScriptException.ReThrowToJS(env);
-    return nullptr;
-  }
-
-  return nullptr;
-}
-#endif
 
 void block_copy(void* dest, void* src) {
   auto dst = static_cast<Block_literal_1*>(dest);
@@ -741,30 +638,6 @@ void FunctionPointer::finalize(napi_env env, void* finalize_data, void* finalize
 }
 
 napi_value FunctionPointer::jsCallAsCFunction(napi_env env, napi_callback_info cbinfo) {
-#ifdef TARGET_ENGINE_HERMES
-  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    auto ref = static_cast<FunctionPointer*>(HermesFastData(fastInfo));
-    const size_t actualArgc = HermesFastArgc(fastInfo);
-    bool handledDirect = false;
-    napi_value directResult = tryCallHermesFunctionPointerFastFromFrame(
-        env, ref, false, actualArgc, HermesFastArgsBase(fastInfo), &handledDirect);
-    if (handledDirect) {
-      return directResult;
-    }
-
-    napi_value stackArgs[16];
-    if (actualArgc <= 16) {
-      copyHermesFunctionPointerFrameArgs(HermesFastArgsBase(fastInfo), actualArgc, stackArgs);
-      return callFunctionPointerAsCFunctionDirect(env, ref, actualArgc, stackArgs);
-    }
-
-    std::vector<napi_value> heapArgs(actualArgc);
-    copyHermesFunctionPointerFrameArgs(HermesFastArgsBase(fastInfo), actualArgc,
-                                       heapArgs.data());
-    return callFunctionPointerAsCFunctionDirect(env, ref, actualArgc, heapArgs.data());
-  }
-#endif
-
   FunctionPointer* ref = nullptr;
   size_t actualArgc = 16;
   napi_value stackArgs[16];
@@ -781,30 +654,6 @@ napi_value FunctionPointer::jsCallAsCFunction(napi_env env, napi_callback_info c
 }
 
 napi_value FunctionPointer::jsCallAsBlock(napi_env env, napi_callback_info cbinfo) {
-#ifdef TARGET_ENGINE_HERMES
-  if (auto* fastInfo = TryGetHermesFastCallbackInfo(env, cbinfo)) {
-    auto ref = static_cast<FunctionPointer*>(HermesFastData(fastInfo));
-    const size_t actualArgc = HermesFastArgc(fastInfo);
-    bool handledDirect = false;
-    napi_value directResult = tryCallHermesFunctionPointerFastFromFrame(
-        env, ref, true, actualArgc, HermesFastArgsBase(fastInfo), &handledDirect);
-    if (handledDirect) {
-      return directResult;
-    }
-
-    napi_value stackArgs[16];
-    if (actualArgc <= 16) {
-      copyHermesFunctionPointerFrameArgs(HermesFastArgsBase(fastInfo), actualArgc, stackArgs);
-      return callFunctionPointerAsBlockDirect(env, ref, actualArgc, stackArgs);
-    }
-
-    std::vector<napi_value> heapArgs(actualArgc);
-    copyHermesFunctionPointerFrameArgs(HermesFastArgsBase(fastInfo), actualArgc,
-                                       heapArgs.data());
-    return callFunctionPointerAsBlockDirect(env, ref, actualArgc, heapArgs.data());
-  }
-#endif
-
   FunctionPointer* ref = nullptr;
   size_t actualArgc = 16;
   napi_value stackArgs[16];

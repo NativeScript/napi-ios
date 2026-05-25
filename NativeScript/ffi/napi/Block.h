@@ -20,7 +20,6 @@ class FunctionPointer {
   uint64_t dispatchLookupSignatureHash = 0;
   uint64_t dispatchId = 0;
   void* preparedInvoker = nullptr;
-  void* hermesFrameDirectReturnInvoker = nullptr;
 
   static napi_value wrap(napi_env env, void* function,
                          metagen::MDSectionOffset offset, bool isBlock);

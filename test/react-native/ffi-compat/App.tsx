@@ -309,22 +309,6 @@ function installRuntimeSpecGlobals(): RuntimeSpecRegistry {
     specName: string,
     body: Function,
   ): string | undefined => {
-    const classBuilderSpecNames = [
-      'Override: More than one methods with same jsname',
-      'Marshals NSString with null character',
-      'NSMutableStringMarshalling',
-      'Initialize a class(NSTimer) whose init deallocates the result from alloc',
-      'Marshal returned javascript object as NSDictionaries',
-    ];
-    if (
-      classBuilderSpecNames.some((name) => specName.endsWith(` > ${name}`)) ||
-      specName.includes(' > DerivedMethod') ||
-      specName.endsWith(' > Handleof') ||
-      specName.endsWith(' > Sizeof')
-    ) {
-      return 'Requires NativeScript JS-defined Objective-C class builder; excluded from the RN direct-JSI FFI slice.';
-    }
-
     let source = '';
     try {
       source = Function.prototype.toString.call(body);
@@ -332,14 +316,8 @@ function installRuntimeSpecGlobals(): RuntimeSpecRegistry {
       source = '';
     }
 
-    if (
-      source.includes('.extend(') ||
-      source.includes('.extend (') ||
-      source.includes('interop.addMethod') ||
-      source.includes('ObjCExposedMethods') ||
-      source.includes('ObjCProtocols')
-    ) {
-      return 'Requires NativeScript JS-defined Objective-C class builder; excluded from the RN direct-JSI FFI slice.';
+    if (source.includes('interop.addMethod')) {
+      return 'Requires interop.addMethod; excluded from the RN direct-JSI FFI slice until the explicit decorator hook is implemented.';
     }
     return undefined;
   };
@@ -772,17 +750,16 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       name: 'invokes C function pointer callbacks on the native caller thread',
       run() {
         let callbackRan = false;
-        let callbackThreadHash = 0;
-        const queue = g('dispatch_get_global_queue')(0, 0);
-        g('dispatch_sync_f')(queue, null, () => {
-          callbackRan = true;
-          callbackThreadHash = g('NSThread').currentThread.hash;
-        });
-        assert(callbackRan, 'dispatch_sync_f callback did not run');
-        assert(
-          callbackThreadHash !== g('NSThread').currentThread.hash,
-          'dispatch_sync_f callback should run on the dispatch queue thread',
+        const result = g('functionWithSimpleFunctionPointerOnBackground')(
+          (nativeCallerWasMainThread: number) => {
+            assertEqual(nativeCallerWasMainThread, 0, 'callback native caller thread');
+            assertEqual(g('NSThread').isMainThread, false, 'callback JS native calls thread');
+            callbackRan = true;
+            return g('NSThread').isMainThread ? 1 : 0;
+          },
         );
+        assertEqual(result, 0, 'background callback return');
+        assert(callbackRan, 'background callback did not run');
       },
     },
     {
@@ -863,7 +840,24 @@ async function runCompatibilitySuite() {
     total: 0,
     results: [],
   });
-  NativeScript.init();
+  try {
+    NativeScript.init();
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? `${error.name}: ${error.message}; step=${currentStep}; global=${lastGlobalAccess}; stack=${error.stack ?? ''}`
+        : `${String(error)}; step=${currentStep}; global=${lastGlobalAccess}`;
+    writeMarker({
+      marker,
+      status: 'fail',
+      current: 'NativeScript.init',
+      passed: 0,
+      total: 0,
+      results: [],
+      failures: [{name: 'NativeScript.init', status: 'fail', error: message}],
+    });
+    throw error;
+  }
 
   const registry = installRuntimeSpecGlobals();
   loadRuntimeFfiSpecs();

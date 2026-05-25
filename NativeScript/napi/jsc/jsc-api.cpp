@@ -15,8 +15,6 @@
 #include <thread>
 #include <vector>
 
-#include "JSCFastNativeApi.h"
-
 struct napi_callback_info__ {
   napi_value newTarget;
   napi_value thisArg;
@@ -1357,10 +1355,6 @@ napi_status napi_define_properties(napi_env env, napi_value object,
 
   for (size_t i = 0; i < property_count; i++) {
     const napi_property_descriptor* p{properties + i};
-
-    if (nativescript::JSCTryDefineFastNativeProperty(env, object, p)) {
-      continue;
-    }
 
     napi_value descriptor{};
     CHECK_NAPI(napi_create_object(env, &descriptor));

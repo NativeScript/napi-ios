@@ -98,14 +98,17 @@ NativeScriptNativeApiModule::NativeScriptNativeApiModule(
 
 bool NativeScriptNativeApiModule::install(jsi::Runtime& runtime,
                                           std::string metadataPath) {
+  writeSmokeMarkerIfRequested("install:resolve-metadata");
   std::string resolvedMetadataPath =
       metadataPath.empty() ? bundledMetadataPath() : metadataPath;
   const char* metadataPathArg =
       resolvedMetadataPath.empty() ? nullptr : resolvedMetadataPath.c_str();
 
+  writeSmokeMarkerIfRequested("install:before-jsi");
   auto config = nativescript::MakeReactNativeNativeApiJsiConfig(
       jsInvoker_, nullptr, metadataPathArg);
   nativescript::InstallNativeApiJSI(runtime, config);
+  writeSmokeMarkerIfRequested("install:after-jsi");
   return isInstalled(runtime);
 }
 

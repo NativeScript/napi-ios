@@ -21,6 +21,9 @@ struct NativeApiJsiConfig {
   const void* metadataPtr = nullptr;
   const char* globalName = "__nativeScriptNativeApi";
   std::shared_ptr<NativeApiJsiScheduler> scheduler = nullptr;
+  std::function<void(std::function<void()>)> nativeInvocationInvoker = nullptr;
+  std::function<void(std::function<void()>)> nativeCallbackInvoker = nullptr;
+  std::function<void(std::function<void()>)> jsThreadCallbackInvoker = nullptr;
   bool installGlobalSymbols = false;
 };
 

@@ -45,9 +45,6 @@ std::mutex gLiveBridgeStatesMutex;
 std::unordered_map<const ObjCBridgeState*, uint64_t> gLiveBridgeStates;
 std::atomic<uint64_t> gNextBridgeStateToken{1};
 constexpr const char* kNativePointerProperty = "__ns_native_ptr";
-#ifdef TARGET_ENGINE_HERMES
-constexpr NSUInteger kHermesFastArrayIndexPropertyLimit = 1024;
-#endif
 
 inline void deleteReferenceNow(napi_env env, napi_ref ref, bool unrefFirst) {
   if (env == nullptr || ref == nullptr) {
@@ -897,7 +894,6 @@ ObjCBridgeState::~ObjCBridgeState() {
   deleteRef(referenceClass);
   deleteRef(functionReferenceClass);
   deleteRef(createNativeProxy);
-  deleteRef(createNativeFastArrayIndexes);
   deleteRef(createFastEnumeratorIterator);
   deleteRef(transferOwnershipToNative);
 
@@ -960,46 +956,9 @@ ObjCBridgeState::~ObjCBridgeState() {
 napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, id nativeObject) {
   NAPI_PREAMBLE
 
-#ifdef TARGET_ENGINE_V8
-  napi_value result = object;
-#else
   napi_value result = object;
   const bool nativeIsArray = [nativeObject isKindOfClass:NSArray.class];
   bool shouldProxyArray = nativeIsArray;
-#ifdef TARGET_ENGINE_HERMES
-  if (nativeIsArray) {
-    const char* nativeArrayClassName = object_getClassName(nativeObject);
-    const bool nativeIsPlaceholderArray =
-        nativeArrayClassName != nullptr &&
-        std::strcmp(nativeArrayClassName, "__NSPlaceholderArray") == 0;
-    const bool nativeIsMutableArray =
-        !nativeIsPlaceholderArray && [nativeObject isKindOfClass:NSMutableArray.class];
-    if (!nativeIsPlaceholderArray && createNativeFastArrayIndexes != nullptr) {
-      const bool shouldUseFastArray =
-          nativeIsMutableArray ||
-          [(NSArray*)nativeObject count] <= kHermesFastArrayIndexPropertyLimit;
-      if (!shouldUseFastArray) {
-        shouldProxyArray = true;
-      } else {
-        shouldProxyArray = false;
-        napi_value factory = get_ref_value(env, createNativeFastArrayIndexes);
-        if (factory != nullptr) {
-          napi_value global;
-          napi_value isMutableArray;
-          napi_value maxIndexedProperties;
-          napi_value args[3] = {object, nullptr, nullptr};
-          napi_get_global(env, &global);
-          napi_get_boolean(env, nativeIsMutableArray, &isMutableArray);
-          napi_create_uint32(env, static_cast<uint32_t>(kHermesFastArrayIndexPropertyLimit),
-                             &maxIndexedProperties);
-          args[1] = isMutableArray;
-          args[2] = maxIndexedProperties;
-          napi_call_function(env, global, factory, 3, args, &result);
-        }
-      }
-    }
-  }
-#endif
   if (shouldProxyArray) {
     napi_value factory = get_ref_value(env, createNativeProxy);
     napi_value transferOwnershipFunc = get_ref_value(env, this->transferOwnershipToNative);
@@ -1009,7 +968,7 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
     napi_get_global(env, &global);
     napi_call_function(env, global, factory, 3, args, &result);
   }
-#endif
+
   napi_value nativePointer = Pointer::create(env, nativeObject);
   if (nativePointer != nullptr) {
     napi_set_named_property(env, result, kNativePointerProperty, nativePointer);

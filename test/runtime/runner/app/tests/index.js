@@ -267,6 +267,6 @@ execute();
 
 if (typeof UIApplicationMain === "function") {
     UIApplicationMain(0, null, null, null);
-} else if (typeof NSApplicationMain === "function") {
+} else if (typeof NSApplicationMain === "function" && !logjunit) {
     NSApplicationMain(0, null);
 }
