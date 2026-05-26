@@ -63,6 +63,7 @@ inline NativeApiJsiConfig MakeReactNativeNativeApiJsiConfig(
   config.metadataPtr = metadataPtr;
   config.globalName = globalName;
   config.installGlobalSymbols = true;
+  config.invokeCallbacksOnNativeCallerThread = true;
   config.scheduler = std::make_shared<ReactNativeCallInvokerScheduler>(
       std::move(jsInvoker), std::move(uiInvoker));
   return config;

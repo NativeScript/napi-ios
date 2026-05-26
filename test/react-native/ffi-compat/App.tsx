@@ -1045,6 +1045,42 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       },
     },
     {
+      name: 'decodes UIKit bounds through Objective-C runtime signatures',
+      async run() {
+        await NativeScript.runOnUI(() => {
+          const view = g('UIView').alloc().initWithFrame(
+            g('CGRectMake')(10, 20, 30, 40),
+          );
+          let bounds = view.invoke('bounds');
+          assertClose(bounds.origin.x, 0, 'initial bounds origin.x');
+          assertClose(bounds.origin.y, 0, 'initial bounds origin.y');
+          assertClose(bounds.size.width, 30, 'initial bounds size.width');
+          assertClose(bounds.size.height, 40, 'initial bounds size.height');
+
+          view.invoke('setBounds:', g('CGRectMake')(1, 2, 3, 4));
+          bounds = view.invoke('bounds');
+          assertClose(bounds.origin.x, 1, 'updated bounds origin.x');
+          assertClose(bounds.origin.y, 2, 'updated bounds origin.y');
+          assertClose(bounds.size.width, 3, 'updated bounds size.width');
+          assertClose(bounds.size.height, 4, 'updated bounds size.height');
+        });
+      },
+    },
+    {
+      name: 'decodes metadata-less Objective-C runtime struct signatures',
+      run() {
+        const provider = g('TNSRuntimeOnlyStructProviderMake')();
+        let pair = provider.invoke('runtimeOnlyPair');
+        assertClose(pair.field0, 12.5, 'runtime-only pair field0');
+        assertClose(pair.field1, 25.5, 'runtime-only pair field1');
+
+        provider.invoke('setRuntimeOnlyPair:', {field0: 3.25, field1: 4.5});
+        pair = provider.invoke('runtimeOnlyPair');
+        assertClose(pair.field0, 3.25, 'updated runtime-only pair field0');
+        assertClose(pair.field1, 4.5, 'updated runtime-only pair field1');
+      },
+    },
+    {
       name: 'mounts JS-defined UIKit views through the React Native host component',
       async run() {
         await waitFor(

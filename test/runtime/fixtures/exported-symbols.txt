@@ -57,6 +57,7 @@ _functionWithUnichar
 _functionWithUShort
 _functionWithUShortPtr
 _TNSIsConfigurationDebug
+_TNSRuntimeOnlyStructProviderMake
 _TNSClearOutput
 _TNSConstant
 _TNSConstant1_0Plus

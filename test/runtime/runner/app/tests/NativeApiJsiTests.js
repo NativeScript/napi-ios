@@ -37,4 +37,39 @@ describe("Native API JSI bridge", function () {
         expect(primitives.methodWithInt(24)).toBe(24);
         expect(TNSGetOutput()).toBe("24");
     });
+
+    it("decodes Objective-C runtime struct signatures through pure JSI", function () {
+        apiOrPending();
+        if (typeof UIView === "undefined" || typeof CGRectMake !== "function") {
+            pending("UIKit CGRect runtime selector fallback is only available on iOS.");
+            return;
+        }
+
+        var view = UIView.alloc().initWithFrame(CGRectMake(10, 20, 30, 40));
+        var bounds = view.invoke("bounds");
+        expect(bounds.origin.x).toBe(0);
+        expect(bounds.origin.y).toBe(0);
+        expect(bounds.size.width).toBe(30);
+        expect(bounds.size.height).toBe(40);
+
+        view.invoke("setBounds:", CGRectMake(1, 2, 3, 4));
+        bounds = view.invoke("bounds");
+        expect(bounds.origin.x).toBe(1);
+        expect(bounds.origin.y).toBe(2);
+        expect(bounds.size.width).toBe(3);
+        expect(bounds.size.height).toBe(4);
+    });
+
+    it("decodes metadata-less Objective-C runtime struct signatures through pure JSI", function () {
+        apiOrPending();
+        var provider = TNSRuntimeOnlyStructProviderMake();
+        var pair = provider.invoke("runtimeOnlyPair");
+        expect(pair.field0).toBe(12.5);
+        expect(pair.field1).toBe(25.5);
+
+        provider.invoke("setRuntimeOnlyPair:", { field0: 3.25, field1: 4.5 });
+        pair = provider.invoke("runtimeOnlyPair");
+        expect(pair.field0).toBe(3.25);
+        expect(pair.field1).toBe(4.5);
+    });
 });

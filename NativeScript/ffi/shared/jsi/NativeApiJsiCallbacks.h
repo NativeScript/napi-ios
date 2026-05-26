@@ -210,9 +210,6 @@ constexpr int kNativeApiJsiBlockHasSignature = (1 << 30);
 
 void* nativeApiJsiStackBlockIsa() {
   static void* isa = dlsym(RTLD_DEFAULT, "_NSConcreteStackBlock");
-  if (isa == nullptr) {
-    isa = dlsym(RTLD_DEFAULT, "_NSConcreteMallocBlock");
-  }
   return isa;
 }
 
@@ -252,11 +249,11 @@ std::string objcEncodingForJsiType(const NativeApiJsiType& type) {
       return "*";
     case metagen::mdTypeAnyObject:
     case metagen::mdTypeProtocolObject:
+    case metagen::mdTypeClassObject:
     case metagen::mdTypeInstanceObject:
     case metagen::mdTypeNSStringObject:
     case metagen::mdTypeNSMutableStringObject:
       return "@";
-    case metagen::mdTypeClassObject:
     case metagen::mdTypeClass:
       return "#";
     case metagen::mdTypeSelector:
@@ -456,7 +453,11 @@ class NativeApiJsiCallback final
 
     auto callOnNativeCallerThread = [&]() {
       ScopedNativeCallerThreadJsiCallback callbackScope;
-      call();
+      if (nativeCallbackInvoker) {
+        nativeCallbackInvoker(call);
+      } else {
+        call();
+      }
     };
     auto callOnUIThread = [&]() {
       auto runOnUIThread = [&]() {
@@ -517,14 +518,16 @@ class NativeApiJsiCallback final
     bool activeSynchronousNativeInvocation =
         gActiveSynchronousNativeInvocationDepth.load(
             std::memory_order_acquire) > 0;
+    bool nativeCallerThreadCallbacks =
+        bridge_->invokeCallbacksOnNativeCallerThread();
     bool nativeCallerThreadCallback =
-        !currentThreadIsJs &&
+        nativeCallerThreadCallbacks && !currentThreadIsJs &&
         (block_ || (activeSynchronousNativeInvocation && !returnsVoid));
     bool direct = currentThreadIsJs ||
                   gExecutingDispatchedUINativeCall ||
                   gSynchronousNativeInvocationDepth > 0 ||
                   nativeCallerThreadCallback ||
-                  (!nativeCallbackInvoker &&
+                  (nativeCallerThreadCallbacks && !nativeCallbackInvoker &&
                    activeSynchronousNativeInvocation);
     bool waitForNativeThreadCallback =
         currentThreadIsJs && nativeCallbackInvoker &&
@@ -535,6 +538,8 @@ class NativeApiJsiCallback final
       } else {
         call();
       }
+    } else if (!currentThreadIsJs && !nativeCallerThreadCallbacks) {
+      callOnJSThread();
     } else if (!currentThreadIsJs && returnsVoid && block_ &&
                jsThreadCallbackInvoker) {
       jsThreadCallbackInvoker(call);
@@ -1325,16 +1330,342 @@ const char* skipObjCTypeQualifiers(const char* encoding) {
   return encoding;
 }
 
+const char* skipObjCTypeFieldName(const char* encoding, std::string* name) {
+  if (encoding == nullptr || *encoding != '"') {
+    return encoding;
+  }
+
+  encoding++;
+  const char* start = encoding;
+  while (*encoding != '\0' && *encoding != '"') {
+    encoding++;
+  }
+  if (name != nullptr) {
+    *name = std::string(start, static_cast<size_t>(encoding - start));
+  }
+  return *encoding == '"' ? encoding + 1 : encoding;
+}
+
+std::string normalizedObjCAggregateName(std::string name) {
+  if (!name.empty() && name.front() == '_') {
+    name.erase(name.begin());
+  }
+  return name;
+}
+
+std::vector<std::string> knownObjCAggregateFieldNames(
+    const std::string& aggregateName, size_t fieldCount) {
+  std::string name = normalizedObjCAggregateName(aggregateName);
+  std::vector<std::string> fields;
+  if (name == "CGPoint" || name == "NSPoint") {
+    fields = {"x", "y"};
+  } else if (name == "CGSize" || name == "NSSize") {
+    fields = {"width", "height"};
+  } else if (name == "CGRect" || name == "NSRect") {
+    fields = {"origin", "size"};
+  } else if (name == "CGVector") {
+    fields = {"dx", "dy"};
+  } else if (name == "UIEdgeInsets" || name == "NSEdgeInsets") {
+    fields = {"top", "left", "bottom", "right"};
+  } else if (name == "NSDirectionalEdgeInsets") {
+    fields = {"top", "leading", "bottom", "trailing"};
+  } else if (name == "NSRange" || name == "CFRange") {
+    fields = {"location", "length"};
+  } else if (name == "CGAffineTransform") {
+    fields = {"a", "b", "c", "d", "tx", "ty"};
+  } else if (name == "CATransform3D") {
+    fields = {"m11", "m12", "m13", "m14", "m21", "m22", "m23", "m24",
+              "m31", "m32", "m33", "m34", "m41", "m42", "m43", "m44"};
+  }
+
+  if (fields.size() != fieldCount) {
+    fields.clear();
+  }
+  return fields;
+}
+
+const NativeApiSymbol* findObjCAggregateSymbol(
+    NativeApiJsiBridge* bridge, const std::string& name, bool isUnion) {
+  if (bridge == nullptr || name.empty()) {
+    return nullptr;
+  }
+
+  std::vector<std::string> candidates;
+  candidates.push_back(name);
+  std::string normalized = normalizedObjCAggregateName(name);
+  if (normalized != name) {
+    candidates.push_back(normalized);
+  } else {
+    candidates.push_back("_" + name);
+  }
+  constexpr const char* suffix = "Struct";
+  if (normalized.size() > std::strlen(suffix) &&
+      normalized.compare(normalized.size() - std::strlen(suffix),
+                         std::strlen(suffix), suffix) == 0) {
+    candidates.push_back(
+        normalized.substr(0, normalized.size() - std::strlen(suffix)));
+  } else {
+    candidates.push_back(normalized + suffix);
+  }
+
+  for (const auto& candidate : candidates) {
+    const NativeApiSymbol* symbol =
+        isUnion ? bridge->findUnion(candidate) : bridge->findStruct(candidate);
+    if (symbol == nullptr) {
+      symbol = bridge->findAggregate(candidate);
+    }
+    if (symbol != nullptr) {
+      return symbol;
+    }
+  }
+
+  return nullptr;
+}
+
+void applyObjCEncodingSizeAndAlignment(const char* encoding,
+                                       NativeApiJsiFfiType* ffiType,
+                                       uint16_t* sizeOut = nullptr) {
+  if (encoding == nullptr || ffiType == nullptr) {
+    return;
+  }
+
+  NSUInteger size = 0;
+  NSUInteger alignment = 0;
+  NSGetSizeAndAlignment(encoding, &size, &alignment);
+  if (size > 0) {
+    ffiType->type.size = static_cast<size_t>(size);
+    if (sizeOut != nullptr) {
+      *sizeOut = static_cast<uint16_t>(std::min<NSUInteger>(
+          size, static_cast<NSUInteger>(std::numeric_limits<uint16_t>::max())));
+    }
+  }
+  if (alignment > 0) {
+    ffiType->type.alignment = static_cast<unsigned short>(alignment);
+  }
+}
+
 NativeApiJsiType parseObjCEncodedJsiType(
-    const char* encoding, NativeApiJsiBridge* bridge = nullptr) {
+    const char* encoding, NativeApiJsiBridge* bridge = nullptr,
+    const char** endEncoding = nullptr);
+
+bool unsupportedJsiType(const NativeApiJsiType& type);
+
+NativeApiJsiType parseObjCEncodedAggregateJsiType(
+    const char* encoding, NativeApiJsiBridge* bridge, const char** endEncoding) {
+  NativeApiJsiType type;
+  type.kind = metagen::mdTypeStruct;
+
+  const bool isUnion = *encoding == '(';
+  const char close = isUnion ? ')' : '}';
+  const char* cursor = encoding + 1;
+  const char* nameStart = cursor;
+  while (*cursor != '\0' && *cursor != '=' && *cursor != close) {
+    cursor++;
+  }
+  std::string aggregateName(nameStart, static_cast<size_t>(cursor - nameStart));
+
+  if (const NativeApiSymbol* symbol =
+          findObjCAggregateSymbol(bridge, aggregateName, isUnion)) {
+    type.aggregateOffset = symbol->offset;
+    type.aggregateIsUnion = symbol->kind == NativeApiSymbolKind::Union;
+    type.aggregateInfo = bridge->aggregateInfoFor(*symbol);
+    type.ffiType = type.aggregateInfo != nullptr && type.aggregateInfo->ffi != nullptr
+                       ? &type.aggregateInfo->ffi->type
+                       : nullptr;
+    type.supported = type.ffiType != nullptr;
+
+    int depth = 0;
+    const char* end = encoding;
+    do {
+      if (*end == *encoding) {
+        depth++;
+      } else if (*end == close) {
+        depth--;
+      }
+      end++;
+    } while (*end != '\0' && depth > 0);
+    if (endEncoding != nullptr) {
+      *endEncoding = end;
+    }
+    return type;
+  }
+
+  auto info = std::make_shared<NativeApiJsiAggregateInfo>();
+  info->name = aggregateName;
+  info->isUnion = isUnion;
+  info->offset = MD_SECTION_OFFSET_NULL;
+
+  if (*cursor == '=') {
+    cursor++;
+  }
+
+  size_t computedOffset = 0;
+  size_t maxFieldSize = 0;
+  size_t fieldIndex = 0;
+  while (*cursor != '\0' && *cursor != close) {
+    NativeApiJsiAggregateField field;
+    std::string encodedFieldName;
+    cursor = skipObjCTypeFieldName(cursor, &encodedFieldName);
+    const char* fieldStart = cursor;
+    const char* fieldEnd = cursor;
+    field.type = parseObjCEncodedJsiType(cursor, bridge, &fieldEnd);
+    if (fieldEnd == fieldStart || unsupportedJsiType(field.type)) {
+      type.supported = false;
+      type.ffiType = nullptr;
+      if (endEncoding != nullptr) {
+        *endEncoding = fieldEnd;
+      }
+      return type;
+    }
+
+    NSUInteger fieldSize = 0;
+    NSUInteger fieldAlignment = 0;
+    NSGetSizeAndAlignment(fieldStart, &fieldSize, &fieldAlignment);
+    size_t nativeFieldSize =
+        fieldSize > 0 ? static_cast<size_t>(fieldSize)
+                      : nativeSizeForType(field.type);
+    size_t nativeFieldAlignment =
+        fieldAlignment > 0 ? static_cast<size_t>(fieldAlignment)
+                           : std::max<size_t>(1, field.type.ffiType != nullptr
+                                                     ? field.type.ffiType->alignment
+                                                     : 1);
+    if (isUnion) {
+      field.offset = 0;
+      maxFieldSize = std::max(maxFieldSize, nativeFieldSize);
+    } else {
+      computedOffset = alignUp(computedOffset, nativeFieldAlignment);
+      field.offset = static_cast<uint16_t>(std::min<size_t>(
+          computedOffset, std::numeric_limits<uint16_t>::max()));
+      computedOffset += nativeFieldSize;
+    }
+    field.name = !encodedFieldName.empty()
+                     ? encodedFieldName
+                     : "field" + std::to_string(fieldIndex);
+    info->fields.push_back(std::move(field));
+    fieldIndex++;
+    cursor = fieldEnd;
+  }
+
+  if (*cursor == close) {
+    cursor++;
+  }
+  if (endEncoding != nullptr) {
+    *endEncoding = cursor;
+  }
+
+  auto knownNames = knownObjCAggregateFieldNames(aggregateName, info->fields.size());
+  for (size_t i = 0; i < knownNames.size(); i++) {
+    info->fields[i].name = knownNames[i];
+  }
+
+  auto ffiOwner = std::make_shared<NativeApiJsiFfiType>();
+  if (isUnion) {
+    ffi_type* largest = &ffi_type_uint8;
+    size_t largestSize = 0;
+    for (const auto& field : info->fields) {
+      size_t fieldSize = nativeSizeForType(field.type);
+      if (field.type.ffiType != nullptr && fieldSize >= largestSize) {
+        largest = field.type.ffiType;
+        largestSize = fieldSize;
+      }
+    }
+    ffiOwner->elements.push_back(largest);
+  } else {
+    for (const auto& field : info->fields) {
+      ffiOwner->elements.push_back(field.type.ffiType != nullptr
+                                       ? field.type.ffiType
+                                       : &ffi_type_pointer);
+    }
+  }
+  if (ffiOwner->elements.empty()) {
+    ffiOwner->elements.push_back(&ffi_type_uint8);
+  }
+  ffiOwner->finalize();
+  applyObjCEncodingSizeAndAlignment(encoding, ffiOwner.get(), &info->size);
+  if (info->size == 0) {
+    info->size = static_cast<uint16_t>(std::min<size_t>(
+        isUnion ? maxFieldSize : computedOffset,
+        std::numeric_limits<uint16_t>::max()));
+  }
+
+  info->ffi = ffiOwner;
+  type.aggregateInfo = info;
+  type.aggregateOffset = MD_SECTION_OFFSET_NULL;
+  type.aggregateIsUnion = isUnion;
+  type.ownedFfiType = ffiOwner;
+  type.ffiType = &ffiOwner->type;
+  type.supported = true;
+  return type;
+}
+
+NativeApiJsiType parseObjCEncodedArrayJsiType(
+    const char* encoding, NativeApiJsiBridge* bridge, const char** endEncoding) {
+  NativeApiJsiType type;
+  type.kind = metagen::mdTypeArray;
+
+  const char* cursor = encoding + 1;
+  uint16_t count = 0;
+  while (*cursor >= '0' && *cursor <= '9') {
+    count = static_cast<uint16_t>(
+        std::min<int>(std::numeric_limits<uint16_t>::max(),
+                      (count * 10) + (*cursor - '0')));
+    cursor++;
+  }
+  type.arraySize = count;
+
+  const char* elementEnd = cursor;
+  type.elementType = std::make_shared<NativeApiJsiType>(
+      parseObjCEncodedJsiType(cursor, bridge, &elementEnd));
+  cursor = elementEnd;
+  if (*cursor == ']') {
+    cursor++;
+  }
+  if (endEncoding != nullptr) {
+    *endEncoding = cursor;
+  }
+
+  auto ffiOwner = std::make_shared<NativeApiJsiFfiType>();
+  ffi_type* elementFfiType =
+      type.elementType != nullptr && type.elementType->ffiType != nullptr
+          ? type.elementType->ffiType
+          : &ffi_type_pointer;
+  for (uint16_t i = 0; i < count; i++) {
+    ffiOwner->elements.push_back(elementFfiType);
+  }
+  if (ffiOwner->elements.empty()) {
+    ffiOwner->elements.push_back(&ffi_type_uint8);
+  }
+  ffiOwner->finalize();
+  applyObjCEncodingSizeAndAlignment(encoding, ffiOwner.get());
+
+  type.ownedFfiType = ffiOwner;
+  type.ffiType = &ffiOwner->type;
+  type.supported = type.elementType != nullptr && type.elementType->supported;
+  return type;
+}
+
+NativeApiJsiType parseObjCEncodedJsiType(
+    const char* encoding, NativeApiJsiBridge* bridge, const char** endEncoding) {
   encoding = skipObjCTypeQualifiers(encoding);
   NativeApiJsiType type;
 
   if (encoding == nullptr || *encoding == '\0') {
     type.kind = metagen::mdTypePointer;
     type.ffiType = &ffi_type_pointer;
+    if (endEncoding != nullptr) {
+      *endEncoding = encoding;
+    }
     return type;
   }
+
+  auto finishPrimitive = [&](const char* end) {
+    type.ffiType = ffiTypeForJsiKind(type.kind);
+    type.supported = type.ffiType != nullptr;
+    if (endEncoding != nullptr) {
+      *endEncoding = end;
+    }
+    return type;
+  };
 
   switch (*encoding) {
     case 'c':
@@ -1379,14 +1710,30 @@ NativeApiJsiType parseObjCEncodedJsiType(
       type.kind = metagen::mdTypeString;
       break;
     case '@':
-      if (std::strncmp(encoding, "@\"NSString\"", 11) == 0) {
-        type.kind = metagen::mdTypeNSStringObject;
-      } else if (std::strncmp(encoding, "@\"NSMutableString\"", 18) == 0) {
-        type.kind = metagen::mdTypeNSMutableStringObject;
-      } else {
-        type.kind = metagen::mdTypeAnyObject;
+      if (encoding[1] == '?') {
+        type.kind = metagen::mdTypeBlock;
+        return finishPrimitive(encoding + 2);
       }
-      break;
+      {
+        const char* objectEnd = encoding + 1;
+        if (*objectEnd == '"') {
+          objectEnd++;
+          while (*objectEnd != '\0' && *objectEnd != '"') {
+            objectEnd++;
+          }
+          if (*objectEnd == '"') {
+            objectEnd++;
+          }
+        }
+        if (std::strncmp(encoding, "@\"NSString\"", 11) == 0) {
+          type.kind = metagen::mdTypeNSStringObject;
+        } else if (std::strncmp(encoding, "@\"NSMutableString\"", 18) == 0) {
+          type.kind = metagen::mdTypeNSMutableStringObject;
+        } else {
+          type.kind = metagen::mdTypeAnyObject;
+        }
+        return finishPrimitive(objectEnd);
+      }
     case '#':
       type.kind = metagen::mdTypeClass;
       break;
@@ -1395,58 +1742,42 @@ NativeApiJsiType parseObjCEncodedJsiType(
       break;
     case '^':
       type.kind = metagen::mdTypePointer;
-      type.elementType = std::make_shared<NativeApiJsiType>(
-          parseObjCEncodedJsiType(encoding + 1, bridge));
-      type.ffiType = &ffi_type_pointer;
-      type.supported = true;
+      {
+        const char* elementEnd = encoding + 1;
+        type.elementType = std::make_shared<NativeApiJsiType>(
+            parseObjCEncodedJsiType(encoding + 1, bridge, &elementEnd));
+        type.ffiType = &ffi_type_pointer;
+        type.supported = true;
+        if (elementEnd == encoding + 1 && encoding[1] != '\0') {
+          elementEnd = encoding + 2;
+        }
+        if (endEncoding != nullptr) {
+          *endEncoding = elementEnd;
+        }
+      }
       return type;
     case '{':
-    case '(': {
-      type.kind = metagen::mdTypeStruct;
-      const char* nameStart = encoding + 1;
-      const char* nameEnd = nameStart;
-      while (*nameEnd != '\0' && *nameEnd != '=' && *nameEnd != '}'
-             && *nameEnd != ')') {
-        nameEnd++;
-      }
-      if (bridge != nullptr && nameEnd > nameStart) {
-        std::string aggregateName(nameStart,
-                                  static_cast<size_t>(nameEnd - nameStart));
-        const NativeApiSymbol* symbol =
-            *encoding == '(' ? bridge->findUnion(aggregateName)
-                             : bridge->findStruct(aggregateName);
-        if (symbol == nullptr) {
-          symbol = bridge->findAggregate(aggregateName);
-        }
-        if (symbol != nullptr) {
-          type.aggregateOffset = symbol->offset;
-          type.aggregateIsUnion = symbol->kind == NativeApiSymbolKind::Union;
-          type.aggregateInfo = bridge->aggregateInfoFor(*symbol);
-          type.ffiType =
-              type.aggregateInfo != nullptr && type.aggregateInfo->ffi != nullptr
-                  ? &type.aggregateInfo->ffi->type
-                  : nullptr;
-          type.supported = type.ffiType != nullptr;
-          return type;
-        }
-      }
-      type.supported = false;
-      type.ffiType = nullptr;
-      return type;
-    }
+    case '(':
+      return parseObjCEncodedAggregateJsiType(encoding, bridge, endEncoding);
     case '[':
-      type.kind = metagen::mdTypeStruct;
-      type.supported = false;
-      type.ffiType = nullptr;
-      return type;
+      return parseObjCEncodedArrayJsiType(encoding, bridge, endEncoding);
+    case 'b': {
+      type.kind = metagen::mdTypeUInt;
+      const char* cursor = encoding + 1;
+      while (*cursor >= '0' && *cursor <= '9') {
+        cursor++;
+      }
+      return finishPrimitive(cursor);
+    }
+    case '?':
+      type.kind = metagen::mdTypeOpaquePointer;
+      break;
     default:
       type.kind = metagen::mdTypePointer;
       break;
   }
 
-  type.ffiType = ffiTypeForJsiKind(type.kind);
-  type.supported = type.ffiType != nullptr;
-  return type;
+  return finishPrimitive(encoding + 1);
 }
 
 std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(
@@ -1515,6 +1846,29 @@ bool prepareJsiMethodSignature(NativeApiJsiSignature* signature) {
                    static_cast<unsigned int>(signature->ffiTypes.size()),
                    returnFfiType, signature->ffiTypes.data()) == FFI_OK;
   return signature->prepared;
+}
+
+bool reconcileObjCMethodRuntimeSignature(NativeApiJsiSignature* signature,
+                                         const NativeApiJsiSignature& runtime) {
+  if (signature == nullptr ||
+      signature->argumentTypes.size() != runtime.argumentTypes.size()) {
+    return false;
+  }
+
+  bool changed = false;
+  for (size_t i = 0; i < signature->argumentTypes.size(); i++) {
+    NativeApiJsiType& metadataType = signature->argumentTypes[i];
+    const NativeApiJsiType& runtimeType = runtime.argumentTypes[i];
+    if (runtimeType.kind == metagen::mdTypeBlock &&
+        metadataType.kind == metagen::mdTypeFunctionPointer) {
+      metadataType.kind = metagen::mdTypeBlock;
+      metadataType.ffiType = runtimeType.ffiType;
+      metadataType.supported = runtimeType.supported;
+      changed = true;
+    }
+  }
+
+  return !changed || prepareJsiMethodSignature(signature);
 }
 
 bool unsupportedJsiType(const NativeApiJsiType& type) {

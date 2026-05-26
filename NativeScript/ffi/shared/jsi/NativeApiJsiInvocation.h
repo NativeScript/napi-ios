@@ -401,6 +401,7 @@ Value callObjCSelector(Runtime& runtime,
   }
 
   std::optional<NativeApiJsiSignature> signature;
+  std::optional<NativeApiJsiSignature> runtimeSignature;
   if (member != nullptr &&
       member->signatureOffset != MD_SECTION_OFFSET_NULL &&
       member->signatureOffset != 0) {
@@ -408,8 +409,15 @@ Value callObjCSelector(Runtime& runtime,
         bridge->metadata(), member->signatureOffset, 2, bridge.get(),
         (member->flags & metagen::mdMemberReturnOwned) != 0);
   }
-  if (!signatureSupportedForJsiInvocation(signature) && method != nullptr) {
-    signature = parseObjCMethodJsiSignature(method, bridge.get());
+  if (method != nullptr) {
+    runtimeSignature = parseObjCMethodJsiSignature(method, bridge.get());
+  }
+  if (signatureSupportedForJsiInvocation(signature) &&
+      signatureSupportedForJsiInvocation(runtimeSignature)) {
+    reconcileObjCMethodRuntimeSignature(&*signature, *runtimeSignature);
+  }
+  if (!signatureSupportedForJsiInvocation(signature) && runtimeSignature) {
+    signature = std::move(runtimeSignature);
   }
 
   if (!signatureSupportedForJsiInvocation(signature)) {

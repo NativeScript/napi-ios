@@ -21,6 +21,7 @@ struct NativeApiDirectConfig {
   std::function<void(std::function<void()>)> nativeInvocationInvoker = nullptr;
   std::function<void(std::function<void()>)> nativeCallbackInvoker = nullptr;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker = nullptr;
+  bool invokeCallbacksOnNativeCallerThread = false;
   bool installGlobalSymbols = false;
 };
 

@@ -430,7 +430,9 @@ class NativeApiJsiBridge {
         scheduler_(config.scheduler),
         nativeInvocationInvoker_(config.nativeInvocationInvoker),
         nativeCallbackInvoker_(config.nativeCallbackInvoker),
-        jsThreadCallbackInvoker_(config.jsThreadCallbackInvoker) {
+        jsThreadCallbackInvoker_(config.jsThreadCallbackInvoker),
+        invokeCallbacksOnNativeCallerThread_(
+            config.invokeCallbacksOnNativeCallerThread) {
     selfDl_ = dlopen(nullptr, RTLD_NOW);
     buildSymbolIndexes();
   }
@@ -695,6 +697,9 @@ class NativeApiJsiBridge {
   const std::function<void(std::function<void()>)>& jsThreadCallbackInvoker()
       const {
     return jsThreadCallbackInvoker_;
+  }
+  bool invokeCallbacksOnNativeCallerThread() const {
+    return invokeCallbacksOnNativeCallerThread_;
   }
   std::thread::id jsThreadId() const { return jsThreadId_; }
 
@@ -1530,6 +1535,7 @@ class NativeApiJsiBridge {
   std::function<void(std::function<void()>)> nativeInvocationInvoker_;
   std::function<void(std::function<void()>)> nativeCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker_;
+  bool invokeCallbacksOnNativeCallerThread_ = false;
   mutable std::unordered_map<MDSectionOffset, std::vector<NativeApiMember>>
       membersByClassOffset_;
   mutable std::unordered_map<MDSectionOffset, std::vector<NativeApiMember>>
