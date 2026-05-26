@@ -36,6 +36,8 @@ export type InstallOptions = {
 };
 
 export type UIKitViewDefinition<Props extends object, NativeView = unknown> = {
+  name?: string;
+  debugName?: string;
   displayName?: string;
   create: (props: Readonly<Props & ViewProps>) => NativeView;
   update?: (
@@ -680,6 +682,12 @@ export function runOnUI(callback?: () => void): Promise<void> {
 export function defineUIKitView<Props extends object, NativeView = unknown>(
   definition: UIKitViewDefinition<Props, NativeView>,
 ): UIKitViewComponent<Props, NativeView> {
+  const debugName =
+    definition.debugName
+    || definition.name
+    || definition.displayName
+    || 'NativeScriptUIKitView';
+
   const Component = forwardRef<UIKitViewRef<NativeView>, Props & ViewProps>(
     function NativeScriptUIKitView(props, ref) {
       const {nativeProps, pluginProps} = splitUIKitViewProps(props, definition);
@@ -804,12 +812,13 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
       return React.createElement(NativeScriptUIViewNativeComponent, {
         ...nativeProps,
         collapsable: false,
+        debugName,
         nativeViewHandle,
       });
     },
   );
 
-  Component.displayName = definition.displayName ?? 'NativeScriptUIKitView';
+  Component.displayName = definition.displayName || definition.name || debugName;
   return Component;
 }
 

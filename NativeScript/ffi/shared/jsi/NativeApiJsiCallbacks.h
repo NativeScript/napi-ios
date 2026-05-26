@@ -478,7 +478,9 @@ class NativeApiJsiCallback final
     }
 
     if (!error.empty()) {
-      throwNativeApiJsiCallbackException(error);
+      if (!recordNativeCallbackException(error)) {
+        throwNativeApiJsiCallbackException(error);
+      }
     }
   }
 
@@ -665,7 +667,18 @@ void nativeApiJsiCallbackTrampoline(ffi_cif*, void* ret, void* args[],
   if (callback == nullptr) {
     return;
   }
-  callback->invoke(ret, args);
+  @try {
+    callback->invoke(ret, args);
+  } @catch (NSException* exception) {
+    const char* description =
+        exception.description != nil ? exception.description.UTF8String : nullptr;
+    std::string message = description != nullptr
+                              ? description
+                              : "Objective-C exception in native JSI callback.";
+    if (!recordNativeCallbackException(message)) {
+      @throw;
+    }
+  }
 }
 
 size_t nativeSizeForType(const NativeApiJsiType& type) {

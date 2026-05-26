@@ -625,7 +625,7 @@ const NativeScriptUIKitTestView = defineUIKitView<{
   title: string;
   tint: 'blue' | 'green';
 }>({
-  displayName: 'NativeScriptUIKitTestView',
+  name: 'NativeScriptUIKitTestView',
   create(props) {
     const view = g('UIView').alloc().initWithFrame(
       new (g('CGRect'))({
@@ -789,6 +789,10 @@ function buildReactNativeIntegrationTests(): TestCase[] {
         await NativeScript.runOnUI(() => {
           const view = (globalThis as any).__nativeScriptUIKitPlugin?.view;
           assert(view?.superview, 'JS-defined UIKit view has no host superview');
+          assert(
+            String(view.superview.description).includes('NativeScriptUIKitTestView'),
+            'JS-defined UIKit host did not expose its debug name',
+          );
           assert(view?.window, 'JS-defined UIKit view has no window');
           const label = view.viewWithTag(uikitPluginLabelTag);
           assertEqual(label.text, 'Initial UIKit title', 'initial UIKit label text');

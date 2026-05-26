@@ -47,7 +47,7 @@ type BadgeProps = {
 };
 
 export const NativeBadge = defineUIKitView<BadgeProps, UIView>({
-  displayName: "NativeBadge",
+  name: "NativeBadge",
   create() {
     const view = UIView.alloc().initWithFrame(CGRectZero);
     const label = UILabel.alloc().initWithFrame(CGRectZero);
@@ -85,7 +85,10 @@ await badgeRef.current?.runOnUI((view) => {
 React Native view props such as `style`, `testID`, accessibility props, responder
 props, and `pointerEvents` go to the host component. Your own props go to the
 UIKit definition; use `nativeProps(props)` when a plugin prop should also affect
-the RN host.
+the RN host. The `name` option is forwarded to the shared native host view as a
+debug name, so native view descriptions can show `NativeScriptUIView` with your
+definition name. It does not dynamically change the registered RN host component
+tag.
 
 The published package includes generated NativeScript metadata, the libffi
 xcframework, and generated iOS SDK TypeScript declarations. Build it from the
@@ -173,6 +176,7 @@ Expo development build, EAS Build, or `npx expo run:ios`.
    NativeScript.init();
 
    const NativeBadge = defineUIKitView<{title: string}, UIView>({
+     name: "NativeBadge",
      create() {
        const view = UIView.alloc().initWithFrame(CGRectZero);
        const label = UILabel.alloc().initWithFrame(CGRectZero);
