@@ -65,7 +65,15 @@ export type UIKitViewComponent<Props extends object, NativeView = unknown> =
 const nativeApiGlobalName = '__nativeScriptNativeApi';
 const nativeApiGlobalCacheName = '__nativeScriptNativeApiGlobalCache';
 const nativeApiTypeCodeKey = '__nativeApiTypeCode';
+const nativeApiCallbackThreadKey = '__nativeScriptCallbackThread';
+const nativeApiWrappedCallbackKey = '__nativeScriptWrappedCallback';
 const nativeClassWrappers = new WeakMap<object, unknown>();
+
+export type NativeScriptCallbackThread = 'ui' | 'js';
+type AnyFunction = (...args: any[]) => any;
+export type NativeScriptInvokedCallback<T extends AnyFunction> = T & {
+  readonly __nativeScriptCallbackThread?: NativeScriptCallbackThread;
+};
 
 function nativeApiHost(): NativeApiHost | undefined {
   return (globalThis as Record<string, unknown>)[nativeApiGlobalName] as
@@ -679,6 +687,57 @@ export function runOnUI(callback?: () => void): Promise<void> {
   return run(callback);
 }
 
+function callbackInvoker<T extends AnyFunction>(
+  thread: NativeScriptCallbackThread,
+  callback: T,
+): NativeScriptInvokedCallback<T> {
+  if (typeof callback !== 'function') {
+    throw new TypeError('NativeScript callback invoker expects a function');
+  }
+
+  const existingPolicy = (callback as Record<string, unknown>)[
+    nativeApiCallbackThreadKey
+  ];
+  if (existingPolicy === thread) {
+    return callback as NativeScriptInvokedCallback<T>;
+  }
+
+  const wrapped = function nativeScriptInvokedCallback(
+    this: unknown,
+    ...args: unknown[]
+  ) {
+    return callback.apply(this, args);
+  } as NativeScriptInvokedCallback<T>;
+
+  Object.defineProperties(wrapped, {
+    [nativeApiCallbackThreadKey]: {
+      configurable: false,
+      enumerable: false,
+      writable: false,
+      value: thread,
+    },
+    [nativeApiWrappedCallbackKey]: {
+      configurable: false,
+      enumerable: false,
+      writable: false,
+      value: callback,
+    },
+  });
+  return wrapped;
+}
+
+export function uiInvoker<T extends AnyFunction>(
+  callback: T,
+): NativeScriptInvokedCallback<T> {
+  return callbackInvoker('ui', callback);
+}
+
+export function jsInvoker<T extends AnyFunction>(
+  callback: T,
+): NativeScriptInvokedCallback<T> {
+  return callbackInvoker('js', callback);
+}
+
 export function defineUIKitView<Props extends object, NativeView = unknown>(
   definition: UIKitViewDefinition<Props, NativeView>,
 ): UIKitViewComponent<Props, NativeView> {
@@ -830,7 +889,9 @@ const NativeScript = {
   defaultMetadataPath,
   defineUIKitView,
   getRuntimeBackend,
+  jsInvoker,
   runOnUI,
+  uiInvoker,
 };
 
 export default NativeScript;

@@ -756,9 +756,10 @@ void convertJsiArgument(Runtime& runtime,
           break;
         }
         if (object.isFunction(runtime)) {
+          auto threadPolicy = readJsiCallbackThreadPolicy(runtime, object);
           auto callback = createJsiCallback(
               runtime, bridge, type, object.asFunction(runtime),
-              type.kind == metagen::mdTypeBlock);
+              type.kind == metagen::mdTypeBlock, threadPolicy);
           void* pointer = callback->functionPointer();
           if (type.kind == metagen::mdTypeBlock) {
             frame.addLifetime(callback);

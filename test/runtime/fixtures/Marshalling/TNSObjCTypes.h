@@ -22,6 +22,7 @@ typedef int (^NumberReturner)(int, int, int);
 
 - (void)methodWithSimpleBlock:(void (^)(void))block;
 - (NSString*)methodWithSimpleBlockOnBackground:(void (^)(NSString* callerThreadHash))block;
+- (void)methodWithSimpleBlockOnBackgroundAsync:(void (^)(NSString* callerThreadHash))block;
 - (void)methodWithComplexBlock:(id (^)(int, id, SEL, NSObject*, TNSOStruct))block;
 
 - (void)methodRetainingBlock:(void (^)(void))block;

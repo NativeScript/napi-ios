@@ -27,6 +27,38 @@ await NativeScript.runOnUI(() => {
 });
 ```
 
+Obj-C blocks default to the thread that invoked the block. Wrap callbacks when
+you want an explicit thread policy:
+
+```ts
+UIView.animateWithDurationAnimationsCompletion(
+  0.25,
+  NativeScript.uiInvoker(() => {
+    view.alpha = 0.5;
+  }),
+  NativeScript.jsInvoker((finished) => {
+    console.log("animation finished", finished);
+  }),
+);
+```
+
+The package also includes a Babel plugin for directive-style callbacks:
+
+```ts
+someNativeApi(() => {
+  "use ui";
+  view.alpha = 1;
+});
+
+someNativeApi(() => {
+  "use js";
+  console.log("back on JS");
+});
+```
+
+The transform rewrites those callbacks to `NativeScript.uiInvoker(fn)` and
+`NativeScript.jsInvoker(fn)`.
+
 ## Defining native UIKit views in JS
 
 Use `defineUIKitView()` to turn a NativeScript-created `UIView` tree into a
@@ -131,6 +163,16 @@ npm run test-rn-turbomodule
    });
    ```
 
+4. To use directive-style callbacks in a bare React Native app, add the bundled
+   Babel plugin:
+
+   ```js
+   module.exports = {
+     presets: ["module:@react-native/babel-preset"],
+     plugins: ["@nativescript/react-native/babel-plugin"],
+   };
+   ```
+
 ## Using the package in an Expo app
 
 Expo Go cannot load this package because it contains custom native code. Use an
@@ -159,7 +201,9 @@ Expo development build, EAS Build, or `npx expo run:ios`.
    ```
 
    The plugin configures iOS for Hermes and the React Native New Architecture,
-   which are required by this JSI TurboModule.
+   which are required by this JSI TurboModule. It also adds the
+   `@nativescript/react-native/babel-plugin` transform to `babel.config.js` so
+   `"use ui"` and `"use js"` callback directives work in Expo bundles.
 
 3. Prebuild and run the iOS development build:
 
@@ -192,3 +236,6 @@ Expo development build, EAS Build, or `npx expo run:ios`.
      },
    });
    ```
+
+Set `{ "babelPlugin": false }` in the config plugin options if you prefer to add
+the Babel plugin manually.

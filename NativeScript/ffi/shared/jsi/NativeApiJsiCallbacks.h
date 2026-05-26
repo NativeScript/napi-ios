@@ -36,6 +36,35 @@ struct NativeApiJsiSignature {
   unsigned int implicitArgumentCount = 0;
 };
 
+enum class NativeApiJsiCallbackThreadPolicy {
+  Default,
+  UI,
+  JS,
+};
+
+NativeApiJsiCallbackThreadPolicy readJsiCallbackThreadPolicy(
+    Runtime& runtime, Object& functionObject) {
+  constexpr const char* propertyName = "__nativeScriptCallbackThread";
+  try {
+    if (!functionObject.hasProperty(runtime, propertyName)) {
+      return NativeApiJsiCallbackThreadPolicy::Default;
+    }
+    Value policyValue = functionObject.getProperty(runtime, propertyName);
+    if (!policyValue.isString()) {
+      return NativeApiJsiCallbackThreadPolicy::Default;
+    }
+    std::string policy = policyValue.asString(runtime).utf8(runtime);
+    if (policy == "ui") {
+      return NativeApiJsiCallbackThreadPolicy::UI;
+    }
+    if (policy == "js") {
+      return NativeApiJsiCallbackThreadPolicy::JS;
+    }
+  } catch (const std::exception&) {
+  }
+  return NativeApiJsiCallbackThreadPolicy::Default;
+}
+
 bool selectorEndsWithNSErrorParam(const std::string& selectorName) {
   constexpr const char* suffix = "error:";
   size_t suffixLength = std::strlen(suffix);
@@ -304,13 +333,17 @@ class NativeApiJsiCallback final
   NativeApiJsiCallback(Runtime& runtime,
                        std::shared_ptr<NativeApiJsiBridge> bridge,
                        std::shared_ptr<NativeApiJsiSignature> signature,
-                       Function function, bool block, bool bindThis = false)
+                       Function function, bool block,
+                       NativeApiJsiCallbackThreadPolicy threadPolicy =
+                           NativeApiJsiCallbackThreadPolicy::Default,
+                       bool bindThis = false)
       : runtimeOwner_(retainNativeApiJsiRuntime(runtime)),
         runtime_(runtimeOwner_.get()),
         bridge_(std::move(bridge)),
         signature_(std::move(signature)),
         function_(std::make_shared<Function>(std::move(function))),
         block_(block),
+        threadPolicy_(threadPolicy),
         bindThis_(bindThis) {
     closure_ = static_cast<ffi_closure*>(
         ffi_closure_alloc(sizeof(ffi_closure), &executable_));
@@ -421,6 +454,66 @@ class NativeApiJsiCallback final
     const auto& jsThreadCallbackInvoker = bridge_->jsThreadCallbackInvoker();
     bool currentThreadIsJs =
         std::this_thread::get_id() == bridge_->jsThreadId();
+
+    auto callOnNativeCallerThread = [&]() {
+      ScopedNativeCallerThreadJsiCallback callbackScope;
+      call();
+    };
+    auto callOnUIThread = [&]() {
+      auto runOnUIThread = [&]() {
+        bool previous = gExecutingDispatchedUINativeCall;
+        gExecutingDispatchedUINativeCall = true;
+        callOnNativeCallerThread();
+        gExecutingDispatchedUINativeCall = previous;
+      };
+      if ([NSThread isMainThread]) {
+        runOnUIThread();
+      } else {
+        dispatch_sync(dispatch_get_main_queue(), ^{
+          runOnUIThread();
+        });
+      }
+    };
+    auto callOnJSThread = [&]() {
+      if (currentThreadIsJs) {
+        call();
+        return;
+      }
+      if (jsThreadCallbackInvoker) {
+        jsThreadCallbackInvoker(call);
+        return;
+      }
+      if (auto scheduler = bridge_->scheduler()) {
+        dispatch_semaphore_t done = dispatch_semaphore_create(0);
+        scheduler->invokeOnJS([call, done]() mutable {
+          call();
+          dispatch_semaphore_signal(done);
+        });
+        dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
+        return;
+      }
+      error = "Native callback was invoked off the JS thread without a JS scheduler.";
+    };
+
+    if (threadPolicy_ == NativeApiJsiCallbackThreadPolicy::UI) {
+      callOnUIThread();
+      if (!error.empty()) {
+        if (!recordNativeCallbackException(error)) {
+          throwNativeApiJsiCallbackException(error);
+        }
+      }
+      return;
+    }
+    if (threadPolicy_ == NativeApiJsiCallbackThreadPolicy::JS) {
+      callOnJSThread();
+      if (!error.empty()) {
+        if (!recordNativeCallbackException(error)) {
+          throwNativeApiJsiCallbackException(error);
+        }
+      }
+      return;
+    }
+
     bool returnsVoid = signature_->returnType.kind == metagen::mdTypeVoid;
     bool activeSynchronousNativeInvocation =
         gActiveSynchronousNativeInvocationDepth.load(
@@ -439,8 +532,7 @@ class NativeApiJsiCallback final
         gActiveNativeThreadJsiCallbacks.load(std::memory_order_acquire) > 0;
     if (direct && !waitForNativeThreadCallback) {
       if (nativeCallerThreadCallback) {
-        ScopedNativeCallerThreadJsiCallback callbackScope;
-        call();
+        callOnNativeCallerThread();
       } else {
         call();
       }
@@ -626,6 +718,8 @@ class NativeApiJsiCallback final
   std::shared_ptr<NativeApiJsiSignature> signature_;
   std::shared_ptr<Function> function_;
   bool block_ = false;
+  NativeApiJsiCallbackThreadPolicy threadPolicy_ =
+      NativeApiJsiCallbackThreadPolicy::Default;
   bool bindThis_ = false;
   ffi_closure* closure_ = nullptr;
   void* executable_ = nullptr;
@@ -1444,7 +1538,9 @@ bool signatureSupportedForJsiCallback(const NativeApiJsiSignature& signature) {
 
 std::shared_ptr<NativeApiJsiCallback> createJsiCallback(
     Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
-    const NativeApiJsiType& type, Function function, bool block) {
+    const NativeApiJsiType& type, Function function, bool block,
+    NativeApiJsiCallbackThreadPolicy threadPolicy =
+        NativeApiJsiCallbackThreadPolicy::Default) {
   if (bridge == nullptr || bridge->metadata() == nullptr ||
       type.signatureOffset == MD_SECTION_OFFSET_NULL) {
     throw facebook::jsi::JSError(
@@ -1461,7 +1557,8 @@ std::shared_ptr<NativeApiJsiCallback> createJsiCallback(
   auto signature =
       std::make_shared<NativeApiJsiSignature>(std::move(*parsed));
   auto callback = std::make_shared<NativeApiJsiCallback>(
-      runtime, bridge, std::move(signature), std::move(function), block);
+      runtime, bridge, std::move(signature), std::move(function), block,
+      threadPolicy);
   if (!block) {
     bridge->retainJsiLifetime(callback);
   }
@@ -1489,7 +1586,8 @@ std::shared_ptr<NativeApiJsiCallback> createJsiMethodCallback(
   auto signature =
       std::make_shared<NativeApiJsiSignature>(std::move(*parsed));
   auto callback = std::make_shared<NativeApiJsiCallback>(
-      runtime, bridge, std::move(signature), std::move(function), false, true);
+      runtime, bridge, std::move(signature), std::move(function), false,
+      NativeApiJsiCallbackThreadPolicy::Default, true);
   bridge->retainJsiLifetime(callback);
   return callback;
 }
@@ -1509,7 +1607,7 @@ std::shared_ptr<NativeApiJsiCallback> createJsiMethodCallback(
       std::make_shared<NativeApiJsiSignature>(std::move(signature));
   auto callback = std::make_shared<NativeApiJsiCallback>(
       runtime, bridge, std::move(sharedSignature), std::move(function), false,
-      true);
+      NativeApiJsiCallbackThreadPolicy::Default, true);
   bridge->retainJsiLifetime(callback);
   return callback;
 }

@@ -24,6 +24,7 @@
   "types": "src/index.d.ts",
   "files": [
     "app.plugin.js",
+    "babel-plugin.js",
     "plugin",
     "src",
     "types",

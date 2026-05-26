@@ -37,6 +37,11 @@ export type InstallOptions = {
   globals?: boolean;
 };
 
+export type NativeScriptCallbackThread = 'ui' | 'js';
+export type NativeScriptInvokedCallback<T extends (...args: any[]) => any> = T & {
+  readonly __nativeScriptCallbackThread?: NativeScriptCallbackThread;
+};
+
 export type UIKitViewDefinition<Props extends object, NativeView = unknown> = {
   /**
    * Human-readable name for this UIKit view definition. This names the JS
@@ -84,6 +89,12 @@ export function isInstalled(): boolean;
 export function defaultMetadataPath(): string;
 export function getRuntimeBackend(): string;
 export function runOnUI(callback?: () => void): Promise<void>;
+export function uiInvoker<T extends (...args: any[]) => any>(
+  callback: T,
+): NativeScriptInvokedCallback<T>;
+export function jsInvoker<T extends (...args: any[]) => any>(
+  callback: T,
+): NativeScriptInvokedCallback<T>;
 export function defineUIKitView<Props extends object, NativeView = unknown>(
   definition: UIKitViewDefinition<Props, NativeView>,
 ): UIKitViewComponent<Props, NativeView>;
@@ -96,7 +107,9 @@ declare const NativeScript: {
   defaultMetadataPath: typeof defaultMetadataPath;
   defineUIKitView: typeof defineUIKitView;
   getRuntimeBackend: typeof getRuntimeBackend;
+  jsInvoker: typeof jsInvoker;
   runOnUI: typeof runOnUI;
+  uiInvoker: typeof uiInvoker;
 };
 
 export default NativeScript;

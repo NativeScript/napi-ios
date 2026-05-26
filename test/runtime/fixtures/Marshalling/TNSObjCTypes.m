@@ -60,6 +60,17 @@ CFTypeRef TNSFunctionWithCreateCFTypeRefReturn() {
     return nativeThreadHash;
 }
 
+- (void)methodWithSimpleBlockOnBackgroundAsync:(void (^)(NSString* callerThreadHash))block {
+    void (^blockCopy)(NSString*) = [block copy];
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        NSString* nativeThreadHash = [NSString stringWithFormat:@"%lu", (unsigned long)NSThread.currentThread.hash];
+        blockCopy(nativeThreadHash);
+#if !__has_feature(objc_arc)
+        [blockCopy release];
+#endif
+    });
+}
+
 - (void)methodRetainingBlock:(void (^)(void))block {
     _retainedBlock = block;
 }

@@ -789,6 +789,59 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       },
     },
     {
+      name: 'invokes uiInvoker Objective-C block callbacks on the UI thread',
+      run() {
+        let callbackRan = false;
+        let callbackThreadHash: string | null = null;
+        const nativeThreadHash = g('TNSObjCTypes')
+          .alloc()
+          .init()
+          .methodWithSimpleBlockOnBackground(
+            NativeScript.uiInvoker((callerThreadHash: string) => {
+              callbackRan = true;
+              callbackThreadHash = String(g('NSThread').currentThread.hash);
+              assert(g('NSThread').isMainThread, 'uiInvoker block did not run on main thread');
+              assert(
+                callbackThreadHash !== String(callerThreadHash),
+                'uiInvoker block stayed on the native caller thread',
+              );
+            }),
+          );
+
+        assert(callbackRan, 'uiInvoker background block callback did not run');
+        assert(
+          callbackThreadHash !== String(nativeThreadHash),
+          'uiInvoker background block return thread',
+        );
+      },
+    },
+    {
+      name: 'invokes jsInvoker Objective-C block callbacks on the JS thread',
+      async run() {
+        const jsThreadHash = String(g('NSThread').currentThread.hash);
+        let callbackRan = false;
+        let callbackThreadHash: string | null = null;
+        let nativeThreadHash: string | null = null;
+        g('TNSObjCTypes')
+          .alloc()
+          .init()
+          .methodWithSimpleBlockOnBackgroundAsync(
+            NativeScript.jsInvoker((callerThreadHash: string) => {
+              callbackRan = true;
+              nativeThreadHash = String(callerThreadHash);
+              callbackThreadHash = String(g('NSThread').currentThread.hash);
+            }),
+          );
+
+        await waitFor(() => callbackRan, 'jsInvoker background block callback did not run');
+        assertEqual(callbackThreadHash, jsThreadHash, 'jsInvoker block callback thread');
+        assert(
+          nativeThreadHash !== jsThreadHash,
+          'jsInvoker block stayed on the native caller thread',
+        );
+      },
+    },
+    {
       name: 'runs UIKit native calls through runOnUI main-thread dispatch',
       async run() {
         let mainThread = false;
