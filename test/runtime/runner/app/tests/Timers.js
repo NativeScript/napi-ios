@@ -166,6 +166,11 @@ describe("native timer", () => {
     const baselineActiveTimerCount = getActiveTimerCount
       ? getActiveTimerCount()
       : null;
+    const baselineHermesTimerCallbackCount =
+      isHermes &&
+      typeof global.__nsHermesTimerCallbackCount === "function"
+        ? global.__nsHermesTimerCallbackCount()
+        : null;
     {
       let obj = {
         value: 0,
@@ -191,7 +196,7 @@ describe("native timer", () => {
           typeof global.__nsHermesHasTimerCallback === "function"
         ) {
           gc();
-          expect(global.__nsHermesTimerCallbackCount()).toBe(0);
+          expect(global.__nsHermesTimerCallbackCount()).toBe(baselineHermesTimerCallbackCount);
           expect(global.__nsHermesHasTimerCallback(timeout.__timerId)).toBe(false);
           expect(global.__nsHermesHasTimerCallback(interval.__timerId)).toBe(false);
           done();
@@ -220,8 +225,14 @@ describe("native timer", () => {
       return;
     }
 
+    const defaultQosClass =
+      typeof qos_class_t !== "undefined" &&
+      qos_class_t &&
+      qos_class_t.QOS_CLASS_DEFAULT != null
+        ? qos_class_t.QOS_CLASS_DEFAULT
+        : (typeof QOS_CLASS_DEFAULT !== "undefined" ? QOS_CLASS_DEFAULT : 0);
     const background_queue = dispatch_get_global_queue(
-      qos_class_t.QOS_CLASS_DEFAULT,
+      Number(defaultQosClass),
       0
     );
     const current_queue = dispatch_get_current_queue();

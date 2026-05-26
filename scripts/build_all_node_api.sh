@@ -54,7 +54,7 @@ fi
 
 checkpoint "... All metadata generated!"
 
-"$SCRIPT_DIR/build_nativescript.sh" --no-vision --no-engine $1 $2 $3 $4 $5 $6 $7 $8 $9
+"$SCRIPT_DIR/build_nativescript.sh" --no-vision --no-engine "$@"
 
 "$SCRIPT_DIR/prepare_dSYMs.sh"
 "$SCRIPT_DIR/build_npm_node_api.sh"

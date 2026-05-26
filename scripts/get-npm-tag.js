@@ -16,6 +16,7 @@ if (!currentVersion) {
     "ios-node-api": "../packages/ios-node-api/package.json",
     "macos-node-api": "../packages/macos-node-api/package.json",
     "objc-node-api": "../packages/objc-node-api/package.json",
+    "react-native": "../packages/react-native/package.json",
   };
 
   if (!packageJsonByTarget[target]) {

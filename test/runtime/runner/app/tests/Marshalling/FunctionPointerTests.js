@@ -20,6 +20,21 @@ describe(module.id, function () {
         expect(TNSGetOutput()).toBe('4');
     });
 
+    it("SimpleFunctionPointerCallbackThread", function () {
+        if (!global.process ||
+            !global.process.versions ||
+            global.process.versions.engine !== "hermes") {
+            pending("Same-thread callback dispatch currently requires the Hermes thread-safe runtime.");
+        }
+
+        var result = functionWithSimpleFunctionPointerOnBackground(function (nativeCallerWasMainThread) {
+            expect(nativeCallerWasMainThread).toBe(0);
+            return NSThread.isMainThread ? 1 : 0;
+        });
+
+        expect(result).toBe(0);
+    });
+
     it("SimpleFunctionPointerParameter", function () {
         var func = functionReturningFunctionPtrAsVoidPtr();
         functionWithSimpleFunctionPointer(func);

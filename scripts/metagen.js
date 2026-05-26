@@ -313,9 +313,14 @@ async function main() {
 
   const typesDir = path.resolve(__dirname, "..", "packages", sdkName, "types");
   const metadataDir = path.resolve(__dirname, "..", "metadata-generator", "metadata");
+  const signatureBindingsPath =
+    process.env.NS_SIGNATURE_BINDINGS_CPP_PATH ||
+    process.env.TNS_SIGNATURE_BINDINGS_CPP_PATH ||
+    path.resolve(__dirname, "..", "NativeScript", "ffi", "napi", "GeneratedSignatureDispatch.inc");
   await fsp.rm(typesDir, { recursive: true, force: true });
   await fsp.mkdir(typesDir, { recursive: true });
   await fsp.mkdir(metadataDir, { recursive: true });
+  await fsp.mkdir(path.dirname(signatureBindingsPath), { recursive: true });
 
   for (const arch of Object.keys(sdk.targets)) {
     // Use the matching arch binary when available, falling back to arm64.
@@ -367,6 +372,8 @@ async function main() {
         metadataDir,
         `metadata.${sdkName}.${arch}.h`,
       ),
+      "-output-signature-bindings-cpp",
+      signatureBindingsPath,
       "Xclang",
       "-isysroot",
       sdk.path,

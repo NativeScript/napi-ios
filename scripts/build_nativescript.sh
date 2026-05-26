@@ -14,7 +14,11 @@ EMBED_METADATA=$(to_bool ${EMBED_METADATA:=false})
 CONFIG_BUILD=RelWithDebInfo
 
 TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
+NS_FFI_BACKEND=${NS_FFI_BACKEND:=auto}
+NS_GSD_BACKEND=${NS_GSD_BACKEND:=auto}
 METADATA_SIZE=${METADATA_SIZE:=0}
+GENERATED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-./NativeScript/ffi/napi/GeneratedSignatureDispatch.inc}}
+GENERATED_SIGNATURE_DISPATCH_STAMP="${GENERATED_SIGNATURE_DISPATCH}.stamp"
 
 for arg in $@; do
   case $arg in
@@ -39,6 +43,16 @@ for arg in $@; do
     --embed-metadata) EMBED_METADATA=true ;;
     --hermes) TARGET_ENGINE=hermes ;;
     --no-engine|--generic-napi) TARGET_ENGINE=none ;;
+    --ffi-direct) NS_FFI_BACKEND=direct ;;
+    --ffi-napi) NS_FFI_BACKEND=napi ;;
+    --ffi-backend=*) NS_FFI_BACKEND="${arg#--ffi-backend=}" ;;
+    --gsd-v8) NS_GSD_BACKEND=v8 ;;
+    --gsd-jsc) NS_GSD_BACKEND=jsc ;;
+    --gsd-quickjs) NS_GSD_BACKEND=quickjs ;;
+    --gsd-hermes) NS_GSD_BACKEND=hermes ;;
+    --gsd-napi) NS_GSD_BACKEND=napi ;;
+    --gsd-none) NS_GSD_BACKEND=none ;;
+    --gsd-backend=*) NS_GSD_BACKEND="${arg#--gsd-backend=}" ;;
     *) ;;
   esac
 done
@@ -60,6 +74,111 @@ QUIET=
 if ! $VERBOSE; then
   QUIET=-quiet
 fi
+
+function assemble_node_api_xcframework () {
+  local output_dir="$1"
+  shift
+
+  if command -v deno >/dev/null 2>&1; then
+    deno run -A ./scripts/build_xcframework.mts --output "$output_dir" "$@"
+    return
+  fi
+
+  if [ ! -d "$SCRIPT_DIR/node_modules/react-native-node-api" ] || [ ! -d "$SCRIPT_DIR/node_modules/yargs-parser" ]; then
+    npm --prefix "$SCRIPT_DIR" install --no-audit --no-fund
+  fi
+
+  node ./scripts/build_xcframework.mts --output "$output_dir" "$@"
+}
+
+function effective_gsd_backend () {
+  local is_macos_napi="${1:-false}"
+
+  if [ "$(effective_ffi_backend "$is_macos_napi")" == "direct" ]; then
+    echo none
+    return
+  fi
+
+  case "$NS_GSD_BACKEND" in
+    auto)
+      if [ "$TARGET_ENGINE" == "none" ]; then
+        echo none
+      else
+        echo napi
+      fi
+      ;;
+    *)
+      echo "$NS_GSD_BACKEND"
+      ;;
+  esac
+}
+
+function effective_ffi_backend () {
+  local is_macos_napi="${1:-false}"
+
+  if $is_macos_napi || [ "$TARGET_ENGINE" == "none" ]; then
+    echo napi
+    return
+  fi
+
+  case "$NS_FFI_BACKEND" in
+    auto)
+      if [[ "$TARGET_ENGINE" == "hermes" || "$TARGET_ENGINE" == "v8" || "$TARGET_ENGINE" == "jsc" || "$TARGET_ENGINE" == "quickjs" ]]; then
+        echo direct
+      else
+        echo napi
+      fi
+      ;;
+    *)
+      echo "$NS_FFI_BACKEND"
+      ;;
+  esac
+}
+
+function signature_dispatch_stamp () {
+  local platform="$1"
+  local is_macos_napi="${2:-false}"
+  local backend
+  backend=$(effective_gsd_backend "$is_macos_napi")
+  local ffi_backend
+  ffi_backend=$(effective_ffi_backend "$is_macos_napi")
+  local generator_hash
+  generator_hash=$(find ./metadata-generator/src ./metadata-generator/include ./metadata-generator/CMakeLists.txt \
+    -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}')
+  printf "platform=%s\nbackend=%s\nffi_backend=%s\ntarget_engine=%s\nmetadata_size=%s\ngenerator_hash=%s\n" \
+    "$platform" "$backend" "$ffi_backend" "$TARGET_ENGINE" "$METADATA_SIZE" "$generator_hash"
+}
+
+function ensure_signature_dispatch_bindings () {
+  local platform="$1"
+  local is_macos_napi="${2:-false}"
+  local backend
+  backend=$(effective_gsd_backend "$is_macos_napi")
+  if [ "$TARGET_ENGINE" == "none" ] || [ "$backend" == "none" ]; then
+    return
+  fi
+
+  if [ -z "$platform" ]; then
+    return
+  fi
+
+  local expected_stamp
+  expected_stamp=$(signature_dispatch_stamp "$platform" "$is_macos_napi")
+  if [ -f "$GENERATED_SIGNATURE_DISPATCH" ] && \
+     [ -f "$GENERATED_SIGNATURE_DISPATCH_STAMP" ] && \
+     [ "$(cat "$GENERATED_SIGNATURE_DISPATCH_STAMP")" == "$expected_stamp" ]; then
+    return
+  fi
+
+  if [ ! -x "./metadata-generator/dist/arm64/bin/objc-metadata-generator" ]; then
+    "$SCRIPT_DIR/build_metadata_generator.sh"
+  fi
+
+  checkpoint "Generating signature dispatch bindings for $platform ($backend)..."
+  NS_SIGNATURE_BINDINGS_CPP_PATH="$GENERATED_SIGNATURE_DISPATCH" npm run metagen "$platform"
+  mkdir -p "$(dirname "$GENERATED_SIGNATURE_DISPATCH_STAMP")"
+  printf "%s" "$expected_stamp" > "$GENERATED_SIGNATURE_DISPATCH_STAMP"
+}
 
 DEV_TEAM=${DEVELOPMENT_TEAM:-}
 DIST=$(PWD)/dist
@@ -84,6 +203,8 @@ function cmake_build () {
     is_macos_napi=true
   fi
 
+  ensure_signature_dispatch_bindings "$platform" "$is_macos_napi"
+
   local libffi_build_dir=
   case "$platform" in
     ios) libffi_build_dir="iphoneos-arm64" ;;
@@ -102,10 +223,26 @@ function cmake_build () {
   local cache_file="$build_dir/CMakeCache.txt"
 
   if [ -f "$cache_file" ]; then
+    local needs_reconfigure=false
     local cached_engine
-    cached_engine=$(grep '^TARGET_ENGINE:STRING=' "$cache_file" | sed 's/^TARGET_ENGINE:STRING=//')
+    cached_engine=$(grep '^TARGET_ENGINE:STRING=' "$cache_file" | sed 's/^TARGET_ENGINE:STRING=//' || true)
     if [ -n "$cached_engine" ] && [ "$cached_engine" != "$TARGET_ENGINE" ]; then
       echo "Reconfiguring $platform build directory for engine '$TARGET_ENGINE' (was '$cached_engine')."
+      needs_reconfigure=true
+    fi
+    local cached_gsd_backend
+    cached_gsd_backend=$(grep '^NS_GSD_BACKEND:STRING=' "$cache_file" | sed 's/^NS_GSD_BACKEND:STRING=//' || true)
+    if [ -n "$cached_gsd_backend" ] && [ "$cached_gsd_backend" != "$NS_GSD_BACKEND" ]; then
+      echo "Reconfiguring $platform build directory for GSD backend '$NS_GSD_BACKEND' (was '$cached_gsd_backend')."
+      needs_reconfigure=true
+    fi
+    local cached_ffi_backend
+    cached_ffi_backend=$(grep '^NS_FFI_BACKEND:STRING=' "$cache_file" | sed 's/^NS_FFI_BACKEND:STRING=//' || true)
+    if [ -n "$cached_ffi_backend" ] && [ "$cached_ffi_backend" != "$NS_FFI_BACKEND" ]; then
+      echo "Reconfiguring $platform build directory for FFI backend '$NS_FFI_BACKEND' (was '$cached_ffi_backend')."
+      needs_reconfigure=true
+    fi
+    if $needs_reconfigure; then
       rm -rf "$build_dir"
     fi
   fi
@@ -122,7 +259,7 @@ function cmake_build () {
 
   fi
 
-  cmake -S=./NativeScript -B="$build_dir" -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
+  cmake -S=./NativeScript -B="$build_dir" -GXcode -DTARGET_PLATFORM=$platform -DTARGET_ENGINE=$TARGET_ENGINE -DNS_FFI_BACKEND=$NS_FFI_BACKEND -DNS_GSD_BACKEND=$NS_GSD_BACKEND -DMETADATA_SIZE=$METADATA_SIZE -DBUILD_CLI_BINARY=$is_macos_cli -DBUILD_MACOS_NODE_API=$is_macos_napi
 
   cmake --build "$build_dir" --config $CONFIG_BUILD -- \
     CODE_SIGN_STYLE=Manual \
@@ -223,7 +360,7 @@ if [[ -n "${XCFRAMEWORKS[@]}" ]]; then
     # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
     OUTPUT_DIR="packages/ios-node-api/build/$CONFIG_BUILD/NativeScript.apple.node"
     rm -rf $OUTPUT_DIR
-    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+    assemble_node_api_xcframework "$OUTPUT_DIR" "${XCFRAMEWORKS[@]}"
   else
     checkpoint "Creating NativeScript.xcframework"
 
@@ -246,7 +383,7 @@ if $BUILD_MACOS; then
     # https://github.com/callstackincubator/react-native-node-api/blob/9b231c14459b62d7df33360f930a00343d8c46e6/docs/PREBUILDS.md
     OUTPUT_DIR="packages/macos-node-api/build/$CONFIG_BUILD/NativeScript.apple.node"
     rm -rf $OUTPUT_DIR
-    deno run -A ./scripts/build_xcframework.mts --output "$OUTPUT_DIR" ${XCFRAMEWORKS[@]}
+    assemble_node_api_xcframework "$OUTPUT_DIR" "${XCFRAMEWORKS[@]}"
   fi
 fi
 

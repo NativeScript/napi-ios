@@ -17,11 +17,17 @@ endif(NOT DEFINED METADATA_BINARY_ARCH)
 
 include_directories(
   ${CMAKE_CURRENT_SOURCE_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}/src
 )
 
 set(EXEC_SOURCE_FILES
   src/main.cpp
   src/SignatureDispatchEmitter.cpp
+  src/SignatureDispatchEmitter/EngineDirect.cpp
+  src/SignatureDispatchEmitter/Hermes.cpp
+  src/SignatureDispatchEmitter/Napi.cpp
+  src/SignatureDispatchEmitter/Shared.cpp
+  src/SignatureDispatchEmitter/V8.cpp
   src/Umbrella.cpp
   src/IR/Category.cpp
   src/IR/Class.cpp

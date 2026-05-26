@@ -20,6 +20,9 @@ jobs:
       - name: Install Dependencies
         run: npm install
 
+      - name: Check FFI backend boundaries
+        run: npm run check:ffi-boundaries
+
       - name: Download V8
         run: ./scripts/download_v8.sh
 
@@ -49,4 +52,6 @@ jobs:
           IOS_BUILD_TIMEOUT_MS: "600000"
           IOS_TEST_TIMEOUT_MS: "600000"
           IOS_TEST_INACTIVITY_TIMEOUT_MS: "180000"
+          IOS_TEST_VERBOSE_SPECS: "1"
+          IOS_SIMCTL_QUERY_TIMEOUT_MS: "10000"
         run: npm run test:ios

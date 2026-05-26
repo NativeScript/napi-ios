@@ -19,6 +19,14 @@ class RuntimeLockGuard {
 };
 }  // namespace
 
+int js_current_env_lock_depth(napi_env env) {
+  auto itFound = JSR::env_to_jsr_cache.find(env);
+  if (itFound == JSR::env_to_jsr_cache.end() || itFound->second == nullptr) {
+    return 0;
+  }
+  return itFound->second->currentLockDepth();
+}
+
 JSR::JSR() {
   hermes::vm::RuntimeConfig config = hermes::vm::RuntimeConfig::Builder()
                                          .withMicrotaskQueue(true)
@@ -62,6 +70,14 @@ napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
   *env = (napi_env)runtime->hermes->rt->createNodeApiEnv(9);
   JSR::env_to_jsr_cache.insert(std::make_pair(*env, runtime->hermes));
   return napi_ok;
+}
+
+facebook::jsi::Runtime* js_get_jsi_runtime(napi_env env) {
+  auto itFound = JSR::env_to_jsr_cache.find(env);
+  if (itFound == JSR::env_to_jsr_cache.end()) {
+    return nullptr;
+  }
+  return itFound->second->rt;
 }
 
 napi_status js_set_runtime_flags(const char* flags) { return napi_ok; }
@@ -138,6 +154,7 @@ extern "C" napi_status jsr_drain_microtasks(napi_env env,
     return napi_invalid_arg;
   }
 
-  *result = itFound->second->runtime->drainMicrotasks(max_count_hint);
+  NapiScope scope(env, false);
+  *result = itFound->second->rt->drainMicrotasks(max_count_hint);
   return napi_ok;
 }

@@ -3414,6 +3414,10 @@ napi_status napi_wrap(napi_env env, napi_value js_object, void* native_object,
     return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
   }
 
+  if (JS_GetClassID(jsValue) == env->runtime->napiObjectClassId) {
+    JS_SetOpaque(jsValue, externalInfo);
+  }
+
   if (result) {
     napi_ref ref;
     napi_create_reference(env, js_object, 0, &ref);
@@ -3432,6 +3436,13 @@ napi_status napi_unwrap(napi_env env, napi_value jsObject, void** result) {
 
   if (!JS_IsObject(jsValue)) {
     return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
+  }
+
+  ExternalInfo* directInfo =
+      (ExternalInfo*)JS_GetOpaque(jsValue, env->runtime->napiObjectClassId);
+  if (directInfo && directInfo->data) {
+    *result = directInfo->data;
+    return napi_clear_last_error(env);
   }
 
   JSPropertyDescriptor descriptor;
@@ -3495,6 +3506,9 @@ napi_status napi_remove_wrap(napi_env env, napi_value jsObject, void** result) {
           (ExternalInfo*)JS_GetOpaque(external, env->runtime->externalClassId);
       if (externalInfo) {
         *result = externalInfo->data;
+      }
+      if (JS_GetClassID(jsValue) == env->runtime->napiObjectClassId) {
+        JS_SetOpaque(jsValue, NULL);
       }
       mi_free(externalInfo);
       JS_SetOpaque(external, NULL);

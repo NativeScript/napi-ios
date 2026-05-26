@@ -9,6 +9,7 @@
 #include <atomic>
 #include <cmath>
 #include "Timers.h"
+#include "ffi/napi/CallbackThreading.h"
 
 static std::atomic<int> gActiveTimers{0};
 struct TimerToken;
@@ -192,7 +193,55 @@ void MarkTimerActive(NSTimerHandle* handle) {
   }
 }
 
-void AddTimerToMainRunLoop(NSTimer* timer) {
+bool MarkTimerInactive(NSTimerHandle* handle) {
+  if (handle == nil) {
+    return false;
+  }
+
+  bool didDeactivate = false;
+  @synchronized(handle) {
+    if (handle->activeCounted) {
+      handle->activeCounted = false;
+      didDeactivate = true;
+    }
+  }
+
+  if (didDeactivate) {
+    gActiveTimers.fetch_sub(1, std::memory_order_relaxed);
+  }
+
+  return didDeactivate;
+}
+
+bool shouldAvoidMainQueueSyncWhileHoldingHermesLock(napi_env env) {
+#ifdef TARGET_ENGINE_HERMES
+  if ([NSThread isMainThread]) {
+    return false;
+  }
+
+  // A native-caller-thread callback already owns the Hermes JS lock. A
+  // synchronous hop to main can deadlock if the main run loop is draining jobs.
+  return nativescript::isNativeCallerThreadCallbackActive() ||
+         (env != nullptr && js_current_env_lock_depth(env) > 0);
+#else
+  (void)env;
+  return false;
+#endif
+}
+
+void DrainPendingJobs(napi_env env) {
+  if (env == nullptr) {
+    return;
+  }
+
+#ifdef ENABLE_JS_RUNTIME
+  js_execute_pending_jobs(env);
+#else
+  (void)env;
+#endif
+}
+
+void AddTimerToMainRunLoop(napi_env env, NSTimer* timer) {
   if (timer == nil) {
     return;
   }
@@ -205,6 +254,15 @@ void AddTimerToMainRunLoop(NSTimer* timer) {
 
   if ([NSThread isMainThread]) {
     addTimer();
+    return;
+  }
+
+  if (shouldAvoidMainQueueSyncWhileHoldingHermesLock(env)) {
+    [timer retain];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      addTimer();
+      [timer release];
+    });
     return;
   }
 
@@ -234,24 +292,24 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle, bool invalidate
 
   if ([NSThread isMainThread]) {
     disposeTimer();
+  } else if (shouldAvoidMainQueueSyncWhileHoldingHermesLock(
+                 callEnv != nullptr ? callEnv : handle->env)) {
+    [handle retain];
+    dispatch_async(dispatch_get_main_queue(), ^{
+      disposeTimer();
+      [handle release];
+    });
   } else {
     dispatch_sync(dispatch_get_main_queue(), disposeTimer);
   }
 
   napi_ref callback = nullptr;
-  bool shouldDecrementActiveCount = false;
   @synchronized(handle) {
-    if (handle->activeCounted) {
-      handle->activeCounted = false;
-      shouldDecrementActiveCount = true;
-    }
     callback = handle->callback;
     handle->callback = nullptr;
   }
 
-  if (shouldDecrementActiveCount) {
-    gActiveTimers.fetch_sub(1, std::memory_order_relaxed);
-  }
+  MarkTimerInactive(handle);
 
   napi_env cleanupEnv = callEnv != nullptr ? callEnv : handle->env;
 #ifdef TARGET_ENGINE_HERMES
@@ -264,14 +322,17 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle, bool invalidate
     uint32_t remaining = 0;
     napi_reference_unref(cleanupEnv, callback, &remaining);
     napi_delete_reference(cleanupEnv, callback);
-#ifdef TARGET_ENGINE_HERMES
-    js_execute_pending_jobs(cleanupEnv);
-#endif
+    DrainPendingJobs(cleanupEnv);
   }
 }
 
 void ScheduleOneShotTimerCleanup(napi_env env, NSTimerHandle* handle) {
   if (handle == nil) {
+    return;
+  }
+
+  if ([NSThread isMainThread]) {
+    DisposeTimerHandle(env, handle, false);
     return;
   }
 
@@ -370,6 +431,7 @@ JS_METHOD(Timers::SetTimeout) {
                         }
 
                         NapiScope scope(callbackEnv);
+                        MarkTimerInactive(handle);
 #ifdef TARGET_ENGINE_HERMES
                         DispatchHermesTimerCallback(callbackEnv, "__nsDispatchTimeout", timerId);
 #else
@@ -382,9 +444,7 @@ JS_METHOD(Timers::SetTimeout) {
         napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
         napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
 #endif
-#ifdef TARGET_ENGINE_HERMES
-                        js_execute_pending_jobs(callbackEnv);
-#endif
+                        DrainPendingJobs(callbackEnv);
 
                         ScheduleOneShotTimerCleanup(callbackEnv, handle);
                         [handle release];
@@ -413,7 +473,7 @@ JS_METHOD(Timers::SetTimeout) {
   // Drop creator ownership. Remaining ownership is the timer association.
   [handle release];
 
-  AddTimerToMainRunLoop(timer);
+  AddTimerToMainRunLoop(env, timer);
 
   return result;
 }
@@ -486,9 +546,7 @@ JS_METHOD(Timers::SetInterval) {
         napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
         napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
 #endif
-#ifdef TARGET_ENGINE_HERMES
-                        js_execute_pending_jobs(callbackEnv);
-#endif
+                        DrainPendingJobs(callbackEnv);
                         [handle release];
                       }];
 
@@ -515,7 +573,7 @@ JS_METHOD(Timers::SetInterval) {
   // Drop creator ownership. Remaining ownership is the timer association.
   [handle release];
 
-  AddTimerToMainRunLoop(timer);
+  AddTimerToMainRunLoop(env, timer);
 
   return result;
 }

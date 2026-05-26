@@ -8,11 +8,24 @@
 #include "js_native_api_types.h"
 #include "jsr.h"
 #include "jsr_common.h"
+#include "runtime/Util.h"
 #include "runtime/modules/RuntimeModules.h"
 #ifdef TARGET_ENGINE_V8
+#include "ffi/v8/NativeApiV8.h"
 #include "v8-api.h"
 #endif  // TARGET_ENGINE_V8
+#ifdef TARGET_ENGINE_HERMES
+#include "ffi/hermes/jsi/NativeApiJsi.h"
+#endif  // TARGET_ENGINE_HERMES
+#ifdef TARGET_ENGINE_JSC
+#include "ffi/jsc/NativeApiJSC.h"
+#endif  // TARGET_ENGINE_JSC
+#ifdef TARGET_ENGINE_QUICKJS
+#include "ffi/quickjs/NativeApiQuickJS.h"
+#endif  // TARGET_ENGINE_QUICKJS
 #include <CoreFoundation/CFRunLoop.h>
+#include <cstdlib>
+#include <functional>
 
 #include "NativeScript.h"
 #include "robin_hood.h"
@@ -38,6 +51,53 @@ Runtime* Runtime::GetRuntime(napi_env env) {
   }
   return nullptr;
 }
+
+#ifdef TARGET_ENGINE_HERMES
+class HermesRuntimeUnlockScope final {
+ public:
+  explicit HermesRuntimeUnlockScope(napi_env env) {
+    auto it = JSR::env_to_jsr_cache.find(env);
+    jsr_ = it != JSR::env_to_jsr_cache.end() ? it->second : nullptr;
+    if (jsr_ == nullptr) {
+      return;
+    }
+
+    unlockedDepth_ = js_current_env_lock_depth(env);
+    for (int i = 0; i < unlockedDepth_; i++) {
+      jsr_->unlock();
+    }
+    if (unlockedDepth_ == 0 && jsr_->runtime != nullptr) {
+      jsr_->runtime->unlock();
+      unlockedRuntime_ = true;
+    }
+  }
+
+  ~HermesRuntimeUnlockScope() {
+    if (unlockedRuntime_ && jsr_ != nullptr && jsr_->runtime != nullptr) {
+      jsr_->runtime->lock();
+    }
+    if (jsr_ != nullptr) {
+      for (int i = 0; i < unlockedDepth_; i++) {
+        jsr_->lock();
+      }
+    }
+  }
+
+  HermesRuntimeUnlockScope(const HermesRuntimeUnlockScope&) = delete;
+  HermesRuntimeUnlockScope& operator=(const HermesRuntimeUnlockScope&) = delete;
+
+ private:
+  JSR* jsr_ = nullptr;
+  int unlockedDepth_ = 0;
+  bool unlockedRuntime_ = false;
+};
+
+void InvokeWithUnlockedHermesRuntime(napi_env env,
+                                     const std::function<void()>& task) {
+  HermesRuntimeUnlockScope scope(env);
+  task();
+}
+#endif  // TARGET_ENGINE_HERMES
 
 Runtime::Runtime() {
   currentRuntime_ = this;
@@ -113,6 +173,26 @@ void Runtime::Init(bool isWorker) {
   napi_set_named_property(env_, global, "global", global);
 
   const char* CompatScript = R"(
+    if (typeof globalThis.__extends !== "function") {
+      var __extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function(d, b) { d.__proto__ = b; }) ||
+        function(d, b) {
+          for (var p in b) {
+            if (Object.prototype.hasOwnProperty.call(b, p)) {
+              d[p] = b[p];
+            }
+          }
+        };
+      globalThis.__extends = function(d, b) {
+        if (typeof b !== "function" && b !== null) {
+          throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        }
+        __extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+      };
+    }
+
     if (typeof globalThis.__decorate !== "function") {
       globalThis.__decorate = function(decorators, target, key, desc) {
         var c = arguments.length;
@@ -260,10 +340,51 @@ void Runtime::Init(bool isWorker) {
         // Ensure that Promise callbacks are executed on the
         // same thread on which they were created
         (() => {
+            const runLoopQueues = [];
+
+            function getRunLoopQueue(runloop) {
+                for (let i = 0; i < runLoopQueues.length; i++) {
+                    if (runLoopQueues[i].runloop === runloop) {
+                        return runLoopQueues[i];
+                    }
+                }
+
+                const queue = {
+                    runloop,
+                    pending: false,
+                    callbacks: [],
+                    drain() {
+                        queue.pending = false;
+                        const callbacks = queue.callbacks.splice(0);
+                        for (let i = 0; i < callbacks.length; i++) {
+                            callbacks[i]();
+                        }
+                        if (queue.callbacks.length > 0 && !queue.pending) {
+                            queue.pending = true;
+                            CFRunLoopPerformBlock(queue.runloop, kCFRunLoopDefaultMode, queue.drain);
+                            CFRunLoopWakeUp(queue.runloop);
+                        }
+                    }
+                };
+                runLoopQueues.push(queue);
+                return queue;
+            }
+
+            function scheduleOnRunLoop(queue, callback) {
+                queue.callbacks.push(callback);
+                if (queue.pending) {
+                    return;
+                }
+                queue.pending = true;
+                CFRunLoopPerformBlock(queue.runloop, kCFRunLoopDefaultMode, queue.drain);
+                CFRunLoopWakeUp(queue.runloop);
+            }
+
             global.Promise = new Proxy(global.Promise, {
                 construct: function(target, args) {
                     let origFunc = args[0];
                     let runloop = CFRunLoopGetCurrent();
+                    let runloopQueue = getRunLoopQueue(runloop);
 
                     let promise = new target(function(resolve, reject) {
                         function isFulfilled() {
@@ -278,27 +399,31 @@ void Runtime::Init(bool isWorker) {
                             if (isFulfilled()) {
                                 return;
                             }
-                            const resolveCall = resolve.bind(this, value);
+                            const resolveFn = resolve;
+                            const resolveCall = function() {
+                                resolveFn(value);
+                            };
                             if (runloop === CFRunLoopGetCurrent()) {
                                 markFulfilled();
                                 resolveCall();
                             } else {
-                                CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, resolveCall);
-                                CFRunLoopWakeUp(runloop);
                                 markFulfilled();
+                                scheduleOnRunLoop(runloopQueue, resolveCall);
                             }
                         }, reason => {
                             if (isFulfilled()) {
                                 return;
                             }
-                            const rejectCall = reject.bind(this, reason);
+                            const rejectFn = reject;
+                            const rejectCall = function() {
+                                rejectFn(reason);
+                            };
                             if (runloop === CFRunLoopGetCurrent()) {
                                 markFulfilled();
                                 rejectCall();
                             } else {
-                                CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, rejectCall);
-                                CFRunLoopWakeUp(runloop);
                                 markFulfilled();
+                                scheduleOnRunLoop(runloopQueue, rejectCall);
                             }
                         });
                     });
@@ -359,7 +484,113 @@ void Runtime::Init(bool isWorker) {
 #endif
 
   const char* metadata_path = std::getenv("NS_METADATA_PATH");
+#if NS_FFI_BACKEND_NAPI
   nativescript_init(env_, metadata_path, RuntimeConfig.MetadataPtr);
+#endif
+
+#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_V8)
+  {
+    NativeApiV8Config nativeApiV8Config;
+    nativeApiV8Config.metadataPath = metadata_path;
+    nativeApiV8Config.metadataPtr = RuntimeConfig.MetadataPtr;
+    nativeApiV8Config.installGlobalSymbols = true;
+    nativeApiV8Config.nativeCallbackInvoker =
+        [env = env_](std::function<void()> task) {
+          NapiScope scope(env);
+          task();
+        };
+    nativeApiV8Config.jsThreadCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              false);
+        };
+    InstallNativeApiV8(env_->isolate, env_->context(), nativeApiV8Config);
+  }
+#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_V8
+
+#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_HERMES)
+  if (auto* jsiRuntime = js_get_jsi_runtime(env_)) {
+    NativeApiJsiConfig nativeApiJsiConfig;
+    nativeApiJsiConfig.metadataPath = metadata_path;
+    nativeApiJsiConfig.metadataPtr = RuntimeConfig.MetadataPtr;
+    nativeApiJsiConfig.installGlobalSymbols = true;
+    nativeApiJsiConfig.nativeInvocationInvoker =
+        [env = env_](std::function<void()> task) {
+          InvokeWithUnlockedHermesRuntime(env, task);
+        };
+    nativeApiJsiConfig.nativeCallbackInvoker =
+        [env = env_](std::function<void()> task) {
+          NapiScope scope(env);
+          task();
+        };
+    nativeApiJsiConfig.jsThreadCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              false);
+        };
+    InstallNativeApiJSI(*jsiRuntime, nativeApiJsiConfig);
+  }
+#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_HERMES
+
+#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_JSC)
+  {
+    NativeApiJSCConfig nativeApiJSCConfig;
+    nativeApiJSCConfig.metadataPath = metadata_path;
+    nativeApiJSCConfig.metadataPtr = RuntimeConfig.MetadataPtr;
+    nativeApiJSCConfig.installGlobalSymbols = true;
+    nativeApiJSCConfig.nativeCallbackInvoker =
+        [env = env_](std::function<void()> task) {
+          NapiScope scope(env);
+          task();
+        };
+    nativeApiJSCConfig.jsThreadCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              false);
+        };
+    InstallNativeApiJSC(env_->context, nativeApiJSCConfig);
+  }
+#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_JSC
+
+#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_QUICKJS)
+  {
+    NativeApiQuickJSConfig nativeApiQuickJSConfig;
+    nativeApiQuickJSConfig.metadataPath = metadata_path;
+    nativeApiQuickJSConfig.metadataPtr = RuntimeConfig.MetadataPtr;
+    nativeApiQuickJSConfig.installGlobalSymbols = true;
+    nativeApiQuickJSConfig.nativeCallbackInvoker =
+        [env = env_](std::function<void()> task) {
+          NapiScope scope(env);
+          task();
+        };
+    nativeApiQuickJSConfig.jsThreadCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              false);
+        };
+    InstallNativeApiQuickJS(qjs_get_context(env_), nativeApiQuickJSConfig);
+  }
+#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_QUICKJS
 
   napi_close_handle_scope(env_, scope);
 }

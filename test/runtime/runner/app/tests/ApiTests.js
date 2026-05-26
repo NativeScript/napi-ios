@@ -883,13 +883,20 @@ describe(module.id, function () {
 //         expect(stack).toBe(expectedStack);
 //     });
 
-    // it("should allow calling callbacks from another thread", function () {
-    //     var result = TNSTestNativeCallbacks.callOnThread(function() {
-    //         return 'method called';
-    //     });
+    it("should invoke block callbacks on the native caller thread", function () {
+        if (!global.process ||
+            !global.process.versions ||
+            global.process.versions.engine !== "hermes") {
+            pending("Same-thread callback dispatch currently requires the Hermes thread-safe runtime.");
+        }
 
-    //     expect(result).toBe('method called');
-    // });
+        var jsThreadHash = String(NSThread.currentThread.hash);
+        var callbackThreadHash = TNSTestNativeCallbacks.callOnThread(function() {
+            return String(NSThread.currentThread.hash);
+        });
+
+        expect(callbackThreadHash).not.toBe(jsThreadHash);
+    });
 
     it("Unimplemented properties from UIBarItem class should be provided by the inheritors", function () {
         if (hasGlobalSymbol("UIBarButtonItem") && hasGlobalSymbol("UITabBarItem")) {

@@ -7,12 +7,16 @@
 //  - MACOS_TEST_CLEAN_BUILD=1 deletes derived data before build.
 //  - MACOS_TEST_ENGINE selects the runtime engine build to use when runtime
 //    artifacts need rebuilding. Supported: v8, hermes, quickjs, jsc. Defaults to v8.
+//  - MACOS_TEST_FFI_BACKEND selects the FFI backend build to use when runtime
+//    artifacts need rebuilding. Supported: auto, napi, direct. Defaults to auto.
 //  - MACOS_COMMAND_TIMEOUT_MS overrides timeout for build commands (default: 10 minutes).
 //  - MACOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
 //  - MACOS_TEST_TIMEOUT_MS overrides max test runtime after launch (default: 2 minutes).
 //  - MACOS_TEST_INACTIVITY_TIMEOUT_MS overrides max no-log interval after launch (default: 45 seconds).
 //  - MACOS_LOG_JUNIT=0 disables streaming TKUnit/JUnit lines to console.
 //  - MACOS_TESTS filters test modules (comma-separated substrings passed as -tests).
+//  - MACOS_TEST_SPECS filters spec names (comma-separated substrings passed as -specs).
+//  - MACOS_TEST_VERBOSE_SPECS=1 prints Jasmine spec start/done markers.
 
 const fs = require("fs");
 const path = require("path");
@@ -87,13 +91,20 @@ const testTimeoutMs = parseTimeoutMs("MACOS_TEST_TIMEOUT_MS", 2 * 60 * 1000);
 const inactivityTimeoutMs = parseTimeoutMs("MACOS_TEST_INACTIVITY_TIMEOUT_MS", 45 * 1000);
 const emitJunitLogs = process.env.MACOS_LOG_JUNIT !== "0";
 const requestedTests = (process.env.MACOS_TESTS || "").trim();
+const requestedSpecs = (process.env.MACOS_TEST_SPECS || "").trim();
+const verboseSpecs = process.env.MACOS_TEST_VERBOSE_SPECS === "1";
 const requestedEngine = (process.env.MACOS_TEST_ENGINE || "v8").trim().toLowerCase();
+const requestedFfiBackend = (process.env.MACOS_TEST_FFI_BACKEND || "auto").trim().toLowerCase();
 
 const launchedMarker = "Application Start!";
 const junitPrefix = "TKUnit: ";
 const junitEndTag = "</testsuites>";
 const consoleLogMarker = "CONSOLE LOG:";
 const crashReportsDir = path.join(os.homedir(), "Library", "Logs", "DiagnosticReports");
+const generatedRuntimeBuildOutputs = new Set([
+    path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc.stamp")
+]);
 
 function parseArgs() {
     const args = process.argv.slice(2).filter(Boolean);
@@ -136,6 +147,9 @@ function getPathStats(targetPath) {
 
     while (queue.length > 0) {
         const currentPath = queue.pop();
+        if (generatedRuntimeBuildOutputs.has(currentPath)) {
+            continue;
+        }
         let stats;
         try {
             stats = fs.lstatSync(currentPath);
@@ -469,6 +483,12 @@ function ensureMacOSRuntimeArtifactsBuilt() {
     const cachePath = path.join(__dirname, "../dist", "intermediates", "macos", "CMakeCache.txt");
     const sourceInputs = [
         nativeScriptSourceRoot,
+        path.join(metadataGeneratorRoot, "src"),
+        path.join(metadataGeneratorRoot, "include"),
+        path.join(metadataGeneratorRoot, "CMakeLists.txt"),
+        metadataGeneratorBinary,
+        metadataGeneratorBuildStepScript,
+        path.join(__dirname, "build_metadata_generator.sh"),
         path.join(__dirname, "build_nativescript.sh")
     ];
 
@@ -478,20 +498,29 @@ function ensureMacOSRuntimeArtifactsBuilt() {
     );
     const artifactMtime = getPathStats(nativeScriptXCFramework).maxMtimeMs;
     let configuredEngine = null;
+    let configuredFfiBackend = null;
 
     if (fs.existsSync(cachePath)) {
         try {
             const cache = fs.readFileSync(cachePath, "utf8");
-            const match = cache.match(/^TARGET_ENGINE:STRING=(.+)$/m);
-            if (match) {
-                configuredEngine = match[1].trim().toLowerCase();
+            const engineMatch = cache.match(/^TARGET_ENGINE:STRING=(.+)$/m);
+            if (engineMatch) {
+                configuredEngine = engineMatch[1].trim().toLowerCase();
+            }
+            const ffiBackendMatch = cache.match(/^NS_FFI_BACKEND:STRING=(.+)$/m);
+            if (ffiBackendMatch) {
+                configuredFfiBackend = ffiBackendMatch[1].trim().toLowerCase();
             }
         } catch (_) {
             configuredEngine = null;
+            configuredFfiBackend = null;
         }
     }
 
-    if (artifactMtime > 0 && artifactMtime >= sourceMtime && configuredEngine === requestedEngine) {
+    if (artifactMtime > 0 &&
+        artifactMtime >= sourceMtime &&
+        configuredEngine === requestedEngine &&
+        configuredFfiBackend === requestedFfiBackend) {
         return;
     }
 
@@ -500,10 +529,15 @@ function ensureMacOSRuntimeArtifactsBuilt() {
         throw new Error(`Unsupported MACOS_TEST_ENGINE: ${requestedEngine}`);
     }
 
-    console.log(`NativeScript macOS artifacts are missing, stale, or built for '${configuredEngine ?? "unknown"}'; running ${requestedEngine} build...`);
+    const supportedFfiBackends = new Set(["auto", "napi", "direct"]);
+    if (!supportedFfiBackends.has(requestedFfiBackend)) {
+        throw new Error(`Unsupported MACOS_TEST_FFI_BACKEND: ${requestedFfiBackend}`);
+    }
+
+    console.log(`NativeScript macOS artifacts are missing, stale, or built for '${configuredEngine ?? "unknown"}/${configuredFfiBackend ?? "unknown"}'; running ${requestedEngine}/${requestedFfiBackend} build...`);
     runBuildAndRequireSuccess(
         path.join(__dirname, "build_nativescript.sh"),
-        ["--macos", "--no-iphone", "--no-simulator", `--${requestedEngine}`],
+        ["--macos", "--no-iphone", "--no-simulator", `--${requestedEngine}`, `--ffi-backend=${requestedFfiBackend}`],
         commandTimeoutMs
     );
 }
@@ -526,7 +560,7 @@ function buildTestRunnerApp() {
     ensureMetadataGeneratorBuilt();
     ensureMacOSRuntimeArtifactsBuilt();
 
-    const nativeFingerprint = `${requestedEngine}:${createBuildFingerprint(macosBuildInputs)}`;
+    const nativeFingerprint = `${requestedEngine}:${requestedFfiBackend}:${createBuildFingerprint(macosBuildInputs)}`;
     const existingBuildState = readBuildState();
     const canReuseBuild = process.env.MACOS_TEST_CLEAN_BUILD !== "1" &&
         fs.existsSync(appPath) &&
@@ -599,8 +633,14 @@ function main() {
     }
 
     const runArgs = ["-logjunit"];
+    if (verboseSpecs) {
+        runArgs.push("-verbose-specs");
+    }
     if (requestedTests.length > 0) {
         runArgs.push("-tests", requestedTests);
+    }
+    if (requestedSpecs.length > 0) {
+        runArgs.push("-specs", requestedSpecs);
     }
 
     console.log(`Launching app and streaming logs: ${appBinaryPath} ${runArgs.join(" ")}`);

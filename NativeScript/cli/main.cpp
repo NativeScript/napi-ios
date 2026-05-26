@@ -5,12 +5,12 @@
 #include <iostream>
 #include <string>
 
-#include "ffi/NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "runtime/Bundle.h"
 #include "runtime/Runtime.h"
 #include "runtime/RuntimeConfig.h"
 #include "segappend.h"
-#include "ffi/Tasks.h"
+#include "ffi/shared/Tasks.h"
 #include "BundleLoader.h"
 
 using namespace nativescript;

@@ -596,8 +596,37 @@ class FunctionInfo : public NativeInfo {
     if (info == nullptr) {
       return napi_set_last_error(env, napi_generic_failure);
     }
-    JSObjectRef function =
-        JSObjectMake(env->context, xyz::functionInfoClass, info);
+
+    JSString name(utf8name != nullptr ? utf8name : "",
+                  utf8name != nullptr ? length : 0);
+    JSObjectRef function = JSObjectMakeFunctionWithCallback(
+        env->context, utf8name != nullptr ? static_cast<JSStringRef>(name)
+                                          : nullptr,
+        FunctionInfo::CallAsFunction);
+    if (function == nullptr) {
+      delete info;
+      return napi_set_last_error(env, napi_generic_failure);
+    }
+
+    NativeInfo::SetNativeInfoKey(env->context, function, xyz::functionInfoClass,
+                                 env->function_info_symbol, info);
+
+    JSValueRef exception{};
+    JSObjectSetProperty(env->context, function, JSString("length"),
+                        JSValueMakeNumber(env->context, 0),
+                        kJSPropertyAttributeDontEnum |
+                            kJSPropertyAttributeReadOnly |
+                            kJSPropertyAttributeDontDelete,
+                        &exception);
+    if (utf8name != nullptr) {
+      JSObjectSetProperty(env->context, function, JSString("name"),
+                          JSValueMakeString(env->context, name),
+                          kJSPropertyAttributeDontEnum |
+                              kJSPropertyAttributeReadOnly |
+                              kJSPropertyAttributeDontDelete,
+                          &exception);
+    }
+
     *result = ToNapi(function);
     return napi_ok;
   }
@@ -638,6 +667,16 @@ class FunctionInfo : public NativeInfo {
                                    JSValueRef* exception) {
     FunctionInfo* info =
         reinterpret_cast<FunctionInfo*>(JSObjectGetPrivate(function));
+    if (info == nullptr) {
+      napi_env env = napi_env__::get(const_cast<JSGlobalContextRef>(ctx));
+      if (env != nullptr) {
+        info = NativeInfo::GetNativeInfoKey<FunctionInfo>(
+            ctx, function, env->function_info_symbol);
+      }
+    }
+    if (info == nullptr) {
+      return JSValueMakeUndefined(ctx);
+    }
 
     // Make sure any errors encountered last time we were in N-API are gone.
     napi_clear_last_error(info->_env);
@@ -791,13 +830,16 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
     RETURN_STATUS_IF_FALSE(env, IsJSObjectValue(env, object), napi_invalid_arg);
     WrapperInfo* info{};
 
-    bool hasOwnProperty = NativeInfo::GetNativeInfoKey<WrapperInfo>(
-                              env->context, ToJSObject(env, object),
-                              env->wrapper_info_symbol) != nullptr;
+    info = GetCached(env, object);
+    if (info != nullptr) {
+      *result = info;
+      return napi_ok;
+    }
 
-    if (hasOwnProperty) {
-      CHECK_NAPI(Unwrap(env, object, &info));
-      RETURN_STATUS_IF_FALSE(env, info != nullptr, napi_generic_failure);
+    info = NativeInfo::GetNativeInfoKey<WrapperInfo>(
+        env->context, ToJSObject(env, object), env->wrapper_info_symbol);
+    if (info != nullptr) {
+      env->wrapper_info_cache[object] = info;
       *result = info;
       return napi_ok;
     }
@@ -811,6 +853,13 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
       NativeInfo::SetNativeInfoKey(env->context, ToJSObject(env, object),
                                    info->_class, env->wrapper_info_symbol,
                                    info);
+      info->AddFinalizer([object](WrapperInfo* info) {
+        napi_env env = info->Env();
+        if (env != nullptr) {
+          env->wrapper_info_cache.erase(object);
+        }
+      });
+      env->wrapper_info_cache[object] = info;
     }
 
     *result = info;
@@ -820,12 +869,37 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
   static napi_status Unwrap(napi_env env, napi_value object,
                             WrapperInfo** result) {
     RETURN_STATUS_IF_FALSE(env, IsJSObjectValue(env, object), napi_invalid_arg);
+    auto cachedInfo = GetCached(env, object);
+    if (cachedInfo != nullptr) {
+      *result = cachedInfo;
+      return napi_ok;
+    }
+
     *result = NativeInfo::GetNativeInfoKey<WrapperInfo>(
         env->context, ToJSObject(env, object), env->wrapper_info_symbol);
+    if (*result != nullptr) {
+      env->wrapper_info_cache[object] = *result;
+    }
     return napi_ok;
   }
 
  private:
+  static WrapperInfo* GetCached(napi_env env, napi_value object) {
+    auto cachedInfo = env->wrapper_info_cache.find(object);
+    if (cachedInfo == env->wrapper_info_cache.end()) {
+      return nullptr;
+    }
+
+    auto info = NativeInfo::GetNativeInfoKey<WrapperInfo>(
+        env->context, ToJSObject(env, object), env->wrapper_info_symbol);
+    if (info == nullptr || info != static_cast<WrapperInfo*>(cachedInfo->second)) {
+      env->wrapper_info_cache.erase(cachedInfo);
+      return nullptr;
+    }
+
+    return info;
+  }
+
   WrapperInfo(napi_env env) : BaseInfoT{env, "Native (Wrapper)"} {}
 };
 
@@ -1624,18 +1698,20 @@ napi_status napi_typeof(napi_env env, napi_value value,
     case kJSTypeString:
       *result = napi_string;
       break;
-    case kJSTypeSymbol:
-      *result = napi_symbol;
-      break;
-    default:
-      JSObjectRef object{ToJSObject(env, value)};
-      if (JSObjectIsFunction(env->context, object)) {
-        *result = napi_function;
-      } else {
-        NativeInfo* info = NativeInfo::Get<NativeInfo>(object);
-        if (info != nullptr && info->Type() == NativeType::External) {
-          *result = napi_external;
-        } else {
+	    case kJSTypeSymbol:
+	      *result = napi_symbol;
+	      break;
+	    default:
+	      JSObjectRef object{ToJSObject(env, value)};
+	      NativeInfo* info = NativeInfo::Get<NativeInfo>(object);
+	      if (JSObjectIsFunction(env->context, object) ||
+	          (info != nullptr && (info->Type() == NativeType::Function ||
+	                               info->Type() == NativeType::Constructor))) {
+	        *result = napi_function;
+	      } else {
+	        if (info != nullptr && info->Type() == NativeType::External) {
+	          *result = napi_external;
+	        } else {
           *result = napi_object;
         }
       }
@@ -2102,6 +2178,28 @@ napi_status napi_unwrap(napi_env env, napi_value js_object, void** result) {
 
   *result = info->Data();
   return napi_ok;
+}
+
+extern "C" bool nativescript_jsc_try_unwrap_native(napi_env env,
+                                                   napi_value value,
+                                                   void** result) {
+  if (env == nullptr || value == nullptr || result == nullptr) {
+    return false;
+  }
+
+  *result = nullptr;
+  if (!IsJSObjectValue(env, value)) {
+    return false;
+  }
+
+  WrapperInfo* info{};
+  if (WrapperInfo::Unwrap(env, value, &info) != napi_ok ||
+      info == nullptr || info->Data() == nullptr) {
+    return false;
+  }
+
+  *result = info->Data();
+  return true;
 }
 
 napi_status napi_remove_wrap(napi_env env, napi_value js_object,

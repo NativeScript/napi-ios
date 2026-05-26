@@ -5,7 +5,7 @@
 #include <functional>
 #include <memory>
 
-#include "ffi/NativeScriptException.h"
+#include "runtime/NativeScriptException.h"
 #include "js_native_api_types.h"
 #include "native_api_util.h"
 #include "runtime/modules/worker/ConcurrentMap.h"

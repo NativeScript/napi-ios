@@ -13,6 +13,17 @@ void functionWithSimpleFunctionPointer(int (*f)(int)) {
     TNSLog([NSString stringWithFormat:@"%d", result]);
 }
 
+int functionWithSimpleFunctionPointerOnBackground(int (*f)(int)) {
+    __block int result = -1;
+    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+        result = f([NSThread isMainThread] ? 1 : 0);
+        dispatch_semaphore_signal(semaphore);
+    });
+    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
+    return result;
+}
+
 void functionWithComplexFunctionPointer(TNSNestedStruct (*f)(char p1, short p2, int p3, long p4, long long p5, unsigned char p6, unsigned short p7, unsigned int p8, unsigned long p9, unsigned long long p10, float p11, double p12, SEL p13, Class p14, Protocol* p15, NSObject* p16, TNSNestedStruct p17)) {
     static NSObject* object = nil;
 
