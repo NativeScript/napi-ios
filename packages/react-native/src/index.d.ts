@@ -26,7 +26,10 @@ export type NativeApiHost = {
     structNames?: () => string[];
     unionNames?: () => string[];
   };
+  import?: (path: string) => boolean;
+  getClass?: (name: string) => unknown;
   getProtocol?: (name: string) => unknown;
+  getEnum?: (name: string) => unknown;
   getStruct?: (name: string) => unknown;
   getUnion?: (name: string) => unknown;
   runOnUI?: (callback?: () => void) => Promise<void>;
@@ -76,7 +79,8 @@ export type UIKitViewContext<Props extends object> = {
     keyPath: string,
     callback: (value: unknown, change: unknown) => void,
   ): void;
-  retain(value: unknown): void;
+  retain<T>(value: T): T;
+  release(value?: unknown): void;
   dispose(callback: () => void): void;
   invalidateLayout(): void;
 };
@@ -84,6 +88,28 @@ export type UIKitViewContext<Props extends object> = {
 export type NativeScriptCallbackThread = 'ui' | 'js';
 export type NativeScriptInvokedCallback<T extends (...args: any[]) => any> = T & {
   readonly __nativeScriptCallbackThread?: NativeScriptCallbackThread;
+};
+export type NativeRetainer = {
+  readonly size: number;
+  retain<T>(value: T): T;
+  release(value?: unknown): void;
+  dispose(): void;
+};
+export type NativeDelegateOwner = {
+  retain<T>(value: T): T | void;
+  release?(value?: unknown): void;
+  dispose?(callback: () => void): void;
+};
+export type NativeProtocolReference = string | object | Function;
+export type CreateDelegateOptions = {
+  name?: string;
+  thread?: NativeScriptCallbackThread | 'caller';
+  retainer?: NativeRetainer;
+  owner?: NativeDelegateOwner;
+  assignTo?: {
+    object: unknown;
+    property?: string;
+  };
 };
 
 export type UIKitViewDefinition<Props extends object, NativeView = unknown> = {
@@ -194,6 +220,27 @@ export function uiInvoker<T extends (...args: any[]) => any>(
 export function jsInvoker<T extends (...args: any[]) => any>(
   callback: T,
 ): NativeScriptInvokedCallback<T>;
+export function eventBridge<T extends (...args: any[]) => any>(
+  callback: T,
+  thread?: NativeScriptCallbackThread | 'caller',
+): T | NativeScriptInvokedCallback<T>;
+export const createEventBridge: typeof eventBridge;
+export function isMainThread(): boolean;
+export function assertUIKitThread(message?: string): void;
+export function warnIfNotUIKitThread(message?: string): boolean;
+export function createRetainer(): NativeRetainer;
+export function retain<T>(value: T): T;
+export function release(value?: unknown): void;
+export function getClass<T = unknown>(name: string): T | null;
+export function getProtocol<T = unknown>(name: string): T | null;
+export function isClassAvailable(name: string): boolean;
+export function isFrameworkLoaded(nameOrPath: string): boolean;
+export function loadFramework(nameOrPath: string): boolean;
+export function createDelegate<T extends object>(
+  protocols: NativeProtocolReference | NativeProtocolReference[],
+  methods: Partial<T>,
+  options?: CreateDelegateOptions,
+): T;
 export function defineUIKitView<Props extends object, NativeView = unknown>(
   definition: UIKitViewDefinition<Props, NativeView>,
 ): UIKitViewComponent<Props, NativeView>;
@@ -221,9 +268,23 @@ declare const NativeScript: {
   defineUIKitView: typeof defineUIKitView;
   defineUIViewController: typeof defineUIViewController;
   getRuntimeBackend: typeof getRuntimeBackend;
+  assertUIKitThread: typeof assertUIKitThread;
+  createDelegate: typeof createDelegate;
+  createEventBridge: typeof createEventBridge;
+  createRetainer: typeof createRetainer;
+  eventBridge: typeof eventBridge;
+  getClass: typeof getClass;
+  getProtocol: typeof getProtocol;
+  isClassAvailable: typeof isClassAvailable;
+  isFrameworkLoaded: typeof isFrameworkLoaded;
+  isMainThread: typeof isMainThread;
   jsInvoker: typeof jsInvoker;
+  loadFramework: typeof loadFramework;
+  release: typeof release;
+  retain: typeof retain;
   runOnUI: typeof runOnUI;
   uiInvoker: typeof uiInvoker;
+  warnIfNotUIKitThread: typeof warnIfNotUIKitThread;
 };
 
 export default NativeScript;

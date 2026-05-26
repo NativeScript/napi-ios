@@ -156,6 +156,8 @@ _TNSFunction15_5Plus
 _TNSFunctionWithCFTypeRefArgument
 _TNSFunctionWithCreateCFTypeRefReturn
 _TNSFunctionWithSimpleCFTypeRefReturn
+_TNSRNMeasureNativeUIColorFactory
+_TNSRNMeasureNativeUITabBarControllerNew
 _TNSGetOutput
 _TNSLog
 _TNSMutableObjectGet

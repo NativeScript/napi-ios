@@ -156,7 +156,10 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
     }
     if (!force && Object.prototype.hasOwnProperty.call(globalThis, name)) {
       try {
-        cacheGlobal(name, globalThis[name]);
+        var existingDescriptor = Object.getOwnPropertyDescriptor(globalThis, name);
+        if (existingDescriptor && Object.prototype.hasOwnProperty.call(existingDescriptor, 'value')) {
+          cacheGlobal(name, existingDescriptor.value);
+        }
       } catch (_) {
       }
       return;
@@ -698,6 +701,27 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
     } catch (_) {
     }
     try {
+      Object.defineProperty(constructable, 'new', {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: function() {
+          if (arguments.length !== 0) {
+            throw new Error('new does not take arguments; use invoke for an explicit Objective-C selector.');
+          }
+          if (typeof nativeClass.alloc !== 'function') {
+            throw new Error('Native class cannot be allocated');
+          }
+          var instance = nativeClass.alloc();
+          if (instance && typeof instance.init === 'function') {
+            return rememberInstanceClass(instance.init());
+          }
+          return rememberInstanceClass(instance);
+        }
+      });
+    } catch (_) {
+    }
+    try {
       Object.defineProperty(constructable, 'caller', {
         configurable: true,
         enumerable: false,
@@ -716,6 +740,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
     } catch (_) {
     }
     var basePrototypeTarget = {};
+    var classMembersInstalled = false;
     function installClassMembers(target, members, receiverIsClass) {
       if (!target || !members || typeof members.length !== 'number') {
         return;
@@ -790,8 +815,23 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
         }
       }
     }
-    installClassMembers(constructable, nativeClass.__staticMembers, true);
-    installClassMembers(basePrototypeTarget, nativeClass.__instanceMembers, false);
+    function installNativeClassMembersIfNeeded() {
+      if (classMembersInstalled) {
+        return;
+      }
+      classMembersInstalled = true;
+      installClassMembers(constructable, nativeClass.__staticMembers, true);
+      installClassMembers(basePrototypeTarget, nativeClass.__instanceMembers, false);
+    }
+    try {
+      Object.defineProperty(constructable, '__nativeApiInstallMembers', {
+        configurable: true,
+        enumerable: false,
+        writable: false,
+        value: installNativeClassMembersIfNeeded
+      });
+    } catch (_) {
+    }
     try {
       Object.defineProperty(basePrototypeTarget, 'constructor', {
         configurable: true,
@@ -905,6 +945,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
       });
     } catch (_) {
     }
+    var cachedNativeFunctions = typeof Map === 'function' ? new Map() : null;
 	    var wrapper = typeof Proxy === 'function'
 	      ? new Proxy(constructable, {
           get: function(target, property, receiver) {
@@ -917,11 +958,33 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
                 property === 'name') {
               return Reflect.get(target, property, receiver);
             }
+            if (cachedNativeFunctions && cachedNativeFunctions.has(property)) {
+              return cachedNativeFunctions.get(property);
+            }
             var nativeValue = nativeClass[property];
             if (nativeValue !== undefined) {
+              if (typeof nativeValue === 'function') {
+                if (cachedNativeFunctions) {
+                  cachedNativeFunctions.set(property, nativeValue);
+                }
+                try {
+                  Object.defineProperty(target, property, {
+                    configurable: true,
+                    enumerable: false,
+                    writable: false,
+                    value: nativeValue
+                  });
+                } catch (_) {
+                }
+              }
               return nativeValue;
             }
             var reflected = Reflect.get(target, property, receiver);
+            if (reflected !== undefined || property in target) {
+              return reflected;
+            }
+            installNativeClassMembersIfNeeded();
+            reflected = Reflect.get(target, property, receiver);
             if (reflected !== undefined || property in target) {
               return reflected;
             }
@@ -956,18 +1019,6 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
           }
 	        })
 	      : constructable;
-	    try {
-	      var nativeSuperclass = nativeClass.__superclass;
-	      if (nativeSuperclass && nativeSuperclass !== nativeClass) {
-	        var superclassWrapper = wrapNativeClass(nativeSuperclass);
-	        if (superclassWrapper &&
-	            superclassWrapper !== wrapper &&
-	            superclassWrapper !== constructable) {
-	          Object.setPrototypeOf(wrapper, superclassWrapper);
-	        }
-	      }
-	    } catch (_) {
-	    }
 	    if (classWrappers) {
 	      classWrappers.set(nativeClass, wrapper);
 	    }
@@ -1000,7 +1051,11 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
 	  function rememberClassOnInstance(instance, classWrapper) {
 	    if (instance && typeof instance === 'object' && classWrapper) {
 	      try {
-	        instance.__nativeApiClassWrapper = classWrapper;
+	        if (typeof api.__rememberObjectClassWrapper === 'function') {
+	          api.__rememberObjectClassWrapper(instance, classWrapper);
+	        } else {
+	          instance.__nativeApiClassWrapper = classWrapper;
+	        }
 	      } catch (_) {
 	      }
 	    }

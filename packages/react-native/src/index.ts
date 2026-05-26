@@ -25,7 +25,10 @@ type NativeApiHost = {
     structNames?: () => string[];
     unionNames?: () => string[];
   };
+  import?: (path: string) => boolean;
+  getClass?: (name: string) => unknown;
   getProtocol?: (name: string) => unknown;
+  getEnum?: (name: string) => unknown;
   getStruct?: (name: string) => unknown;
   getUnion?: (name: string) => unknown;
   runOnUI?: (callback?: () => void) => Promise<void>;
@@ -75,7 +78,8 @@ export type UIKitViewContext<Props extends object> = {
     keyPath: string,
     callback: (value: unknown, change: unknown) => void,
   ): void;
-  retain(value: unknown): void;
+  retain<T>(value: T): T;
+  release(value?: unknown): void;
   dispose(callback: () => void): void;
   invalidateLayout(): void;
 };
@@ -182,6 +186,32 @@ export type NativeScriptInvokedCallback<T extends AnyFunction> = T & {
   readonly __nativeScriptCallbackThread?: NativeScriptCallbackThread;
 };
 
+export type NativeRetainer = {
+  readonly size: number;
+  retain<T>(value: T): T;
+  release(value?: unknown): void;
+  dispose(): void;
+};
+
+export type NativeDelegateOwner = {
+  retain<T>(value: T): T | void;
+  release?(value?: unknown): void;
+  dispose?(callback: () => void): void;
+};
+
+export type CreateDelegateOptions = {
+  name?: string;
+  thread?: NativeScriptCallbackThread | 'caller';
+  retainer?: NativeRetainer;
+  owner?: NativeDelegateOwner;
+  assignTo?: {
+    object: unknown;
+    property?: string;
+  };
+};
+
+export type NativeProtocolReference = string | object | Function;
+
 function nativeApiHost(): NativeApiHost | undefined {
   return (globalThis as Record<string, unknown>)[nativeApiGlobalName] as
     | NativeApiHost
@@ -218,6 +248,51 @@ function cacheNativeGlobal(name: string, value: unknown): void {
     return;
   }
   nativeApiGlobalCache()[name] = value;
+}
+
+function createNativeRetainer(): NativeRetainer {
+  const retained: unknown[] = [];
+  return {
+    get size() {
+      return retained.length;
+    },
+    retain<T>(value: T): T {
+      retained.push(value);
+      return value;
+    },
+    release(value?: unknown) {
+      if (arguments.length === 0) {
+        retained.length = 0;
+        return;
+      }
+      for (let i = retained.length - 1; i >= 0; i--) {
+        if (retained[i] === value) {
+          retained.splice(i, 1);
+        }
+      }
+    },
+    dispose() {
+      retained.length = 0;
+    },
+  };
+}
+
+const defaultNativeRetainer = createNativeRetainer();
+
+export function createRetainer(): NativeRetainer {
+  return createNativeRetainer();
+}
+
+export function retain<T>(value: T): T {
+  return defaultNativeRetainer.retain(value);
+}
+
+export function release(value?: unknown): void {
+  if (arguments.length === 0) {
+    defaultNativeRetainer.dispose();
+    return;
+  }
+  defaultNativeRetainer.release(value);
 }
 
 const hostViewPropNames = new Set([
@@ -345,10 +420,9 @@ function defineLazyNativeGlobal(
   }
 
   if (!force && Object.prototype.hasOwnProperty.call(globalThis, name)) {
-    try {
-      cacheNativeGlobal(name, (globalThis as Record<string, unknown>)[name]);
-    } catch {
-      // Some host globals throw when read; leave those uncached.
+    const descriptor = Object.getOwnPropertyDescriptor(globalThis, name);
+    if (descriptor && 'value' in descriptor) {
+      cacheNativeGlobal(name, descriptor.value);
     }
     return;
   }
@@ -463,12 +537,25 @@ function wrapNativeClass(nativeClass: unknown): unknown {
     return instance;
   };
 
+  Object.defineProperty(constructable, 'new', {
+    configurable: true,
+    enumerable: false,
+    writable: false,
+    value(...args: unknown[]) {
+      if (args.length !== 0) {
+        throw new Error('new does not take arguments; use invoke for an explicit Objective-C selector.');
+      }
+      return constructable();
+    },
+  });
+
   Object.defineProperty(constructable, '__nativeApiClass', {
     configurable: false,
     enumerable: false,
     writable: false,
     value: nativeClass,
   });
+  const cachedNativeFunctions = new Map<PropertyKey, unknown>();
 
   try {
     const hasInstance = Symbol.hasInstance;
@@ -504,7 +591,24 @@ function wrapNativeClass(nativeClass: unknown): unknown {
       if (property in target) {
         return Reflect.get(target, property, receiver);
       }
-      return (nativeClass as Record<PropertyKey, unknown>)[property];
+      if (cachedNativeFunctions.has(property)) {
+        return cachedNativeFunctions.get(property);
+      }
+      const nativeValue = (nativeClass as Record<PropertyKey, unknown>)[property];
+      if (typeof nativeValue === 'function') {
+        cachedNativeFunctions.set(property, nativeValue);
+        try {
+          Object.defineProperty(target, property, {
+            configurable: true,
+            enumerable: false,
+            writable: false,
+            value: nativeValue,
+          });
+        } catch {
+          // Host runtimes may reject defining function properties; the map is enough.
+        }
+      }
+      return nativeValue;
     },
     set(_target, property, value) {
       (nativeClass as Record<PropertyKey, unknown>)[property] = value;
@@ -845,6 +949,247 @@ export function jsInvoker<T extends AnyFunction>(
   return callbackInvoker('js', callback);
 }
 
+export function eventBridge<T extends AnyFunction>(
+  callback: T,
+  thread: NativeScriptCallbackThread | 'caller' = 'js',
+): T | NativeScriptInvokedCallback<T> {
+  if (thread === 'ui') {
+    return uiInvoker(callback);
+  }
+  if (thread === 'js') {
+    return jsInvoker(callback);
+  }
+  return callback;
+}
+
+export const createEventBridge = eventBridge;
+
+export function isMainThread(): boolean {
+  const NSThread = (globalThis as Record<string, any>).NSThread;
+  return NSThread?.isMainThread === true;
+}
+
+export function assertUIKitThread(
+  message = 'UIKit native APIs must be called through NativeScript.runOnUI',
+): void {
+  if (!isMainThread()) {
+    throw new Error(message);
+  }
+}
+
+export function warnIfNotUIKitThread(
+  message = 'UIKit native APIs should be mutated through NativeScript.runOnUI',
+): boolean {
+  if (isMainThread()) {
+    return false;
+  }
+  if (typeof console !== 'undefined' && typeof console.warn === 'function') {
+    console.warn(message);
+  }
+  return true;
+}
+
+function systemFrameworkPath(nameOrPath: string): string {
+  if (!nameOrPath) {
+    return '';
+  }
+  if (nameOrPath.includes('/')) {
+    return nameOrPath;
+  }
+  const frameworkName = nameOrPath.endsWith('.framework')
+    ? nameOrPath
+    : `${nameOrPath}.framework`;
+  return `/System/Library/Frameworks/${frameworkName}`;
+}
+
+export function getClass<T = unknown>(name: string): T | null {
+  if (!name) {
+    return null;
+  }
+  const api = requireNativeApiHost();
+  const nativeClass = api.getClass?.(name) ?? api[name];
+  if (nativeClass == null) {
+    return null;
+  }
+  const wrapped = wrapNativeClass(nativeClass);
+  return wrapped == null ? null : (wrapped as T);
+}
+
+export function getProtocol<T = unknown>(name: string): T | null {
+  if (!name) {
+    return null;
+  }
+  const api = requireNativeApiHost();
+  const protocol = api.getProtocol?.(name) ?? api[name];
+  return protocol == null ? null : (protocol as T);
+}
+
+export function isClassAvailable(name: string): boolean {
+  const nativeClass = getClass<Record<string, unknown>>(name);
+  if (!nativeClass) {
+    return false;
+  }
+  if (typeof nativeClass.available === 'boolean') {
+    return nativeClass.available;
+  }
+  return true;
+}
+
+function frameworkBundle(nameOrPath: string): any | null {
+  const NSBundle = getClass<any>('NSBundle');
+  if (!NSBundle || typeof NSBundle.bundleWithPath !== 'function') {
+    return null;
+  }
+  const path = systemFrameworkPath(nameOrPath);
+  if (!path) {
+    return null;
+  }
+  return NSBundle.bundleWithPath(path) ?? null;
+}
+
+const frameworkSentinelClasses: Record<string, string> = {
+  Foundation: 'NSObject',
+  UIKit: 'UIView',
+  QuickLook: 'QLPreviewController',
+  VisionKit: 'VNDocumentCameraViewController',
+  PassKit: 'PKPass',
+};
+
+function frameworkName(nameOrPath: string): string {
+  const match = /([^/]+)\.framework(?:\/)?$/.exec(nameOrPath);
+  if (match) {
+    return match[1];
+  }
+  return nameOrPath.replace(/\.framework$/, '');
+}
+
+export function isFrameworkLoaded(nameOrPath: string): boolean {
+  const sentinelClass = frameworkSentinelClasses[frameworkName(nameOrPath)];
+  if (sentinelClass && isClassAvailable(sentinelClass)) {
+    return true;
+  }
+  const bundle = frameworkBundle(nameOrPath);
+  if (!bundle) {
+    return false;
+  }
+  if (typeof bundle.loaded === 'boolean') {
+    return bundle.loaded;
+  }
+  if (typeof bundle.isLoaded === 'function') {
+    return Boolean(bundle.isLoaded());
+  }
+  return false;
+}
+
+export function loadFramework(nameOrPath: string): boolean {
+  if (!nameOrPath) {
+    return false;
+  }
+  if (isFrameworkLoaded(nameOrPath)) {
+    return true;
+  }
+  const api = requireNativeApiHost();
+  try {
+    if (typeof api.import === 'function') {
+      api.import(nameOrPath);
+      return true;
+    }
+  } catch {
+    // Fall through to NSBundle below so callers get a false availability result.
+  }
+  const bundle = frameworkBundle(nameOrPath);
+  if (!bundle || typeof bundle.load !== 'function') {
+    return false;
+  }
+  try {
+    return Boolean(bundle.load());
+  } catch {
+    return false;
+  }
+}
+
+function resolveProtocolReference(protocolRef: NativeProtocolReference): unknown {
+  if (typeof protocolRef !== 'string') {
+    return protocolRef;
+  }
+  return (
+    (globalThis as Record<string, unknown>)[protocolRef] ??
+    getProtocol(protocolRef)
+  );
+}
+
+function wrapDelegateMethods<T extends object>(
+  methods: T,
+  thread: CreateDelegateOptions['thread'],
+): T {
+  if (!thread || thread === 'caller') {
+    return methods;
+  }
+
+  const wrapped = Object.create(Object.getPrototypeOf(methods));
+  for (const key of Reflect.ownKeys(methods)) {
+    const descriptor = Object.getOwnPropertyDescriptor(methods, key);
+    if (!descriptor) {
+      continue;
+    }
+    if ('value' in descriptor && typeof descriptor.value === 'function') {
+      descriptor.value = eventBridge(descriptor.value, thread);
+    }
+    Object.defineProperty(wrapped, key, descriptor);
+  }
+  return wrapped;
+}
+
+export function createDelegate<T extends object>(
+  protocols: NativeProtocolReference | NativeProtocolReference[],
+  methods: Partial<T>,
+  options: CreateDelegateOptions = {},
+): T {
+  const protocolList = (Array.isArray(protocols) ? protocols : [protocols])
+    .map(resolveProtocolReference)
+    .filter(Boolean);
+  if (protocolList.length === 0) {
+    throw new Error('NativeScript.createDelegate requires at least one protocol');
+  }
+
+  const DelegateClass = requireNSObject().extend(
+    wrapDelegateMethods(methods, options.thread),
+    {
+      protocols: protocolList,
+      name: options.name,
+    },
+  );
+  const delegate = DelegateClass.alloc().init() as T;
+  if (options.retainer) {
+    options.retainer.retain(delegate);
+  } else if (options.owner) {
+    options.owner.retain(delegate);
+  } else {
+    defaultNativeRetainer.retain(delegate);
+  }
+
+  const assignedObject = options.assignTo?.object as
+    | Record<string, unknown>
+    | undefined;
+  const assignedProperty = options.assignTo?.property ?? 'delegate';
+  if (assignedObject) {
+    assignedObject[assignedProperty] = delegate;
+  }
+
+  options.owner?.dispose?.(() => {
+    if (assignedObject && assignedObject[assignedProperty] === delegate) {
+      assignedObject[assignedProperty] = null;
+    }
+    options.owner?.release?.(delegate);
+    options.retainer?.release(delegate);
+    if (!options.retainer && !options.owner) {
+      defaultNativeRetainer.release(delegate);
+    }
+  });
+
+  return delegate;
+}
+
 type UIKitRuntimeContext<Props extends object> = UIKitViewContext<Props> & {
   createArgument(): UIKitCreateArgument<Props>;
   disposeResources(): void;
@@ -865,6 +1210,11 @@ type UIKitAdapterDefinition<Props extends object, NativeView> =
 
 let targetActionClass: any;
 let observerClass: any;
+const targetActionCallbacks = new WeakMap<object, (sender: unknown) => void>();
+const observerCallbacks = new WeakMap<
+  object,
+  (keyPath: string, object: unknown, change: unknown) => void
+>();
 
 function objcInteropTypes(): any {
   return (globalThis as Record<string, any>).interop?.types;
@@ -887,8 +1237,7 @@ function getTargetActionClass(): any {
   targetActionClass = NSObject.extend(
     {
       nativeScriptHandleAction(sender: unknown) {
-        const callback = (this as Record<string, unknown>)
-          .__nativeScriptActionCallback;
+        const callback = targetActionCallbacks.get(this as object);
         if (typeof callback === 'function') {
           callback(sender);
         }
@@ -924,8 +1273,7 @@ function getObserverClass(): any {
         object: unknown,
         change: unknown,
       ) {
-        const callback = (this as Record<string, unknown>)
-          .__nativeScriptObserveCallback;
+        const callback = observerCallbacks.get(this as object);
         if (typeof callback === 'function') {
           callback(keyPath, object, change);
         }
@@ -983,11 +1331,11 @@ function createUIKitContext<Props extends object>(
         return;
       }
       const target = getTargetActionClass().alloc().init();
-      target.__nativeScriptActionCallback = uiInvoker(() => {
+      targetActionCallbacks.set(target as object, uiInvoker(() => {
         if (!disposed) {
           callback();
         }
-      });
+      }));
       const selector = 'nativeScriptHandleAction:';
       const nativeControl = control as Record<string, Function>;
       if (typeof nativeControl.addTargetActionForControlEvents !== 'function') {
@@ -999,25 +1347,17 @@ function createUIKitContext<Props extends object>(
         if (typeof nativeControl.removeTargetActionForControlEvents === 'function') {
           nativeControl.removeTargetActionForControlEvents(target, selector, events);
         }
-        target.__nativeScriptActionCallback = undefined;
+        targetActionCallbacks.delete(target as object);
       });
     },
     delegate(object, protocolRef, implementation) {
-      const DelegateClass = requireNSObject().extend(implementation, {
-        protocols: [protocolRef],
-      });
-      const delegate = DelegateClass.alloc().init();
-      context.retain(delegate);
       const nativeObject = object as Record<string, unknown>;
-      if (nativeObject && 'delegate' in nativeObject) {
-        nativeObject.delegate = delegate;
-        context.dispose(() => {
-          if (nativeObject.delegate === delegate) {
-            nativeObject.delegate = null;
-          }
-        });
-      }
-      return delegate as T;
+      return createDelegate<T>([protocolRef as NativeProtocolReference], implementation, {
+        owner: context,
+        assignTo: nativeObject && 'delegate' in nativeObject
+          ? {object: nativeObject, property: 'delegate'}
+          : undefined,
+      });
     },
     notification(name, object, callback) {
       const center = (globalThis as Record<string, any>).NSNotificationCenter
@@ -1049,7 +1389,7 @@ function createUIKitContext<Props extends object>(
         throw new Error('observe expects a KVO-compatible NSObject');
       }
       const observer = getObserverClass().alloc().init();
-      observer.__nativeScriptObserveCallback = (
+      observerCallbacks.set(observer as object, (
         observedKeyPath: string,
         _observedObject: unknown,
         change: unknown,
@@ -1063,7 +1403,7 @@ function createUIKitContext<Props extends object>(
             ? (change as Record<string, Function>).objectForKey(newKey)
             : undefined;
         callback(value, change);
-      };
+      });
       const options = (globalThis as Record<string, any>).NSKeyValueObservingOptions;
       const optionNew =
         typeof options?.New === 'number'
@@ -1082,12 +1422,24 @@ function createUIKitContext<Props extends object>(
             nativeObject.removeObserverForKeyPath(observer, keyPath);
           }
         } finally {
-          observer.__nativeScriptObserveCallback = undefined;
+          observerCallbacks.delete(observer as object);
         }
       });
     },
     retain(value) {
       retained.push(value);
+      return value;
+    },
+    release(value?: unknown) {
+      if (arguments.length === 0) {
+        retained.length = 0;
+        return;
+      }
+      for (let i = retained.length - 1; i >= 0; i--) {
+        if (retained[i] === value) {
+          retained.splice(i, 1);
+        }
+      }
     },
     dispose(callback) {
       cleanupCallbacks.push(callback);
@@ -1539,9 +1891,23 @@ const NativeScript = {
   defineUIKitView,
   defineUIViewController,
   getRuntimeBackend,
+  assertUIKitThread,
+  createDelegate,
+  createEventBridge,
+  createRetainer,
+  eventBridge,
+  getClass,
+  getProtocol,
+  isClassAvailable,
+  isFrameworkLoaded,
+  isMainThread,
   jsInvoker,
+  loadFramework,
+  release,
+  retain,
   runOnUI,
   uiInvoker,
+  warnIfNotUIKitThread,
 };
 
 export default NativeScript;

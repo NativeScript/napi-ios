@@ -4,6 +4,26 @@ thread_local int gSynchronousNativeInvocationDepth = 0;
 thread_local int gNativeCallerThreadJsiCallbackDepth = 0;
 thread_local std::vector<std::string*> gNativeCallbackExceptionCaptureStack;
 std::atomic<int> gActiveSynchronousNativeInvocationDepth{0};
+static char gNativeApiJsiExtendedClassKey;
+
+void markNativeApiJsiExtendedClass(Class cls) {
+  if (cls == Nil) {
+    return;
+  }
+  objc_setAssociatedObject(cls, &gNativeApiJsiExtendedClassKey, @YES,
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
+
+bool isNativeApiJsiExtendedClass(Class cls) {
+  Class current = cls;
+  while (current != Nil) {
+    if (objc_getAssociatedObject(current, &gNativeApiJsiExtendedClassKey) != nil) {
+      return true;
+    }
+    current = class_getSuperclass(current);
+  }
+  return false;
+}
 
 class ScopedNativeApiUINativeCallDispatch final {
  public:

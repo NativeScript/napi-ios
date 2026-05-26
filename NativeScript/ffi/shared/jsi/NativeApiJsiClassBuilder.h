@@ -555,6 +555,7 @@ Value extendNativeApiJsiClass(
     throw facebook::jsi::JSError(runtime, "Failed to allocate Objective-C class.");
   }
 
+  markNativeApiJsiExtendedClass(nativeClass);
   class_addProtocol(nativeClass, @protocol(NativeApiJsiClassBuilderProtocol));
   rememberNativeApiJsiClassBuilder(runtime, bridge, nativeClass);
 

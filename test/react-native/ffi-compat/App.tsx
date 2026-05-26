@@ -22,6 +22,20 @@ type TestResult = {
   error?: string;
 };
 
+type PerformanceMetric = {
+  iterations: number;
+  ms: number;
+  nsPerOp: number;
+  maxMs?: number;
+  baselineMs?: number;
+  ratio?: number;
+};
+
+type BenchmarkOptions = {
+  maxMs?: number;
+  warmupIterations?: number;
+};
+
 type RuntimeSpec = {
   name: string;
   run: Function;
@@ -46,6 +60,8 @@ const runtimeFailureLimit = 25;
 let currentStep = 'startup';
 let lastGlobalAccess = '';
 let activeAsyncReject: ((reason?: unknown) => void) | null = null;
+let benchmarkSink = 0;
+const performanceMetrics: Record<string, PerformanceMetric> = {};
 const uikitPluginIdentifier = 'NativeScriptUIKitPluginView';
 const uikitPluginLabelTag = 101;
 
@@ -81,6 +97,119 @@ function assertEqual<T>(actual: T, expected: T, message: string) {
 function assertClose(actual: number, expected: number, message: string) {
   if (Math.abs(actual - expected) > 0.0001) {
     throw new Error(`${message}: expected ${expected}, got ${actual}`);
+  }
+}
+
+function assertThrows(callback: () => void, pattern: RegExp, message: string) {
+  try {
+    callback();
+  } catch (error) {
+    const text = error instanceof Error ? error.message : String(error);
+    if (!pattern.test(text)) {
+      throw new Error(`${message}: unexpected error ${text}`);
+    }
+    return;
+  }
+  throw new Error(`${message}: did not throw`);
+}
+
+function nowMs(): number {
+  const performanceObject = (globalThis as Record<string, any>).performance;
+  if (performanceObject && typeof performanceObject.now === 'function') {
+    return performanceObject.now();
+  }
+  return Date.now();
+}
+
+function consumeBenchmarkValue(value: unknown) {
+  let n = 0;
+  switch (typeof value) {
+    case 'number':
+      n = value | 0;
+      break;
+    case 'boolean':
+      n = value ? 1 : 0;
+      break;
+    case 'string':
+      n = value.length;
+      break;
+    case 'object':
+    case 'function':
+      n = value == null ? 0 : 1;
+      break;
+    default:
+      n = value ? 1 : 0;
+      break;
+  }
+  benchmarkSink = ((benchmarkSink << 5) - benchmarkSink + n) | 0;
+}
+
+function recordPerformance(
+  name: string,
+  iterations: number,
+  elapsedMs: number,
+  maxMs?: number,
+) {
+  const roundedMs = Math.round(elapsedMs * 1000) / 1000;
+  const nsPerOp = Math.round((elapsedMs * 1000000 / iterations) * 10) / 10;
+  const metric: PerformanceMetric = {
+    iterations,
+    ms: roundedMs,
+    nsPerOp,
+  };
+  if (maxMs !== undefined) {
+    metric.maxMs = maxMs;
+  }
+  performanceMetrics[name] = metric;
+  if (maxMs !== undefined && elapsedMs > maxMs) {
+    throw new Error(
+      `${name} was too slow: ${roundedMs}ms for ${iterations} iterations (${nsPerOp} ns/op), max ${maxMs}ms`,
+    );
+  }
+  return metric;
+}
+
+function benchmarkSync(
+  name: string,
+  iterations: number,
+  callback: (index: number) => unknown,
+  options: number | BenchmarkOptions = {},
+) {
+  const benchmarkOptions =
+    typeof options === 'number' ? {maxMs: options} : options;
+  const warmup = benchmarkOptions.warmupIterations ?? Math.min(1000, iterations);
+  for (let i = 0; i < warmup; i++) {
+    consumeBenchmarkValue(callback(i));
+  }
+
+  const startedAt = nowMs();
+  for (let i = 0; i < iterations; i++) {
+    consumeBenchmarkValue(callback(i));
+  }
+  const elapsedMs = nowMs() - startedAt;
+  recordPerformance(name, iterations, elapsedMs, benchmarkOptions.maxMs);
+  return elapsedMs;
+}
+
+function assertBridgeOverNative(
+  name: string,
+  bridgeMs: number,
+  nativeMs: number,
+  maxRatio: number,
+  allowanceMs: number,
+) {
+  const baselineMs = Math.round(nativeMs * 1000) / 1000;
+  const ratio = nativeMs > 0 ? bridgeMs / nativeMs : Number.POSITIVE_INFINITY;
+  const roundedRatio = Math.round(ratio * 1000) / 1000;
+  const metric = performanceMetrics[name];
+  if (metric) {
+    metric.baselineMs = baselineMs;
+    metric.ratio = roundedRatio;
+  }
+  if (bridgeMs > nativeMs * maxRatio + allowanceMs) {
+    throw new Error(
+      `${name} bridge overhead too high: ${Math.round(bridgeMs * 1000) / 1000}ms vs native ${baselineMs}ms (ratio ${roundedRatio}, max ${maxRatio} + ${allowanceMs}ms)`,
+    );
   }
 }
 
@@ -1033,6 +1162,35 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       },
     },
     {
+      name: 'invokes Objective-C subclass methods on the native caller thread',
+      run() {
+        let callbackRan = false;
+        let callbackThreadHash: string | null = null;
+        let received: string | null = null;
+        const probe = g('TNSRNDelegateProbe').new();
+        probe.value = 'delegate-background';
+        const delegate = NativeScript.createDelegate('TNSRNDelegateProbeDelegate', {
+          probeDidFireValue(_probe: unknown, value: string) {
+            callbackRan = true;
+            received = String(value);
+            callbackThreadHash = String(g('NSThread').currentThread.hash);
+          },
+        });
+        probe.delegate = delegate;
+
+        const nativeThreadHash = probe.fireOnBackground();
+
+        assert(callbackRan, 'background delegate callback did not run');
+        assertEqual(received, 'delegate-background', 'background delegate callback payload');
+        assertEqual(
+          callbackThreadHash,
+          String(nativeThreadHash),
+          'background delegate callback thread',
+        );
+        NativeScript.release(delegate);
+      },
+    },
+    {
       name: 'runs UIKit native calls through runOnUI main-thread dispatch',
       async run() {
         let mainThread = false;
@@ -1042,6 +1200,281 @@ function buildReactNativeIntegrationTests(): TestCase[] {
           assert(color, 'UIColor construction failed on UI thread');
         });
         assert(mainThread, 'runOnUI did not execute native calls on main thread');
+      },
+    },
+    {
+      name: 'exposes availability and UIKit thread helper APIs',
+      async run() {
+        assert(NativeScript.isClassAvailable('UIView'), 'UIView should be available');
+        assert(
+          !NativeScript.isClassAvailable('__NativeScriptDefinitelyMissingClass'),
+          'missing class should not be available',
+        );
+        assert(NativeScript.isFrameworkLoaded('Foundation'), 'Foundation should be loaded');
+        assert(NativeScript.loadFramework('QuickLook'), 'QuickLook should load');
+        assert(NativeScript.isClassAvailable('QLPreviewController'), 'QuickLook class missing');
+        assert(!NativeScript.isMainThread(), 'test body should start on JS thread');
+        assertThrows(
+          () => NativeScript.assertUIKitThread('expected UI thread'),
+          /expected UI thread/,
+          'assertUIKitThread outside runOnUI',
+        );
+        await NativeScript.runOnUI(() => {
+          assert(NativeScript.isMainThread(), 'runOnUI should report main thread');
+          NativeScript.assertUIKitThread();
+        });
+      },
+    },
+    {
+      name: 'retains, releases, and disposes native helper lifetimes explicitly',
+      run() {
+        const retainer = NativeScript.createRetainer();
+        const object = {label: 'retained'};
+        assertEqual(retainer.size, 0, 'initial retainer size');
+        assert(retainer.retain(object) === object, 'retain should return retained value');
+        assertEqual(retainer.size, 1, 'retainer size after retain');
+        retainer.release(object);
+        assertEqual(retainer.size, 0, 'retainer size after release');
+        retainer.retain(object);
+        retainer.dispose();
+        assertEqual(retainer.size, 0, 'retainer size after dispose');
+
+        const globalObject = NativeScript.retain(object);
+        assert(globalObject === object, 'global retain should return retained value');
+        NativeScript.release(object);
+      },
+    },
+    {
+      name: 'creates retained Objective-C delegates without native proxy state',
+      async run() {
+        let received: string | null = null;
+        const retainer = NativeScript.createRetainer();
+        const probe = g('TNSRNDelegateProbe').new();
+        probe.value = 'created-delegate';
+        const delegate = NativeScript.createDelegate(
+          'TNSRNDelegateProbeDelegate',
+          {
+            probeDidFireValue(_probe: unknown, value: string) {
+              received = String(value);
+            },
+          },
+          {
+            retainer,
+            assignTo: {object: probe, property: 'delegate'},
+          },
+        );
+        assert(delegate, 'delegate was not created');
+        assertEqual(retainer.size, 1, 'delegate was not retained');
+        await NativeScript.runOnUI(() => {
+          probe.fire();
+        });
+        assertEqual(received, 'created-delegate', 'delegate callback payload');
+        retainer.dispose();
+      },
+    },
+    {
+      name: 'rejects arbitrary JavaScript state on native proxies with guidance',
+      async run() {
+        await NativeScript.runOnUI(() => {
+          const view = g('UIView').new();
+          assertThrows(
+            () => {
+              view.__nativeScriptCustomState = {unsafe: true};
+            },
+            /WeakMap|native proxy/,
+            'custom native proxy property assignment',
+          );
+        });
+      },
+    },
+    {
+      name: 'constructs heavy UIKit classes close to native cold cost',
+      async run() {
+        let elapsed = 0;
+        let nativeElapsed = 0;
+        await NativeScript.runOnUI(() => {
+          const measureNative = g('TNSRNMeasureNativeUITabBarControllerNew');
+          nativeElapsed = measureNative(1, 1);
+          recordPerformance(
+            'native.uikit.UITabBarController.new.firstWithView',
+            1,
+            nativeElapsed,
+          );
+
+          const startedAt = nowMs();
+          const controller = g('UITabBarController').new();
+          elapsed = nowMs() - startedAt;
+          assert(controller?.view, 'UITabBarController view missing');
+        });
+        recordPerformance(
+          'rn.uikit.UITabBarController.new.firstWithView',
+          1,
+          elapsed,
+        );
+        assertBridgeOverNative(
+          'rn.uikit.UITabBarController.new.firstWithView',
+          elapsed,
+          nativeElapsed,
+          2.5,
+          750,
+        );
+      },
+    },
+    {
+      name: 'benchmarks React Native NativeScript hot surfaces',
+      async run() {
+        const NSObject = g('NSObject');
+        const object = NSObject.alloc().init();
+        const NSString = g('NSString');
+        const string = NSString.stringWithString('NativeScript React Native benchmark');
+
+        benchmarkSync('rn.global.NSObject.cached', 20000, () => g('NSObject'), 500);
+        benchmarkSync(
+          'rn.objc.NSObject.new',
+          10,
+          () => NSObject.new(),
+          {warmupIterations: 1},
+        );
+        benchmarkSync(
+          'rn.objc.NSObject.alloc',
+          10,
+          () => NSObject.alloc(),
+          {warmupIterations: 1},
+        );
+        benchmarkSync(
+          'rn.objc.NSObject.alloc.init',
+          10,
+          () => NSObject.alloc().init(),
+          {warmupIterations: 1},
+        );
+        benchmarkSync(
+          'rn.getClass.UIView.cached',
+          5000,
+          () => NativeScript.getClass('UIView'),
+          1500,
+        );
+        benchmarkSync(
+          'rn.objc.NSObject.respondsToSelector',
+          10000,
+          () => object.respondsToSelector('description'),
+          2000,
+        );
+        benchmarkSync(
+          'rn.objc.NSString.length',
+          10000,
+          () => string.length,
+          1500,
+        );
+
+        let delegateCallbacks = 0;
+        const probe = g('TNSRNDelegateProbe').new();
+        probe.value = 'bench';
+        const delegate = NativeScript.createDelegate('TNSRNDelegateProbeDelegate', {
+          probeDidFireValue() {
+            delegateCallbacks++;
+            return delegateCallbacks;
+          },
+        });
+        probe.delegate = delegate;
+        const delegateIterations = 2000;
+        const delegateWarmupIterations = Math.min(1000, delegateIterations);
+        benchmarkSync(
+          'rn.callback.delegate.sameThread',
+          delegateIterations,
+          () => {
+            probe.fire();
+            return delegateCallbacks;
+          },
+          2500,
+        );
+        assertEqual(
+          delegateCallbacks,
+          delegateIterations + delegateWarmupIterations,
+          'delegate benchmark callback count',
+        );
+        NativeScript.release(delegate);
+
+        await NativeScript.runOnUI(() => {
+          const UIColor = g('UIColor');
+          const measureNativeUIColor = g('TNSRNMeasureNativeUIColorFactory');
+          const iterations = 100;
+          const nativeElapsed = measureNativeUIColor(iterations);
+          recordPerformance(
+            'native.uikit.UIColor.factory.batch',
+            iterations,
+            nativeElapsed,
+          );
+
+          const startedAt = nowMs();
+          for (let i = 0; i < iterations; i++) {
+            consumeBenchmarkValue(
+              UIColor.colorWithRedGreenBlueAlpha(0.1, 0.2, 0.3, 1),
+            );
+          }
+          const bridgeElapsed = nowMs() - startedAt;
+          recordPerformance('rn.runOnUI.UIColor.factory.batch', iterations, bridgeElapsed, 1500);
+          assertBridgeOverNative(
+            'rn.runOnUI.UIColor.factory.batch',
+            bridgeElapsed,
+            nativeElapsed,
+            150,
+            50,
+          );
+        });
+
+        await NativeScript.runOnUI(() => {
+          const UITabBarController = g('UITabBarController');
+          const UIView = g('UIView');
+          const UIViewController = g('UIViewController');
+          const measureNative = g('TNSRNMeasureNativeUITabBarControllerNew');
+          benchmarkSync(
+            'rn.uikit.UIView.new',
+            10,
+            () => UIView.new(),
+            {warmupIterations: 1},
+          );
+          benchmarkSync(
+            'rn.uikit.UIViewController.new',
+            10,
+            () => UIViewController.new(),
+            {warmupIterations: 1},
+          );
+          benchmarkSync(
+            'rn.uikit.UITabBarController.alloc',
+            5,
+            () => UITabBarController.alloc(),
+            {warmupIterations: 1},
+          );
+          benchmarkSync(
+            'rn.uikit.UITabBarController.alloc.init',
+            5,
+            () => UITabBarController.alloc().init(),
+            {warmupIterations: 1},
+          );
+          const iterations = 5;
+          const nativeElapsed = measureNative(iterations, 0);
+          recordPerformance(
+            'native.uikit.UITabBarController.new.warm',
+            iterations,
+            nativeElapsed,
+          );
+
+          const startedAt = nowMs();
+          for (let i = 0; i < iterations; i++) {
+            const controller = UITabBarController.new();
+            assert(controller, 'UITabBarController benchmark instance missing');
+            consumeBenchmarkValue(controller);
+          }
+          const bridgeElapsed = nowMs() - startedAt;
+          recordPerformance('rn.uikit.UITabBarController.new.warm', iterations, bridgeElapsed);
+          assertBridgeOverNative(
+            'rn.uikit.UITabBarController.new.warm',
+            bridgeElapsed,
+            nativeElapsed,
+            1.75,
+            350,
+          );
+        });
       },
     },
     {
@@ -1413,6 +1846,8 @@ async function runCompatibilitySuite() {
     total,
     runtime: summarize(runtimeResults),
     reactNative: summarize(rnResults),
+    performance: performanceMetrics,
+    benchmarkSink,
     failures: results.filter((result) => result.status === 'fail').slice(0, 50),
     backend: NativeScript.getRuntimeBackend(),
   };

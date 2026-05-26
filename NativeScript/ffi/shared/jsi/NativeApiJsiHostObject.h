@@ -248,6 +248,26 @@ class NativeApiHostObject final : public HostObject {
             return Value::undefined();
           });
     }
+    if (property == "__rememberObjectClassWrapper") {
+      auto bridge = bridge_;
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "__rememberObjectClassWrapper"),
+          2,
+          [bridge](Runtime& runtime, const Value&, const Value* args,
+                   size_t count) -> Value {
+            if (count < 2) {
+              return Value::undefined();
+            }
+            id object = NativeApiObjectHostObject::nativeObjectFromValue(
+                runtime, args[0]);
+            if (object == nil) {
+              return Value::undefined();
+            }
+            bridge->setObjectExpando(runtime, object,
+                                     "__nativeApiClassWrapper", args[1]);
+            return Value::undefined();
+          });
+    }
     if (property == "CC_SHA256") {
       auto bridge = bridge_;
       return Function::createFromHostFunction(
@@ -449,6 +469,7 @@ class NativeApiHostObject final : public HostObject {
     addPropertyName(runtime, names, "__extendClass");
     addPropertyName(runtime, names, "__invokeBase");
     addPropertyName(runtime, names, "__rememberClassWrapper");
+    addPropertyName(runtime, names, "__rememberObjectClassWrapper");
     addPropertyName(runtime, names, "getFunction");
     addPropertyName(runtime, names, "getConstant");
     addPropertyName(runtime, names, "getEnum");

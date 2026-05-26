@@ -522,7 +522,8 @@ class NativeApiJsiCallback final
         bridge_->invokeCallbacksOnNativeCallerThread();
     bool nativeCallerThreadCallback =
         nativeCallerThreadCallbacks && !currentThreadIsJs &&
-        (block_ || (activeSynchronousNativeInvocation && !returnsVoid));
+        (block_ || bindThis_ ||
+         (activeSynchronousNativeInvocation && !returnsVoid));
     bool direct = currentThreadIsJs ||
                   gExecutingDispatchedUINativeCall ||
                   gSynchronousNativeInvocationDepth > 0 ||
@@ -1941,9 +1942,10 @@ std::shared_ptr<NativeApiJsiCallback> createJsiMethodCallback(
 
   auto signature =
       std::make_shared<NativeApiJsiSignature>(std::move(*parsed));
+  auto threadPolicy = readJsiCallbackThreadPolicy(runtime, function);
   auto callback = std::make_shared<NativeApiJsiCallback>(
       runtime, bridge, std::move(signature), std::move(function), false,
-      NativeApiJsiCallbackThreadPolicy::Default, true);
+      threadPolicy, true);
   bridge->retainJsiLifetime(callback);
   return callback;
 }
@@ -1961,9 +1963,10 @@ std::shared_ptr<NativeApiJsiCallback> createJsiMethodCallback(
 
   auto sharedSignature =
       std::make_shared<NativeApiJsiSignature>(std::move(signature));
+  auto threadPolicy = readJsiCallbackThreadPolicy(runtime, function);
   auto callback = std::make_shared<NativeApiJsiCallback>(
       runtime, bridge, std::move(sharedSignature), std::move(function), false,
-      NativeApiJsiCallbackThreadPolicy::Default, true);
+      threadPolicy, true);
   bridge->retainJsiLifetime(callback);
   return callback;
 }

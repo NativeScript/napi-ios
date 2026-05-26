@@ -27,8 +27,10 @@ await NativeScript.runOnUI(() => {
 });
 ```
 
-Obj-C blocks default to the thread that invoked the block. Wrap callbacks when
-you want an explicit thread policy:
+Obj-C blocks and JS-backed Obj-C method callbacks, including `NSObject.extend`
+subclass overrides and delegates created with `createDelegate()`, default to the
+thread that invoked them. Wrap callbacks when you want an explicit thread
+policy:
 
 ```ts
 UIView.animateWithDurationAnimationsCompletion(
@@ -41,6 +43,11 @@ UIView.animateWithDurationAnimationsCompletion(
   }),
 );
 ```
+
+Delegate, data-source, target/action, and `UIAction` callbacks are JS-side
+callbacks. Treat their bodies as JS work. If a callback can be reached from a
+background native thread and needs to mutate UIKit, wrap the mutation in
+`NativeScript.runOnUI()` or create the callback with `NativeScript.uiInvoker()`.
 
 The package also includes a Babel plugin for directive-style callbacks:
 
@@ -163,8 +170,75 @@ Context helpers cover common native view-manager patterns:
 - `ctx.notification(name, object, callback)` observes and removes notifications.
 - `ctx.observe(object, keyPath, callback)` observes and removes KVO.
 - `ctx.retain(value)` keeps native helper objects alive for the component lifetime.
+- `ctx.release(value)` releases a retained helper before component disposal.
 - `ctx.dispose(callback)` runs cleanup once, in reverse registration order.
 - `ctx.invalidateLayout()` schedules a fresh native measurement.
+
+### State, delegates, and retention
+
+Do not attach arbitrary JavaScript properties to native proxies. Native proxies
+now reject unsupported/custom assignments with a guidance error. Keep JS state in
+`WeakMap`, React state, or another external object:
+
+```ts
+const state = new WeakMap<UIView, {selected: boolean}>();
+
+NativeScript.runOnUI(() => {
+  const view = UIView.new();
+  state.set(view, {selected: false});
+});
+```
+
+UIKit often retains delegates and actions weakly or outlives the JavaScript
+closure that created them. Retain those helper objects explicitly. Use
+`ctx.retain()` inside `defineUIKitView()`, or a standalone retainer elsewhere:
+
+```ts
+const retainer = NativeScript.createRetainer();
+
+const delegate = NativeScript.createDelegate<UIScrollViewDelegate>(
+  UIScrollViewDelegate,
+  {
+    scrollViewDidScroll(scrollView) {
+      NativeScript.runOnUI(() => {
+        scrollView.indicatorStyle = UIScrollViewIndicatorStyle.White;
+      });
+    },
+  },
+  {retainer},
+);
+
+scrollView.delegate = delegate;
+
+// Later, when the owner is done:
+scrollView.delegate = null;
+retainer.dispose();
+```
+
+`createDelegate(protocols, methods, options)` accepts protocol objects or names.
+If metadata was generated before a framework was loaded, use strings with
+`NativeScript.loadFramework()` and `NativeScript.getProtocol()`:
+
+```ts
+NativeScript.loadFramework("QuickLook");
+
+const dataSource = NativeScript.createDelegate(
+  "QLPreviewControllerDataSource",
+  {
+    numberOfPreviewItemsInPreviewController() {
+      return 1;
+    },
+    previewControllerPreviewItemAtIndex() {
+      return NSURL.fileURLWithPath(path);
+    },
+  },
+  {owner: ctx},
+);
+```
+
+Use `NativeScript.retain(value)` and `NativeScript.release(value)` only for
+process-lifetime helpers. Prefer `createRetainer()` or `ctx.retain()` for
+component-scoped objects.
 
 ### Layout
 
@@ -234,6 +308,67 @@ export const NativePageHost = NativeScript.defineUIViewController({
   },
 });
 ```
+
+For modal UIKit controllers, find the top visible presenter and guard against
+double presentation:
+
+```ts
+function topVisibleViewController(root = UIApplication.sharedApplication.keyWindow?.rootViewController) {
+  let current = root;
+  while (current?.presentedViewController) {
+    current = current.presentedViewController;
+  }
+  if (current?.selectedViewController) {
+    return topVisibleViewController(current.selectedViewController);
+  }
+  if (current?.visibleViewController) {
+    return topVisibleViewController(current.visibleViewController);
+  }
+  return current;
+}
+
+await NativeScript.runOnUI(() => {
+  const presenter = topVisibleViewController();
+  if (!presenter || presenter.presentedViewController) {
+    return;
+  }
+  presenter.presentViewControllerAnimatedCompletion(controller, true, null);
+});
+```
+
+### Availability and heavy UIKit classes
+
+Use availability helpers before touching optional frameworks. Simulator and
+device availability can differ for frameworks such as VisionKit, QuickLook, and
+PassKit.
+
+```ts
+if (NativeScript.loadFramework("VisionKit") &&
+    NativeScript.isClassAvailable("VNDocumentCameraViewController")) {
+  const CameraController =
+    NativeScript.getClass<typeof VNDocumentCameraViewController>(
+      "VNDocumentCameraViewController",
+    );
+  const controller = CameraController?.new();
+}
+```
+
+`NativeScript.isFrameworkLoaded(nameOrPath)` checks an `NSBundle`;
+`NativeScript.loadFramework(nameOrPath)` loads a system framework by name or a
+specific `.framework` path; `NativeScript.getClass(name)` and
+`NativeScript.getProtocol(name)` return dynamically available native references.
+
+Class globals are lazy. Large UIKit classes such as `UITabBarController` can
+have a wide inherited surface, so avoid forcing member enumeration with broad
+reflection in hot paths. Constructing and direct property/method access stay
+lazy; `Object.keys`, prototype introspection, and generated member lists are the
+expensive path.
+
+Objective-C exceptions thrown while dispatching through the bridge are converted
+to JS errors where Objective-C can catch them. Process-level failures such as
+`abort()`, fatal assertions, memory corruption, and some framework precondition
+violations are not catchable; use availability checks and presentation guards
+instead of relying on exceptions as control flow.
 
 The package ships example definitions under `@nativescript/react-native/examples`.
 

@@ -1,7 +1,9 @@
+#include <TargetConditionals.h>
+
 typedef struct TNSOStruct {
-    int x;
-    int y;
-    int z;
+  int x;
+  int y;
+  int z;
 } TNSOStruct;
 
 void TNSFunctionWithCFTypeRefArgument(CFTypeRef x);
@@ -11,22 +13,28 @@ CFTypeRef TNSFunctionWithCreateCFTypeRefReturn() CF_RETURNS_RETAINED;
 
 typedef int (^NumberReturner)(int, int, int);
 
+#if TARGET_OS_IPHONE
+double TNSRNMeasureNativeUITabBarControllerNew(int iterations, int touchView);
+double TNSRNMeasureNativeUIColorFactory(int iterations);
+#endif
+
 @protocol TNSRNDelegateProbeDelegate <NSObject>
 - (void)probeDidFire:(id)probe value:(NSString*)value;
 @end
 
 @interface TNSRNDelegateProbe : NSObject
-@property (nonatomic, weak) id<TNSRNDelegateProbeDelegate> delegate;
-@property (nonatomic, copy) NSString* value;
+@property(nonatomic, weak) id<TNSRNDelegateProbeDelegate> delegate;
+@property(nonatomic, copy) NSString* value;
 - (void)fire;
+- (NSString*)fireOnBackground;
 @end
 
 @interface TNSRNObservableProbe : NSObject
-@property (nonatomic, copy) NSString* value;
+@property(nonatomic, copy) NSString* value;
 @end
 
 @interface TNSObjCTypes : NSObject
-@property (nonatomic, copy) void (^retainedBlock)(void);
+@property(nonatomic, copy) void (^retainedBlock)(void);
 + (void)methodWithComplexBlock:(id (^)(int, id, SEL, NSObject*, TNSOStruct))block;
 + (id)methodWithObject:(id)x;
 

@@ -262,11 +262,11 @@ class NativeApiFastEnumerationIteratorHostObject final : public HostObject {
   NativeApiFastEnumerationIteratorHostObject(
       std::shared_ptr<NativeApiJsiBridge> bridge, id<NSFastEnumeration> collection)
       : bridge_(std::move(bridge)), collection_(collection) {
-    [collection_ retain];
+    [(id)collection_ retain];
   }
 
   ~NativeApiFastEnumerationIteratorHostObject() override {
-    [collection_ release];
+    [(id)collection_ release];
     collection_ = nil;
   }
 
@@ -977,7 +977,20 @@ class NativeApiObjectHostObject final
       return;
     }
 
-    bridge_->setObjectExpando(runtime, object_, property, value);
+    if (property == "__nativeApiClassWrapper" ||
+        isNativeApiJsiExtendedClass(object_getClass(object_))) {
+      bridge_->setObjectExpando(runtime, object_, property, value);
+      return;
+    }
+
+    const char* className = object_getClassName(object_);
+    throw facebook::jsi::JSError(
+        runtime,
+        "Cannot assign JavaScript property '" + property +
+            "' to native proxy " +
+            (className != nullptr ? std::string(className) : std::string("")) +
+            ". Native proxies only accept writable native properties; keep "
+            "JavaScript state in a WeakMap or external object.");
   }
 
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override {
@@ -1131,7 +1144,7 @@ class NativeApiClassHostObject final : public HostObject {
                     runtime, "new does not take arguments; use invoke for an "
                              "explicit Objective-C selector.");
               }
-              result = [cls new];
+              result = [[cls alloc] init];
             } else {
               if (count != 0) {
                 throw facebook::jsi::JSError(
