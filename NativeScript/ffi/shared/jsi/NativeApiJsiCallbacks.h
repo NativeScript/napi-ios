@@ -426,8 +426,8 @@ class NativeApiJsiCallback final
         gActiveSynchronousNativeInvocationDepth.load(
             std::memory_order_acquire) > 0;
     bool nativeCallerThreadCallback =
-        !currentThreadIsJs && activeSynchronousNativeInvocation &&
-        (!block_ || !returnsVoid);
+        !currentThreadIsJs &&
+        (block_ || (activeSynchronousNativeInvocation && !returnsVoid));
     bool direct = currentThreadIsJs ||
                   gExecutingDispatchedUINativeCall ||
                   gSynchronousNativeInvocationDepth > 0 ||

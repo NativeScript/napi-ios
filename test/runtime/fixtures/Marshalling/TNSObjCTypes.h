@@ -21,6 +21,7 @@ typedef int (^NumberReturner)(int, int, int);
 - (void)methodWithStructOutParameter:(TNSOStruct*)value;
 
 - (void)methodWithSimpleBlock:(void (^)(void))block;
+- (NSString*)methodWithSimpleBlockOnBackground:(void (^)(NSString* callerThreadHash))block;
 - (void)methodWithComplexBlock:(id (^)(int, id, SEL, NSObject*, TNSOStruct))block;
 
 - (void)methodRetainingBlock:(void (^)(void))block;

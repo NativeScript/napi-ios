@@ -763,6 +763,32 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       },
     },
     {
+      name: 'invokes Objective-C block callbacks on the native caller thread',
+      run() {
+        let callbackRan = false;
+        let callbackThreadHash: string | null = null;
+        const nativeThreadHash = g('TNSObjCTypes')
+          .alloc()
+          .init()
+          .methodWithSimpleBlockOnBackground((callerThreadHash: string) => {
+            callbackRan = true;
+            callbackThreadHash = String(g('NSThread').currentThread.hash);
+            assertEqual(
+              callbackThreadHash,
+              String(callerThreadHash),
+              'block callback JS native calls thread',
+            );
+          });
+
+        assert(callbackRan, 'background block callback did not run');
+        assertEqual(
+          callbackThreadHash,
+          String(nativeThreadHash),
+          'background block callback return thread',
+        );
+      },
+    },
+    {
       name: 'runs UIKit native calls through runOnUI main-thread dispatch',
       async run() {
         let mainThread = false;
