@@ -38,6 +38,21 @@ export type InstallOptions = {
 };
 
 export type UIKitViewDefinition<Props extends object, NativeView = unknown> = {
+  /**
+   * Human-readable name for this UIKit view definition. This names the JS
+   * wrapper when displayName is omitted and is forwarded to the shared native
+   * host view as a debug name. It does not change the RN host component tag.
+   */
+  name?: string;
+  /**
+   * Explicit native debug name for the shared host view. Use this when the
+   * native inspector name should differ from the JS wrapper displayName.
+   */
+  debugName?: string;
+  /**
+   * React component display name. When name/debugName are omitted, this is also
+   * used as the native debug name.
+   */
   displayName?: string;
   create: (props: Readonly<Props & ViewProps>) => NativeView;
   update?: (

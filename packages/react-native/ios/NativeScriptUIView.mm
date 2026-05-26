@@ -32,6 +32,7 @@ static UIView* NativeScriptUIViewFromHandle(NSString* handle) {
   [_nativeView removeFromSuperview];
   [_nativeView release];
   [_nativeViewHandle release];
+  [_debugName release];
   [super dealloc];
 }
 
@@ -44,6 +45,28 @@ static UIView* NativeScriptUIViewFromHandle(NSString* handle) {
   [_nativeViewHandle release];
   _nativeViewHandle = [nativeViewHandle copy];
   [self setNativeView:NativeScriptUIViewFromHandle(_nativeViewHandle)];
+}
+
+- (void)setDebugName:(NSString*)debugName {
+  if ((_debugName == debugName) || [_debugName isEqualToString:debugName]) {
+    return;
+  }
+
+  [_debugName release];
+  _debugName = [debugName copy];
+}
+
+- (NSString*)description {
+  if (_debugName.length == 0) {
+    return [super description];
+  }
+
+  NSString* description = [super description];
+  if ([description hasSuffix:@">"]) {
+    return [[description substringToIndex:description.length - 1]
+        stringByAppendingFormat:@"; debugName = %@>", _debugName];
+  }
+  return [description stringByAppendingFormat:@" debugName = %@", _debugName];
 }
 
 - (void)setNativeView:(UIView*)nativeView {
