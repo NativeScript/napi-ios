@@ -361,6 +361,20 @@ Value callCFunction(Runtime& runtime,
                                   returnStorage.data());
 }
 
+bool signatureSupportedForJsiInvocation(
+    const std::optional<NativeApiJsiSignature>& signature) {
+  if (!signature || !signature->prepared || signature->variadic ||
+      unsupportedJsiType(signature->returnType)) {
+    return false;
+  }
+  for (const auto& argType : signature->argumentTypes) {
+    if (unsupportedJsiType(argType)) {
+      return false;
+    }
+  }
+  return true;
+}
+
 Value callObjCSelector(Runtime& runtime,
                        const std::shared_ptr<NativeApiJsiBridge>& bridge,
                        id receiver, bool receiverIsClass,
@@ -379,7 +393,8 @@ Value callObjCSelector(Runtime& runtime,
   Class lookupClass = dispatchSuperClass != Nil ? dispatchSuperClass : receiverClass;
   Method method = receiverIsClass ? class_getClassMethod(lookupClass, selector)
                                   : class_getInstanceMethod(lookupClass, selector);
-  if (method == nullptr) {
+  if (method == nullptr &&
+      (dispatchSuperClass != Nil || ![receiver respondsToSelector:selector])) {
     throw facebook::jsi::JSError(runtime,
                                  "Objective-C selector is not available: " +
                                      selectorName);
@@ -393,12 +408,11 @@ Value callObjCSelector(Runtime& runtime,
         bridge->metadata(), member->signatureOffset, 2, bridge.get(),
         (member->flags & metagen::mdMemberReturnOwned) != 0);
   }
-  if (!signature) {
+  if (!signatureSupportedForJsiInvocation(signature) && method != nullptr) {
     signature = parseObjCMethodJsiSignature(method, bridge.get());
   }
 
-  if (!signature || !signature->prepared || signature->variadic ||
-      unsupportedJsiType(signature->returnType)) {
+  if (!signatureSupportedForJsiInvocation(signature)) {
     throw facebook::jsi::JSError(
         runtime, "Objective-C signature is not supported by pure JSI: " +
                      selectorName);

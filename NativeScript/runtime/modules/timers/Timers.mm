@@ -229,6 +229,18 @@ bool shouldAvoidMainQueueSyncWhileHoldingHermesLock(napi_env env) {
 #endif
 }
 
+void DrainPendingJobs(napi_env env) {
+  if (env == nullptr) {
+    return;
+  }
+
+#ifdef ENABLE_JS_RUNTIME
+  js_execute_pending_jobs(env);
+#else
+  (void)env;
+#endif
+}
+
 void AddTimerToMainRunLoop(napi_env env, NSTimer* timer) {
   if (timer == nil) {
     return;
@@ -310,14 +322,17 @@ void DisposeTimerHandle(napi_env callEnv, NSTimerHandle* handle, bool invalidate
     uint32_t remaining = 0;
     napi_reference_unref(cleanupEnv, callback, &remaining);
     napi_delete_reference(cleanupEnv, callback);
-#ifdef TARGET_ENGINE_HERMES
-    js_execute_pending_jobs(cleanupEnv);
-#endif
+    DrainPendingJobs(cleanupEnv);
   }
 }
 
 void ScheduleOneShotTimerCleanup(napi_env env, NSTimerHandle* handle) {
   if (handle == nil) {
+    return;
+  }
+
+  if ([NSThread isMainThread]) {
+    DisposeTimerHandle(env, handle, false);
     return;
   }
 
@@ -429,9 +444,7 @@ JS_METHOD(Timers::SetTimeout) {
         napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
         napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
 #endif
-#ifdef TARGET_ENGINE_HERMES
-                        js_execute_pending_jobs(callbackEnv);
-#endif
+                        DrainPendingJobs(callbackEnv);
 
                         ScheduleOneShotTimerCleanup(callbackEnv, handle);
                         [handle release];
@@ -533,9 +546,7 @@ JS_METHOD(Timers::SetInterval) {
         napi_get_reference_value(callbackEnv, callbackRef, &callbackValue);
         napi_call_function(callbackEnv, global, callbackValue, 0, nullptr, nullptr);
 #endif
-#ifdef TARGET_ENGINE_HERMES
-                        js_execute_pending_jobs(callbackEnv);
-#endif
+                        DrainPendingJobs(callbackEnv);
                         [handle release];
                       }];
 

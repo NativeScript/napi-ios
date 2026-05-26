@@ -187,6 +187,32 @@ std::string jsifySelector(const char* selector) {
   return jsifiedSelector;
 }
 
+std::string booleanGetterSelectorForProperty(const std::string& property) {
+  if (property.empty()) {
+    return property;
+  }
+
+  std::string selector = "is";
+  selector += static_cast<char>(toupper(property[0]));
+  selector += property.substr(1);
+  return selector;
+}
+
+std::optional<std::string> runtimeBooleanGetterSelectorForProperty(
+    Class cls, bool staticMethod, const std::string& property) {
+  if (cls == nil || property.empty()) {
+    return std::nullopt;
+  }
+
+  std::string selectorName = booleanGetterSelectorForProperty(property);
+  SEL selector = sel_getUid(selectorName.c_str());
+  if ((!staticMethod && class_getInstanceMethod(cls, selector) != nullptr) ||
+      (staticMethod && class_getClassMethod(cls, selector) != nullptr)) {
+    return selectorName;
+  }
+  return std::nullopt;
+}
+
 std::optional<std::string> runtimeSelectorNameForProperty(
     Class cls, bool staticMethod, const std::string& property) {
   if (cls == nil || property.empty()) {
@@ -220,6 +246,11 @@ std::optional<std::string> runtimeSelectorNameForProperty(
     }
   }
 #endif
+
+  if (auto selectorName =
+          runtimeBooleanGetterSelectorForProperty(cls, staticMethod, property)) {
+    return selectorName;
+  }
 
   Class scan = staticMethod ? object_getClass(cls) : cls;
   while (scan != Nil) {

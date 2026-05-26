@@ -390,9 +390,12 @@ class NativeApiSuperHostObject final : public HostObject {
       const auto& members = bridge_->membersForClass(*symbol);
       if (const NativeApiMember* propertyMember =
               selectPropertyMember(members, property, false)) {
-        return callObjCSelector(runtime, bridge_, receiver_, false,
-                                propertyMember->selectorName, propertyMember,
-                                nullptr, 0, dispatchClass_);
+        SEL selector = sel_getUid(propertyMember->selectorName.c_str());
+        if (class_getInstanceMethod(dispatchClass_, selector) != nullptr) {
+          return callObjCSelector(runtime, bridge_, receiver_, false,
+                                  propertyMember->selectorName, propertyMember,
+                                  nullptr, 0, dispatchClass_);
+        }
       }
 
       if (selectMethodMember(members, property, false, 0) != nullptr) {
@@ -845,12 +848,21 @@ class NativeApiObjectHostObject final
         if (const NativeApiMember* propertyMember =
                 selectPropertyMember(members, property, false)) {
           SEL selector = sel_getUid(propertyMember->selectorName.c_str());
-          if (class_getInstanceMethod(object_getClass(object_), selector) ==
-              nullptr) {
-            return Value::undefined();
+          if ([object_ respondsToSelector:selector]) {
+            return callObjectSelector(runtime, propertyMember->selectorName,
+                                      propertyMember, nullptr, 0);
           }
-          return callObjectSelector(runtime, propertyMember->selectorName,
-                                    propertyMember, nullptr, 0);
+          std::string booleanSelectorName =
+              booleanGetterSelectorForProperty(property);
+          if (booleanSelectorName != propertyMember->selectorName) {
+            SEL booleanSelector = sel_getUid(booleanSelectorName.c_str());
+            if ([object_ respondsToSelector:booleanSelector]) {
+              NativeApiMember getterMember = *propertyMember;
+              getterMember.selectorName = booleanSelectorName;
+              return callObjectSelector(runtime, getterMember.selectorName,
+                                        &getterMember, nullptr, 0);
+            }
+          }
         }
 
         if (selectMethodMember(members, property, false, 0) != nullptr) {
@@ -958,7 +970,7 @@ class NativeApiObjectHostObject final
 
     std::string setterSelectorName = setterSelectorForProperty(property);
     SEL selector = sel_getUid(setterSelectorName.c_str());
-    if (class_getInstanceMethod(object_getClass(object_), selector) != nullptr) {
+    if ([object_ respondsToSelector:selector]) {
       Value args[] = {Value(runtime, value)};
       callObjCSelector(runtime, bridge_, object_, false, setterSelectorName,
                        nullptr, args, 1);
@@ -1163,12 +1175,11 @@ class NativeApiClassHostObject final : public HostObject {
             runtime, "Objective-C class is not available: " + symbol.name);
       }
       SEL selector = sel_getUid(propertyMember->selectorName.c_str());
-      if (class_getClassMethod(cls, selector) == nullptr) {
-        return Value::undefined();
+      if (class_getClassMethod(cls, selector) != nullptr) {
+        return callObjCSelector(runtime, bridge, static_cast<id>(cls), true,
+                                propertyMember->selectorName, propertyMember,
+                                nullptr, 0);
       }
-      return callObjCSelector(runtime, bridge, static_cast<id>(cls), true,
-                              propertyMember->selectorName, propertyMember,
-                              nullptr, 0);
     }
 
     if (selectMethodMember(members, property, true, 0) != nullptr) {

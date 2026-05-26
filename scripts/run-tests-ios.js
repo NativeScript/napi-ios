@@ -13,6 +13,7 @@
 //    artifacts need rebuilding. Supported: v8, hermes, quickjs, jsc. Defaults to v8.
 //  - IOS_SWIFT_VERSION overrides default Swift version (default: 5.0).
 //  - IOS_COMMAND_TIMEOUT_MS overrides timeout for build/install/simctl commands (default: 3 minutes).
+//  - IOS_SIMCTL_QUERY_TIMEOUT_MS overrides timeout for polling simctl queries (default: 10 seconds).
 //  - IOS_BUILD_TIMEOUT_MS overrides timeout for xcodebuild app build (default: IOS_COMMAND_TIMEOUT_MS).
 //  - IOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
 //  - IOS_TEST_TIMEOUT_MS overrides max test runtime (default: 10 minutes).
@@ -95,6 +96,10 @@ const commandTimeoutMs = parseTimeoutMs("IOS_COMMAND_TIMEOUT_MS", 3 * 60 * 1000)
 // Clean CI runners often need substantially longer for the first iOS build than
 // for simulator control commands like boot/install/log collection.
 const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", 10 * 60 * 1000);
+const simctlQueryTimeoutMs = parseTimeoutMs(
+    "IOS_SIMCTL_QUERY_TIMEOUT_MS",
+    Math.min(commandTimeoutMs, 10 * 1000)
+);
 const commandMaxBufferBytes = parsePositiveInt("IOS_COMMAND_MAX_BUFFER_BYTES", 64 * 1024 * 1024);
 const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 10 * 60 * 1000);
 const inactivityTimeoutMs = Number(process.env.IOS_TEST_INACTIVITY_TIMEOUT_MS || 2 * 60 * 1000);
@@ -634,13 +639,25 @@ function buildTestRunnerApp(destination, swiftVersion) {
     return { appPath, reusedBuild: canReuseBuild };
 }
 
+const appContainerPathCache = new Map();
+
 function getAppContainerPath(udid, containerType) {
-    const result = run("xcrun", ["simctl", "get_app_container", udid, bundleId, containerType]);
+    const cacheKey = `${udid}:${containerType}`;
+    if (appContainerPathCache.has(cacheKey)) {
+        return appContainerPathCache.get(cacheKey);
+    }
+
+    const result = run("xcrun", ["simctl", "get_app_container", udid, bundleId, containerType], {
+        timeout: simctlQueryTimeoutMs
+    });
     if (result.status !== 0) {
         return null;
     }
 
     const out = (result.stdout || "").trim();
+    if (out) {
+        appContainerPathCache.set(cacheKey, out);
+    }
     return out || null;
 }
 
@@ -882,7 +899,8 @@ async function waitForCompletedJunitOrLaunchExit(udid, launchProcess, timeoutMs,
 
         if (Date.now() - state.lastActivityAt >= inactivityTimeoutMs) {
             const launchPid = extractLaunchPid(state.logs);
-            if (!isAppProcessRunning(udid, launchPid)) {
+            const appRunning = isAppProcessRunning(udid, launchPid);
+            if (appRunning === false) {
                 return { junitResult: null, launchResult, timedOut: true, inactive: true };
             }
         }
@@ -1002,9 +1020,11 @@ function readJunitFileState(udid) {
 }
 
 function collectSimulatorProcessSnapshot(udid) {
-    const result = run("xcrun", ["simctl", "spawn", udid, "ps", "-axo", "pid,ppid,stat,etime,command"]);
+    const result = run("xcrun", ["simctl", "spawn", udid, "ps", "-axo", "pid,ppid,stat,etime,command"], {
+        timeout: simctlQueryTimeoutMs
+    });
     if (result.status !== 0) {
-        return "";
+        return null;
     }
 
     const lines = (result.stdout || "")
@@ -1016,6 +1036,9 @@ function collectSimulatorProcessSnapshot(udid) {
 
 function isAppProcessRunning(udid, pid) {
     const snapshot = collectSimulatorProcessSnapshot(udid);
+    if (snapshot == null) {
+        return null;
+    }
     if (!snapshot) {
         return false;
     }
