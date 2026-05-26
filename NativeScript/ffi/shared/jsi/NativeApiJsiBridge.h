@@ -2,6 +2,7 @@ thread_local bool gDispatchNativeCallsToUI = false;
 thread_local bool gExecutingDispatchedUINativeCall = false;
 thread_local int gSynchronousNativeInvocationDepth = 0;
 thread_local int gNativeCallerThreadJsiCallbackDepth = 0;
+thread_local std::vector<std::string*> gNativeCallbackExceptionCaptureStack;
 std::atomic<int> gActiveSynchronousNativeInvocationDepth{0};
 
 class ScopedNativeApiUINativeCallDispatch final {
@@ -54,14 +55,56 @@ class ScopedNativeCallerThreadJsiCallback final {
       const ScopedNativeCallerThreadJsiCallback&) = delete;
 };
 
+class ScopedNativeCallbackExceptionCapture final {
+ public:
+  explicit ScopedNativeCallbackExceptionCapture(std::string* message)
+      : message_(message) {
+    gNativeCallbackExceptionCaptureStack.push_back(message_);
+  }
+
+  ~ScopedNativeCallbackExceptionCapture() {
+    if (!gNativeCallbackExceptionCaptureStack.empty() &&
+        gNativeCallbackExceptionCaptureStack.back() == message_) {
+      gNativeCallbackExceptionCaptureStack.pop_back();
+    }
+  }
+
+  ScopedNativeCallbackExceptionCapture(
+      const ScopedNativeCallbackExceptionCapture&) = delete;
+  ScopedNativeCallbackExceptionCapture& operator=(
+      const ScopedNativeCallbackExceptionCapture&) = delete;
+
+ private:
+  std::string* message_ = nullptr;
+};
+
+bool recordNativeCallbackException(const std::string& message) {
+  if (gNativeCallbackExceptionCaptureStack.empty()) {
+    return false;
+  }
+
+  std::string* captured = gNativeCallbackExceptionCaptureStack.back();
+  if (captured == nullptr) {
+    return false;
+  }
+
+  if (captured->empty()) {
+    *captured = message;
+  }
+  return true;
+}
+
 template <typename Invocation>
 void performNativeInvocation(Runtime& runtime,
                              const std::function<void(std::function<void()>)>&
                                  invoker,
                              Invocation&& invocation) {
   NSString* exceptionDescription = nil;
+  std::string callbackException;
   auto run = [&]() {
     ScopedNativeApiSynchronousInvocation synchronousInvocation;
+    ScopedNativeCallbackExceptionCapture callbackExceptionCapture(
+        &callbackException);
     @try {
       invocation();
     } @catch (NSException* exception) {
@@ -91,6 +134,9 @@ void performNativeInvocation(Runtime& runtime,
     std::string message = exceptionDescription.UTF8String ?: "";
     [exceptionDescription release];
     throw facebook::jsi::JSError(runtime, message);
+  }
+  if (!callbackException.empty()) {
+    throw facebook::jsi::JSError(runtime, callbackException);
   }
 }
 
