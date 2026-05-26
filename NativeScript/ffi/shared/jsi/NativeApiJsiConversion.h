@@ -751,15 +751,20 @@ void convertJsiArgument(Runtime& runtime,
       if (value.isObject()) {
         Object object = value.asObject(runtime);
         void* nativePointer = nullptr;
-        if (readNativePointerProperty(runtime, object, &nativePointer)) {
-          *static_cast<void**>(target) = nativePointer;
-          break;
-        }
         if (object.isFunction(runtime)) {
+          std::string functionKind = stringPropertyOrEmpty(runtime, object, "kind");
+          if (functionKind == "block" || functionKind == "functionPointer" ||
+              functionKind == "functionReference") {
+            if (readNativePointerProperty(runtime, object, &nativePointer)) {
+              *static_cast<void**>(target) = nativePointer;
+              break;
+            }
+          }
+
           auto threadPolicy = readJsiCallbackThreadPolicy(runtime, object);
-          auto callback = createJsiCallback(
-              runtime, bridge, type, object.asFunction(runtime),
-              type.kind == metagen::mdTypeBlock, threadPolicy);
+          auto callback =
+              createJsiCallback(runtime, bridge, type, object.asFunction(runtime),
+                                type.kind == metagen::mdTypeBlock, threadPolicy);
           void* pointer = callback->functionPointer();
           if (type.kind == metagen::mdTypeBlock) {
             frame.addLifetime(callback);

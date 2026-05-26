@@ -413,15 +413,15 @@ class NativeApiJsiCallback final
     retainedBlockCopies_.push_back({blockPointer, std::move(self)});
   }
 
-  void releaseBlockCopy(const void* blockPointer) {
+  bool releaseBlockCopy(const void* blockPointer) {
     if (!block_) {
-      return;
+      return false;
     }
     std::shared_ptr<NativeApiJsiCallback> keepAlive;
     try {
       keepAlive = shared_from_this();
     } catch (const std::bad_weak_ptr&) {
-      return;
+      return false;
     }
     std::lock_guard<std::mutex> lock(retainedBlockCopiesMutex_);
     auto it = retainedBlockCopies_.end();
@@ -432,15 +432,14 @@ class NativeApiJsiCallback final
             return retained.blockPointer == blockPointer;
           });
     }
-    if (it == retainedBlockCopies_.end() && !retainedBlockCopies_.empty()) {
-      it = retainedBlockCopies_.end() - 1;
-    }
     if (it != retainedBlockCopies_.end()) {
       if (bridge_ != nullptr && it->blockPointer != nullptr) {
         bridge_->forgetRoundTripValue(it->blockPointer);
       }
       retainedBlockCopies_.erase(it);
+      return true;
     }
+    return false;
   }
 
   void invoke(void* ret, void* args[]) {
@@ -751,8 +750,11 @@ void nativeApiJsiBlockDispose(void* src) {
   if (block == nullptr || block->callback == nullptr) {
     return;
   }
-  static_cast<NativeApiJsiCallback*>(block->callback)->releaseBlockCopy(block);
-  block->callback = nullptr;
+  bool released =
+      static_cast<NativeApiJsiCallback*>(block->callback)->releaseBlockCopy(block);
+  if (released) {
+    block->callback = nullptr;
+  }
 }
 
 void nativeApiJsiCallbackTrampoline(ffi_cif*, void* ret, void* args[],

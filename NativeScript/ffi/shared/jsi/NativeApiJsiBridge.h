@@ -508,6 +508,7 @@ class NativeApiJsiBridge {
     if (native == nullptr) {
       return;
     }
+    std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
     roundTripValues_[normalizeRuntimePointer(
         reinterpret_cast<uintptr_t>(native))] =
         std::make_shared<Value>(runtime, value);
@@ -517,6 +518,7 @@ class NativeApiJsiBridge {
     if (native == nullptr) {
       return Value::undefined();
     }
+    std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
     auto it = roundTripValues_.find(
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
     if (it == roundTripValues_.end() || it->second == nullptr) {
@@ -529,6 +531,7 @@ class NativeApiJsiBridge {
     if (native == nullptr) {
       return;
     }
+    std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
     roundTripValues_.erase(
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
   }
@@ -1506,6 +1509,7 @@ class NativeApiJsiBridge {
   std::unordered_map<std::string, NativeApiSymbol> protocolSymbolsByRuntimeName_;
   std::unordered_map<uintptr_t, NativeApiSymbol> classSymbolsByRuntimePointer_;
   std::unordered_map<uintptr_t, NativeApiSymbol> protocolSymbolsByRuntimePointer_;
+  mutable std::mutex roundTripValuesMutex_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> roundTripValues_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classValues_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classPrototypes_;

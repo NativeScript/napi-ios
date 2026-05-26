@@ -108,7 +108,9 @@ void NativeApiV8LazyGlobalGetter(v8::Local<v8::Name>,
     }
     return;
   }
-  global->DefineOwnProperty(context, nameValue, result, v8::DontEnum).FromMaybe(false);
+  if (global->Delete(context, nameValue).FromMaybe(false)) {
+    global->DefineOwnProperty(context, nameValue, result, v8::DontEnum).FromMaybe(false);
+  }
   info.GetReturnValue().Set(result);
 }
 
