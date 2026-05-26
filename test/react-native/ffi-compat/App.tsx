@@ -1,6 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {SafeAreaView, ScrollView, Text} from 'react-native';
-import NativeScript, {defineUIKitView} from '@nativescript/react-native';
+import NativeScript, {
+  defineUIKitContainer,
+  defineUIKitView,
+  defineUIViewController,
+} from '@nativescript/react-native';
 import NativeScriptNativeApi from '@nativescript/react-native/src/NativeScriptNativeApi';
 
 declare const require: any;
@@ -679,6 +683,193 @@ const NativeScriptUIKitTestView = defineUIKitView<{
   },
 });
 
+function rnPlanState(): any {
+  const globalObject = globalThis as any;
+  if (!globalObject.__nativeScriptRNPlan) {
+    globalObject.__nativeScriptRNPlan = {
+      lifecycle: [],
+      disposeCalls: [],
+      switchEvents: [],
+      delegateEvents: [],
+      notificationEvents: [],
+      kvoEvents: [],
+    };
+  }
+  return globalObject.__nativeScriptRNPlan;
+}
+
+const RNPlanLifecycleProbe = defineUIKitView<{value: number}>({
+  name: 'RNPlanLifecycleProbe',
+  create(ctx) {
+    assert(g('NSThread').isMainThread, 'create did not run on main thread');
+    rnPlanState().lifecycle.push(`create:${ctx.value}`);
+    return g('UIView').new();
+  },
+  update(_view, props, _previous, ctx) {
+    assert(g('NSThread').isMainThread, 'update did not run on main thread');
+    rnPlanState().lifecycle.push(`update:${props.value}:${ctx?.name}`);
+  },
+  mounted() {
+    assert(g('NSThread').isMainThread, 'mounted did not run on main thread');
+    rnPlanState().lifecycle.push('mounted');
+  },
+  dispose() {
+    assert(g('NSThread').isMainThread, 'dispose did not run on main thread');
+    rnPlanState().lifecycle.push('dispose');
+  },
+});
+
+const RNPlanDisposeProbe = defineUIKitView<{}>({
+  name: 'RNPlanDisposeProbe',
+  create(ctx) {
+    ctx.dispose(() => rnPlanState().disposeCalls.push('first'));
+    ctx.dispose(() => rnPlanState().disposeCalls.push('second'));
+    ctx.retain({retained: true});
+    return g('UIView').new();
+  },
+  dispose() {
+    rnPlanState().disposeCalls.push('view');
+  },
+});
+
+const RNPlanSwitchProbe = defineUIKitView<{
+  value: boolean;
+  onValueChange?: (value: boolean) => void;
+}>({
+  name: 'RNPlanSwitchProbe',
+  create(ctx) {
+    const view = g('UISwitch').new();
+    ctx.targetAction(view, g('UIControlEvents').ValueChanged, () => {
+      ctx.emit('onValueChange', view.on);
+    });
+    rnPlanState().switch = view;
+    return view;
+  },
+  update(view, props) {
+    if (view.on !== props.value) {
+      view.setOnAnimated(props.value, false);
+    }
+  },
+});
+
+const RNPlanDelegateProbe = defineUIKitView<{onFire?: (value: string) => void}>({
+  name: 'RNPlanDelegateProbe',
+  create(ctx) {
+    const view = g('UIView').new();
+    const probe = g('TNSRNDelegateProbe').new();
+    probe.value = 'delegate-value';
+    ctx.delegate(probe, g('TNSRNDelegateProbeDelegate'), {
+      probeDidFireValue(_probe: unknown, value: string) {
+        ctx.emit('onFire', String(value));
+      },
+    });
+    rnPlanState().delegateProbe = probe;
+    return view;
+  },
+});
+
+const RNPlanNotificationProbe = defineUIKitView<{
+  onNotification?: (value: string) => void;
+}>({
+  name: 'RNPlanNotificationProbe',
+  create(ctx) {
+    const view = g('UIView').new();
+    ctx.notification('TNSRNProbeNotification', null, (notification: any) => {
+      ctx.emit('onNotification', String(notification.name));
+    });
+    return view;
+  },
+});
+
+const RNPlanKVOProbe = defineUIKitView<{onTextObserved?: (value: string) => void}>({
+  name: 'RNPlanKVOProbe',
+  create(ctx) {
+    const view = g('UIView').new();
+    const observed = g('TNSRNObservableProbe').new();
+    observed.value = 'initial';
+    ctx.observe(observed, 'value', (value) => {
+      ctx.emit('onTextObserved', String(value));
+    });
+    rnPlanState().observedProbe = observed;
+    return view;
+  },
+});
+
+const RNPlanIntrinsicLabel = defineUIKitView<{text: string}>({
+  name: 'RNPlanIntrinsicLabel',
+  layout: {
+    sizing: 'intrinsic',
+    defaultSize: {width: 1, height: 1},
+  },
+  create() {
+    const label = g('UILabel').new();
+    rnPlanState().intrinsicLabel = label;
+    return label;
+  },
+  update(label, props, _previous, ctx) {
+    label.text = props.text;
+    ctx?.invalidateLayout();
+  },
+});
+
+const RNPlanSizeThatFitsLabel = defineUIKitView<{text: string}>({
+  name: 'RNPlanSizeThatFitsLabel',
+  layout: {
+    sizing: 'sizeThatFits',
+    defaultSize: {width: 1, height: 1},
+  },
+  create() {
+    return g('UILabel').new();
+  },
+  update(label, props, _previous, ctx) {
+    label.text = props.text;
+    ctx?.invalidateLayout();
+  },
+});
+
+const RNPlanAutoLayoutLabel = defineUIKitView<{text: string}>({
+  name: 'RNPlanAutoLayoutLabel',
+  layout: {
+    sizing: 'autoLayout',
+    defaultSize: {width: 1, height: 1},
+  },
+  create() {
+    const label = g('UILabel').new();
+    label.translatesAutoresizingMaskIntoConstraints = false;
+    return label;
+  },
+  update(label, props, _previous, ctx) {
+    label.text = props.text;
+    ctx?.invalidateLayout();
+  },
+});
+
+const RNPlanContainer = defineUIKitContainer<{}>({
+  name: 'RNPlanContainer',
+  create() {
+    const rootView = g('UIView').new();
+    const childrenView = g('UIView').new();
+    childrenView.accessibilityIdentifier = 'RNPlanContainerChildren';
+    childrenView.frame = rootView.bounds;
+    childrenView.autoresizingMask =
+      g('UIViewAutoresizing').FlexibleWidth |
+      g('UIViewAutoresizing').FlexibleHeight;
+    rootView.addSubview(childrenView);
+    rnPlanState().container = {rootView, childrenView};
+    return {rootView, childrenView};
+  },
+});
+
+const RNPlanViewControllerHost = defineUIViewController<{}>({
+  name: 'RNPlanViewControllerHost',
+  createController() {
+    const controller = g('UIViewController').new();
+    controller.view.backgroundColor = g('UIColor').clearColor;
+    rnPlanState().controller = controller;
+    return controller;
+  },
+});
+
 function buildReactNativeIntegrationTests(): TestCase[] {
   return [
     {
@@ -902,6 +1093,179 @@ function buildReactNativeIntegrationTests(): TestCase[] {
         });
       },
     },
+    {
+      name: 'runs defineUIKitView lifecycle callbacks on the main thread',
+      async run() {
+        await waitFor(
+          () =>
+            rnPlanState().lifecycle.includes('mounted') &&
+            rnPlanState().lifecycle.some((entry: string) => entry.startsWith('update:1')),
+          'RN plan lifecycle probe did not mount',
+        );
+        const setValue = (globalThis as any).__setRNPlanLifecycleValue;
+        assert(typeof setValue === 'function', 'RN plan lifecycle setter missing');
+        setValue(2);
+        await waitFor(
+          () =>
+            rnPlanState().lifecycle.some((entry: string) => entry.startsWith('update:2')),
+          'RN plan lifecycle probe did not update',
+        );
+      },
+    },
+    {
+      name: 'delivers ctx.targetAction events to React Native JavaScript',
+      async run() {
+        await waitFor(() => rnPlanState().switch?.window, 'switch probe was not mounted');
+        await NativeScript.runOnUI(() => {
+          const view = rnPlanState().switch;
+          view.setOnAnimated(true, false);
+          view.sendActionsForControlEvents(g('UIControlEvents').ValueChanged);
+        });
+        await waitFor(
+          () => rnPlanState().switchEvents[0] === true,
+          'switch target/action did not emit',
+        );
+      },
+    },
+    {
+      name: 'delivers ctx.delegate callbacks and retains delegate lifetime',
+      async run() {
+        await waitFor(
+          () => rnPlanState().delegateProbe,
+          'delegate probe was not mounted',
+        );
+        await NativeScript.runOnUI(() => {
+          rnPlanState().delegateProbe.fire();
+        });
+        await waitFor(
+          () => rnPlanState().delegateEvents[0] === 'delegate-value',
+          'delegate callback did not emit',
+        );
+      },
+    },
+    {
+      name: 'delivers ctx.notification and ctx.observe events',
+      async run() {
+        await waitFor(
+          () => rnPlanState().observedProbe,
+          'KVO probe was not mounted',
+        );
+        await NativeScript.runOnUI(() => {
+          g('NSNotificationCenter').defaultCenter.postNotificationNameObject(
+            'TNSRNProbeNotification',
+            null,
+          );
+          rnPlanState().observedProbe.value = 'changed';
+        });
+        await waitFor(
+          () => rnPlanState().notificationEvents[0] === 'TNSRNProbeNotification',
+          'notification helper did not emit',
+        );
+        await waitFor(
+          () => rnPlanState().kvoEvents[0] === 'changed',
+          'KVO helper did not emit',
+        );
+      },
+    },
+    {
+      name: 'measures intrinsic, sizeThatFits, and Auto Layout UIKit views',
+      async run() {
+        const intrinsicRef = (globalThis as any).__rnPlanIntrinsicRef;
+        const sizeThatFitsRef = (globalThis as any).__rnPlanSizeThatFitsRef;
+        const autoLayoutRef = (globalThis as any).__rnPlanAutoLayoutRef;
+        await waitFor(
+          () =>
+            intrinsicRef?.current?.nativeView &&
+            sizeThatFitsRef?.current?.nativeView &&
+            autoLayoutRef?.current?.nativeView,
+          'measurement refs were not mounted',
+        );
+        const intrinsic = await intrinsicRef.current.measureNative();
+        const sizeThatFits = await sizeThatFitsRef.current.measureNative();
+        const autoLayout = await autoLayoutRef.current.measureNative();
+        assert(intrinsic.width > 1 && intrinsic.height > 1, 'intrinsic measurement failed');
+        assert(sizeThatFits.width > 1 && sizeThatFits.height > 1, 'sizeThatFits failed');
+        assert(autoLayout.width > 0 && autoLayout.height > 0, 'autoLayout measurement failed');
+      },
+    },
+    {
+      name: 'mounts React Native children inside a UIKit container',
+      async run() {
+        await waitForAsync(
+          async () => {
+            let mounted = false;
+            await NativeScript.runOnUI(() => {
+              const container = rnPlanState().container;
+              mounted = Boolean(
+                container?.rootView?.superview &&
+                  container?.childrenView?.superview === container.rootView &&
+                  container?.childrenView?.subviews?.count > 0,
+              );
+            });
+            return mounted;
+          },
+          'UIKit container children did not mount',
+        );
+      },
+    },
+    {
+      name: 'hosts UIViewController instances with balanced containment',
+      async run() {
+        await waitForAsync(
+          async () => {
+            let attached = false;
+            await NativeScript.runOnUI(() => {
+              const controller = rnPlanState().controller;
+              attached = Boolean(
+                controller?.parentViewController &&
+                  controller?.view?.superview,
+              );
+            });
+            return attached;
+          },
+          'UIViewController was not attached to a parent',
+        );
+      },
+    },
+    {
+      name: 'cleans context resources in reverse order on unmount',
+      async run() {
+        const state = rnPlanState();
+        const counts = {
+          switchEvents: state.switchEvents.length,
+          delegateEvents: state.delegateEvents.length,
+          notificationEvents: state.notificationEvents.length,
+          kvoEvents: state.kvoEvents.length,
+        };
+        const setShow = (globalThis as any).__setRNPlanVisible;
+        assert(typeof setShow === 'function', 'RN plan visibility setter missing');
+        setShow(false);
+        await waitFor(
+          () => state.disposeCalls.join(',') === 'view,second,first',
+          `dispose order mismatch: ${state.disposeCalls.join(',')}`,
+        );
+        await NativeScript.runOnUI(() => {
+          state.switch?.sendActionsForControlEvents(g('UIControlEvents').ValueChanged);
+          state.delegateProbe?.fire();
+          g('NSNotificationCenter').defaultCenter.postNotificationNameObject(
+            'TNSRNProbeNotification',
+            null,
+          );
+          if (state.observedProbe) {
+            state.observedProbe.value = 'after-unmount';
+          }
+        });
+        await new Promise((resolve) => setTimeout(resolve, 200));
+        assertEqual(state.switchEvents.length, counts.switchEvents, 'targetAction after unmount');
+        assertEqual(state.delegateEvents.length, counts.delegateEvents, 'delegate after unmount');
+        assertEqual(
+          state.notificationEvents.length,
+          counts.notificationEvents,
+          'notification after unmount',
+        );
+        assertEqual(state.kvoEvents.length, counts.kvoEvents, 'KVO after unmount');
+      },
+    },
   ];
 }
 
@@ -1027,10 +1391,20 @@ export default function App(): React.JSX.Element {
   const [text, setText] = useState('Running NativeScript RN FFI compatibility tests...');
   const [uikitTitle, setUIKitTitle] = useState('Initial UIKit title');
   const [uikitTint, setUIKitTint] = useState<'blue' | 'green'>('blue');
+  const [rnPlanVisible, setRNPlanVisible] = useState(true);
+  const [rnPlanLifecycleValue, setRNPlanLifecycleValue] = useState(1);
+  const intrinsicRef = useRef<any>(null);
+  const sizeThatFitsRef = useRef<any>(null);
+  const autoLayoutRef = useRef<any>(null);
 
   useEffect(() => {
     (globalThis as any).__setNativeScriptUIKitTitle = setUIKitTitle;
     (globalThis as any).__setNativeScriptUIKitTint = setUIKitTint;
+    (globalThis as any).__setRNPlanVisible = setRNPlanVisible;
+    (globalThis as any).__setRNPlanLifecycleValue = setRNPlanLifecycleValue;
+    (globalThis as any).__rnPlanIntrinsicRef = intrinsicRef;
+    (globalThis as any).__rnPlanSizeThatFitsRef = sizeThatFitsRef;
+    (globalThis as any).__rnPlanAutoLayoutRef = autoLayoutRef;
     runCompatibilitySuite()
       .then((payload) => setText(JSON.stringify(payload, null, 2)))
       .catch((error) => {
@@ -1047,6 +1421,51 @@ export default function App(): React.JSX.Element {
           tint={uikitTint}
           style={{height: 48, marginTop: 12}}
         />
+        {rnPlanVisible ? (
+          <>
+            <RNPlanLifecycleProbe
+              value={rnPlanLifecycleValue}
+              style={{height: 12}}
+            />
+            <RNPlanDisposeProbe style={{height: 12}} />
+            <RNPlanSwitchProbe
+              value={false}
+              onValueChange={(value) => rnPlanState().switchEvents.push(value)}
+              style={{height: 40}}
+            />
+            <RNPlanDelegateProbe
+              onFire={(value) => rnPlanState().delegateEvents.push(value)}
+              style={{height: 12}}
+            />
+            <RNPlanNotificationProbe
+              onNotification={(value) => rnPlanState().notificationEvents.push(value)}
+              style={{height: 12}}
+            />
+            <RNPlanKVOProbe
+              onTextObserved={(value) => rnPlanState().kvoEvents.push(value)}
+              style={{height: 12}}
+            />
+            <RNPlanIntrinsicLabel
+              ref={intrinsicRef}
+              text="Intrinsic NativeScript label"
+              style={{marginTop: 12}}
+            />
+            <RNPlanSizeThatFitsLabel
+              ref={sizeThatFitsRef}
+              text="Size that fits NativeScript label"
+              style={{marginTop: 12}}
+            />
+            <RNPlanAutoLayoutLabel
+              ref={autoLayoutRef}
+              text="Auto Layout NativeScript label"
+              style={{marginTop: 12}}
+            />
+            <RNPlanContainer style={{height: 48, marginTop: 12}}>
+              <Text>RN child inside UIKit container</Text>
+            </RNPlanContainer>
+            <RNPlanViewControllerHost style={{height: 24, marginTop: 12}} />
+          </>
+        ) : null}
       </ScrollView>
     </SafeAreaView>
   );

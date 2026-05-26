@@ -11,6 +11,20 @@ CFTypeRef TNSFunctionWithCreateCFTypeRefReturn() CF_RETURNS_RETAINED;
 
 typedef int (^NumberReturner)(int, int, int);
 
+@protocol TNSRNDelegateProbeDelegate <NSObject>
+- (void)probeDidFire:(id)probe value:(NSString*)value;
+@end
+
+@interface TNSRNDelegateProbe : NSObject
+@property (nonatomic, weak) id<TNSRNDelegateProbeDelegate> delegate;
+@property (nonatomic, copy) NSString* value;
+- (void)fire;
+@end
+
+@interface TNSRNObservableProbe : NSObject
+@property (nonatomic, copy) NSString* value;
+@end
+
 @interface TNSObjCTypes : NSObject
 @property (nonatomic, copy) void (^retainedBlock)(void);
 + (void)methodWithComplexBlock:(id (^)(int, id, SEL, NSObject*, TNSOStruct))block;

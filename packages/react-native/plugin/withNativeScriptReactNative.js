@@ -9,15 +9,29 @@ const DEFAULTS = {
 };
 
 const BABEL_PLUGIN = '@nativescript/react-native/babel-plugin';
+const METADATA_CONFIG_FILE = 'nativescript.react-native.json';
 
 function readBoolean(value, fallback) {
   return typeof value === 'boolean' ? value : fallback;
+}
+
+function normalizeMetadataOptions(options = {}) {
+  const metadata = options.metadata || {};
+  return {
+    includePods: Array.isArray(metadata.includePods)
+      ? metadata.includePods.filter((value) => typeof value === 'string')
+      : [],
+    includeSystemFrameworks: Array.isArray(metadata.includeSystemFrameworks)
+      ? metadata.includeSystemFrameworks.filter((value) => typeof value === 'string')
+      : [],
+  };
 }
 
 function normalizeOptions(options = {}) {
   const ios = options.ios || {};
   return {
     babelPlugin: readBoolean(options.babelPlugin, DEFAULTS.babelPlugin),
+    metadata: normalizeMetadataOptions(options),
     ios: {
       hermes: readBoolean(
         ios.hermes,
@@ -29,6 +43,33 @@ function normalizeOptions(options = {}) {
       ),
     },
   };
+}
+
+function ensureMetadataConfig(projectRoot, metadataOptions) {
+  const fs = require('fs');
+  const path = require('path');
+  const configPath = path.join(projectRoot, METADATA_CONFIG_FILE);
+  let existing = {};
+  if (fs.existsSync(configPath)) {
+    try {
+      existing = JSON.parse(fs.readFileSync(configPath, 'utf8'));
+    } catch (error) {
+      existing = {};
+    }
+  }
+
+  const merged = {
+    ...existing,
+    reactNative: {
+      ...(existing.reactNative || {}),
+      metadata: metadataOptions,
+    },
+  };
+  const nextSource = `${JSON.stringify(merged, null, 2)}\n`;
+  if (!fs.existsSync(configPath) || fs.readFileSync(configPath, 'utf8') !== nextSource) {
+    fs.writeFileSync(configPath, nextSource);
+  }
+  return merged;
 }
 
 function ensureBabelPlugin(projectRoot) {
@@ -104,6 +145,23 @@ function withNativeScriptBabelPlugin(config) {
   ]);
 }
 
+function withNativeScriptMetadata(config, metadataOptions) {
+  let withDangerousMod;
+  try {
+    ({withDangerousMod} = require('expo/config-plugins'));
+  } catch (error) {
+    return config;
+  }
+
+  return withDangerousMod(config, [
+    'ios',
+    async (modConfig) => {
+      ensureMetadataConfig(modConfig.modRequest.projectRoot, metadataOptions);
+      return modConfig;
+    },
+  ]);
+}
+
 function withNativeScriptReactNative(config, options) {
   const normalized = normalizeOptions(options);
 
@@ -123,6 +181,7 @@ function withNativeScriptReactNative(config, options) {
   if (normalized.babelPlugin) {
     config = withNativeScriptBabelPlugin(config);
   }
+  config = withNativeScriptMetadata(config, normalized.metadata);
 
   return config;
 }
@@ -131,4 +190,6 @@ module.exports = withNativeScriptReactNative;
 module.exports.default = withNativeScriptReactNative;
 module.exports.withNativeScriptReactNative = withNativeScriptReactNative;
 module.exports.ensureBabelPlugin = ensureBabelPlugin;
+module.exports.ensureMetadataConfig = ensureMetadataConfig;
+module.exports.normalizeMetadataOptions = normalizeMetadataOptions;
 module.exports.pkg = pkg;

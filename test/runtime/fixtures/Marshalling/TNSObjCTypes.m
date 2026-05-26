@@ -13,6 +13,18 @@ CFTypeRef TNSFunctionWithCreateCFTypeRefReturn() {
     return CFStringCreateWithCString(kCFAllocatorDefault, "test", kCFStringEncodingUTF8);
 }
 
+@implementation TNSRNDelegateProbe
+
+- (void)fire {
+    NSString* value = self.value ?: @"delegate";
+    [self.delegate probeDidFire:self value:value];
+}
+
+@end
+
+@implementation TNSRNObservableProbe
+@end
+
 @implementation TNSObjCTypes
 + (void)methodWithComplexBlock:(id (^)(int, id, SEL, NSObject*, TNSOStruct))block {
     TNSOStruct str = { 5, 6, 7 };

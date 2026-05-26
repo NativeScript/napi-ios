@@ -46,11 +46,25 @@ using namespace facebook::react;
   return [description stringByAppendingFormat:@" debugName = %@", _debugName];
 }
 
+- (void)mountChildComponentView:(UIView<RCTComponentViewProtocol>*)childComponentView
+                          index:(NSInteger)index {
+  [_containerView insertSubview:childComponentView atIndex:index];
+}
+
+- (void)unmountChildComponentView:(UIView<RCTComponentViewProtocol>*)childComponentView
+                            index:(NSInteger)index {
+  [childComponentView removeFromSuperview];
+}
+
 - (void)updateProps:(Props::Shared const&)props oldProps:(Props::Shared const&)oldProps {
   const auto oldViewProps = std::static_pointer_cast<const NativeScriptUIViewProps>(_props);
   const auto newViewProps = std::static_pointer_cast<const NativeScriptUIViewProps>(props);
   const std::string oldNativeViewHandle = oldViewProps->nativeViewHandle;
   const std::string newNativeViewHandle = newViewProps->nativeViewHandle;
+  const std::string oldChildrenViewHandle = oldViewProps->childrenViewHandle;
+  const std::string newChildrenViewHandle = newViewProps->childrenViewHandle;
+  const std::string oldControllerHandle = oldViewProps->controllerHandle;
+  const std::string newControllerHandle = newViewProps->controllerHandle;
   const std::string oldDebugName = oldViewProps->debugName;
   const std::string newDebugName = newViewProps->debugName;
 
@@ -70,6 +84,22 @@ using namespace facebook::react;
                                      : [NSString stringWithUTF8String:newNativeViewHandle.c_str()];
     _containerView.nativeViewHandle = nativeViewHandle;
   }
+
+  if (oldChildrenViewHandle != newChildrenViewHandle) {
+    NSString* childrenViewHandle =
+        newChildrenViewHandle.empty()
+            ? nil
+            : [NSString stringWithUTF8String:newChildrenViewHandle.c_str()];
+    _containerView.childrenViewHandle = childrenViewHandle;
+  }
+
+  if (oldControllerHandle != newControllerHandle) {
+    NSString* controllerHandle =
+        newControllerHandle.empty()
+            ? nil
+            : [NSString stringWithUTF8String:newControllerHandle.c_str()];
+    _containerView.controllerHandle = controllerHandle;
+  }
 }
 
 - (void)prepareForRecycle {
@@ -78,6 +108,8 @@ using namespace facebook::react;
   _debugName = nil;
   _containerView.debugName = nil;
   _containerView.nativeViewHandle = nil;
+  _containerView.childrenViewHandle = nil;
+  _containerView.controllerHandle = nil;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider {

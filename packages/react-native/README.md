@@ -112,6 +112,9 @@ const badgeRef = useRef<UIKitViewRef<UIView>>(null);
 await badgeRef.current?.runOnUI((view) => {
   view.alpha = 0.8;
 });
+
+const measured = await badgeRef.current?.measureNative();
+badgeRef.current?.invalidateNativeLayout();
 ```
 
 React Native view props such as `style`, `testID`, accessibility props, responder
@@ -121,6 +124,118 @@ the RN host. The `name` option is forwarded to the shared native host view as a
 debug name, so native view descriptions can show `NativeScriptUIView` with your
 definition name. It does not dynamically change the registered RN host component
 tag.
+
+### Lifecycle and context
+
+`create`, `update`, `mounted`, and `dispose` run through the UIKit path. You do
+not need to wrap UIKit work in `runOnUI()` inside those callbacks.
+
+The first argument to `create` is also the current props object, so existing
+`create(props)` definitions keep working. New code can use the context helpers:
+
+```tsx
+export const NativeSwitch = NativeScript.defineUIKitView<
+  {value: boolean; onValueChange?: (value: boolean) => void},
+  UISwitch
+>({
+  name: "NativeSwitch",
+  layout: {sizing: "intrinsic"},
+  create(ctx) {
+    const view = UISwitch.new();
+    ctx.targetAction(view, UIControlEvents.ValueChanged, () => {
+      ctx.emit("onValueChange", view.on);
+    });
+    return view;
+  },
+  update(view, props) {
+    if (view.on !== props.value) {
+      view.setOnAnimated(props.value, false);
+    }
+  },
+});
+```
+
+Context helpers cover common native view-manager patterns:
+
+- `ctx.emit(name, payload)` asynchronously calls the matching React prop.
+- `ctx.targetAction(control, events, callback)` retains and removes a target/action helper.
+- `ctx.delegate(object, protocol, implementation)` creates, assigns, and retains a delegate.
+- `ctx.notification(name, object, callback)` observes and removes notifications.
+- `ctx.observe(object, keyPath, callback)` observes and removes KVO.
+- `ctx.retain(value)` keeps native helper objects alive for the component lifetime.
+- `ctx.dispose(callback)` runs cleanup once, in reverse registration order.
+- `ctx.invalidateLayout()` schedules a fresh native measurement.
+
+### Layout
+
+React Native owns placement through Yoga. UIKit owns native behavior inside the
+placed rectangle. Use `layout.sizing` to opt into native measurement:
+
+- `fill`: fill the RN host bounds.
+- `intrinsic`: use `intrinsicContentSize`.
+- `sizeThatFits`: use `sizeThatFits` with style constraints.
+- `autoLayout`: use `systemLayoutSizeFittingSize`.
+
+Use `defaultSize`, `minSize`, and `maxSize` when a native view can report zero
+or needs bounds during the first layout pass.
+
+```tsx
+const NativeTitle = NativeScript.defineUIKitView<{text: string}, UILabel>({
+  name: "NativeTitle",
+  layout: {
+    sizing: "intrinsic",
+    defaultSize: {width: 1, height: 1},
+  },
+  create() {
+    return UILabel.new();
+  },
+  update(label, props, _previous, ctx) {
+    label.text = props.text;
+    ctx?.invalidateLayout();
+  },
+});
+```
+
+### Containers and view controllers
+
+Use `defineUIKitContainer()` when React Native children should mount inside a
+UIKit-owned content view:
+
+```tsx
+export const BlurCard = NativeScript.defineUIKitContainer({
+  name: "BlurCard",
+  create() {
+    const rootView = UIVisualEffectView.alloc().initWithEffect(
+      UIBlurEffect.effectWithStyle(UIBlurEffectStyle.SystemMaterial),
+    );
+    return {
+      rootView,
+      childrenView: rootView.contentView,
+    };
+  },
+});
+
+<BlurCard style={{padding: 16}}>
+  <Text>React Native child content</Text>
+</BlurCard>;
+```
+
+Use `defineUIViewController()` for APIs that require real child view-controller
+containment:
+
+```tsx
+export const NativePageHost = NativeScript.defineUIViewController({
+  name: "NativePageHost",
+  createController() {
+    return UIViewController.new();
+  },
+  update(controller) {
+    controller.view.backgroundColor = UIColor.systemBackgroundColor;
+  },
+});
+```
+
+The package ships example definitions under `@nativescript/react-native/examples`.
 
 The published package includes generated NativeScript metadata, the libffi
 xcframework, and generated iOS SDK TypeScript declarations. Build it from the
@@ -239,3 +354,41 @@ Expo development build, EAS Build, or `npx expo run:ios`.
 
 Set `{ "babelPlugin": false }` in the config plugin options if you prefer to add
 the Babel plugin manually.
+
+The plugin also writes `nativescript.react-native.json` so metadata options are
+visible to native builds. You can pass metadata inputs when the app uses
+Objective-C-visible pods or extra system frameworks:
+
+```json
+{
+  "expo": {
+    "plugins": [
+      [
+        "@nativescript/react-native",
+        {
+          "metadata": {
+            "includePods": ["SomeObjCSDK"],
+            "includeSystemFrameworks": ["UIKit", "MapKit", "WebKit"]
+          }
+        }
+      ]
+    ]
+  }
+}
+```
+
+## Bare React Native setup helper
+
+The tarball includes a small CLI for bare RN projects:
+
+```sh
+npx nativescript-rn configure
+npx nativescript-rn generate-metadata --check
+cd ios
+RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 pod install
+```
+
+`configure` adds the bundled Babel plugin when missing, writes
+`nativescript.react-native.json`, and warns when the app is not configured for
+Hermes and the New Architecture. The command is intentionally conservative and
+does not make destructive native project edits.

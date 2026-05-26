@@ -11,6 +11,7 @@ import type {
   RefAttributes,
 } from 'react';
 import type {ViewProps} from 'react-native';
+import {StyleSheet} from 'react-native';
 import NativeScriptNativeApi from './NativeScriptNativeApi';
 import NativeScriptUIViewNativeComponent from './NativeScriptUIViewNativeComponent';
 
@@ -35,18 +36,75 @@ export type InstallOptions = {
   globals?: boolean;
 };
 
+export type UIKitSizingMode = 'fill' | 'intrinsic' | 'sizeThatFits' | 'autoLayout';
+
+export type UIKitLayoutOptions = {
+  sizing?: UIKitSizingMode;
+  defaultSize?: {width?: number; height?: number};
+  minSize?: {width?: number; height?: number};
+  maxSize?: {width?: number; height?: number};
+};
+
+export type UIKitViewContext<Props extends object> = {
+  readonly name: string;
+  readonly tag: number | null;
+  readonly props: Readonly<Props>;
+  emit<K extends keyof Props>(
+    eventName: K,
+    payload?: Props[K] extends ((arg: infer Payload) => unknown) | undefined
+      ? Payload
+      : unknown,
+  ): void;
+  targetAction(
+    control: unknown,
+    events: unknown,
+    callback: () => void,
+  ): void;
+  delegate<T extends object>(
+    object: unknown,
+    protocolRef: unknown,
+    implementation: Partial<T>,
+  ): T;
+  notification(
+    name: string,
+    object: unknown | null,
+    callback: (notification: unknown) => void,
+  ): void;
+  observe(
+    object: unknown,
+    keyPath: string,
+    callback: (value: unknown, change: unknown) => void,
+  ): void;
+  retain(value: unknown): void;
+  dispose(callback: () => void): void;
+  invalidateLayout(): void;
+};
+
+type UIKitCreateArgument<Props extends object> =
+  UIKitViewContext<Props> & Readonly<Props>;
+
 export type UIKitViewDefinition<Props extends object, NativeView = unknown> = {
   name?: string;
   debugName?: string;
   displayName?: string;
-  create: (props: Readonly<Props & ViewProps>) => NativeView;
+  layout?: UIKitLayoutOptions;
+  create: (ctx: UIKitCreateArgument<Props & ViewProps>) => NativeView;
   update?: (
     view: NativeView,
     props: Readonly<Props & ViewProps>,
     previousProps?: Readonly<Props & ViewProps>,
+    ctx?: UIKitViewContext<Props & ViewProps>,
   ) => void;
-  mounted?: (view: NativeView, props: Readonly<Props & ViewProps>) => void;
-  dispose?: (view: NativeView, props: Readonly<Props & ViewProps>) => void;
+  mounted?: (
+    view: NativeView,
+    props: Readonly<Props & ViewProps>,
+    ctx?: UIKitViewContext<Props & ViewProps>,
+  ) => void;
+  dispose?: (
+    view: NativeView,
+    props: Readonly<Props & ViewProps>,
+    ctx?: UIKitViewContext<Props & ViewProps>,
+  ) => void;
   nativeProps?: (
     props: Readonly<Props & ViewProps>,
   ) => Partial<ViewProps> | undefined;
@@ -54,13 +112,62 @@ export type UIKitViewDefinition<Props extends object, NativeView = unknown> = {
 
 export type UIKitViewRef<NativeView = unknown> = {
   readonly nativeView: NativeView | null;
-  runOnUI: (callback: (view: NativeView) => void) => Promise<void>;
+  runOnUI: <T>(callback: (view: NativeView) => T) => Promise<T>;
+  measureNative: () => Promise<{width: number; height: number}>;
+  invalidateNativeLayout: () => void;
 };
 
 export type UIKitViewComponent<Props extends object, NativeView = unknown> =
   ForwardRefExoticComponent<
     PropsWithoutRef<Props & ViewProps> & RefAttributes<UIKitViewRef<NativeView>>
   >;
+
+export type UIKitContainerResult<
+  RootView = unknown,
+  ChildrenView = unknown,
+> = {
+  rootView: RootView;
+  childrenView: ChildrenView;
+};
+
+export type UIKitContainerDefinition<
+  Props extends object,
+  RootView = unknown,
+  ChildrenView = unknown,
+> = Omit<
+  UIKitViewDefinition<Props, UIKitContainerResult<RootView, ChildrenView>>,
+  'create' | 'update' | 'mounted' | 'dispose'
+> & {
+  create: (
+    ctx: UIKitCreateArgument<Props & ViewProps>,
+  ) => UIKitContainerResult<RootView, ChildrenView>;
+  update?: (
+    view: UIKitContainerResult<RootView, ChildrenView>,
+    props: Readonly<Props & ViewProps>,
+    previousProps?: Readonly<Props & ViewProps>,
+    ctx?: UIKitViewContext<Props & ViewProps>,
+  ) => void;
+  mounted?: (
+    view: UIKitContainerResult<RootView, ChildrenView>,
+    props: Readonly<Props & ViewProps>,
+    ctx?: UIKitViewContext<Props & ViewProps>,
+  ) => void;
+  dispose?: (
+    view: UIKitContainerResult<RootView, ChildrenView>,
+    props: Readonly<Props & ViewProps>,
+    ctx?: UIKitViewContext<Props & ViewProps>,
+  ) => void;
+};
+
+export type UIViewControllerDefinition<
+  Props extends object,
+  Controller = unknown,
+> = Omit<
+  UIKitViewDefinition<Props, Controller>,
+  'create'
+> & {
+  createController: (ctx: UIKitCreateArgument<Props & ViewProps>) => Controller;
+};
 
 const nativeApiGlobalName = '__nativeScriptNativeApi';
 const nativeApiGlobalCacheName = '__nativeScriptNativeApiGlobalCache';
@@ -738,8 +845,398 @@ export function jsInvoker<T extends AnyFunction>(
   return callbackInvoker('js', callback);
 }
 
-export function defineUIKitView<Props extends object, NativeView = unknown>(
-  definition: UIKitViewDefinition<Props, NativeView>,
+type UIKitRuntimeContext<Props extends object> = UIKitViewContext<Props> & {
+  createArgument(): UIKitCreateArgument<Props>;
+  disposeResources(): void;
+  isDisposed(): boolean;
+};
+
+type UIKitHostInstance<NativeView> = {
+  hostView: unknown;
+  lifecycleValue: NativeView;
+  childrenView?: unknown;
+  controller?: unknown;
+};
+
+type UIKitAdapterDefinition<Props extends object, NativeView> =
+  UIKitViewDefinition<Props, NativeView> & {
+    resolveHostInstance?: (created: NativeView) => UIKitHostInstance<NativeView>;
+  };
+
+let targetActionClass: any;
+let observerClass: any;
+
+function objcInteropTypes(): any {
+  return (globalThis as Record<string, any>).interop?.types;
+}
+
+function requireNSObject(): any {
+  const nsObject = (globalThis as Record<string, any>).NSObject;
+  if (!nsObject || typeof nsObject.extend !== 'function') {
+    throw new Error('NSObject.extend is not available');
+  }
+  return nsObject;
+}
+
+function getTargetActionClass(): any {
+  if (targetActionClass) {
+    return targetActionClass;
+  }
+  const types = objcInteropTypes();
+  const NSObject = requireNSObject();
+  targetActionClass = NSObject.extend(
+    {
+      nativeScriptHandleAction(sender: unknown) {
+        const callback = (this as Record<string, unknown>)
+          .__nativeScriptActionCallback;
+        if (typeof callback === 'function') {
+          callback(sender);
+        }
+      },
+    },
+    {
+      exposedMethods: {
+        'nativeScriptHandleAction:': {
+          returns: types?.void,
+          params: [NSObject],
+        },
+      },
+    },
+  );
+  return targetActionClass;
+}
+
+function getObserverClass(): any {
+  if (observerClass) {
+    return observerClass;
+  }
+  const types = objcInteropTypes();
+  const NSObject = requireNSObject();
+  const NSString = (globalThis as Record<string, any>).NSString;
+  const NSDictionary = (globalThis as Record<string, any>).NSDictionary;
+  const Pointer = (globalThis as Record<string, any>).interop?.Pointer
+    ?? types?.id;
+
+  observerClass = NSObject.extend(
+    {
+      'observeValueForKeyPath:ofObject:change:context:'(
+        keyPath: string,
+        object: unknown,
+        change: unknown,
+      ) {
+        const callback = (this as Record<string, unknown>)
+          .__nativeScriptObserveCallback;
+        if (typeof callback === 'function') {
+          callback(keyPath, object, change);
+        }
+      },
+    },
+    {
+      exposedMethods: {
+        'observeValueForKeyPath:ofObject:change:context:': {
+          returns: types?.void,
+          params: [NSString ?? NSObject, NSObject, NSDictionary ?? NSObject, Pointer],
+        },
+      },
+    },
+  );
+  return observerClass;
+}
+
+function createUIKitContext<Props extends object>(
+  name: string,
+  propsRef: React.MutableRefObject<Props>,
+  invalidateLayout: () => void,
+): UIKitRuntimeContext<Props> {
+  const retained: unknown[] = [];
+  const cleanupCallbacks: Array<() => void> = [];
+  let disposed = false;
+
+  const context: UIKitRuntimeContext<Props> = {
+    get name() {
+      return name;
+    },
+    get tag() {
+      return null;
+    },
+    get props() {
+      return propsRef.current;
+    },
+    emit(eventName, payload) {
+      if (disposed) {
+        return;
+      }
+      const handler = (propsRef.current as Record<PropertyKey, unknown>)[
+        eventName as PropertyKey
+      ];
+      if (typeof handler !== 'function') {
+        return;
+      }
+      setTimeout(() => {
+        if (!disposed) {
+          (handler as Function)(payload);
+        }
+      }, 0);
+    },
+    targetAction(control, events, callback) {
+      if (control == null || typeof callback !== 'function') {
+        return;
+      }
+      const target = getTargetActionClass().alloc().init();
+      target.__nativeScriptActionCallback = uiInvoker(() => {
+        if (!disposed) {
+          callback();
+        }
+      });
+      const selector = 'nativeScriptHandleAction:';
+      const nativeControl = control as Record<string, Function>;
+      if (typeof nativeControl.addTargetActionForControlEvents !== 'function') {
+        throw new Error('targetAction expects a UIControl-compatible object');
+      }
+      nativeControl.addTargetActionForControlEvents(target, selector, events);
+      context.retain(target);
+      context.dispose(() => {
+        if (typeof nativeControl.removeTargetActionForControlEvents === 'function') {
+          nativeControl.removeTargetActionForControlEvents(target, selector, events);
+        }
+        target.__nativeScriptActionCallback = undefined;
+      });
+    },
+    delegate(object, protocolRef, implementation) {
+      const DelegateClass = requireNSObject().extend(implementation, {
+        protocols: [protocolRef],
+      });
+      const delegate = DelegateClass.alloc().init();
+      context.retain(delegate);
+      const nativeObject = object as Record<string, unknown>;
+      if (nativeObject && 'delegate' in nativeObject) {
+        nativeObject.delegate = delegate;
+        context.dispose(() => {
+          if (nativeObject.delegate === delegate) {
+            nativeObject.delegate = null;
+          }
+        });
+      }
+      return delegate as T;
+    },
+    notification(name, object, callback) {
+      const center = (globalThis as Record<string, any>).NSNotificationCenter
+        ?.defaultCenter;
+      if (!center) {
+        throw new Error('NSNotificationCenter.defaultCenter is not available');
+      }
+      const observer = center.addObserverForNameObjectQueueUsingBlock(
+        name,
+        object ?? null,
+        null,
+        uiInvoker((notification: unknown) => {
+          if (!disposed) {
+            callback(notification);
+          }
+        }),
+      );
+      context.retain(observer);
+      context.dispose(() => {
+        center.removeObserver(observer);
+      });
+    },
+    observe(object, keyPath, callback) {
+      const nativeObject = object as Record<string, Function>;
+      if (
+        object == null ||
+        typeof nativeObject.addObserverForKeyPathOptionsContext !== 'function'
+      ) {
+        throw new Error('observe expects a KVO-compatible NSObject');
+      }
+      const observer = getObserverClass().alloc().init();
+      observer.__nativeScriptObserveCallback = (
+        observedKeyPath: string,
+        _observedObject: unknown,
+        change: unknown,
+      ) => {
+        if (disposed || String(observedKeyPath) !== keyPath) {
+          return;
+        }
+        const newKey = (globalThis as Record<string, any>).NSKeyValueChangeNewKey;
+        const value =
+          change && typeof (change as Record<string, Function>).objectForKey === 'function'
+            ? (change as Record<string, Function>).objectForKey(newKey)
+            : undefined;
+        callback(value, change);
+      };
+      const options = (globalThis as Record<string, any>).NSKeyValueObservingOptions;
+      const optionNew =
+        typeof options?.New === 'number'
+          ? options.New
+          : (globalThis as Record<string, any>).NSKeyValueObservingOptionNew ?? 1;
+      nativeObject.addObserverForKeyPathOptionsContext(
+        observer,
+        keyPath,
+        optionNew,
+        null,
+      );
+      context.retain(observer);
+      context.dispose(() => {
+        try {
+          if (typeof nativeObject.removeObserverForKeyPath === 'function') {
+            nativeObject.removeObserverForKeyPath(observer, keyPath);
+          }
+        } finally {
+          observer.__nativeScriptObserveCallback = undefined;
+        }
+      });
+    },
+    retain(value) {
+      retained.push(value);
+    },
+    dispose(callback) {
+      cleanupCallbacks.push(callback);
+    },
+    invalidateLayout,
+    createArgument() {
+      return Object.assign(Object.create(context), propsRef.current);
+    },
+    disposeResources() {
+      if (disposed) {
+        return;
+      }
+      disposed = true;
+      for (let i = cleanupCallbacks.length - 1; i >= 0; i--) {
+        cleanupCallbacks[i]();
+      }
+      cleanupCallbacks.length = 0;
+      retained.length = 0;
+    },
+    isDisposed() {
+      return disposed;
+    },
+  };
+
+  return context;
+}
+
+function constrainedSize(
+  size: {width: number; height: number},
+  layout?: UIKitLayoutOptions,
+): {width: number; height: number} {
+  const defaultSize = layout?.defaultSize ?? {};
+  let width = Number.isFinite(size.width) && size.width >= 0
+    ? size.width
+    : defaultSize.width ?? 0;
+  let height = Number.isFinite(size.height) && size.height >= 0
+    ? size.height
+    : defaultSize.height ?? 0;
+
+  if (layout?.minSize?.width != null) {
+    width = Math.max(width, layout.minSize.width);
+  }
+  if (layout?.minSize?.height != null) {
+    height = Math.max(height, layout.minSize.height);
+  }
+  if (layout?.maxSize?.width != null) {
+    width = Math.min(width, layout.maxSize.width);
+  }
+  if (layout?.maxSize?.height != null) {
+    height = Math.min(height, layout.maxSize.height);
+  }
+  return {width, height};
+}
+
+function flattenedStyleSize(style: ViewProps['style']) {
+  const flat = StyleSheet.flatten(style) ?? {};
+  return {
+    width: typeof flat.width === 'number' ? flat.width : undefined,
+    height: typeof flat.height === 'number' ? flat.height : undefined,
+  };
+}
+
+function makeCGSize(width: number, height: number) {
+  const CGSizeMake = (globalThis as Record<string, any>).CGSizeMake;
+  if (typeof CGSizeMake === 'function') {
+    return CGSizeMake(width, height);
+  }
+  return {width, height};
+}
+
+function readNativeSize(size: unknown): {width: number; height: number} {
+  const nativeSize = size as {width?: unknown; height?: unknown};
+  return {
+    width: Number(nativeSize?.width ?? 0),
+    height: Number(nativeSize?.height ?? 0),
+  };
+}
+
+function measureUIKitView(
+  view: unknown,
+  layout: UIKitLayoutOptions | undefined,
+  style: ViewProps['style'],
+): {width: number; height: number} {
+  const mode = layout?.sizing ?? 'fill';
+  if (mode === 'fill') {
+    return constrainedSize(layout?.defaultSize ?? {width: 0, height: 0}, layout);
+  }
+
+  const styleSize = flattenedStyleSize(style);
+  const nativeView = view as Record<string, any>;
+  let measured = layout?.defaultSize ?? {width: 0, height: 0};
+
+  if (mode === 'intrinsic') {
+    measured = readNativeSize(nativeView.intrinsicContentSize);
+  } else if (mode === 'sizeThatFits' && typeof nativeView.sizeThatFits === 'function') {
+    measured = readNativeSize(
+      nativeView.sizeThatFits(
+        makeCGSize(styleSize.width ?? Number.MAX_SAFE_INTEGER, styleSize.height ?? Number.MAX_SAFE_INTEGER),
+      ),
+    );
+  } else if (
+    mode === 'autoLayout' &&
+    typeof nativeView.systemLayoutSizeFittingSize === 'function'
+  ) {
+    const fittingSize =
+      (globalThis as Record<string, any>).UIView?.layoutFittingCompressedSize ??
+      makeCGSize(styleSize.width ?? 0, styleSize.height ?? 0);
+    measured = readNativeSize(nativeView.systemLayoutSizeFittingSize(fittingSize));
+  }
+
+  return constrainedSize(
+    {
+      width: styleSize.width ?? measured.width,
+      height: styleSize.height ?? measured.height,
+    },
+    layout,
+  );
+}
+
+function nativeHandleOrUndefined(value: unknown): string | undefined {
+  return value == null ? undefined : nativeHandleForUIKitView(value);
+}
+
+function nativeHandleForNSObject(value: unknown): string | undefined {
+  if (value == null) {
+    return undefined;
+  }
+  const interop = (globalThis as Record<string, any>).interop;
+  const pointer = interop?.handleof?.(value);
+  if (!pointer) {
+    return undefined;
+  }
+  if (typeof pointer.toHexString === 'function') {
+    return pointer.toHexString();
+  }
+  if (typeof pointer.address === 'string') {
+    return pointer.address;
+  }
+  if (typeof pointer.address === 'number') {
+    return String(pointer.address);
+  }
+  if (typeof pointer.toNumber === 'function') {
+    return String(pointer.toNumber());
+  }
+  return undefined;
+}
+
+function defineUIKitHost<Props extends object, NativeView = unknown>(
+  definition: UIKitAdapterDefinition<Props, NativeView>,
 ): UIKitViewComponent<Props, NativeView> {
   const debugName =
     definition.debugName
@@ -753,12 +1250,51 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
       const viewRef = useRef<NativeView | null>(null);
       const propsRef = useRef(pluginProps);
       const previousPropsRef = useRef<Readonly<Props & ViewProps> | undefined>();
+      const contextRef = useRef<UIKitRuntimeContext<Props & ViewProps> | null>(
+        null,
+      );
+      const hostInstanceRef = useRef<UIKitHostInstance<NativeView> | null>(null);
       const mountedRef = useRef(false);
       const disposedRef = useRef(false);
       const [nativeViewHandle, setNativeViewHandle] = useState<string>();
+      const [childrenViewHandle, setChildrenViewHandle] = useState<string>();
+      const [controllerHandle, setControllerHandle] = useState<string>();
+      const [measuredSize, setMeasuredSize] = useState<
+        {width: number; height: number} | undefined
+      >(() => definition.layout?.sizing === 'fill'
+        ? undefined
+        : definition.layout?.defaultSize
+          ? {
+              width: definition.layout.defaultSize.width ?? 0,
+              height: definition.layout.defaultSize.height ?? 0,
+            }
+          : undefined);
       const [error, setError] = useState<Error | null>(null);
 
       propsRef.current = pluginProps;
+
+      const updateMeasuredSize = () => {
+        const hostInstance = hostInstanceRef.current;
+        if (!hostInstance || definition.layout?.sizing === 'fill') {
+          return;
+        }
+        runOnUI(() => {
+          const nextSize = measureUIKitView(
+            hostInstance.hostView,
+            definition.layout,
+            nativeProps.style,
+          );
+          setMeasuredSize((previous) =>
+            previous &&
+            previous.width === nextSize.width &&
+            previous.height === nextSize.height
+              ? previous
+              : nextSize,
+          );
+        }).catch((reason) => {
+          setError(reason instanceof Error ? reason : new Error(String(reason)));
+        });
+      };
 
       useImperativeHandle(
         ref,
@@ -767,15 +1303,39 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
             return viewRef.current;
           },
           runOnUI(callback) {
+            let result: unknown;
             return runOnUI(() => {
               if (viewRef.current == null) {
                 throw new Error('UIKit view has not been created yet');
               }
-              callback(viewRef.current);
+              result = callback(viewRef.current);
+            }).then(() => result as never);
+          },
+          measureNative() {
+            let measured:
+              | {width: number; height: number}
+              | undefined;
+            return runOnUI(() => {
+              if (viewRef.current == null) {
+                throw new Error('UIKit view has not been created yet');
+              }
+              measured = measureUIKitView(
+                hostInstanceRef.current?.hostView ?? viewRef.current,
+                definition.layout,
+                nativeProps.style,
+              );
+            }).then(() => {
+              if (measured == null) {
+                throw new Error('UIKit view measurement did not complete');
+              }
+              return measured;
             });
           },
+          invalidateNativeLayout() {
+            updateMeasuredSize();
+          },
         }),
-        [],
+        [definition.layout, nativeProps.style],
       );
 
       useEffect(() => {
@@ -786,25 +1346,41 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
 
         runOnUI(() => {
           const currentProps = propsRef.current;
-          const nativeView = definition.create(currentProps);
+          const context = createUIKitContext(
+            debugName,
+            propsRef,
+            updateMeasuredSize,
+          );
+          contextRef.current = context;
+          const created = definition.create(context.createArgument());
+          const hostInstance = definition.resolveHostInstance
+            ? definition.resolveHostInstance(created)
+            : {hostView: created, lifecycleValue: created};
+          const nativeView = hostInstance.lifecycleValue;
           if (cancelled || disposedRef.current) {
-            definition.dispose?.(nativeView, currentProps);
-            const maybeView = nativeView as Record<string, unknown>;
+            definition.dispose?.(nativeView, currentProps, context);
+            context.disposeResources();
+            const maybeView = hostInstance.hostView as Record<string, unknown>;
             if (typeof maybeView.removeFromSuperview === 'function') {
               maybeView.removeFromSuperview();
             }
             return undefined;
           }
+          hostInstanceRef.current = hostInstance;
           viewRef.current = nativeView;
-          definition.update?.(nativeView, currentProps, undefined);
+          definition.update?.(nativeView, currentProps, undefined, context);
           previousPropsRef.current = currentProps;
           return undefined;
         })
           .then(() => {
-            if (cancelled || viewRef.current == null) {
+            const hostInstance = hostInstanceRef.current;
+            if (cancelled || viewRef.current == null || hostInstance == null) {
               return;
             }
-            setNativeViewHandle(nativeHandleForUIKitView(viewRef.current));
+            setNativeViewHandle(nativeHandleOrUndefined(hostInstance.hostView));
+            setChildrenViewHandle(nativeHandleOrUndefined(hostInstance.childrenView));
+            setControllerHandle(nativeHandleForNSObject(hostInstance.controller));
+            updateMeasuredSize();
           })
           .catch((reason) => {
             setError(reason instanceof Error ? reason : new Error(String(reason)));
@@ -814,14 +1390,22 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
           cancelled = true;
           disposedRef.current = true;
           const nativeView = viewRef.current;
+          const context = contextRef.current;
+          const hostInstance = hostInstanceRef.current;
           viewRef.current = null;
+          hostInstanceRef.current = null;
+          contextRef.current = null;
           mountedRef.current = false;
           if (nativeView == null) {
+            context?.disposeResources();
             return;
           }
           runOnUI(() => {
-            definition.dispose?.(nativeView, propsRef.current);
-            const maybeView = nativeView as Record<string, unknown>;
+            definition.dispose?.(nativeView, propsRef.current, context ?? undefined);
+            context?.disposeResources();
+            const maybeView = hostInstance?.hostView as
+              | Record<string, unknown>
+              | undefined;
             if (typeof maybeView.removeFromSuperview === 'function') {
               maybeView.removeFromSuperview();
             }
@@ -839,13 +1423,15 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
 
         const previousProps = previousPropsRef.current;
         const currentProps = propsRef.current;
+        const context = contextRef.current;
         previousPropsRef.current = currentProps;
 
         runOnUI(() => {
-          definition.update?.(nativeView, currentProps, previousProps);
+          definition.update?.(nativeView, currentProps, previousProps, context ?? undefined);
         }).catch((reason) => {
           setError(reason instanceof Error ? reason : new Error(String(reason)));
         });
+        updateMeasuredSize();
       }, [definition, pluginProps]);
 
       useEffect(() => {
@@ -855,9 +1441,10 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
         }
 
         mountedRef.current = true;
+        const context = contextRef.current;
         runOnUI(() => {
           if (!disposedRef.current) {
-            definition.mounted?.(nativeView, propsRef.current);
+            definition.mounted?.(nativeView, propsRef.current, context ?? undefined);
           }
         }).catch((reason) => {
           setError(reason instanceof Error ? reason : new Error(String(reason)));
@@ -868,11 +1455,24 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
         throw error;
       }
 
+      const layoutStyle =
+        measuredSize && definition.layout?.sizing !== 'fill'
+          ? {
+              width: measuredSize.width,
+              height: measuredSize.height,
+            }
+          : undefined;
+
       return React.createElement(NativeScriptUIViewNativeComponent, {
         ...nativeProps,
         collapsable: false,
+        childrenViewHandle,
+        controllerHandle,
         debugName,
         nativeViewHandle,
+        style: layoutStyle
+          ? [nativeProps.style, layoutStyle]
+          : nativeProps.style,
       });
     },
   );
@@ -881,13 +1481,63 @@ export function defineUIKitView<Props extends object, NativeView = unknown>(
   return Component;
 }
 
+export function defineUIKitView<Props extends object, NativeView = unknown>(
+  definition: UIKitViewDefinition<Props, NativeView>,
+): UIKitViewComponent<Props, NativeView> {
+  return defineUIKitHost(definition);
+}
+
+export function defineUIKitContainer<
+  Props extends object,
+  RootView = unknown,
+  ChildrenView = unknown,
+>(
+  definition: UIKitContainerDefinition<Props, RootView, ChildrenView>,
+): UIKitViewComponent<Props, UIKitContainerResult<RootView, ChildrenView>> {
+  return defineUIKitHost({
+    ...definition,
+    resolveHostInstance(created) {
+      return {
+        hostView: created.rootView,
+        lifecycleValue: created,
+        childrenView: created.childrenView,
+      };
+    },
+  } as UIKitAdapterDefinition<
+    Props,
+    UIKitContainerResult<RootView, ChildrenView>
+  >);
+}
+
+export function defineUIViewController<
+  Props extends object,
+  Controller = unknown,
+>(
+  definition: UIViewControllerDefinition<Props, Controller>,
+): UIKitViewComponent<Props, Controller> {
+  return defineUIKitHost({
+    ...definition,
+    create: definition.createController,
+    resolveHostInstance(controller) {
+      const controllerRecord = controller as Record<string, unknown>;
+      return {
+        hostView: controllerRecord.view,
+        lifecycleValue: controller,
+        controller,
+      };
+    },
+  } as UIKitAdapterDefinition<Props, Controller>);
+}
+
 const NativeScript = {
   init,
   install,
   installGlobals,
   isInstalled,
   defaultMetadataPath,
+  defineUIKitContainer,
   defineUIKitView,
+  defineUIViewController,
   getRuntimeBackend,
   jsInvoker,
   runOnUI,
