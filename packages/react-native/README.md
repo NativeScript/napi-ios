@@ -176,18 +176,19 @@ Context helpers cover common native view-manager patterns:
 
 ### State, delegates, and retention
 
-Do not attach arbitrary JavaScript properties to native proxies. Native proxies
-now reject unsupported/custom assignments with a guidance error. Keep JS state in
-`WeakMap`, React state, or another external object:
+Native proxies support JavaScript expando properties for local state. Native
+property setters still win first, and unsupported names fall back to JS state:
 
 ```ts
-const state = new WeakMap<UIView, {selected: boolean}>();
-
 NativeScript.runOnUI(() => {
   const view = UIView.new();
-  state.set(view, {selected: false});
+  view.ownerState = {selected: false};
+  view.tag = 42; // still calls UIKit's native tag setter
 });
 ```
+
+Use `WeakMap`, React state, or another external object when you want state that
+is not tied to the lifetime of a specific native proxy.
 
 UIKit often retains delegates and actions weakly or outlives the JavaScript
 closure that created them. Retain those helper objects explicitly. Use

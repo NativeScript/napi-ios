@@ -977,20 +977,7 @@ class NativeApiObjectHostObject final
       return;
     }
 
-    if (property == "__nativeApiClassWrapper" ||
-        isNativeApiJsiExtendedClass(object_getClass(object_))) {
-      bridge_->setObjectExpando(runtime, object_, property, value);
-      return;
-    }
-
-    const char* className = object_getClassName(object_);
-    throw facebook::jsi::JSError(
-        runtime,
-        "Cannot assign JavaScript property '" + property +
-            "' to native proxy " +
-            (className != nullptr ? std::string(className) : std::string("")) +
-            ". Native proxies only accept writable native properties; keep "
-            "JavaScript state in a WeakMap or external object.");
+    bridge_->setObjectExpando(runtime, object_, property, value);
   }
 
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override {

@@ -1273,16 +1273,36 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       },
     },
     {
-      name: 'rejects arbitrary JavaScript state on native proxies with guidance',
+      name: 'preserves arbitrary JavaScript state on native proxies',
       async run() {
         await NativeScript.runOnUI(() => {
           const view = g('UIView').new();
-          assertThrows(
-            () => {
-              view.__nativeScriptCustomState = {unsafe: true};
-            },
-            /WeakMap|native proxy/,
-            'custom native proxy property assignment',
+          const state = {selected: true, count: 1};
+          view.__nativeScriptCustomState = state;
+          assert(
+            view.__nativeScriptCustomState === state,
+            'custom native proxy state identity',
+          );
+          view.__nativeScriptCustomState.count++;
+          assertEqual(
+            state.count,
+            2,
+            'custom native proxy state remains mutable',
+          );
+
+          view.__nativeScriptCustomFlag = 'ok';
+          assertEqual(
+            view.__nativeScriptCustomFlag,
+            'ok',
+            'custom native proxy string state',
+          );
+
+          view.tag = 42;
+          assertEqual(view.tag, 42, 'native property setter still wins');
+          assertEqual(
+            view.__nativeScriptCustomFlag,
+            'ok',
+            'custom native proxy state survives native property writes',
           );
         });
       },
