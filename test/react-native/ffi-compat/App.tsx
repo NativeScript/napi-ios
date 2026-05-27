@@ -1226,6 +1226,38 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       },
     },
     {
+      name: 'exposes current UIKit SDK tab accessory APIs when available',
+      async run() {
+        if (!NativeScript.isClassAvailable('UITabAccessory')) {
+          return;
+        }
+        await NativeScript.runOnUI(() => {
+          const contentView = g('UIView').new();
+          const accessory = g('UITabAccessory')
+            .alloc()
+            .initWithContentView(contentView);
+          assert(
+            accessory.contentView.isEqual(contentView),
+            'UITabAccessory contentView should round-trip',
+          );
+
+          const controller = g('UITabBarController').new();
+          controller.bottomAccessory = accessory;
+          assert(
+            controller.bottomAccessory.isEqual(accessory),
+            'UITabBarController.bottomAccessory should round-trip',
+          );
+
+          controller.setBottomAccessoryAnimated(null, false);
+          assertEqual(
+            controller.bottomAccessory,
+            null,
+            'UITabBarController bottom accessory should clear',
+          );
+        });
+      },
+    },
+    {
       name: 'retains, releases, and disposes native helper lifetimes explicitly',
       run() {
         const retainer = NativeScript.createRetainer();
