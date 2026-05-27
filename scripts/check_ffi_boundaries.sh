@@ -28,17 +28,37 @@ if [ "${#EXISTING_DIRECT_DIRS[@]}" -eq 0 ]; then
   exit 0
 fi
 
-if rg -n '\b(napi_|napi_env|napi_value|js_native_api|node_api)\b' \
-  "${EXISTING_DIRECT_DIRS[@]}" \
-  -g '*.{h,hh,hpp,c,cc,cpp,m,mm,inc}'; then
+search_sources() {
+  local pattern="$1"
+  shift
+
+  if command -v rg >/dev/null 2>&1; then
+    rg -n "$pattern" "$@" -g '*.{h,hh,hpp,c,cc,cpp,m,mm,inc}'
+    return
+  fi
+
+  find "$@" \
+    -type f \( \
+      -name '*.h' -o \
+      -name '*.hh' -o \
+      -name '*.hpp' -o \
+      -name '*.c' -o \
+      -name '*.cc' -o \
+      -name '*.cpp' -o \
+      -name '*.m' -o \
+      -name '*.mm' -o \
+      -name '*.inc' \
+    \) -print0 | xargs -0 grep -nE "$pattern"
+}
+
+if search_sources '(^|[^[:alnum:]_])(napi_|napi_env|napi_value|js_native_api|node_api)($|[^[:alnum:]_])' \
+  "${EXISTING_DIRECT_DIRS[@]}"; then
   echo "Node-API symbols are not allowed in shared or direct engine FFI folders." >&2
   exit 1
 fi
 
-if rg -n '\b(EngineDirect|FastNative|HermesFast|V8Fast|JSCFast|QuickJSFast)\b' \
-  "$ROOT_DIR/NativeScript/ffi/napi" \
-  -g '*.{h,hh,hpp,c,cc,cpp,m,mm,inc}' \
-  -g '!GeneratedSignatureDispatch.inc'; then
+if search_sources '(^|[^[:alnum:]_])(EngineDirect|FastNative|HermesFast|V8Fast|JSCFast|QuickJSFast)($|[^[:alnum:]_])' \
+  "$ROOT_DIR/NativeScript/ffi/napi" | grep -v 'GeneratedSignatureDispatch.inc'; then
   echo "Direct-engine FFI code is not allowed in ffi/napi." >&2
   exit 1
 fi

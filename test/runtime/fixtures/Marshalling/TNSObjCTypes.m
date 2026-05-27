@@ -56,6 +56,17 @@ double TNSRNMeasureNativeUIColorFactory(int iterations) {
   }
   return (CFAbsoluteTimeGetCurrent() - startedAt) * 1000.0;
 }
+#else
+double TNSRNMeasureNativeUITabBarControllerNew(int iterations, int touchView) {
+  (void)iterations;
+  (void)touchView;
+  return 0;
+}
+
+double TNSRNMeasureNativeUIColorFactory(int iterations) {
+  (void)iterations;
+  return 0;
+}
 #endif
 
 @implementation TNSRNDelegateProbe

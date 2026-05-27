@@ -822,6 +822,10 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
       classMembersInstalled = true;
       installClassMembers(constructable, nativeClass.__staticMembers, true);
       installClassMembers(basePrototypeTarget, nativeClass.__instanceMembers, false);
+      try {
+        delete constructable.__nativeApiInstallMembers;
+      } catch (_) {
+      }
     }
     try {
       Object.defineProperty(constructable, '__nativeApiInstallMembers', {
@@ -869,6 +873,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
     constructable.prototype = typeof Proxy === 'function'
       ? new Proxy(basePrototypeTarget, {
           get: function(target, property, receiver) {
+            installNativeClassMembersIfNeeded();
             if (property in target) {
               return Reflect.get(target, property, receiver);
             }
@@ -902,7 +907,16 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
             return true;
           },
           has: function(target, property) {
+            installNativeClassMembersIfNeeded();
             return property in target;
+          },
+          ownKeys: function(target) {
+            installNativeClassMembersIfNeeded();
+            return Reflect.ownKeys(target);
+          },
+          getOwnPropertyDescriptor: function(target, property) {
+            installNativeClassMembersIfNeeded();
+            return Reflect.getOwnPropertyDescriptor(target, property);
           }
         })
       : basePrototypeTarget;
@@ -952,10 +966,25 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
             if (property === '__nativeApiClass') {
               return nativeClass;
             }
+            if (property === 'toString') {
+              return function() {
+                return String(nativeClass);
+              };
+            }
+            if (property === 'hasOwnProperty') {
+              return function(key) {
+                installNativeClassMembersIfNeeded();
+                return Object.prototype.hasOwnProperty.call(target, key);
+              };
+            }
             if (Object.prototype.hasOwnProperty.call(target, property) ||
                 property === 'prototype' ||
                 property === 'length' ||
                 property === 'name') {
+              return Reflect.get(target, property, receiver);
+            }
+            installNativeClassMembersIfNeeded();
+            if (Object.prototype.hasOwnProperty.call(target, property)) {
               return Reflect.get(target, property, receiver);
             }
             if (cachedNativeFunctions && cachedNativeFunctions.has(property)) {
@@ -1015,13 +1044,37 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
             return Reflect.set(target, property, value, receiver);
           },
           has: function(target, property) {
+            installNativeClassMembersIfNeeded();
             return property in target || property in nativeClass;
+          },
+          ownKeys: function(target) {
+            installNativeClassMembersIfNeeded();
+            return Reflect.ownKeys(target).filter(function(key) {
+              return key !== 'new' &&
+                key !== 'hasOwnProperty' &&
+                key !== '__nativeApiInstallMembers';
+            });
+          },
+          getOwnPropertyDescriptor: function(target, property) {
+            installNativeClassMembersIfNeeded();
+            return Reflect.getOwnPropertyDescriptor(target, property);
           }
 	        })
 	      : constructable;
 	    if (classWrappers) {
 	      classWrappers.set(nativeClass, wrapper);
 	    }
+    try {
+      var nativeSuperclass = nativeClass.__superclass;
+      if (nativeSuperclass && nativeSuperclass !== nativeClass) {
+        var superclassWrapper = wrapNativeClass(nativeSuperclass);
+        if (superclassWrapper && superclassWrapper !== wrapper &&
+            typeof Object.setPrototypeOf === 'function') {
+          Object.setPrototypeOf(wrapper, superclassWrapper);
+        }
+      }
+    } catch (_) {
+    }
     try {
       api.__rememberClassWrapper(nativeClass, wrapper, constructable.prototype);
     } catch (_) {
