@@ -75,8 +75,8 @@ run through the NativeScript UI dispatcher, so UIKit calls are safe and use the
 same globals and iOS SDK types as NativeScript.
 
 ```tsx
-import NativeScript, {defineUIKitView} from "@nativescript/react-native";
-import type {UIKitViewRef} from "@nativescript/react-native";
+import NativeScript, { defineUIKitView } from "@nativescript/react-native";
+import type { UIKitViewRef } from "@nativescript/react-native";
 
 NativeScript.init();
 
@@ -100,7 +100,9 @@ export const NativeBadge = defineUIKitView<BadgeProps, UIView>({
   },
   update(view, props) {
     view.backgroundColor =
-      props.tone === "green" ? UIColor.systemGreenColor : UIColor.systemBlueColor;
+      props.tone === "green"
+        ? UIColor.systemGreenColor
+        : UIColor.systemBlueColor;
     view.layer.cornerRadius = 12;
     view.clipsToBounds = true;
     const label = view.viewWithTag(1) as UILabel;
@@ -108,7 +110,7 @@ export const NativeBadge = defineUIKitView<BadgeProps, UIView>({
   },
 });
 
-<NativeBadge title="UIKit from JS" tone="blue" style={{height: 48}} />;
+<NativeBadge title="UIKit from JS" tone="blue" style={{ height: 48 }} />;
 ```
 
 Forward a ref when you need imperative access:
@@ -142,11 +144,11 @@ The first argument to `create` is also the current props object, so existing
 
 ```tsx
 export const NativeSwitch = NativeScript.defineUIKitView<
-  {value: boolean; onValueChange?: (value: boolean) => void},
+  { value: boolean; onValueChange?: (value: boolean) => void },
   UISwitch
 >({
   name: "NativeSwitch",
-  layout: {sizing: "intrinsic"},
+  layout: { sizing: "intrinsic" },
   create(ctx) {
     const view = UISwitch.new();
     ctx.targetAction(view, UIControlEvents.ValueChanged, () => {
@@ -182,7 +184,7 @@ property setters still win first, and unsupported names fall back to JS state:
 ```ts
 NativeScript.runOnUI(() => {
   const view = UIView.new();
-  view.ownerState = {selected: false};
+  view.ownerState = { selected: false };
   view.tag = 42; // still calls UIKit's native tag setter
 });
 ```
@@ -206,7 +208,7 @@ const delegate = NativeScript.createDelegate<UIScrollViewDelegate>(
       });
     },
   },
-  {retainer},
+  { retainer },
 );
 
 scrollView.delegate = delegate;
@@ -233,7 +235,7 @@ const dataSource = NativeScript.createDelegate(
       return NSURL.fileURLWithPath(path);
     },
   },
-  {owner: ctx},
+  { owner: ctx },
 );
 ```
 
@@ -255,11 +257,11 @@ Use `defaultSize`, `minSize`, and `maxSize` when a native view can report zero
 or needs bounds during the first layout pass.
 
 ```tsx
-const NativeTitle = NativeScript.defineUIKitView<{text: string}, UILabel>({
+const NativeTitle = NativeScript.defineUIKitView<{ text: string }, UILabel>({
   name: "NativeTitle",
   layout: {
     sizing: "intrinsic",
-    defaultSize: {width: 1, height: 1},
+    defaultSize: { width: 1, height: 1 },
   },
   create() {
     return UILabel.new();
@@ -290,7 +292,7 @@ export const BlurCard = NativeScript.defineUIKitContainer({
   },
 });
 
-<BlurCard style={{padding: 16}}>
+<BlurCard style={{ padding: 16 }}>
   <Text>React Native child content</Text>
 </BlurCard>;
 ```
@@ -310,11 +312,78 @@ export const NativePageHost = NativeScript.defineUIViewController({
 });
 ```
 
+### Building app-specific native UI
+
+This package is intentionally low-level. It installs NativeScript's Native API
+inside React Native and gives you lifecycle helpers; it does not ship opinionated
+wrappers for tabs, maps, cameras, pickers, or other app components. Build those
+as local components in your app or library:
+
+- Use `defineUIKitView()` for one native `UIView`.
+- Use `defineUIKitContainer()` when React Native children should mount inside a
+  native `UIView`.
+- Use `defineUIViewController()` when UIKit expects view-controller containment,
+  such as tabs, navigation controllers, split views, document browsers, preview
+  controllers, and presentation flows.
+- Use `ctx.delegate()`, `ctx.targetAction()`, `ctx.retain()`, and
+  `ctx.dispose()` for native callbacks and weakly-held helper objects.
+- Use `NativeScript.isClassAvailable()` before touching SDK-new APIs.
+
+For example, build native tabs with `UITabBarController` instead of measuring a
+standalone `UITabBar` as a leaf RN view:
+
+```tsx
+type NativeTabsProps = {
+  selectedIndex: number;
+  onSelectedIndexChange?: (index: number) => void;
+};
+
+export const NativeTabs = NativeScript.defineUIViewController<
+  NativeTabsProps,
+  UITabBarController
+>({
+  name: "NativeTabs",
+  createController(ctx) {
+    const controller = UITabBarController.new();
+    const viewControllers = TAB_ITEMS.map((item, index) => {
+      const child = UIViewController.new();
+      child.view.backgroundColor = UIColor.systemBackgroundColor;
+      child.tabBarItem = UITabBarItem.alloc().initWithTitleImageSelectedImage(
+        item.title,
+        UIImage.systemImageNamed(item.symbol),
+        UIImage.systemImageNamed(item.selectedSymbol),
+      );
+      child.tabBarItem.tag = index;
+      return child;
+    });
+
+    controller.viewControllers = NSArray.arrayWithArray(viewControllers);
+    ctx.delegate(controller, UITabBarControllerDelegate, {
+      tabBarControllerDidSelectViewController(tabBarController) {
+        ctx.emit("onSelectedIndexChange", tabBarController.selectedIndex);
+      },
+    });
+    return controller;
+  },
+  update(controller, props) {
+    controller.selectedIndex = props.selectedIndex;
+  },
+});
+
+<NativeTabs
+  selectedIndex={selectedIndex}
+  onSelectedIndexChange={setSelectedIndex}
+  style={{ flex: 1 }}
+/>;
+```
+
 For modal UIKit controllers, find the top visible presenter and guard against
 double presentation:
 
 ```ts
-function topVisibleViewController(root = UIApplication.sharedApplication.keyWindow?.rootViewController) {
+function topVisibleViewController(
+  root = UIApplication.sharedApplication.keyWindow?.rootViewController,
+) {
   let current = root;
   while (current?.presentedViewController) {
     current = current.presentedViewController;
@@ -344,12 +413,13 @@ device availability can differ for frameworks such as VisionKit, QuickLook, and
 PassKit.
 
 ```ts
-if (NativeScript.loadFramework("VisionKit") &&
-    NativeScript.isClassAvailable("VNDocumentCameraViewController")) {
-  const CameraController =
-    NativeScript.getClass<typeof VNDocumentCameraViewController>(
-      "VNDocumentCameraViewController",
-    );
+if (
+  NativeScript.loadFramework("VisionKit") &&
+  NativeScript.isClassAvailable("VNDocumentCameraViewController")
+) {
+  const CameraController = NativeScript.getClass<
+    typeof VNDocumentCameraViewController
+  >("VNDocumentCameraViewController");
   const controller = CameraController?.new();
 }
 ```
@@ -466,11 +536,11 @@ Expo development build, EAS Build, or `npx expo run:ios`.
 4. Initialize NativeScript in app code before using native APIs:
 
    ```tsx
-   import NativeScript, {defineUIKitView} from "@nativescript/react-native";
+   import NativeScript, { defineUIKitView } from "@nativescript/react-native";
 
    NativeScript.init();
 
-   const NativeBadge = defineUIKitView<{title: string}, UIView>({
+   const NativeBadge = defineUIKitView<{ title: string }, UIView>({
      name: "NativeBadge",
      create() {
        const view = UIView.alloc().initWithFrame(CGRectZero);
