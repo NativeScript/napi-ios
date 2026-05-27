@@ -1,8 +1,6 @@
 #import "TNSObjCTypes.h"
 
-#if TARGET_OS_IPHONE
-#import <UIKit/UIKit.h>
-#endif
+#import <objc/message.h>
 
 void TNSFunctionWithCFTypeRefArgument(CFTypeRef x) {
   NSString* str = (__bridge NSString*)x;
@@ -21,14 +19,25 @@ double TNSRNMeasureNativeUITabBarControllerNew(int iterations, int touchView) {
     return 0;
   }
 
+  Class controllerClass = NSClassFromString(@"UITabBarController");
+  if (controllerClass == nil) {
+    return 0;
+  }
+
+  SEL newSelector = sel_registerName("new");
+  SEL viewSelector = sel_registerName("view");
   uintptr_t sink = 0;
   CFAbsoluteTime startedAt = CFAbsoluteTimeGetCurrent();
   for (int i = 0; i < iterations; i++) {
     @autoreleasepool {
-      UITabBarController* controller = [UITabBarController new];
-      sink ^= touchView ? (uintptr_t)controller.view : (uintptr_t)controller;
+      id controller = ((id (*)(Class, SEL))objc_msgSend)(controllerClass, newSelector);
+      if (touchView) {
+        sink ^= (uintptr_t)((id (*)(id, SEL))objc_msgSend)(controller, viewSelector);
+      } else {
+        sink ^= (uintptr_t)controller;
+      }
 #if !__has_feature(objc_arc)
-      [controller release];
+      ((void (*)(id, SEL))objc_msgSend)(controller, sel_registerName("release"));
 #endif
     }
   }
@@ -43,11 +52,18 @@ double TNSRNMeasureNativeUIColorFactory(int iterations) {
     return 0;
   }
 
+  Class colorClass = NSClassFromString(@"UIColor");
+  if (colorClass == nil) {
+    return 0;
+  }
+
+  SEL colorSelector = sel_registerName("colorWithRed:green:blue:alpha:");
   uintptr_t sink = 0;
   CFAbsoluteTime startedAt = CFAbsoluteTimeGetCurrent();
   for (int i = 0; i < iterations; i++) {
     @autoreleasepool {
-      UIColor* color = [UIColor colorWithRed:0.1 green:0.2 blue:0.3 alpha:1];
+      id color = ((id (*)(Class, SEL, double, double, double, double))objc_msgSend)(
+          colorClass, colorSelector, 0.1, 0.2, 0.3, 1.0);
       sink ^= (uintptr_t)color;
     }
   }
