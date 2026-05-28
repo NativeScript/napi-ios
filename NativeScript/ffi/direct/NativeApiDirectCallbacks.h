@@ -1,4 +1,4 @@
-bool isObjectiveCObjectType(const NativeApiJsiType& type) {
+bool isObjectiveCObjectType(const NativeApiDirectType& type) {
   switch (type.kind) {
     case metagen::mdTypeAnyObject:
     case metagen::mdTypeProtocolObject:
@@ -13,56 +13,58 @@ bool isObjectiveCObjectType(const NativeApiJsiType& type) {
 }
 
 #ifndef NATIVESCRIPT_NATIVE_API_RETAIN_RUNTIME
-std::shared_ptr<Runtime> retainNativeApiJsiRuntime(Runtime& runtime) {
+std::shared_ptr<Runtime> retainNativeApiDirectRuntime(Runtime& runtime) {
   return std::shared_ptr<Runtime>(&runtime, [](Runtime*) {});
 }
 #endif
 
 #ifndef NATIVESCRIPT_NATIVE_API_RUNTIME_SCOPE
-class NativeApiJsiRuntimeScope final {
+class NativeApiDirectRuntimeScope final {
  public:
-  explicit NativeApiJsiRuntimeScope(Runtime&) {}
+  explicit NativeApiDirectRuntimeScope(Runtime&) {}
 };
 #endif
 
-struct NativeApiJsiSignature {
+struct NativeApiDirectSignature {
   ffi_cif cif = {};
-  NativeApiJsiType returnType;
-  std::vector<NativeApiJsiType> argumentTypes;
+  NativeApiDirectType returnType;
+  std::vector<NativeApiDirectType> argumentTypes;
   std::vector<ffi_type*> ffiTypes;
   std::string selectorName;
+  uint64_t signatureHash = 0;
+  uint8_t dispatchFlags = 0;
   bool variadic = false;
   bool prepared = false;
   unsigned int implicitArgumentCount = 0;
 };
 
-enum class NativeApiJsiCallbackThreadPolicy {
+enum class NativeApiDirectCallbackThreadPolicy {
   Default,
   UI,
   JS,
 };
 
-NativeApiJsiCallbackThreadPolicy readJsiCallbackThreadPolicy(
+NativeApiDirectCallbackThreadPolicy readDirectCallbackThreadPolicy(
     Runtime& runtime, Object& functionObject) {
   constexpr const char* propertyName = "__nativeScriptCallbackThread";
   try {
     if (!functionObject.hasProperty(runtime, propertyName)) {
-      return NativeApiJsiCallbackThreadPolicy::Default;
+      return NativeApiDirectCallbackThreadPolicy::Default;
     }
     Value policyValue = functionObject.getProperty(runtime, propertyName);
     if (!policyValue.isString()) {
-      return NativeApiJsiCallbackThreadPolicy::Default;
+      return NativeApiDirectCallbackThreadPolicy::Default;
     }
     std::string policy = policyValue.asString(runtime).utf8(runtime);
     if (policy == "ui") {
-      return NativeApiJsiCallbackThreadPolicy::UI;
+      return NativeApiDirectCallbackThreadPolicy::UI;
     }
     if (policy == "js") {
-      return NativeApiJsiCallbackThreadPolicy::JS;
+      return NativeApiDirectCallbackThreadPolicy::JS;
     }
   } catch (const std::exception&) {
   }
-  return NativeApiJsiCallbackThreadPolicy::Default;
+  return NativeApiDirectCallbackThreadPolicy::Default;
 }
 
 bool selectorEndsWithNSErrorParam(const std::string& selectorName) {
@@ -73,7 +75,7 @@ bool selectorEndsWithNSErrorParam(const std::string& selectorName) {
                               suffix) == 0;
 }
 
-bool isNSErrorOutJsiMethodSignature(const NativeApiJsiSignature& signature) {
+bool isNSErrorOutDirectMethodSignature(const NativeApiDirectSignature& signature) {
   if (signature.argumentTypes.empty() || signature.variadic ||
       !selectorEndsWithNSErrorParam(signature.selectorName)) {
     return false;
@@ -82,17 +84,17 @@ bool isNSErrorOutJsiMethodSignature(const NativeApiJsiSignature& signature) {
   return signature.argumentTypes.back().kind == metagen::mdTypePointer;
 }
 
-bool isNSErrorOutJsiMethodCallback(const NativeApiJsiSignature& signature) {
+bool isNSErrorOutDirectMethodCallback(const NativeApiDirectSignature& signature) {
   return signature.returnType.kind == metagen::mdTypeBool &&
          signature.implicitArgumentCount >= 2 &&
-         isNSErrorOutJsiMethodSignature(signature);
+         isNSErrorOutDirectMethodSignature(signature);
 }
 
-class NativeApiJsiArgumentFrame {
+class NativeApiDirectArgumentFrame {
  public:
-  explicit NativeApiJsiArgumentFrame(size_t count) : storage_(count), values_(count) {}
+  explicit NativeApiDirectArgumentFrame(size_t count) : storage_(count), values_(count) {}
 
-  ~NativeApiJsiArgumentFrame() {
+  ~NativeApiDirectArgumentFrame() {
     for (char* string : ownedCStrings_) {
       free(string);
     }
@@ -132,7 +134,7 @@ class NativeApiJsiArgumentFrame {
     }
   }
   void rememberRoundTripValue(
-      const std::shared_ptr<NativeApiJsiBridge>& bridge, Runtime& runtime,
+      const std::shared_ptr<NativeApiDirectBridge>& bridge, Runtime& runtime,
       const void* native, const Value& value) {
     if (bridge == nullptr || native == nullptr) {
       return;
@@ -149,7 +151,7 @@ class NativeApiJsiArgumentFrame {
   std::vector<void*> ownedBuffers_;
   std::vector<id> ownedObjects_;
   std::vector<std::shared_ptr<void>> ownedLifetimes_;
-  std::vector<std::pair<std::shared_ptr<NativeApiJsiBridge>, const void*>>
+  std::vector<std::pair<std::shared_ptr<NativeApiDirectBridge>, const void*>>
       temporaryRoundTripValues_;
 };
 
@@ -169,24 +171,24 @@ class NativeApiMutableBuffer final : public MutableBuffer {
   std::vector<uint8_t> data_;
 };
 
-void convertJsiArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                        const NativeApiJsiType& type,
+void convertDirectArgument(Runtime& runtime,
+                        const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                        const NativeApiDirectType& type,
                         const Value& value, void* target,
-                        NativeApiJsiArgumentFrame& frame);
+                        NativeApiDirectArgumentFrame& frame);
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                               const NativeApiJsiType& type, void* value);
+                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                               const NativeApiDirectType& type, void* value);
 
 Value wrapNativeFunctionPointer(Runtime& runtime,
-                                const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                                const NativeApiJsiType& type, void* pointer,
+                                const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                                const NativeApiDirectType& type, void* pointer,
                                 bool block);
 
-bool isObjectiveCObjectType(const NativeApiJsiType& type);
+bool isObjectiveCObjectType(const NativeApiDirectType& type);
 
-struct NativeApiJsiBlockDescriptor {
+struct NativeApiDirectBlockDescriptor {
   unsigned long reserved = 0;
   unsigned long size = 0;
   void (*copyHelper)(void*, void*) = nullptr;
@@ -194,29 +196,29 @@ struct NativeApiJsiBlockDescriptor {
   const char* signature = nullptr;
 };
 
-struct NativeApiJsiBlockLiteral {
+struct NativeApiDirectBlockLiteral {
   void* isa = nullptr;
   int flags = 0;
   int reserved = 0;
   void* invoke = nullptr;
-  NativeApiJsiBlockDescriptor* descriptor = nullptr;
+  NativeApiDirectBlockDescriptor* descriptor = nullptr;
   void* callback = nullptr;
 };
 
-constexpr int kNativeApiJsiBlockNeedsFree = (1 << 24);
-constexpr int kNativeApiJsiBlockHasCopyDispose = (1 << 25);
-constexpr int kNativeApiJsiBlockRefCountOne = (1 << 1);
-constexpr int kNativeApiJsiBlockHasSignature = (1 << 30);
+constexpr int kNativeApiDirectBlockNeedsFree = (1 << 24);
+constexpr int kNativeApiDirectBlockHasCopyDispose = (1 << 25);
+constexpr int kNativeApiDirectBlockRefCountOne = (1 << 1);
+constexpr int kNativeApiDirectBlockHasSignature = (1 << 30);
 
-void* nativeApiJsiStackBlockIsa() {
+void* nativeApiDirectStackBlockIsa() {
   static void* isa = dlsym(RTLD_DEFAULT, "_NSConcreteStackBlock");
   return isa;
 }
 
-void nativeApiJsiBlockCopy(void* dst, void* src);
-void nativeApiJsiBlockDispose(void* src);
+void nativeApiDirectBlockCopy(void* dst, void* src);
+void nativeApiDirectBlockDispose(void* src);
 
-std::string objcEncodingForJsiType(const NativeApiJsiType& type) {
+std::string objcEncodingForDirectType(const NativeApiDirectType& type) {
   switch (type.kind) {
     case metagen::mdTypeVoid:
       return "v";
@@ -266,7 +268,7 @@ std::string objcEncodingForJsiType(const NativeApiJsiType& type) {
     case metagen::mdTypeOpaquePointer:
       if (type.elementType != nullptr &&
           type.elementType->kind != metagen::mdTypeVoid) {
-        return "^" + objcEncodingForJsiType(*type.elementType);
+        return "^" + objcEncodingForDirectType(*type.elementType);
       }
       return "^v";
     case metagen::mdTypeStruct:
@@ -276,65 +278,65 @@ std::string objcEncodingForJsiType(const NativeApiJsiType& type) {
              "=}";
     case metagen::mdTypeArray:
       return "[" + std::to_string(type.arraySize) +
-             (type.elementType != nullptr ? objcEncodingForJsiType(*type.elementType)
+             (type.elementType != nullptr ? objcEncodingForDirectType(*type.elementType)
                                           : std::string("?")) +
              "]";
     case metagen::mdTypeVector:
     case metagen::mdTypeExtVector:
     case metagen::mdTypeComplex:
-      return type.elementType != nullptr ? objcEncodingForJsiType(*type.elementType)
+      return type.elementType != nullptr ? objcEncodingForDirectType(*type.elementType)
                                          : "?";
     default:
       return "?";
   }
 }
 
-std::string objcBlockSignatureForJsiSignature(
-    const NativeApiJsiSignature& signature) {
-  std::string encoding = objcEncodingForJsiType(signature.returnType);
+std::string objcBlockSignatureForDirectSignature(
+    const NativeApiDirectSignature& signature) {
+  std::string encoding = objcEncodingForDirectType(signature.returnType);
   encoding += "@?";
   for (const auto& argType : signature.argumentTypes) {
-    encoding += objcEncodingForJsiType(argType);
+    encoding += objcEncodingForDirectType(argType);
   }
   return encoding;
 }
 
-std::string objcMethodSignatureForJsiSignature(
-    const NativeApiJsiSignature& signature) {
-  std::string encoding = objcEncodingForJsiType(signature.returnType);
+std::string objcMethodSignatureForDirectSignature(
+    const NativeApiDirectSignature& signature) {
+  std::string encoding = objcEncodingForDirectType(signature.returnType);
   encoding += "@:";
   for (const auto& argType : signature.argumentTypes) {
-    encoding += objcEncodingForJsiType(argType);
+    encoding += objcEncodingForDirectType(argType);
   }
   return encoding;
 }
 
-[[noreturn]] void throwNativeApiJsiCallbackException(
+[[noreturn]] void throwNativeApiDirectCallbackException(
     const std::string& message) {
   NSString* reason = [NSString stringWithUTF8String:message.c_str()];
-  @throw [NSException exceptionWithName:@"NativeScriptJSICallbackException"
+  @throw [NSException exceptionWithName:@"NativeScriptDirectCallbackException"
                                  reason:reason
                                userInfo:nil];
 }
 
-class NativeApiJsiCallback;
+class NativeApiDirectCallback;
 
-void nativeApiJsiCallbackTrampoline(ffi_cif* cif, void* ret, void* args[],
+void nativeApiDirectCallbackTrampoline(ffi_cif* cif, void* ret, void* args[],
                                     void* data);
 
-std::atomic<int> gActiveNativeThreadJsiCallbacks{0};
+std::atomic<int> gActiveNativeThreadDirectCallbacks{0};
 
-class NativeApiJsiCallback final
-    : public std::enable_shared_from_this<NativeApiJsiCallback> {
+class NativeApiDirectCallback final
+    : public std::enable_shared_from_this<NativeApiDirectCallback> {
  public:
-  NativeApiJsiCallback(Runtime& runtime,
-                       std::shared_ptr<NativeApiJsiBridge> bridge,
-                       std::shared_ptr<NativeApiJsiSignature> signature,
+  NativeApiDirectCallback(Runtime& runtime,
+                       std::shared_ptr<NativeApiDirectBridge> bridge,
+                       std::shared_ptr<NativeApiDirectSignature> signature,
                        Function function, bool block,
-                       NativeApiJsiCallbackThreadPolicy threadPolicy =
-                           NativeApiJsiCallbackThreadPolicy::Default,
+                       NativeApiDirectCallbackThreadPolicy threadPolicy =
+                           NativeApiDirectCallbackThreadPolicy::Default,
                        bool bindThis = false)
-      : runtimeOwner_(retainNativeApiJsiRuntime(runtime)),
+      : runtimeOwner_(retainNativeApiDirectRuntime(runtime)),
         runtime_(runtimeOwner_.get()),
         bridge_(std::move(bridge)),
         signature_(std::move(signature)),
@@ -346,41 +348,41 @@ class NativeApiJsiCallback final
         ffi_closure_alloc(sizeof(ffi_closure), &executable_));
     if (closure_ == nullptr || executable_ == nullptr ||
         signature_ == nullptr || !signature_->prepared) {
-      throw facebook::jsi::JSError(runtime,
-                                   "Unable to allocate native JSI callback.");
+      throw JSError(runtime,
+                                   "Unable to allocate native Direct callback.");
     }
 
     ffi_status status = ffi_prep_closure_loc(
-        closure_, &signature_->cif, nativeApiJsiCallbackTrampoline, this,
+        closure_, &signature_->cif, nativeApiDirectCallbackTrampoline, this,
         executable_);
     if (status != FFI_OK) {
       ffi_closure_free(closure_);
       closure_ = nullptr;
       executable_ = nullptr;
-      throw facebook::jsi::JSError(runtime,
-                                   "Unable to prepare native JSI callback.");
+      throw JSError(runtime,
+                                   "Unable to prepare native Direct callback.");
     }
 
     if (block_) {
-      blockSignature_ = objcBlockSignatureForJsiSignature(*signature_);
-      descriptor_ = std::make_unique<NativeApiJsiBlockDescriptor>();
+      blockSignature_ = objcBlockSignatureForDirectSignature(*signature_);
+      descriptor_ = std::make_unique<NativeApiDirectBlockDescriptor>();
       descriptor_->reserved = 0;
-      descriptor_->size = sizeof(NativeApiJsiBlockLiteral);
-      descriptor_->copyHelper = nativeApiJsiBlockCopy;
-      descriptor_->disposeHelper = nativeApiJsiBlockDispose;
+      descriptor_->size = sizeof(NativeApiDirectBlockLiteral);
+      descriptor_->copyHelper = nativeApiDirectBlockCopy;
+      descriptor_->disposeHelper = nativeApiDirectBlockDispose;
       descriptor_->signature = blockSignature_.c_str();
 
-      blockLiteral_ = std::make_unique<NativeApiJsiBlockLiteral>();
-      blockLiteral_->isa = nativeApiJsiStackBlockIsa();
-      blockLiteral_->flags = kNativeApiJsiBlockHasCopyDispose |
-                             kNativeApiJsiBlockHasSignature;
+      blockLiteral_ = std::make_unique<NativeApiDirectBlockLiteral>();
+      blockLiteral_->isa = nativeApiDirectStackBlockIsa();
+      blockLiteral_->flags = kNativeApiDirectBlockHasCopyDispose |
+                             kNativeApiDirectBlockHasSignature;
       blockLiteral_->invoke = executable_;
       blockLiteral_->descriptor = descriptor_.get();
       blockLiteral_->callback = this;
     }
   }
 
-  ~NativeApiJsiCallback() {
+  ~NativeApiDirectCallback() {
     if (closure_ != nullptr) {
       ffi_closure_free(closure_);
       closure_ = nullptr;
@@ -394,7 +396,7 @@ class NativeApiJsiCallback final
                : executable_;
   }
 
-  const NativeApiJsiSignature& signature() const { return *signature_; }
+  const NativeApiDirectSignature& signature() const { return *signature_; }
 
   void retainBlockCopy(const void* blockPointer) {
     if (!block_) {
@@ -414,7 +416,7 @@ class NativeApiJsiCallback final
     if (!block_) {
       return false;
     }
-    std::shared_ptr<NativeApiJsiCallback> keepAlive;
+    std::shared_ptr<NativeApiDirectCallback> keepAlive;
     try {
       keepAlive = shared_from_this();
     } catch (const std::bad_weak_ptr&) {
@@ -441,7 +443,7 @@ class NativeApiJsiCallback final
 
   void invoke(void* ret, void* args[]) {
     if (runtime_ == nullptr || function_ == nullptr || signature_ == nullptr) {
-      throwNativeApiJsiCallbackException("Invalid JSI callback.");
+      throwNativeApiDirectCallbackException("Invalid Direct callback.");
     }
 
     std::string error;
@@ -452,7 +454,7 @@ class NativeApiJsiCallback final
         std::this_thread::get_id() == bridge_->jsThreadId();
 
     auto callOnNativeCallerThread = [&]() {
-      ScopedNativeCallerThreadJsiCallback callbackScope;
+      ScopedNativeCallerThreadDirectCallback callbackScope;
       if (nativeCallbackInvoker) {
         nativeCallbackInvoker(call);
       } else {
@@ -495,20 +497,20 @@ class NativeApiJsiCallback final
       error = "Native callback was invoked off the JS thread without a JS scheduler.";
     };
 
-    if (threadPolicy_ == NativeApiJsiCallbackThreadPolicy::UI) {
+    if (threadPolicy_ == NativeApiDirectCallbackThreadPolicy::UI) {
       callOnUIThread();
       if (!error.empty()) {
         if (!recordNativeCallbackException(error)) {
-          throwNativeApiJsiCallbackException(error);
+          throwNativeApiDirectCallbackException(error);
         }
       }
       return;
     }
-    if (threadPolicy_ == NativeApiJsiCallbackThreadPolicy::JS) {
+    if (threadPolicy_ == NativeApiDirectCallbackThreadPolicy::JS) {
       callOnJSThread();
       if (!error.empty()) {
         if (!recordNativeCallbackException(error)) {
-          throwNativeApiJsiCallbackException(error);
+          throwNativeApiDirectCallbackException(error);
         }
       }
       return;
@@ -522,17 +524,15 @@ class NativeApiJsiCallback final
         bridge_->invokeCallbacksOnNativeCallerThread();
     bool nativeCallerThreadCallback =
         nativeCallerThreadCallbacks && !currentThreadIsJs &&
-        (block_ || bindThis_ ||
-         (activeSynchronousNativeInvocation && !returnsVoid));
+        activeSynchronousNativeInvocation &&
+        (block_ || bindThis_ || !returnsVoid);
     bool direct = currentThreadIsJs ||
                   gExecutingDispatchedUINativeCall ||
                   gSynchronousNativeInvocationDepth > 0 ||
-                  nativeCallerThreadCallback ||
-                  (nativeCallerThreadCallbacks && !nativeCallbackInvoker &&
-                   activeSynchronousNativeInvocation);
+                  nativeCallerThreadCallback;
     bool waitForNativeThreadCallback =
         currentThreadIsJs && nativeCallbackInvoker &&
-        gActiveNativeThreadJsiCallbacks.load(std::memory_order_acquire) > 0;
+        gActiveNativeThreadDirectCallbacks.load(std::memory_order_acquire) > 0;
     if (direct && !waitForNativeThreadCallback) {
       if (nativeCallerThreadCallback) {
         callOnNativeCallerThread();
@@ -547,20 +547,20 @@ class NativeApiJsiCallback final
     } else if (nativeCallbackInvoker) {
       bool nativeThreadCallback = !currentThreadIsJs;
       if (nativeThreadCallback) {
-        gActiveNativeThreadJsiCallbacks.fetch_add(1,
+        gActiveNativeThreadDirectCallbacks.fetch_add(1,
                                                   std::memory_order_acq_rel);
       }
       try {
         nativeCallbackInvoker(call);
       } catch (...) {
         if (nativeThreadCallback) {
-          gActiveNativeThreadJsiCallbacks.fetch_sub(
+          gActiveNativeThreadDirectCallbacks.fetch_sub(
               1, std::memory_order_acq_rel);
         }
         throw;
       }
       if (nativeThreadCallback) {
-        gActiveNativeThreadJsiCallbacks.fetch_sub(1,
+        gActiveNativeThreadDirectCallbacks.fetch_sub(1,
                                                   std::memory_order_acq_rel);
       }
     } else if (auto scheduler = bridge_->scheduler()) {
@@ -576,7 +576,7 @@ class NativeApiJsiCallback final
 
     if (!error.empty()) {
       if (!recordNativeCallbackException(error)) {
-        throwNativeApiJsiCallbackException(error);
+        throwNativeApiDirectCallbackException(error);
       }
     }
   }
@@ -584,7 +584,7 @@ class NativeApiJsiCallback final
  private:
   void invokeOnCurrentThread(void* ret, void* args[], std::string* error) {
     try {
-      NativeApiJsiRuntimeScope runtimeScope(*runtime_);
+      NativeApiDirectRuntimeScope runtimeScope(*runtime_);
       size_t nativeArgOffset = signature_->implicitArgumentCount;
       std::vector<Value> jsArgs;
       jsArgs.reserve(signature_->argumentTypes.size());
@@ -622,7 +622,7 @@ class NativeApiJsiCallback final
         runtime_->drainMicrotasks();
       }
     } catch (const std::exception& exception) {
-      if (isNSErrorOutJsiMethodCallback(*signature_)) {
+      if (isNSErrorOutDirectMethodCallback(*signature_)) {
         zeroReturnValue(ret);
         populateNSErrorOutArgument(args, exception.what());
         return;
@@ -632,13 +632,13 @@ class NativeApiJsiCallback final
       }
       zeroReturnValue(ret);
     } catch (...) {
-      if (isNSErrorOutJsiMethodCallback(*signature_)) {
+      if (isNSErrorOutDirectMethodCallback(*signature_)) {
         zeroReturnValue(ret);
-        populateNSErrorOutArgument(args, "Unknown exception in native JSI callback.");
+        populateNSErrorOutArgument(args, "Unknown exception in native Direct callback.");
         return;
       }
       if (error != nullptr) {
-        *error = "Unknown exception in native JSI callback.";
+        *error = "Unknown exception in native Direct callback.";
       }
       zeroReturnValue(ret);
     }
@@ -706,8 +706,8 @@ class NativeApiJsiCallback final
       return;
     }
 
-    NativeApiJsiArgumentFrame frame(1);
-    convertJsiArgument(*runtime_, bridge_, returnType, result, ret, frame);
+    NativeApiDirectArgumentFrame frame(1);
+    convertDirectArgument(*runtime_, bridge_, returnType, result, ret, frame);
     if (isObjectiveCObjectType(returnType)) {
       id object = *static_cast<id*>(ret);
       if (object != nil) {
@@ -719,53 +719,53 @@ class NativeApiJsiCallback final
 
   std::shared_ptr<Runtime> runtimeOwner_;
   Runtime* runtime_ = nullptr;
-  std::shared_ptr<NativeApiJsiBridge> bridge_;
-  std::shared_ptr<NativeApiJsiSignature> signature_;
+  std::shared_ptr<NativeApiDirectBridge> bridge_;
+  std::shared_ptr<NativeApiDirectSignature> signature_;
   std::shared_ptr<Function> function_;
   bool block_ = false;
-  NativeApiJsiCallbackThreadPolicy threadPolicy_ =
-      NativeApiJsiCallbackThreadPolicy::Default;
+  NativeApiDirectCallbackThreadPolicy threadPolicy_ =
+      NativeApiDirectCallbackThreadPolicy::Default;
   bool bindThis_ = false;
   ffi_closure* closure_ = nullptr;
   void* executable_ = nullptr;
   std::string blockSignature_;
-  std::unique_ptr<NativeApiJsiBlockDescriptor> descriptor_;
-  std::unique_ptr<NativeApiJsiBlockLiteral> blockLiteral_;
+  std::unique_ptr<NativeApiDirectBlockDescriptor> descriptor_;
+  std::unique_ptr<NativeApiDirectBlockLiteral> blockLiteral_;
   struct RetainedBlockCopy {
     const void* blockPointer = nullptr;
-    std::shared_ptr<NativeApiJsiCallback> lifetime;
+    std::shared_ptr<NativeApiDirectCallback> lifetime;
   };
   std::mutex retainedBlockCopiesMutex_;
   std::vector<RetainedBlockCopy> retainedBlockCopies_;
 };
 
-void nativeApiJsiBlockCopy(void* dst, void* src) {
-  auto* dstBlock = static_cast<NativeApiJsiBlockLiteral*>(dst);
-  auto* srcBlock = static_cast<NativeApiJsiBlockLiteral*>(src);
+void nativeApiDirectBlockCopy(void* dst, void* src) {
+  auto* dstBlock = static_cast<NativeApiDirectBlockLiteral*>(dst);
+  auto* srcBlock = static_cast<NativeApiDirectBlockLiteral*>(src);
   if (dstBlock == nullptr || srcBlock == nullptr ||
       srcBlock->callback == nullptr) {
     return;
   }
   dstBlock->callback = srcBlock->callback;
-  static_cast<NativeApiJsiCallback*>(srcBlock->callback)
+  static_cast<NativeApiDirectCallback*>(srcBlock->callback)
       ->retainBlockCopy(dstBlock);
 }
 
-void nativeApiJsiBlockDispose(void* src) {
-  auto* block = static_cast<NativeApiJsiBlockLiteral*>(src);
+void nativeApiDirectBlockDispose(void* src) {
+  auto* block = static_cast<NativeApiDirectBlockLiteral*>(src);
   if (block == nullptr || block->callback == nullptr) {
     return;
   }
   bool released =
-      static_cast<NativeApiJsiCallback*>(block->callback)->releaseBlockCopy(block);
+      static_cast<NativeApiDirectCallback*>(block->callback)->releaseBlockCopy(block);
   if (released) {
     block->callback = nullptr;
   }
 }
 
-void nativeApiJsiCallbackTrampoline(ffi_cif*, void* ret, void* args[],
+void nativeApiDirectCallbackTrampoline(ffi_cif*, void* ret, void* args[],
                                     void* data) {
-  auto callback = static_cast<NativeApiJsiCallback*>(data);
+  auto callback = static_cast<NativeApiDirectCallback*>(data);
   if (callback == nullptr) {
     return;
   }
@@ -776,14 +776,14 @@ void nativeApiJsiCallbackTrampoline(ffi_cif*, void* ret, void* args[],
         exception.description != nil ? exception.description.UTF8String : nullptr;
     std::string message = description != nullptr
                               ? description
-                              : "Objective-C exception in native JSI callback.";
+                              : "Objective-C exception in native Direct callback.";
     if (!recordNativeCallbackException(message)) {
       @throw;
     }
   }
 }
 
-size_t nativeSizeForType(const NativeApiJsiType& type) {
+size_t nativeSizeForType(const NativeApiDirectType& type) {
   switch (type.kind) {
     case metagen::mdTypeStruct:
       if (type.aggregateInfo != nullptr) {
@@ -818,7 +818,7 @@ size_t nativeSizeForType(const NativeApiJsiType& type) {
   return sizeof(void*);
 }
 
-Value signedInteger64ToJsiValue(Runtime& runtime, int64_t value) {
+Value signedInteger64ToDirectValue(Runtime& runtime, int64_t value) {
   constexpr int64_t maxSafeInteger = 9007199254740991LL;
   constexpr int64_t minSafeInteger = -9007199254740991LL;
   if (value >= minSafeInteger && value <= maxSafeInteger) {
@@ -827,7 +827,7 @@ Value signedInteger64ToJsiValue(Runtime& runtime, int64_t value) {
   return BigInt::fromInt64(runtime, value);
 }
 
-Value unsignedInteger64ToJsiValue(Runtime& runtime, uint64_t value) {
+Value unsignedInteger64ToDirectValue(Runtime& runtime, uint64_t value) {
   constexpr uint64_t maxSafeInteger = 9007199254740991ULL;
   if (value <= maxSafeInteger) {
     return static_cast<double>(value);
@@ -873,7 +873,7 @@ bool parseBigIntToUintptr(Runtime& runtime, const BigInt& bigint,
                                    address);
 }
 
-bool readJsiBuffer(Runtime& runtime, const Object& object, const uint8_t** data,
+bool readDirectBuffer(Runtime& runtime, const Object& object, const uint8_t** data,
                    size_t* byteLength) {
   if (data == nullptr || byteLength == nullptr) {
     return false;
@@ -936,7 +936,7 @@ size_t alignUp(size_t value, size_t alignment) {
   return ((value + alignment - 1) / alignment) * alignment;
 }
 
-ffi_type* ffiTypeForJsiKind(MDTypeKind kind) {
+ffi_type* ffiTypeForDirectKind(MDTypeKind kind) {
   switch (kind) {
     case metagen::mdTypeChar:
       return &ffi_type_sint8;
@@ -983,23 +983,23 @@ ffi_type* ffiTypeForJsiKind(MDTypeKind kind) {
   }
 }
 
-bool isSupportedJsiKind(MDTypeKind kind) {
+bool isSupportedDirectKind(MDTypeKind kind) {
   switch (kind) {
     default:
-      return ffiTypeForJsiKind(kind) != nullptr;
+      return ffiTypeForDirectKind(kind) != nullptr;
   }
 }
 
-void skipMetadataJsiTypePayload(MDMetadataReader* metadata, MDSectionOffset* offset,
+void skipMetadataDirectTypePayload(MDMetadataReader* metadata, MDSectionOffset* offset,
                                 MDTypeKind kind);
 
-void skipMetadataJsiType(MDMetadataReader* metadata, MDSectionOffset* offset) {
+void skipMetadataDirectType(MDMetadataReader* metadata, MDSectionOffset* offset) {
   MDTypeKind kind = stripTypeFlags(metadata->getTypeKind(*offset));
   *offset += sizeof(MDTypeKind);
-  skipMetadataJsiTypePayload(metadata, offset, kind);
+  skipMetadataDirectTypePayload(metadata, offset, kind);
 }
 
-void skipMetadataJsiTypePayload(MDMetadataReader* metadata, MDSectionOffset* offset,
+void skipMetadataDirectTypePayload(MDMetadataReader* metadata, MDSectionOffset* offset,
                                 MDTypeKind kind) {
   switch (kind) {
     case metagen::mdTypeClassObject: {
@@ -1027,13 +1027,13 @@ void skipMetadataJsiTypePayload(MDMetadataReader* metadata, MDSectionOffset* off
     case metagen::mdTypeExtVector:
     case metagen::mdTypeComplex:
       *offset += sizeof(uint16_t);
-      skipMetadataJsiType(metadata, offset);
+      skipMetadataDirectType(metadata, offset);
       break;
     case metagen::mdTypeStruct:
       *offset += sizeof(MDSectionOffset);
       break;
     case metagen::mdTypePointer:
-      skipMetadataJsiType(metadata, offset);
+      skipMetadataDirectType(metadata, offset);
       break;
     case metagen::mdTypeBlock:
     case metagen::mdTypeFunctionPointer:
@@ -1044,14 +1044,14 @@ void skipMetadataJsiTypePayload(MDMetadataReader* metadata, MDSectionOffset* off
   }
 }
 
-NativeApiJsiType parseMetadataJsiType(MDMetadataReader* metadata,
+NativeApiDirectType parseMetadataDirectType(MDMetadataReader* metadata,
                                       MDSectionOffset* offset,
-                                      NativeApiJsiBridge* bridge) {
+                                      NativeApiDirectBridge* bridge) {
   MDTypeKind rawKind = metadata->getTypeKind(*offset);
   MDTypeKind kind = stripTypeFlags(rawKind);
   *offset += sizeof(MDTypeKind);
 
-  NativeApiJsiType type;
+  NativeApiDirectType type;
   type.kind = kind;
 
   switch (kind) {
@@ -1059,9 +1059,9 @@ NativeApiJsiType parseMetadataJsiType(MDMetadataReader* metadata,
       type.arraySize = metadata->getArraySize(*offset);
       *offset += sizeof(uint16_t);
       type.elementType =
-          std::make_shared<NativeApiJsiType>(
-              parseMetadataJsiType(metadata, offset, bridge));
-      auto ffiOwner = std::make_shared<NativeApiJsiFfiType>();
+          std::make_shared<NativeApiDirectType>(
+              parseMetadataDirectType(metadata, offset, bridge));
+      auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
       ffiOwner->elements.reserve(static_cast<size_t>(type.arraySize) + 1);
       ffi_type* elementFfiType = type.elementType->ffiType != nullptr
                                      ? type.elementType->ffiType
@@ -1081,9 +1081,9 @@ NativeApiJsiType parseMetadataJsiType(MDMetadataReader* metadata,
       type.arraySize = metadata->getArraySize(*offset);
       *offset += sizeof(uint16_t);
       type.elementType =
-          std::make_shared<NativeApiJsiType>(
-              parseMetadataJsiType(metadata, offset, bridge));
-      auto ffiOwner = std::make_shared<NativeApiJsiFfiType>();
+          std::make_shared<NativeApiDirectType>(
+              parseMetadataDirectType(metadata, offset, bridge));
+      auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
 #if defined(FFI_TYPE_EXT_VECTOR)
       ffiOwner->type.type =
           kind == metagen::mdTypeComplex ? FFI_TYPE_COMPLEX : FFI_TYPE_EXT_VECTOR;
@@ -1143,8 +1143,8 @@ NativeApiJsiType parseMetadataJsiType(MDMetadataReader* metadata,
     }
     case metagen::mdTypePointer:
       type.elementType =
-          std::make_shared<NativeApiJsiType>(
-              parseMetadataJsiType(metadata, offset, bridge));
+          std::make_shared<NativeApiDirectType>(
+              parseMetadataDirectType(metadata, offset, bridge));
       type.ffiType = &ffi_type_pointer;
       type.supported = true;
       return type;
@@ -1179,12 +1179,12 @@ NativeApiJsiType parseMetadataJsiType(MDMetadataReader* metadata,
       break;
   }
 
-  type.ffiType = ffiTypeForJsiKind(kind);
-  type.supported = type.ffiType != nullptr && isSupportedJsiKind(kind);
+  type.ffiType = ffiTypeForDirectKind(kind);
+  type.supported = type.ffiType != nullptr && isSupportedDirectKind(kind);
   return type;
 }
 
-std::shared_ptr<NativeApiJsiAggregateInfo> NativeApiJsiBridge::aggregateInfoFor(
+std::shared_ptr<NativeApiDirectAggregateInfo> NativeApiDirectBridge::aggregateInfoFor(
     MDSectionOffset aggregateOffset, bool isUnion) {
   if (metadata_ == nullptr || aggregateOffset == MD_SECTION_OFFSET_NULL) {
     return nullptr;
@@ -1195,14 +1195,14 @@ std::shared_ptr<NativeApiJsiAggregateInfo> NativeApiJsiBridge::aggregateInfoFor(
     return cached->second;
   }
 
-  auto info = std::make_shared<NativeApiJsiAggregateInfo>();
+  auto info = std::make_shared<NativeApiDirectAggregateInfo>();
   info->offset = aggregateOffset;
   info->isUnion = isUnion;
   aggregateInfoByOffset_[aggregateOffset] = info;
 
   if (aggregateInfoInProgress_.find(aggregateOffset) !=
       aggregateInfoInProgress_.end()) {
-    auto ffiOwner = std::make_shared<NativeApiJsiFfiType>();
+    auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
     ffiOwner->elements.push_back(&ffi_type_pointer);
     ffiOwner->finalize();
     info->ffi = ffiOwner;
@@ -1228,18 +1228,18 @@ std::shared_ptr<NativeApiJsiAggregateInfo> NativeApiJsiBridge::aggregateInfoFor(
       break;
     }
 
-    NativeApiJsiAggregateField field;
+    NativeApiDirectAggregateField field;
     const char* fieldName = metadata_->resolveString(nameOffset);
     field.name = fieldName != nullptr ? fieldName : "";
     if (!isUnion) {
       field.offset = metadata_->getArraySize(offset);
       offset += sizeof(uint16_t);
     }
-    field.type = parseMetadataJsiType(metadata_.get(), &offset, this);
+    field.type = parseMetadataDirectType(metadata_.get(), &offset, this);
     info->fields.push_back(std::move(field));
   }
 
-  auto ffiOwner = std::make_shared<NativeApiJsiFfiType>();
+  auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
   if (isUnion) {
     ffi_type* largest = &ffi_type_uint8;
     size_t largestSize = 0;
@@ -1267,7 +1267,7 @@ std::shared_ptr<NativeApiJsiAggregateInfo> NativeApiJsiBridge::aggregateInfoFor(
   return info;
 }
 
-ffi_type* ffiTypeForJsiArgument(const NativeApiJsiType& type) {
+ffi_type* ffiTypeForDirectArgument(const NativeApiDirectType& type) {
   switch (type.kind) {
     case metagen::mdTypeArray:
       return &ffi_type_pointer;
@@ -1276,16 +1276,18 @@ ffi_type* ffiTypeForJsiArgument(const NativeApiJsiType& type) {
   }
 }
 
-std::optional<NativeApiJsiSignature> parseMetadataJsiSignature(
+std::optional<NativeApiDirectSignature> parseMetadataDirectSignature(
     MDMetadataReader* metadata, MDSectionOffset signatureOffset,
-    unsigned int implicitArgumentCount, NativeApiJsiBridge* bridge,
+    unsigned int implicitArgumentCount, NativeApiDirectBridge* bridge,
     bool returnOwned = false) {
   if (metadata == nullptr || signatureOffset == MD_SECTION_OFFSET_NULL) {
     return std::nullopt;
   }
 
-  NativeApiJsiSignature signature;
+  NativeApiDirectSignature signature;
   signature.implicitArgumentCount = implicitArgumentCount;
+  signature.signatureHash = metadataSignatureHash(metadata, signatureOffset);
+  signature.dispatchFlags = returnOwned ? 1 : 0;
 
   MDSectionOffset offset = signatureOffset;
   MDTypeKind returnKind = metadata->getTypeKind(offset);
@@ -1294,14 +1296,14 @@ std::optional<NativeApiJsiSignature> parseMetadataJsiSignature(
       (returnKindRaw & static_cast<uint32_t>(metagen::mdTypeFlagNext)) != 0;
   signature.variadic =
       (returnKindRaw & static_cast<uint32_t>(metagen::mdTypeFlagVariadic)) != 0;
-  signature.returnType = parseMetadataJsiType(metadata, &offset, bridge);
+  signature.returnType = parseMetadataDirectType(metadata, &offset, bridge);
   signature.returnType.returnOwned = returnOwned;
 
   while (next) {
     MDTypeKind argKind = metadata->getTypeKind(offset);
     next = (rawTypeKind(argKind) &
             static_cast<uint32_t>(metagen::mdTypeFlagNext)) != 0;
-    signature.argumentTypes.push_back(parseMetadataJsiType(metadata, &offset, bridge));
+    signature.argumentTypes.push_back(parseMetadataDirectType(metadata, &offset, bridge));
   }
 
   signature.ffiTypes.reserve(signature.argumentTypes.size() +
@@ -1310,7 +1312,7 @@ std::optional<NativeApiJsiSignature> parseMetadataJsiSignature(
     signature.ffiTypes.push_back(&ffi_type_pointer);
   }
   for (const auto& argType : signature.argumentTypes) {
-    signature.ffiTypes.push_back(ffiTypeForJsiArgument(argType));
+    signature.ffiTypes.push_back(ffiTypeForDirectArgument(argType));
   }
 
   ffi_status status = ffi_prep_cif(
@@ -1386,7 +1388,7 @@ std::vector<std::string> knownObjCAggregateFieldNames(
 }
 
 const NativeApiSymbol* findObjCAggregateSymbol(
-    NativeApiJsiBridge* bridge, const std::string& name, bool isUnion) {
+    NativeApiDirectBridge* bridge, const std::string& name, bool isUnion) {
   if (bridge == nullptr || name.empty()) {
     return nullptr;
   }
@@ -1424,7 +1426,7 @@ const NativeApiSymbol* findObjCAggregateSymbol(
 }
 
 void applyObjCEncodingSizeAndAlignment(const char* encoding,
-                                       NativeApiJsiFfiType* ffiType,
+                                       NativeApiDirectFfiType* ffiType,
                                        uint16_t* sizeOut = nullptr) {
   if (encoding == nullptr || ffiType == nullptr) {
     return;
@@ -1445,15 +1447,15 @@ void applyObjCEncodingSizeAndAlignment(const char* encoding,
   }
 }
 
-NativeApiJsiType parseObjCEncodedJsiType(
-    const char* encoding, NativeApiJsiBridge* bridge = nullptr,
+NativeApiDirectType parseObjCEncodedDirectType(
+    const char* encoding, NativeApiDirectBridge* bridge = nullptr,
     const char** endEncoding = nullptr);
 
-bool unsupportedJsiType(const NativeApiJsiType& type);
+bool unsupportedDirectType(const NativeApiDirectType& type);
 
-NativeApiJsiType parseObjCEncodedAggregateJsiType(
-    const char* encoding, NativeApiJsiBridge* bridge, const char** endEncoding) {
-  NativeApiJsiType type;
+NativeApiDirectType parseObjCEncodedAggregateDirectType(
+    const char* encoding, NativeApiDirectBridge* bridge, const char** endEncoding) {
+  NativeApiDirectType type;
   type.kind = metagen::mdTypeStruct;
 
   const bool isUnion = *encoding == '(';
@@ -1491,7 +1493,7 @@ NativeApiJsiType parseObjCEncodedAggregateJsiType(
     return type;
   }
 
-  auto info = std::make_shared<NativeApiJsiAggregateInfo>();
+  auto info = std::make_shared<NativeApiDirectAggregateInfo>();
   info->name = aggregateName;
   info->isUnion = isUnion;
   info->offset = MD_SECTION_OFFSET_NULL;
@@ -1504,13 +1506,13 @@ NativeApiJsiType parseObjCEncodedAggregateJsiType(
   size_t maxFieldSize = 0;
   size_t fieldIndex = 0;
   while (*cursor != '\0' && *cursor != close) {
-    NativeApiJsiAggregateField field;
+    NativeApiDirectAggregateField field;
     std::string encodedFieldName;
     cursor = skipObjCTypeFieldName(cursor, &encodedFieldName);
     const char* fieldStart = cursor;
     const char* fieldEnd = cursor;
-    field.type = parseObjCEncodedJsiType(cursor, bridge, &fieldEnd);
-    if (fieldEnd == fieldStart || unsupportedJsiType(field.type)) {
+    field.type = parseObjCEncodedDirectType(cursor, bridge, &fieldEnd);
+    if (fieldEnd == fieldStart || unsupportedDirectType(field.type)) {
       type.supported = false;
       type.ffiType = nullptr;
       if (endEncoding != nullptr) {
@@ -1559,7 +1561,7 @@ NativeApiJsiType parseObjCEncodedAggregateJsiType(
     info->fields[i].name = knownNames[i];
   }
 
-  auto ffiOwner = std::make_shared<NativeApiJsiFfiType>();
+  auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
   if (isUnion) {
     ffi_type* largest = &ffi_type_uint8;
     size_t largestSize = 0;
@@ -1599,9 +1601,9 @@ NativeApiJsiType parseObjCEncodedAggregateJsiType(
   return type;
 }
 
-NativeApiJsiType parseObjCEncodedArrayJsiType(
-    const char* encoding, NativeApiJsiBridge* bridge, const char** endEncoding) {
-  NativeApiJsiType type;
+NativeApiDirectType parseObjCEncodedArrayDirectType(
+    const char* encoding, NativeApiDirectBridge* bridge, const char** endEncoding) {
+  NativeApiDirectType type;
   type.kind = metagen::mdTypeArray;
 
   const char* cursor = encoding + 1;
@@ -1615,8 +1617,8 @@ NativeApiJsiType parseObjCEncodedArrayJsiType(
   type.arraySize = count;
 
   const char* elementEnd = cursor;
-  type.elementType = std::make_shared<NativeApiJsiType>(
-      parseObjCEncodedJsiType(cursor, bridge, &elementEnd));
+  type.elementType = std::make_shared<NativeApiDirectType>(
+      parseObjCEncodedDirectType(cursor, bridge, &elementEnd));
   cursor = elementEnd;
   if (*cursor == ']') {
     cursor++;
@@ -1625,7 +1627,7 @@ NativeApiJsiType parseObjCEncodedArrayJsiType(
     *endEncoding = cursor;
   }
 
-  auto ffiOwner = std::make_shared<NativeApiJsiFfiType>();
+  auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
   ffi_type* elementFfiType =
       type.elementType != nullptr && type.elementType->ffiType != nullptr
           ? type.elementType->ffiType
@@ -1645,10 +1647,10 @@ NativeApiJsiType parseObjCEncodedArrayJsiType(
   return type;
 }
 
-NativeApiJsiType parseObjCEncodedJsiType(
-    const char* encoding, NativeApiJsiBridge* bridge, const char** endEncoding) {
+NativeApiDirectType parseObjCEncodedDirectType(
+    const char* encoding, NativeApiDirectBridge* bridge, const char** endEncoding) {
   encoding = skipObjCTypeQualifiers(encoding);
-  NativeApiJsiType type;
+  NativeApiDirectType type;
 
   if (encoding == nullptr || *encoding == '\0') {
     type.kind = metagen::mdTypePointer;
@@ -1660,7 +1662,7 @@ NativeApiJsiType parseObjCEncodedJsiType(
   }
 
   auto finishPrimitive = [&](const char* end) {
-    type.ffiType = ffiTypeForJsiKind(type.kind);
+    type.ffiType = ffiTypeForDirectKind(type.kind);
     type.supported = type.ffiType != nullptr;
     if (endEncoding != nullptr) {
       *endEncoding = end;
@@ -1745,8 +1747,8 @@ NativeApiJsiType parseObjCEncodedJsiType(
       type.kind = metagen::mdTypePointer;
       {
         const char* elementEnd = encoding + 1;
-        type.elementType = std::make_shared<NativeApiJsiType>(
-            parseObjCEncodedJsiType(encoding + 1, bridge, &elementEnd));
+        type.elementType = std::make_shared<NativeApiDirectType>(
+            parseObjCEncodedDirectType(encoding + 1, bridge, &elementEnd));
         type.ffiType = &ffi_type_pointer;
         type.supported = true;
         if (elementEnd == encoding + 1 && encoding[1] != '\0') {
@@ -1759,9 +1761,9 @@ NativeApiJsiType parseObjCEncodedJsiType(
       return type;
     case '{':
     case '(':
-      return parseObjCEncodedAggregateJsiType(encoding, bridge, endEncoding);
+      return parseObjCEncodedAggregateDirectType(encoding, bridge, endEncoding);
     case '[':
-      return parseObjCEncodedArrayJsiType(encoding, bridge, endEncoding);
+      return parseObjCEncodedArrayDirectType(encoding, bridge, endEncoding);
     case 'b': {
       type.kind = metagen::mdTypeUInt;
       const char* cursor = encoding + 1;
@@ -1781,17 +1783,17 @@ NativeApiJsiType parseObjCEncodedJsiType(
   return finishPrimitive(encoding + 1);
 }
 
-std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(
-    Method method, NativeApiJsiBridge* bridge = nullptr) {
+std::optional<NativeApiDirectSignature> parseObjCMethodDirectSignature(
+    Method method, NativeApiDirectBridge* bridge = nullptr) {
   if (method == nullptr) {
     return std::nullopt;
   }
 
-  NativeApiJsiSignature signature;
+  NativeApiDirectSignature signature;
   signature.implicitArgumentCount = 2;
 
   char* returnEncoding = method_copyReturnType(method);
-  signature.returnType = parseObjCEncodedJsiType(returnEncoding, bridge);
+  signature.returnType = parseObjCEncodedDirectType(returnEncoding, bridge);
   if (returnEncoding != nullptr) {
     free(returnEncoding);
   }
@@ -1799,7 +1801,7 @@ std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(
   unsigned int totalArgc = method_getNumberOfArguments(method);
   for (unsigned int i = 2; i < totalArgc; i++) {
     char* argEncoding = method_copyArgumentType(method, i);
-    signature.argumentTypes.push_back(parseObjCEncodedJsiType(argEncoding, bridge));
+    signature.argumentTypes.push_back(parseObjCEncodedDirectType(argEncoding, bridge));
     if (argEncoding != nullptr) {
       free(argEncoding);
     }
@@ -1809,7 +1811,7 @@ std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(
   signature.ffiTypes.push_back(&ffi_type_pointer);
   signature.ffiTypes.push_back(&ffi_type_pointer);
   for (const auto& argType : signature.argumentTypes) {
-    signature.ffiTypes.push_back(ffiTypeForJsiArgument(argType));
+    signature.ffiTypes.push_back(ffiTypeForDirectArgument(argType));
   }
 
   ffi_status status = ffi_prep_cif(
@@ -1822,7 +1824,7 @@ std::optional<NativeApiJsiSignature> parseObjCMethodJsiSignature(
   return signature;
 }
 
-bool prepareJsiMethodSignature(NativeApiJsiSignature* signature) {
+bool prepareDirectMethodSignature(NativeApiDirectSignature* signature) {
   if (signature == nullptr) {
     return false;
   }
@@ -1832,7 +1834,7 @@ bool prepareJsiMethodSignature(NativeApiJsiSignature* signature) {
   signature->ffiTypes.push_back(&ffi_type_pointer);
   signature->ffiTypes.push_back(&ffi_type_pointer);
   for (const auto& argType : signature->argumentTypes) {
-    ffi_type* ffiType = ffiTypeForJsiArgument(argType);
+    ffi_type* ffiType = ffiTypeForDirectArgument(argType);
     if (ffiType == nullptr) {
       signature->prepared = false;
       return false;
@@ -1849,8 +1851,8 @@ bool prepareJsiMethodSignature(NativeApiJsiSignature* signature) {
   return signature->prepared;
 }
 
-bool reconcileObjCMethodRuntimeSignature(NativeApiJsiSignature* signature,
-                                         const NativeApiJsiSignature& runtime) {
+bool reconcileObjCMethodRuntimeSignature(NativeApiDirectSignature* signature,
+                                         const NativeApiDirectSignature& runtime) {
   if (signature == nullptr ||
       signature->argumentTypes.size() != runtime.argumentTypes.size()) {
     return false;
@@ -1858,8 +1860,8 @@ bool reconcileObjCMethodRuntimeSignature(NativeApiJsiSignature* signature,
 
   bool changed = false;
   for (size_t i = 0; i < signature->argumentTypes.size(); i++) {
-    NativeApiJsiType& metadataType = signature->argumentTypes[i];
-    const NativeApiJsiType& runtimeType = runtime.argumentTypes[i];
+    NativeApiDirectType& metadataType = signature->argumentTypes[i];
+    const NativeApiDirectType& runtimeType = runtime.argumentTypes[i];
     if (runtimeType.kind == metagen::mdTypeBlock &&
         metadataType.kind == metagen::mdTypeFunctionPointer) {
       metadataType.kind = metagen::mdTypeBlock;
@@ -1869,10 +1871,10 @@ bool reconcileObjCMethodRuntimeSignature(NativeApiJsiSignature* signature,
     }
   }
 
-  return !changed || prepareJsiMethodSignature(signature);
+  return !changed || prepareDirectMethodSignature(signature);
 }
 
-bool unsupportedJsiType(const NativeApiJsiType& type) {
+bool unsupportedDirectType(const NativeApiDirectType& type) {
   if (type.kind == metagen::mdTypeStruct && type.aggregateInfo != nullptr &&
       type.aggregateInfo->ffi != nullptr) {
     return false;
@@ -1880,93 +1882,93 @@ bool unsupportedJsiType(const NativeApiJsiType& type) {
   return !type.supported || type.ffiType == nullptr;
 }
 
-bool signatureSupportedForJsiCallback(const NativeApiJsiSignature& signature) {
+bool signatureSupportedForDirectCallback(const NativeApiDirectSignature& signature) {
   if (!signature.prepared || signature.variadic ||
-      unsupportedJsiType(signature.returnType)) {
+      unsupportedDirectType(signature.returnType)) {
     return false;
   }
   for (const auto& argType : signature.argumentTypes) {
-    if (unsupportedJsiType(argType)) {
+    if (unsupportedDirectType(argType)) {
       return false;
     }
   }
   return true;
 }
 
-std::shared_ptr<NativeApiJsiCallback> createJsiCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
-    const NativeApiJsiType& type, Function function, bool block,
-    NativeApiJsiCallbackThreadPolicy threadPolicy =
-        NativeApiJsiCallbackThreadPolicy::Default) {
+std::shared_ptr<NativeApiDirectCallback> createDirectCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
+    const NativeApiDirectType& type, Function function, bool block,
+    NativeApiDirectCallbackThreadPolicy threadPolicy =
+        NativeApiDirectCallbackThreadPolicy::Default) {
   if (bridge == nullptr || bridge->metadata() == nullptr ||
       type.signatureOffset == MD_SECTION_OFFSET_NULL) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "Native callback metadata is unavailable.");
   }
 
-  auto parsed = parseMetadataJsiSignature(
+  auto parsed = parseMetadataDirectSignature(
       bridge->metadata(), type.signatureOffset, block ? 1 : 0, bridge.get());
-  if (!parsed || !signatureSupportedForJsiCallback(*parsed)) {
-    throw facebook::jsi::JSError(
-        runtime, "Native callback signature is not supported by pure JSI.");
+  if (!parsed || !signatureSupportedForDirectCallback(*parsed)) {
+    throw JSError(
+        runtime, "Native callback signature is not supported by direct engine.");
   }
 
   auto signature =
-      std::make_shared<NativeApiJsiSignature>(std::move(*parsed));
-  auto callback = std::make_shared<NativeApiJsiCallback>(
+      std::make_shared<NativeApiDirectSignature>(std::move(*parsed));
+  auto callback = std::make_shared<NativeApiDirectCallback>(
       runtime, bridge, std::move(signature), std::move(function), block,
       threadPolicy);
   if (!block) {
-    bridge->retainJsiLifetime(callback);
+    bridge->retainDirectLifetime(callback);
   }
   return callback;
 }
 
-std::shared_ptr<NativeApiJsiCallback> createJsiMethodCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+std::shared_ptr<NativeApiDirectCallback> createDirectMethodCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     const std::string& selectorName, MDSectionOffset signatureOffset,
     Function function, bool returnOwned) {
   if (bridge == nullptr || bridge->metadata() == nullptr ||
       signatureOffset == MD_SECTION_OFFSET_NULL) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "Native method callback metadata is unavailable.");
   }
 
-  auto parsed = parseMetadataJsiSignature(
+  auto parsed = parseMetadataDirectSignature(
       bridge->metadata(), signatureOffset, 2, bridge.get(), returnOwned);
-  if (!parsed || !signatureSupportedForJsiCallback(*parsed)) {
-    throw facebook::jsi::JSError(
-        runtime, "Native method callback signature is not supported by pure JSI.");
+  if (!parsed || !signatureSupportedForDirectCallback(*parsed)) {
+    throw JSError(
+        runtime, "Native method callback signature is not supported by direct engine.");
   }
   parsed->selectorName = selectorName;
 
   auto signature =
-      std::make_shared<NativeApiJsiSignature>(std::move(*parsed));
-  auto threadPolicy = readJsiCallbackThreadPolicy(runtime, function);
-  auto callback = std::make_shared<NativeApiJsiCallback>(
+      std::make_shared<NativeApiDirectSignature>(std::move(*parsed));
+  auto threadPolicy = readDirectCallbackThreadPolicy(runtime, function);
+  auto callback = std::make_shared<NativeApiDirectCallback>(
       runtime, bridge, std::move(signature), std::move(function), false,
       threadPolicy, true);
-  bridge->retainJsiLifetime(callback);
+  bridge->retainDirectLifetime(callback);
   return callback;
 }
 
-std::shared_ptr<NativeApiJsiCallback> createJsiMethodCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
-    const std::string& selectorName, NativeApiJsiSignature signature,
+std::shared_ptr<NativeApiDirectCallback> createDirectMethodCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
+    const std::string& selectorName, NativeApiDirectSignature signature,
     Function function) {
   signature.selectorName = selectorName;
-  prepareJsiMethodSignature(&signature);
-  if (!signatureSupportedForJsiCallback(signature)) {
-    throw facebook::jsi::JSError(
-        runtime, "Native method callback signature is not supported by pure JSI.");
+  prepareDirectMethodSignature(&signature);
+  if (!signatureSupportedForDirectCallback(signature)) {
+    throw JSError(
+        runtime, "Native method callback signature is not supported by direct engine.");
   }
 
   auto sharedSignature =
-      std::make_shared<NativeApiJsiSignature>(std::move(signature));
-  auto threadPolicy = readJsiCallbackThreadPolicy(runtime, function);
-  auto callback = std::make_shared<NativeApiJsiCallback>(
+      std::make_shared<NativeApiDirectSignature>(std::move(signature));
+  auto threadPolicy = readDirectCallbackThreadPolicy(runtime, function);
+  auto callback = std::make_shared<NativeApiDirectCallback>(
       runtime, bridge, std::move(sharedSignature), std::move(function), false,
       threadPolicy, true);
-  bridge->retainJsiLifetime(callback);
+  bridge->retainDirectLifetime(callback);
   return callback;
 }

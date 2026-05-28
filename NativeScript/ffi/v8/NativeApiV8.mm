@@ -3,33 +3,33 @@
 #ifdef TARGET_ENGINE_V8
 
 #include "NativeApiV8Runtime.h"
+#include "ffi/direct/NativeApiDirectSignatureDispatch.h"
 
 namespace nativescript {
 
-using NativeApiJsiConfig = NativeApiDirectConfig;
-using NativeApiJsiScheduler = NativeApiDirectScheduler;
-
 namespace {
 
-using facebook::jsi::Array;
-using facebook::jsi::ArrayBuffer;
-using facebook::jsi::BigInt;
-using facebook::jsi::Function;
-using facebook::jsi::HostObject;
-using facebook::jsi::MutableBuffer;
-using facebook::jsi::Object;
-using facebook::jsi::PropNameID;
-using facebook::jsi::Runtime;
-using facebook::jsi::String;
-using facebook::jsi::StringBuffer;
-using facebook::jsi::Value;
+using nativescript::direct::Array;
+using nativescript::direct::ArrayBuffer;
+using nativescript::direct::BigInt;
+using nativescript::direct::Function;
+using nativescript::direct::HostObject;
+using nativescript::direct::MutableBuffer;
+using nativescript::direct::Object;
+using nativescript::direct::PropNameID;
+using nativescript::direct::Runtime;
+using nativescript::direct::String;
+using nativescript::direct::StringBuffer;
+using nativescript::direct::Value;
+using nativescript::direct::JSError;
 using metagen::MDMemberFlag;
 using metagen::MDMetadataReader;
 using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
 // clang-format off
-#include "jsi/NativeApiJsiBridge.h"
+#define NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME "v8"
+#include "ffi/direct/NativeApiDirectBridge.h"
 // clang-format on
 
 #define NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS 1
@@ -39,8 +39,8 @@ using metagen::MDTypeKind;
 struct NativeApiV8LazyGlobalData {
   NativeApiV8LazyGlobalData(v8::Isolate* isolate, const std::string& name,
                             const std::string& kind) {
-    nameValue.Reset(isolate, facebook::jsi::v8direct::makeV8String(isolate, name));
-    kindValue.Reset(isolate, facebook::jsi::v8direct::makeV8String(isolate, kind));
+    nameValue.Reset(isolate, direct::v8direct::makeV8String(isolate, name));
+    kindValue.Reset(isolate, direct::v8direct::makeV8String(isolate, kind));
   }
 
   ~NativeApiV8LazyGlobalData() {
@@ -52,13 +52,13 @@ struct NativeApiV8LazyGlobalData {
   v8::Global<v8::String> kindValue;
 };
 
-std::shared_ptr<Runtime> retainNativeApiJsiRuntime(Runtime& runtime) {
+std::shared_ptr<Runtime> retainNativeApiDirectRuntime(Runtime& runtime) {
   return std::make_shared<Runtime>(runtime.state());
 }
 
-class NativeApiJsiRuntimeScope final {
+class NativeApiDirectRuntimeScope final {
  public:
-  explicit NativeApiJsiRuntimeScope(Runtime& runtime)
+  explicit NativeApiDirectRuntimeScope(Runtime& runtime)
       : locker_(runtime.isolate()),
         isolateScope_(runtime.isolate()),
         handleScope_(runtime.isolate()),
@@ -92,7 +92,7 @@ void NativeApiV8LazyGlobalGetter(v8::Local<v8::Name>,
   v8::Local<v8::Object> global = context->Global();
   v8::Local<v8::Value> resolverValue;
   if (!global
-           ->Get(context, facebook::jsi::v8direct::makeV8String(
+           ->Get(context, direct::v8direct::makeV8String(
                               isolate, "__nativeScriptResolveNativeApiLazyGlobal"))
            .ToLocal(&resolverValue) ||
       !resolverValue->IsFunction()) {
@@ -114,7 +114,7 @@ void NativeApiV8LazyGlobalGetter(v8::Local<v8::Name>,
   info.GetReturnValue().Set(result);
 }
 
-bool InstallNativeApiEngineLazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiJsiBridge>,
+bool InstallNativeApiEngineLazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiDirectBridge>,
                                       const std::string& name, const std::string& kind,
                                       bool force) {
   if (name.empty() || kind.empty()) {
@@ -125,7 +125,7 @@ bool InstallNativeApiEngineLazyGlobal(Runtime& runtime, std::shared_ptr<NativeAp
   v8::EscapableHandleScope handleScope(isolate);
   v8::Local<v8::Context> context = runtime.context();
   v8::Local<v8::Object> global = context->Global();
-  v8::Local<v8::String> property = facebook::jsi::v8direct::makeV8String(isolate, name);
+  v8::Local<v8::String> property = direct::v8direct::makeV8String(isolate, name);
   if (!force && global->HasOwnProperty(context, property).FromMaybe(false)) {
     return false;
   }
@@ -144,17 +144,17 @@ bool InstallNativeApiEngineLazyGlobal(Runtime& runtime, std::shared_ptr<NativeAp
 }
 
 // clang-format off
-#include "jsi/NativeApiJsiHostObjects.h"
-#include "jsi/NativeApiJsiCallbacks.h"
-#include "jsi/NativeApiJsiConversion.h"
-#include "jsi/NativeApiJsiInvocation.h"
-#include "jsi/NativeApiJsiClassBuilder.h"
-#include "jsi/NativeApiJsiHostObject.h"
+#include "ffi/direct/NativeApiDirectHostObjects.h"
+#include "ffi/direct/NativeApiDirectCallbacks.h"
+#include "ffi/direct/NativeApiDirectConversion.h"
+#include "ffi/direct/NativeApiDirectInvocation.h"
+#include "ffi/direct/NativeApiDirectClassBuilder.h"
+#include "ffi/direct/NativeApiDirectHostObject.h"
 // clang-format on
 
 }  // namespace
 
-#include "jsi/NativeApiJsiInstall.h"
+#include "ffi/direct/NativeApiDirectInstall.h"
 
 void InstallNativeApiV8(v8::Isolate* isolate, v8::Local<v8::Context> context,
                         const NativeApiV8Config& config) {
@@ -166,7 +166,7 @@ void InstallNativeApiV8(v8::Isolate* isolate, v8::Local<v8::Context> context,
   v8::HandleScope handleScope(isolate);
   v8::Context::Scope contextScope(context);
   Runtime runtime(isolate, context);
-  InstallNativeApiJSI(runtime, config);
+  InstallNativeApiDirect(runtime, config);
 }
 
 }  // namespace nativescript

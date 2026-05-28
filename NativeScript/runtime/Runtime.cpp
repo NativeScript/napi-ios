@@ -15,7 +15,7 @@
 #include "v8-api.h"
 #endif  // TARGET_ENGINE_V8
 #ifdef TARGET_ENGINE_HERMES
-#include "ffi/hermes/jsi/NativeApiJsi.h"
+#include "ffi/hermes/NativeApiJsi.h"
 #endif  // TARGET_ENGINE_HERMES
 #ifdef TARGET_ENGINE_JSC
 #include "ffi/jsc/NativeApiJSC.h"
@@ -706,11 +706,6 @@ void Runtime::Init(bool isWorker) {
     nativeApiJsiConfig.nativeInvocationInvoker =
         [env = env_](std::function<void()> task) {
           InvokeWithUnlockedHermesRuntime(env, task);
-        };
-    nativeApiJsiConfig.nativeCallbackInvoker =
-        [env = env_](std::function<void()> task) {
-          NapiScope scope(env);
-          task();
         };
     nativeApiJsiConfig.jsThreadCallbackInvoker =
         [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {

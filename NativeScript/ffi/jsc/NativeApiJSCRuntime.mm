@@ -2,8 +2,8 @@
 
 #ifdef TARGET_ENGINE_JSC
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace direct {
 
 Object Runtime::global() {
   return Object::fromValueStorage(Value(*this, JSContextGetGlobalObject(context())).storage_);
@@ -24,7 +24,7 @@ Value Runtime::evaluateJavaScript(std::shared_ptr<StringBuffer> buffer,
   return Value(*this, result);
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace direct
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_JSC

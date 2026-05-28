@@ -1,7 +1,7 @@
 #ifndef NATIVESCRIPT_FFI_QUICKJS_NATIVE_API_QUICKJS_H
 #define NATIVESCRIPT_FFI_QUICKJS_NATIVE_API_QUICKJS_H
 
-#include "ffi/shared/direct/NativeApiDirect.h"
+#include "ffi/direct/NativeApiDirect.h"
 #include "quickjs.h"
 
 namespace nativescript {

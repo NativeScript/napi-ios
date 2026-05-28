@@ -2,8 +2,8 @@
 
 #ifdef TARGET_ENGINE_QUICKJS
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace direct {
 
 String BigInt::toString(Runtime& runtime, int) const {
   JSValue value = local(runtime);
@@ -34,7 +34,7 @@ Value Runtime::evaluateJavaScript(std::shared_ptr<StringBuffer> buffer,
   return value;
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace direct
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_QUICKJS

@@ -2,9 +2,9 @@ std::string stringPropertyOrEmpty(Runtime& runtime, const Object& object,
                                   const char* name);
 void* pointerFromSymbolLikeObject(Runtime& runtime, const Object& object);
 
-id objectFromJsiValue(Runtime& runtime,
-                      const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                      const Value& value, NativeApiJsiArgumentFrame& frame,
+id objectFromDirectValue(Runtime& runtime,
+                      const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                      const Value& value, NativeApiDirectArgumentFrame& frame,
                       bool mutableString) {
   if (value.isNull() || value.isUndefined()) {
     return nil;
@@ -32,7 +32,7 @@ id objectFromJsiValue(Runtime& runtime,
     if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
       return object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     }
-    if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+    if (Class cls = nativeClassFromDirectObject(runtime, object)) {
       return static_cast<id>(cls);
     }
     if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
@@ -80,14 +80,14 @@ id objectFromJsiValue(Runtime& runtime,
                                  .callWithThis(runtime, object, nullptr, 0);
       if (primitiveValue.isString() || primitiveValue.isBool() ||
           primitiveValue.isNumber()) {
-        return objectFromJsiValue(runtime, bridge, primitiveValue, frame,
+        return objectFromDirectValue(runtime, bridge, primitiveValue, frame,
                                   mutableString);
       }
     }
 
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
-    if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+    if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
       NSData* data = [NSData dataWithBytes:bytes length:byteLength];
       bridge->rememberRoundTripValue(runtime, data, value);
       return data;
@@ -98,7 +98,7 @@ id objectFromJsiValue(Runtime& runtime,
       NSMutableArray* nativeArray =
           [NSMutableArray arrayWithCapacity:array.size(runtime)];
       for (size_t i = 0; i < array.size(runtime); i++) {
-        id element = objectFromJsiValue(runtime, bridge,
+        id element = objectFromDirectValue(runtime, bridge,
                                         array.getValueAtIndex(runtime, i),
                                         frame, false);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
@@ -114,7 +114,7 @@ id objectFromJsiValue(Runtime& runtime,
       NSMutableArray* nativeArray = [NSMutableArray arrayWithCapacity:length];
       for (size_t i = 0; i < length; i++) {
         std::string key = std::to_string(i);
-        id element = objectFromJsiValue(
+        id element = objectFromDirectValue(
             runtime, bridge, object.getProperty(runtime, key.c_str()), frame,
             false);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
@@ -150,10 +150,10 @@ id objectFromJsiValue(Runtime& runtime,
           if (pair.size(runtime) < 2) {
             continue;
           }
-          id key = objectFromJsiValue(runtime, bridge,
+          id key = objectFromDirectValue(runtime, bridge,
                                       pair.getValueAtIndex(runtime, 0),
                                       frame, false);
-          id nativeValue = objectFromJsiValue(runtime, bridge,
+          id nativeValue = objectFromDirectValue(runtime, bridge,
                                               pair.getValueAtIndex(runtime, 1),
                                               frame, false);
           if (key != nil) {
@@ -179,7 +179,7 @@ id objectFromJsiValue(Runtime& runtime,
         continue;
       }
       id nativeValue =
-          objectFromJsiValue(runtime, bridge, propertyValue, frame, false);
+          objectFromDirectValue(runtime, bridge, propertyValue, frame, false);
       NSString* nativeKey = [NSString stringWithUTF8String:key.c_str()];
       if (nativeKey != nil) {
         [dictionary setObject:nativeValue != nil ? nativeValue : [NSNull null]
@@ -189,7 +189,7 @@ id objectFromJsiValue(Runtime& runtime,
     bridge->rememberRoundTripValue(runtime, dictionary, value);
     return dictionary;
   }
-  throw facebook::jsi::JSError(runtime,
+  throw JSError(runtime,
                                "Value cannot be converted to Objective-C object.");
 }
 
@@ -281,8 +281,8 @@ void* pointerFromSymbolLikeObject(Runtime& runtime, const Object& object) {
   return lookupProtocolByNativeName(runtimeName);
 }
 
-void* pointerFromJsiValue(Runtime& runtime, const Value& value,
-                          NativeApiJsiArgumentFrame& frame) {
+void* pointerFromDirectValue(Runtime& runtime, const Value& value,
+                          NativeApiDirectArgumentFrame& frame) {
   if (value.isNull() || value.isUndefined()) {
     return nullptr;
   }
@@ -297,7 +297,7 @@ void* pointerFromJsiValue(Runtime& runtime, const Value& value,
     if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
       return object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     }
-    if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+    if (Class cls = nativeClassFromDirectObject(runtime, object)) {
       return cls;
     }
     if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
@@ -324,7 +324,7 @@ void* pointerFromJsiValue(Runtime& runtime, const Value& value,
     }
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
-    if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+    if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
       return const_cast<uint8_t*>(bytes);
     }
   }
@@ -333,7 +333,7 @@ void* pointerFromJsiValue(Runtime& runtime, const Value& value,
     char* string = strdup(utf8.c_str());
     return string;
   }
-  throw facebook::jsi::JSError(runtime, "Value cannot be converted to pointer.");
+  throw JSError(runtime, "Value cannot be converted to pointer.");
 }
 
 bool readPointerLikeValue(Runtime& runtime, const Value& value, void** pointer) {
@@ -357,7 +357,7 @@ bool readPointerLikeValue(Runtime& runtime, const Value& value, void** pointer) 
     *pointer = object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     return true;
   }
-  if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+  if (Class cls = nativeClassFromDirectObject(runtime, object)) {
     *pointer = cls;
     return true;
   }
@@ -391,7 +391,7 @@ void writeNumericArgument(Runtime& runtime, const Value& value, void* target,
   }
 
   if (!numericValue->isNumber() && !numericValue->isBool()) {
-    throw facebook::jsi::JSError(runtime,
+    throw JSError(runtime,
                                  std::string("Expected numeric ") + typeName +
                                      " argument.");
   }
@@ -400,18 +400,18 @@ void writeNumericArgument(Runtime& runtime, const Value& value, void* target,
   *static_cast<T*>(target) = static_cast<T>(number);
 }
 
-void convertJsiArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                        const NativeApiJsiType& type,
+void convertDirectArgument(Runtime& runtime,
+                        const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                        const NativeApiDirectType& type,
                         const Value& value, void* target,
-                        NativeApiJsiArgumentFrame& frame);
+                        NativeApiDirectArgumentFrame& frame);
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                               const NativeApiJsiType& type, void* value);
+                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                               const NativeApiDirectType& type, void* value);
 
-Class classFromJsiValue(Runtime& runtime, const Value& value);
-Protocol* protocolFromJsiValue(Runtime& runtime, const Value& value);
+Class classFromDirectValue(Runtime& runtime, const Value& value);
+Protocol* protocolFromDirectValue(Runtime& runtime, const Value& value);
 
 std::optional<size_t> parseArrayIndexProperty(const std::string& property) {
   if (property.empty()) {
@@ -431,15 +431,15 @@ std::optional<size_t> parseArrayIndexProperty(const std::string& property) {
   return index;
 }
 
-size_t referenceElementStride(const NativeApiJsiType& type) {
+size_t referenceElementStride(const NativeApiDirectType& type) {
   return std::max<size_t>(nativeSizeForType(type), 1);
 }
 
 void convertAggregateArgument(Runtime& runtime,
-                              const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                              const NativeApiJsiType& type,
+                              const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                              const NativeApiDirectType& type,
                               const Value& value, void* target,
-                              NativeApiJsiArgumentFrame& frame) {
+                              NativeApiDirectArgumentFrame& frame) {
   size_t size = nativeSizeForType(type);
   if (size == 0) {
     return;
@@ -477,7 +477,7 @@ void convertAggregateArgument(Runtime& runtime,
 
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
-    if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+    if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
       if (bytes != nullptr) {
         std::memcpy(target, bytes, std::min(byteLength, size));
       }
@@ -486,10 +486,10 @@ void convertAggregateArgument(Runtime& runtime,
   }
 
   if (type.aggregateInfo == nullptr) {
-    throw facebook::jsi::JSError(runtime, "Missing native struct metadata.");
+    throw JSError(runtime, "Missing native struct metadata.");
   }
   if (!value.isObject()) {
-    throw facebook::jsi::JSError(runtime, "Expected struct descriptor object.");
+    throw JSError(runtime, "Expected struct descriptor object.");
   }
 
   Object object = value.asObject(runtime);
@@ -500,16 +500,16 @@ void convertAggregateArgument(Runtime& runtime,
     }
     Value fieldValue = object.getProperty(runtime, field.name.c_str());
     void* fieldTarget = static_cast<uint8_t*>(target) + field.offset;
-    convertJsiArgument(runtime, bridge, field.type, fieldValue, fieldTarget,
+    convertDirectArgument(runtime, bridge, field.type, fieldValue, fieldTarget,
                        frame);
   }
 }
 
 void convertIndexedAggregateArgument(Runtime& runtime,
-                                     const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                                     const NativeApiJsiType& type,
+                                     const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                                     const NativeApiDirectType& type,
                                      const Value& value, void* target,
-                                     NativeApiJsiArgumentFrame& frame) {
+                                     NativeApiDirectArgumentFrame& frame) {
   size_t size = nativeSizeForType(type);
   std::memset(target, 0, size);
   if (value.isNull() || value.isUndefined()) {
@@ -518,7 +518,7 @@ void convertIndexedAggregateArgument(Runtime& runtime,
   if (value.isObject()) {
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
-    if (readJsiBuffer(runtime, value.asObject(runtime), &bytes, &byteLength)) {
+    if (readDirectBuffer(runtime, value.asObject(runtime), &bytes, &byteLength)) {
       if (bytes != nullptr) {
         std::memcpy(target, bytes, std::min(byteLength, size));
       }
@@ -526,28 +526,28 @@ void convertIndexedAggregateArgument(Runtime& runtime,
     }
   }
   if (!value.isObject() || !value.asObject(runtime).isArray(runtime)) {
-    throw facebook::jsi::JSError(runtime, "Expected array, ArrayBuffer, or typed array.");
+    throw JSError(runtime, "Expected array, ArrayBuffer, or typed array.");
   }
 
   Array array = value.asObject(runtime).getArray(runtime);
   size_t elementSize = type.elementType != nullptr ? nativeSizeForType(*type.elementType) : 0;
   if (elementSize == 0 || type.elementType == nullptr) {
-    throw facebook::jsi::JSError(runtime, "Invalid native array element type.");
+    throw JSError(runtime, "Invalid native array element type.");
   }
   size_t count = std::min<size_t>(type.arraySize, array.size(runtime));
   for (size_t i = 0; i < count; i++) {
     void* slot = static_cast<uint8_t*>(target) + (i * elementSize);
-    convertJsiArgument(runtime, bridge, *type.elementType,
+    convertDirectArgument(runtime, bridge, *type.elementType,
                        array.getValueAtIndex(runtime, i), slot, frame);
   }
 }
 
-void convertJsiFfiArgument(Runtime& runtime,
-                           const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                           const NativeApiJsiType& type, const Value& value,
-                           void* target, NativeApiJsiArgumentFrame& frame) {
+void convertDirectFfiArgument(Runtime& runtime,
+                           const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                           const NativeApiDirectType& type, const Value& value,
+                           void* target, NativeApiDirectArgumentFrame& frame) {
   if (type.kind != metagen::mdTypeArray) {
-    convertJsiArgument(runtime, bridge, type, value, target, frame);
+    convertDirectArgument(runtime, bridge, type, value, target, frame);
     return;
   }
 
@@ -558,7 +558,7 @@ void convertJsiFfiArgument(Runtime& runtime,
       if (!readPointerLikeValue(runtime, value, &pointer)) {
         const uint8_t* bytes = nullptr;
         size_t byteLength = 0;
-        if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+        if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
           pointer = const_cast<uint8_t*>(bytes);
         }
       }
@@ -576,21 +576,21 @@ void convertJsiFfiArgument(Runtime& runtime,
   *static_cast<void**>(target) = pointer;
 }
 
-void convertJsiArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                        const NativeApiJsiType& type,
+void convertDirectArgument(Runtime& runtime,
+                        const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                        const NativeApiDirectType& type,
                         const Value& value, void* target,
-                        NativeApiJsiArgumentFrame& frame) {
-  if (unsupportedJsiType(type)) {
-    throw facebook::jsi::JSError(runtime,
+                        NativeApiDirectArgumentFrame& frame) {
+  if (unsupportedDirectType(type)) {
+    throw JSError(runtime,
                                  "This native signature is not supported by "
-                                 "the pure JSI bridge yet.");
+                                 "the direct engine bridge yet.");
   }
 
   switch (type.kind) {
     case metagen::mdTypeBool:
       if (!value.isNumber() && !value.isBool()) {
-        throw facebook::jsi::JSError(runtime,
+        throw JSError(runtime,
                                      "Expected boolean or numeric argument.");
       }
       *static_cast<uint8_t*>(target) =
@@ -611,7 +611,7 @@ void convertJsiArgument(Runtime& runtime,
       if (value.isString()) {
         std::string text = value.asString(runtime).utf8(runtime);
         if (text.size() != 1) {
-          throw facebook::jsi::JSError(
+          throw JSError(
               runtime, "Expected a single-character string.");
         }
         *static_cast<uint16_t*>(target) =
@@ -654,7 +654,7 @@ void convertJsiArgument(Runtime& runtime,
         }
         const uint8_t* bytes = nullptr;
         size_t byteLength = 0;
-        if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+        if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
           *static_cast<char**>(target) =
               reinterpret_cast<char*>(const_cast<uint8_t*>(bytes));
           break;
@@ -674,7 +674,7 @@ void convertJsiArgument(Runtime& runtime,
         }
       }
       if (!value.isString()) {
-        throw facebook::jsi::JSError(runtime, "Expected string argument.");
+        throw JSError(runtime, "Expected string argument.");
       }
       std::string utf8 = value.asString(runtime).utf8(runtime);
       char* string = strdup(utf8.c_str());
@@ -687,14 +687,14 @@ void convertJsiArgument(Runtime& runtime,
     case metagen::mdTypeInstanceObject:
     case metagen::mdTypeNSStringObject:
     case metagen::mdTypeNSMutableStringObject: {
-      id object = objectFromJsiValue(
+      id object = objectFromDirectValue(
           runtime, bridge, value, frame,
           type.kind == metagen::mdTypeNSMutableStringObject);
       *static_cast<id*>(target) = object;
       break;
     }
     case metagen::mdTypeClass: {
-      *static_cast<Class*>(target) = classFromJsiValue(runtime, value);
+      *static_cast<Class*>(target) = classFromDirectValue(runtime, value);
       break;
     }
     case metagen::mdTypeSelector: {
@@ -703,7 +703,7 @@ void convertJsiArgument(Runtime& runtime,
         break;
       }
       if (!value.isString()) {
-        throw facebook::jsi::JSError(runtime, "Expected selector string.");
+        throw JSError(runtime, "Expected selector string.");
       }
       std::string selectorName = value.asString(runtime).utf8(runtime);
       *static_cast<SEL*>(target) = sel_registerName(selectorName.c_str());
@@ -734,17 +734,17 @@ void convertJsiArgument(Runtime& runtime,
         }
         const uint8_t* bytes = nullptr;
         size_t byteLength = 0;
-        if (readJsiBuffer(runtime, object, &bytes, &byteLength)) {
+        if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
           void* pointer = const_cast<uint8_t*>(bytes);
           frame.rememberRoundTripValue(bridge, runtime, pointer, value);
           *static_cast<void**>(target) = pointer;
           break;
         }
       }
-      *static_cast<void**>(target) = pointerFromJsiValue(runtime, value, frame);
+      *static_cast<void**>(target) = pointerFromDirectValue(runtime, value, frame);
       break;
     case metagen::mdTypeOpaquePointer:
-      *static_cast<void**>(target) = pointerFromJsiValue(runtime, value, frame);
+      *static_cast<void**>(target) = pointerFromDirectValue(runtime, value, frame);
       break;
     case metagen::mdTypeBlock:
     case metagen::mdTypeFunctionPointer: {
@@ -761,9 +761,9 @@ void convertJsiArgument(Runtime& runtime,
             }
           }
 
-          auto threadPolicy = readJsiCallbackThreadPolicy(runtime, object);
+          auto threadPolicy = readDirectCallbackThreadPolicy(runtime, object);
           auto callback =
-              createJsiCallback(runtime, bridge, type, object.asFunction(runtime),
+              createDirectCallback(runtime, bridge, type, object.asFunction(runtime),
                                 type.kind == metagen::mdTypeBlock, threadPolicy);
           void* pointer = callback->functionPointer();
           if (type.kind == metagen::mdTypeBlock) {
@@ -784,7 +784,7 @@ void convertJsiArgument(Runtime& runtime,
           break;
         }
       }
-      *static_cast<void**>(target) = pointerFromJsiValue(runtime, value, frame);
+      *static_cast<void**>(target) = pointerFromDirectValue(runtime, value, frame);
       break;
     }
     case metagen::mdTypeStruct:
@@ -798,17 +798,17 @@ void convertJsiArgument(Runtime& runtime,
                                       frame);
       break;
     default:
-      throw facebook::jsi::JSError(runtime, "Unsupported JSI argument type.");
+      throw JSError(runtime, "Unsupported Direct argument type.");
   }
 }
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                               const NativeApiJsiType& type, void* value) {
-  if (unsupportedJsiType(type)) {
-    throw facebook::jsi::JSError(runtime,
+                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                               const NativeApiDirectType& type, void* value) {
+  if (unsupportedDirectType(type)) {
+    throw JSError(runtime,
                                  "This native return type is not supported by "
-                                 "the pure JSI bridge yet.");
+                                 "the direct engine bridge yet.");
   }
 
   switch (type.kind) {
@@ -837,10 +837,10 @@ Value convertNativeReturnValue(Runtime& runtime,
       return static_cast<double>(*static_cast<uint32_t*>(value));
     case metagen::mdTypeSLong:
     case metagen::mdTypeSInt64:
-      return signedInteger64ToJsiValue(runtime, *static_cast<int64_t*>(value));
+      return signedInteger64ToDirectValue(runtime, *static_cast<int64_t*>(value));
     case metagen::mdTypeULong:
     case metagen::mdTypeUInt64:
-      return unsignedInteger64ToJsiValue(runtime,
+      return unsignedInteger64ToDirectValue(runtime,
                                          *static_cast<uint64_t*>(value));
     case metagen::mdTypeFloat:
       return static_cast<double>(*static_cast<float*>(value));
@@ -851,7 +851,7 @@ Value convertNativeReturnValue(Runtime& runtime,
       if (string == nullptr) {
         return Value::null();
       }
-      NativeApiJsiType cStringType =
+      NativeApiDirectType cStringType =
           primitiveInteropType(metagen::mdTypeChar);
       return Object::createFromHostObject(
           runtime, std::make_shared<NativeApiReferenceHostObject>(
@@ -1007,15 +1007,15 @@ Value convertNativeReturnValue(Runtime& runtime,
       return result;
     }
     default:
-      throw facebook::jsi::JSError(runtime, "Unsupported JSI return type.");
+      throw JSError(runtime, "Unsupported Direct return type.");
   }
 }
 
 void NativeApiReferenceHostObject::ensureStorage(
-    Runtime& runtime, NativeApiJsiType type, NativeApiJsiArgumentFrame& frame,
+    Runtime& runtime, NativeApiDirectType type, NativeApiDirectArgumentFrame& frame,
     size_t elements) {
   size_t elementCount = std::max<size_t>(elements, 1);
-  NativeApiJsiType storageType = std::move(type);
+  NativeApiDirectType storageType = std::move(type);
   size_t stride = std::max<size_t>(nativeSizeForType(storageType), 1);
   size_t required = std::max<size_t>(stride * elementCount, sizeof(void*));
   type_ = std::move(storageType);
@@ -1037,7 +1037,7 @@ void NativeApiReferenceHostObject::ensureStorage(
 
   if (data_ != nullptr && pendingValue_ != nullptr) {
     Value pending(runtime, *pendingValue_);
-    convertJsiArgument(runtime, bridge_, type_, pending, data_, frame);
+    convertDirectArgument(runtime, bridge_, type_, pending, data_, frame);
     pendingValue_.reset();
   }
 }
@@ -1091,7 +1091,7 @@ void NativeApiReferenceHostObject::set(Runtime& runtime,
     return;
   }
   size_t slotIndex = index.value_or(0);
-  NativeApiJsiArgumentFrame frame(1);
+  NativeApiDirectArgumentFrame frame(1);
   if (data_ == nullptr) {
     if (slotIndex == 0) {
       pendingValue_ = std::make_shared<Value>(runtime, value);
@@ -1102,7 +1102,7 @@ void NativeApiReferenceHostObject::set(Runtime& runtime,
   pendingValue_.reset();
   void* slot = static_cast<uint8_t*>(data_) +
                (slotIndex * referenceElementStride(type_));
-  convertJsiArgument(runtime, bridge_, type_, value, slot, frame);
+  convertDirectArgument(runtime, bridge_, type_, value, slot, frame);
 }
 
 Value NativeApiStructObjectHostObject::get(Runtime& runtime,
@@ -1126,7 +1126,7 @@ Value NativeApiStructObjectHostObject::get(Runtime& runtime,
         runtime, PropNameID::forAscii(runtime, "toString"), 0,
         [info](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
           return makeString(runtime,
-                            std::string("[NativeApiJsi ") +
+                            std::string("[NativeApiDirect ") +
                                 (info != nullptr && info->isUnion ? "Union " : "Struct ") +
                                 (info != nullptr ? info->name : "") + "]");
         });
@@ -1156,18 +1156,18 @@ void NativeApiStructObjectHostObject::set(Runtime& runtime,
                                           const Value& value) {
   std::string property = name.utf8(runtime);
   if (info_ == nullptr || data_ == nullptr) {
-    throw facebook::jsi::JSError(runtime, "Struct is not initialized.");
+    throw JSError(runtime, "Struct is not initialized.");
   }
   for (const auto& field : info_->fields) {
     if (field.name != property) {
       continue;
     }
-    NativeApiJsiArgumentFrame frame(1);
-    convertJsiArgument(runtime, bridge_, field.type, value,
+    NativeApiDirectArgumentFrame frame(1);
+    convertDirectArgument(runtime, bridge_, field.type, value,
                        static_cast<uint8_t*>(data_) + field.offset, frame);
     return;
   }
-  throw facebook::jsi::JSError(runtime, "No native struct field: " + property);
+  throw JSError(runtime, "No native struct field: " + property);
 }
 
 std::vector<PropNameID> NativeApiStructObjectHostObject::getPropertyNames(
@@ -1186,15 +1186,15 @@ std::vector<PropNameID> NativeApiStructObjectHostObject::getPropertyNames(
   return names;
 }
 
-NativeApiJsiType primitiveInteropType(MDTypeKind kind) {
-  NativeApiJsiType type;
+NativeApiDirectType primitiveInteropType(MDTypeKind kind) {
+  NativeApiDirectType type;
   type.kind = kind;
-  type.ffiType = ffiTypeForJsiKind(kind);
+  type.ffiType = ffiTypeForDirectKind(kind);
   type.supported = type.ffiType != nullptr;
   return type;
 }
 
-std::optional<NativeApiJsiType> primitiveInteropTypeFromCode(int32_t code) {
+std::optional<NativeApiDirectType> primitiveInteropTypeFromCode(int32_t code) {
   MDTypeKind kind = static_cast<MDTypeKind>(code);
   switch (kind) {
     case metagen::mdTypeVoid:
@@ -1227,8 +1227,8 @@ std::optional<NativeApiJsiType> primitiveInteropTypeFromCode(int32_t code) {
   }
 }
 
-std::optional<NativeApiJsiType> interopTypeFromValue(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+std::optional<NativeApiDirectType> interopTypeFromValue(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     const Value& value) {
   if (value.isNumber()) {
     return primitiveInteropTypeFromCode(static_cast<int32_t>(value.getNumber()));
@@ -1256,7 +1256,7 @@ std::optional<NativeApiJsiType> interopTypeFromValue(
     }
   }
 
-  Class descriptorClass = nativeClassFromJsiObject(runtime, object);
+  Class descriptorClass = nativeClassFromDirectObject(runtime, object);
   if (descriptorClass == Nil &&
       stringPropertyOrEmpty(runtime, object, "kind") == "class") {
     descriptorClass =
@@ -1268,7 +1268,7 @@ std::optional<NativeApiJsiType> interopTypeFromValue(
 
   if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
     auto structObject = object.getHostObject<NativeApiStructObjectHostObject>(runtime);
-    NativeApiJsiType type;
+    NativeApiDirectType type;
     type.kind = metagen::mdTypeStruct;
     type.aggregateInfo = structObject->info();
     type.aggregateOffset = type.aggregateInfo != nullptr
@@ -1318,7 +1318,7 @@ std::optional<NativeApiJsiType> interopTypeFromValue(
       bool isUnion = kindName == "union";
       auto info = bridge->aggregateInfoFor(
           static_cast<MDSectionOffset>(offsetValue.getNumber()), isUnion);
-      NativeApiJsiType type;
+      NativeApiDirectType type;
       type.kind = metagen::mdTypeStruct;
       type.aggregateInfo = info;
       type.aggregateOffset = info != nullptr ? info->offset : MD_SECTION_OFFSET_NULL;
@@ -1333,7 +1333,7 @@ std::optional<NativeApiJsiType> interopTypeFromValue(
 }
 
 Value makeAggregateConstructor(Runtime& runtime,
-                               const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
                                const NativeApiSymbol& symbol) {
   auto info = bridge->aggregateInfoFor(symbol);
   auto constructor = Function::createFromHostFunction(
@@ -1341,12 +1341,12 @@ Value makeAggregateConstructor(Runtime& runtime,
       [bridge, symbol, info](Runtime& runtime, const Value&, const Value* args,
                              size_t count) -> Value {
         if (info == nullptr) {
-          throw facebook::jsi::JSError(runtime,
+          throw JSError(runtime,
                                        "Native aggregate metadata is unavailable: " +
                                            symbol.name);
         }
 
-        NativeApiJsiType type;
+        NativeApiDirectType type;
         type.kind = metagen::mdTypeStruct;
         type.aggregateInfo = info;
         type.aggregateOffset = info->offset;
@@ -1366,7 +1366,7 @@ Value makeAggregateConstructor(Runtime& runtime,
 
         std::vector<unsigned char> storage(info->size, 0);
         if (count > 0) {
-          NativeApiJsiArgumentFrame frame(1);
+          NativeApiDirectArgumentFrame frame(1);
           convertAggregateArgument(runtime, bridge, type, args[0],
                                    storage.data(), frame);
         }
@@ -1393,7 +1393,7 @@ Value makeAggregateConstructor(Runtime& runtime,
               return false;
             }
 
-            NativeApiJsiType type;
+            NativeApiDirectType type;
             type.kind = metagen::mdTypeStruct;
             type.aggregateInfo = info;
             type.aggregateOffset = info->offset;
@@ -1404,10 +1404,10 @@ Value makeAggregateConstructor(Runtime& runtime,
             std::vector<unsigned char> left(info->size, 0);
             std::vector<unsigned char> right(info->size, 0);
             try {
-              NativeApiJsiArgumentFrame leftFrame(1);
+              NativeApiDirectArgumentFrame leftFrame(1);
               convertAggregateArgument(runtime, bridge, type, args[0],
                                        left.data(), leftFrame);
-              NativeApiJsiArgumentFrame rightFrame(1);
+              NativeApiDirectArgumentFrame rightFrame(1);
               convertAggregateArgument(runtime, bridge, type, args[1],
                                        right.data(), rightFrame);
             } catch (const std::exception&) {
@@ -1427,7 +1427,7 @@ Value makeAggregateConstructor(Runtime& runtime,
 }
 
 size_t sizeofInteropType(Runtime& runtime,
-                         const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                         const std::shared_ptr<NativeApiDirectBridge>& bridge,
                          const Value& value) {
   if (auto type = interopTypeFromValue(runtime, bridge, value)) {
     return nativeSizeForType(*type);
@@ -1438,7 +1438,7 @@ size_t sizeofInteropType(Runtime& runtime,
     if (object.isHostObject<NativeApiPointerHostObject>(runtime) ||
         object.isHostObject<NativeApiReferenceHostObject>(runtime) ||
         object.isHostObject<NativeApiObjectHostObject>(runtime) ||
-        nativeClassFromJsiObject(runtime, object) != Nil) {
+        nativeClassFromDirectObject(runtime, object) != Nil) {
       return sizeof(void*);
     }
     void* nativePointer = nullptr;
@@ -1451,11 +1451,11 @@ size_t sizeofInteropType(Runtime& runtime,
     }
   }
 
-  throw facebook::jsi::JSError(runtime, "Invalid type for interop.sizeof.");
+  throw JSError(runtime, "Invalid type for interop.sizeof.");
 }
 
 Object createPointer(Runtime& runtime,
-                     const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                     const std::shared_ptr<NativeApiDirectBridge>& bridge,
                      void* pointer, bool adopted) {
   if (!adopted && bridge != nullptr) {
     Value cached = bridge->findPointerValue(runtime, pointer);
@@ -1513,7 +1513,7 @@ void installInteropHasInstance(Runtime& runtime, Function& constructor,
   }
 }
 
-Class classFromJsiValue(Runtime& runtime, const Value& value) {
+Class classFromDirectValue(Runtime& runtime, const Value& value) {
   if (value.isString()) {
     std::string name = value.asString(runtime).utf8(runtime);
     return objc_lookUpClass(name.c_str());
@@ -1522,7 +1522,7 @@ Class classFromJsiValue(Runtime& runtime, const Value& value) {
     return Nil;
   }
   Object object = value.asObject(runtime);
-  if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+  if (Class cls = nativeClassFromDirectObject(runtime, object)) {
     return cls;
   }
   if (stringPropertyOrEmpty(runtime, object, "kind") == "class") {
@@ -1537,7 +1537,7 @@ Class classFromJsiValue(Runtime& runtime, const Value& value) {
   return Nil;
 }
 
-Protocol* protocolFromJsiValue(Runtime& runtime, const Value& value) {
+Protocol* protocolFromDirectValue(Runtime& runtime, const Value& value) {
   if (value.isString()) {
     std::string name = value.asString(runtime).utf8(runtime);
     Protocol* protocol = objc_getProtocol(name.c_str());
@@ -1573,13 +1573,13 @@ Protocol* protocolFromJsiValue(Runtime& runtime, const Value& value) {
   }
   Value nameValue = object.getProperty(runtime, "name");
   if (nameValue.isString()) {
-    return protocolFromJsiValue(runtime, nameValue);
+    return protocolFromDirectValue(runtime, nameValue);
   }
   return nullptr;
 }
 
 Object createInteropObject(Runtime& runtime,
-                           const std::shared_ptr<NativeApiJsiBridge>& bridge) {
+                           const std::shared_ptr<NativeApiDirectBridge>& bridge) {
   Object interop(runtime);
   Object types(runtime);
   auto setType = [&](const char* name, MDTypeKind kind) {
@@ -1711,7 +1711,7 @@ Object createInteropObject(Runtime& runtime,
 
               uintptr_t address = 0;
               if (!readAddress(args[0], &address)) {
-                throw facebook::jsi::JSError(runtime,
+                throw JSError(runtime,
                                              "Pointer expects a numeric address.");
               }
               pointer = reinterpret_cast<void*>(address);
@@ -1732,13 +1732,13 @@ Object createInteropObject(Runtime& runtime,
       [](Runtime& runtime, const Value&, const Value* args,
          size_t count) -> Value {
         if (count < 1 || !args[0].isObject()) {
-          throw facebook::jsi::JSError(
+          throw JSError(
               runtime, "FunctionReference expects a function.");
         }
 
         Object object = args[0].asObject(runtime);
         if (!object.isFunction(runtime)) {
-          throw facebook::jsi::JSError(
+          throw JSError(
               runtime, "FunctionReference expects a function.");
         }
 
@@ -1768,7 +1768,7 @@ Object createInteropObject(Runtime& runtime,
       runtime, PropNameID::forAscii(runtime, "Reference"), 2,
       [bridge](Runtime& runtime, const Value&, const Value* args,
                size_t count) -> Value {
-            NativeApiJsiType type = primitiveInteropType(metagen::mdTypePointer);
+            NativeApiDirectType type = primitiveInteropType(metagen::mdTypePointer);
             bool firstArgumentIsType = false;
             if (count > 1) {
               firstArgumentIsType = true;
@@ -1779,12 +1779,12 @@ Object createInteropObject(Runtime& runtime,
               Value kindValue = object.getProperty(runtime, "kind");
               firstArgumentIsType =
                   typeCodeValue.isNumber() || object.isFunction(runtime) ||
-                  nativeClassFromJsiObject(runtime, object) != Nil ||
+                  nativeClassFromDirectObject(runtime, object) != Nil ||
                   (kindValue.isString() &&
                    (kindValue.asString(runtime).utf8(runtime) == "class" ||
                     kindValue.asString(runtime).utf8(runtime) == "protocol"));
             }
-            std::optional<NativeApiJsiType> requestedType =
+            std::optional<NativeApiDirectType> requestedType =
                 firstArgumentIsType
                     ? interopTypeFromValue(runtime, bridge, args[0])
                     : std::nullopt;
@@ -1851,8 +1851,8 @@ Object createInteropObject(Runtime& runtime,
                 }
                 ownsData = true;
                 if (count > 1) {
-                  NativeApiJsiArgumentFrame frame(1);
-                  convertJsiArgument(runtime, bridge, type, valueToStore, data,
+                  NativeApiDirectArgumentFrame frame(1);
+                  convertDirectArgument(runtime, bridge, type, valueToStore, data,
                                      frame);
                 }
               }
@@ -1885,7 +1885,7 @@ Object createInteropObject(Runtime& runtime,
           [bridge](Runtime& runtime, const Value&, const Value* args,
                    size_t count) -> Value {
             if (count < 1) {
-              throw facebook::jsi::JSError(runtime, "sizeof expects a type.");
+              throw JSError(runtime, "sizeof expects a type.");
             }
             return static_cast<double>(sizeofInteropType(runtime, bridge, args[0]));
           }));
@@ -1897,7 +1897,7 @@ Object createInteropObject(Runtime& runtime,
           [bridge](Runtime& runtime, const Value&, const Value* args,
                    size_t count) -> Value {
             if (count < 1 || !args[0].isNumber()) {
-              throw facebook::jsi::JSError(runtime, "alloc expects a byte size.");
+              throw JSError(runtime, "alloc expects a byte size.");
             }
             size_t size = static_cast<size_t>(std::max<double>(0, args[0].getNumber()));
             return createPointer(runtime, bridge, calloc(1, size), false);
@@ -1932,11 +1932,11 @@ Object createInteropObject(Runtime& runtime,
           [](Runtime& runtime, const Value&, const Value* args,
              size_t count) -> Value {
             if (count < 1 || !args[0].isObject()) {
-              throw facebook::jsi::JSError(runtime, "adopt expects a Pointer.");
+              throw JSError(runtime, "adopt expects a Pointer.");
             }
             Object object = args[0].asObject(runtime);
             if (!object.isHostObject<NativeApiPointerHostObject>(runtime)) {
-              throw facebook::jsi::JSError(runtime, "adopt expects a Pointer.");
+              throw JSError(runtime, "adopt expects a Pointer.");
             }
             object.getHostObject<NativeApiPointerHostObject>(runtime)->adopt();
             return Value(runtime, object);
@@ -1967,7 +1967,7 @@ Object createInteropObject(Runtime& runtime,
               void* data =
                   object.getHostObject<NativeApiReferenceHostObject>(runtime)->data();
               if (data == nullptr) {
-                throw facebook::jsi::JSError(
+                throw JSError(
                     runtime, "Cannot get handle of empty Reference.");
               }
               return createPointer(runtime, bridge, data);
@@ -1986,7 +1986,7 @@ Object createInteropObject(Runtime& runtime,
                   object.getHostObject<NativeApiObjectHostObject>(runtime)
                       ->object());
             }
-            if (Class cls = nativeClassFromJsiObject(runtime, object)) {
+            if (Class cls = nativeClassFromDirectObject(runtime, object)) {
               return createPointer(runtime, bridge, cls);
             }
             if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
@@ -2005,7 +2005,7 @@ Object createInteropObject(Runtime& runtime,
             Value kindValue = object.getProperty(runtime, "kind");
             if (kindValue.isString() &&
                 kindValue.asString(runtime).utf8(runtime) == "functionReference") {
-              throw facebook::jsi::JSError(
+              throw JSError(
                   runtime, "Cannot get handle of uninitialized FunctionReference.");
             }
             Value nativeName = object.getProperty(runtime, "nativeName");
@@ -2028,9 +2028,9 @@ Object createInteropObject(Runtime& runtime,
             if (count < 1 || args[0].isNull() || args[0].isUndefined()) {
               return Value::null();
             }
-            NativeApiJsiArgumentFrame frame(1);
+            NativeApiDirectArgumentFrame frame(1);
             const char* data =
-                static_cast<const char*>(pointerFromJsiValue(runtime, args[0], frame));
+                static_cast<const char*>(pointerFromDirectValue(runtime, args[0], frame));
             if (data == nullptr) {
               return Value::null();
             }
@@ -2050,7 +2050,7 @@ Object createInteropObject(Runtime& runtime,
           [](Runtime& runtime, const Value&, const Value* args,
              size_t count) -> Value {
             if (count < 1 || !args[0].isObject()) {
-              throw facebook::jsi::JSError(runtime, "Invalid data.");
+              throw JSError(runtime, "Invalid data.");
             }
             Object object = args[0].asObject(runtime);
             if (object.isArrayBuffer(runtime)) {
@@ -2064,7 +2064,7 @@ Object createInteropObject(Runtime& runtime,
                   object.getHostObject<NativeApiPointerHostObject>(runtime)->pointer());
             }
             if (native == nil || ![native isKindOfClass:[NSData class]]) {
-              throw facebook::jsi::JSError(runtime, "Invalid data.");
+              throw JSError(runtime, "Invalid data.");
             }
             NSData* data = static_cast<NSData*>(native);
             return ArrayBuffer(
@@ -2077,9 +2077,9 @@ Object createInteropObject(Runtime& runtime,
       Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "addMethod"), 2,
           [](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
-            throw facebook::jsi::JSError(
+            throw JSError(
                 runtime,
-                "interop.addMethod requires the JSI class builder layer.");
+                "interop.addMethod requires the Direct class builder layer.");
           }));
   interop.setProperty(
       runtime, "addProtocol",
@@ -2088,11 +2088,11 @@ Object createInteropObject(Runtime& runtime,
           [](Runtime& runtime, const Value&, const Value* args,
              size_t count) -> Value {
             if (count < 2) {
-              throw facebook::jsi::JSError(
+              throw JSError(
                   runtime, "interop.addProtocol expects class and protocol.");
             }
-            Class cls = classFromJsiValue(runtime, args[0]);
-            Protocol* protocol = protocolFromJsiValue(runtime, args[1]);
+            Class cls = classFromDirectValue(runtime, args[0]);
+            Protocol* protocol = protocolFromDirectValue(runtime, args[1]);
             if (cls == Nil || protocol == nullptr) {
               return false;
             }

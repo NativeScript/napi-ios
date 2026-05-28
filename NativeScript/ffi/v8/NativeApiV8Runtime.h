@@ -36,15 +36,15 @@
 #include "ffi.h"
 #include "v8.h"
 
-@protocol NativeApiJsiClassBuilderProtocol
+@protocol NativeApiDirectClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE
 extern const unsigned char embedded_metadata[EMBED_METADATA_SIZE];
 #endif
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace direct {
 
 class Runtime;
 class Value;
@@ -728,8 +728,8 @@ class ArrayBuffer : public Object {
     return value;
   }
 };
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace direct
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_V8
 

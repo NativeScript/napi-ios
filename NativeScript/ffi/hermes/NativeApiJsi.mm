@@ -32,8 +32,9 @@
 #include "Metadata.h"
 #include "MetadataReader.h"
 #include "ffi.h"
+#include "NativeApiJsiSignatureDispatch.h"
 
-@protocol NativeApiJsiClassBuilderProtocol
+@protocol NativeApiDirectClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE
@@ -55,24 +56,38 @@ using facebook::jsi::Runtime;
 using facebook::jsi::String;
 using facebook::jsi::StringBuffer;
 using facebook::jsi::Value;
+using facebook::jsi::JSError;
+
+using NativeApiDirectConfig = NativeApiJsiConfig;
+using NativeApiDirectScheduler = NativeApiJsiScheduler;
 using metagen::MDMemberFlag;
 using metagen::MDMetadataReader;
 using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
 // clang-format off
-#include "jsi/NativeApiJsiBridge.h"
-#include "jsi/NativeApiJsiHostObjects.h"
-#include "jsi/NativeApiJsiCallbacks.h"
-#include "jsi/NativeApiJsiConversion.h"
-#include "jsi/NativeApiJsiInvocation.h"
-#include "jsi/NativeApiJsiClassBuilder.h"
-#include "jsi/NativeApiJsiHostObject.h"
+#define NATIVESCRIPT_NATIVE_API_DIRECT_RUNTIME_NAME "jsi"
+#define NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME "hermes"
+#include "ffi/direct/NativeApiDirectBridge.h"
+#include "ffi/direct/NativeApiDirectHostObjects.h"
+#include "ffi/direct/NativeApiDirectCallbacks.h"
+#include "ffi/direct/NativeApiDirectConversion.h"
+#include "ffi/direct/NativeApiDirectInvocation.h"
+#include "ffi/direct/NativeApiDirectClassBuilder.h"
+#include "ffi/direct/NativeApiDirectHostObject.h"
 // clang-format on
 
 }  // namespace
 
-#include "jsi/NativeApiJsiInstall.h"
+#include "ffi/direct/NativeApiDirectInstall.h"
+
+Object CreateNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
+  return CreateNativeApiDirect(runtime, config);
+}
+
+void InstallNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
+  InstallNativeApiDirect(runtime, config);
+}
 
 }  // namespace nativescript
 

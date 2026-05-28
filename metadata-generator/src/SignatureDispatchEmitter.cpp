@@ -59,6 +59,9 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       wrappersByKey;
   std::unordered_map<std::string, std::pair<DispatchKind, const MDSignature*>>
       preparedWrappersByKey;
+  std::unordered_map<uint64_t, std::string> objcPreparedEntries;
+  std::unordered_map<uint64_t, std::string> cFunctionPreparedEntries;
+  std::unordered_map<uint64_t, std::string> blockPreparedEntries;
   std::unordered_map<uint64_t, std::string> objcNapiEntries;
   std::unordered_map<uint64_t, std::string> cFunctionNapiEntries;
   std::unordered_map<uint64_t, std::string> objcEngineDirectEntries;
@@ -70,7 +73,6 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   std::unordered_map<uint64_t, std::string> objcHermesFrameDirectReturnEntries;
   std::unordered_map<uint64_t, std::string> cFunctionHermesFrameDirectReturnEntries;
   std::unordered_map<uint64_t, std::string> blockHermesFrameDirectReturnEntries;
-  std::unordered_map<uint64_t, std::string> blockPreparedEntries;
   std::unordered_map<uint64_t, std::string> dispatchEncoding;
   std::unordered_set<uint64_t> collidedDispatchIds;
 
@@ -98,6 +100,9 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
     if (encodedIt != dispatchEncoding.end() &&
         encodedIt->second != canonicalSignatureKey) {
       collidedDispatchIds.insert(dispatchId);
+      objcPreparedEntries.erase(dispatchId);
+      cFunctionPreparedEntries.erase(dispatchId);
+      blockPreparedEntries.erase(dispatchId);
       objcNapiEntries.erase(dispatchId);
       cFunctionNapiEntries.erase(dispatchId);
       objcEngineDirectEntries.erase(dispatchId);
@@ -109,7 +114,6 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       objcHermesFrameDirectReturnEntries.erase(dispatchId);
       cFunctionHermesFrameDirectReturnEntries.erase(dispatchId);
       blockHermesFrameDirectReturnEntries.erase(dispatchId);
-      blockPreparedEntries.erase(dispatchId);
       dispatchEncoding.erase(dispatchId);
       continue;
     }
@@ -125,6 +129,9 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
 
     if (use.kind == DispatchKind::ObjCMethod) {
       wrappersByKey.emplace(wrapperKey, std::make_pair(use.kind, signature));
+      preparedWrappersByKey.emplace(wrapperKey,
+                                    std::make_pair(use.kind, signature));
+      objcPreparedEntries.emplace(dispatchId, wrapperKey);
       objcNapiEntries.emplace(dispatchId, wrapperKey);
       objcEngineDirectEntries.emplace(dispatchId, wrapperKey);
       objcV8Entries.emplace(dispatchId, wrapperKey);
@@ -138,6 +145,9 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       }
     } else if (use.kind == DispatchKind::CFunction) {
       wrappersByKey.emplace(wrapperKey, std::make_pair(use.kind, signature));
+      preparedWrappersByKey.emplace(wrapperKey,
+                                    std::make_pair(use.kind, signature));
+      cFunctionPreparedEntries.emplace(dispatchId, wrapperKey);
       cFunctionNapiEntries.emplace(dispatchId, wrapperKey);
       cFunctionEngineDirectEntries.emplace(dispatchId, wrapperKey);
       cFunctionV8Entries.emplace(dispatchId, wrapperKey);
@@ -255,6 +265,20 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       sortedCFunctionNapiEntries.begin(), sortedCFunctionNapiEntries.end(),
       [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
 
+  std::vector<std::pair<uint64_t, std::string>> sortedObjCPreparedEntries(
+      objcPreparedEntries.begin(), objcPreparedEntries.end());
+  std::sort(
+      sortedObjCPreparedEntries.begin(), sortedObjCPreparedEntries.end(),
+      [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
+
+  std::vector<std::pair<uint64_t, std::string>> sortedCFunctionPreparedEntries(
+      cFunctionPreparedEntries.begin(), cFunctionPreparedEntries.end());
+  std::sort(sortedCFunctionPreparedEntries.begin(),
+            sortedCFunctionPreparedEntries.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
+
   std::vector<std::pair<uint64_t, std::string>> sortedObjCEngineDirectEntries(
       objcEngineDirectEntries.begin(), objcEngineDirectEntries.end());
   std::sort(sortedObjCEngineDirectEntries.begin(),
@@ -344,7 +368,8 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "#ifndef NS_GENERATED_SIGNATURE_DISPATCH_INC\n";
   generated << "#define NS_GENERATED_SIGNATURE_DISPATCH_INC\n\n";
   generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI || "
-               "NS_GSD_BACKEND_ENGINE_DIRECT\n";
+               "NS_GSD_BACKEND_ENGINE_DIRECT || NS_GSD_BACKEND_HERMES || "
+               "NS_GSD_BACKEND_DIRECT_PREPARED\n";
   generated << "#undef NS_HAS_GENERATED_SIGNATURE_DISPATCH\n";
   generated << "#define NS_HAS_GENERATED_SIGNATURE_DISPATCH 1\n";
   generated << "#endif\n";
@@ -360,7 +385,7 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "#undef NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH\n";
   generated << "#define NS_HAS_GENERATED_SIGNATURE_ENGINE_DIRECT_DISPATCH 1\n";
   generated << "#endif\n\n";
-  generated << "#if NS_GSD_BACKEND_HERMES\n";
+  generated << "#if NS_GSD_BACKEND_HERMES_EXPERIMENTAL_DIRECT_RETURN\n";
   generated << "#undef NS_HAS_GENERATED_SIGNATURE_HERMES_DIRECT_RETURN_DISPATCH\n";
   generated << "#define NS_HAS_GENERATED_SIGNATURE_HERMES_DIRECT_RETURN_DISPATCH 1\n";
   generated << "#undef "
@@ -375,7 +400,8 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "namespace nativescript {\n\n";
 
   generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI || "
-               "NS_GSD_BACKEND_ENGINE_DIRECT\n";
+               "NS_GSD_BACKEND_ENGINE_DIRECT || NS_GSD_BACKEND_HERMES || "
+               "NS_GSD_BACKEND_DIRECT_PREPARED\n";
   for (const auto& wrapper : preparedWrappers) {
     writePreparedWrapper(generated, wrapper.second.first,
                          preparedWrapperNameByKey.at(wrapper.first),
@@ -400,7 +426,7 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   writeEngineDirectConverterUndefs(generated);
   generated << "#endif\n\n";
 
-  generated << "#if NS_GSD_BACKEND_HERMES\n";
+  generated << "#if NS_GSD_BACKEND_HERMES_EXPERIMENTAL_DIRECT_RETURN\n";
   writeHermesEngineDirectConverterMacros(generated);
   for (const auto& wrapper : wrappers) {
     writeHermesDirectReturnWrapper(
@@ -431,15 +457,24 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "#endif\n\n";
 
   generated << "#if NS_GSD_BACKEND_V8 || NS_GSD_BACKEND_NAPI || "
-               "NS_GSD_BACKEND_ENGINE_DIRECT\n";
+               "NS_GSD_BACKEND_ENGINE_DIRECT || NS_GSD_BACKEND_HERMES || "
+               "NS_GSD_BACKEND_DIRECT_PREPARED\n";
   generated << "inline constexpr ObjCDispatchEntry "
                "kGeneratedObjCDispatchEntries[] = {\n";
   generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedObjCPreparedEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << preparedWrapperNameByKey.at(entry.second) << "},\n";
+  }
   generated << "};\n\n";
 
   generated << "inline constexpr CFunctionDispatchEntry "
                "kGeneratedCFunctionDispatchEntries[] = {\n";
   generated << "    {0, nullptr},\n";
+  for (const auto& entry : sortedCFunctionPreparedEntries) {
+    generated << "    {" << toHexLiteral(entry.first) << ", &"
+              << preparedWrapperNameByKey.at(entry.second) << "},\n";
+  }
   generated << "};\n\n";
 
   generated << "inline constexpr BlockDispatchEntry "
@@ -472,7 +507,7 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
   generated << "};\n";
   generated << "#endif\n\n";
 
-  generated << "#if NS_GSD_BACKEND_HERMES\n";
+  generated << "#if NS_GSD_BACKEND_HERMES_EXPERIMENTAL_DIRECT_RETURN\n";
   generated << "inline constexpr ObjCHermesDirectReturnDispatchEntry "
                "kGeneratedObjCHermesDirectReturnDispatchEntries[] = {\n";
   generated << "    {0, nullptr},\n";

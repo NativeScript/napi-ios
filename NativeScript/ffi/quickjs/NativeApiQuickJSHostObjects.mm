@@ -2,8 +2,8 @@
 
 #ifdef TARGET_ENGINE_QUICKJS
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace direct {
 
 namespace quickjsdirect {
 
@@ -233,7 +233,7 @@ Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& na
   return result;
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace direct
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_QUICKJS

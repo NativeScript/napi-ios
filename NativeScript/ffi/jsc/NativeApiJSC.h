@@ -1,7 +1,7 @@
 #ifndef NATIVESCRIPT_FFI_JSC_NATIVE_API_JSC_H
 #define NATIVESCRIPT_FFI_JSC_NATIVE_API_JSC_H
 
-#include "ffi/shared/direct/NativeApiDirect.h"
+#include "ffi/direct/NativeApiDirect.h"
 #include <JavaScriptCore/JavaScript.h>
 
 namespace nativescript {

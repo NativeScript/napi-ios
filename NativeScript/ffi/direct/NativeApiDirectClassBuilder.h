@@ -7,72 +7,72 @@ std::string readOptionalStringProperty(Runtime& runtime, const Object& object,
   return value.isString() ? value.asString(runtime).utf8(runtime) : "";
 }
 
-struct NativeApiJsiClassBuilderRegistration {
+struct NativeApiDirectClassBuilderRegistration {
   std::shared_ptr<Runtime> runtimeOwner;
   Runtime* runtime = nullptr;
-  std::shared_ptr<NativeApiJsiBridge> bridge;
+  std::shared_ptr<NativeApiDirectBridge> bridge;
 };
 
-std::mutex gNativeApiJsiClassBuilderMutex;
-std::unordered_map<Class, NativeApiJsiClassBuilderRegistration>
-    gNativeApiJsiClassBuilders;
-struct NativeApiJsiKnownExposedMethod {
+std::mutex gNativeApiDirectClassBuilderMutex;
+std::unordered_map<Class, NativeApiDirectClassBuilderRegistration>
+    gNativeApiDirectClassBuilders;
+struct NativeApiDirectKnownExposedMethod {
   std::string selectorName;
-  NativeApiJsiSignature signature;
+  NativeApiDirectSignature signature;
 };
-std::mutex gNativeApiJsiKnownExposedMethodsMutex;
-std::unordered_map<std::string, NativeApiJsiKnownExposedMethod>
-    gNativeApiJsiKnownExposedMethods;
+std::mutex gNativeApiDirectKnownExposedMethodsMutex;
+std::unordered_map<std::string, NativeApiDirectKnownExposedMethod>
+    gNativeApiDirectKnownExposedMethods;
 
-void rememberNativeApiJsiClassBuilder(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+void rememberNativeApiDirectClassBuilder(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     Class cls) {
   if (cls == Nil) {
     return;
   }
-  std::lock_guard<std::mutex> lock(gNativeApiJsiClassBuilderMutex);
-  auto runtimeOwner = retainNativeApiJsiRuntime(runtime);
-  gNativeApiJsiClassBuilders[cls] = NativeApiJsiClassBuilderRegistration{
+  std::lock_guard<std::mutex> lock(gNativeApiDirectClassBuilderMutex);
+  auto runtimeOwner = retainNativeApiDirectRuntime(runtime);
+  gNativeApiDirectClassBuilders[cls] = NativeApiDirectClassBuilderRegistration{
       .runtimeOwner = runtimeOwner,
       .runtime = runtimeOwner.get(),
       .bridge = bridge,
   };
 }
 
-void rememberNativeApiJsiKnownExposedMethod(
-    const std::string& selectorName, const NativeApiJsiSignature& signature) {
+void rememberNativeApiDirectKnownExposedMethod(
+    const std::string& selectorName, const NativeApiDirectSignature& signature) {
   if (selectorName.empty()) {
     return;
   }
-  NativeApiJsiKnownExposedMethod method{
+  NativeApiDirectKnownExposedMethod method{
       .selectorName = selectorName,
       .signature = signature,
   };
-  std::lock_guard<std::mutex> lock(gNativeApiJsiKnownExposedMethodsMutex);
-  gNativeApiJsiKnownExposedMethods[selectorName] = method;
-  gNativeApiJsiKnownExposedMethods[jsifySelector(selectorName.c_str())] =
+  std::lock_guard<std::mutex> lock(gNativeApiDirectKnownExposedMethodsMutex);
+  gNativeApiDirectKnownExposedMethods[selectorName] = method;
+  gNativeApiDirectKnownExposedMethods[jsifySelector(selectorName.c_str())] =
       std::move(method);
 }
 
-std::optional<NativeApiJsiKnownExposedMethod> knownNativeApiJsiExposedMethod(
+std::optional<NativeApiDirectKnownExposedMethod> knownNativeApiDirectExposedMethod(
     const std::string& name) {
-  std::lock_guard<std::mutex> lock(gNativeApiJsiKnownExposedMethodsMutex);
-  auto it = gNativeApiJsiKnownExposedMethods.find(name);
-  if (it == gNativeApiJsiKnownExposedMethods.end()) {
+  std::lock_guard<std::mutex> lock(gNativeApiDirectKnownExposedMethodsMutex);
+  auto it = gNativeApiDirectKnownExposedMethods.find(name);
+  if (it == gNativeApiDirectKnownExposedMethods.end()) {
     return std::nullopt;
   }
-  NativeApiJsiKnownExposedMethod method = it->second;
-  prepareJsiMethodSignature(&method.signature);
+  NativeApiDirectKnownExposedMethod method = it->second;
+  prepareDirectMethodSignature(&method.signature);
   return method;
 }
 
-std::optional<NativeApiJsiClassBuilderRegistration>
-findNativeApiJsiClassBuilder(id object) {
+std::optional<NativeApiDirectClassBuilderRegistration>
+findNativeApiDirectClassBuilder(id object) {
   Class cls = object != nil ? object_getClass(object) : Nil;
-  std::lock_guard<std::mutex> lock(gNativeApiJsiClassBuilderMutex);
+  std::lock_guard<std::mutex> lock(gNativeApiDirectClassBuilderMutex);
   while (cls != Nil) {
-    auto it = gNativeApiJsiClassBuilders.find(cls);
-    if (it != gNativeApiJsiClassBuilders.end()) {
+    auto it = gNativeApiDirectClassBuilders.find(cls);
+    if (it != gNativeApiDirectClassBuilders.end()) {
       return it->second;
     }
     cls = class_getSuperclass(cls);
@@ -80,7 +80,7 @@ findNativeApiJsiClassBuilder(id object) {
   return std::nullopt;
 }
 
-const char* nativeApiJsiFastEnumerationEncoding() {
+const char* nativeApiDirectFastEnumerationEncoding() {
   static const char* encoding = nullptr;
   if (encoding == nullptr) {
     struct objc_method_description desc = protocol_getMethodDescription(
@@ -91,21 +91,21 @@ const char* nativeApiJsiFastEnumerationEncoding() {
   return encoding;
 }
 
-NSUInteger nativeApiJsiSymbolIteratorCountByEnumerating(
+NSUInteger nativeApiDirectSymbolIteratorCountByEnumerating(
     id self, SEL, NSFastEnumerationState* state,
     id __unsafe_unretained stackbuf[], NSUInteger len) {
   if (len == 0 || state == nullptr || stackbuf == nullptr) {
     return 0;
   }
 
-  auto registration = findNativeApiJsiClassBuilder(self);
+  auto registration = findNativeApiDirectClassBuilder(self);
   if (!registration || registration->runtime == nullptr ||
       registration->bridge == nullptr) {
     return 0;
   }
 
   Runtime& runtime = *registration->runtime;
-  NativeApiJsiRuntimeScope runtimeScope(runtime);
+  NativeApiDirectRuntimeScope runtimeScope(runtime);
   auto bridge = registration->bridge;
   try {
     Value receiver = makeNativeObjectValue(runtime, bridge, self, false);
@@ -170,8 +170,8 @@ NSUInteger nativeApiJsiSymbolIteratorCountByEnumerating(
       }
 
       Value value = nextObject.getProperty(runtime, "value");
-      NativeApiJsiArgumentFrame frame(1);
-      id nativeValue = objectFromJsiValue(runtime, bridge, value, frame, false);
+      NativeApiDirectArgumentFrame frame(1);
+      id nativeValue = objectFromDirectValue(runtime, bridge, value, frame, false);
       if (nativeValue != nil) {
         [nativeValue retain];
         [nativeValue autorelease];
@@ -190,7 +190,7 @@ NSUInteger nativeApiJsiSymbolIteratorCountByEnumerating(
 }
 
 NativeApiSymbol runtimeSymbolForClass(
-    const std::shared_ptr<NativeApiJsiBridge>& bridge, Class cls) {
+    const std::shared_ptr<NativeApiDirectBridge>& bridge, Class cls) {
   if (bridge != nullptr) {
     if (const NativeApiSymbol* symbol = bridge->findClassForRuntimeClass(cls)) {
       return *symbol;
@@ -206,7 +206,7 @@ NativeApiSymbol runtimeSymbolForClass(
   };
 }
 
-std::string nextAvailableJsiClassName(const std::string& requestedName) {
+std::string nextAvailableDirectClassName(const std::string& requestedName) {
   if (requestedName.empty()) {
     return "";
   }
@@ -256,8 +256,8 @@ const NativeApiMember* propertyOverrideForName(
   return fallback;
 }
 
-void addJsiOverrideMethod(Runtime& runtime,
-                          const std::shared_ptr<NativeApiJsiBridge>& bridge,
+void addDirectOverrideMethod(Runtime& runtime,
+                          const std::shared_ptr<NativeApiDirectBridge>& bridge,
                           Class nativeClass, Class baseClass,
                           const std::string& selectorName,
                           MDSectionOffset signatureOffset,
@@ -266,12 +266,12 @@ void addJsiOverrideMethod(Runtime& runtime,
     return;
   }
 
-  auto callback = createJsiMethodCallback(runtime, bridge, selectorName,
+  auto callback = createDirectMethodCallback(runtime, bridge, selectorName,
                                           signatureOffset, std::move(function),
                                           returnOwned);
   SEL selector = sel_registerName(selectorName.c_str());
   std::string metadataEncoding =
-      objcMethodSignatureForJsiSignature(callback->signature());
+      objcMethodSignatureForDirectSignature(callback->signature());
   class_replaceMethod(nativeClass, selector,
                       reinterpret_cast<IMP>(callback->functionPointer()),
                       metadataEncoding.c_str());
@@ -284,7 +284,7 @@ Value getObjectPropertyOrUndefined(Runtime& runtime, const Object& object,
              : Value::undefined();
 }
 
-Class dispatchSuperclassForJsiDerivedReceiver(id receiver, Class fallback) {
+Class dispatchSuperclassForDirectDerivedReceiver(id receiver, Class fallback) {
   if (receiver == nil) {
     return Nil;
   }
@@ -292,7 +292,7 @@ Class dispatchSuperclassForJsiDerivedReceiver(id receiver, Class fallback) {
   Class receiverClass = object_getClass(receiver);
   if (receiverClass == Nil ||
       !class_conformsToProtocol(receiverClass,
-                                @protocol(NativeApiJsiClassBuilderProtocol))) {
+                                @protocol(NativeApiDirectClassBuilderProtocol))) {
     return Nil;
   }
 
@@ -316,8 +316,8 @@ std::optional<Function> functionForSelector(Runtime& runtime,
   return value.asObject(runtime).asFunction(runtime);
 }
 
-std::optional<NativeApiJsiType> readExposedType(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+std::optional<NativeApiDirectType> readExposedType(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     const Object& descriptor, const char* propertyName) {
   if (!descriptor.hasProperty(runtime, propertyName)) {
     return std::nullopt;
@@ -326,10 +326,10 @@ std::optional<NativeApiJsiType> readExposedType(
                               descriptor.getProperty(runtime, propertyName));
 }
 
-std::optional<NativeApiJsiSignature> exposedMethodSignature(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+std::optional<NativeApiDirectSignature> exposedMethodSignature(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     const std::string& selectorName, const Object& descriptor) {
-  NativeApiJsiSignature signature;
+  NativeApiDirectSignature signature;
   if (auto returnType = readExposedType(runtime, bridge, descriptor, "returns")) {
     signature.returnType = *returnType;
   } else {
@@ -339,7 +339,7 @@ std::optional<NativeApiJsiSignature> exposedMethodSignature(
   Value paramsValue = getObjectPropertyOrUndefined(runtime, descriptor, "params");
   if (!paramsValue.isUndefined() && !paramsValue.isNull()) {
     if (!paramsValue.isObject() || !paramsValue.asObject(runtime).isArray(runtime)) {
-      throw facebook::jsi::JSError(
+      throw JSError(
           runtime, "exposedMethods params must be an array.");
     }
     Array params = paramsValue.asObject(runtime).getArray(runtime);
@@ -347,7 +347,7 @@ std::optional<NativeApiJsiSignature> exposedMethodSignature(
       Value typeValue = params.getValueAtIndex(runtime, i);
       auto type = interopTypeFromValue(runtime, bridge, typeValue);
       if (!type) {
-        throw facebook::jsi::JSError(
+        throw JSError(
             runtime, "exposedMethods contains an unsupported parameter type.");
       }
       signature.argumentTypes.push_back(*type);
@@ -355,15 +355,15 @@ std::optional<NativeApiJsiSignature> exposedMethodSignature(
   }
 
   if (selectorArgumentCount(selectorName) != signature.argumentTypes.size()) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "exposedMethods selector argument count does not match params.");
   }
 
-  prepareJsiMethodSignature(&signature);
+  prepareDirectMethodSignature(&signature);
   return signature;
 }
 
-std::optional<NativeApiJsiSignature> runtimeProtocolMethodSignature(
+std::optional<NativeApiDirectSignature> runtimeProtocolMethodSignature(
     const char* types) {
   if (types == nullptr) {
     return std::nullopt;
@@ -375,27 +375,27 @@ std::optional<NativeApiJsiSignature> runtimeProtocolMethodSignature(
     return std::nullopt;
   }
 
-  NativeApiJsiSignature signature;
+  NativeApiDirectSignature signature;
   signature.implicitArgumentCount = 2;
   signature.returnType =
-      parseObjCEncodedJsiType(methodSignature.methodReturnType);
+      parseObjCEncodedDirectType(methodSignature.methodReturnType);
   for (NSUInteger i = 2; i < methodSignature.numberOfArguments; i++) {
     signature.argumentTypes.push_back(
-        parseObjCEncodedJsiType([methodSignature getArgumentTypeAtIndex:i]));
+        parseObjCEncodedDirectType([methodSignature getArgumentTypeAtIndex:i]));
   }
-  if (unsupportedJsiType(signature.returnType)) {
+  if (unsupportedDirectType(signature.returnType)) {
     return std::nullopt;
   }
   for (const auto& argumentType : signature.argumentTypes) {
-    if (unsupportedJsiType(argumentType)) {
+    if (unsupportedDirectType(argumentType)) {
       return std::nullopt;
     }
   }
   return signature;
 }
 
-std::optional<NativeApiSymbol> protocolSymbolFromJsiValue(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+std::optional<NativeApiSymbol> protocolSymbolFromDirectValue(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     const Value& value) {
   if (value.isString()) {
     std::string name = value.asString(runtime).utf8(runtime);
@@ -434,23 +434,23 @@ std::optional<NativeApiSymbol> protocolSymbolFromJsiValue(
   return std::nullopt;
 }
 
-void addJsiExposedMethod(Runtime& runtime,
-                         const std::shared_ptr<NativeApiJsiBridge>& bridge,
+void addDirectExposedMethod(Runtime& runtime,
+                         const std::shared_ptr<NativeApiDirectBridge>& bridge,
                          Class nativeClass, const std::string& selectorName,
-                         NativeApiJsiSignature signature, Function function) {
+                         NativeApiDirectSignature signature, Function function) {
   if (selectorName.empty()) {
     return;
   }
-  auto callback = createJsiMethodCallback(runtime, bridge, selectorName,
+  auto callback = createDirectMethodCallback(runtime, bridge, selectorName,
                                           std::move(signature), std::move(function));
-  std::string encoding = objcMethodSignatureForJsiSignature(callback->signature());
+  std::string encoding = objcMethodSignatureForDirectSignature(callback->signature());
   class_replaceMethod(nativeClass, sel_registerName(selectorName.c_str()),
                       reinterpret_cast<IMP>(callback->functionPointer()),
                       encoding.c_str());
 }
 
 bool addRuntimeProtocolOverrideForName(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     Class nativeClass, const std::vector<Protocol*>& protocols,
     const std::string& propertyName, Function function) {
   std::unordered_set<Protocol*> visited;
@@ -487,7 +487,7 @@ bool addRuntimeProtocolOverrideForName(
         }
         auto signature = runtimeProtocolMethodSignature(descriptions[i].types);
         if (signature) {
-          addJsiExposedMethod(runtime, bridge, nativeClass, selectorName,
+          addDirectExposedMethod(runtime, bridge, nativeClass, selectorName,
                               std::move(*signature), std::move(function));
           free(descriptions);
           return true;
@@ -519,22 +519,22 @@ Object getOwnPropertyDescriptor(Runtime& runtime, const Object& object,
                                     : Object(runtime);
 }
 
-Value extendNativeApiJsiClass(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+Value extendNativeApiDirectClass(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     const Value* args, size_t count) {
   if (count < 2 || !args[0].isObject() || !args[1].isObject()) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "extendClass expects a native class and method object.");
   }
 
-  Class baseClass = classFromJsiValue(runtime, args[0]);
+  Class baseClass = classFromDirectValue(runtime, args[0]);
   if (baseClass == Nil) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "extendClass can only extend native class constructors.");
   }
   if (class_conformsToProtocol(baseClass,
-                               @protocol(NativeApiJsiClassBuilderProtocol))) {
-    throw facebook::jsi::JSError(runtime,
+                               @protocol(NativeApiDirectClassBuilderProtocol))) {
+    throw JSError(runtime,
                                  "Cannot extend an already extended class.");
   }
 
@@ -549,15 +549,15 @@ Value extendNativeApiJsiClass(
                     "_Extended_" + std::to_string(rand());
   }
 
-  std::string className = nextAvailableJsiClassName(requestedName);
+  std::string className = nextAvailableDirectClassName(requestedName);
   Class nativeClass = objc_allocateClassPair(baseClass, className.c_str(), 0);
   if (nativeClass == Nil) {
-    throw facebook::jsi::JSError(runtime, "Failed to allocate Objective-C class.");
+    throw JSError(runtime, "Failed to allocate Objective-C class.");
   }
 
-  markNativeApiJsiExtendedClass(nativeClass);
-  class_addProtocol(nativeClass, @protocol(NativeApiJsiClassBuilderProtocol));
-  rememberNativeApiJsiClassBuilder(runtime, bridge, nativeClass);
+  markNativeApiDirectExtendedClass(nativeClass);
+  class_addProtocol(nativeClass, @protocol(NativeApiDirectClassBuilderProtocol));
+  rememberNativeApiDirectClassBuilder(runtime, bridge, nativeClass);
 
   NativeApiSymbol baseSymbol = runtimeSymbolForClass(bridge, baseClass);
   std::vector<NativeApiMember> extensionMembers =
@@ -569,9 +569,9 @@ Value extendNativeApiJsiClass(
     Array protocols = protocolsValue.asObject(runtime).getArray(runtime);
     for (size_t i = 0; i < protocols.size(runtime); i++) {
       Value protocolValue = protocols.getValueAtIndex(runtime, i);
-      Protocol* protocol = protocolFromJsiValue(runtime, protocolValue);
+      Protocol* protocol = protocolFromDirectValue(runtime, protocolValue);
       std::optional<NativeApiSymbol> protocolSymbol =
-          protocolSymbolFromJsiValue(runtime, bridge, protocolValue);
+          protocolSymbolFromDirectValue(runtime, bridge, protocolValue);
       if (protocol != nullptr) {
         optionProtocols.push_back(protocol);
         class_addProtocol(nativeClass, protocol);
@@ -611,7 +611,7 @@ Value extendNativeApiJsiClass(
             member.signatureOffset == 0) {
           continue;
         }
-        addJsiOverrideMethod(
+        addDirectOverrideMethod(
             runtime, bridge, nativeClass, baseClass, member.selectorName,
             member.signatureOffset,
             (member.flags & metagen::mdMemberReturnOwned) != 0,
@@ -623,8 +623,8 @@ Value extendNativeApiJsiClass(
 	            runtime, bridge, nativeClass, optionProtocols, propertyName,
 	            value.asObject(runtime).asFunction(runtime));
 	        if (!addedRuntimeProtocolOverride) {
-	          if (auto known = knownNativeApiJsiExposedMethod(propertyName)) {
-	            addJsiExposedMethod(runtime, bridge, nativeClass,
+	          if (auto known = knownNativeApiDirectExposedMethod(propertyName)) {
+	            addDirectExposedMethod(runtime, bridge, nativeClass,
 	                                known->selectorName,
 	                                std::move(known->signature),
 	                                value.asObject(runtime).asFunction(runtime));
@@ -639,7 +639,7 @@ Value extendNativeApiJsiClass(
     Value getter = descriptor.getProperty(runtime, "get");
     if (propertyMember != nullptr && getter.isObject() &&
         getter.asObject(runtime).isFunction(runtime)) {
-      addJsiOverrideMethod(
+      addDirectOverrideMethod(
           runtime, bridge, nativeClass, baseClass,
           propertyMember->selectorName, propertyMember->signatureOffset,
           (propertyMember->flags & metagen::mdMemberReturnOwned) != 0,
@@ -651,7 +651,7 @@ Value extendNativeApiJsiClass(
         if (selectorArgumentCount(member.selectorName) != 0) {
           continue;
         }
-        addJsiOverrideMethod(
+        addDirectOverrideMethod(
             runtime, bridge, nativeClass, baseClass, member.selectorName,
             member.signatureOffset,
             (member.flags & metagen::mdMemberReturnOwned) != 0,
@@ -663,7 +663,7 @@ Value extendNativeApiJsiClass(
     if (propertyMember != nullptr &&
         setter.isObject() && setter.asObject(runtime).isFunction(runtime) &&
         !propertyMember->setterSelectorName.empty()) {
-      addJsiOverrideMethod(runtime, bridge, nativeClass, baseClass,
+      addDirectOverrideMethod(runtime, bridge, nativeClass, baseClass,
                            propertyMember->setterSelectorName,
                            propertyMember->setterSignatureOffset, false,
                            setter.asObject(runtime).asFunction(runtime));
@@ -697,8 +697,8 @@ Value extendNativeApiJsiClass(
 	      auto signature = exposedMethodSignature(
 	          runtime, bridge, selectorName, descriptorValue.asObject(runtime));
 	      if (signature) {
-	        rememberNativeApiJsiKnownExposedMethod(selectorName, *signature);
-	        addJsiExposedMethod(runtime, bridge, nativeClass, selectorName,
+	        rememberNativeApiDirectKnownExposedMethod(selectorName, *signature);
+	        addDirectExposedMethod(runtime, bridge, nativeClass, selectorName,
 	                            std::move(*signature), std::move(*function));
 	      }
     }
@@ -708,11 +708,11 @@ Value extendNativeApiJsiClass(
       getObjectPropertyOrUndefined(runtime, options, "__hasIterator");
   if (hasIteratorValue.isBool() && hasIteratorValue.getBool()) {
     class_addProtocol(nativeClass, @protocol(NSFastEnumeration));
-    if (const char* encoding = nativeApiJsiFastEnumerationEncoding()) {
+    if (const char* encoding = nativeApiDirectFastEnumerationEncoding()) {
       class_replaceMethod(
           nativeClass,
           @selector(countByEnumeratingWithState:objects:count:),
-          reinterpret_cast<IMP>(nativeApiJsiSymbolIteratorCountByEnumerating),
+          reinterpret_cast<IMP>(nativeApiDirectSymbolIteratorCountByEnumerating),
           encoding);
     }
   }
@@ -726,23 +726,23 @@ Value extendNativeApiJsiClass(
 	  return makeNativeClassValue(runtime, bridge, std::move(newSymbol));
 	}
 
-Value invokeNativeApiJsiBaseMethod(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
+Value invokeNativeApiDirectBaseMethod(
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
     const Value* args, size_t count) {
   if (count < 3 || !args[0].isObject() || !args[1].isObject() ||
       !args[2].isString()) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "__invokeBase expects base class, receiver, and member name.");
   }
 
-  Class baseClass = classFromJsiValue(runtime, args[0]);
+  Class baseClass = classFromDirectValue(runtime, args[0]);
   if (baseClass == Nil) {
-    throw facebook::jsi::JSError(runtime, "__invokeBase base class is invalid.");
+    throw JSError(runtime, "__invokeBase base class is invalid.");
   }
 
   Object receiverObject = args[1].asObject(runtime);
   if (!receiverObject.isHostObject<NativeApiObjectHostObject>(runtime)) {
-    throw facebook::jsi::JSError(runtime, "__invokeBase receiver is not native.");
+    throw JSError(runtime, "__invokeBase receiver is not native.");
   }
 
   id receiver =
@@ -759,7 +759,7 @@ Value invokeNativeApiJsiBaseMethod(
             selectWritablePropertyMember(members, memberName, false)) {
       if (actualArgc == 0) {
         Class dispatchClass =
-            dispatchSuperclassForJsiDerivedReceiver(receiver, baseClass);
+            dispatchSuperclassForDirectDerivedReceiver(receiver, baseClass);
         return callObjCSelector(runtime, bridge, receiver, false,
                                 propertyMember->selectorName, propertyMember,
                                 nullptr, 0, dispatchClass);
@@ -767,7 +767,7 @@ Value invokeNativeApiJsiBaseMethod(
       if (actualArgc == 1 && !propertyMember->setterSelectorName.empty() &&
           !propertyMember->readonly) {
         Class dispatchClass =
-            dispatchSuperclassForJsiDerivedReceiver(receiver, baseClass);
+            dispatchSuperclassForDirectDerivedReceiver(receiver, baseClass);
         NativeApiMember setterMember = *propertyMember;
         setterMember.selectorName = propertyMember->setterSelectorName;
         setterMember.signatureOffset = propertyMember->setterSignatureOffset;
@@ -778,12 +778,12 @@ Value invokeNativeApiJsiBaseMethod(
     }
   }
   if (member == nullptr) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "Objective-C base selector is not available: " + memberName);
   }
 
   Class dispatchClass =
-      dispatchSuperclassForJsiDerivedReceiver(receiver, baseClass);
+      dispatchSuperclassForDirectDerivedReceiver(receiver, baseClass);
   return callObjCSelector(runtime, bridge, receiver, false, member->selectorName,
                           member, args + 3, actualArgc, dispatchClass);
 }

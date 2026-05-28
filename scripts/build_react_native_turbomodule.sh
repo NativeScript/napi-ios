@@ -6,6 +6,9 @@ PACKAGE_DIR="packages/react-native"
 OUTPUT_DIR="$PACKAGE_DIR/dist"
 PACK_DESTINATION=${NPM_PACK_DESTINATION:-"$REPO_ROOT/build/npm-tarballs"}
 VERSION_OVERRIDE=${NPM_PACKAGE_VERSION:-}
+GENERATED_SIGNATURE_DISPATCH_OVERRIDE=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-}}
+GENERATED_SIGNATURE_DISPATCH=${GENERATED_SIGNATURE_DISPATCH_OVERRIDE:-"$REPO_ROOT/dist/intermediates/react-native/GeneratedSignatureDispatch.ios-sim.tmp.inc"}
+DEVICE_SIGNATURE_DISPATCH="$REPO_ROOT/dist/intermediates/react-native/GeneratedSignatureDispatch.ios-device.tmp.inc"
 SKIP_PACK=false
 
 while [[ $# -gt 0 ]]; do
@@ -23,13 +26,26 @@ done
 
 checkpoint "Preparing @nativescript/react-native TurboModule package..."
 
+if [ ! -x "$REPO_ROOT/metadata-generator/dist/arm64/bin/objc-metadata-generator" ]; then
+  "$SCRIPT_DIR/build_metadata_generator.sh"
+fi
+
+checkpoint "Generating iOS device metadata for the TurboModule..."
+mkdir -p "$(dirname "$DEVICE_SIGNATURE_DISPATCH")"
+NS_SIGNATURE_BINDINGS_CPP_PATH="$DEVICE_SIGNATURE_DISPATCH" npm run metagen ios
+rm -f "$DEVICE_SIGNATURE_DISPATCH" "$DEVICE_SIGNATURE_DISPATCH.stamp"
+
+checkpoint "Generating Hermes signature dispatch bindings for the TurboModule..."
+mkdir -p "$(dirname "$GENERATED_SIGNATURE_DISPATCH")"
+NS_SIGNATURE_BINDINGS_CPP_PATH="$GENERATED_SIGNATURE_DISPATCH" npm run metagen ios-sim
+
 rm -rf \
   "$PACKAGE_DIR/native-api-jsi" \
   "$PACKAGE_DIR/metadata" \
   "$PACKAGE_DIR/ios/vendor" \
   "$PACKAGE_DIR/types"
 mkdir -p \
-  "$PACKAGE_DIR/native-api-jsi/jsi" \
+  "$PACKAGE_DIR/native-api-jsi/ffi/direct" \
   "$PACKAGE_DIR/native-api-jsi/metadata/include" \
   "$PACKAGE_DIR/metadata" \
   "$PACKAGE_DIR/ios/vendor/libffi/include" \
@@ -37,10 +53,16 @@ mkdir -p \
   "$PACKAGE_DIR/types/objc-node-api" \
   "$PACK_DESTINATION"
 
-cp NativeScript/ffi/hermes/jsi/NativeApiJsi.h "$PACKAGE_DIR/native-api-jsi/"
-cp NativeScript/ffi/hermes/jsi/NativeApiJsi.mm "$PACKAGE_DIR/native-api-jsi/"
-cp NativeScript/ffi/shared/jsi/NativeApiJsi*.h "$PACKAGE_DIR/native-api-jsi/jsi/"
-cp NativeScript/ffi/hermes/jsi/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/hermes/NativeApiJsi.h "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/hermes/NativeApiJsi.mm "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/hermes/NativeApiJsi*.h "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/hermes/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api-jsi/"
+cp NativeScript/ffi/direct/NativeApiDirect*.h "$PACKAGE_DIR/native-api-jsi/ffi/direct/"
+cp NativeScript/ffi/shared/SignatureDispatchCore.h "$PACKAGE_DIR/native-api-jsi/"
+cp "$GENERATED_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api-jsi/GeneratedSignatureDispatch.inc"
+if [ -z "$GENERATED_SIGNATURE_DISPATCH_OVERRIDE" ]; then
+  rm -f "$GENERATED_SIGNATURE_DISPATCH" "$GENERATED_SIGNATURE_DISPATCH.stamp"
+fi
 cp metadata-generator/include/Metadata.h "$PACKAGE_DIR/native-api-jsi/metadata/include/"
 cp metadata-generator/include/MetadataReader.h "$PACKAGE_DIR/native-api-jsi/metadata/include/"
 cp NativeScript/libffi/iphonesimulator-universal/include/ffi.h "$PACKAGE_DIR/ios/vendor/libffi/include/"
