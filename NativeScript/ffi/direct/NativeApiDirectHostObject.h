@@ -1,6 +1,14 @@
+#ifndef NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME
+#define NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME "direct"
+#endif
+
+#ifndef NATIVESCRIPT_NATIVE_API_DIRECT_RUNTIME_NAME
+#define NATIVESCRIPT_NATIVE_API_DIRECT_RUNTIME_NAME "direct"
+#endif
+
 #ifndef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS
 inline bool InstallNativeApiEngineLazyGlobal(
-    Runtime&, std::shared_ptr<NativeApiJsiBridge>, const std::string&,
+    Runtime&, std::shared_ptr<NativeApiDirectBridge>, const std::string&,
     const std::string&, bool) {
   return false;
 }
@@ -8,16 +16,16 @@ inline bool InstallNativeApiEngineLazyGlobal(
 
 class NativeApiHostObject final : public HostObject {
  public:
-  explicit NativeApiHostObject(std::shared_ptr<NativeApiJsiBridge> bridge)
+  explicit NativeApiHostObject(std::shared_ptr<NativeApiDirectBridge> bridge)
       : bridge_(std::move(bridge)) {}
 
   Value get(Runtime& runtime, const PropNameID& name) override {
     std::string property = name.utf8(runtime);
     if (property == "runtime") {
-      return makeString(runtime, "jsi");
+      return makeString(runtime, NATIVESCRIPT_NATIVE_API_DIRECT_RUNTIME_NAME);
     }
     if (property == "backend") {
-      return makeString(runtime, "hermes");
+      return makeString(runtime, NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME);
     }
     if (property == "metadata") {
       return metadataObject(runtime);
@@ -50,16 +58,16 @@ class NativeApiHostObject final : public HostObject {
           [bridge](Runtime& runtime, const Value&, const Value* args,
                    size_t count) -> Value {
             if (count < 1 || !args[0].isObject()) {
-              throw facebook::jsi::JSError(
+              throw JSError(
                   runtime, "Fast enumeration expects a native object.");
             }
             id object = NativeApiObjectHostObject::nativeObjectFromValue(runtime, args[0]);
             if (object == nil) {
-              throw facebook::jsi::JSError(
+              throw JSError(
                   runtime, "Fast enumeration expects a native object.");
             }
             if (![object conformsToProtocol:@protocol(NSFastEnumeration)]) {
-              throw facebook::jsi::JSError(
+              throw JSError(
                   runtime, "Object does not conform to NSFastEnumeration.");
             }
             return Object::createFromHostObject(
@@ -76,21 +84,21 @@ class NativeApiHostObject final : public HostObject {
                    size_t count) -> Value {
             auto scheduler = bridge->scheduler();
             if (scheduler == nullptr) {
-              throw facebook::jsi::JSError(
+              throw JSError(
                   runtime,
-                  "NativeApiJsi was installed without a UI scheduler.");
+                  "NativeApiDirect was installed without a UI scheduler.");
             }
 
             std::shared_ptr<Function> callback;
             if (count > 0 && !args[0].isNull() && !args[0].isUndefined()) {
               if (!args[0].isObject()) {
-                throw facebook::jsi::JSError(
+                throw JSError(
                     runtime, "runOnUI expects a function callback.");
               }
 
               Object callbackObject = args[0].asObject(runtime);
               if (!callbackObject.isFunction(runtime)) {
-                throw facebook::jsi::JSError(
+                throw JSError(
                     runtime, "runOnUI expects a function callback.");
               }
               callback = std::make_shared<Function>(
@@ -162,7 +170,7 @@ class NativeApiHostObject final : public HostObject {
             NSBundle* bundle = [NSBundle
                 bundleWithPath:[NSString stringWithUTF8String:frameworkPath.c_str()]];
             if (bundle == nil || ![bundle load]) {
-              throw facebook::jsi::JSError(
+              throw JSError(
                   runtime, "Could not load bundle: " + frameworkPath);
             }
             return true;
@@ -216,7 +224,7 @@ class NativeApiHostObject final : public HostObject {
           runtime, PropNameID::forAscii(runtime, "__extendClass"), 2,
           [bridge](Runtime& runtime, const Value&, const Value* args,
                    size_t count) -> Value {
-            return extendNativeApiJsiClass(runtime, bridge, args, count);
+            return extendNativeApiDirectClass(runtime, bridge, args, count);
           });
     }
     if (property == "__invokeBase") {
@@ -225,7 +233,7 @@ class NativeApiHostObject final : public HostObject {
           runtime, PropNameID::forAscii(runtime, "__invokeBase"), 3,
           [bridge](Runtime& runtime, const Value&, const Value* args,
                    size_t count) -> Value {
-            return invokeNativeApiJsiBaseMethod(runtime, bridge, args, count);
+            return invokeNativeApiDirectBaseMethod(runtime, bridge, args, count);
           });
     }
     if (property == "__rememberClassWrapper") {
@@ -237,7 +245,7 @@ class NativeApiHostObject final : public HostObject {
             if (count < 2) {
               return Value::undefined();
             }
-            Class cls = classFromJsiValue(runtime, args[0]);
+            Class cls = classFromDirectValue(runtime, args[0]);
             if (cls == Nil) {
               return Value::undefined();
             }
@@ -275,7 +283,7 @@ class NativeApiHostObject final : public HostObject {
           [bridge](Runtime& runtime, const Value&, const Value* args,
                    size_t count) -> Value {
             if (count < 3 || !args[1].isNumber()) {
-              throw facebook::jsi::JSError(
+              throw JSError(
                   runtime, "CC_SHA256 expects data, length, and output.");
             }
             void* commonCrypto =
@@ -288,12 +296,12 @@ class NativeApiHostObject final : public HostObject {
               symbol = dlsym(commonCrypto, "_CC_SHA256");
             }
             if (symbol == nullptr) {
-              throw facebook::jsi::JSError(runtime,
+              throw JSError(runtime,
                                            "CC_SHA256 is not available.");
             }
-            NativeApiJsiArgumentFrame frame(3);
-            void* data = pointerFromJsiValue(runtime, args[0], frame);
-            void* output = pointerFromJsiValue(runtime, args[2], frame);
+            NativeApiDirectArgumentFrame frame(3);
+            void* data = pointerFromDirectValue(runtime, args[0], frame);
+            void* output = pointerFromDirectValue(runtime, args[2], frame);
             using CC_SHA256_Fn = unsigned char* (*)(const void*, unsigned long,
                                                     unsigned char*);
             auto fn = reinterpret_cast<CC_SHA256_Fn>(symbol);
@@ -556,5 +564,5 @@ class NativeApiHostObject final : public HostObject {
     return metadata;
   }
 
-  std::shared_ptr<NativeApiJsiBridge> bridge_;
+  std::shared_ptr<NativeApiDirectBridge> bridge_;
 };

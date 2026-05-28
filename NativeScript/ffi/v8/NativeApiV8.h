@@ -1,7 +1,7 @@
 #ifndef NATIVESCRIPT_FFI_V8_NATIVE_API_V8_H
 #define NATIVESCRIPT_FFI_V8_NATIVE_API_V8_H
 
-#include "ffi/shared/direct/NativeApiDirect.h"
+#include "ffi/direct/NativeApiDirect.h"
 #include "v8.h"
 
 namespace nativescript {

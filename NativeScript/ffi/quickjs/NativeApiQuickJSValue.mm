@@ -2,8 +2,8 @@
 
 #ifdef TARGET_ENGINE_QUICKJS
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace direct {
 
 Value HostObject::get(Runtime&, const PropNameID&) { return Value::undefined(); }
 void HostObject::set(Runtime&, const PropNameID&, const Value&) {}
@@ -82,7 +82,7 @@ void Object::setProperty(Runtime& runtime, const char* name, const ArrayBuffer& 
   setProperty(runtime, name, Value(runtime, value));
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace direct
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_QUICKJS

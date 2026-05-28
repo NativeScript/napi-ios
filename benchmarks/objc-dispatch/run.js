@@ -448,8 +448,7 @@ function runNapiNode(options, variant) {
 
   const env = { ...process.env, METADATA_PATH: options.metadataPath };
   if (variant === "gsd-off") {
-    // Current runtime disables generated signature dispatch when this value is exactly "0".
-    env.NS_DISABLE_GSD = "0";
+    env.NS_DISABLE_GSD = "1";
   } else {
     delete env.NS_DISABLE_GSD;
   }
@@ -900,7 +899,7 @@ async function runNapiIOS(options, variant, packageTgz, reportVariant = variant)
     copyDirectoryContents(app.appDir, path.join(appPath, "app"));
   }
   installApp(udid, appPath, app.bundleId);
-  const launchEnv = variant === "gsd-off" ? { NS_DISABLE_GSD: "0" } : {};
+  const launchEnv = variant === "gsd-off" ? { NS_DISABLE_GSD: "1" } : {};
   return await launchAndCollect(udid, app.bundleId, options, launchEnv);
 }
 

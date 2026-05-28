@@ -114,7 +114,7 @@ Value enumToObject(Runtime& runtime, MDMetadataReader* metadata,
 }
 
 Value constantToValue(Runtime& runtime,
-                      const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                      const std::shared_ptr<NativeApiDirectBridge>& bridge,
                       const NativeApiSymbol& symbol) {
   MDMetadataReader* metadata = bridge->metadata();
   if (metadata == nullptr || symbol.offset == MD_SECTION_OFFSET_NULL) {
@@ -141,7 +141,7 @@ Value constantToValue(Runtime& runtime,
         return Value::undefined();
       }
 
-      NativeApiJsiType stringObjectType;
+      NativeApiDirectType stringObjectType;
       stringObjectType.kind = metagen::mdTypeNSStringObject;
       stringObjectType.ffiType = &ffi_type_pointer;
       stringObjectType.supported = true;
@@ -153,10 +153,10 @@ Value constantToValue(Runtime& runtime,
   }
 
   MDSectionOffset typeOffset = offset;
-  NativeApiJsiType type = parseMetadataJsiType(metadata, &typeOffset, bridge.get());
-  if (unsupportedJsiType(type)) {
-    throw facebook::jsi::JSError(
-        runtime, "Native constant type is not supported by pure JSI: " +
+  NativeApiDirectType type = parseMetadataDirectType(metadata, &typeOffset, bridge.get());
+  if (unsupportedDirectType(type)) {
+    throw JSError(
+        runtime, "Native constant type is not supported by direct engine: " +
                      symbol.name);
   }
 
@@ -167,59 +167,68 @@ Value constantToValue(Runtime& runtime,
   return convertNativeReturnValue(runtime, bridge, type, symbolPtr);
 }
 
-void prepareJsiArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                        const NativeApiJsiType& type, const Value& arg,
-                        size_t index, NativeApiJsiArgumentFrame& frame) {
-  ffi_type* ffiType = ffiTypeForJsiArgument(type);
+void prepareDirectArgument(Runtime& runtime,
+                        const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                        const NativeApiDirectType& type, const Value& arg,
+                        size_t index, NativeApiDirectArgumentFrame& frame) {
+  ffi_type* ffiType = ffiTypeForDirectArgument(type);
   size_t size =
       ffiType != nullptr && ffiType->size > 0 ? ffiType->size : nativeSizeForType(type);
   void* target = frame.storageAt(index, size);
-  convertJsiFfiArgument(runtime, bridge, type, arg, target, frame);
+  convertDirectFfiArgument(runtime, bridge, type, arg, target, frame);
 }
 
-void prepareJsiArguments(Runtime& runtime,
-                         const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                         const NativeApiJsiSignature& signature,
+void prepareDirectArguments(Runtime& runtime,
+                         const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                         const NativeApiDirectSignature& signature,
                          const Value* args, size_t count,
-                         NativeApiJsiArgumentFrame& frame) {
+                         NativeApiDirectArgumentFrame& frame) {
   if (count != signature.argumentTypes.size()) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "Actual arguments count: \"" + std::to_string(count) +
                      "\". Expected: \"" +
                      std::to_string(signature.argumentTypes.size()) + "\".");
   }
 
   for (size_t i = 0; i < signature.argumentTypes.size(); i++) {
-    prepareJsiArgument(runtime, bridge, signature.argumentTypes[i], args[i], i,
+    prepareDirectArgument(runtime, bridge, signature.argumentTypes[i], args[i], i,
                        frame);
   }
 }
 
+inline uint64_t dispatchIdForDirectSignature(
+    const NativeApiDirectSignature& signature, SignatureCallKind kind) {
+  if (signature.signatureHash == 0) {
+    return 0;
+  }
+  return composeSignatureDispatchId(signature.signatureHash, kind,
+                                    signature.dispatchFlags);
+}
+
 Value callNativeFunctionPointer(
-    Runtime& runtime, const std::shared_ptr<NativeApiJsiBridge>& bridge,
-    const NativeApiJsiType& type, void* pointer, bool block, const Value* args,
+    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
+    const NativeApiDirectType& type, void* pointer, bool block, const Value* args,
     size_t count) {
   if (pointer == nullptr) {
-    throw facebook::jsi::JSError(runtime, "Native function pointer is null.");
+    throw JSError(runtime, "Native function pointer is null.");
   }
   if (bridge == nullptr || bridge->metadata() == nullptr ||
       type.signatureOffset == MD_SECTION_OFFSET_NULL) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, "Native function pointer metadata is unavailable.");
   }
 
-  auto signature = parseMetadataJsiSignature(
+  auto signature = parseMetadataDirectSignature(
       bridge->metadata(), type.signatureOffset, block ? 1 : 0, bridge.get());
   if (!signature || !signature->prepared || signature->variadic ||
-      unsupportedJsiType(signature->returnType)) {
-    throw facebook::jsi::JSError(
+      unsupportedDirectType(signature->returnType)) {
+    throw JSError(
         runtime,
-        "Native function pointer signature is not supported by pure JSI.");
+        "Native function pointer signature is not supported by direct engine.");
   }
 
-  NativeApiJsiArgumentFrame frame(signature->argumentTypes.size());
-  prepareJsiArguments(runtime, bridge, *signature, args, count, frame);
+  NativeApiDirectArgumentFrame frame(signature->argumentTypes.size());
+  prepareDirectArguments(runtime, bridge, *signature, args, count, frame);
 
   std::vector<void*> values;
   if (block) {
@@ -232,9 +241,9 @@ Value callNativeFunctionPointer(
 
   void* callable = pointer;
   if (block) {
-    auto literal = static_cast<NativeApiJsiBlockLiteral*>(pointer);
+    auto literal = static_cast<NativeApiDirectBlockLiteral*>(pointer);
     if (literal == nullptr || literal->invoke == nullptr) {
-      throw facebook::jsi::JSError(runtime, "Native block invoke pointer is null.");
+      throw JSError(runtime, "Native block invoke pointer is null.");
     }
     callable = literal->invoke;
   }
@@ -242,6 +251,21 @@ Value callNativeFunctionPointer(
   std::vector<unsigned char> returnStorage(
       std::max<size_t>(nativeSizeForType(signature->returnType), sizeof(void*)), 0);
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
+    if (block) {
+      auto preparedInvoker = lookupBlockPreparedInvoker(
+          dispatchIdForDirectSignature(*signature, SignatureCallKind::BlockInvoke));
+      if (preparedInvoker != nullptr) {
+        preparedInvoker(callable, values.data(), returnStorage.data());
+        return;
+      }
+    } else {
+      auto preparedInvoker = lookupCFunctionPreparedInvoker(
+          dispatchIdForDirectSignature(*signature, SignatureCallKind::CFunction));
+      if (preparedInvoker != nullptr) {
+        preparedInvoker(callable, frame.values(), returnStorage.data());
+        return;
+      }
+    }
     ffi_call(&signature->cif, FFI_FN(callable), returnStorage.data(),
              block ? values.data() : frame.values());
   });
@@ -251,10 +275,10 @@ Value callNativeFunctionPointer(
 }
 
 Value wrapNativeFunctionPointer(Runtime& runtime,
-                                const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                                const NativeApiJsiType& type, void* pointer,
+                                const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                                const NativeApiDirectType& type, void* pointer,
                                 bool block) {
-  const char* functionName = block ? "NativeApiJsiBlock" : "NativeApiJsiFunctionPointer";
+  const char* functionName = block ? "NativeApiDirectBlock" : "NativeApiDirectFunctionPointer";
   auto function = Function::createFromHostFunction(
       runtime, PropNameID::forAscii(runtime, functionName), 0,
       [bridge, type, pointer, block](Runtime& runtime, const Value&,
@@ -284,7 +308,7 @@ Value wrapNativeFunctionPointer(Runtime& runtime,
             char address[32] = {};
             snprintf(address, sizeof(address), "%p", pointer);
             return makeString(runtime,
-                              std::string("[NativeApiJsi ") +
+                              std::string("[NativeApiDirect ") +
                                   (block ? "Block " : "FunctionPointer ") +
                                   address + "]");
           }));
@@ -292,17 +316,17 @@ Value wrapNativeFunctionPointer(Runtime& runtime,
 }
 
 Value callCFunction(Runtime& runtime,
-                    const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                    const std::shared_ptr<NativeApiDirectBridge>& bridge,
                     const NativeApiSymbol& symbol, const Value* args,
                     size_t count) {
   MDMetadataReader* metadata = bridge->metadata();
   if (metadata == nullptr) {
-    throw facebook::jsi::JSError(runtime, "Native metadata is not loaded.");
+    throw JSError(runtime, "Native metadata is not loaded.");
   }
 
   void* fnptr = dlsym(bridge->selfDl(), symbol.name.c_str());
   if (fnptr == nullptr) {
-    throw facebook::jsi::JSError(runtime,
+    throw JSError(runtime,
                                  "Native function is not available: " +
                                      symbol.name);
   }
@@ -310,19 +334,19 @@ Value callCFunction(Runtime& runtime,
   MDSectionOffset signatureOffset =
       metadata->signaturesOffset +
       metadata->getOffset(symbol.offset + sizeof(MDSectionOffset));
-  auto signature = parseMetadataJsiSignature(
+  auto signature = parseMetadataDirectSignature(
       metadata, signatureOffset, 0, bridge.get(),
       (metadata->getFunctionFlag(symbol.offset + sizeof(MDSectionOffset) * 2) &
        metagen::mdFunctionReturnOwned) != 0);
   if (!signature || !signature->prepared || signature->variadic ||
-      unsupportedJsiType(signature->returnType)) {
-    throw facebook::jsi::JSError(
-        runtime, "Native function signature is not supported by pure JSI: " +
+      unsupportedDirectType(signature->returnType)) {
+    throw JSError(
+        runtime, "Native function signature is not supported by direct engine: " +
                      symbol.name);
   }
 
-  NativeApiJsiArgumentFrame frame(signature->argumentTypes.size());
-  prepareJsiArguments(runtime, bridge, *signature, args, count, frame);
+  NativeApiDirectArgumentFrame frame(signature->argumentTypes.size());
+  prepareDirectArguments(runtime, bridge, *signature, args, count, frame);
 
   if (symbol.name == "NSApplicationMain" ||
       symbol.name == "UIApplicationMain") {
@@ -334,8 +358,14 @@ Value callCFunction(Runtime& runtime,
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
-    ffi_call(&signature->cif, FFI_FN(fnptr), returnStorage.data(),
-             frame.values());
+    auto preparedInvoker = lookupCFunctionPreparedInvoker(
+        dispatchIdForDirectSignature(*signature, SignatureCallKind::CFunction));
+    if (preparedInvoker != nullptr) {
+      preparedInvoker(fnptr, frame.values(), returnStorage.data());
+    } else {
+      ffi_call(&signature->cif, FFI_FN(fnptr), returnStorage.data(),
+               frame.values());
+    }
     if (dispatchingNativeCallToUI &&
         !signature->returnType.returnOwned &&
         isObjectiveCObjectType(signature->returnType)) {
@@ -347,7 +377,7 @@ Value callCFunction(Runtime& runtime,
     }
   });
 
-  NativeApiJsiType returnType = signature->returnType;
+  NativeApiDirectType returnType = signature->returnType;
   if (retainedReturn) {
     returnType.returnOwned = true;
   }
@@ -361,14 +391,14 @@ Value callCFunction(Runtime& runtime,
                                   returnStorage.data());
 }
 
-bool signatureSupportedForJsiInvocation(
-    const std::optional<NativeApiJsiSignature>& signature) {
+bool signatureSupportedForDirectInvocation(
+    const std::optional<NativeApiDirectSignature>& signature) {
   if (!signature || !signature->prepared || signature->variadic ||
-      unsupportedJsiType(signature->returnType)) {
+      unsupportedDirectType(signature->returnType)) {
     return false;
   }
   for (const auto& argType : signature->argumentTypes) {
-    if (unsupportedJsiType(argType)) {
+    if (unsupportedDirectType(argType)) {
       return false;
     }
   }
@@ -376,14 +406,14 @@ bool signatureSupportedForJsiInvocation(
 }
 
 Value callObjCSelector(Runtime& runtime,
-                       const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                       const std::shared_ptr<NativeApiDirectBridge>& bridge,
                        id receiver, bool receiverIsClass,
                        const std::string& selectorName,
                        const NativeApiMember* member,
                        const Value* args, size_t count,
                        Class dispatchSuperClass) {
   if (receiver == nil) {
-    throw facebook::jsi::JSError(runtime,
+    throw JSError(runtime,
                                  "Cannot send Objective-C selector to nil.");
   }
 
@@ -395,44 +425,44 @@ Value callObjCSelector(Runtime& runtime,
                                   : class_getInstanceMethod(lookupClass, selector);
   if (method == nullptr &&
       (dispatchSuperClass != Nil || ![receiver respondsToSelector:selector])) {
-    throw facebook::jsi::JSError(runtime,
+    throw JSError(runtime,
                                  "Objective-C selector is not available: " +
                                      selectorName);
   }
 
-  std::optional<NativeApiJsiSignature> signature;
-  std::optional<NativeApiJsiSignature> runtimeSignature;
+  std::optional<NativeApiDirectSignature> signature;
+  std::optional<NativeApiDirectSignature> runtimeSignature;
   if (member != nullptr &&
       member->signatureOffset != MD_SECTION_OFFSET_NULL &&
       member->signatureOffset != 0) {
-    signature = parseMetadataJsiSignature(
+    signature = parseMetadataDirectSignature(
         bridge->metadata(), member->signatureOffset, 2, bridge.get(),
         (member->flags & metagen::mdMemberReturnOwned) != 0);
   }
   if (method != nullptr) {
-    runtimeSignature = parseObjCMethodJsiSignature(method, bridge.get());
+    runtimeSignature = parseObjCMethodDirectSignature(method, bridge.get());
   }
-  if (signatureSupportedForJsiInvocation(signature) &&
-      signatureSupportedForJsiInvocation(runtimeSignature)) {
+  if (signatureSupportedForDirectInvocation(signature) &&
+      signatureSupportedForDirectInvocation(runtimeSignature)) {
     reconcileObjCMethodRuntimeSignature(&*signature, *runtimeSignature);
   }
-  if (!signatureSupportedForJsiInvocation(signature) && runtimeSignature) {
+  if (!signatureSupportedForDirectInvocation(signature) && runtimeSignature) {
     signature = std::move(runtimeSignature);
   }
 
-  if (!signatureSupportedForJsiInvocation(signature)) {
-    throw facebook::jsi::JSError(
-        runtime, "Objective-C signature is not supported by pure JSI: " +
+  if (!signatureSupportedForDirectInvocation(signature)) {
+    throw JSError(
+        runtime, "Objective-C signature is not supported by direct engine: " +
                      selectorName);
   }
   signature->selectorName = selectorName;
 
-  NativeApiJsiArgumentFrame frame(signature->argumentTypes.size());
-  const bool isNSErrorOutMethod = isNSErrorOutJsiMethodSignature(*signature);
+  NativeApiDirectArgumentFrame frame(signature->argumentTypes.size());
+  const bool isNSErrorOutMethod = isNSErrorOutDirectMethodSignature(*signature);
   if (isNSErrorOutMethod) {
     size_t expected = signature->argumentTypes.size();
     if (count > expected || count + 1 < expected) {
-      throw facebook::jsi::JSError(
+      throw JSError(
           runtime, "Actual arguments count: \"" + std::to_string(count) +
                        "\". Expected: \"" + std::to_string(expected) + "\".");
     }
@@ -443,7 +473,7 @@ Value callObjCSelector(Runtime& runtime,
   NSError* implicitNSError = nil;
   if (hasImplicitNSErrorOutArg) {
     for (size_t i = 0; i < count; i++) {
-      prepareJsiArgument(runtime, bridge, signature->argumentTypes[i], args[i], i,
+      prepareDirectArgument(runtime, bridge, signature->argumentTypes[i], args[i], i,
                          frame);
     }
 
@@ -452,7 +482,7 @@ Value callObjCSelector(Runtime& runtime,
     NSError** implicitNSErrorOutArg = &implicitNSError;
     *static_cast<void**>(target) = implicitNSErrorOutArg;
   } else {
-    prepareJsiArguments(runtime, bridge, *signature, args, count, frame);
+    prepareDirectArguments(runtime, bridge, *signature, args, count, frame);
   }
 
   std::vector<void*> values;
@@ -474,21 +504,31 @@ Value callObjCSelector(Runtime& runtime,
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
+    auto preparedInvoker =
+        dispatchSuperClass == Nil
+            ? lookupObjCPreparedInvoker(dispatchIdForDirectSignature(
+                  *signature, SignatureCallKind::ObjCMethod))
+            : nullptr;
+    if (preparedInvoker != nullptr) {
+      preparedInvoker(reinterpret_cast<void*>(objc_msgSend), values.data(),
+                      returnStorage.data());
+    } else {
 #if defined(__x86_64__)
-    bool isStret = signature->returnType.ffiType->size > 16 &&
-                   signature->returnType.ffiType->type == FFI_TYPE_STRUCT;
-    void (*target)(void) = dispatchSuperClass != Nil
-                       ? (isStret ? FFI_FN(objc_msgSendSuper_stret)
-                                  : FFI_FN(objc_msgSendSuper))
-                       : (isStret ? FFI_FN(objc_msgSend_stret)
-                                  : FFI_FN(objc_msgSend));
-    ffi_call(&signature->cif, target, returnStorage.data(), values.data());
+      bool isStret = signature->returnType.ffiType->size > 16 &&
+                     signature->returnType.ffiType->type == FFI_TYPE_STRUCT;
+      void (*target)(void) = dispatchSuperClass != Nil
+                         ? (isStret ? FFI_FN(objc_msgSendSuper_stret)
+                                    : FFI_FN(objc_msgSendSuper))
+                         : (isStret ? FFI_FN(objc_msgSend_stret)
+                                    : FFI_FN(objc_msgSend));
+      ffi_call(&signature->cif, target, returnStorage.data(), values.data());
 #else
-    ffi_call(&signature->cif,
-             dispatchSuperClass != Nil ? FFI_FN(objc_msgSendSuper)
-                                       : FFI_FN(objc_msgSend),
-             returnStorage.data(), values.data());
+      ffi_call(&signature->cif,
+               dispatchSuperClass != Nil ? FFI_FN(objc_msgSendSuper)
+                                         : FFI_FN(objc_msgSend),
+               returnStorage.data(), values.data());
 #endif
+    }
     if (dispatchingNativeCallToUI &&
         !signature->returnType.returnOwned &&
         isObjectiveCObjectType(signature->returnType)) {
@@ -500,7 +540,7 @@ Value callObjCSelector(Runtime& runtime,
     }
   });
 
-  NativeApiJsiType returnType = signature->returnType;
+  NativeApiDirectType returnType = signature->returnType;
   if ((selectorName == "valueForKey:" || selectorName == "valueForKeyPath:") &&
       isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeAnyObject;
@@ -510,7 +550,7 @@ Value callObjCSelector(Runtime& runtime,
   }
   if (hasImplicitNSErrorOutArg && implicitNSError != nil) {
     const char* errorMessage = [[implicitNSError description] UTF8String];
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, errorMessage != nullptr ? errorMessage : "Unknown NSError");
   }
   return convertNativeReturnValue(runtime, bridge, returnType,

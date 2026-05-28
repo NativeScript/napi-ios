@@ -31,7 +31,7 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = {
     "CLANG_CXX_LANGUAGE_STANDARD" => "c++20",
     "CLANG_CXX_LIBRARY" => "libc++",
-    "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited) TARGET_ENGINE_HERMES=1",
+    "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited) TARGET_ENGINE_HERMES=1 NS_FFI_BACKEND_DIRECT=1 NS_GSD_BACKEND_HERMES=1",
     "HEADER_SEARCH_PATHS" => [
       "\"$(PODS_TARGET_SRCROOT)/ios\"",
       "\"$(PODS_TARGET_SRCROOT)/native-api-jsi\"",

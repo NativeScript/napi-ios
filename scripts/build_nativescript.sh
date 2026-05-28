@@ -17,8 +17,7 @@ TARGET_ENGINE=${TARGET_ENGINE:=v8} # default to v8 for compat
 NS_FFI_BACKEND=${NS_FFI_BACKEND:=auto}
 NS_GSD_BACKEND=${NS_GSD_BACKEND:=auto}
 METADATA_SIZE=${METADATA_SIZE:=0}
-GENERATED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-./NativeScript/ffi/napi/GeneratedSignatureDispatch.inc}}
-GENERATED_SIGNATURE_DISPATCH_STAMP="${GENERATED_SIGNATURE_DISPATCH}.stamp"
+REQUESTED_SIGNATURE_DISPATCH=${NS_SIGNATURE_BINDINGS_CPP_PATH:-${TNS_SIGNATURE_BINDINGS_CPP_PATH:-}}
 
 for arg in $@; do
   case $arg in
@@ -95,7 +94,14 @@ function effective_gsd_backend () {
   local is_macos_napi="${1:-false}"
 
   if [ "$(effective_ffi_backend "$is_macos_napi")" == "direct" ]; then
-    echo none
+    case "$NS_GSD_BACKEND" in
+      auto)
+        echo none
+        ;;
+      *)
+        echo "$NS_GSD_BACKEND"
+        ;;
+    esac
     return
   fi
 
@@ -135,6 +141,33 @@ function effective_ffi_backend () {
   esac
 }
 
+function signature_dispatch_path () {
+  local is_macos_napi="${1:-false}"
+  if [ -n "$REQUESTED_SIGNATURE_DISPATCH" ]; then
+    echo "$REQUESTED_SIGNATURE_DISPATCH"
+    return
+  fi
+
+  local backend
+  backend=$(effective_gsd_backend "$is_macos_napi")
+  local ffi_backend
+  ffi_backend=$(effective_ffi_backend "$is_macos_napi")
+
+  if [ "$ffi_backend" == "direct" ]; then
+    case "$backend" in
+      v8|jsc|quickjs) echo "./NativeScript/ffi/direct/GeneratedSignatureDispatch.inc"; return ;;
+    esac
+  fi
+
+  case "$backend" in
+    hermes) echo "./NativeScript/ffi/hermes/GeneratedSignatureDispatch.inc" ;;
+    v8) echo "./NativeScript/ffi/v8/GeneratedSignatureDispatch.inc" ;;
+    jsc) echo "./NativeScript/ffi/jsc/GeneratedSignatureDispatch.inc" ;;
+    quickjs) echo "./NativeScript/ffi/quickjs/GeneratedSignatureDispatch.inc" ;;
+    *) echo "./NativeScript/ffi/napi/GeneratedSignatureDispatch.inc" ;;
+  esac
+}
+
 function signature_dispatch_stamp () {
   local platform="$1"
   local is_macos_napi="${2:-false}"
@@ -164,9 +197,12 @@ function ensure_signature_dispatch_bindings () {
 
   local expected_stamp
   expected_stamp=$(signature_dispatch_stamp "$platform" "$is_macos_napi")
-  if [ -f "$GENERATED_SIGNATURE_DISPATCH" ] && \
-     [ -f "$GENERATED_SIGNATURE_DISPATCH_STAMP" ] && \
-     [ "$(cat "$GENERATED_SIGNATURE_DISPATCH_STAMP")" == "$expected_stamp" ]; then
+  local generated_signature_dispatch
+  generated_signature_dispatch=$(signature_dispatch_path "$is_macos_napi")
+  local generated_signature_dispatch_stamp="${generated_signature_dispatch}.stamp"
+  if [ -f "$generated_signature_dispatch" ] && \
+     [ -f "$generated_signature_dispatch_stamp" ] && \
+     [ "$(cat "$generated_signature_dispatch_stamp")" == "$expected_stamp" ]; then
     return
   fi
 
@@ -175,9 +211,9 @@ function ensure_signature_dispatch_bindings () {
   fi
 
   checkpoint "Generating signature dispatch bindings for $platform ($backend)..."
-  NS_SIGNATURE_BINDINGS_CPP_PATH="$GENERATED_SIGNATURE_DISPATCH" npm run metagen "$platform"
-  mkdir -p "$(dirname "$GENERATED_SIGNATURE_DISPATCH_STAMP")"
-  printf "%s" "$expected_stamp" > "$GENERATED_SIGNATURE_DISPATCH_STAMP"
+  NS_SIGNATURE_BINDINGS_CPP_PATH="$generated_signature_dispatch" npm run metagen "$platform"
+  mkdir -p "$(dirname "$generated_signature_dispatch_stamp")"
+  printf "%s" "$expected_stamp" > "$generated_signature_dispatch_stamp"
 }
 
 DEV_TEAM=${DEVELOPMENT_TEAM:-}

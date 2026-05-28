@@ -66,8 +66,8 @@ packages/*/metadata-json
 SwiftBindgen
 
 # Generated Objective-C/C dispatch wrappers
-NativeScript/ffi/napi/GeneratedSignatureDispatch.inc
-NativeScript/ffi/napi/GeneratedSignatureDispatch.inc.stamp
+NativeScript/ffi/*/GeneratedSignatureDispatch.inc
+NativeScript/ffi/*/GeneratedSignatureDispatch.inc.stamp
 
 # React Native TurboModule package staging
 packages/react-native/dist/

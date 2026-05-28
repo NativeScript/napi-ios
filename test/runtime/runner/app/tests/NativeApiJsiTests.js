@@ -1,27 +1,36 @@
-describe("Native API JSI bridge", function () {
+describe("Native API direct bridge", function () {
     function apiOrPending() {
         var api = global.__nativeScriptNativeApi;
         if (!api) {
-            pending("Native API JSI bridge is only installed for Hermes.");
+            pending("Native API direct bridge is only installed for direct FFI backends.");
         }
         return api;
+    }
+
+    function expectBridgeIdentity(api) {
+        if (api.runtime === "jsi") {
+            expect(api.backend).toBe("hermes");
+            return;
+        }
+
+        expect(api.runtime).toBe("direct");
+        expect(["v8", "jsc", "quickjs"]).toContain(api.backend);
     }
 
     afterEach(function () {
         TNSClearOutput();
     });
 
-    it("exposes the Hermes JSI host object", function () {
+    it("exposes the native API host object", function () {
         var api = apiOrPending();
 
-        expect(api.runtime).toBe("jsi");
-        expect(api.backend).toBe("hermes");
+        expectBridgeIdentity(api);
         expect(api.metadata.classes).toBeGreaterThan(0);
         expect(api.metadata.functions).toBeGreaterThan(0);
         expect(api.getClass("NSObject").available).toBe(true);
     });
 
-    it("calls metadata-backed C functions through pure JSI", function () {
+    it("calls metadata-backed C functions through the direct bridge", function () {
         var api = apiOrPending();
         var fn = api.getFunction("functionWithInt");
 
@@ -30,7 +39,7 @@ describe("Native API JSI bridge", function () {
         expect(TNSGetOutput()).toBe("42");
     });
 
-    it("sends Objective-C selectors through pure JSI", function () {
+    it("sends Objective-C selectors through the direct bridge", function () {
         var api = apiOrPending();
         var primitives = api.getClass("TNSPrimitives").alloc().invoke("init");
 
@@ -38,7 +47,7 @@ describe("Native API JSI bridge", function () {
         expect(TNSGetOutput()).toBe("24");
     });
 
-    it("decodes Objective-C runtime struct signatures through pure JSI", function () {
+    it("decodes Objective-C runtime struct signatures through the direct bridge", function () {
         apiOrPending();
         if (typeof UIView === "undefined" || typeof CGRectMake !== "function") {
             pending("UIKit CGRect runtime selector fallback is only available on iOS.");
@@ -60,7 +69,7 @@ describe("Native API JSI bridge", function () {
         expect(bounds.size.height).toBe(4);
     });
 
-    it("decodes metadata-less Objective-C runtime struct signatures through pure JSI", function () {
+    it("decodes metadata-less Objective-C runtime struct signatures through the direct bridge", function () {
         apiOrPending();
         var provider = TNSRuntimeOnlyStructProviderMake();
         var pair = provider.invoke("runtimeOnlyPair");

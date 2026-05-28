@@ -1,23 +1,23 @@
 thread_local bool gDispatchNativeCallsToUI = false;
 thread_local bool gExecutingDispatchedUINativeCall = false;
 thread_local int gSynchronousNativeInvocationDepth = 0;
-thread_local int gNativeCallerThreadJsiCallbackDepth = 0;
+thread_local int gNativeCallerThreadDirectCallbackDepth = 0;
 thread_local std::vector<std::string*> gNativeCallbackExceptionCaptureStack;
 std::atomic<int> gActiveSynchronousNativeInvocationDepth{0};
-static char gNativeApiJsiExtendedClassKey;
+static char gNativeApiDirectExtendedClassKey;
 
-void markNativeApiJsiExtendedClass(Class cls) {
+void markNativeApiDirectExtendedClass(Class cls) {
   if (cls == Nil) {
     return;
   }
-  objc_setAssociatedObject(cls, &gNativeApiJsiExtendedClassKey, @YES,
+  objc_setAssociatedObject(cls, &gNativeApiDirectExtendedClassKey, @YES,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-bool isNativeApiJsiExtendedClass(Class cls) {
+bool isNativeApiDirectExtendedClass(Class cls) {
   Class current = cls;
   while (current != Nil) {
-    if (objc_getAssociatedObject(current, &gNativeApiJsiExtendedClassKey) != nil) {
+    if (objc_getAssociatedObject(current, &gNativeApiDirectExtendedClassKey) != nil) {
       return true;
     }
     current = class_getSuperclass(current);
@@ -59,20 +59,20 @@ class ScopedNativeApiSynchronousInvocation final {
   }
 };
 
-class ScopedNativeCallerThreadJsiCallback final {
+class ScopedNativeCallerThreadDirectCallback final {
  public:
-  ScopedNativeCallerThreadJsiCallback() {
-    gNativeCallerThreadJsiCallbackDepth += 1;
+  ScopedNativeCallerThreadDirectCallback() {
+    gNativeCallerThreadDirectCallbackDepth += 1;
   }
 
-  ~ScopedNativeCallerThreadJsiCallback() {
-    gNativeCallerThreadJsiCallbackDepth -= 1;
+  ~ScopedNativeCallerThreadDirectCallback() {
+    gNativeCallerThreadDirectCallbackDepth -= 1;
   }
 
-  ScopedNativeCallerThreadJsiCallback(
-      const ScopedNativeCallerThreadJsiCallback&) = delete;
-  ScopedNativeCallerThreadJsiCallback& operator=(
-      const ScopedNativeCallerThreadJsiCallback&) = delete;
+  ScopedNativeCallerThreadDirectCallback(
+      const ScopedNativeCallerThreadDirectCallback&) = delete;
+  ScopedNativeCallerThreadDirectCallback& operator=(
+      const ScopedNativeCallerThreadDirectCallback&) = delete;
 };
 
 class ScopedNativeCallbackExceptionCapture final {
@@ -132,7 +132,7 @@ void performNativeInvocation(Runtime& runtime,
     }
   };
 
-  bool skipInvoker = gNativeCallerThreadJsiCallbackDepth > 0;
+  bool skipInvoker = gNativeCallerThreadDirectCallbackDepth > 0;
   if (shouldDispatchNativeCallToUI()) {
     dispatch_sync(dispatch_get_main_queue(), ^{
       bool previous = gExecutingDispatchedUINativeCall;
@@ -153,10 +153,10 @@ void performNativeInvocation(Runtime& runtime,
   if (exceptionDescription != nil) {
     std::string message = exceptionDescription.UTF8String ?: "";
     [exceptionDescription release];
-    throw facebook::jsi::JSError(runtime, message);
+    throw JSError(runtime, message);
   }
   if (!callbackException.empty()) {
-    throw facebook::jsi::JSError(runtime, callbackException);
+    throw JSError(runtime, callbackException);
   }
 }
 
@@ -189,13 +189,13 @@ struct NativeApiMember {
   bool readonly = false;
 };
 
-struct NativeApiJsiAggregateInfo;
+struct NativeApiDirectAggregateInfo;
 
-struct NativeApiJsiFfiType {
+struct NativeApiDirectFfiType {
   ffi_type type = {};
   std::vector<ffi_type*> elements;
 
-  NativeApiJsiFfiType() {
+  NativeApiDirectFfiType() {
     type.type = FFI_TYPE_STRUCT;
     type.size = 0;
     type.alignment = 0;
@@ -208,7 +208,7 @@ struct NativeApiJsiFfiType {
   }
 };
 
-struct NativeApiJsiType {
+struct NativeApiDirectType {
   MDTypeKind kind = metagen::mdTypeVoid;
   ffi_type* ffiType = &ffi_type_void;
   bool supported = true;
@@ -217,24 +217,24 @@ struct NativeApiJsiType {
   MDSectionOffset aggregateOffset = MD_SECTION_OFFSET_NULL;
   bool aggregateIsUnion = false;
   uint16_t arraySize = 0;
-  std::shared_ptr<NativeApiJsiType> elementType;
-  std::shared_ptr<NativeApiJsiAggregateInfo> aggregateInfo;
-  std::shared_ptr<NativeApiJsiFfiType> ownedFfiType;
+  std::shared_ptr<NativeApiDirectType> elementType;
+  std::shared_ptr<NativeApiDirectAggregateInfo> aggregateInfo;
+  std::shared_ptr<NativeApiDirectFfiType> ownedFfiType;
 };
 
-struct NativeApiJsiAggregateField {
+struct NativeApiDirectAggregateField {
   std::string name;
   uint16_t offset = 0;
-  NativeApiJsiType type;
+  NativeApiDirectType type;
 };
 
-struct NativeApiJsiAggregateInfo {
+struct NativeApiDirectAggregateInfo {
   std::string name;
   uint16_t size = 0;
   bool isUnion = false;
   MDSectionOffset offset = MD_SECTION_OFFSET_NULL;
-  std::vector<NativeApiJsiAggregateField> fields;
-  std::shared_ptr<NativeApiJsiFfiType> ffi;
+  std::vector<NativeApiDirectAggregateField> fields;
+  std::shared_ptr<NativeApiDirectFfiType> ffi;
 };
 
 std::string jsifySelector(const char* selector) {
@@ -432,7 +432,7 @@ const NativeApiMember* selectWritablePropertyMember(
   return fallback;
 }
 
-void skipMetadataJsiType(MDMetadataReader* metadata, MDSectionOffset* offset);
+void skipMetadataDirectType(MDMetadataReader* metadata, MDSectionOffset* offset);
 Protocol* lookupProtocolByNativeName(const std::string& name);
 
 inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
@@ -443,9 +443,9 @@ inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
 #endif
 }
 
-class NativeApiJsiBridge {
+class NativeApiDirectBridge {
  public:
-  explicit NativeApiJsiBridge(const NativeApiJsiConfig& config)
+  explicit NativeApiDirectBridge(const NativeApiDirectConfig& config)
       : metadata_(loadMetadata(config)),
         scheduler_(config.scheduler),
         nativeInvocationInvoker_(config.nativeInvocationInvoker),
@@ -457,7 +457,7 @@ class NativeApiJsiBridge {
     buildSymbolIndexes();
   }
 
-  ~NativeApiJsiBridge() {
+  ~NativeApiDirectBridge() {
     if (selfDl_ != nullptr) {
       dlclose(selfDl_);
     }
@@ -705,7 +705,7 @@ class NativeApiJsiBridge {
   const std::vector<std::string>& enumNames() const { return enumNames_; }
   const std::vector<std::string>& structNames() const { return structNames_; }
   const std::vector<std::string>& unionNames() const { return unionNames_; }
-  std::shared_ptr<NativeApiJsiScheduler> scheduler() const { return scheduler_; }
+  std::shared_ptr<NativeApiDirectScheduler> scheduler() const { return scheduler_; }
   const std::function<void(std::function<void()>)>& nativeInvocationInvoker()
       const {
     return nativeInvocationInvoker_;
@@ -723,7 +723,7 @@ class NativeApiJsiBridge {
   }
   std::thread::id jsThreadId() const { return jsThreadId_; }
 
-  void retainJsiLifetime(std::shared_ptr<void> lifetime) {
+  void retainDirectLifetime(std::shared_ptr<void> lifetime) {
     if (lifetime == nullptr) {
       return;
     }
@@ -767,10 +767,10 @@ class NativeApiJsiBridge {
     return inserted.first->second;
   }
 
-  std::shared_ptr<NativeApiJsiAggregateInfo> aggregateInfoFor(
+  std::shared_ptr<NativeApiDirectAggregateInfo> aggregateInfoFor(
       MDSectionOffset aggregateOffset, bool isUnion);
 
-  std::shared_ptr<NativeApiJsiAggregateInfo> aggregateInfoFor(
+  std::shared_ptr<NativeApiDirectAggregateInfo> aggregateInfoFor(
       const NativeApiSymbol& symbol) {
     return aggregateInfoFor(symbol.offset,
                             symbol.kind == NativeApiSymbolKind::Union);
@@ -810,7 +810,7 @@ class NativeApiJsiBridge {
   }
 
   static std::unique_ptr<MDMetadataReader> loadMetadata(
-      const NativeApiJsiConfig& config) {
+      const NativeApiDirectConfig& config) {
     if (config.metadataPtr != nullptr &&
         *static_cast<const char*>(config.metadataPtr) != '\0') {
 #ifdef EMBED_METADATA_SIZE
@@ -979,7 +979,7 @@ class NativeApiJsiBridge {
                                 metagen::MDVariableEvalKind evalKind) {
     switch (evalKind) {
       case metagen::mdEvalNone:
-        skipMetadataJsiType(metadata, &offset);
+        skipMetadataDirectType(metadata, &offset);
         break;
       case metagen::mdEvalInt64:
         offset += sizeof(int64_t);
@@ -1124,7 +1124,7 @@ class NativeApiJsiBridge {
       if (!isUnion) {
         offset += sizeof(uint16_t);
       }
-      skipMetadataJsiType(metadata_.get(), &offset);
+      skipMetadataDirectType(metadata_.get(), &offset);
     }
   }
 
@@ -1551,7 +1551,7 @@ class NativeApiJsiBridge {
   std::vector<std::string> enumNames_;
   std::vector<std::string> structNames_;
   std::vector<std::string> unionNames_;
-  std::shared_ptr<NativeApiJsiScheduler> scheduler_;
+  std::shared_ptr<NativeApiDirectScheduler> scheduler_;
   std::function<void(std::function<void()>)> nativeInvocationInvoker_;
   std::function<void(std::function<void()>)> nativeCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker_;
@@ -1564,7 +1564,7 @@ class NativeApiJsiBridge {
       membersByProtocolOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> structSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> unionSymbolsByOffset_;
-  std::unordered_map<MDSectionOffset, std::shared_ptr<NativeApiJsiAggregateInfo>>
+  std::unordered_map<MDSectionOffset, std::shared_ptr<NativeApiDirectAggregateInfo>>
       aggregateInfoByOffset_;
   std::unordered_set<MDSectionOffset> aggregateInfoInProgress_;
   std::thread::id jsThreadId_ = std::this_thread::get_id();
@@ -1579,7 +1579,7 @@ Value makeString(Runtime& runtime, const std::string& value) {
 std::string readStringArg(Runtime& runtime, const Value* args, size_t count,
                           size_t index, const char* argumentName) {
   if (index >= count || !args[index].isString()) {
-    throw facebook::jsi::JSError(
+    throw JSError(
         runtime, std::string(argumentName) + " must be a string.");
   }
   return args[index].asString(runtime).utf8(runtime);
@@ -1622,15 +1622,15 @@ class NativeApiPointerHostObject;
 class NativeApiObjectHostObject;
 class NativeApiClassHostObject;
 class NativeApiProtocolHostObject;
-class NativeApiJsiArgumentFrame;
+class NativeApiDirectArgumentFrame;
 
 Value callCFunction(Runtime& runtime,
-                    const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                    const std::shared_ptr<NativeApiDirectBridge>& bridge,
                     const NativeApiSymbol& symbol, const Value* args,
                     size_t count);
 
 Value callObjCSelector(Runtime& runtime,
-                       const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                       const std::shared_ptr<NativeApiDirectBridge>& bridge,
                        id receiver, bool receiverIsClass,
                        const std::string& selectorName,
                        const NativeApiMember* member,
@@ -1638,11 +1638,11 @@ Value callObjCSelector(Runtime& runtime,
                        Class dispatchSuperClass = Nil);
 
 Value makeNativeObjectValue(Runtime& runtime,
-                            const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                            const std::shared_ptr<NativeApiDirectBridge>& bridge,
                             id object, bool ownsObject);
 
 Value makeNativeClassValue(Runtime& runtime,
-                           const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                           const std::shared_ptr<NativeApiDirectBridge>& bridge,
                            NativeApiSymbol symbol);
 
 Object symbolToObject(Runtime& runtime, const NativeApiSymbol& symbol) {
@@ -1670,19 +1670,19 @@ Object symbolToObject(Runtime& runtime, const NativeApiSymbol& symbol) {
   return result;
 }
 
-size_t nativeSizeForType(const NativeApiJsiType& type);
+size_t nativeSizeForType(const NativeApiDirectType& type);
 std::optional<size_t> parseArrayIndexProperty(const std::string& property);
 
-NativeApiJsiType nativeObjectReturnType(
+NativeApiDirectType nativeObjectReturnType(
     MDTypeKind kind = metagen::mdTypeAnyObject) {
-  NativeApiJsiType type;
+  NativeApiDirectType type;
   type.kind = kind;
   type.ffiType = &ffi_type_pointer;
   type.supported = true;
   return type;
 }
 
-NativeApiJsiType nativeObjectReturnTypeForClass(Class cls) {
+NativeApiDirectType nativeObjectReturnTypeForClass(Class cls) {
   if (cls != Nil) {
     const char* name = class_getName(cls);
     if (name != nullptr && std::strcmp(name, "NSString") == 0) {
@@ -1696,10 +1696,10 @@ NativeApiJsiType nativeObjectReturnTypeForClass(Class cls) {
 }
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiJsiBridge>& bridge,
-                               const NativeApiJsiType& type, void* value);
+                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                               const NativeApiDirectType& type, void* value);
 Object createPointer(Runtime& runtime,
-                     const std::shared_ptr<NativeApiJsiBridge>& bridge,
+                     const std::shared_ptr<NativeApiDirectBridge>& bridge,
                      void* pointer, bool adopted = false);
 
-NativeApiJsiType primitiveInteropType(MDTypeKind kind);
+NativeApiDirectType primitiveInteropType(MDTypeKind kind);

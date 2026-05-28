@@ -1,10 +1,10 @@
-Object CreateNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
-  auto bridge = std::make_shared<NativeApiJsiBridge>(config);
+Object CreateNativeApiDirect(Runtime& runtime, const NativeApiDirectConfig& config) {
+  auto bridge = std::make_shared<NativeApiDirectBridge>(config);
   return Object::createFromHostObject(runtime,
                                       std::make_shared<NativeApiHostObject>(std::move(bridge)));
 }
 
-void NativeApiJsiWriteSmokeStage(const char* stage) {
+void NativeApiDirectWriteSmokeStage(const char* stage) {
   const char* enabled = getenv("NATIVESCRIPT_RN_TURBO_SMOKE_MARKER");
   if (enabled == nullptr || enabled[0] == '\0') {
     return;
@@ -87,9 +87,9 @@ std::string jsStringLiteral(const char* value) {
   return result;
 }
 
-void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) {
-  NativeApiJsiWriteSmokeStage("jsi:globals:before-eval");
-  static const char* GlobalInstaller = R"JSI_GLOBALS(
+void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalName) {
+  NativeApiDirectWriteSmokeStage("direct:globals:before-eval");
+  static const char* GlobalInstaller = R"Direct_GLOBALS(
 (function(nativeApiGlobalName) {
   'use strict';
   var api = globalThis[nativeApiGlobalName];
@@ -1691,38 +1691,38 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
   } catch (_) {
   }
 })
-)JSI_GLOBALS";
+)Direct_GLOBALS";
 
   std::string script(GlobalInstaller);
   script += "(";
   script += jsStringLiteral(globalName);
   script += ");";
   runtime.evaluateJavaScript(std::make_shared<StringBuffer>(std::move(script)),
-                             "NativeApiJsiGlobals.js");
-  NativeApiJsiWriteSmokeStage("jsi:globals:after-eval");
+                             "NativeApiDirectGlobals.js");
+  NativeApiDirectWriteSmokeStage("direct:globals:after-eval");
 }
 
-void InstallNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
+void InstallNativeApiDirect(Runtime& runtime, const NativeApiDirectConfig& config) {
   const char* globalName = config.globalName != nullptr && config.globalName[0] != '\0'
                                ? config.globalName
                                : "__nativeScriptNativeApi";
-  NativeApiJsiWriteSmokeStage("jsi:create-api");
-  Object api = CreateNativeApiJSI(runtime, config);
+  NativeApiDirectWriteSmokeStage("direct:create-api");
+  Object api = CreateNativeApiDirect(runtime, config);
   Object global = runtime.global();
-  NativeApiJsiWriteSmokeStage("jsi:set-global");
+  NativeApiDirectWriteSmokeStage("direct:set-global");
   global.setProperty(runtime, globalName, api);
 
-  NativeApiJsiWriteSmokeStage("jsi:set-interop");
+  NativeApiDirectWriteSmokeStage("direct:set-interop");
   Value existingInterop = global.getProperty(runtime, "interop");
   if (existingInterop.isUndefined() || existingInterop.isNull()) {
     global.setProperty(runtime, "interop", api.getProperty(runtime, "interop"));
   }
   if (config.installGlobalSymbols) {
-    NativeApiJsiWriteSmokeStage("jsi:install-globals");
-    InstallNativeApiJsiGlobalSymbols(runtime, globalName);
+    NativeApiDirectWriteSmokeStage("direct:install-globals");
+    InstallNativeApiDirectGlobalSymbols(runtime, globalName);
   } else {
-    NativeApiJsiWriteSmokeStage("jsi:install-aggregate-globals");
+    NativeApiDirectWriteSmokeStage("direct:install-aggregate-globals");
     InstallAggregateGlobals(runtime, api, "protocolNames");
   }
-  NativeApiJsiWriteSmokeStage("jsi:installed");
+  NativeApiDirectWriteSmokeStage("direct:installed");
 }

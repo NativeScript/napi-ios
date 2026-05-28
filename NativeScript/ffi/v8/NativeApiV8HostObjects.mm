@@ -2,8 +2,8 @@
 
 #ifdef TARGET_ENGINE_V8
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace direct {
 
 namespace v8direct {
 
@@ -181,7 +181,7 @@ Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& na
   return Function(Object::fromValueStorage(Value(runtime, function).storage_));
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace direct
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_V8
