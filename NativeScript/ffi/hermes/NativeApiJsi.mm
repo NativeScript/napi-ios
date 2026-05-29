@@ -34,7 +34,7 @@
 #include "ffi.h"
 #include "NativeApiJsiSignatureDispatch.h"
 
-@protocol NativeApiHermesClassBuilderProtocol
+@protocol NativeApiClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE
@@ -58,14 +58,14 @@ using facebook::jsi::StringBuffer;
 using facebook::jsi::Value;
 using facebook::jsi::JSError;
 
-using NativeApiHermesConfig = NativeApiJsiConfig;
-using NativeApiHermesScheduler = NativeApiJsiScheduler;
+using NativeApiConfig = NativeApiJsiConfig;
+using NativeApiScheduler = NativeApiJsiScheduler;
 using metagen::MDMemberFlag;
 using metagen::MDMetadataReader;
 using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
-void SetNativeApiHermesObjectPrototype(Runtime& runtime, Object& object,
+void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
                                        const Object& prototype) {
   Object objectConstructor =
       runtime.global().getPropertyAsObject(runtime, "Object");
@@ -75,24 +75,25 @@ void SetNativeApiHermesObjectPrototype(Runtime& runtime, Object& object,
 }
 
 // clang-format off
-#define NATIVESCRIPT_NATIVE_API_HERMES_RUNTIME_NAME "jsi"
-#define NATIVESCRIPT_NATIVE_API_HERMES_BACKEND_NAME "hermes"
+#define NATIVESCRIPT_NATIVE_API_RUNTIME_NAME "jsi"
+#define NATIVESCRIPT_NATIVE_API_BACKEND_NAME "hermes"
+#define NATIVESCRIPT_NATIVE_API_HOST_SET_VOID 1
 #define NATIVESCRIPT_NATIVE_API_HAS_ENGINE_SELECTOR_GROUP_FUNCTION 1
-#include "ObjCBridge.mm"
-#include "HostObjects.mm"
-#include "Callbacks.mm"
-#include "TypeConv.mm"
-#include "Invocation.mm"
-#include "ClassBuilder.mm"
-#include "HostObject.mm"
+#include "../shared/bridge/ObjCBridge.mm"
+#include "../shared/bridge/HostObjects.mm"
+#include "../shared/bridge/Callbacks.mm"
+#include "../shared/bridge/TypeConv.mm"
+#include "../shared/bridge/Invocation.mm"
+#include "../shared/bridge/ClassBuilder.mm"
+#include "../shared/bridge/HostObject.mm"
 // clang-format on
 
-Function CreateNativeApiHermesSelectorGroupFunction(
-    Runtime& runtime, std::shared_ptr<NativeApiHermesBridge> bridge,
+Function CreateNativeApiSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
     Class lookupClass, bool receiverIsClass,
-    std::shared_ptr<std::vector<NativeApiHermesSelectorGroupEntry>> selectors,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
     std::shared_ptr<
-        std::vector<std::shared_ptr<NativeApiHermesPreparedObjCInvocation>>>
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
         preparedInvocations) {
   return Function::createFromHostFunction(
       runtime, PropNameID::forAscii(runtime, "__nativeSelectorGroup"), 0,
@@ -108,7 +109,7 @@ Function CreateNativeApiHermesSelectorGroupFunction(
                         "argument count.");
         }
 
-        const NativeApiHermesSelectorGroupEntry& entry = (*selectors)[count];
+        const NativeApiSelectorGroupEntry& entry = (*selectors)[count];
         auto& prepared = (*preparedInvocations)[count];
         Class selectorLookupClass = lookupClass;
         id receiver = nil;
@@ -154,7 +155,7 @@ Function CreateNativeApiHermesSelectorGroupFunction(
         }
 
         if (prepared == nullptr) {
-          prepared = prepareNativeApiHermesObjCInvocation(
+          prepared = prepareNativeApiObjCInvocation(
               runtime, bridge, selectorLookupClass, receiverIsClass, entry.selectorName,
               entry.hasMember ? &entry.member : nullptr);
         }
@@ -164,7 +165,7 @@ Function CreateNativeApiHermesSelectorGroupFunction(
                                           *prepared, args, count, Nil);
         }
         Class dispatchClass =
-            dispatchPrototypeClassForEngineDerivedReceiver(receiver, lookupClass);
+            dispatchSuperclassForEngineDerivedReceiver(receiver, lookupClass);
         return receiverHostObject->callPreparedObjectSelector(
             runtime, (*selectors)[count].selectorName, *prepared, args, count,
             dispatchClass);
@@ -173,14 +174,14 @@ Function CreateNativeApiHermesSelectorGroupFunction(
 
 }  // namespace
 
-#include "Install.mm"
+#include "../shared/bridge/Install.mm"
 
 Object CreateNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
-  return CreateNativeApiHermes(runtime, config);
+  return CreateNativeApi(runtime, config);
 }
 
 void InstallNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
-  InstallNativeApiHermes(runtime, config);
+  InstallNativeApi(runtime, config);
 }
 
 }  // namespace nativescript

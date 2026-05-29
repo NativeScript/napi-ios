@@ -1093,20 +1093,20 @@ Value NativeApiReferenceHostObject::get(Runtime& runtime,
   return Value::undefined();
 }
 
-bool NativeApiReferenceHostObject::set(Runtime& runtime,
+NativeApiHostSetResult NativeApiReferenceHostObject::set(Runtime& runtime,
                                        const PropNameID& name,
                                        const Value& value) {
   std::string property = name.utf8(runtime);
   auto index = parseArrayIndexProperty(property);
   if (property != "value" && !index) {
-    return true;
+    NATIVE_API_SET_RETURN(true);
   }
   size_t slotIndex = index.value_or(0);
   NativeApiArgumentFrame frame(1);
   if (data_ == nullptr) {
     if (slotIndex == 0) {
       pendingValue_ = std::make_shared<Value>(runtime, value);
-      return true;
+      NATIVE_API_SET_RETURN(true);
     }
     ensureStorage(runtime, type_, frame, slotIndex + 1);
   }
@@ -1114,7 +1114,7 @@ bool NativeApiReferenceHostObject::set(Runtime& runtime,
   void* slot = static_cast<uint8_t*>(data_) +
                (slotIndex * referenceElementStride(type_));
   convertEngineArgument(runtime, bridge_, type_, value, slot, frame);
-  return true;
+  NATIVE_API_SET_RETURN(true);
 }
 
 Value NativeApiStructObjectHostObject::get(Runtime& runtime,
@@ -1163,7 +1163,7 @@ Value NativeApiStructObjectHostObject::get(Runtime& runtime,
   return Value::undefined();
 }
 
-bool NativeApiStructObjectHostObject::set(Runtime& runtime,
+NativeApiHostSetResult NativeApiStructObjectHostObject::set(Runtime& runtime,
                                           const PropNameID& name,
                                           const Value& value) {
   std::string property = name.utf8(runtime);
@@ -1177,7 +1177,7 @@ bool NativeApiStructObjectHostObject::set(Runtime& runtime,
     NativeApiArgumentFrame frame(1);
     convertEngineArgument(runtime, bridge_, field.type, value,
                        static_cast<uint8_t*>(data_) + field.offset, frame);
-    return true;
+    NATIVE_API_SET_RETURN(true);
   }
   throw JSError(runtime, "No native struct field: " + property);
 }

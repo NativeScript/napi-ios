@@ -1,3 +1,15 @@
+// HostObject::set returns bool on engines whose interceptors can defer an
+// unhandled set to the JS prototype chain. JSI's HostObject::set is void, so
+// the Hermes backend defines NATIVESCRIPT_NATIVE_API_HOST_SET_VOID and the
+// set overrides below collapse their return type/values accordingly.
+#ifdef NATIVESCRIPT_NATIVE_API_HOST_SET_VOID
+using NativeApiHostSetResult = void;
+#define NATIVE_API_SET_RETURN(handled) return
+#else
+using NativeApiHostSetResult = bool;
+#define NATIVE_API_SET_RETURN(handled) return (handled)
+#endif
+
 class NativeApiPointerHostObject final
     : public HostObject,
       public std::enable_shared_from_this<NativeApiPointerHostObject> {
@@ -189,7 +201,7 @@ class NativeApiReferenceHostObject final : public HostObject {
                      NativeApiArgumentFrame& frame, size_t elements = 1);
 
   Value get(Runtime& runtime, const PropNameID& name) override;
-  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override;
+  NativeApiHostSetResult set(Runtime& runtime, const PropNameID& name, const Value& value) override;
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override {
     std::vector<PropNameID> names;
     addPropertyName(runtime, names, "kind");
@@ -245,7 +257,7 @@ class NativeApiStructObjectHostObject final : public HostObject {
   std::shared_ptr<Value> backingValue() const { return backingValue_; }
 
   Value get(Runtime& runtime, const PropNameID& name) override;
-  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override;
+  NativeApiHostSetResult set(Runtime& runtime, const PropNameID& name, const Value& value) override;
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override;
 
  private:
@@ -431,7 +443,7 @@ class NativeApiSuperHostObject final : public HostObject {
     return Value::undefined();
   }
 
-  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override {
+  NativeApiHostSetResult set(Runtime& runtime, const PropNameID& name, const Value& value) override {
     std::string property = name.utf8(runtime);
     if (receiver_ == nil || dispatchClass_ == Nil) {
       throw JSError(runtime, "Cannot set property on nil super.");
@@ -454,7 +466,7 @@ class NativeApiSuperHostObject final : public HostObject {
         callObjCSelector(runtime, bridge_, receiver_, false,
                          setterMember.selectorName, &setterMember, args, 1,
                          dispatchClass_);
-        return true;
+        NATIVE_API_SET_RETURN(true);
       }
     }
 
@@ -464,7 +476,7 @@ class NativeApiSuperHostObject final : public HostObject {
       Value args[] = {Value(runtime, value)};
       callObjCSelector(runtime, bridge_, receiver_, false, setterSelectorName,
                        nullptr, args, 1, dispatchClass_);
-      return true;
+      NATIVE_API_SET_RETURN(true);
     }
 
     throw JSError(runtime,
@@ -1184,7 +1196,7 @@ class NativeApiObjectHostObject final
     return Value::undefined();
   }
 
-  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override {
+  NativeApiHostSetResult set(Runtime& runtime, const PropNameID& name, const Value& value) override {
     std::string property = name.utf8(runtime);
     if (object_ == nil) {
       throw JSError(runtime, "Cannot set property on nil object.");
@@ -1205,7 +1217,7 @@ class NativeApiObjectHostObject final
         Value args[] = {Value(runtime, value)};
         callObjCSelector(runtime, bridge_, object_, false,
                          setterMember.selectorName, &setterMember, args, 1);
-        return true;
+        NATIVE_API_SET_RETURN(true);
       }
     }
 
@@ -1214,11 +1226,11 @@ class NativeApiObjectHostObject final
     // shadowing it with a bridge expando.
     if (class_conformsToProtocol(object_getClass(object_),
                                  @protocol(NativeApiClassBuilderProtocol))) {
-      return false;
+      NATIVE_API_SET_RETURN(false);
     }
 
     bridge_->setObjectExpando(runtime, object_, property, value);
-    return true;
+    NATIVE_API_SET_RETURN(true);
   }
 
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override {
@@ -1488,7 +1500,7 @@ class NativeApiClassHostObject final : public HostObject {
     return Value::undefined();
   }
 
-  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override {
+  NativeApiHostSetResult set(Runtime& runtime, const PropNameID& name, const Value& value) override {
     std::string property = name.utf8(runtime);
     Class cls = objc_lookUpClass(symbol_.runtimeName.c_str());
     if (cls == nil) {
@@ -1516,7 +1528,7 @@ class NativeApiClassHostObject final : public HostObject {
       Value args[] = {Value(runtime, value)};
       callObjCSelector(runtime, bridge_, static_cast<id>(dispatchClass), true,
                        setterMember.selectorName, &setterMember, args, 1);
-      return true;
+      NATIVE_API_SET_RETURN(true);
     }
 
     throw JSError(runtime,
