@@ -84,18 +84,6 @@ static JSValue nativeHostGet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSVa
     if (!result.isUndefined()) {
       return result.local(runtime);
     }
-    JSValue prototype = JS_GetPrototype(ctx, obj);
-    if (!JS_IsException(prototype) && !JS_IsNull(prototype) &&
-        !JS_IsUndefined(prototype)) {
-      JSValue prototypeValue = JS_GetProperty(ctx, prototype, atom);
-      JS_FreeValue(ctx, prototype);
-      if (!JS_IsException(prototypeValue) && !JS_IsUndefined(prototypeValue)) {
-        return prototypeValue;
-      }
-      JS_FreeValue(ctx, prototypeValue);
-    } else {
-      JS_FreeValue(ctx, prototype);
-    }
     return JS_UNDEFINED;
   } catch (const std::exception& error) {
     return throwError(ctx, error);
