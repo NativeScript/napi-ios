@@ -28,15 +28,15 @@ using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
 // clang-format off
-#define NATIVESCRIPT_NATIVE_API_QUICKJS_BACKEND_NAME "quickjs"
-#include "ObjCBridge.mm"
+#define NATIVESCRIPT_NATIVE_API_BACKEND_NAME "quickjs"
+#include "../shared/bridge/ObjCBridge.mm"
 // clang-format on
 
 #define NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS 1
 #define NATIVESCRIPT_NATIVE_API_RETAIN_RUNTIME 1
 #define NATIVESCRIPT_NATIVE_API_HAS_ENGINE_SELECTOR_GROUP_FUNCTION 1
 
-static JSValue NativeApiQuickJSLazyGlobalGetter(JSContext* context, JSValueConst, int,
+static JSValue NativeApiLazyGlobalGetter(JSContext* context, JSValueConst, int,
                                                 JSValueConst*, int, JSValueConst* data) {
   JSValue global = JS_GetGlobalObject(context);
   JSValue resolver = JS_GetPropertyStr(context, global, "__nativeScriptResolveNativeApiLazyGlobal");
@@ -64,7 +64,7 @@ static JSValue NativeApiQuickJSLazyGlobalGetter(JSContext* context, JSValueConst
   return result;
 }
 
-bool InstallNativeApiQuickJSLazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiQuickJSBridge>,
+bool InstallNativeApiLazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiBridge>,
                                       const std::string& name, const std::string& kind,
                                       bool force) {
   if (name.empty() || kind.empty()) {
@@ -103,7 +103,7 @@ bool InstallNativeApiQuickJSLazyGlobal(Runtime& runtime, std::shared_ptr<NativeA
     return false;
   }
 
-  JSValue getter = JS_NewCFunctionData(context, NativeApiQuickJSLazyGlobalGetter, 0, 0, 2, data);
+  JSValue getter = JS_NewCFunctionData(context, NativeApiLazyGlobalGetter, 0, 0, 2, data);
   JS_FreeValue(context, data[0]);
   JS_FreeValue(context, data[1]);
   if (JS_IsException(getter)) {
@@ -119,7 +119,7 @@ bool InstallNativeApiQuickJSLazyGlobal(Runtime& runtime, std::shared_ptr<NativeA
   return status >= 0;
 }
 
-void SetNativeApiQuickJSObjectPrototype(Runtime& runtime, Object& object,
+void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
                                        const Object& prototype) {
   JSValue objectValue = object.local(runtime);
   JSValue prototypeValue = prototype.local(runtime);
@@ -132,30 +132,30 @@ void SetNativeApiQuickJSObjectPrototype(Runtime& runtime, Object& object,
 }
 
 // clang-format off
-#include "HostObjects.mm"
+#include "../shared/bridge/HostObjects.mm"
 // clang-format on
 
-std::shared_ptr<Runtime> retainNativeApiQuickJSRuntime(Runtime& runtime) {
+std::shared_ptr<Runtime> retainNativeApiRuntime(Runtime& runtime) {
   return std::make_shared<Runtime>(runtime.state());
 }
 
 // clang-format off
-#include "Callbacks.mm"
-#include "TypeConv.mm"
-#include "Invocation.mm"
-#include "ClassBuilder.mm"
-#include "HostObject.mm"
+#include "../shared/bridge/Callbacks.mm"
+#include "../shared/bridge/TypeConv.mm"
+#include "../shared/bridge/Invocation.mm"
+#include "../shared/bridge/ClassBuilder.mm"
+#include "../shared/bridge/HostObject.mm"
 // clang-format on
 
-struct NativeApiQuickJSSelectorGroupData {
-  NativeApiQuickJSSelectorGroupData(
+struct NativeApiSelectorGroupData {
+  NativeApiSelectorGroupData(
       std::shared_ptr<engine::quickjsengine::RuntimeState> state,
-      std::shared_ptr<NativeApiQuickJSBridge> bridge, Class lookupClass,
+      std::shared_ptr<NativeApiBridge> bridge, Class lookupClass,
       bool receiverIsClass,
-      std::shared_ptr<std::vector<NativeApiQuickJSSelectorGroupEntry>>
+      std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>>
           selectors,
       std::shared_ptr<
-          std::vector<std::shared_ptr<NativeApiQuickJSPreparedObjCInvocation>>>
+          std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
           preparedInvocations)
       : state(std::move(state)),
         bridge(std::move(bridge)),
@@ -165,12 +165,12 @@ struct NativeApiQuickJSSelectorGroupData {
         preparedInvocations(std::move(preparedInvocations)) {}
 
   std::shared_ptr<engine::quickjsengine::RuntimeState> state;
-  std::shared_ptr<NativeApiQuickJSBridge> bridge;
+  std::shared_ptr<NativeApiBridge> bridge;
   Class lookupClass = Nil;
   bool receiverIsClass = false;
-  std::shared_ptr<std::vector<NativeApiQuickJSSelectorGroupEntry>> selectors;
+  std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors;
   std::shared_ptr<
-      std::vector<std::shared_ptr<NativeApiQuickJSPreparedObjCInvocation>>>
+      std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
       preparedInvocations;
 };
 
@@ -214,9 +214,9 @@ std::shared_ptr<T> quickJSHostObject(Runtime& runtime, JSValueConst value) {
 }
 
 id quickJSNativeObjectArgument(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    const NativeApiQuickJSType& type, JSValueConst value,
-    NativeApiQuickJSArgumentFrame& frame) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const NativeApiType& type, JSValueConst value,
+    NativeApiArgumentFrame& frame) {
   JSContext* context = runtime.context();
   if (JS_IsNull(value) || JS_IsUndefined(value)) {
     return nil;
@@ -341,9 +341,9 @@ bool writeQuickJSNumber(JSContext* context, JSValueConst value, void* target) {
 }
 
 bool prepareQuickJSEngineArgument(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    const NativeApiQuickJSType& type, JSValueConst value,
-    NativeApiQuickJSArgumentFrame& frame, size_t index) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const NativeApiType& type, JSValueConst value,
+    NativeApiArgumentFrame& frame, size_t index) {
   ffi_type* ffiType = ffiTypeForEngineArgument(type);
   size_t size =
       ffiType != nullptr && ffiType->size > 0 ? ffiType->size : nativeSizeForType(type);
@@ -468,8 +468,8 @@ JSValue quickJSUnsignedInteger64Value(Runtime& runtime, uint64_t value) {
 }
 
 JSValue setQuickJSEngineObjectReturn(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    NativeApiQuickJSType type, id object) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    NativeApiType type, id object) {
   JSContext* context = runtime.context();
   if (object == nil || [object isKindOfClass:[NSNull class]]) {
     if (object != nil && type.returnOwned) {
@@ -531,8 +531,8 @@ JSValue setQuickJSEngineObjectReturn(
 }
 
 JSValue setQuickJSEngineReturnValue(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    NativeApiQuickJSType type, void* value, const std::string& selectorName) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    NativeApiType type, void* value, const std::string& selectorName) {
   JSContext* context = runtime.context();
   switch (type.kind) {
     case metagen::mdTypeVoid:
@@ -617,13 +617,13 @@ JSValue setQuickJSEngineReturnValue(
 }
 
 JSValue setQuickJSEnginePreparedObjCResult(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    id receiver, const NativeApiQuickJSPreparedObjCInvocation& prepared,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
     const std::shared_ptr<NativeApiObjectHostObject>& receiverHostObject,
     const std::optional<Object>& initializerClassWrapper,
     size_t providedCount, JSValueConst arguments[],
     Class dispatchSuperClass) {
-  const NativeApiQuickJSSignature& signature = prepared.signature;
+  const NativeApiSignature& signature = prepared.signature;
   if (receiver == nil || signature.variadic ||
       unsupportedEngineType(signature.returnType)) {
     throw JSError(runtime,
@@ -660,7 +660,7 @@ JSValue setQuickJSEnginePreparedObjCResult(
     }
   }
 
-  NativeApiQuickJSArgumentFrame frame(signature.argumentTypes.size());
+  NativeApiArgumentFrame frame(signature.argumentTypes.size());
   for (size_t i = 0; i < providedCount; i++) {
     if (!prepareQuickJSEngineArgument(runtime, bridge,
                                       signature.argumentTypes[i],
@@ -681,7 +681,7 @@ JSValue setQuickJSEnginePreparedObjCResult(
     *static_cast<void**>(target) = implicitNSErrorOutArg;
   }
 
-  NativeApiQuickJSPointerFrame values(signature.argumentTypes.size() + 2);
+  NativeApiPointerFrame values(signature.argumentTypes.size() + 2);
   size_t valueIndex = 0;
   struct objc_super superReceiver = {receiver, dispatchSuperClass};
   struct objc_super* superReceiverPtr = &superReceiver;
@@ -695,7 +695,7 @@ JSValue setQuickJSEnginePreparedObjCResult(
     values.set(valueIndex++, frame.values()[i]);
   }
 
-  NativeApiQuickJSReturnStorage returnStorage(
+  NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
@@ -731,7 +731,7 @@ JSValue setQuickJSEnginePreparedObjCResult(
     }
   });
 
-  NativeApiQuickJSType returnType = signature.returnType;
+  NativeApiType returnType = signature.returnType;
   if (retainedReturn) {
     returnType.returnOwned = true;
   }
@@ -759,36 +759,36 @@ JSValue setQuickJSEnginePreparedObjCResult(
                                      prepared.selectorName);
 }
 
-static JSClassID gNativeApiQuickJSSelectorGroupDataClassId = 0;
+static JSClassID gNativeApiSelectorGroupDataClassId = 0;
 
-void NativeApiQuickJSSelectorGroupFinalize(JSRuntime*, JSValue value) {
-  auto* data = static_cast<NativeApiQuickJSSelectorGroupData*>(
-      JS_GetOpaque(value, gNativeApiQuickJSSelectorGroupDataClassId));
+void NativeApiSelectorGroupFinalize(JSRuntime*, JSValue value) {
+  auto* data = static_cast<NativeApiSelectorGroupData*>(
+      JS_GetOpaque(value, gNativeApiSelectorGroupDataClassId));
   delete data;
 }
 
-void EnsureNativeApiQuickJSSelectorGroupClass(Runtime& runtime) {
+void EnsureNativeApiSelectorGroupClass(Runtime& runtime) {
   JSRuntime* jsRuntime = JS_GetRuntime(runtime.context());
-  if (gNativeApiQuickJSSelectorGroupDataClassId == 0) {
-    JS_NewClassID(jsRuntime, &gNativeApiQuickJSSelectorGroupDataClassId);
+  if (gNativeApiSelectorGroupDataClassId == 0) {
+    JS_NewClassID(jsRuntime, &gNativeApiSelectorGroupDataClassId);
   }
 
   auto state = runtime.state();
   if (!state->selectorGroupDataClassRegistered) {
     JSClassDef definition = {};
     definition.class_name = "NativeScriptEngineSelectorGroupData";
-    definition.finalizer = NativeApiQuickJSSelectorGroupFinalize;
-    JS_NewClass(jsRuntime, gNativeApiQuickJSSelectorGroupDataClassId,
+    definition.finalizer = NativeApiSelectorGroupFinalize;
+    JS_NewClass(jsRuntime, gNativeApiSelectorGroupDataClassId,
                 &definition);
     state->selectorGroupDataClassRegistered = true;
   }
 }
 
-JSValue NativeApiQuickJSSelectorGroupCall(JSContext* context, JSValue thisValue,
+JSValue NativeApiSelectorGroupCall(JSContext* context, JSValue thisValue,
                                           int argc, JSValue* argv, int,
                                           JSValue* dataValues) {
-  auto* data = static_cast<NativeApiQuickJSSelectorGroupData*>(
-      JS_GetOpaque(dataValues[0], gNativeApiQuickJSSelectorGroupDataClassId));
+  auto* data = static_cast<NativeApiSelectorGroupData*>(
+      JS_GetOpaque(dataValues[0], gNativeApiSelectorGroupDataClassId));
   if (data == nullptr || data->selectors == nullptr ||
       data->preparedInvocations == nullptr) {
     return JS_UNDEFINED;
@@ -804,7 +804,7 @@ JSValue NativeApiQuickJSSelectorGroupCall(JSContext* context, JSValue thisValue,
                     "count.");
     }
 
-    const NativeApiQuickJSSelectorGroupEntry& entry = (*data->selectors)[count];
+    const NativeApiSelectorGroupEntry& entry = (*data->selectors)[count];
     auto& prepared = (*data->preparedInvocations)[count];
     Class selectorLookupClass = data->lookupClass;
     id receiver = nil;
@@ -847,7 +847,7 @@ JSValue NativeApiQuickJSSelectorGroupCall(JSContext* context, JSValue thisValue,
     }
 
     if (prepared == nullptr) {
-      prepared = prepareNativeApiQuickJSObjCInvocation(
+      prepared = prepareNativeApiObjCInvocation(
           runtime, data->bridge, selectorLookupClass, data->receiverIsClass,
           entry.selectorName, entry.hasMember ? &entry.member : nullptr);
     }
@@ -876,21 +876,21 @@ JSValue NativeApiQuickJSSelectorGroupCall(JSContext* context, JSValue thisValue,
   }
 }
 
-Function CreateNativeApiQuickJSSelectorGroupFunction(
-    Runtime& runtime, std::shared_ptr<NativeApiQuickJSBridge> bridge,
+Function CreateNativeApiSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
     Class lookupClass, bool receiverIsClass,
-    std::shared_ptr<std::vector<NativeApiQuickJSSelectorGroupEntry>> selectors,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
     std::shared_ptr<
-        std::vector<std::shared_ptr<NativeApiQuickJSPreparedObjCInvocation>>>
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
         preparedInvocations) {
-  EnsureNativeApiQuickJSSelectorGroupClass(runtime);
-  auto* data = new NativeApiQuickJSSelectorGroupData(
+  EnsureNativeApiSelectorGroupClass(runtime);
+  auto* data = new NativeApiSelectorGroupData(
       runtime.state(), std::move(bridge), lookupClass, receiverIsClass,
       std::move(selectors), std::move(preparedInvocations));
 
   JSValue dataObject =
       JS_NewObjectClass(runtime.context(),
-                        gNativeApiQuickJSSelectorGroupDataClassId);
+                        gNativeApiSelectorGroupDataClassId);
   if (JS_IsException(dataObject)) {
     delete data;
     throw JSError(runtime, "QuickJS selector group allocation failed.");
@@ -898,7 +898,7 @@ Function CreateNativeApiQuickJSSelectorGroupFunction(
   JS_SetOpaque(dataObject, data);
 
   JSValue function =
-      JS_NewCFunctionData(runtime.context(), NativeApiQuickJSSelectorGroupCall,
+      JS_NewCFunctionData(runtime.context(), NativeApiSelectorGroupCall,
                           0, 0, 1, &dataObject);
   JS_FreeValue(runtime.context(), dataObject);
   if (JS_IsException(function)) {
@@ -917,24 +917,24 @@ Function CreateNativeApiQuickJSSelectorGroupFunction(
 
 }  // namespace
 
-#include "Install.mm"
+#include "../shared/bridge/Install.mm"
 
-void InstallNativeApiQuickJS(JSContext* context, const NativeApiQuickJSConfig& config) {
+void InstallNativeApi(JSContext* context, const NativeApiConfig& config) {
   if (context == nullptr) {
     return;
   }
   auto state = engine::quickjsengine::stateForContext(context);
   nativescript::engine::Runtime runtime(state);
   engine::quickjsengine::ensureClasses(runtime);
-  InstallNativeApiQuickJS(runtime, config);
+  InstallNativeApi(runtime, config);
 }
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApiQuickJS(JSContext* context, const char* metadataPath) {
-  nativescript::NativeApiQuickJSConfig config;
+extern "C" void NativeScriptInstallNativeApi(JSContext* context, const char* metadataPath) {
+  nativescript::NativeApiConfig config;
   config.metadataPath = metadataPath;
-  nativescript::InstallNativeApiQuickJS(context, config);
+  nativescript::InstallNativeApi(context, config);
 }
 
 #endif  // TARGET_ENGINE_QUICKJS

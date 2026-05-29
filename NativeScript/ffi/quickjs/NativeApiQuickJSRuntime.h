@@ -36,7 +36,7 @@
 #include "ffi.h"
 #include "quickjs.h"
 
-@protocol NativeApiQuickJSClassBuilderProtocol
+@protocol NativeApiClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE

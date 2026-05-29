@@ -28,40 +28,40 @@ using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
 // clang-format off
-#define NATIVESCRIPT_NATIVE_API_JSC_BACKEND_NAME "jsc"
-#include "ObjCBridge.mm"
+#define NATIVESCRIPT_NATIVE_API_BACKEND_NAME "jsc"
+#include "../shared/bridge/ObjCBridge.mm"
 // clang-format on
 #define NATIVESCRIPT_NATIVE_API_RETAIN_RUNTIME 1
 #define NATIVESCRIPT_NATIVE_API_HAS_ENGINE_SELECTOR_GROUP_FUNCTION 1
 
-std::shared_ptr<Runtime> retainNativeApiJSCRuntime(Runtime& runtime) {
+std::shared_ptr<Runtime> retainNativeApiRuntime(Runtime& runtime) {
   return std::make_shared<Runtime>(runtime.state());
 }
 
-void SetNativeApiJSCObjectPrototype(Runtime& runtime, Object& object,
+void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
                                        const Object& prototype) {
   JSObjectSetPrototype(runtime.context(), object.local(runtime),
                        prototype.local(runtime));
 }
 
 // clang-format off
-#include "HostObjects.mm"
-#include "Callbacks.mm"
-#include "TypeConv.mm"
-#include "Invocation.mm"
-#include "ClassBuilder.mm"
-#include "HostObject.mm"
+#include "../shared/bridge/HostObjects.mm"
+#include "../shared/bridge/Callbacks.mm"
+#include "../shared/bridge/TypeConv.mm"
+#include "../shared/bridge/Invocation.mm"
+#include "../shared/bridge/ClassBuilder.mm"
+#include "../shared/bridge/HostObject.mm"
 // clang-format on
 
-struct NativeApiJSCSelectorGroupData {
-  NativeApiJSCSelectorGroupData(
+struct NativeApiSelectorGroupData {
+  NativeApiSelectorGroupData(
       std::shared_ptr<engine::jscengine::RuntimeState> state,
-      std::shared_ptr<NativeApiJSCBridge> bridge, Class lookupClass,
+      std::shared_ptr<NativeApiBridge> bridge, Class lookupClass,
       bool receiverIsClass,
-      std::shared_ptr<std::vector<NativeApiJSCSelectorGroupEntry>>
+      std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>>
           selectors,
       std::shared_ptr<
-          std::vector<std::shared_ptr<NativeApiJSCPreparedObjCInvocation>>>
+          std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
           preparedInvocations)
       : state(std::move(state)),
         bridge(std::move(bridge)),
@@ -71,12 +71,12 @@ struct NativeApiJSCSelectorGroupData {
         preparedInvocations(std::move(preparedInvocations)) {}
 
   std::shared_ptr<engine::jscengine::RuntimeState> state;
-  std::shared_ptr<NativeApiJSCBridge> bridge;
+  std::shared_ptr<NativeApiBridge> bridge;
   Class lookupClass = Nil;
   bool receiverIsClass = false;
-  std::shared_ptr<std::vector<NativeApiJSCSelectorGroupEntry>> selectors;
+  std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors;
   std::shared_ptr<
-      std::vector<std::shared_ptr<NativeApiJSCPreparedObjCInvocation>>>
+      std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
       preparedInvocations;
 };
 
@@ -127,9 +127,9 @@ std::shared_ptr<T> jscHostObject(Runtime& runtime, JSValueRef value) {
 }
 
 id jscNativeObjectArgument(Runtime& runtime,
-                           const std::shared_ptr<NativeApiJSCBridge>& bridge,
-                           const NativeApiJSCType& type, JSValueRef value,
-                           NativeApiJSCArgumentFrame& frame) {
+                           const std::shared_ptr<NativeApiBridge>& bridge,
+                           const NativeApiType& type, JSValueRef value,
+                           NativeApiArgumentFrame& frame) {
   if (value == nullptr || JSValueIsNull(runtime.context(), value) ||
       JSValueIsUndefined(runtime.context(), value)) {
     return nil;
@@ -259,9 +259,9 @@ bool writeJSCNumber(Runtime& runtime, JSValueRef value, void* target) {
 }
 
 bool prepareJSCEngineArgument(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
-    const NativeApiJSCType& type, JSValueRef value,
-    NativeApiJSCArgumentFrame& frame, size_t index) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const NativeApiType& type, JSValueRef value,
+    NativeApiArgumentFrame& frame, size_t index) {
   ffi_type* ffiType = ffiTypeForEngineArgument(type);
   size_t size =
       ffiType != nullptr && ffiType->size > 0 ? ffiType->size : nativeSizeForType(type);
@@ -356,8 +356,8 @@ JSValueRef jscUnsignedInteger64Value(Runtime& runtime, uint64_t value) {
 }
 
 JSValueRef setJSCEngineObjectReturn(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
-    NativeApiJSCType type, id object) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    NativeApiType type, id object) {
   if (object == nil || [object isKindOfClass:[NSNull class]]) {
     if (object != nil && type.returnOwned) {
       [object release];
@@ -422,8 +422,8 @@ JSValueRef setJSCEngineObjectReturn(
 }
 
 JSValueRef setJSCEngineReturnValue(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
-    NativeApiJSCType type, void* value, const std::string& selectorName) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    NativeApiType type, void* value, const std::string& selectorName) {
   switch (type.kind) {
     case metagen::mdTypeVoid:
       return JSValueMakeUndefined(runtime.context());
@@ -519,13 +519,13 @@ JSValueRef setJSCEngineReturnValue(
 }
 
 JSValueRef setJSCEnginePreparedObjCResult(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
-    id receiver, const NativeApiJSCPreparedObjCInvocation& prepared,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
     const std::shared_ptr<NativeApiObjectHostObject>& receiverHostObject,
     const std::optional<Object>& initializerClassWrapper,
     size_t providedCount, const JSValueRef arguments[],
     Class dispatchSuperClass) {
-  const NativeApiJSCSignature& signature = prepared.signature;
+  const NativeApiSignature& signature = prepared.signature;
   if (receiver == nil || signature.variadic ||
       unsupportedEngineType(signature.returnType)) {
     throw JSError(runtime,
@@ -562,7 +562,7 @@ JSValueRef setJSCEnginePreparedObjCResult(
     }
   }
 
-  NativeApiJSCArgumentFrame frame(signature.argumentTypes.size());
+  NativeApiArgumentFrame frame(signature.argumentTypes.size());
   for (size_t i = 0; i < providedCount; i++) {
     if (!prepareJSCEngineArgument(runtime, bridge, signature.argumentTypes[i],
                                   arguments[i], frame, i)) {
@@ -582,7 +582,7 @@ JSValueRef setJSCEnginePreparedObjCResult(
     *static_cast<void**>(target) = implicitNSErrorOutArg;
   }
 
-  NativeApiJSCPointerFrame values(signature.argumentTypes.size() + 2);
+  NativeApiPointerFrame values(signature.argumentTypes.size() + 2);
   size_t valueIndex = 0;
   struct objc_super superReceiver = {receiver, dispatchSuperClass};
   struct objc_super* superReceiverPtr = &superReceiver;
@@ -596,7 +596,7 @@ JSValueRef setJSCEnginePreparedObjCResult(
     values.set(valueIndex++, frame.values()[i]);
   }
 
-  NativeApiJSCReturnStorage returnStorage(
+  NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
@@ -632,7 +632,7 @@ JSValueRef setJSCEnginePreparedObjCResult(
     }
   });
 
-  NativeApiJSCType returnType = signature.returnType;
+  NativeApiType returnType = signature.returnType;
   if (retainedReturn) {
     returnType.returnOwned = true;
   }
@@ -659,11 +659,11 @@ JSValueRef setJSCEnginePreparedObjCResult(
                                  returnStorage.data(), prepared.selectorName);
 }
 
-JSValueRef NativeApiJSCSelectorGroupCall(
+JSValueRef NativeApiSelectorGroupCall(
     JSContextRef context, JSObjectRef function, JSObjectRef thisObject,
     size_t argumentCount, const JSValueRef arguments[], JSValueRef* exception) {
   auto* data =
-      static_cast<NativeApiJSCSelectorGroupData*>(JSObjectGetPrivate(function));
+      static_cast<NativeApiSelectorGroupData*>(JSObjectGetPrivate(function));
   if (data == nullptr || data->selectors == nullptr ||
       data->preparedInvocations == nullptr) {
     return JSValueMakeUndefined(context);
@@ -678,7 +678,7 @@ JSValueRef NativeApiJSCSelectorGroupCall(
                     "count.");
     }
 
-    const NativeApiJSCSelectorGroupEntry& entry =
+    const NativeApiSelectorGroupEntry& entry =
         (*data->selectors)[argumentCount];
     auto& prepared = (*data->preparedInvocations)[argumentCount];
     Class selectorLookupClass = data->lookupClass;
@@ -728,7 +728,7 @@ JSValueRef NativeApiJSCSelectorGroupCall(
     }
 
     if (prepared == nullptr) {
-      prepared = prepareNativeApiJSCObjCInvocation(
+      prepared = prepareNativeApiObjCInvocation(
           runtime, data->bridge, selectorLookupClass, data->receiverIsClass,
           entry.selectorName, entry.hasMember ? &entry.member : nullptr);
     }
@@ -758,36 +758,36 @@ JSValueRef NativeApiJSCSelectorGroupCall(
   }
 }
 
-void NativeApiJSCSelectorGroupFinalize(JSObjectRef function) {
-  delete static_cast<NativeApiJSCSelectorGroupData*>(
+void NativeApiSelectorGroupFinalize(JSObjectRef function) {
+  delete static_cast<NativeApiSelectorGroupData*>(
       JSObjectGetPrivate(function));
 }
 
-JSClassRef NativeApiJSCSelectorGroupFunctionClass(Runtime& runtime) {
+JSClassRef NativeApiSelectorGroupFunctionClass(Runtime& runtime) {
   auto state = runtime.state();
   if (state->selectorGroupFunctionClass == nullptr) {
     JSClassDefinition definition = kJSClassDefinitionEmpty;
     definition.className = "NativeScriptEngineSelectorGroupFunction";
-    definition.callAsFunction = NativeApiJSCSelectorGroupCall;
-    definition.finalize = NativeApiJSCSelectorGroupFinalize;
+    definition.callAsFunction = NativeApiSelectorGroupCall;
+    definition.finalize = NativeApiSelectorGroupFinalize;
     state->selectorGroupFunctionClass = JSClassCreate(&definition);
   }
   return state->selectorGroupFunctionClass;
 }
 
-Function CreateNativeApiJSCSelectorGroupFunction(
-    Runtime& runtime, std::shared_ptr<NativeApiJSCBridge> bridge,
+Function CreateNativeApiSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
     Class lookupClass, bool receiverIsClass,
-    std::shared_ptr<std::vector<NativeApiJSCSelectorGroupEntry>> selectors,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
     std::shared_ptr<
-        std::vector<std::shared_ptr<NativeApiJSCPreparedObjCInvocation>>>
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
         preparedInvocations) {
-  auto* data = new NativeApiJSCSelectorGroupData(
+  auto* data = new NativeApiSelectorGroupData(
       runtime.state(), std::move(bridge), lookupClass, receiverIsClass,
       std::move(selectors), std::move(preparedInvocations));
   JSObjectRef function =
       JSObjectMake(runtime.context(),
-                   NativeApiJSCSelectorGroupFunctionClass(runtime), data);
+                   NativeApiSelectorGroupFunctionClass(runtime), data);
   engine::jscengine::setFunctionPrototype(runtime.context(), function);
 
   JSStringRef property = engine::jscengine::makeJSString("name");
@@ -805,23 +805,23 @@ Function CreateNativeApiJSCSelectorGroupFunction(
 
 }  // namespace
 
-#include "Install.mm"
+#include "../shared/bridge/Install.mm"
 
-void InstallNativeApiJSC(JSGlobalContextRef context, const NativeApiJSCConfig& config) {
+void InstallNativeApi(JSGlobalContextRef context, const NativeApiConfig& config) {
   if (context == nullptr) {
     return;
   }
   Runtime runtime(context);
-  InstallNativeApiJSC(runtime, config);
+  InstallNativeApi(runtime, config);
 }
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApiJSC(JSGlobalContextRef context,
+extern "C" void NativeScriptInstallNativeApi(JSGlobalContextRef context,
                                                 const char* metadataPath) {
-  nativescript::NativeApiJSCConfig config;
+  nativescript::NativeApiConfig config;
   config.metadataPath = metadataPath;
-  nativescript::InstallNativeApiJSC(context, config);
+  nativescript::InstallNativeApi(context, config);
 }
 
 #endif  // TARGET_ENGINE_JSC

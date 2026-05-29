@@ -1,4 +1,4 @@
-bool isObjectiveCObjectType(const NativeApiV8Type& type) {
+bool isObjectiveCObjectType(const NativeApiType& type) {
   switch (type.kind) {
     case metagen::mdTypeAnyObject:
     case metagen::mdTypeProtocolObject:
@@ -13,22 +13,22 @@ bool isObjectiveCObjectType(const NativeApiV8Type& type) {
 }
 
 #ifndef NATIVESCRIPT_NATIVE_API_RETAIN_RUNTIME
-std::shared_ptr<Runtime> retainNativeApiV8Runtime(Runtime& runtime) {
+std::shared_ptr<Runtime> retainNativeApiRuntime(Runtime& runtime) {
   return std::shared_ptr<Runtime>(&runtime, [](Runtime*) {});
 }
 #endif
 
 #ifndef NATIVESCRIPT_NATIVE_API_RUNTIME_SCOPE
-class NativeApiV8RuntimeScope final {
+class NativeApiRuntimeScope final {
  public:
-  explicit NativeApiV8RuntimeScope(Runtime&) {}
+  explicit NativeApiRuntimeScope(Runtime&) {}
 };
 #endif
 
-struct NativeApiV8Signature {
+struct NativeApiSignature {
   ffi_cif cif = {};
-  NativeApiV8Type returnType;
-  std::vector<NativeApiV8Type> argumentTypes;
+  NativeApiType returnType;
+  std::vector<NativeApiType> argumentTypes;
   std::vector<ffi_type*> ffiTypes;
   std::string selectorName;
   uint64_t signatureHash = 0;
@@ -38,33 +38,33 @@ struct NativeApiV8Signature {
   unsigned int implicitArgumentCount = 0;
 };
 
-enum class NativeApiV8CallbackThreadPolicy {
+enum class NativeApiCallbackThreadPolicy {
   Default,
   UI,
   JS,
 };
 
-NativeApiV8CallbackThreadPolicy readEngineCallbackThreadPolicy(
+NativeApiCallbackThreadPolicy readEngineCallbackThreadPolicy(
     Runtime& runtime, Object& functionObject) {
   constexpr const char* propertyName = "__nativeScriptCallbackThread";
   try {
     if (!functionObject.hasProperty(runtime, propertyName)) {
-      return NativeApiV8CallbackThreadPolicy::Default;
+      return NativeApiCallbackThreadPolicy::Default;
     }
     Value policyValue = functionObject.getProperty(runtime, propertyName);
     if (!policyValue.isString()) {
-      return NativeApiV8CallbackThreadPolicy::Default;
+      return NativeApiCallbackThreadPolicy::Default;
     }
     std::string policy = policyValue.asString(runtime).utf8(runtime);
     if (policy == "ui") {
-      return NativeApiV8CallbackThreadPolicy::UI;
+      return NativeApiCallbackThreadPolicy::UI;
     }
     if (policy == "js") {
-      return NativeApiV8CallbackThreadPolicy::JS;
+      return NativeApiCallbackThreadPolicy::JS;
     }
   } catch (const std::exception&) {
   }
-  return NativeApiV8CallbackThreadPolicy::Default;
+  return NativeApiCallbackThreadPolicy::Default;
 }
 
 bool selectorEndsWithNSErrorParam(const std::string& selectorName) {
@@ -75,7 +75,7 @@ bool selectorEndsWithNSErrorParam(const std::string& selectorName) {
                               suffix) == 0;
 }
 
-bool isNSErrorOutEngineMethodSignature(const NativeApiV8Signature& signature) {
+bool isNSErrorOutEngineMethodSignature(const NativeApiSignature& signature) {
   if (signature.argumentTypes.empty() || signature.variadic ||
       !selectorEndsWithNSErrorParam(signature.selectorName)) {
     return false;
@@ -84,22 +84,22 @@ bool isNSErrorOutEngineMethodSignature(const NativeApiV8Signature& signature) {
   return signature.argumentTypes.back().kind == metagen::mdTypePointer;
 }
 
-bool isNSErrorOutEngineMethodCallback(const NativeApiV8Signature& signature) {
+bool isNSErrorOutEngineMethodCallback(const NativeApiSignature& signature) {
   return signature.returnType.kind == metagen::mdTypeBool &&
          signature.implicitArgumentCount >= 2 &&
          isNSErrorOutEngineMethodSignature(signature);
 }
 
-class NativeApiV8ArgumentFrame {
+class NativeApiArgumentFrame {
  public:
-  explicit NativeApiV8ArgumentFrame(size_t count) : count_(count) {
+  explicit NativeApiArgumentFrame(size_t count) : count_(count) {
     if (count_ > kInlineArgumentCount) {
       heapStorage_.resize(count_);
       heapValues_.resize(count_);
     }
   }
 
-  ~NativeApiV8ArgumentFrame() {
+  ~NativeApiArgumentFrame() {
     for (char* string : ownedCStrings_) {
       free(string);
     }
@@ -162,7 +162,7 @@ class NativeApiV8ArgumentFrame {
     }
   }
   void rememberRoundTripValue(
-      const std::shared_ptr<NativeApiV8Bridge>& bridge, Runtime& runtime,
+      const std::shared_ptr<NativeApiBridge>& bridge, Runtime& runtime,
       const void* native, const Value& value) {
     if (bridge == nullptr || native == nullptr) {
       return;
@@ -193,7 +193,7 @@ class NativeApiV8ArgumentFrame {
   std::vector<id> ownedObjects_;
   std::vector<std::shared_ptr<void>> ownedLifetimes_;
   struct TemporaryRoundTripValue {
-    std::shared_ptr<NativeApiV8Bridge> bridge;
+    std::shared_ptr<NativeApiBridge> bridge;
     Runtime* runtime = nullptr;
     const void* native = nullptr;
   };
@@ -217,23 +217,23 @@ class NativeApiMutableBuffer final : public MutableBuffer {
 };
 
 void convertEngineArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiV8Bridge>& bridge,
-                        const NativeApiV8Type& type,
+                        const std::shared_ptr<NativeApiBridge>& bridge,
+                        const NativeApiType& type,
                         const Value& value, void* target,
-                        NativeApiV8ArgumentFrame& frame);
+                        NativeApiArgumentFrame& frame);
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiV8Bridge>& bridge,
-                               const NativeApiV8Type& type, void* value);
+                               const std::shared_ptr<NativeApiBridge>& bridge,
+                               const NativeApiType& type, void* value);
 
 Value wrapNativeFunctionPointer(Runtime& runtime,
-                                const std::shared_ptr<NativeApiV8Bridge>& bridge,
-                                const NativeApiV8Type& type, void* pointer,
+                                const std::shared_ptr<NativeApiBridge>& bridge,
+                                const NativeApiType& type, void* pointer,
                                 bool block);
 
-bool isObjectiveCObjectType(const NativeApiV8Type& type);
+bool isObjectiveCObjectType(const NativeApiType& type);
 
-struct NativeApiV8BlockDescriptor {
+struct NativeApiBlockDescriptor {
   unsigned long reserved = 0;
   unsigned long size = 0;
   void (*copyHelper)(void*, void*) = nullptr;
@@ -241,19 +241,19 @@ struct NativeApiV8BlockDescriptor {
   const char* signature = nullptr;
 };
 
-struct NativeApiV8BlockLiteral {
+struct NativeApiBlockLiteral {
   void* isa = nullptr;
   int flags = 0;
   int reserved = 0;
   void* invoke = nullptr;
-  NativeApiV8BlockDescriptor* descriptor = nullptr;
+  NativeApiBlockDescriptor* descriptor = nullptr;
   void* callback = nullptr;
 };
 
-constexpr int kNativeApiV8BlockNeedsFree = (1 << 24);
-constexpr int kNativeApiV8BlockHasCopyDispose = (1 << 25);
-constexpr int kNativeApiV8BlockRefCountOne = (1 << 1);
-constexpr int kNativeApiV8BlockHasSignature = (1 << 30);
+constexpr int kNativeApiBlockNeedsFree = (1 << 24);
+constexpr int kNativeApiBlockHasCopyDispose = (1 << 25);
+constexpr int kNativeApiBlockRefCountOne = (1 << 1);
+constexpr int kNativeApiBlockHasSignature = (1 << 30);
 
 void* nativeApiEngineMallocBlockIsa() {
   static void* isa = dlsym(RTLD_DEFAULT, "_NSConcreteMallocBlock");
@@ -263,7 +263,7 @@ void* nativeApiEngineMallocBlockIsa() {
 void nativeApiEngineBlockCopy(void* dst, void* src);
 void nativeApiEngineBlockDispose(void* src);
 
-std::string objcEncodingForEngineType(const NativeApiV8Type& type) {
+std::string objcEncodingForEngineType(const NativeApiType& type) {
   switch (type.kind) {
     case metagen::mdTypeVoid:
       return "v";
@@ -337,7 +337,7 @@ std::string objcEncodingForEngineType(const NativeApiV8Type& type) {
 }
 
 std::string objcBlockSignatureForEngineSignature(
-    const NativeApiV8Signature& signature) {
+    const NativeApiSignature& signature) {
   std::string encoding = objcEncodingForEngineType(signature.returnType);
   encoding += "@?";
   for (const auto& argType : signature.argumentTypes) {
@@ -347,7 +347,7 @@ std::string objcBlockSignatureForEngineSignature(
 }
 
 std::string objcMethodSignatureForEngineSignature(
-    const NativeApiV8Signature& signature) {
+    const NativeApiSignature& signature) {
   std::string encoding = objcEncodingForEngineType(signature.returnType);
   encoding += "@:";
   for (const auto& argType : signature.argumentTypes) {
@@ -356,7 +356,7 @@ std::string objcMethodSignatureForEngineSignature(
   return encoding;
 }
 
-[[noreturn]] void throwNativeApiV8CallbackException(
+[[noreturn]] void throwNativeApiCallbackException(
     const std::string& message) {
   NSString* reason = [NSString stringWithUTF8String:message.c_str()];
   @throw [NSException exceptionWithName:@"NativeScriptEngineCallbackException"
@@ -364,24 +364,24 @@ std::string objcMethodSignatureForEngineSignature(
                                userInfo:nil];
 }
 
-class NativeApiV8Callback;
+class NativeApiCallback;
 
 void nativeApiEngineCallbackTrampoline(ffi_cif* cif, void* ret, void* args[],
                                     void* data);
 
 std::atomic<int> gActiveNativeThreadEngineCallbacks{0};
 
-class NativeApiV8Callback final
-    : public std::enable_shared_from_this<NativeApiV8Callback> {
+class NativeApiCallback final
+    : public std::enable_shared_from_this<NativeApiCallback> {
  public:
-  NativeApiV8Callback(Runtime& runtime,
-                       std::shared_ptr<NativeApiV8Bridge> bridge,
-                       std::shared_ptr<NativeApiV8Signature> signature,
+  NativeApiCallback(Runtime& runtime,
+                       std::shared_ptr<NativeApiBridge> bridge,
+                       std::shared_ptr<NativeApiSignature> signature,
                        Function function, bool block,
-                       NativeApiV8CallbackThreadPolicy threadPolicy =
-                           NativeApiV8CallbackThreadPolicy::Default,
+                       NativeApiCallbackThreadPolicy threadPolicy =
+                           NativeApiCallbackThreadPolicy::Default,
                        bool bindThis = false)
-      : runtimeOwner_(retainNativeApiV8Runtime(runtime)),
+      : runtimeOwner_(retainNativeApiRuntime(runtime)),
         runtime_(runtimeOwner_.get()),
         bridge_(std::move(bridge)),
         signature_(std::move(signature)),
@@ -394,7 +394,7 @@ class NativeApiV8Callback final
     if (closure_ == nullptr || executable_ == nullptr ||
         signature_ == nullptr || !signature_->prepared) {
       throw JSError(runtime,
-                                   "Unable to allocate native V8 callback.");
+                                   "Unable to allocate native callback.");
     }
 
     ffi_status status = ffi_prep_closure_loc(
@@ -405,22 +405,22 @@ class NativeApiV8Callback final
       closure_ = nullptr;
       executable_ = nullptr;
       throw JSError(runtime,
-                                   "Unable to prepare native V8 callback.");
+                                   "Unable to prepare native callback.");
     }
 
     if (block_) {
       blockSignature_ = objcBlockSignatureForEngineSignature(*signature_);
-      descriptor_ = std::make_unique<NativeApiV8BlockDescriptor>();
+      descriptor_ = std::make_unique<NativeApiBlockDescriptor>();
       descriptor_->reserved = 0;
-      descriptor_->size = sizeof(NativeApiV8BlockLiteral);
+      descriptor_->size = sizeof(NativeApiBlockLiteral);
       descriptor_->copyHelper = nativeApiEngineBlockCopy;
       descriptor_->disposeHelper = nativeApiEngineBlockDispose;
       descriptor_->signature = blockSignature_.c_str();
 
-      blockLiteral_ = static_cast<NativeApiV8BlockLiteral*>(
-          calloc(1, sizeof(NativeApiV8BlockLiteral)));
+      blockLiteral_ = static_cast<NativeApiBlockLiteral*>(
+          calloc(1, sizeof(NativeApiBlockLiteral)));
       if (blockLiteral_ == nullptr) {
-        throw JSError(runtime, "Unable to allocate native V8 block callback.");
+        throw JSError(runtime, "Unable to allocate native block callback.");
       }
       void* blockIsa = nativeApiEngineMallocBlockIsa();
       if (blockIsa == nullptr) {
@@ -430,17 +430,17 @@ class NativeApiV8Callback final
                      "Objective-C malloc block runtime is unavailable.");
       }
       blockLiteral_->isa = blockIsa;
-      blockLiteral_->flags = kNativeApiV8BlockNeedsFree |
-                             kNativeApiV8BlockHasCopyDispose |
-                             kNativeApiV8BlockRefCountOne |
-                             kNativeApiV8BlockHasSignature;
+      blockLiteral_->flags = kNativeApiBlockNeedsFree |
+                             kNativeApiBlockHasCopyDispose |
+                             kNativeApiBlockRefCountOne |
+                             kNativeApiBlockHasSignature;
       blockLiteral_->invoke = executable_;
       blockLiteral_->descriptor = descriptor_.get();
       blockLiteral_->callback = this;
     }
   }
 
-  ~NativeApiV8Callback() {
+  ~NativeApiCallback() {
     if (closure_ != nullptr) {
       ffi_closure_free(closure_);
       closure_ = nullptr;
@@ -454,10 +454,10 @@ class NativeApiV8Callback final
                : executable_;
   }
 
-  const NativeApiV8Signature& signature() const { return *signature_; }
+  const NativeApiSignature& signature() const { return *signature_; }
 
   void retainInitialBlockLifetime(
-      std::shared_ptr<NativeApiV8Callback> lifetime) {
+      std::shared_ptr<NativeApiCallback> lifetime) {
     if (block_) {
       initialBlockLifetime_ = std::move(lifetime);
     }
@@ -481,7 +481,7 @@ class NativeApiV8Callback final
     if (!block_) {
       return false;
     }
-    std::shared_ptr<NativeApiV8Callback> keepAlive;
+    std::shared_ptr<NativeApiCallback> keepAlive;
     try {
       keepAlive = shared_from_this();
     } catch (const std::bad_weak_ptr&) {
@@ -517,7 +517,7 @@ class NativeApiV8Callback final
 
   void invoke(void* ret, void* args[]) {
     if (runtime_ == nullptr || function_ == nullptr || signature_ == nullptr) {
-      throwNativeApiV8CallbackException("Invalid V8 callback.");
+      throwNativeApiCallbackException("Invalid callback.");
     }
 
     std::string error;
@@ -571,20 +571,20 @@ class NativeApiV8Callback final
       error = "Native callback was invoked off the JS thread without a JS scheduler.";
     };
 
-    if (threadPolicy_ == NativeApiV8CallbackThreadPolicy::UI) {
+    if (threadPolicy_ == NativeApiCallbackThreadPolicy::UI) {
       callOnUIThread();
       if (!error.empty()) {
         if (!recordNativeCallbackException(error)) {
-          throwNativeApiV8CallbackException(error);
+          throwNativeApiCallbackException(error);
         }
       }
       return;
     }
-    if (threadPolicy_ == NativeApiV8CallbackThreadPolicy::JS) {
+    if (threadPolicy_ == NativeApiCallbackThreadPolicy::JS) {
       callOnJSThread();
       if (!error.empty()) {
         if (!recordNativeCallbackException(error)) {
-          throwNativeApiV8CallbackException(error);
+          throwNativeApiCallbackException(error);
         }
       }
       return;
@@ -650,7 +650,7 @@ class NativeApiV8Callback final
 
     if (!error.empty()) {
       if (!recordNativeCallbackException(error)) {
-        throwNativeApiV8CallbackException(error);
+        throwNativeApiCallbackException(error);
       }
     }
   }
@@ -658,7 +658,7 @@ class NativeApiV8Callback final
  private:
   void invokeOnCurrentThread(void* ret, void* args[], std::string* error) {
     try {
-      NativeApiV8RuntimeScope runtimeScope(*runtime_);
+      NativeApiRuntimeScope runtimeScope(*runtime_);
       size_t nativeArgOffset = signature_->implicitArgumentCount;
       std::vector<Value> jsArgs;
       jsArgs.reserve(signature_->argumentTypes.size());
@@ -708,11 +708,11 @@ class NativeApiV8Callback final
     } catch (...) {
       if (isNSErrorOutEngineMethodCallback(*signature_)) {
         zeroReturnValue(ret);
-        populateNSErrorOutArgument(args, "Unknown exception in native V8 callback.");
+        populateNSErrorOutArgument(args, "Unknown exception in native callback.");
         return;
       }
       if (error != nullptr) {
-        *error = "Unknown exception in native V8 callback.";
+        *error = "Unknown exception in native callback.";
       }
       zeroReturnValue(ret);
     }
@@ -780,7 +780,7 @@ class NativeApiV8Callback final
       return;
     }
 
-    NativeApiV8ArgumentFrame frame(1);
+    NativeApiArgumentFrame frame(1);
     convertEngineArgument(*runtime_, bridge_, returnType, result, ret, frame);
     if (isObjectiveCObjectType(returnType)) {
       id object = *static_cast<id*>(ret);
@@ -793,46 +793,46 @@ class NativeApiV8Callback final
 
   std::shared_ptr<Runtime> runtimeOwner_;
   Runtime* runtime_ = nullptr;
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
-  std::shared_ptr<NativeApiV8Signature> signature_;
+  std::shared_ptr<NativeApiBridge> bridge_;
+  std::shared_ptr<NativeApiSignature> signature_;
   std::shared_ptr<Function> function_;
   bool block_ = false;
-  NativeApiV8CallbackThreadPolicy threadPolicy_ =
-      NativeApiV8CallbackThreadPolicy::Default;
+  NativeApiCallbackThreadPolicy threadPolicy_ =
+      NativeApiCallbackThreadPolicy::Default;
   bool bindThis_ = false;
   ffi_closure* closure_ = nullptr;
   void* executable_ = nullptr;
   std::string blockSignature_;
-  std::unique_ptr<NativeApiV8BlockDescriptor> descriptor_;
-  NativeApiV8BlockLiteral* blockLiteral_ = nullptr;
-  std::shared_ptr<NativeApiV8Callback> initialBlockLifetime_;
+  std::unique_ptr<NativeApiBlockDescriptor> descriptor_;
+  NativeApiBlockLiteral* blockLiteral_ = nullptr;
+  std::shared_ptr<NativeApiCallback> initialBlockLifetime_;
   struct RetainedBlockCopy {
     const void* blockPointer = nullptr;
-    std::shared_ptr<NativeApiV8Callback> lifetime;
+    std::shared_ptr<NativeApiCallback> lifetime;
   };
   std::mutex retainedBlockCopiesMutex_;
   std::vector<RetainedBlockCopy> retainedBlockCopies_;
 };
 
 void nativeApiEngineBlockCopy(void* dst, void* src) {
-  auto* dstBlock = static_cast<NativeApiV8BlockLiteral*>(dst);
-  auto* srcBlock = static_cast<NativeApiV8BlockLiteral*>(src);
+  auto* dstBlock = static_cast<NativeApiBlockLiteral*>(dst);
+  auto* srcBlock = static_cast<NativeApiBlockLiteral*>(src);
   if (dstBlock == nullptr || srcBlock == nullptr ||
       srcBlock->callback == nullptr) {
     return;
   }
   dstBlock->callback = srcBlock->callback;
-  static_cast<NativeApiV8Callback*>(srcBlock->callback)
+  static_cast<NativeApiCallback*>(srcBlock->callback)
       ->retainBlockCopy(dstBlock);
 }
 
 void nativeApiEngineBlockDispose(void* src) {
-  auto* block = static_cast<NativeApiV8BlockLiteral*>(src);
+  auto* block = static_cast<NativeApiBlockLiteral*>(src);
   if (block == nullptr || block->callback == nullptr) {
     return;
   }
   bool released =
-      static_cast<NativeApiV8Callback*>(block->callback)->releaseBlockCopy(block);
+      static_cast<NativeApiCallback*>(block->callback)->releaseBlockCopy(block);
   if (released) {
     block->callback = nullptr;
   }
@@ -840,7 +840,7 @@ void nativeApiEngineBlockDispose(void* src) {
 
 void nativeApiEngineCallbackTrampoline(ffi_cif*, void* ret, void* args[],
                                     void* data) {
-  auto callback = static_cast<NativeApiV8Callback*>(data);
+  auto callback = static_cast<NativeApiCallback*>(data);
   if (callback == nullptr) {
     return;
   }
@@ -851,14 +851,14 @@ void nativeApiEngineCallbackTrampoline(ffi_cif*, void* ret, void* args[],
         exception.description != nil ? exception.description.UTF8String : nullptr;
     std::string message = description != nullptr
                               ? description
-                              : "Objective-C exception in native V8 callback.";
+                              : "Objective-C exception in native callback.";
     if (!recordNativeCallbackException(message)) {
       @throw;
     }
   }
 }
 
-size_t nativeSizeForType(const NativeApiV8Type& type) {
+size_t nativeSizeForType(const NativeApiType& type) {
   switch (type.kind) {
     case metagen::mdTypeStruct:
       if (type.aggregateInfo != nullptr) {
@@ -1119,14 +1119,14 @@ void skipMetadataEngineTypePayload(MDMetadataReader* metadata, MDSectionOffset* 
   }
 }
 
-NativeApiV8Type parseMetadataEngineType(MDMetadataReader* metadata,
+NativeApiType parseMetadataEngineType(MDMetadataReader* metadata,
                                       MDSectionOffset* offset,
-                                      NativeApiV8Bridge* bridge) {
+                                      NativeApiBridge* bridge) {
   MDTypeKind rawKind = metadata->getTypeKind(*offset);
   MDTypeKind kind = stripTypeFlags(rawKind);
   *offset += sizeof(MDTypeKind);
 
-  NativeApiV8Type type;
+  NativeApiType type;
   type.kind = kind;
 
   switch (kind) {
@@ -1134,9 +1134,9 @@ NativeApiV8Type parseMetadataEngineType(MDMetadataReader* metadata,
       type.arraySize = metadata->getArraySize(*offset);
       *offset += sizeof(uint16_t);
       type.elementType =
-          std::make_shared<NativeApiV8Type>(
+          std::make_shared<NativeApiType>(
               parseMetadataEngineType(metadata, offset, bridge));
-      auto ffiOwner = std::make_shared<NativeApiV8FfiType>();
+      auto ffiOwner = std::make_shared<NativeApiFfiType>();
       ffiOwner->elements.reserve(static_cast<size_t>(type.arraySize) + 1);
       ffi_type* elementFfiType = type.elementType->ffiType != nullptr
                                      ? type.elementType->ffiType
@@ -1156,9 +1156,9 @@ NativeApiV8Type parseMetadataEngineType(MDMetadataReader* metadata,
       type.arraySize = metadata->getArraySize(*offset);
       *offset += sizeof(uint16_t);
       type.elementType =
-          std::make_shared<NativeApiV8Type>(
+          std::make_shared<NativeApiType>(
               parseMetadataEngineType(metadata, offset, bridge));
-      auto ffiOwner = std::make_shared<NativeApiV8FfiType>();
+      auto ffiOwner = std::make_shared<NativeApiFfiType>();
 #if defined(FFI_TYPE_EXT_VECTOR)
       ffiOwner->type.type =
           kind == metagen::mdTypeComplex ? FFI_TYPE_COMPLEX : FFI_TYPE_EXT_VECTOR;
@@ -1218,7 +1218,7 @@ NativeApiV8Type parseMetadataEngineType(MDMetadataReader* metadata,
     }
     case metagen::mdTypePointer:
       type.elementType =
-          std::make_shared<NativeApiV8Type>(
+          std::make_shared<NativeApiType>(
               parseMetadataEngineType(metadata, offset, bridge));
       type.ffiType = &ffi_type_pointer;
       type.supported = true;
@@ -1259,7 +1259,7 @@ NativeApiV8Type parseMetadataEngineType(MDMetadataReader* metadata,
   return type;
 }
 
-std::shared_ptr<NativeApiV8AggregateInfo> NativeApiV8Bridge::aggregateInfoFor(
+std::shared_ptr<NativeApiAggregateInfo> NativeApiBridge::aggregateInfoFor(
     MDSectionOffset aggregateOffset, bool isUnion) {
   if (metadata_ == nullptr || aggregateOffset == MD_SECTION_OFFSET_NULL) {
     return nullptr;
@@ -1270,14 +1270,14 @@ std::shared_ptr<NativeApiV8AggregateInfo> NativeApiV8Bridge::aggregateInfoFor(
     return cached->second;
   }
 
-  auto info = std::make_shared<NativeApiV8AggregateInfo>();
+  auto info = std::make_shared<NativeApiAggregateInfo>();
   info->offset = aggregateOffset;
   info->isUnion = isUnion;
   aggregateInfoByOffset_[aggregateOffset] = info;
 
   if (aggregateInfoInProgress_.find(aggregateOffset) !=
       aggregateInfoInProgress_.end()) {
-    auto ffiOwner = std::make_shared<NativeApiV8FfiType>();
+    auto ffiOwner = std::make_shared<NativeApiFfiType>();
     ffiOwner->elements.push_back(&ffi_type_pointer);
     ffiOwner->finalize();
     info->ffi = ffiOwner;
@@ -1303,7 +1303,7 @@ std::shared_ptr<NativeApiV8AggregateInfo> NativeApiV8Bridge::aggregateInfoFor(
       break;
     }
 
-    NativeApiV8AggregateField field;
+    NativeApiAggregateField field;
     const char* fieldName = metadata_->resolveString(nameOffset);
     field.name = fieldName != nullptr ? fieldName : "";
     if (!isUnion) {
@@ -1314,7 +1314,7 @@ std::shared_ptr<NativeApiV8AggregateInfo> NativeApiV8Bridge::aggregateInfoFor(
     info->fields.push_back(std::move(field));
   }
 
-  auto ffiOwner = std::make_shared<NativeApiV8FfiType>();
+  auto ffiOwner = std::make_shared<NativeApiFfiType>();
   if (isUnion) {
     ffi_type* largest = &ffi_type_uint8;
     size_t largestSize = 0;
@@ -1342,7 +1342,7 @@ std::shared_ptr<NativeApiV8AggregateInfo> NativeApiV8Bridge::aggregateInfoFor(
   return info;
 }
 
-ffi_type* ffiTypeForEngineArgument(const NativeApiV8Type& type) {
+ffi_type* ffiTypeForEngineArgument(const NativeApiType& type) {
   switch (type.kind) {
     case metagen::mdTypeArray:
       return &ffi_type_pointer;
@@ -1351,15 +1351,15 @@ ffi_type* ffiTypeForEngineArgument(const NativeApiV8Type& type) {
   }
 }
 
-std::optional<NativeApiV8Signature> parseMetadataEngineSignature(
+std::optional<NativeApiSignature> parseMetadataEngineSignature(
     MDMetadataReader* metadata, MDSectionOffset signatureOffset,
-    unsigned int implicitArgumentCount, NativeApiV8Bridge* bridge,
+    unsigned int implicitArgumentCount, NativeApiBridge* bridge,
     bool returnOwned = false) {
   if (metadata == nullptr || signatureOffset == MD_SECTION_OFFSET_NULL) {
     return std::nullopt;
   }
 
-  NativeApiV8Signature signature;
+  NativeApiSignature signature;
   signature.implicitArgumentCount = implicitArgumentCount;
   signature.signatureHash = isPreparedGeneratedDispatchRequired()
       ? metadataSignatureHash(metadata, signatureOffset)
@@ -1465,7 +1465,7 @@ std::vector<std::string> knownObjCAggregateFieldNames(
 }
 
 const NativeApiSymbol* findObjCAggregateSymbol(
-    NativeApiV8Bridge* bridge, const std::string& name, bool isUnion) {
+    NativeApiBridge* bridge, const std::string& name, bool isUnion) {
   if (bridge == nullptr || name.empty()) {
     return nullptr;
   }
@@ -1503,7 +1503,7 @@ const NativeApiSymbol* findObjCAggregateSymbol(
 }
 
 void applyObjCEncodingSizeAndAlignment(const char* encoding,
-                                       NativeApiV8FfiType* ffiType,
+                                       NativeApiFfiType* ffiType,
                                        uint16_t* sizeOut = nullptr) {
   if (encoding == nullptr || ffiType == nullptr) {
     return;
@@ -1524,15 +1524,15 @@ void applyObjCEncodingSizeAndAlignment(const char* encoding,
   }
 }
 
-NativeApiV8Type parseObjCEncodedEngineType(
-    const char* encoding, NativeApiV8Bridge* bridge = nullptr,
+NativeApiType parseObjCEncodedEngineType(
+    const char* encoding, NativeApiBridge* bridge = nullptr,
     const char** endEncoding = nullptr);
 
-bool unsupportedEngineType(const NativeApiV8Type& type);
+bool unsupportedEngineType(const NativeApiType& type);
 
-NativeApiV8Type parseObjCEncodedAggregateEngineType(
-    const char* encoding, NativeApiV8Bridge* bridge, const char** endEncoding) {
-  NativeApiV8Type type;
+NativeApiType parseObjCEncodedAggregateEngineType(
+    const char* encoding, NativeApiBridge* bridge, const char** endEncoding) {
+  NativeApiType type;
   type.kind = metagen::mdTypeStruct;
 
   const bool isUnion = *encoding == '(';
@@ -1570,7 +1570,7 @@ NativeApiV8Type parseObjCEncodedAggregateEngineType(
     return type;
   }
 
-  auto info = std::make_shared<NativeApiV8AggregateInfo>();
+  auto info = std::make_shared<NativeApiAggregateInfo>();
   info->name = aggregateName;
   info->isUnion = isUnion;
   info->offset = MD_SECTION_OFFSET_NULL;
@@ -1583,7 +1583,7 @@ NativeApiV8Type parseObjCEncodedAggregateEngineType(
   size_t maxFieldSize = 0;
   size_t fieldIndex = 0;
   while (*cursor != '\0' && *cursor != close) {
-    NativeApiV8AggregateField field;
+    NativeApiAggregateField field;
     std::string encodedFieldName;
     cursor = skipObjCTypeFieldName(cursor, &encodedFieldName);
     const char* fieldStart = cursor;
@@ -1638,7 +1638,7 @@ NativeApiV8Type parseObjCEncodedAggregateEngineType(
     info->fields[i].name = knownNames[i];
   }
 
-  auto ffiOwner = std::make_shared<NativeApiV8FfiType>();
+  auto ffiOwner = std::make_shared<NativeApiFfiType>();
   if (isUnion) {
     ffi_type* largest = &ffi_type_uint8;
     size_t largestSize = 0;
@@ -1678,9 +1678,9 @@ NativeApiV8Type parseObjCEncodedAggregateEngineType(
   return type;
 }
 
-NativeApiV8Type parseObjCEncodedArrayEngineType(
-    const char* encoding, NativeApiV8Bridge* bridge, const char** endEncoding) {
-  NativeApiV8Type type;
+NativeApiType parseObjCEncodedArrayEngineType(
+    const char* encoding, NativeApiBridge* bridge, const char** endEncoding) {
+  NativeApiType type;
   type.kind = metagen::mdTypeArray;
 
   const char* cursor = encoding + 1;
@@ -1694,7 +1694,7 @@ NativeApiV8Type parseObjCEncodedArrayEngineType(
   type.arraySize = count;
 
   const char* elementEnd = cursor;
-  type.elementType = std::make_shared<NativeApiV8Type>(
+  type.elementType = std::make_shared<NativeApiType>(
       parseObjCEncodedEngineType(cursor, bridge, &elementEnd));
   cursor = elementEnd;
   if (*cursor == ']') {
@@ -1704,7 +1704,7 @@ NativeApiV8Type parseObjCEncodedArrayEngineType(
     *endEncoding = cursor;
   }
 
-  auto ffiOwner = std::make_shared<NativeApiV8FfiType>();
+  auto ffiOwner = std::make_shared<NativeApiFfiType>();
   ffi_type* elementFfiType =
       type.elementType != nullptr && type.elementType->ffiType != nullptr
           ? type.elementType->ffiType
@@ -1724,10 +1724,10 @@ NativeApiV8Type parseObjCEncodedArrayEngineType(
   return type;
 }
 
-NativeApiV8Type parseObjCEncodedEngineType(
-    const char* encoding, NativeApiV8Bridge* bridge, const char** endEncoding) {
+NativeApiType parseObjCEncodedEngineType(
+    const char* encoding, NativeApiBridge* bridge, const char** endEncoding) {
   encoding = skipObjCTypeQualifiers(encoding);
-  NativeApiV8Type type;
+  NativeApiType type;
 
   if (encoding == nullptr || *encoding == '\0') {
     type.kind = metagen::mdTypePointer;
@@ -1824,7 +1824,7 @@ NativeApiV8Type parseObjCEncodedEngineType(
       type.kind = metagen::mdTypePointer;
       {
         const char* elementEnd = encoding + 1;
-        type.elementType = std::make_shared<NativeApiV8Type>(
+        type.elementType = std::make_shared<NativeApiType>(
             parseObjCEncodedEngineType(encoding + 1, bridge, &elementEnd));
         type.ffiType = &ffi_type_pointer;
         type.supported = true;
@@ -1860,13 +1860,13 @@ NativeApiV8Type parseObjCEncodedEngineType(
   return finishPrimitive(encoding + 1);
 }
 
-std::optional<NativeApiV8Signature> parseObjCMethodEngineSignature(
-    Method method, NativeApiV8Bridge* bridge = nullptr) {
+std::optional<NativeApiSignature> parseObjCMethodEngineSignature(
+    Method method, NativeApiBridge* bridge = nullptr) {
   if (method == nullptr) {
     return std::nullopt;
   }
 
-  NativeApiV8Signature signature;
+  NativeApiSignature signature;
   signature.implicitArgumentCount = 2;
 
   char* returnEncoding = method_copyReturnType(method);
@@ -1901,7 +1901,7 @@ std::optional<NativeApiV8Signature> parseObjCMethodEngineSignature(
   return signature;
 }
 
-bool prepareEngineMethodSignature(NativeApiV8Signature* signature) {
+bool prepareEngineMethodSignature(NativeApiSignature* signature) {
   if (signature == nullptr) {
     return false;
   }
@@ -1928,7 +1928,7 @@ bool prepareEngineMethodSignature(NativeApiV8Signature* signature) {
   return signature->prepared;
 }
 
-bool isRuntimeAggregateType(const NativeApiV8Type& type) {
+bool isRuntimeAggregateType(const NativeApiType& type) {
   switch (type.kind) {
     case metagen::mdTypeStruct:
     case metagen::mdTypeArray:
@@ -1941,8 +1941,8 @@ bool isRuntimeAggregateType(const NativeApiV8Type& type) {
   }
 }
 
-bool reconcileObjCMethodRuntimeType(NativeApiV8Type* metadataType,
-                                    const NativeApiV8Type& runtimeType,
+bool reconcileObjCMethodRuntimeType(NativeApiType* metadataType,
+                                    const NativeApiType& runtimeType,
                                     bool* abiChanged) {
   if (metadataType == nullptr || unsupportedEngineType(runtimeType)) {
     return false;
@@ -1963,8 +1963,8 @@ bool reconcileObjCMethodRuntimeType(NativeApiV8Type* metadataType,
   return false;
 }
 
-bool reconcileObjCMethodRuntimeSignature(NativeApiV8Signature* signature,
-                                         const NativeApiV8Signature& runtime) {
+bool reconcileObjCMethodRuntimeSignature(NativeApiSignature* signature,
+                                         const NativeApiSignature& runtime) {
   if (signature == nullptr ||
       signature->argumentTypes.size() != runtime.argumentTypes.size()) {
     return false;
@@ -1986,7 +1986,7 @@ bool reconcileObjCMethodRuntimeSignature(NativeApiV8Signature* signature,
   return !changed || prepareEngineMethodSignature(signature);
 }
 
-bool unsupportedEngineType(const NativeApiV8Type& type) {
+bool unsupportedEngineType(const NativeApiType& type) {
   if (type.kind == metagen::mdTypeStruct && type.aggregateInfo != nullptr &&
       type.aggregateInfo->ffi != nullptr) {
     return false;
@@ -1994,7 +1994,7 @@ bool unsupportedEngineType(const NativeApiV8Type& type) {
   return !type.supported || type.ffiType == nullptr;
 }
 
-bool signatureSupportedForEngineCallback(const NativeApiV8Signature& signature) {
+bool signatureSupportedForEngineCallback(const NativeApiSignature& signature) {
   if (!signature.prepared || signature.variadic ||
       unsupportedEngineType(signature.returnType)) {
     return false;
@@ -2007,11 +2007,11 @@ bool signatureSupportedForEngineCallback(const NativeApiV8Signature& signature) 
   return true;
 }
 
-std::shared_ptr<NativeApiV8Callback> createEngineCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiV8Bridge>& bridge,
-    const NativeApiV8Type& type, Function function, bool block,
-    NativeApiV8CallbackThreadPolicy threadPolicy =
-        NativeApiV8CallbackThreadPolicy::Default) {
+std::shared_ptr<NativeApiCallback> createEngineCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const NativeApiType& type, Function function, bool block,
+    NativeApiCallbackThreadPolicy threadPolicy =
+        NativeApiCallbackThreadPolicy::Default) {
   if (bridge == nullptr || bridge->metadata() == nullptr ||
       type.signatureOffset == MD_SECTION_OFFSET_NULL) {
     throw JSError(
@@ -2026,8 +2026,8 @@ std::shared_ptr<NativeApiV8Callback> createEngineCallback(
   }
 
   auto signature =
-      std::make_shared<NativeApiV8Signature>(std::move(*parsed));
-  auto callback = std::make_shared<NativeApiV8Callback>(
+      std::make_shared<NativeApiSignature>(std::move(*parsed));
+  auto callback = std::make_shared<NativeApiCallback>(
       runtime, bridge, std::move(signature), std::move(function), block,
       threadPolicy);
   if (block) {
@@ -2038,8 +2038,8 @@ std::shared_ptr<NativeApiV8Callback> createEngineCallback(
   return callback;
 }
 
-std::shared_ptr<NativeApiV8Callback> createEngineMethodCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiV8Bridge>& bridge,
+std::shared_ptr<NativeApiCallback> createEngineMethodCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     const std::string& selectorName, MDSectionOffset signatureOffset,
     Function function, bool returnOwned) {
   if (bridge == nullptr || bridge->metadata() == nullptr ||
@@ -2057,18 +2057,18 @@ std::shared_ptr<NativeApiV8Callback> createEngineMethodCallback(
   parsed->selectorName = selectorName;
 
   auto signature =
-      std::make_shared<NativeApiV8Signature>(std::move(*parsed));
+      std::make_shared<NativeApiSignature>(std::move(*parsed));
   auto threadPolicy = readEngineCallbackThreadPolicy(runtime, function);
-  auto callback = std::make_shared<NativeApiV8Callback>(
+  auto callback = std::make_shared<NativeApiCallback>(
       runtime, bridge, std::move(signature), std::move(function), false,
       threadPolicy, true);
   bridge->retainEngineLifetime(callback);
   return callback;
 }
 
-std::shared_ptr<NativeApiV8Callback> createEngineMethodCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiV8Bridge>& bridge,
-    const std::string& selectorName, NativeApiV8Signature signature,
+std::shared_ptr<NativeApiCallback> createEngineMethodCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const std::string& selectorName, NativeApiSignature signature,
     Function function) {
   signature.selectorName = selectorName;
   prepareEngineMethodSignature(&signature);
@@ -2078,9 +2078,9 @@ std::shared_ptr<NativeApiV8Callback> createEngineMethodCallback(
   }
 
   auto sharedSignature =
-      std::make_shared<NativeApiV8Signature>(std::move(signature));
+      std::make_shared<NativeApiSignature>(std::move(signature));
   auto threadPolicy = readEngineCallbackThreadPolicy(runtime, function);
-  auto callback = std::make_shared<NativeApiV8Callback>(
+  auto callback = std::make_shared<NativeApiCallback>(
       runtime, bridge, std::move(sharedSignature), std::move(function), false,
       threadPolicy, true);
   bridge->retainEngineLifetime(callback);

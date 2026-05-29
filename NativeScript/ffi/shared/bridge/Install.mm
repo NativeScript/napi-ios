@@ -1,10 +1,10 @@
-Object CreateNativeApiQuickJS(Runtime& runtime, const NativeApiQuickJSConfig& config) {
-  auto bridge = std::make_shared<NativeApiQuickJSBridge>(config);
+Object CreateNativeApi(Runtime& runtime, const NativeApiConfig& config) {
+  auto bridge = std::make_shared<NativeApiBridge>(config);
   return Object::createFromHostObject(
       runtime, std::make_shared<NativeApiHostObject>(std::move(bridge)));
 }
 
-void NativeApiQuickJSWriteSmokeStage(const char* stage) {
+void NativeApiWriteSmokeStage(const char* stage) {
   const char* enabled = getenv("NATIVESCRIPT_RN_TURBO_SMOKE_MARKER");
   if (enabled == nullptr || enabled[0] == '\0') {
     return;
@@ -88,8 +88,8 @@ std::string jsStringLiteral(const char* value) {
   return result;
 }
 
-void InstallNativeApiQuickJSGlobalSymbols(Runtime& runtime, const char* globalName) {
-  NativeApiQuickJSWriteSmokeStage("engine:globals:before-eval");
+void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
+  NativeApiWriteSmokeStage("engine:globals:before-eval");
   static const char* GlobalInstaller = R"Engine_GLOBALS(
 (function(nativeApiGlobalName) {
   'use strict';
@@ -862,7 +862,6 @@ void InstallNativeApiQuickJSGlobalSymbols(Runtime& runtime, const char* globalNa
       }
       var selectorGroups = Object.create(null);
       addSelectorGroups(selectorGroups, members, false);
-      addSelectorGroups(selectorGroups, runtimeMembers, true);
       for (var i = 0; hasMetadataMembers && i < members.length; i++) {
         var member = members[i];
         if (!member || !member.name) {
@@ -1752,31 +1751,31 @@ void InstallNativeApiQuickJSGlobalSymbols(Runtime& runtime, const char* globalNa
   script += jsStringLiteral(globalName);
   script += ");";
   runtime.evaluateJavaScript(std::make_shared<StringBuffer>(std::move(script)),
-                             "NativeApiQuickJSGlobals.js");
-  NativeApiQuickJSWriteSmokeStage("engine:globals:after-eval");
+                             "NativeApiGlobals.js");
+  NativeApiWriteSmokeStage("engine:globals:after-eval");
 }
 
-void InstallNativeApiQuickJS(Runtime& runtime, const NativeApiQuickJSConfig& config) {
+void InstallNativeApi(Runtime& runtime, const NativeApiConfig& config) {
   const char* globalName = config.globalName != nullptr && config.globalName[0] != '\0'
                                ? config.globalName
                                : "__nativeScriptNativeApi";
-  NativeApiQuickJSWriteSmokeStage("engine:create-api");
-  Object api = CreateNativeApiQuickJS(runtime, config);
+  NativeApiWriteSmokeStage("engine:create-api");
+  Object api = CreateNativeApi(runtime, config);
   Object global = runtime.global();
-  NativeApiQuickJSWriteSmokeStage("engine:set-global");
+  NativeApiWriteSmokeStage("engine:set-global");
   global.setProperty(runtime, globalName, api);
 
-  NativeApiQuickJSWriteSmokeStage("engine:set-interop");
+  NativeApiWriteSmokeStage("engine:set-interop");
   Value existingInterop = global.getProperty(runtime, "interop");
   if (existingInterop.isUndefined() || existingInterop.isNull()) {
     global.setProperty(runtime, "interop", api.getProperty(runtime, "interop"));
   }
   if (config.installGlobalSymbols) {
-    NativeApiQuickJSWriteSmokeStage("engine:install-globals");
-    InstallNativeApiQuickJSGlobalSymbols(runtime, globalName);
+    NativeApiWriteSmokeStage("engine:install-globals");
+    InstallNativeApiGlobalSymbols(runtime, globalName);
   } else {
-    NativeApiQuickJSWriteSmokeStage("engine:install-aggregate-globals");
+    NativeApiWriteSmokeStage("engine:install-aggregate-globals");
     InstallAggregateGlobals(runtime, api, "protocolNames");
   }
-  NativeApiQuickJSWriteSmokeStage("engine:installed");
+  NativeApiWriteSmokeStage("engine:installed");
 }

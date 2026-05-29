@@ -6,16 +6,16 @@
 
 namespace nativescript {
 
-using NativeApiV8Scheduler = NativeApiBackendScheduler;
-using NativeApiV8Config = NativeApiBackendConfig;
+using NativeApiScheduler = NativeApiBackendScheduler;
+using NativeApiConfig = NativeApiBackendConfig;
 
-void InstallNativeApiV8(v8::Isolate* isolate,
+void InstallNativeApi(v8::Isolate* isolate,
                         v8::Local<v8::Context> context,
-                        const NativeApiV8Config& config = NativeApiV8Config{});
+                        const NativeApiConfig& config = NativeApiConfig{});
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApiV8(v8::Isolate* isolate,
+extern "C" void NativeScriptInstallNativeApi(v8::Isolate* isolate,
                                                 v8::Local<v8::Context> context,
                                                 const char* metadataPath);
 

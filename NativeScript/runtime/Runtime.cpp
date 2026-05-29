@@ -673,7 +673,7 @@ void Runtime::Init(bool isWorker) {
 
 #if NS_FFI_BACKEND_V8 && defined(TARGET_ENGINE_V8)
   {
-    NativeApiV8Config nativeApiV8Config;
+    NativeApiConfig nativeApiV8Config;
     nativeApiV8Config.metadataPath = metadata_path;
     nativeApiV8Config.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiV8Config.installGlobalSymbols = true;
@@ -692,7 +692,7 @@ void Runtime::Init(bool isWorker) {
               },
               false);
         };
-    InstallNativeApiV8(env_->isolate, env_->context(), nativeApiV8Config);
+    InstallNativeApi(env_->isolate, env_->context(), nativeApiV8Config);
   }
 #endif  // NS_FFI_BACKEND_V8 && TARGET_ENGINE_V8
 
@@ -723,7 +723,7 @@ void Runtime::Init(bool isWorker) {
 
 #if NS_FFI_BACKEND_JSC && defined(TARGET_ENGINE_JSC)
   {
-    NativeApiJSCConfig nativeApiJSCConfig;
+    NativeApiConfig nativeApiJSCConfig;
     nativeApiJSCConfig.metadataPath = metadata_path;
     nativeApiJSCConfig.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiJSCConfig.installGlobalSymbols = true;
@@ -742,13 +742,13 @@ void Runtime::Init(bool isWorker) {
               },
               false);
         };
-    InstallNativeApiJSC(env_->context, nativeApiJSCConfig);
+    InstallNativeApi(env_->context, nativeApiJSCConfig);
   }
 #endif  // NS_FFI_BACKEND_JSC && TARGET_ENGINE_JSC
 
 #if NS_FFI_BACKEND_QUICKJS && defined(TARGET_ENGINE_QUICKJS)
   {
-    NativeApiQuickJSConfig nativeApiQuickJSConfig;
+    NativeApiConfig nativeApiQuickJSConfig;
     nativeApiQuickJSConfig.metadataPath = metadata_path;
     nativeApiQuickJSConfig.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiQuickJSConfig.installGlobalSymbols = true;
@@ -767,7 +767,7 @@ void Runtime::Init(bool isWorker) {
               },
               false);
         };
-    InstallNativeApiQuickJS(qjs_get_context(env_), nativeApiQuickJSConfig);
+    InstallNativeApi(qjs_get_context(env_), nativeApiQuickJSConfig);
   }
 #endif  // NS_FFI_BACKEND_QUICKJS && TARGET_ENGINE_QUICKJS
 
