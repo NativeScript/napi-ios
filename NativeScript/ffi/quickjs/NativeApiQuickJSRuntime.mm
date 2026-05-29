@@ -3,7 +3,7 @@
 #ifdef TARGET_ENGINE_QUICKJS
 
 namespace nativescript {
-namespace direct {
+namespace engine {
 
 String BigInt::toString(Runtime& runtime, int) const {
   JSValue value = local(runtime);
@@ -34,7 +34,7 @@ Value Runtime::evaluateJavaScript(std::shared_ptr<StringBuffer> buffer,
   return value;
 }
 
-}  // namespace direct
+}  // namespace engine
 }  // namespace nativescript
 
 #endif  // TARGET_ENGINE_QUICKJS

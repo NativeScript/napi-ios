@@ -2,7 +2,7 @@ class NativeApiPointerHostObject final
     : public HostObject,
       public std::enable_shared_from_this<NativeApiPointerHostObject> {
  public:
-  NativeApiPointerHostObject(std::shared_ptr<NativeApiDirectBridge> bridge,
+  NativeApiPointerHostObject(std::shared_ptr<NativeApiJSCBridge> bridge,
                              void* pointer, std::string kind = "pointer",
                              bool adopted = false)
       : bridge_(std::move(bridge)),
@@ -128,7 +128,7 @@ class NativeApiPointerHostObject final
               return makeString(runtime,
                                 "<Pointer: " + std::string(address) + ">");
             }
-            return makeString(runtime, "[NativeApiDirect " + kind + " " +
+            return makeString(runtime, "[NativeApiJSC " + kind + " " +
                                            std::string(address) + "]");
           });
     }
@@ -154,7 +154,7 @@ class NativeApiPointerHostObject final
   }
 
  private:
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
+  std::shared_ptr<NativeApiJSCBridge> bridge_;
   void* pointer_ = nullptr;
   std::string kind_;
   bool adopted_ = false;
@@ -163,8 +163,8 @@ class NativeApiPointerHostObject final
 
 class NativeApiReferenceHostObject final : public HostObject {
  public:
-  NativeApiReferenceHostObject(std::shared_ptr<NativeApiDirectBridge> bridge,
-                               NativeApiDirectType type, void* data, bool ownsData,
+  NativeApiReferenceHostObject(std::shared_ptr<NativeApiJSCBridge> bridge,
+                               NativeApiJSCType type, void* data, bool ownsData,
                                size_t byteLength = 0,
                                std::shared_ptr<Value> pendingValue = nullptr,
                                std::shared_ptr<Value> backingValue = nullptr)
@@ -184,9 +184,9 @@ class NativeApiReferenceHostObject final : public HostObject {
   }
 
   void* data() const { return data_; }
-  const NativeApiDirectType& type() const { return type_; }
-  void ensureStorage(Runtime& runtime, NativeApiDirectType type,
-                     NativeApiDirectArgumentFrame& frame, size_t elements = 1);
+  const NativeApiJSCType& type() const { return type_; }
+  void ensureStorage(Runtime& runtime, NativeApiJSCType type,
+                     NativeApiJSCArgumentFrame& frame, size_t elements = 1);
 
   Value get(Runtime& runtime, const PropNameID& name) override;
   void set(Runtime& runtime, const PropNameID& name, const Value& value) override;
@@ -200,8 +200,8 @@ class NativeApiReferenceHostObject final : public HostObject {
   }
 
  private:
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
-  NativeApiDirectType type_;
+  std::shared_ptr<NativeApiJSCBridge> bridge_;
+  NativeApiJSCType type_;
   void* data_ = nullptr;
   bool ownsData_ = false;
   size_t byteLength_ = 0;
@@ -212,8 +212,8 @@ class NativeApiReferenceHostObject final : public HostObject {
 class NativeApiStructObjectHostObject final : public HostObject {
  public:
   NativeApiStructObjectHostObject(
-      std::shared_ptr<NativeApiDirectBridge> bridge,
-      std::shared_ptr<NativeApiDirectAggregateInfo> info,
+      std::shared_ptr<NativeApiJSCBridge> bridge,
+      std::shared_ptr<NativeApiJSCAggregateInfo> info,
       const void* data = nullptr, bool ownsData = true,
       std::shared_ptr<std::vector<unsigned char>> storageOwner = nullptr,
       std::shared_ptr<Value> backingValue = nullptr)
@@ -238,7 +238,7 @@ class NativeApiStructObjectHostObject final : public HostObject {
   }
 
   void* data() const { return data_; }
-  std::shared_ptr<NativeApiDirectAggregateInfo> info() const { return info_; }
+  std::shared_ptr<NativeApiJSCAggregateInfo> info() const { return info_; }
   std::shared_ptr<std::vector<unsigned char>> storageOwner() const {
     return ownedData_;
   }
@@ -249,8 +249,8 @@ class NativeApiStructObjectHostObject final : public HostObject {
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override;
 
  private:
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
-  std::shared_ptr<NativeApiDirectAggregateInfo> info_;
+  std::shared_ptr<NativeApiJSCBridge> bridge_;
+  std::shared_ptr<NativeApiJSCAggregateInfo> info_;
   std::shared_ptr<std::vector<unsigned char>> ownedData_;
   std::shared_ptr<Value> backingValue_;
   void* data_ = nullptr;
@@ -260,7 +260,7 @@ class NativeApiStructObjectHostObject final : public HostObject {
 class NativeApiFastEnumerationIteratorHostObject final : public HostObject {
  public:
   NativeApiFastEnumerationIteratorHostObject(
-      std::shared_ptr<NativeApiDirectBridge> bridge, id<NSFastEnumeration> collection)
+      std::shared_ptr<NativeApiJSCBridge> bridge, id<NSFastEnumeration> collection)
       : bridge_(std::move(bridge)), collection_(collection) {
     [(id)collection_ retain];
   }
@@ -309,14 +309,14 @@ class NativeApiFastEnumerationIteratorHostObject final : public HostObject {
     }
 
     id value = state_.itemsPtr[stackIndex_++];
-    NativeApiDirectType valueType = nativeObjectReturnTypeForClass(object_getClass(value));
+    NativeApiJSCType valueType = nativeObjectReturnTypeForClass(object_getClass(value));
     result.setProperty(runtime, "value",
                        convertNativeReturnValue(runtime, bridge_, valueType, &value));
     result.setProperty(runtime, "done", false);
     return result;
   }
 
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
+  std::shared_ptr<NativeApiJSCBridge> bridge_;
   id<NSFastEnumeration> collection_ = nil;
   NSFastEnumerationState state_ = {};
   id __unsafe_unretained stack_[16] = {};
@@ -326,7 +326,7 @@ class NativeApiFastEnumerationIteratorHostObject final : public HostObject {
 };
 
 NativeApiSymbol nativeApiSymbolForRuntimeClass(
-    const std::shared_ptr<NativeApiDirectBridge>& bridge, Class cls) {
+    const std::shared_ptr<NativeApiJSCBridge>& bridge, Class cls) {
   const char* name = cls != Nil ? class_getName(cls) : "";
   if (bridge != nullptr) {
     if (const NativeApiSymbol* symbol = bridge->findClassForRuntimePointer(cls)) {
@@ -352,7 +352,7 @@ NativeApiSymbol nativeApiSymbolForRuntimeClass(
 
 class NativeApiSuperHostObject final : public HostObject {
  public:
-  NativeApiSuperHostObject(std::shared_ptr<NativeApiDirectBridge> bridge,
+  NativeApiSuperHostObject(std::shared_ptr<NativeApiJSCBridge> bridge,
                            id receiver, Class dispatchClass)
       : bridge_(std::move(bridge)),
         receiver_(receiver),
@@ -378,7 +378,7 @@ class NativeApiSuperHostObject final : public HostObject {
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "toString"), 0,
           [](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
-            return makeString(runtime, "[NativeApiDirectSuper]");
+            return makeString(runtime, "[NativeApiJSCSuper]");
           });
     }
     if (receiver_ == nil || dispatchClass_ == Nil) {
@@ -398,7 +398,7 @@ class NativeApiSuperHostObject final : public HostObject {
         }
       }
 
-      if (selectMethodMember(members, property, false, 0) != nullptr) {
+      if (hasMethodMember(members, property, false)) {
         auto bridge = bridge_;
         id receiver = receiver_;
         Class dispatchClass = dispatchClass_;
@@ -426,22 +426,6 @@ class NativeApiSuperHostObject final : public HostObject {
                                       count, dispatchClass);
             });
       }
-    }
-
-    if (auto selectorName =
-            runtimeSelectorNameForProperty(dispatchClass_, false, property)) {
-      auto bridge = bridge_;
-      id receiver = receiver_;
-      Class dispatchClass = dispatchClass_;
-      return Function::createFromHostFunction(
-          runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
-          [bridge, receiver, dispatchClass, selectorName = *selectorName](
-              Runtime& runtime, const Value&, const Value* args,
-              size_t count) -> Value {
-            return callObjCSelector(runtime, bridge, receiver, false,
-                                    selectorName, nullptr, args, count,
-                                    dispatchClass);
-          });
     }
 
     return Value::undefined();
@@ -496,16 +480,109 @@ class NativeApiSuperHostObject final : public HostObject {
   }
 
  private:
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
+  std::shared_ptr<NativeApiJSCBridge> bridge_;
   id receiver_ = nil;
   Class dispatchClass_ = Nil;
 };
+
+struct NativeApiJSCRuntimeMember {
+  std::string name;
+  std::string selectorName;
+  size_t argumentCount = 0;
+};
+
+std::vector<NativeApiJSCRuntimeMember> runtimeMembersForClass(Class cls,
+                                                                 bool staticMembers) {
+  std::vector<NativeApiJSCRuntimeMember> members;
+  if (cls == Nil) {
+    return members;
+  }
+
+  std::unordered_set<std::string> seen;
+  Class current = staticMembers ? object_getClass(cls) : cls;
+  while (current != Nil) {
+    unsigned int methodCount = 0;
+    Method* methods = class_copyMethodList(current, &methodCount);
+    for (unsigned int i = 0; i < methodCount; i++) {
+      SEL selector = method_getName(methods[i]);
+      const char* selectorName = selector != nullptr ? sel_getName(selector) : nullptr;
+      if (selectorName == nullptr || selectorName[0] == '\0') {
+        continue;
+      }
+
+      std::string selectorString(selectorName);
+      std::string name = jsifySelector(selectorString.c_str());
+      if (name.empty()) {
+        continue;
+      }
+
+      size_t argumentCount = selectorArgumentCount(selectorString);
+      std::string key = name + "\x1f" + std::to_string(argumentCount);
+      if (!seen.insert(key).second) {
+        continue;
+      }
+
+      members.push_back(NativeApiJSCRuntimeMember{
+          .name = std::move(name),
+          .selectorName = std::move(selectorString),
+          .argumentCount = argumentCount,
+      });
+    }
+    if (methods != nullptr) {
+      free(methods);
+    }
+    current = class_getSuperclass(current);
+  }
+
+  return members;
+}
+
+bool hasRuntimeMemberForName(Class cls, bool staticMembers,
+                             const std::string& name) {
+  auto members = runtimeMembersForClass(cls, staticMembers);
+  for (const auto& member : members) {
+    if (member.name == name) {
+      return true;
+    }
+  }
+  return false;
+}
+
+std::optional<std::string> selectRuntimeSelectorForName(
+    Class cls, bool staticMembers, const std::string& name, size_t count) {
+  auto members = runtimeMembersForClass(cls, staticMembers);
+  for (const auto& member : members) {
+    if (member.name == name && member.argumentCount == count) {
+      return member.selectorName;
+    }
+  }
+  return std::nullopt;
+}
+
+Array runtimeMembersArray(Runtime& runtime, Class cls, bool staticMembers) {
+  auto members = runtimeMembersForClass(cls, staticMembers);
+  Array result(runtime, members.size());
+  for (size_t i = 0; i < members.size(); i++) {
+    const auto& member = members[i];
+    Object descriptor(runtime);
+    descriptor.setProperty(runtime, "name", makeString(runtime, member.name));
+    descriptor.setProperty(runtime, "selectorName",
+                           makeString(runtime, member.selectorName));
+    descriptor.setProperty(runtime, "argumentCount",
+                           static_cast<double>(member.argumentCount));
+    descriptor.setProperty(runtime, "property", false);
+    descriptor.setProperty(runtime, "readonly", false);
+    descriptor.setProperty(runtime, "setterSelectorName", makeString(runtime, ""));
+    result.setValueAtIndex(runtime, i, descriptor);
+  }
+  return result;
+}
 
 class NativeApiObjectHostObject final
     : public HostObject,
       public std::enable_shared_from_this<NativeApiObjectHostObject> {
  public:
-  NativeApiObjectHostObject(std::shared_ptr<NativeApiDirectBridge> bridge,
+  NativeApiObjectHostObject(std::shared_ptr<NativeApiJSCBridge> bridge,
                             id object, bool ownsObject)
       : bridge_(std::move(bridge)), object_(object), ownsObject_(ownsObject) {
     if (object_ != nil && !ownsObject_) {
@@ -545,6 +622,16 @@ class NativeApiObjectHostObject final
     return object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
   }
 
+  static Value descriptionString(Runtime& runtime, id object) {
+    NSString* description = nil;
+    performDirectObjCInvocation(runtime, [&]() {
+      description = [(object != nil ? [object description] : @"<nil>") copy];
+    });
+    std::string text = description.UTF8String ?: "";
+    [description release];
+    return makeString(runtime, text);
+  }
+
   Value callObjectSelector(Runtime& runtime, const std::string& selectorName,
                            const NativeApiMember* member, const Value* args,
                            size_t count, Class dispatchSuperClass = Nil) {
@@ -562,7 +649,7 @@ class NativeApiObjectHostObject final
       if (classWrapperValue.isObject()) {
         classWrapper.emplace(classWrapperValue.asObject(runtime));
       }
-      bridge_->forgetRoundTripValue(receiver);
+      bridge_->forgetRoundTripValue(runtime, receiver);
       bridge_->forgetObjectExpandos(receiver);
     }
 
@@ -570,14 +657,128 @@ class NativeApiObjectHostObject final
         callObjCSelector(runtime, bridge_, receiver, false, selectorName, member,
                          args, count, dispatchSuperClass);
     if (initializer) {
-      if (nativeObjectFromValue(runtime, result) != receiver) {
-        disownObject(receiver);
-      } else if (classWrapper) {
-        bridge_->setObjectExpando(runtime, receiver, "__nativeApiClassWrapper",
+      id resultObject = nativeObjectFromValue(runtime, result);
+      disownObject(receiver);
+      if (resultObject != nil && classWrapper) {
+        bridge_->setObjectExpando(runtime, resultObject,
+                                  "__nativeApiClassWrapper",
                                   Value(runtime, *classWrapper));
+        if (result.isObject()) {
+          Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
+          if (prototypeValue.isObject()) {
+            Object resultValue = result.asObject(runtime);
+            Object prototype = prototypeValue.asObject(runtime);
+            SetNativeApiJSCObjectPrototype(runtime, resultValue, prototype);
+          }
+        }
       }
     }
     return result;
+  }
+
+  Value callPreparedObjectSelector(
+      Runtime& runtime, const std::string& selectorName,
+      const NativeApiJSCPreparedObjCInvocation& prepared, const Value* args,
+      size_t count, Class dispatchSuperClass = Nil) {
+    id receiver = object_;
+    if (receiver == nil) {
+      throw JSError(runtime,
+                    "Cannot send Objective-C selector to nil.");
+    }
+
+    const bool initializer = isInitializerSelector(selectorName);
+    std::optional<Object> classWrapper;
+    if (initializer) {
+      Value classWrapperValue = bridge_->findObjectExpando(
+          runtime, receiver, "__nativeApiClassWrapper");
+      if (classWrapperValue.isObject()) {
+        classWrapper.emplace(classWrapperValue.asObject(runtime));
+      }
+      bridge_->forgetRoundTripValue(runtime, receiver);
+      bridge_->forgetObjectExpandos(receiver);
+    }
+
+    Value result = callPreparedObjCSelector(
+        runtime, bridge_, receiver, false, prepared, args, count,
+        dispatchSuperClass);
+    if (initializer) {
+      id resultObject = nativeObjectFromValue(runtime, result);
+      disownObject(receiver);
+      if (resultObject != nil && classWrapper) {
+        bridge_->setObjectExpando(runtime, resultObject,
+                                  "__nativeApiClassWrapper",
+                                  Value(runtime, *classWrapper));
+        if (result.isObject()) {
+          Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
+          if (prototypeValue.isObject()) {
+            Object resultValue = result.asObject(runtime);
+            Object prototype = prototypeValue.asObject(runtime);
+            SetNativeApiJSCObjectPrototype(runtime, resultValue, prototype);
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  Value prototypeFunctionForProperty(Runtime& runtime,
+                                     const std::string& property) {
+    if (object_ == nil || property.empty()) {
+      return Value::undefined();
+    }
+
+    Value classWrapperValue = bridge_->findObjectExpando(
+        runtime, object_, "__nativeApiClassWrapper");
+    if (!classWrapperValue.isObject()) {
+      classWrapperValue = bridge_->findClassValue(runtime, object_getClass(object_));
+    }
+    if (!classWrapperValue.isObject()) {
+      if (const NativeApiSymbol* symbol =
+              bridge_->findClassForRuntimeClass(object_getClass(object_))) {
+        classWrapperValue = bridge_->findClassValue(
+            runtime, objc_lookUpClass(symbol->runtimeName.c_str()));
+      }
+    }
+    if (!classWrapperValue.isObject()) {
+      return Value::undefined();
+    }
+
+    Object classWrapper = classWrapperValue.asObject(runtime);
+    Value prototypeValue = classWrapper.getProperty(runtime, "prototype");
+    if (!prototypeValue.isObject()) {
+      return Value::undefined();
+    }
+
+    Object objectConstructor =
+        runtime.global().getPropertyAsObject(runtime, "Object");
+    Function getOwnPropertyDescriptor =
+        objectConstructor.getPropertyAsFunction(runtime,
+                                                "getOwnPropertyDescriptor");
+    Function getPrototypeOf =
+        objectConstructor.getPropertyAsFunction(runtime, "getPrototypeOf");
+    Value propertyName = makeString(runtime, property);
+    Value currentValue(runtime, prototypeValue);
+
+    for (size_t depth = 0; depth < 64 && currentValue.isObject(); depth++) {
+      Object current = currentValue.asObject(runtime);
+      Value descriptorValue =
+          getOwnPropertyDescriptor.call(runtime, Value(runtime, current),
+                                        propertyName);
+      if (descriptorValue.isObject()) {
+        Value functionValue =
+            descriptorValue.asObject(runtime).getProperty(runtime, "value");
+        if (functionValue.isObject() &&
+            functionValue.asObject(runtime).isFunction(runtime)) {
+          bridge_->setObjectExpando(runtime, object_, property, functionValue);
+          return functionValue;
+        }
+        return Value::undefined();
+      }
+      currentValue =
+          getPrototypeOf.call(runtime, Value(runtime, current));
+    }
+
+    return Value::undefined();
   }
 
   Value get(Runtime& runtime, const PropNameID& name) override {
@@ -678,7 +879,7 @@ class NativeApiObjectHostObject final
 
             id object = self->object_;
             if (self->bridge_ != nullptr) {
-              self->bridge_->forgetRoundTripValue(object);
+              self->bridge_->forgetRoundTripValue(runtime, object);
             }
             if (self->ownsObject_) {
               [object release];
@@ -694,10 +895,11 @@ class NativeApiObjectHostObject final
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "toString"), 0,
           [object](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
-            NSString* description =
-                object != nil ? [object description] : @"<nil>";
-            return makeString(runtime, description.UTF8String ?: "");
+            return NativeApiObjectHostObject::descriptionString(runtime, object);
               });
+    }
+    if (property == "description") {
+      return descriptionString(runtime, object_);
     }
     if (property == "URL" && object_ != nil &&
         [object_ respondsToSelector:@selector(URL)]) {
@@ -780,65 +982,62 @@ class NativeApiObjectHostObject final
       return expando;
     }
 
-    if (object_ != nil) {
-      try {
-        Value receiver = bridge_->findRoundTripValue(runtime, object_);
-        Value resolverValue = runtime.global().getProperty(
-            runtime, "__nativeScriptGetNativeApiPrototypeProperty");
-        if (receiver.isObject() && resolverValue.isObject() &&
-            resolverValue.asObject(runtime).isFunction(runtime)) {
-          Value prototype =
-              bridge_->findClassPrototype(runtime, object_getClass(object_));
-          Value prototypeOrName = prototype.isObject()
-                                      ? Value(runtime, prototype)
-                                      : Value::undefined();
-          if (prototypeOrName.isUndefined()) {
-            Value classWrapper = bridge_->findObjectExpando(
-                runtime, object_, "__nativeApiClassWrapper");
-            if (classWrapper.isObject()) {
-              Object wrapperObject = classWrapper.asObject(runtime);
-              Value wrapperPrototype =
-                  wrapperObject.getProperty(runtime, "prototype");
-              if (wrapperPrototype.isObject()) {
-                prototypeOrName = std::move(wrapperPrototype);
-              }
-            }
-          }
-          if (prototypeOrName.isUndefined()) {
-            const char* className = object_getClassName(object_);
-            prototypeOrName = makeString(runtime,
-                                         className != nullptr ? className : "");
-          }
-	          Value resolved = resolverValue.asObject(runtime)
-	                               .asFunction(runtime)
-	                               .call(runtime, std::move(prototypeOrName),
-	                                     Value(runtime, receiver),
-	                                     makeString(runtime, property));
-	          if (resolved.isObject()) {
-	            Object result = resolved.asObject(runtime);
-	            Value found = result.getProperty(runtime, "found");
-	            if (found.isBool() && found.getBool()) {
-	              return result.getProperty(runtime, "value");
-	            }
-	          }
-	        }
-	      } catch (const std::exception&) {
-	      }
-    }
-
     if (object_ != nil && [object_ isKindOfClass:[NSArray class]]) {
       NSArray* array = static_cast<NSArray*>(object_);
       if (property == "length") {
         return static_cast<double>(array.count);
+      }
+      if (property == "objectAtIndex") {
+        auto bridge = bridge_;
+        std::weak_ptr<NativeApiObjectHostObject> weakSelf =
+            shared_from_this();
+        Function function = Function::createFromHostFunction(
+            runtime, PropNameID::forAscii(runtime, "objectAtIndex"), 1,
+            [bridge, weakSelf](Runtime& runtime, const Value&,
+                               const Value* args, size_t count) -> Value {
+              auto self = weakSelf.lock();
+              if (!self || self->object_ == nil ||
+                  ![self->object_ isKindOfClass:[NSArray class]]) {
+                throw JSError(runtime,
+                              "Cannot send objectAtIndex to nil array.");
+              }
+              if (count < 1 || !args[0].isNumber()) {
+                throw JSError(runtime,
+                              "objectAtIndex expects a numeric index.");
+              }
+
+              NSArray* array = static_cast<NSArray*>(self->object_);
+              NSUInteger index =
+                  static_cast<NSUInteger>(args[0].getNumber());
+              id element = nil;
+              performDirectObjCInvocation(runtime, [&]() {
+                element = [array objectAtIndex:index];
+              });
+              NativeApiJSCType elementType = nativeObjectReturnType();
+              return convertNativeReturnValue(runtime, bridge, elementType,
+                                              &element);
+            });
+        Value functionValue(runtime, function);
+        bridge_->setObjectExpando(runtime, object_, property, functionValue);
+        return functionValue;
       }
       if (auto index = parseArrayIndexProperty(property)) {
         if (*index >= array.count) {
           return Value::undefined();
         }
         id element = [array objectAtIndex:*index];
-        NativeApiDirectType elementType = nativeObjectReturnType();
+        NativeApiJSCType elementType = nativeObjectReturnType();
         return convertNativeReturnValue(runtime, bridge_, elementType, &element);
       }
+    }
+
+    if (object_ != nil && property == "length" &&
+        ![object_ respondsToSelector:@selector(length)]) {
+      return Value::undefined();
+    }
+    if (object_ != nil && property == "count" &&
+        ![object_ respondsToSelector:@selector(count)]) {
+      return Value::undefined();
     }
 
     if (object_ != nil) {
@@ -865,79 +1064,37 @@ class NativeApiObjectHostObject final
           }
         }
 
-        if (selectMethodMember(members, property, false, 0) != nullptr) {
-          auto bridge = bridge_;
-          id object = object_;
-          std::weak_ptr<NativeApiObjectHostObject> weakSelf =
-              shared_from_this();
-          std::string memberName = property;
-          return Function::createFromHostFunction(
-              runtime, PropNameID::forAscii(runtime, property.c_str()),
-              0,
-              [bridge, object, weakSelf, memberName](Runtime& runtime,
-                                                     const Value&,
-                                                     const Value* args,
-                                                     size_t count) -> Value {
-                const NativeApiSymbol* symbol =
-                    bridge->findClassForRuntimeClass(object_getClass(object));
-                if (symbol == nullptr) {
-                  throw JSError(
-                      runtime, "Objective-C metadata is not available for object.");
-                }
-                const NativeApiMember* selected = selectMethodMember(
-                    bridge->membersForClass(*symbol), memberName, false, count);
-                if (selected == nullptr) {
-                  throw JSError(
-                      runtime, "Objective-C selector is not available: " +
-                                   memberName);
-                }
-                if (auto self = weakSelf.lock()) {
-                  return self->callObjectSelector(
-                      runtime, selected->selectorName, selected, args, count);
-                }
-                return callObjCSelector(runtime, bridge, object, false,
-                                        selected->selectorName, selected, args,
-                                        count);
-              });
-        }
       }
+    }
 
-      if (auto selectorName =
-              runtimeSelectorNameForProperty(object_getClass(object_), false,
-                                             property)) {
-        if (selectorArgumentCount(*selectorName) == 0 &&
-            hasRuntimeSetterForProperty(object_getClass(object_), false,
-                                        property)) {
-          return callObjectSelector(runtime, *selectorName, nullptr, nullptr, 0);
-        }
+    Value prototypeFunction = prototypeFunctionForProperty(runtime, property);
+    if (!prototypeFunction.isUndefined()) {
+      return prototypeFunction;
+    }
 
-        auto bridge = bridge_;
-        id object = object_;
-        std::weak_ptr<NativeApiObjectHostObject> weakSelf = shared_from_this();
-        return Function::createFromHostFunction(
-            runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
-            [bridge, object, weakSelf, selectorName = *selectorName](
-                Runtime& runtime, const Value&, const Value* args,
-                size_t count) -> Value {
-              if (auto self = weakSelf.lock()) {
-                return self->callObjectSelector(runtime, selectorName, nullptr,
-                                                args, count);
-              }
-              return callObjCSelector(runtime, bridge, object, false,
-                                      selectorName, nullptr, args, count);
-        });
-      }
-
-      if ([object_ isKindOfClass:[NSDictionary class]]) {
-        NSString* key = [NSString stringWithUTF8String:property.c_str()];
-        if (key != nil) {
-          id value = [static_cast<NSDictionary*>(object_) objectForKey:key];
-          if (value != nil) {
-            NativeApiDirectType valueType = nativeObjectReturnType();
-            return convertNativeReturnValue(runtime, bridge_, valueType, &value);
-          }
-        }
-      }
+    if (object_ != nil &&
+        hasRuntimeMemberForName(object_getClass(object_), false, property)) {
+      std::weak_ptr<NativeApiObjectHostObject> weakSelf = shared_from_this();
+      std::string memberName = property;
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
+          [weakSelf, memberName](Runtime& runtime, const Value&,
+                                 const Value* args, size_t count) -> Value {
+            auto self = weakSelf.lock();
+            if (!self || self->object_ == nil) {
+              throw JSError(runtime,
+                            "Cannot send Objective-C selector to nil.");
+            }
+            auto selectorName = selectRuntimeSelectorForName(
+                object_getClass(self->object_), false, memberName, count);
+            if (!selectorName) {
+              throw JSError(runtime,
+                            "Objective-C selector is not available: " +
+                                memberName);
+            }
+            return self->callObjectSelector(runtime, *selectorName, nullptr,
+                                            args, count);
+          });
     }
 
     return Value::undefined();
@@ -968,15 +1125,6 @@ class NativeApiObjectHostObject final
       }
     }
 
-    std::string setterSelectorName = setterSelectorForProperty(property);
-    SEL selector = sel_getUid(setterSelectorName.c_str());
-    if ([object_ respondsToSelector:selector]) {
-      Value args[] = {Value(runtime, value)};
-      callObjCSelector(runtime, bridge_, object_, false, setterSelectorName,
-                       nullptr, args, 1);
-      return;
-    }
-
     bridge_->setObjectExpando(runtime, object_, property, value);
   }
 
@@ -998,7 +1146,7 @@ class NativeApiObjectHostObject final
   }
 
  private:
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
+  std::shared_ptr<NativeApiJSCBridge> bridge_;
   id object_ = nil;
   bool ownsObject_ = false;
   bool consumed_ = false;
@@ -1006,12 +1154,22 @@ class NativeApiObjectHostObject final
 
 class NativeApiClassHostObject final : public HostObject {
  public:
-  NativeApiClassHostObject(std::shared_ptr<NativeApiDirectBridge> bridge,
+  NativeApiClassHostObject(std::shared_ptr<NativeApiJSCBridge> bridge,
                            NativeApiSymbol symbol)
       : bridge_(std::move(bridge)), symbol_(std::move(symbol)) {}
 
   Class nativeClass() const {
     return objc_lookUpClass(symbol_.runtimeName.c_str());
+  }
+
+  static Class classRespondingToClassSelector(Class cls, SEL selector) {
+    for (Class current = cls; current != Nil;
+         current = class_getSuperclass(current)) {
+      if (class_getClassMethod(current, selector) != nullptr) {
+        return current;
+      }
+    }
+    return Nil;
   }
 
   Value get(Runtime& runtime, const PropNameID& name) override {
@@ -1042,6 +1200,11 @@ class NativeApiClassHostObject final : public HostObject {
 	      }
 	      return makeNativeClassValue(runtime, bridge_, *superclass);
 	    }
+	    if (property == "__runtimeStaticMembers" ||
+	        property == "__runtimeInstanceMembers") {
+	      return runtimeMembersArray(runtime, nativeClass(),
+	                                 property == "__runtimeStaticMembers");
+	    }
 	    if (property == "__staticMembers" || property == "__instanceMembers") {
 	      bool staticMembers = property == "__staticMembers";
       const auto& members = bridge_->surfaceMembersForClass(symbol_);
@@ -1062,6 +1225,13 @@ class NativeApiClassHostObject final : public HostObject {
             static_cast<double>(selectorArgumentCount(member.selectorName)));
         descriptor.setProperty(runtime, "property", member.property);
         descriptor.setProperty(runtime, "readonly", member.readonly);
+        descriptor.setProperty(runtime, "signatureOffset",
+                               static_cast<double>(member.signatureOffset));
+        descriptor.setProperty(
+            runtime, "setterSignatureOffset",
+            static_cast<double>(member.setterSignatureOffset));
+        descriptor.setProperty(runtime, "flags",
+                               static_cast<double>(member.flags));
         descriptor.setProperty(runtime, "setterSelectorName",
                                makeString(runtime, member.setterSelectorName));
         result.setValueAtIndex(runtime, index++, descriptor);
@@ -1078,7 +1248,7 @@ class NativeApiClassHostObject final : public HostObject {
           [symbol = symbol_](Runtime& runtime, const Value&,
                              const Value*, size_t) -> Value {
             return makeString(runtime,
-                              "[NativeApiDirectClass " + symbol.name + "]");
+                              "[NativeApiJSCClass " + symbol.name + "]");
           });
     }
     if (property == "construct" || property == "alloc" || property == "new") {
@@ -1131,14 +1301,16 @@ class NativeApiClassHostObject final : public HostObject {
                     runtime, "new does not take arguments; use invoke for an "
                              "explicit Objective-C selector.");
               }
-              result = [[cls alloc] init];
+              performDirectObjCInvocation(runtime,
+                                          [&]() { result = [[cls alloc] init]; });
             } else {
               if (count != 0) {
                 throw JSError(
                     runtime, "alloc does not take arguments; call invoke on the "
                              "allocated object for an explicit init selector.");
               }
-              result = [cls alloc];
+              performDirectObjCInvocation(runtime,
+                                          [&]() { result = [cls alloc]; });
             }
 
             return makeNativeObjectValue(runtime, bridge, result, true);
@@ -1175,14 +1347,15 @@ class NativeApiClassHostObject final : public HostObject {
             runtime, "Objective-C class is not available: " + symbol.name);
       }
       SEL selector = sel_getUid(propertyMember->selectorName.c_str());
-      if (class_getClassMethod(cls, selector) != nullptr) {
-        return callObjCSelector(runtime, bridge, static_cast<id>(cls), true,
+      Class dispatchClass = classRespondingToClassSelector(cls, selector);
+      if (dispatchClass != Nil) {
+        return callObjCSelector(runtime, bridge, static_cast<id>(dispatchClass), true,
                                 propertyMember->selectorName, propertyMember,
                                 nullptr, 0);
       }
     }
 
-    if (selectMethodMember(members, property, true, 0) != nullptr) {
+    if (hasMethodMember(members, property, true)) {
       auto bridge = bridge_;
       auto symbol = symbol_;
       std::string memberName = property;
@@ -1203,33 +1376,20 @@ class NativeApiClassHostObject final : public HostObject {
                   runtime, "Objective-C selector is not available: " +
                                memberName);
             }
-            return callObjCSelector(runtime, bridge, static_cast<id>(cls), true,
+            SEL selector = sel_getUid(selected->selectorName.c_str());
+            Class dispatchClass =
+                NativeApiClassHostObject::classRespondingToClassSelector(
+                    cls, selector);
+            if (dispatchClass == Nil) {
+              throw JSError(runtime,
+                            "Objective-C selector is not available: " +
+                                selected->selectorName);
+            }
+            return callObjCSelector(runtime, bridge,
+                                    static_cast<id>(dispatchClass), true,
                                     selected->selectorName, selected, args,
                                     count);
           });
-    }
-
-    Class cls = objc_lookUpClass(symbol_.runtimeName.c_str());
-    if (cls != nil) {
-      if (auto selectorName =
-              runtimeSelectorNameForProperty(cls, true, property)) {
-        if (selectorArgumentCount(*selectorName) == 0 &&
-            hasRuntimeSetterForProperty(cls, true, property)) {
-          return callObjCSelector(runtime, bridge_, static_cast<id>(cls), true,
-                                  *selectorName, nullptr, nullptr, 0);
-        }
-
-        auto bridge = bridge_;
-        return Function::createFromHostFunction(
-            runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
-            [bridge, cls, selectorName = *selectorName](
-                Runtime& runtime, const Value&, const Value* args,
-                size_t count) -> Value {
-              return callObjCSelector(runtime, bridge, static_cast<id>(cls),
-                                      true, selectorName, nullptr, args,
-                                      count);
-            });
-      }
     }
 
     return Value::undefined();
@@ -1253,18 +1413,16 @@ class NativeApiClassHostObject final : public HostObject {
       NativeApiMember setterMember = *propertyMember;
       setterMember.selectorName = propertyMember->setterSelectorName;
       setterMember.signatureOffset = propertyMember->setterSignatureOffset;
+      SEL selector = sel_getUid(setterMember.selectorName.c_str());
+      Class dispatchClass = classRespondingToClassSelector(cls, selector);
+      if (dispatchClass == Nil) {
+        throw JSError(runtime,
+                      "Objective-C selector is not available: " +
+                          setterMember.selectorName);
+      }
       Value args[] = {Value(runtime, value)};
-      callObjCSelector(runtime, bridge_, static_cast<id>(cls), true,
+      callObjCSelector(runtime, bridge_, static_cast<id>(dispatchClass), true,
                        setterMember.selectorName, &setterMember, args, 1);
-      return;
-    }
-
-    std::string setterSelectorName = setterSelectorForProperty(property);
-    SEL selector = sel_getUid(setterSelectorName.c_str());
-    if (class_getClassMethod(cls, selector) != nullptr) {
-      Value args[] = {Value(runtime, value)};
-      callObjCSelector(runtime, bridge_, static_cast<id>(cls), true,
-                       setterSelectorName, nullptr, args, 1);
       return;
     }
 
@@ -1290,12 +1448,12 @@ class NativeApiClassHostObject final : public HostObject {
   }
 
  private:
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
+  std::shared_ptr<NativeApiJSCBridge> bridge_;
   NativeApiSymbol symbol_;
 };
 
 Value makeNativeObjectValue(Runtime& runtime,
-                            const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                            const std::shared_ptr<NativeApiJSCBridge>& bridge,
                             id object, bool ownsObject) {
   if (object == nil) {
     return Value::null();
@@ -1312,6 +1470,20 @@ Value makeNativeObjectValue(Runtime& runtime,
   Object result = Object::createFromHostObject(
       runtime,
       std::make_shared<NativeApiObjectHostObject>(bridge, object, ownsObject));
+  Value prototypeValue = Value::undefined();
+  Value classWrapperValue =
+      bridge->findObjectExpando(runtime, object, "__nativeApiClassWrapper");
+  if (classWrapperValue.isObject()) {
+    Object classWrapper = classWrapperValue.asObject(runtime);
+    prototypeValue = classWrapper.getProperty(runtime, "prototype");
+  }
+  if (!prototypeValue.isObject()) {
+    prototypeValue = bridge->findClassPrototype(runtime, object_getClass(object));
+  }
+  if (prototypeValue.isObject()) {
+    Object prototype = prototypeValue.asObject(runtime);
+    SetNativeApiJSCObjectPrototype(runtime, result, prototype);
+  }
   bridge->rememberRoundTripValue(runtime, object, Value(runtime, result));
   return result;
 }
@@ -1424,7 +1596,7 @@ Value globalNativeSymbolValue(Runtime& runtime, const NativeApiSymbol& symbol,
 }
 
 Value makeNativeClassValue(Runtime& runtime,
-                           const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                           const std::shared_ptr<NativeApiJSCBridge>& bridge,
                            NativeApiSymbol symbol) {
   Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
   Value cachedClass = bridge->findClassValue(runtime, cls);
@@ -1457,7 +1629,7 @@ Protocol* lookupProtocolByNativeName(const std::string& name) {
 
 class NativeApiProtocolHostObject final : public HostObject {
  public:
-  NativeApiProtocolHostObject(std::shared_ptr<NativeApiDirectBridge> bridge,
+  NativeApiProtocolHostObject(std::shared_ptr<NativeApiJSCBridge> bridge,
                               NativeApiSymbol symbol)
       : bridge_(std::move(bridge)), symbol_(std::move(symbol)) {}
 
@@ -1514,7 +1686,7 @@ class NativeApiProtocolHostObject final : public HostObject {
           runtime, PropNameID::forAscii(runtime, "toString"), 0,
           [symbol](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
             return makeString(runtime,
-                              "[NativeApiDirectProtocol " + symbol.name + "]");
+                              "[NativeApiJSCProtocol " + symbol.name + "]");
           });
     }
     const auto& members = bridge_->membersForProtocol(symbol_);
@@ -1526,13 +1698,23 @@ class NativeApiProtocolHostObject final : public HostObject {
             selectPropertyMember(members, property, false)) {
       return makeProtocolPropertyGetter(runtime, *propertyMember, true);
     }
-    if (const NativeApiMember* methodMember =
-            selectMethodMember(members, property, true, 0)) {
-      return makeProtocolMemberFunction(runtime, *methodMember, true);
+    for (const auto& member : members) {
+      if (member.property || member.name != property) {
+        continue;
+      }
+      bool memberIsStatic = (member.flags & metagen::mdMemberStatic) != 0;
+      if (memberIsStatic) {
+        return makeProtocolMemberFunction(runtime, member, true);
+      }
     }
-    if (const NativeApiMember* methodMember =
-            selectMethodMember(members, property, false, 0)) {
-      return makeProtocolMemberFunction(runtime, *methodMember, true);
+    for (const auto& member : members) {
+      if (member.property || member.name != property) {
+        continue;
+      }
+      bool memberIsStatic = (member.flags & metagen::mdMemberStatic) != 0;
+      if (!memberIsStatic) {
+        return makeProtocolMemberFunction(runtime, member, true);
+      }
     }
     return Value::undefined();
   }
@@ -1726,12 +1908,12 @@ class NativeApiProtocolHostObject final : public HostObject {
     }
   }
 
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
+  std::shared_ptr<NativeApiJSCBridge> bridge_;
   NativeApiSymbol symbol_;
 };
 
 Value makeNativeProtocolValue(Runtime& runtime,
-                              const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                              const std::shared_ptr<NativeApiJSCBridge>& bridge,
                               NativeApiSymbol symbol) {
   Value globalValue = globalNativeSymbolValue(runtime, symbol, "protocol");
   if (!globalValue.isUndefined()) {
@@ -1742,7 +1924,7 @@ Value makeNativeProtocolValue(Runtime& runtime,
       std::make_shared<NativeApiProtocolHostObject>(bridge, std::move(symbol)));
 }
 
-Class nativeClassFromDirectObject(Runtime& runtime, const Object& object) {
+Class nativeClassFromEngineObject(Runtime& runtime, const Object& object) {
   if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
     return object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass();
   }

@@ -6,68 +6,72 @@ std::string readOptionalStringProperty(Runtime& runtime, const Object& object, c
   return value.isString() ? value.asString(runtime).utf8(runtime) : "";
 }
 
-struct NativeApiDirectClassBuilderRegistration {
+struct NativeApiHermesClassBuilderRegistration {
   std::shared_ptr<Runtime> runtimeOwner;
   Runtime* runtime = nullptr;
-  std::shared_ptr<NativeApiDirectBridge> bridge;
+  std::shared_ptr<NativeApiHermesBridge> bridge;
 };
 
-std::mutex gNativeApiDirectClassBuilderMutex;
-std::unordered_map<Class, NativeApiDirectClassBuilderRegistration> gNativeApiDirectClassBuilders;
-struct NativeApiDirectKnownExposedMethod {
+std::mutex gNativeApiHermesClassBuilderMutex;
+std::unordered_map<Class, NativeApiHermesClassBuilderRegistration>
+    gNativeApiHermesClassBuilders;
+struct NativeApiHermesKnownExposedMethod {
   std::string selectorName;
-  NativeApiDirectSignature signature;
+  NativeApiHermesSignature signature;
 };
-std::mutex gNativeApiDirectKnownExposedMethodsMutex;
-std::unordered_map<std::string, NativeApiDirectKnownExposedMethod> gNativeApiDirectKnownExposedMethods;
+std::mutex gNativeApiHermesKnownExposedMethodsMutex;
+std::unordered_map<std::string, NativeApiHermesKnownExposedMethod>
+    gNativeApiHermesKnownExposedMethods;
 
-void rememberNativeApiDirectClassBuilder(Runtime& runtime,
-                                      const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                                      Class cls) {
+void rememberNativeApiHermesClassBuilder(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
+    Class cls) {
   if (cls == Nil) {
     return;
   }
-  std::lock_guard<std::mutex> lock(gNativeApiDirectClassBuilderMutex);
-  auto runtimeOwner = retainNativeApiDirectRuntime(runtime);
-  gNativeApiDirectClassBuilders[cls] = NativeApiDirectClassBuilderRegistration{
+  std::lock_guard<std::mutex> lock(gNativeApiHermesClassBuilderMutex);
+  auto runtimeOwner = retainNativeApiHermesRuntime(runtime);
+  gNativeApiHermesClassBuilders[cls] = NativeApiHermesClassBuilderRegistration{
       .runtimeOwner = runtimeOwner,
       .runtime = runtimeOwner.get(),
       .bridge = bridge,
   };
 }
 
-void rememberNativeApiDirectKnownExposedMethod(const std::string& selectorName,
-                                            const NativeApiDirectSignature& signature) {
+void rememberNativeApiHermesKnownExposedMethod(
+    const std::string& selectorName, const NativeApiHermesSignature& signature) {
   if (selectorName.empty()) {
     return;
   }
-  NativeApiDirectKnownExposedMethod method{
+  NativeApiHermesKnownExposedMethod method{
       .selectorName = selectorName,
       .signature = signature,
   };
-  std::lock_guard<std::mutex> lock(gNativeApiDirectKnownExposedMethodsMutex);
-  gNativeApiDirectKnownExposedMethods[selectorName] = method;
-  gNativeApiDirectKnownExposedMethods[jsifySelector(selectorName.c_str())] = std::move(method);
+  std::lock_guard<std::mutex> lock(gNativeApiHermesKnownExposedMethodsMutex);
+  gNativeApiHermesKnownExposedMethods[selectorName] = method;
+  gNativeApiHermesKnownExposedMethods[jsifySelector(selectorName.c_str())] =
+      std::move(method);
 }
 
-std::optional<NativeApiDirectKnownExposedMethod> knownNativeApiDirectExposedMethod(
+std::optional<NativeApiHermesKnownExposedMethod> knownNativeApiHermesExposedMethod(
     const std::string& name) {
-  std::lock_guard<std::mutex> lock(gNativeApiDirectKnownExposedMethodsMutex);
-  auto it = gNativeApiDirectKnownExposedMethods.find(name);
-  if (it == gNativeApiDirectKnownExposedMethods.end()) {
+  std::lock_guard<std::mutex> lock(gNativeApiHermesKnownExposedMethodsMutex);
+  auto it = gNativeApiHermesKnownExposedMethods.find(name);
+  if (it == gNativeApiHermesKnownExposedMethods.end()) {
     return std::nullopt;
   }
-  NativeApiDirectKnownExposedMethod method = it->second;
-  prepareDirectMethodSignature(&method.signature);
+  NativeApiHermesKnownExposedMethod method = it->second;
+  prepareEngineMethodSignature(&method.signature);
   return method;
 }
 
-std::optional<NativeApiDirectClassBuilderRegistration> findNativeApiDirectClassBuilder(id object) {
+std::optional<NativeApiHermesClassBuilderRegistration>
+findNativeApiHermesClassBuilder(id object) {
   Class cls = object != nil ? object_getClass(object) : Nil;
-  std::lock_guard<std::mutex> lock(gNativeApiDirectClassBuilderMutex);
+  std::lock_guard<std::mutex> lock(gNativeApiHermesClassBuilderMutex);
   while (cls != Nil) {
-    auto it = gNativeApiDirectClassBuilders.find(cls);
-    if (it != gNativeApiDirectClassBuilders.end()) {
+    auto it = gNativeApiHermesClassBuilders.find(cls);
+    if (it != gNativeApiHermesClassBuilders.end()) {
       return it->second;
     }
     cls = class_getSuperclass(cls);
@@ -75,7 +79,7 @@ std::optional<NativeApiDirectClassBuilderRegistration> findNativeApiDirectClassB
   return std::nullopt;
 }
 
-const char* nativeApiDirectFastEnumerationEncoding() {
+const char* nativeApiEngineFastEnumerationEncoding() {
   static const char* encoding = nullptr;
   if (encoding == nullptr) {
     struct objc_method_description desc = protocol_getMethodDescription(
@@ -86,20 +90,21 @@ const char* nativeApiDirectFastEnumerationEncoding() {
   return encoding;
 }
 
-NSUInteger nativeApiDirectSymbolIteratorCountByEnumerating(id self, SEL, NSFastEnumerationState* state,
-                                                        id __unsafe_unretained stackbuf[],
-                                                        NSUInteger len) {
+NSUInteger nativeApiEngineSymbolIteratorCountByEnumerating(
+    id self, SEL, NSFastEnumerationState* state,
+    id __unsafe_unretained stackbuf[], NSUInteger len) {
   if (len == 0 || state == nullptr || stackbuf == nullptr) {
     return 0;
   }
 
-  auto registration = findNativeApiDirectClassBuilder(self);
-  if (!registration || registration->runtime == nullptr || registration->bridge == nullptr) {
+  auto registration = findNativeApiHermesClassBuilder(self);
+  if (!registration || registration->runtime == nullptr ||
+      registration->bridge == nullptr) {
     return 0;
   }
 
   Runtime& runtime = *registration->runtime;
-  NativeApiDirectRuntimeScope runtimeScope(runtime);
+  NativeApiHermesRuntimeScope runtimeScope(runtime);
   auto bridge = registration->bridge;
   try {
     Value receiver = makeNativeObjectValue(runtime, bridge, self, false);
@@ -156,8 +161,8 @@ NSUInteger nativeApiDirectSymbolIteratorCountByEnumerating(id self, SEL, NSFastE
       }
 
       Value value = nextObject.getProperty(runtime, "value");
-      NativeApiDirectArgumentFrame frame(1);
-      id nativeValue = objectFromDirectValue(runtime, bridge, value, frame, false);
+      NativeApiHermesArgumentFrame frame(1);
+      id nativeValue = objectFromEngineValue(runtime, bridge, value, frame, false);
       if (nativeValue != nil) {
         [nativeValue retain];
         [nativeValue autorelease];
@@ -175,8 +180,8 @@ NSUInteger nativeApiDirectSymbolIteratorCountByEnumerating(id self, SEL, NSFastE
   }
 }
 
-NativeApiSymbol runtimeSymbolForClass(const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                                      Class cls) {
+NativeApiSymbol runtimeSymbolForClass(
+    const std::shared_ptr<NativeApiHermesBridge>& bridge, Class cls) {
   if (bridge != nullptr) {
     if (const NativeApiSymbol* symbol = bridge->findClassForRuntimeClass(cls)) {
       return *symbol;
@@ -192,7 +197,7 @@ NativeApiSymbol runtimeSymbolForClass(const std::shared_ptr<NativeApiDirectBridg
   };
 }
 
-std::string nextAvailableDirectClassName(const std::string& requestedName) {
+std::string nextAvailableEngineClassName(const std::string& requestedName) {
   if (requestedName.empty()) {
     return "";
   }
@@ -224,34 +229,41 @@ std::vector<NativeApiMember> methodOverridesForName(const std::vector<NativeApiM
   return result;
 }
 
-const NativeApiMember* propertyOverrideForName(const std::vector<NativeApiMember>& members,
-                                               const std::string& name) {
-  const NativeApiMember* fallback = nullptr;
+const NativeApiMember* propertyOverrideForName(
+    const std::vector<NativeApiMember>& members, const std::string& name) {
+  const NativeApiMember* propertyMember = nullptr;
   for (const auto& member : members) {
-    if (member.property && member.name == name && (member.flags & metagen::mdMemberStatic) == 0) {
-      if (fallback == nullptr) {
-        fallback = &member;
+    if (member.property && member.name == name &&
+        (member.flags & metagen::mdMemberStatic) == 0) {
+      if (propertyMember == nullptr) {
+        propertyMember = &member;
       }
       if (!member.readonly && !member.setterSelectorName.empty()) {
         return &member;
       }
     }
   }
-  return fallback;
+  return propertyMember;
 }
 
-void addDirectOverrideMethod(Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                          Class nativeClass, Class baseClass, const std::string& selectorName,
-                          MDSectionOffset signatureOffset, bool returnOwned, Function function) {
+void addEngineOverrideMethod(Runtime& runtime,
+                          const std::shared_ptr<NativeApiHermesBridge>& bridge,
+                          Class nativeClass, Class baseClass,
+                          const std::string& selectorName,
+                          MDSectionOffset signatureOffset,
+                          bool returnOwned, Function function) {
   if (selectorName.empty() || signatureOffset == MD_SECTION_OFFSET_NULL) {
     return;
   }
 
-  auto callback = createDirectMethodCallback(runtime, bridge, selectorName, signatureOffset,
-                                          std::move(function), returnOwned);
+  auto callback = createEngineMethodCallback(runtime, bridge, selectorName,
+                                          signatureOffset, std::move(function),
+                                          returnOwned);
   SEL selector = sel_registerName(selectorName.c_str());
-  std::string metadataEncoding = objcMethodSignatureForDirectSignature(callback->signature());
-  class_replaceMethod(nativeClass, selector, reinterpret_cast<IMP>(callback->functionPointer()),
+  std::string metadataEncoding =
+      objcMethodSignatureForEngineSignature(callback->signature());
+  class_replaceMethod(nativeClass, selector,
+                      reinterpret_cast<IMP>(callback->functionPointer()),
                       metadataEncoding.c_str());
 }
 
@@ -261,19 +273,42 @@ Value getObjectPropertyOrUndefined(Runtime& runtime, const Object& object,
                                                    : Value::undefined();
 }
 
-Class dispatchSuperclassForDirectDerivedReceiver(id receiver, Class fallback) {
+Class dispatchSuperclassForEngineDerivedReceiver(id receiver,
+                                                Class defaultSuperclass) {
   if (receiver == nil) {
     return Nil;
   }
 
   Class receiverClass = object_getClass(receiver);
   if (receiverClass == Nil ||
-      !class_conformsToProtocol(receiverClass, @protocol(NativeApiDirectClassBuilderProtocol))) {
+      !class_conformsToProtocol(receiverClass,
+                                @protocol(NativeApiHermesClassBuilderProtocol))) {
     return Nil;
   }
 
   Class superclass = class_getSuperclass(receiverClass);
-  return superclass != Nil ? superclass : fallback;
+  return superclass != Nil ? superclass : defaultSuperclass;
+}
+
+Class dispatchPrototypeClassForEngineDerivedReceiver(id receiver,
+                                                     Class prototypeClass) {
+  if (receiver == nil || prototypeClass == Nil) {
+    return Nil;
+  }
+
+  Class receiverClass = object_getClass(receiver);
+  if (receiverClass == Nil || receiverClass == prototypeClass ||
+      !class_conformsToProtocol(receiverClass,
+                                @protocol(NativeApiHermesClassBuilderProtocol))) {
+    return Nil;
+  }
+
+  for (Class cls = receiverClass; cls != Nil; cls = class_getSuperclass(cls)) {
+    if (cls == prototypeClass) {
+      return prototypeClass;
+    }
+  }
+  return Nil;
 }
 
 std::optional<Function> functionForSelector(Runtime& runtime, const Object& methods,
@@ -291,20 +326,19 @@ std::optional<Function> functionForSelector(Runtime& runtime, const Object& meth
   return value.asObject(runtime).asFunction(runtime);
 }
 
-std::optional<NativeApiDirectType> readExposedType(Runtime& runtime,
-                                                const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                                                const Object& descriptor,
-                                                const char* propertyName) {
+std::optional<NativeApiHermesType> readExposedType(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
+    const Object& descriptor, const char* propertyName) {
   if (!descriptor.hasProperty(runtime, propertyName)) {
     return std::nullopt;
   }
   return interopTypeFromValue(runtime, bridge, descriptor.getProperty(runtime, propertyName));
 }
 
-std::optional<NativeApiDirectSignature> exposedMethodSignature(
-    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
+std::optional<NativeApiHermesSignature> exposedMethodSignature(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
     const std::string& selectorName, const Object& descriptor) {
-  NativeApiDirectSignature signature;
+  NativeApiHermesSignature signature;
   if (auto returnType = readExposedType(runtime, bridge, descriptor, "returns")) {
     signature.returnType = *returnType;
   } else {
@@ -339,11 +373,12 @@ std::optional<NativeApiDirectSignature> exposedMethodSignature(
                                  "exposedMethods selector argument count does not match params.");
   }
 
-  prepareDirectMethodSignature(&signature);
+  prepareEngineMethodSignature(&signature);
   return signature;
 }
 
-std::optional<NativeApiDirectSignature> runtimeProtocolMethodSignature(const char* types) {
+std::optional<NativeApiHermesSignature> runtimeProtocolMethodSignature(
+    const char* types) {
   if (types == nullptr) {
     return std::nullopt;
   }
@@ -353,26 +388,28 @@ std::optional<NativeApiDirectSignature> runtimeProtocolMethodSignature(const cha
     return std::nullopt;
   }
 
-  NativeApiDirectSignature signature;
+  NativeApiHermesSignature signature;
   signature.implicitArgumentCount = 2;
-  signature.returnType = parseObjCEncodedDirectType(methodSignature.methodReturnType);
+  signature.returnType =
+      parseObjCEncodedEngineType(methodSignature.methodReturnType);
   for (NSUInteger i = 2; i < methodSignature.numberOfArguments; i++) {
     signature.argumentTypes.push_back(
-        parseObjCEncodedDirectType([methodSignature getArgumentTypeAtIndex:i]));
+        parseObjCEncodedEngineType([methodSignature getArgumentTypeAtIndex:i]));
   }
-  if (unsupportedDirectType(signature.returnType)) {
+  if (unsupportedEngineType(signature.returnType)) {
     return std::nullopt;
   }
   for (const auto& argumentType : signature.argumentTypes) {
-    if (unsupportedDirectType(argumentType)) {
+    if (unsupportedEngineType(argumentType)) {
       return std::nullopt;
     }
   }
   return signature;
 }
 
-std::optional<NativeApiSymbol> protocolSymbolFromDirectValue(
-    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge, const Value& value) {
+std::optional<NativeApiSymbol> protocolSymbolFromEngineValue(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
+    const Value& value) {
   if (value.isString()) {
     std::string name = value.asString(runtime).utf8(runtime);
     if (const NativeApiSymbol* symbol = bridge->findProtocol(name)) {
@@ -410,23 +447,24 @@ std::optional<NativeApiSymbol> protocolSymbolFromDirectValue(
   return std::nullopt;
 }
 
-void addDirectExposedMethod(Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
+void addEngineExposedMethod(Runtime& runtime,
+                         const std::shared_ptr<NativeApiHermesBridge>& bridge,
                          Class nativeClass, const std::string& selectorName,
-                         NativeApiDirectSignature signature, Function function) {
+                         NativeApiHermesSignature signature, Function function) {
   if (selectorName.empty()) {
     return;
   }
-  auto callback = createDirectMethodCallback(runtime, bridge, selectorName, std::move(signature),
-                                          std::move(function));
-  std::string encoding = objcMethodSignatureForDirectSignature(callback->signature());
+  auto callback = createEngineMethodCallback(runtime, bridge, selectorName,
+                                          std::move(signature), std::move(function));
+  std::string encoding = objcMethodSignatureForEngineSignature(callback->signature());
   class_replaceMethod(nativeClass, sel_registerName(selectorName.c_str()),
                       reinterpret_cast<IMP>(callback->functionPointer()), encoding.c_str());
 }
 
-bool addRuntimeProtocolOverrideForName(Runtime& runtime,
-                                       const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                                       Class nativeClass, const std::vector<Protocol*>& protocols,
-                                       const std::string& propertyName, Function function) {
+bool addRuntimeProtocolOverrideForName(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
+    Class nativeClass, const std::vector<Protocol*>& protocols,
+    const std::string& propertyName, Function function) {
   std::unordered_set<Protocol*> visited;
   std::function<bool(Protocol*)> visit = [&](Protocol* protocol) -> bool {
     if (protocol == nullptr || !visited.insert(protocol).second) {
@@ -459,8 +497,8 @@ bool addRuntimeProtocolOverrideForName(Runtime& runtime,
         }
         auto signature = runtimeProtocolMethodSignature(descriptions[i].types);
         if (signature) {
-          addDirectExposedMethod(runtime, bridge, nativeClass, selectorName, std::move(*signature),
-                              std::move(function));
+          addEngineExposedMethod(runtime, bridge, nativeClass, selectorName,
+                              std::move(*signature), std::move(function));
           free(descriptions);
           return true;
         }
@@ -488,18 +526,21 @@ Object getOwnPropertyDescriptor(Runtime& runtime, const Object& object, const st
   return descriptorValue.isObject() ? descriptorValue.asObject(runtime) : Object(runtime);
 }
 
-Value extendNativeApiDirectClass(Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                              const Value* args, size_t count) {
+Value extendNativeApiHermesClass(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
+    const Value* args, size_t count) {
   if (count < 2 || !args[0].isObject() || !args[1].isObject()) {
     throw JSError(runtime, "extendClass expects a native class and method object.");
   }
 
-  Class baseClass = classFromDirectValue(runtime, args[0]);
+  Class baseClass = classFromEngineValue(runtime, args[0]);
   if (baseClass == Nil) {
     throw JSError(runtime, "extendClass can only extend native class constructors.");
   }
-  if (class_conformsToProtocol(baseClass, @protocol(NativeApiDirectClassBuilderProtocol))) {
-    throw JSError(runtime, "Cannot extend an already extended class.");
+  if (class_conformsToProtocol(baseClass,
+                               @protocol(NativeApiHermesClassBuilderProtocol))) {
+    throw JSError(runtime,
+                                 "Cannot extend an already extended class.");
   }
 
   Object methods = args[1].asObject(runtime);
@@ -511,15 +552,15 @@ Value extendNativeApiDirectClass(Runtime& runtime, const std::shared_ptr<NativeA
                     std::to_string(rand());
   }
 
-  std::string className = nextAvailableDirectClassName(requestedName);
+  std::string className = nextAvailableEngineClassName(requestedName);
   Class nativeClass = objc_allocateClassPair(baseClass, className.c_str(), 0);
   if (nativeClass == Nil) {
     throw JSError(runtime, "Failed to allocate Objective-C class.");
   }
 
-  markNativeApiDirectExtendedClass(nativeClass);
-  class_addProtocol(nativeClass, @protocol(NativeApiDirectClassBuilderProtocol));
-  rememberNativeApiDirectClassBuilder(runtime, bridge, nativeClass);
+  markNativeApiHermesExtendedClass(nativeClass);
+  class_addProtocol(nativeClass, @protocol(NativeApiHermesClassBuilderProtocol));
+  rememberNativeApiHermesClassBuilder(runtime, bridge, nativeClass);
 
   NativeApiSymbol baseSymbol = runtimeSymbolForClass(bridge, baseClass);
   std::vector<NativeApiMember> extensionMembers = bridge->membersForClass(baseSymbol);
@@ -529,9 +570,9 @@ Value extendNativeApiDirectClass(Runtime& runtime, const std::shared_ptr<NativeA
     Array protocols = protocolsValue.asObject(runtime).getArray(runtime);
     for (size_t i = 0; i < protocols.size(runtime); i++) {
       Value protocolValue = protocols.getValueAtIndex(runtime, i);
-      Protocol* protocol = protocolFromDirectValue(runtime, protocolValue);
+      Protocol* protocol = protocolFromEngineValue(runtime, protocolValue);
       std::optional<NativeApiSymbol> protocolSymbol =
-          protocolSymbolFromDirectValue(runtime, bridge, protocolValue);
+          protocolSymbolFromEngineValue(runtime, bridge, protocolValue);
       if (protocol != nullptr) {
         optionProtocols.push_back(protocol);
         class_addProtocol(nativeClass, protocol);
@@ -569,35 +610,39 @@ Value extendNativeApiDirectClass(Runtime& runtime, const std::shared_ptr<NativeA
             member.signatureOffset == 0) {
           continue;
         }
-        addDirectOverrideMethod(runtime, bridge, nativeClass, baseClass, member.selectorName,
-                             member.signatureOffset,
-                             (member.flags & metagen::mdMemberReturnOwned) != 0,
-                             value.asObject(runtime).asFunction(runtime));
+        addEngineOverrideMethod(
+            runtime, bridge, nativeClass, baseClass, member.selectorName,
+            member.signatureOffset,
+            (member.flags & metagen::mdMemberReturnOwned) != 0,
+            value.asObject(runtime).asFunction(runtime));
         addedOverride = true;
       }
-      if (!addedOverride) {
-        bool addedRuntimeProtocolOverride = addRuntimeProtocolOverrideForName(
-            runtime, bridge, nativeClass, optionProtocols, propertyName,
-            value.asObject(runtime).asFunction(runtime));
-        if (!addedRuntimeProtocolOverride) {
-          if (auto known = knownNativeApiDirectExposedMethod(propertyName)) {
-            addDirectExposedMethod(runtime, bridge, nativeClass, known->selectorName,
-                                std::move(known->signature),
-                                value.asObject(runtime).asFunction(runtime));
-          }
-        }
-      }
-    }
+	      if (!addedOverride) {
+	        bool addedRuntimeProtocolOverride = addRuntimeProtocolOverrideForName(
+	            runtime, bridge, nativeClass, optionProtocols, propertyName,
+	            value.asObject(runtime).asFunction(runtime));
+	        if (!addedRuntimeProtocolOverride) {
+	          if (auto known = knownNativeApiHermesExposedMethod(propertyName)) {
+	            addEngineExposedMethod(runtime, bridge, nativeClass,
+	                                known->selectorName,
+	                                std::move(known->signature),
+	                                value.asObject(runtime).asFunction(runtime));
+	          }
+	        }
+	      }
+	    }
 
-    const NativeApiMember* propertyMember = propertyOverrideForName(members, propertyName);
+    const NativeApiMember* propertyMember =
+        propertyOverrideForName(members, propertyName);
 
     Value getter = descriptor.getProperty(runtime, "get");
     if (propertyMember != nullptr && getter.isObject() &&
         getter.asObject(runtime).isFunction(runtime)) {
-      addDirectOverrideMethod(runtime, bridge, nativeClass, baseClass, propertyMember->selectorName,
-                           propertyMember->signatureOffset,
-                           (propertyMember->flags & metagen::mdMemberReturnOwned) != 0,
-                           getter.asObject(runtime).asFunction(runtime));
+      addEngineOverrideMethod(
+          runtime, bridge, nativeClass, baseClass,
+          propertyMember->selectorName, propertyMember->signatureOffset,
+          (propertyMember->flags & metagen::mdMemberReturnOwned) != 0,
+          getter.asObject(runtime).asFunction(runtime));
     } else if (propertyMember == nullptr && getter.isObject() &&
                getter.asObject(runtime).isFunction(runtime)) {
       auto overrides = methodOverridesForName(members, propertyName);
@@ -605,10 +650,11 @@ Value extendNativeApiDirectClass(Runtime& runtime, const std::shared_ptr<NativeA
         if (selectorArgumentCount(member.selectorName) != 0) {
           continue;
         }
-        addDirectOverrideMethod(runtime, bridge, nativeClass, baseClass, member.selectorName,
-                             member.signatureOffset,
-                             (member.flags & metagen::mdMemberReturnOwned) != 0,
-                             getter.asObject(runtime).asFunction(runtime));
+        addEngineOverrideMethod(
+            runtime, bridge, nativeClass, baseClass, member.selectorName,
+            member.signatureOffset,
+            (member.flags & metagen::mdMemberReturnOwned) != 0,
+            getter.asObject(runtime).asFunction(runtime));
       }
     }
 
@@ -616,7 +662,7 @@ Value extendNativeApiDirectClass(Runtime& runtime, const std::shared_ptr<NativeA
     if (propertyMember != nullptr && setter.isObject() &&
         setter.asObject(runtime).isFunction(runtime) &&
         !propertyMember->setterSelectorName.empty()) {
-      addDirectOverrideMethod(runtime, bridge, nativeClass, baseClass,
+      addEngineOverrideMethod(runtime, bridge, nativeClass, baseClass,
                            propertyMember->setterSelectorName,
                            propertyMember->setterSignatureOffset, false,
                            setter.asObject(runtime).asFunction(runtime));
@@ -644,23 +690,25 @@ Value extendNativeApiDirectClass(Runtime& runtime, const std::shared_ptr<NativeA
       if (!function) {
         continue;
       }
-      auto signature =
-          exposedMethodSignature(runtime, bridge, selectorName, descriptorValue.asObject(runtime));
-      if (signature) {
-        rememberNativeApiDirectKnownExposedMethod(selectorName, *signature);
-        addDirectExposedMethod(runtime, bridge, nativeClass, selectorName, std::move(*signature),
-                            std::move(*function));
-      }
+	      auto signature = exposedMethodSignature(
+	          runtime, bridge, selectorName, descriptorValue.asObject(runtime));
+	      if (signature) {
+	        rememberNativeApiHermesKnownExposedMethod(selectorName, *signature);
+	        addEngineExposedMethod(runtime, bridge, nativeClass, selectorName,
+	                            std::move(*signature), std::move(*function));
+	      }
     }
   }
 
   Value hasIteratorValue = getObjectPropertyOrUndefined(runtime, options, "__hasIterator");
   if (hasIteratorValue.isBool() && hasIteratorValue.getBool()) {
     class_addProtocol(nativeClass, @protocol(NSFastEnumeration));
-    if (const char* encoding = nativeApiDirectFastEnumerationEncoding()) {
-      class_replaceMethod(nativeClass, @selector(countByEnumeratingWithState:objects:count:),
-                          reinterpret_cast<IMP>(nativeApiDirectSymbolIteratorCountByEnumerating),
-                          encoding);
+    if (const char* encoding = nativeApiEngineFastEnumerationEncoding()) {
+      class_replaceMethod(
+          nativeClass,
+          @selector(countByEnumeratingWithState:objects:count:),
+          reinterpret_cast<IMP>(nativeApiEngineSymbolIteratorCountByEnumerating),
+          encoding);
     }
   }
 
@@ -673,15 +721,16 @@ Value extendNativeApiDirectClass(Runtime& runtime, const std::shared_ptr<NativeA
   return makeNativeClassValue(runtime, bridge, std::move(newSymbol));
 }
 
-Value invokeNativeApiDirectBaseMethod(Runtime& runtime,
-                                   const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                                   const Value* args, size_t count) {
-  if (count < 3 || !args[0].isObject() || !args[1].isObject() || !args[2].isString()) {
-    throw JSError(runtime,
-                                 "__invokeBase expects base class, receiver, and member name.");
+Value invokeNativeApiHermesBaseMethod(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
+    const Value* args, size_t count) {
+  if (count < 3 || !args[0].isObject() || !args[1].isObject() ||
+      !args[2].isString()) {
+    throw JSError(
+        runtime, "__invokeBase expects base class, receiver, and member name.");
   }
 
-  Class baseClass = classFromDirectValue(runtime, args[0]);
+  Class baseClass = classFromEngineValue(runtime, args[0]);
   if (baseClass == Nil) {
     throw JSError(runtime, "__invokeBase base class is invalid.");
   }
@@ -695,8 +744,9 @@ Value invokeNativeApiDirectBaseMethod(Runtime& runtime,
   // receiver-consumption bookkeeping (disown + round-trip/expando forget);
   // calling the raw selector path here leaves dangling ownership of the
   // placeholder an init consumes (e.g. UIColor.alloc().initWith...).
-  auto hostObject = receiverObject.getHostObject<NativeApiObjectHostObject>(runtime);
-  id receiver = hostObject->object();
+  auto receiverHostObject =
+      receiverObject.getHostObject<NativeApiObjectHostObject>(runtime);
+  id receiver = receiverHostObject->object();
   std::string memberName = args[2].asString(runtime).utf8(runtime);
   size_t actualArgc = count - 3;
 
@@ -707,18 +757,22 @@ Value invokeNativeApiDirectBaseMethod(Runtime& runtime,
     if (const NativeApiMember* propertyMember =
             selectWritablePropertyMember(members, memberName, false)) {
       if (actualArgc == 0) {
-        Class dispatchClass = dispatchSuperclassForDirectDerivedReceiver(receiver, baseClass);
-        return hostObject->callObjectSelector(runtime, propertyMember->selectorName,
-                                              propertyMember, nullptr, 0, dispatchClass);
+        Class dispatchClass =
+            dispatchSuperclassForEngineDerivedReceiver(receiver, baseClass);
+        return receiverHostObject->callObjectSelector(
+            runtime, propertyMember->selectorName, propertyMember, nullptr, 0,
+            dispatchClass);
       }
       if (actualArgc == 1 && !propertyMember->setterSelectorName.empty() &&
           !propertyMember->readonly) {
-        Class dispatchClass = dispatchSuperclassForDirectDerivedReceiver(receiver, baseClass);
+        Class dispatchClass =
+            dispatchSuperclassForEngineDerivedReceiver(receiver, baseClass);
         NativeApiMember setterMember = *propertyMember;
         setterMember.selectorName = propertyMember->setterSelectorName;
         setterMember.signatureOffset = propertyMember->setterSignatureOffset;
-        return hostObject->callObjectSelector(runtime, setterMember.selectorName, &setterMember,
-                                              args + 3, actualArgc, dispatchClass);
+        return receiverHostObject->callObjectSelector(
+            runtime, setterMember.selectorName, &setterMember, args + 3,
+            actualArgc, dispatchClass);
       }
     }
   }
@@ -727,7 +781,9 @@ Value invokeNativeApiDirectBaseMethod(Runtime& runtime,
                                  "Objective-C base selector is not available: " + memberName);
   }
 
-  Class dispatchClass = dispatchSuperclassForDirectDerivedReceiver(receiver, baseClass);
-  return hostObject->callObjectSelector(runtime, member->selectorName, member, args + 3,
-                                        actualArgc, dispatchClass);
+  Class dispatchClass =
+      dispatchSuperclassForEngineDerivedReceiver(receiver, baseClass);
+  return receiverHostObject->callObjectSelector(runtime, member->selectorName,
+                                                member, args + 3, actualArgc,
+                                                dispatchClass);
 }

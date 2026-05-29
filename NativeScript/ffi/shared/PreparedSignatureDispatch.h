@@ -1,22 +1,10 @@
-#ifndef NATIVESCRIPT_FFI_DIRECT_NATIVE_API_DIRECT_SIGNATURE_DISPATCH_H
-#define NATIVESCRIPT_FFI_DIRECT_NATIVE_API_DIRECT_SIGNATURE_DISPATCH_H
+#ifndef NATIVESCRIPT_FFI_SHARED_PREPARED_SIGNATURE_DISPATCH_H
+#define NATIVESCRIPT_FFI_SHARED_PREPARED_SIGNATURE_DISPATCH_H
 
 #include "SignatureDispatchCore.h"
 
-#ifndef NS_GSD_BACKEND_DIRECT_PREPARED
-#define NS_GSD_BACKEND_DIRECT_PREPARED 0
-#endif
-
-#ifndef NS_GSD_BACKEND_V8
-#define NS_GSD_BACKEND_V8 0
-#endif
-
-#ifndef NS_GSD_BACKEND_JSC
-#define NS_GSD_BACKEND_JSC 0
-#endif
-
-#ifndef NS_GSD_BACKEND_QUICKJS
-#define NS_GSD_BACKEND_QUICKJS 0
+#ifndef NS_GSD_BACKEND_PREPARED
+#define NS_GSD_BACKEND_PREPARED 0
 #endif
 
 #ifndef NS_GSD_BACKEND_HERMES
@@ -27,18 +15,16 @@
 #define NS_GSD_BACKEND_NAPI 0
 #endif
 
-#ifndef NS_GSD_BACKEND_ENGINE_DIRECT
-#define NS_GSD_BACKEND_ENGINE_DIRECT 0
-#endif
-
 #ifndef NS_HAS_GENERATED_SIGNATURE_DISPATCH
 #define NS_HAS_GENERATED_SIGNATURE_DISPATCH 0
 #endif
 
-#if defined(__has_include)
-#if __has_include("GeneratedSignatureDispatch.inc")
-#include "GeneratedSignatureDispatch.inc"
-#endif
+#define NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH \
+  (NS_GSD_BACKEND_HERMES || NS_GSD_BACKEND_NAPI || NS_GSD_BACKEND_PREPARED)
+
+#if NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH && \
+    !NS_HAS_GENERATED_SIGNATURE_DISPATCH
+#error GeneratedSignatureDispatch.inc did not enable this generated signature dispatch backend.
 #endif
 
 #if !NS_HAS_GENERATED_SIGNATURE_DISPATCH
@@ -80,6 +66,15 @@ inline BlockPreparedInvoker lookupBlockPreparedInvoker(uint64_t dispatchId) {
       kGeneratedBlockDispatchEntries, dispatchId);
 }
 
+inline bool isPreparedGeneratedDispatchRequired() {
+#if NS_HAS_GENERATED_SIGNATURE_DISPATCH && \
+    (NS_GSD_BACKEND_PREPARED || NS_GSD_BACKEND_HERMES)
+  return isGeneratedDispatchEnabled();
+#else
+  return false;
+#endif
+}
+
 }  // namespace nativescript
 
-#endif  // NATIVESCRIPT_FFI_DIRECT_NATIVE_API_DIRECT_SIGNATURE_DISPATCH_H
+#endif  // NATIVESCRIPT_FFI_SHARED_PREPARED_SIGNATURE_DISPATCH_H

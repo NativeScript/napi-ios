@@ -8,7 +8,8 @@
 //  - MACOS_TEST_ENGINE selects the runtime engine build to use when runtime
 //    artifacts need rebuilding. Supported: v8, hermes, quickjs, jsc. Defaults to v8.
 //  - MACOS_TEST_FFI_BACKEND selects the FFI backend build to use when runtime
-//    artifacts need rebuilding. Supported: auto, napi, direct. Defaults to auto.
+//    artifacts need rebuilding. Supported: auto, napi, v8, hermes, quickjs, jsc.
+//    Defaults to auto.
 //  - MACOS_TEST_GSD_BACKEND selects generated signature dispatch backend.
 //    Supported: auto, v8, jsc, quickjs, hermes, napi, none. Defaults to auto.
 //  - MACOS_COMMAND_TIMEOUT_MS overrides timeout for build commands (default: 10 minutes).
@@ -109,8 +110,6 @@ const generatedRuntimeBuildOutputs = new Set([
     path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc.stamp"),
     path.join(nativeScriptSourceRoot, "ffi", "hermes", "GeneratedSignatureDispatch.inc"),
     path.join(nativeScriptSourceRoot, "ffi", "hermes", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "direct", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "direct", "GeneratedSignatureDispatch.inc.stamp"),
     path.join(nativeScriptSourceRoot, "ffi", "v8", "GeneratedSignatureDispatch.inc"),
     path.join(nativeScriptSourceRoot, "ffi", "v8", "GeneratedSignatureDispatch.inc.stamp"),
     path.join(nativeScriptSourceRoot, "ffi", "jsc", "GeneratedSignatureDispatch.inc"),
@@ -548,7 +547,7 @@ function ensureMacOSRuntimeArtifactsBuilt() {
         throw new Error(`Unsupported MACOS_TEST_ENGINE: ${requestedEngine}`);
     }
 
-    const supportedFfiBackends = new Set(["auto", "napi", "direct"]);
+    const supportedFfiBackends = new Set(["auto", "napi", "v8", "hermes", "quickjs", "jsc"]);
     if (!supportedFfiBackends.has(requestedFfiBackend)) {
         throw new Error(`Unsupported MACOS_TEST_FFI_BACKEND: ${requestedFfiBackend}`);
     }
@@ -584,7 +583,7 @@ function buildTestRunnerApp() {
     ensureMetadataGeneratorBuilt();
     ensureMacOSRuntimeArtifactsBuilt();
 
-    const nativeFingerprint = `${requestedEngine}:${requestedFfiBackend}:${createBuildFingerprint(macosBuildInputs)}`;
+    const nativeFingerprint = `${requestedEngine}:${requestedFfiBackend}:${requestedGsdBackend}:${createBuildFingerprint(macosBuildInputs)}`;
     const existingBuildState = readBuildState();
     const canReuseBuild = process.env.MACOS_TEST_CLEAN_BUILD !== "1" &&
         fs.existsSync(appPath) &&

@@ -1,8 +1,8 @@
-describe("Native API direct bridge", function () {
+describe("Native API engine bridge", function () {
     function apiOrPending() {
         var api = global.__nativeScriptNativeApi;
         if (!api) {
-            pending("Native API direct bridge is only installed for direct FFI backends.");
+            pending("Native API engine bridge is only installed for engine FFI backends.");
         }
         return api;
     }
@@ -13,7 +13,7 @@ describe("Native API direct bridge", function () {
             return;
         }
 
-        expect(api.runtime).toBe("direct");
+        expect(api.runtime).toBe(api.backend);
         expect(["v8", "jsc", "quickjs"]).toContain(api.backend);
     }
 
@@ -30,7 +30,7 @@ describe("Native API direct bridge", function () {
         expect(api.getClass("NSObject").available).toBe(true);
     });
 
-    it("calls metadata-backed C functions through the direct bridge", function () {
+    it("calls metadata-backed C functions through the engine bridge", function () {
         var api = apiOrPending();
         var fn = api.getFunction("functionWithInt");
 
@@ -39,7 +39,7 @@ describe("Native API direct bridge", function () {
         expect(TNSGetOutput()).toBe("42");
     });
 
-    it("sends Objective-C selectors through the direct bridge", function () {
+    it("sends Objective-C selectors through the engine bridge", function () {
         var api = apiOrPending();
         var primitives = api.getClass("TNSPrimitives").alloc().invoke("init");
 
@@ -47,10 +47,10 @@ describe("Native API direct bridge", function () {
         expect(TNSGetOutput()).toBe("24");
     });
 
-    it("decodes Objective-C runtime struct signatures through the direct bridge", function () {
+    it("decodes Objective-C runtime struct signatures through the engine bridge", function () {
         apiOrPending();
         if (typeof UIView === "undefined" || typeof CGRectMake !== "function") {
-            pending("UIKit CGRect runtime selector fallback is only available on iOS.");
+            pending("UIKit CGRect runtime selector path is only available on iOS.");
             return;
         }
 
@@ -69,7 +69,7 @@ describe("Native API direct bridge", function () {
         expect(bounds.size.height).toBe(4);
     });
 
-    it("decodes metadata-less Objective-C runtime struct signatures through the direct bridge", function () {
+    it("decodes metadata-less Objective-C runtime struct signatures through the engine bridge", function () {
         apiOrPending();
         var provider = TNSRuntimeOnlyStructProviderMake();
         var pair = provider.invoke("runtimeOnlyPair");

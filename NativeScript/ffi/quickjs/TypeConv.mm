@@ -2,9 +2,9 @@ std::string stringPropertyOrEmpty(Runtime& runtime, const Object& object,
                                   const char* name);
 void* pointerFromSymbolLikeObject(Runtime& runtime, const Object& object);
 
-id objectFromDirectValue(Runtime& runtime,
-                      const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                      const Value& value, NativeApiDirectArgumentFrame& frame,
+id objectFromEngineValue(Runtime& runtime,
+                      const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                      const Value& value, NativeApiQuickJSArgumentFrame& frame,
                       bool mutableString) {
   if (value.isNull() || value.isUndefined()) {
     return nil;
@@ -32,7 +32,7 @@ id objectFromDirectValue(Runtime& runtime,
     if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
       return object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     }
-    if (Class cls = nativeClassFromDirectObject(runtime, object)) {
+    if (Class cls = nativeClassFromEngineObject(runtime, object)) {
       return static_cast<id>(cls);
     }
     if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
@@ -80,14 +80,14 @@ id objectFromDirectValue(Runtime& runtime,
                                  .callWithThis(runtime, object, nullptr, 0);
       if (primitiveValue.isString() || primitiveValue.isBool() ||
           primitiveValue.isNumber()) {
-        return objectFromDirectValue(runtime, bridge, primitiveValue, frame,
+        return objectFromEngineValue(runtime, bridge, primitiveValue, frame,
                                   mutableString);
       }
     }
 
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
-    if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
+    if (readEngineBuffer(runtime, object, &bytes, &byteLength)) {
       NSData* data = [NSData dataWithBytes:bytes length:byteLength];
       bridge->rememberRoundTripValue(runtime, data, value);
       return data;
@@ -98,7 +98,7 @@ id objectFromDirectValue(Runtime& runtime,
       NSMutableArray* nativeArray =
           [NSMutableArray arrayWithCapacity:array.size(runtime)];
       for (size_t i = 0; i < array.size(runtime); i++) {
-        id element = objectFromDirectValue(runtime, bridge,
+        id element = objectFromEngineValue(runtime, bridge,
                                         array.getValueAtIndex(runtime, i),
                                         frame, false);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
@@ -114,7 +114,7 @@ id objectFromDirectValue(Runtime& runtime,
       NSMutableArray* nativeArray = [NSMutableArray arrayWithCapacity:length];
       for (size_t i = 0; i < length; i++) {
         std::string key = std::to_string(i);
-        id element = objectFromDirectValue(
+        id element = objectFromEngineValue(
             runtime, bridge, object.getProperty(runtime, key.c_str()), frame,
             false);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
@@ -150,10 +150,10 @@ id objectFromDirectValue(Runtime& runtime,
           if (pair.size(runtime) < 2) {
             continue;
           }
-          id key = objectFromDirectValue(runtime, bridge,
+          id key = objectFromEngineValue(runtime, bridge,
                                       pair.getValueAtIndex(runtime, 0),
                                       frame, false);
-          id nativeValue = objectFromDirectValue(runtime, bridge,
+          id nativeValue = objectFromEngineValue(runtime, bridge,
                                               pair.getValueAtIndex(runtime, 1),
                                               frame, false);
           if (key != nil) {
@@ -179,7 +179,7 @@ id objectFromDirectValue(Runtime& runtime,
         continue;
       }
       id nativeValue =
-          objectFromDirectValue(runtime, bridge, propertyValue, frame, false);
+          objectFromEngineValue(runtime, bridge, propertyValue, frame, false);
       NSString* nativeKey = [NSString stringWithUTF8String:key.c_str()];
       if (nativeKey != nil) {
         [dictionary setObject:nativeValue != nil ? nativeValue : [NSNull null]
@@ -281,8 +281,8 @@ void* pointerFromSymbolLikeObject(Runtime& runtime, const Object& object) {
   return lookupProtocolByNativeName(runtimeName);
 }
 
-void* pointerFromDirectValue(Runtime& runtime, const Value& value,
-                          NativeApiDirectArgumentFrame& frame) {
+void* pointerFromEngineValue(Runtime& runtime, const Value& value,
+                          NativeApiQuickJSArgumentFrame& frame) {
   if (value.isNull() || value.isUndefined()) {
     return nullptr;
   }
@@ -297,7 +297,7 @@ void* pointerFromDirectValue(Runtime& runtime, const Value& value,
     if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
       return object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     }
-    if (Class cls = nativeClassFromDirectObject(runtime, object)) {
+    if (Class cls = nativeClassFromEngineObject(runtime, object)) {
       return cls;
     }
     if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
@@ -324,7 +324,7 @@ void* pointerFromDirectValue(Runtime& runtime, const Value& value,
     }
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
-    if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
+    if (readEngineBuffer(runtime, object, &bytes, &byteLength)) {
       return const_cast<uint8_t*>(bytes);
     }
   }
@@ -357,7 +357,7 @@ bool readPointerLikeValue(Runtime& runtime, const Value& value, void** pointer) 
     *pointer = object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
     return true;
   }
-  if (Class cls = nativeClassFromDirectObject(runtime, object)) {
+  if (Class cls = nativeClassFromEngineObject(runtime, object)) {
     *pointer = cls;
     return true;
   }
@@ -400,18 +400,25 @@ void writeNumericArgument(Runtime& runtime, const Value& value, void* target,
   *static_cast<T*>(target) = static_cast<T>(number);
 }
 
-void convertDirectArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                        const NativeApiDirectType& type,
+void convertEngineArgument(Runtime& runtime,
+                        const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                        const NativeApiQuickJSType& type,
                         const Value& value, void* target,
-                        NativeApiDirectArgumentFrame& frame);
+                        NativeApiQuickJSArgumentFrame& frame);
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                               const NativeApiDirectType& type, void* value);
+                               const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                               const NativeApiQuickJSType& type, void* value);
 
-Class classFromDirectValue(Runtime& runtime, const Value& value);
-Protocol* protocolFromDirectValue(Runtime& runtime, const Value& value);
+Class classFromEngineValue(Runtime& runtime, const Value& value);
+Protocol* protocolFromEngineValue(Runtime& runtime, const Value& value);
+
+bool valueIsNativeObjectHostObject(Runtime& runtime, const Value& value) {
+  if (!value.isObject()) {
+    return false;
+  }
+  return value.asObject(runtime).isHostObject<NativeApiObjectHostObject>(runtime);
+}
 
 std::optional<size_t> parseArrayIndexProperty(const std::string& property) {
   if (property.empty()) {
@@ -431,15 +438,15 @@ std::optional<size_t> parseArrayIndexProperty(const std::string& property) {
   return index;
 }
 
-size_t referenceElementStride(const NativeApiDirectType& type) {
+size_t referenceElementStride(const NativeApiQuickJSType& type) {
   return std::max<size_t>(nativeSizeForType(type), 1);
 }
 
 void convertAggregateArgument(Runtime& runtime,
-                              const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                              const NativeApiDirectType& type,
+                              const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                              const NativeApiQuickJSType& type,
                               const Value& value, void* target,
-                              NativeApiDirectArgumentFrame& frame) {
+                              NativeApiQuickJSArgumentFrame& frame) {
   size_t size = nativeSizeForType(type);
   if (size == 0) {
     return;
@@ -477,7 +484,7 @@ void convertAggregateArgument(Runtime& runtime,
 
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
-    if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
+    if (readEngineBuffer(runtime, object, &bytes, &byteLength)) {
       if (bytes != nullptr) {
         std::memcpy(target, bytes, std::min(byteLength, size));
       }
@@ -500,16 +507,16 @@ void convertAggregateArgument(Runtime& runtime,
     }
     Value fieldValue = object.getProperty(runtime, field.name.c_str());
     void* fieldTarget = static_cast<uint8_t*>(target) + field.offset;
-    convertDirectArgument(runtime, bridge, field.type, fieldValue, fieldTarget,
+    convertEngineArgument(runtime, bridge, field.type, fieldValue, fieldTarget,
                        frame);
   }
 }
 
 void convertIndexedAggregateArgument(Runtime& runtime,
-                                     const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                                     const NativeApiDirectType& type,
+                                     const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                                     const NativeApiQuickJSType& type,
                                      const Value& value, void* target,
-                                     NativeApiDirectArgumentFrame& frame) {
+                                     NativeApiQuickJSArgumentFrame& frame) {
   size_t size = nativeSizeForType(type);
   std::memset(target, 0, size);
   if (value.isNull() || value.isUndefined()) {
@@ -518,7 +525,7 @@ void convertIndexedAggregateArgument(Runtime& runtime,
   if (value.isObject()) {
     const uint8_t* bytes = nullptr;
     size_t byteLength = 0;
-    if (readDirectBuffer(runtime, value.asObject(runtime), &bytes, &byteLength)) {
+    if (readEngineBuffer(runtime, value.asObject(runtime), &bytes, &byteLength)) {
       if (bytes != nullptr) {
         std::memcpy(target, bytes, std::min(byteLength, size));
       }
@@ -537,17 +544,17 @@ void convertIndexedAggregateArgument(Runtime& runtime,
   size_t count = std::min<size_t>(type.arraySize, array.size(runtime));
   for (size_t i = 0; i < count; i++) {
     void* slot = static_cast<uint8_t*>(target) + (i * elementSize);
-    convertDirectArgument(runtime, bridge, *type.elementType,
+    convertEngineArgument(runtime, bridge, *type.elementType,
                        array.getValueAtIndex(runtime, i), slot, frame);
   }
 }
 
-void convertDirectFfiArgument(Runtime& runtime,
-                           const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                           const NativeApiDirectType& type, const Value& value,
-                           void* target, NativeApiDirectArgumentFrame& frame) {
+void convertEngineFfiArgument(Runtime& runtime,
+                           const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                           const NativeApiQuickJSType& type, const Value& value,
+                           void* target, NativeApiQuickJSArgumentFrame& frame) {
   if (type.kind != metagen::mdTypeArray) {
-    convertDirectArgument(runtime, bridge, type, value, target, frame);
+    convertEngineArgument(runtime, bridge, type, value, target, frame);
     return;
   }
 
@@ -558,7 +565,7 @@ void convertDirectFfiArgument(Runtime& runtime,
       if (!readPointerLikeValue(runtime, value, &pointer)) {
         const uint8_t* bytes = nullptr;
         size_t byteLength = 0;
-        if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
+        if (readEngineBuffer(runtime, object, &bytes, &byteLength)) {
           pointer = const_cast<uint8_t*>(bytes);
         }
       }
@@ -576,15 +583,15 @@ void convertDirectFfiArgument(Runtime& runtime,
   *static_cast<void**>(target) = pointer;
 }
 
-void convertDirectArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                        const NativeApiDirectType& type,
+void convertEngineArgument(Runtime& runtime,
+                        const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                        const NativeApiQuickJSType& type,
                         const Value& value, void* target,
-                        NativeApiDirectArgumentFrame& frame) {
-  if (unsupportedDirectType(type)) {
+                        NativeApiQuickJSArgumentFrame& frame) {
+  if (unsupportedEngineType(type)) {
     throw JSError(runtime,
                                  "This native signature is not supported by "
-                                 "the direct engine bridge yet.");
+                                 "the engine bridge yet.");
   }
 
   switch (type.kind) {
@@ -608,7 +615,6 @@ void convertDirectArgument(Runtime& runtime,
       writeNumericArgument<int16_t>(runtime, value, target, "int16");
       break;
     case metagen::mdTypeUShort:
-    case metagen::mdTypeUnichar:
       if (value.isString()) {
         std::string text = value.asString(runtime).utf8(runtime);
         if (text.size() != 1) {
@@ -655,7 +661,7 @@ void convertDirectArgument(Runtime& runtime,
         }
         const uint8_t* bytes = nullptr;
         size_t byteLength = 0;
-        if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
+        if (readEngineBuffer(runtime, object, &bytes, &byteLength)) {
           *static_cast<char**>(target) =
               reinterpret_cast<char*>(const_cast<uint8_t*>(bytes));
           break;
@@ -688,14 +694,17 @@ void convertDirectArgument(Runtime& runtime,
     case metagen::mdTypeInstanceObject:
     case metagen::mdTypeNSStringObject:
     case metagen::mdTypeNSMutableStringObject: {
-      id object = objectFromDirectValue(
+      id object = objectFromEngineValue(
           runtime, bridge, value, frame,
           type.kind == metagen::mdTypeNSMutableStringObject);
+      if (valueIsNativeObjectHostObject(runtime, value)) {
+        frame.retainObject(object);
+      }
       *static_cast<id*>(target) = object;
       break;
     }
     case metagen::mdTypeClass: {
-      *static_cast<Class*>(target) = classFromDirectValue(runtime, value);
+      *static_cast<Class*>(target) = classFromEngineValue(runtime, value);
       break;
     }
     case metagen::mdTypeSelector: {
@@ -735,17 +744,17 @@ void convertDirectArgument(Runtime& runtime,
         }
         const uint8_t* bytes = nullptr;
         size_t byteLength = 0;
-        if (readDirectBuffer(runtime, object, &bytes, &byteLength)) {
+        if (readEngineBuffer(runtime, object, &bytes, &byteLength)) {
           void* pointer = const_cast<uint8_t*>(bytes);
           frame.rememberRoundTripValue(bridge, runtime, pointer, value);
           *static_cast<void**>(target) = pointer;
           break;
         }
       }
-      *static_cast<void**>(target) = pointerFromDirectValue(runtime, value, frame);
+      *static_cast<void**>(target) = pointerFromEngineValue(runtime, value, frame);
       break;
     case metagen::mdTypeOpaquePointer:
-      *static_cast<void**>(target) = pointerFromDirectValue(runtime, value, frame);
+      *static_cast<void**>(target) = pointerFromEngineValue(runtime, value, frame);
       break;
     case metagen::mdTypeBlock:
     case metagen::mdTypeFunctionPointer: {
@@ -762,14 +771,15 @@ void convertDirectArgument(Runtime& runtime,
             }
           }
 
-          auto threadPolicy = readDirectCallbackThreadPolicy(runtime, object);
+          auto threadPolicy = readEngineCallbackThreadPolicy(runtime, object);
           auto callback =
-              createDirectCallback(runtime, bridge, type, object.asFunction(runtime),
+              createEngineCallback(runtime, bridge, type, object.asFunction(runtime),
                                 type.kind == metagen::mdTypeBlock, threadPolicy);
           void* pointer = callback->functionPointer();
           if (type.kind == metagen::mdTypeBlock) {
+            frame.addObject(static_cast<id>(pointer));
             frame.addLifetime(callback);
-            frame.rememberRoundTripValue(bridge, runtime, pointer, value);
+            bridge->rememberRoundTripValue(runtime, pointer, value);
           } else {
             bridge->rememberRoundTripValue(runtime, pointer, value);
           }
@@ -785,7 +795,7 @@ void convertDirectArgument(Runtime& runtime,
           break;
         }
       }
-      *static_cast<void**>(target) = pointerFromDirectValue(runtime, value, frame);
+      *static_cast<void**>(target) = pointerFromEngineValue(runtime, value, frame);
       break;
     }
     case metagen::mdTypeStruct:
@@ -799,17 +809,17 @@ void convertDirectArgument(Runtime& runtime,
                                       frame);
       break;
     default:
-      throw JSError(runtime, "Unsupported Direct argument type.");
+      throw JSError(runtime, "Unsupported Engine argument type.");
   }
 }
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                               const NativeApiDirectType& type, void* value) {
-  if (unsupportedDirectType(type)) {
+                               const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                               const NativeApiQuickJSType& type, void* value) {
+  if (unsupportedEngineType(type)) {
     throw JSError(runtime,
                                  "This native return type is not supported by "
-                                 "the direct engine bridge yet.");
+                                 "the engine bridge yet.");
   }
 
   switch (type.kind) {
@@ -824,30 +834,13 @@ Value convertNativeReturnValue(Runtime& runtime,
       return static_cast<double>(*static_cast<uint8_t*>(value));
     case metagen::mdTypeSShort:
       return static_cast<double>(*static_cast<int16_t*>(value));
-    case metagen::mdTypeUShort:
-      return static_cast<double>(*static_cast<uint16_t*>(value));
-    case metagen::mdTypeUnichar: {
-      const char16_t unit = *static_cast<char16_t*>(value);
-      // UTF-8 encode one UTF-16 code unit (1-3 bytes; unpaired surrogates
-      // fall back to U+FFFD).
-      char buffer[4] = {0};
-      size_t length = 0;
-      if (unit < 0x80) {
-        buffer[length++] = static_cast<char>(unit);
-      } else if (unit < 0x800) {
-        buffer[length++] = static_cast<char>(0xC0 | (unit >> 6));
-        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
-      } else if (unit >= 0xD800 && unit <= 0xDFFF) {
-        buffer[length++] = static_cast<char>(0xEF);
-        buffer[length++] = static_cast<char>(0xBF);
-        buffer[length++] = static_cast<char>(0xBD);
-      } else {
-        buffer[length++] = static_cast<char>(0xE0 | (unit >> 12));
-        buffer[length++] = static_cast<char>(0x80 | ((unit >> 6) & 0x3F));
-        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
+    case metagen::mdTypeUShort: {
+      uint16_t raw = *static_cast<uint16_t*>(value);
+      if (raw >= 32 && raw <= 126) {
+        char buffer[2] = {static_cast<char>(raw), '\0'};
+        return String::createFromUtf8(runtime, buffer);
       }
-      return String::createFromUtf8(
-          runtime, reinterpret_cast<const uint8_t*>(buffer), length);
+      return static_cast<double>(raw);
     }
     case metagen::mdTypeSInt:
       return static_cast<double>(*static_cast<int32_t*>(value));
@@ -855,10 +848,10 @@ Value convertNativeReturnValue(Runtime& runtime,
       return static_cast<double>(*static_cast<uint32_t*>(value));
     case metagen::mdTypeSLong:
     case metagen::mdTypeSInt64:
-      return signedInteger64ToDirectValue(runtime, *static_cast<int64_t*>(value));
+      return signedInteger64ToEngineValue(runtime, *static_cast<int64_t*>(value));
     case metagen::mdTypeULong:
     case metagen::mdTypeUInt64:
-      return unsignedInteger64ToDirectValue(runtime,
+      return unsignedInteger64ToEngineValue(runtime,
                                          *static_cast<uint64_t*>(value));
     case metagen::mdTypeFloat:
       return static_cast<double>(*static_cast<float*>(value));
@@ -869,7 +862,7 @@ Value convertNativeReturnValue(Runtime& runtime,
       if (string == nullptr) {
         return Value::null();
       }
-      NativeApiDirectType cStringType =
+      NativeApiQuickJSType cStringType =
           primitiveInteropType(metagen::mdTypeChar);
       return Object::createFromHostObject(
           runtime, std::make_shared<NativeApiReferenceHostObject>(
@@ -1025,15 +1018,15 @@ Value convertNativeReturnValue(Runtime& runtime,
       return result;
     }
     default:
-      throw JSError(runtime, "Unsupported Direct return type.");
+      throw JSError(runtime, "Unsupported Engine return type.");
   }
 }
 
 void NativeApiReferenceHostObject::ensureStorage(
-    Runtime& runtime, NativeApiDirectType type, NativeApiDirectArgumentFrame& frame,
+    Runtime& runtime, NativeApiQuickJSType type, NativeApiQuickJSArgumentFrame& frame,
     size_t elements) {
   size_t elementCount = std::max<size_t>(elements, 1);
-  NativeApiDirectType storageType = std::move(type);
+  NativeApiQuickJSType storageType = std::move(type);
   size_t stride = std::max<size_t>(nativeSizeForType(storageType), 1);
   size_t required = std::max<size_t>(stride * elementCount, sizeof(void*));
   type_ = std::move(storageType);
@@ -1055,7 +1048,7 @@ void NativeApiReferenceHostObject::ensureStorage(
 
   if (data_ != nullptr && pendingValue_ != nullptr) {
     Value pending(runtime, *pendingValue_);
-    convertDirectArgument(runtime, bridge_, type_, pending, data_, frame);
+    convertEngineArgument(runtime, bridge_, type_, pending, data_, frame);
     pendingValue_.reset();
   }
 }
@@ -1109,7 +1102,7 @@ void NativeApiReferenceHostObject::set(Runtime& runtime,
     return;
   }
   size_t slotIndex = index.value_or(0);
-  NativeApiDirectArgumentFrame frame(1);
+  NativeApiQuickJSArgumentFrame frame(1);
   if (data_ == nullptr) {
     if (slotIndex == 0) {
       pendingValue_ = std::make_shared<Value>(runtime, value);
@@ -1120,7 +1113,7 @@ void NativeApiReferenceHostObject::set(Runtime& runtime,
   pendingValue_.reset();
   void* slot = static_cast<uint8_t*>(data_) +
                (slotIndex * referenceElementStride(type_));
-  convertDirectArgument(runtime, bridge_, type_, value, slot, frame);
+  convertEngineArgument(runtime, bridge_, type_, value, slot, frame);
 }
 
 Value NativeApiStructObjectHostObject::get(Runtime& runtime,
@@ -1144,7 +1137,7 @@ Value NativeApiStructObjectHostObject::get(Runtime& runtime,
         runtime, PropNameID::forAscii(runtime, "toString"), 0,
         [info](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
           return makeString(runtime,
-                            std::string("[NativeApiDirect ") +
+                            std::string("[NativeApiQuickJS ") +
                                 (info != nullptr && info->isUnion ? "Union " : "Struct ") +
                                 (info != nullptr ? info->name : "") + "]");
         });
@@ -1180,8 +1173,8 @@ void NativeApiStructObjectHostObject::set(Runtime& runtime,
     if (field.name != property) {
       continue;
     }
-    NativeApiDirectArgumentFrame frame(1);
-    convertDirectArgument(runtime, bridge_, field.type, value,
+    NativeApiQuickJSArgumentFrame frame(1);
+    convertEngineArgument(runtime, bridge_, field.type, value,
                        static_cast<uint8_t*>(data_) + field.offset, frame);
     return;
   }
@@ -1204,15 +1197,15 @@ std::vector<PropNameID> NativeApiStructObjectHostObject::getPropertyNames(
   return names;
 }
 
-NativeApiDirectType primitiveInteropType(MDTypeKind kind) {
-  NativeApiDirectType type;
+NativeApiQuickJSType primitiveInteropType(MDTypeKind kind) {
+  NativeApiQuickJSType type;
   type.kind = kind;
-  type.ffiType = ffiTypeForDirectKind(kind);
+  type.ffiType = ffiTypeForEngineKind(kind);
   type.supported = type.ffiType != nullptr;
   return type;
 }
 
-std::optional<NativeApiDirectType> primitiveInteropTypeFromCode(int32_t code) {
+std::optional<NativeApiQuickJSType> primitiveInteropTypeFromCode(int32_t code) {
   MDTypeKind kind = static_cast<MDTypeKind>(code);
   switch (kind) {
     case metagen::mdTypeVoid:
@@ -1222,7 +1215,6 @@ std::optional<NativeApiDirectType> primitiveInteropTypeFromCode(int32_t code) {
     case metagen::mdTypeUInt8:
     case metagen::mdTypeSShort:
     case metagen::mdTypeUShort:
-    case metagen::mdTypeUnichar:
     case metagen::mdTypeSInt:
     case metagen::mdTypeUInt:
     case metagen::mdTypeSLong:
@@ -1246,8 +1238,8 @@ std::optional<NativeApiDirectType> primitiveInteropTypeFromCode(int32_t code) {
   }
 }
 
-std::optional<NativeApiDirectType> interopTypeFromValue(
-    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
+std::optional<NativeApiQuickJSType> interopTypeFromValue(
+    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
     const Value& value) {
   if (value.isNumber()) {
     return primitiveInteropTypeFromCode(static_cast<int32_t>(value.getNumber()));
@@ -1275,7 +1267,7 @@ std::optional<NativeApiDirectType> interopTypeFromValue(
     }
   }
 
-  Class descriptorClass = nativeClassFromDirectObject(runtime, object);
+  Class descriptorClass = nativeClassFromEngineObject(runtime, object);
   if (descriptorClass == Nil &&
       stringPropertyOrEmpty(runtime, object, "kind") == "class") {
     descriptorClass =
@@ -1287,7 +1279,7 @@ std::optional<NativeApiDirectType> interopTypeFromValue(
 
   if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
     auto structObject = object.getHostObject<NativeApiStructObjectHostObject>(runtime);
-    NativeApiDirectType type;
+    NativeApiQuickJSType type;
     type.kind = metagen::mdTypeStruct;
     type.aggregateInfo = structObject->info();
     type.aggregateOffset = type.aggregateInfo != nullptr
@@ -1337,7 +1329,7 @@ std::optional<NativeApiDirectType> interopTypeFromValue(
       bool isUnion = kindName == "union";
       auto info = bridge->aggregateInfoFor(
           static_cast<MDSectionOffset>(offsetValue.getNumber()), isUnion);
-      NativeApiDirectType type;
+      NativeApiQuickJSType type;
       type.kind = metagen::mdTypeStruct;
       type.aggregateInfo = info;
       type.aggregateOffset = info != nullptr ? info->offset : MD_SECTION_OFFSET_NULL;
@@ -1352,7 +1344,7 @@ std::optional<NativeApiDirectType> interopTypeFromValue(
 }
 
 Value makeAggregateConstructor(Runtime& runtime,
-                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                               const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
                                const NativeApiSymbol& symbol) {
   auto info = bridge->aggregateInfoFor(symbol);
   auto constructor = Function::createFromHostFunction(
@@ -1365,7 +1357,7 @@ Value makeAggregateConstructor(Runtime& runtime,
                                            symbol.name);
         }
 
-        NativeApiDirectType type;
+        NativeApiQuickJSType type;
         type.kind = metagen::mdTypeStruct;
         type.aggregateInfo = info;
         type.aggregateOffset = info->offset;
@@ -1385,7 +1377,7 @@ Value makeAggregateConstructor(Runtime& runtime,
 
         std::vector<unsigned char> storage(info->size, 0);
         if (count > 0) {
-          NativeApiDirectArgumentFrame frame(1);
+          NativeApiQuickJSArgumentFrame frame(1);
           convertAggregateArgument(runtime, bridge, type, args[0],
                                    storage.data(), frame);
         }
@@ -1412,7 +1404,7 @@ Value makeAggregateConstructor(Runtime& runtime,
               return false;
             }
 
-            NativeApiDirectType type;
+            NativeApiQuickJSType type;
             type.kind = metagen::mdTypeStruct;
             type.aggregateInfo = info;
             type.aggregateOffset = info->offset;
@@ -1423,10 +1415,10 @@ Value makeAggregateConstructor(Runtime& runtime,
             std::vector<unsigned char> left(info->size, 0);
             std::vector<unsigned char> right(info->size, 0);
             try {
-              NativeApiDirectArgumentFrame leftFrame(1);
+              NativeApiQuickJSArgumentFrame leftFrame(1);
               convertAggregateArgument(runtime, bridge, type, args[0],
                                        left.data(), leftFrame);
-              NativeApiDirectArgumentFrame rightFrame(1);
+              NativeApiQuickJSArgumentFrame rightFrame(1);
               convertAggregateArgument(runtime, bridge, type, args[1],
                                        right.data(), rightFrame);
             } catch (const std::exception&) {
@@ -1446,7 +1438,7 @@ Value makeAggregateConstructor(Runtime& runtime,
 }
 
 size_t sizeofInteropType(Runtime& runtime,
-                         const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                         const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
                          const Value& value) {
   if (auto type = interopTypeFromValue(runtime, bridge, value)) {
     return nativeSizeForType(*type);
@@ -1457,7 +1449,7 @@ size_t sizeofInteropType(Runtime& runtime,
     if (object.isHostObject<NativeApiPointerHostObject>(runtime) ||
         object.isHostObject<NativeApiReferenceHostObject>(runtime) ||
         object.isHostObject<NativeApiObjectHostObject>(runtime) ||
-        nativeClassFromDirectObject(runtime, object) != Nil) {
+        nativeClassFromEngineObject(runtime, object) != Nil) {
       return sizeof(void*);
     }
     void* nativePointer = nullptr;
@@ -1474,7 +1466,7 @@ size_t sizeofInteropType(Runtime& runtime,
 }
 
 Object createPointer(Runtime& runtime,
-                     const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                     const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
                      void* pointer, bool adopted) {
   if (!adopted && bridge != nullptr) {
     Value cached = bridge->findPointerValue(runtime, pointer);
@@ -1532,7 +1524,7 @@ void installInteropHasInstance(Runtime& runtime, Function& constructor,
   }
 }
 
-Class classFromDirectValue(Runtime& runtime, const Value& value) {
+Class classFromEngineValue(Runtime& runtime, const Value& value) {
   if (value.isString()) {
     std::string name = value.asString(runtime).utf8(runtime);
     return objc_lookUpClass(name.c_str());
@@ -1541,7 +1533,7 @@ Class classFromDirectValue(Runtime& runtime, const Value& value) {
     return Nil;
   }
   Object object = value.asObject(runtime);
-  if (Class cls = nativeClassFromDirectObject(runtime, object)) {
+  if (Class cls = nativeClassFromEngineObject(runtime, object)) {
     return cls;
   }
   if (stringPropertyOrEmpty(runtime, object, "kind") == "class") {
@@ -1556,7 +1548,7 @@ Class classFromDirectValue(Runtime& runtime, const Value& value) {
   return Nil;
 }
 
-Protocol* protocolFromDirectValue(Runtime& runtime, const Value& value) {
+Protocol* protocolFromEngineValue(Runtime& runtime, const Value& value) {
   if (value.isString()) {
     std::string name = value.asString(runtime).utf8(runtime);
     Protocol* protocol = objc_getProtocol(name.c_str());
@@ -1592,13 +1584,13 @@ Protocol* protocolFromDirectValue(Runtime& runtime, const Value& value) {
   }
   Value nameValue = object.getProperty(runtime, "name");
   if (nameValue.isString()) {
-    return protocolFromDirectValue(runtime, nameValue);
+    return protocolFromEngineValue(runtime, nameValue);
   }
   return nullptr;
 }
 
 Object createInteropObject(Runtime& runtime,
-                           const std::shared_ptr<NativeApiDirectBridge>& bridge) {
+                           const std::shared_ptr<NativeApiQuickJSBridge>& bridge) {
   Object interop(runtime);
   Object types(runtime);
   auto setType = [&](const char* name, MDTypeKind kind) {
@@ -1636,7 +1628,7 @@ Object createInteropObject(Runtime& runtime,
   setType("float", metagen::mdTypeFloat);
   setType("double", metagen::mdTypeDouble);
   setType("UTF8CString", metagen::mdTypeString);
-  setType("unichar", metagen::mdTypeUnichar);
+  setType("unichar", metagen::mdTypeUShort);
   setType("id", metagen::mdTypeAnyObject);
   setType("class", metagen::mdTypeClass);
   setType("protocol", metagen::mdTypeProtocolObject);
@@ -1787,7 +1779,7 @@ Object createInteropObject(Runtime& runtime,
       runtime, PropNameID::forAscii(runtime, "Reference"), 2,
       [bridge](Runtime& runtime, const Value&, const Value* args,
                size_t count) -> Value {
-            NativeApiDirectType type = primitiveInteropType(metagen::mdTypePointer);
+            NativeApiQuickJSType type = primitiveInteropType(metagen::mdTypePointer);
             bool firstArgumentIsType = false;
             if (count > 1) {
               firstArgumentIsType = true;
@@ -1798,12 +1790,12 @@ Object createInteropObject(Runtime& runtime,
               Value kindValue = object.getProperty(runtime, "kind");
               firstArgumentIsType =
                   typeCodeValue.isNumber() || object.isFunction(runtime) ||
-                  nativeClassFromDirectObject(runtime, object) != Nil ||
+                  nativeClassFromEngineObject(runtime, object) != Nil ||
                   (kindValue.isString() &&
                    (kindValue.asString(runtime).utf8(runtime) == "class" ||
                     kindValue.asString(runtime).utf8(runtime) == "protocol"));
             }
-            std::optional<NativeApiDirectType> requestedType =
+            std::optional<NativeApiQuickJSType> requestedType =
                 firstArgumentIsType
                     ? interopTypeFromValue(runtime, bridge, args[0])
                     : std::nullopt;
@@ -1870,8 +1862,8 @@ Object createInteropObject(Runtime& runtime,
                 }
                 ownsData = true;
                 if (count > 1) {
-                  NativeApiDirectArgumentFrame frame(1);
-                  convertDirectArgument(runtime, bridge, type, valueToStore, data,
+                  NativeApiQuickJSArgumentFrame frame(1);
+                  convertEngineArgument(runtime, bridge, type, valueToStore, data,
                                      frame);
                 }
               }
@@ -2005,7 +1997,7 @@ Object createInteropObject(Runtime& runtime,
                   object.getHostObject<NativeApiObjectHostObject>(runtime)
                       ->object());
             }
-            if (Class cls = nativeClassFromDirectObject(runtime, object)) {
+            if (Class cls = nativeClassFromEngineObject(runtime, object)) {
               return createPointer(runtime, bridge, cls);
             }
             if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
@@ -2047,9 +2039,9 @@ Object createInteropObject(Runtime& runtime,
             if (count < 1 || args[0].isNull() || args[0].isUndefined()) {
               return Value::null();
             }
-            NativeApiDirectArgumentFrame frame(1);
+            NativeApiQuickJSArgumentFrame frame(1);
             const char* data =
-                static_cast<const char*>(pointerFromDirectValue(runtime, args[0], frame));
+                static_cast<const char*>(pointerFromEngineValue(runtime, args[0], frame));
             if (data == nullptr) {
               return Value::null();
             }
@@ -2098,7 +2090,7 @@ Object createInteropObject(Runtime& runtime,
           [](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
             throw JSError(
                 runtime,
-                "interop.addMethod requires the Direct class builder layer.");
+                "interop.addMethod requires the Engine class builder layer.");
           }));
   interop.setProperty(
       runtime, "addProtocol",
@@ -2110,8 +2102,8 @@ Object createInteropObject(Runtime& runtime,
               throw JSError(
                   runtime, "interop.addProtocol expects class and protocol.");
             }
-            Class cls = classFromDirectValue(runtime, args[0]);
-            Protocol* protocol = protocolFromDirectValue(runtime, args[1]);
+            Class cls = classFromEngineValue(runtime, args[0]);
+            Protocol* protocol = protocolFromEngineValue(runtime, args[1]);
             if (cls == Nil || protocol == nullptr) {
               return false;
             }

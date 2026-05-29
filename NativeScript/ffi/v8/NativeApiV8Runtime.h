@@ -36,7 +36,7 @@
 #include "ffi.h"
 #include "v8.h"
 
-@protocol NativeApiDirectClassBuilderProtocol
+@protocol NativeApiV8ClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE
@@ -44,7 +44,7 @@ extern const unsigned char embedded_metadata[EMBED_METADATA_SIZE];
 #endif
 
 namespace nativescript {
-namespace direct {
+namespace engine {
 
 class Runtime;
 class Value;
@@ -105,7 +105,7 @@ class HostObject {
 
 using HostFunctionType = std::function<Value(Runtime&, const Value&, const Value*, size_t)>;
 
-namespace v8direct {
+namespace v8engine {
 
 struct RuntimeState {
   explicit RuntimeState(v8::Isolate* isolate, v8::Local<v8::Context> context) : isolate(isolate) {
@@ -129,6 +129,7 @@ struct ValueStorage {
     Bool,
     Number,
     V8,
+    V8Borrowed,
   };
 
   explicit ValueStorage(Kind kind) : kind(kind) {}
@@ -139,6 +140,7 @@ struct ValueStorage {
   bool boolValue = false;
   double numberValue = 0;
   v8::Global<v8::Value> value;
+  v8::Local<v8::Value> borrowedValue;
 };
 
 template <typename T>
@@ -204,25 +206,25 @@ inline std::string currentExceptionMessage(v8::Isolate* isolate, v8::TryCatch& t
   if (tryCatch.HasCaught()) {
     return toUtf8(isolate, tryCatch.Exception());
   }
-  return "NativeScript direct V8 operation failed.";
+  return "NativeScript V8 engine operation failed.";
 }
 
 inline void throwV8Exception(v8::Isolate* isolate, const std::exception& exception) {
   isolate->ThrowException(v8::Exception::Error(makeV8String(isolate, exception.what())));
 }
 
-}  // namespace v8direct
+}  // namespace v8engine
 
 class Runtime {
  public:
   Runtime(v8::Isolate* isolate, v8::Local<v8::Context> context)
-      : state_(std::make_shared<v8direct::RuntimeState>(isolate, context)) {}
+      : state_(std::make_shared<v8engine::RuntimeState>(isolate, context)) {}
 
-  explicit Runtime(std::shared_ptr<v8direct::RuntimeState> state) : state_(std::move(state)) {}
+  explicit Runtime(std::shared_ptr<v8engine::RuntimeState> state) : state_(std::move(state)) {}
 
   v8::Isolate* isolate() const { return state_->isolate; }
   v8::Local<v8::Context> context() const { return state_->localContext(); }
-  std::shared_ptr<v8direct::RuntimeState> state() const { return state_; }
+  std::shared_ptr<v8engine::RuntimeState> state() const { return state_; }
 
   Object global();
 
@@ -231,7 +233,7 @@ class Runtime {
   void drainMicrotasks() { isolate()->PerformMicrotaskCheckpoint(); }
 
  private:
-  std::shared_ptr<v8direct::RuntimeState> state_;
+  std::shared_ptr<v8engine::RuntimeState> state_;
 };
 
 class String {
@@ -241,11 +243,11 @@ class String {
 
   static String createFromUtf8(Runtime& runtime, const char* value) {
     return String(runtime,
-                  v8direct::makeV8String(runtime.isolate(), value != nullptr ? value : ""));
+                  v8engine::makeV8String(runtime.isolate(), value != nullptr ? value : ""));
   }
 
   static String createFromUtf8(Runtime& runtime, const std::string& value) {
-    return String(runtime, v8direct::makeV8String(runtime.isolate(), value));
+    return String(runtime, v8engine::makeV8String(runtime.isolate(), value));
   }
 
   static String createFromUtf8(Runtime& runtime, const uint8_t* value, size_t length) {
@@ -258,7 +260,7 @@ class String {
   }
 
   std::string utf8(Runtime& runtime) const {
-    return v8direct::toUtf8(runtime.isolate(), local(runtime));
+    return v8engine::toUtf8(runtime.isolate(), local(runtime));
   }
 
   v8::Local<v8::String> local(Runtime& runtime) const {
@@ -269,29 +271,37 @@ class String {
 
  private:
   friend class Value;
-  std::shared_ptr<v8direct::ValueStorage> storage_;
+  std::shared_ptr<v8engine::ValueStorage> storage_;
 };
 
 class Value {
  public:
   Value()
       : storage_(
-            std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::Undefined)) {}
+            std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::Undefined)) {}
 
   Value(bool value)
-      : storage_(std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::Bool)) {
+      : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::Bool)) {
     storage_->boolValue = value;
   }
 
   Value(double value)
-      : storage_(std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::Number)) {
+      : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::Number)) {
     storage_->numberValue = value;
   }
 
   Value(int value) : Value(static_cast<double>(value)) {}
   Value(uint32_t value) : Value(static_cast<double>(value)) {}
 
-  Value(Runtime& runtime, const Value& value) : storage_(value.storage_) {}
+  Value(Runtime& runtime, const Value& value) {
+    if (value.storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+      storage_ =
+          std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8);
+      storage_->value.Reset(runtime.isolate(), value.storage_->borrowedValue);
+      return;
+    }
+    storage_ = value.storage_;
+  }
   Value(Runtime& runtime, Value&& value) : storage_(std::move(value.storage_)) {}
   Value(Runtime& runtime, const String& value) : storage_(value.storage_) {}
   Value(Runtime& runtime, const Object& object);
@@ -304,7 +314,7 @@ class Value {
 
   static Value null() {
     Value value;
-    value.storage_ = std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::Null);
+    value.storage_ = std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::Null);
     return value;
   }
 
@@ -327,22 +337,31 @@ class Value {
   v8::Local<v8::Value> local(Runtime& runtime) const {
     v8::Isolate* isolate = runtime.isolate();
     switch (storage_->kind) {
-      case v8direct::ValueStorage::Kind::Undefined:
+      case v8engine::ValueStorage::Kind::Undefined:
         return v8::Undefined(isolate);
-      case v8direct::ValueStorage::Kind::Null:
+      case v8engine::ValueStorage::Kind::Null:
         return v8::Null(isolate);
-      case v8direct::ValueStorage::Kind::Bool:
+      case v8engine::ValueStorage::Kind::Bool:
         return v8::Boolean::New(isolate, storage_->boolValue);
-      case v8direct::ValueStorage::Kind::Number:
+      case v8engine::ValueStorage::Kind::Number:
         return v8::Number::New(isolate, storage_->numberValue);
-      case v8direct::ValueStorage::Kind::V8:
+      case v8engine::ValueStorage::Kind::V8:
         return storage_->value.Get(isolate);
+      case v8engine::ValueStorage::Kind::V8Borrowed:
+        return storage_->borrowedValue;
     }
   }
 
   Value(Runtime& runtime, v8::Local<v8::Value> value)
-      : storage_(std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::V8)) {
+      : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
     storage_->value.Reset(runtime.isolate(), value);
+  }
+
+  static Value borrowed(Runtime&, v8::Local<v8::Value> value) {
+    Value result;
+    result.storage_->kind = v8engine::ValueStorage::Kind::V8Borrowed;
+    result.storage_->borrowedValue = value;
+    return result;
   }
 
  private:
@@ -354,18 +373,18 @@ class Value {
   friend class Function;
   friend class Array;
 
-  std::shared_ptr<v8direct::ValueStorage> storage_;
+  std::shared_ptr<v8engine::ValueStorage> storage_;
 };
 
 class Object {
  public:
   Object() = default;
   explicit Object(Runtime& runtime)
-      : storage_(std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::V8)) {
+      : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
     storage_->value.Reset(runtime.isolate(), v8::Object::New(runtime.isolate()));
   }
 
-  static Object fromValueStorage(std::shared_ptr<v8direct::ValueStorage> storage) {
+  static Object fromValueStorage(std::shared_ptr<v8engine::ValueStorage> storage) {
     Object object;
     object.storage_ = std::move(storage);
     return object;
@@ -375,12 +394,12 @@ class Object {
   static Object createFromHostObject(Runtime& runtime, std::shared_ptr<T> host) {
     auto baseHost = std::static_pointer_cast<HostObject>(std::move(host));
     return createFromHostObjectWithToken(runtime, std::move(baseHost),
-                                         v8direct::hostObjectTypeToken<T>());
+                                         v8engine::hostObjectTypeToken<T>());
   }
 
   Value getProperty(Runtime& runtime, const char* name) const {
     return getProperty(runtime,
-                       v8direct::makeV8String(runtime.isolate(), name != nullptr ? name : ""));
+                       v8engine::makeV8String(runtime.isolate(), name != nullptr ? name : ""));
   }
 
   Value getProperty(Runtime& runtime, const std::string& name) const {
@@ -395,7 +414,7 @@ class Object {
     v8::TryCatch tryCatch(runtime.isolate());
     v8::Local<v8::Value> result;
     if (!local(runtime)->Get(runtime.context(), key).ToLocal(&result)) {
-      throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+      throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
     }
     return Value(runtime, result);
   }
@@ -407,7 +426,7 @@ class Object {
   Function getPropertyAsFunction(Runtime& runtime, const char* name) const;
 
   void setProperty(Runtime& runtime, const char* name, const Value& value) {
-    setProperty(runtime, v8direct::makeV8String(runtime.isolate(), name != nullptr ? name : ""),
+    setProperty(runtime, v8engine::makeV8String(runtime.isolate(), name != nullptr ? name : ""),
                 value);
   }
 
@@ -440,7 +459,7 @@ class Object {
   void setProperty(Runtime& runtime, v8::Local<v8::Value> key, const Value& value) {
     v8::TryCatch tryCatch(runtime.isolate());
     if (!local(runtime)->Set(runtime.context(), key, value.local(runtime)).FromMaybe(false)) {
-      throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+      throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
     }
   }
 
@@ -448,7 +467,7 @@ class Object {
     v8::TryCatch tryCatch(runtime.isolate());
     return local(runtime)
         ->Has(runtime.context(),
-              v8direct::makeV8String(runtime.isolate(), name != nullptr ? name : ""))
+              v8engine::makeV8String(runtime.isolate(), name != nullptr ? name : ""))
         .FromMaybe(false);
   }
 
@@ -464,19 +483,22 @@ class Object {
   template <typename T>
   bool isHostObject(Runtime& runtime) const {
     auto holder = hostObjectHolder(runtime);
-    return holder != nullptr && holder->typeToken == v8direct::hostObjectTypeToken<T>();
+    return holder != nullptr && holder->typeToken == v8engine::hostObjectTypeToken<T>();
   }
 
   template <typename T>
   std::shared_ptr<T> getHostObject(Runtime& runtime) const {
     auto holder = hostObjectHolder(runtime);
-    if (holder == nullptr || holder->typeToken != v8direct::hostObjectTypeToken<T>()) {
+    if (holder == nullptr || holder->typeToken != v8engine::hostObjectTypeToken<T>()) {
       return nullptr;
     }
     return std::static_pointer_cast<T>(holder->hostObject);
   }
 
   v8::Local<v8::Object> local(Runtime& runtime) const {
+    if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+      return storage_->borrowedValue.As<v8::Object>();
+    }
     return storage_->value.Get(runtime.isolate()).As<v8::Object>();
   }
 
@@ -493,20 +515,20 @@ class Object {
   friend class Array;
   friend class ArrayBuffer;
 
-  explicit Object(std::shared_ptr<v8direct::ValueStorage> storage) : storage_(std::move(storage)) {}
+  explicit Object(std::shared_ptr<v8engine::ValueStorage> storage) : storage_(std::move(storage)) {}
 
   static Object createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
                                               const void* typeToken);
 
-  v8direct::HostObjectHolder* hostObjectHolder(Runtime& runtime) const {
+  v8engine::HostObjectHolder* hostObjectHolder(Runtime& runtime) const {
     v8::Local<v8::Object> object = local(runtime);
     if (object->InternalFieldCount() < 1) {
       return nullptr;
     }
-    return static_cast<v8direct::HostObjectHolder*>(object->GetAlignedPointerFromInternalField(0));
+    return static_cast<v8engine::HostObjectHolder*>(object->GetAlignedPointerFromInternalField(0));
   }
 
-  std::shared_ptr<v8direct::ValueStorage> storage_;
+  std::shared_ptr<v8engine::ValueStorage> storage_;
 };
 
 class Function : public Object {
@@ -530,7 +552,7 @@ class Function : public Object {
              ->Call(runtime.context(), runtime.context()->Global(), static_cast<int>(argv.size()),
                     argv.data())
              .ToLocal(&result)) {
-      throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+      throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
     }
     return Value(runtime, result);
   }
@@ -568,7 +590,7 @@ class Function : public Object {
              ->Call(runtime.context(), thisObject.local(runtime), static_cast<int>(argv.size()),
                     argv.data())
              .ToLocal(&result)) {
-      throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+      throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
     }
     return Value(runtime, result);
   }
@@ -585,7 +607,7 @@ class Function : public Object {
              .As<v8::Function>()
              ->NewInstance(runtime.context(), static_cast<int>(argv.size()), argv.data())
              .ToLocal(&result)) {
-      throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+      throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
     }
     return Value(runtime, result);
   }
@@ -615,7 +637,7 @@ class Function : public Object {
 class Array : public Object {
  public:
   explicit Array(Runtime& runtime, size_t size)
-      : Object(std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::V8)) {
+      : Object(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
     storage_->value.Reset(runtime.isolate(),
                           v8::Array::New(runtime.isolate(), static_cast<int>(size)));
   }
@@ -628,7 +650,7 @@ class Array : public Object {
     v8::TryCatch tryCatch(runtime.isolate());
     v8::Local<v8::Value> result;
     if (!local(runtime)->Get(runtime.context(), static_cast<uint32_t>(index)).ToLocal(&result)) {
-      throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+      throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
     }
     return Value(runtime, result);
   }
@@ -638,7 +660,7 @@ class Array : public Object {
     if (!local(runtime)
              ->Set(runtime.context(), static_cast<uint32_t>(index), value.local(runtime))
              .FromMaybe(false)) {
-      throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+      throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
     }
   }
 
@@ -657,7 +679,7 @@ class BigInt {
  public:
   BigInt() = default;
   BigInt(Runtime& runtime, v8::Local<v8::BigInt> value)
-      : storage_(std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::V8)) {
+      : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
     storage_->value.Reset(runtime.isolate(), value);
   }
 
@@ -674,7 +696,7 @@ class BigInt {
     v8::Local<v8::String> result;
     (void)radix;
     if (!local(runtime)->ToString(runtime.context()).ToLocal(&result)) {
-      throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+      throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
     }
     return String(runtime, result);
   }
@@ -691,18 +713,18 @@ class BigInt {
 
  private:
   friend class Value;
-  std::shared_ptr<v8direct::ValueStorage> storage_;
+  std::shared_ptr<v8engine::ValueStorage> storage_;
 };
 
 class ArrayBuffer : public Object {
  public:
   ArrayBuffer(Runtime& runtime, std::shared_ptr<MutableBuffer> buffer)
-      : Object(std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::V8)) {
-    auto holder = new v8direct::ArrayBufferHolder(std::move(buffer));
+      : Object(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
+    auto holder = new v8engine::ArrayBufferHolder(std::move(buffer));
     auto backingStore = v8::ArrayBuffer::NewBackingStore(
         holder->buffer->data(), holder->buffer->size(),
         [](void*, size_t, void* deleterData) {
-          auto* holder = static_cast<v8direct::ArrayBufferHolder*>(deleterData);
+          auto* holder = static_cast<v8engine::ArrayBufferHolder*>(deleterData);
           holder->object.Reset();
           delete holder;
         },
@@ -728,7 +750,7 @@ class ArrayBuffer : public Object {
     return value;
   }
 };
-}  // namespace direct
+}  // namespace engine
 }  // namespace nativescript
 
 #endif  // TARGET_ENGINE_V8

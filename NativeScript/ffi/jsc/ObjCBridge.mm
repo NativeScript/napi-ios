@@ -1,23 +1,23 @@
 thread_local bool gDispatchNativeCallsToUI = false;
 thread_local bool gExecutingDispatchedUINativeCall = false;
 thread_local int gSynchronousNativeInvocationDepth = 0;
-thread_local int gNativeCallerThreadDirectCallbackDepth = 0;
+thread_local int gNativeCallerThreadEngineCallbackDepth = 0;
 thread_local std::vector<std::string*> gNativeCallbackExceptionCaptureStack;
 std::atomic<int> gActiveSynchronousNativeInvocationDepth{0};
-static char gNativeApiDirectExtendedClassKey;
+static char gNativeApiJSCExtendedClassKey;
 
-void markNativeApiDirectExtendedClass(Class cls) {
+void markNativeApiJSCExtendedClass(Class cls) {
   if (cls == Nil) {
     return;
   }
-  objc_setAssociatedObject(cls, &gNativeApiDirectExtendedClassKey, @YES,
+  objc_setAssociatedObject(cls, &gNativeApiJSCExtendedClassKey, @YES,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-bool isNativeApiDirectExtendedClass(Class cls) {
+bool isNativeApiJSCExtendedClass(Class cls) {
   Class current = cls;
   while (current != Nil) {
-    if (objc_getAssociatedObject(current, &gNativeApiDirectExtendedClassKey) != nil) {
+    if (objc_getAssociatedObject(current, &gNativeApiJSCExtendedClassKey) != nil) {
       return true;
     }
     current = class_getSuperclass(current);
@@ -59,20 +59,20 @@ class ScopedNativeApiSynchronousInvocation final {
   }
 };
 
-class ScopedNativeCallerThreadDirectCallback final {
+class ScopedNativeCallerThreadEngineCallback final {
  public:
-  ScopedNativeCallerThreadDirectCallback() {
-    gNativeCallerThreadDirectCallbackDepth += 1;
+  ScopedNativeCallerThreadEngineCallback() {
+    gNativeCallerThreadEngineCallbackDepth += 1;
   }
 
-  ~ScopedNativeCallerThreadDirectCallback() {
-    gNativeCallerThreadDirectCallbackDepth -= 1;
+  ~ScopedNativeCallerThreadEngineCallback() {
+    gNativeCallerThreadEngineCallbackDepth -= 1;
   }
 
-  ScopedNativeCallerThreadDirectCallback(
-      const ScopedNativeCallerThreadDirectCallback&) = delete;
-  ScopedNativeCallerThreadDirectCallback& operator=(
-      const ScopedNativeCallerThreadDirectCallback&) = delete;
+  ScopedNativeCallerThreadEngineCallback(
+      const ScopedNativeCallerThreadEngineCallback&) = delete;
+  ScopedNativeCallerThreadEngineCallback& operator=(
+      const ScopedNativeCallerThreadEngineCallback&) = delete;
 };
 
 class ScopedNativeCallbackExceptionCapture final {
@@ -132,7 +132,7 @@ void performNativeInvocation(Runtime& runtime,
     }
   };
 
-  bool skipInvoker = gNativeCallerThreadDirectCallbackDepth > 0;
+  bool skipInvoker = gNativeCallerThreadEngineCallbackDepth > 0;
   if (shouldDispatchNativeCallToUI()) {
     dispatch_sync(dispatch_get_main_queue(), ^{
       bool previous = gExecutingDispatchedUINativeCall;
@@ -157,6 +157,35 @@ void performNativeInvocation(Runtime& runtime,
   }
   if (!callbackException.empty()) {
     throw JSError(runtime, callbackException);
+  }
+}
+
+template <typename Invocation>
+void performDirectObjCInvocation(Runtime& runtime, Invocation&& invocation) {
+  NSString* exceptionDescription = nil;
+  auto run = [&]() {
+    @try {
+      invocation();
+    } @catch (NSException* exception) {
+      exceptionDescription = [exception.description copy];
+    }
+  };
+
+  if (shouldDispatchNativeCallToUI()) {
+    dispatch_sync(dispatch_get_main_queue(), ^{
+      bool previous = gExecutingDispatchedUINativeCall;
+      gExecutingDispatchedUINativeCall = true;
+      run();
+      gExecutingDispatchedUINativeCall = previous;
+    });
+  } else {
+    run();
+  }
+
+  if (exceptionDescription != nil) {
+    std::string message = exceptionDescription.UTF8String ?: "";
+    [exceptionDescription release];
+    throw JSError(runtime, message);
   }
 }
 
@@ -189,13 +218,13 @@ struct NativeApiMember {
   bool readonly = false;
 };
 
-struct NativeApiDirectAggregateInfo;
+struct NativeApiJSCAggregateInfo;
 
-struct NativeApiDirectFfiType {
+struct NativeApiJSCFfiType {
   ffi_type type = {};
   std::vector<ffi_type*> elements;
 
-  NativeApiDirectFfiType() {
+  NativeApiJSCFfiType() {
     type.type = FFI_TYPE_STRUCT;
     type.size = 0;
     type.alignment = 0;
@@ -208,7 +237,7 @@ struct NativeApiDirectFfiType {
   }
 };
 
-struct NativeApiDirectType {
+struct NativeApiJSCType {
   MDTypeKind kind = metagen::mdTypeVoid;
   ffi_type* ffiType = &ffi_type_void;
   bool supported = true;
@@ -217,24 +246,24 @@ struct NativeApiDirectType {
   MDSectionOffset aggregateOffset = MD_SECTION_OFFSET_NULL;
   bool aggregateIsUnion = false;
   uint16_t arraySize = 0;
-  std::shared_ptr<NativeApiDirectType> elementType;
-  std::shared_ptr<NativeApiDirectAggregateInfo> aggregateInfo;
-  std::shared_ptr<NativeApiDirectFfiType> ownedFfiType;
+  std::shared_ptr<NativeApiJSCType> elementType;
+  std::shared_ptr<NativeApiJSCAggregateInfo> aggregateInfo;
+  std::shared_ptr<NativeApiJSCFfiType> ownedFfiType;
 };
 
-struct NativeApiDirectAggregateField {
+struct NativeApiJSCAggregateField {
   std::string name;
   uint16_t offset = 0;
-  NativeApiDirectType type;
+  NativeApiJSCType type;
 };
 
-struct NativeApiDirectAggregateInfo {
+struct NativeApiJSCAggregateInfo {
   std::string name;
   uint16_t size = 0;
   bool isUnion = false;
   MDSectionOffset offset = MD_SECTION_OFFSET_NULL;
-  std::vector<NativeApiDirectAggregateField> fields;
-  std::shared_ptr<NativeApiDirectFfiType> ffi;
+  std::vector<NativeApiJSCAggregateField> fields;
+  std::shared_ptr<NativeApiJSCFfiType> ffi;
 };
 
 std::string jsifySelector(const char* selector) {
@@ -264,81 +293,6 @@ std::string booleanGetterSelectorForProperty(const std::string& property) {
   return selector;
 }
 
-std::optional<std::string> runtimeBooleanGetterSelectorForProperty(
-    Class cls, bool staticMethod, const std::string& property) {
-  if (cls == nil || property.empty()) {
-    return std::nullopt;
-  }
-
-  std::string selectorName = booleanGetterSelectorForProperty(property);
-  SEL selector = sel_getUid(selectorName.c_str());
-  if ((!staticMethod && class_getInstanceMethod(cls, selector) != nullptr) ||
-      (staticMethod && class_getClassMethod(cls, selector) != nullptr)) {
-    return selectorName;
-  }
-  return std::nullopt;
-}
-
-std::optional<std::string> runtimeSelectorNameForProperty(
-    Class cls, bool staticMethod, const std::string& property) {
-  if (cls == nil || property.empty()) {
-    return std::nullopt;
-  }
-
-#if TARGET_OS_OSX
-  if (property == "initWithRedGreenBlueAlpha") {
-    const char* candidates[] = {
-        "initWithSRGBRed:green:blue:alpha:",
-        "initWithCalibratedRed:green:blue:alpha:",
-    };
-    for (const char* candidate : candidates) {
-      SEL selector = sel_getUid(candidate);
-      if ((!staticMethod && class_getInstanceMethod(cls, selector) != nullptr) ||
-          (staticMethod && class_getClassMethod(cls, selector) != nullptr)) {
-        return std::string(candidate);
-      }
-    }
-  } else if (property == "colorWithRedGreenBlueAlpha") {
-    const char* candidates[] = {
-        "colorWithSRGBRed:green:blue:alpha:",
-        "colorWithCalibratedRed:green:blue:alpha:",
-    };
-    for (const char* candidate : candidates) {
-      SEL selector = sel_getUid(candidate);
-      if ((!staticMethod && class_getInstanceMethod(cls, selector) != nullptr) ||
-          (staticMethod && class_getClassMethod(cls, selector) != nullptr)) {
-        return std::string(candidate);
-      }
-    }
-  }
-#endif
-
-  if (auto selectorName =
-          runtimeBooleanGetterSelectorForProperty(cls, staticMethod, property)) {
-    return selectorName;
-  }
-
-  Class scan = staticMethod ? object_getClass(cls) : cls;
-  while (scan != Nil) {
-    unsigned int methodCount = 0;
-    Method* methods = class_copyMethodList(scan, &methodCount);
-    for (unsigned int i = 0; i < methodCount; i++) {
-      SEL selector = method_getName(methods[i]);
-      const char* selectorName = selector != nullptr ? sel_getName(selector) : nullptr;
-      if (selectorName != nullptr &&
-          (property == selectorName || jsifySelector(selectorName) == property)) {
-        std::string result(selectorName);
-        free(methods);
-        return result;
-      }
-    }
-    free(methods);
-    scan = class_getSuperclass(scan);
-  }
-
-  return std::nullopt;
-}
-
 std::string setterSelectorForProperty(const std::string& property) {
   if (property.empty()) {
     return property;
@@ -351,18 +305,6 @@ std::string setterSelectorForProperty(const std::string& property) {
   return selector;
 }
 
-bool hasRuntimeSetterForProperty(Class cls, bool staticMethod,
-                                 const std::string& property) {
-  if (cls == nil || property.empty()) {
-    return false;
-  }
-
-  std::string setterSelectorName = setterSelectorForProperty(property);
-  SEL selector = sel_getUid(setterSelectorName.c_str());
-  return staticMethod ? class_getClassMethod(cls, selector) != nullptr
-                      : class_getInstanceMethod(cls, selector) != nullptr;
-}
-
 size_t selectorArgumentCount(const std::string& selector) {
   return static_cast<size_t>(
       std::count(selector.begin(), selector.end(), ':'));
@@ -371,7 +313,6 @@ size_t selectorArgumentCount(const std::string& selector) {
 const NativeApiMember* selectMethodMember(
     const std::vector<NativeApiMember>& members, const std::string& property,
     bool staticMethod, size_t argumentCount) {
-  const NativeApiMember* fallback = nullptr;
   for (const auto& member : members) {
     if (member.property || member.name != property) {
       continue;
@@ -382,14 +323,25 @@ const NativeApiMember* selectMethodMember(
       continue;
     }
 
-    if (fallback == nullptr) {
-      fallback = &member;
-    }
     if (selectorArgumentCount(member.selectorName) == argumentCount) {
       return &member;
     }
   }
-  return fallback;
+  return nullptr;
+}
+
+bool hasMethodMember(const std::vector<NativeApiMember>& members,
+                     const std::string& property, bool staticMethod) {
+  for (const auto& member : members) {
+    if (member.property || member.name != property) {
+      continue;
+    }
+    bool memberIsStatic = (member.flags & metagen::mdMemberStatic) != 0;
+    if (memberIsStatic == staticMethod) {
+      return true;
+    }
+  }
+  return false;
 }
 
 const NativeApiMember* selectPropertyMember(
@@ -411,7 +363,7 @@ const NativeApiMember* selectPropertyMember(
 const NativeApiMember* selectWritablePropertyMember(
     const std::vector<NativeApiMember>& members, const std::string& property,
     bool staticMethod) {
-  const NativeApiMember* fallback = nullptr;
+  const NativeApiMember* propertyMember = nullptr;
   for (const auto& member : members) {
     if (!member.property || member.name != property) {
       continue;
@@ -422,17 +374,17 @@ const NativeApiMember* selectWritablePropertyMember(
       continue;
     }
 
-    if (fallback == nullptr) {
-      fallback = &member;
+    if (propertyMember == nullptr) {
+      propertyMember = &member;
     }
     if (!member.readonly && !member.setterSelectorName.empty()) {
       return &member;
     }
   }
-  return fallback;
+  return propertyMember;
 }
 
-void skipMetadataDirectType(MDMetadataReader* metadata, MDSectionOffset* offset);
+void skipMetadataEngineType(MDMetadataReader* metadata, MDSectionOffset* offset);
 Protocol* lookupProtocolByNativeName(const std::string& name);
 
 inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
@@ -443,9 +395,9 @@ inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
 #endif
 }
 
-class NativeApiDirectBridge {
+class NativeApiJSCBridge {
  public:
-  explicit NativeApiDirectBridge(const NativeApiDirectConfig& config)
+  explicit NativeApiJSCBridge(const NativeApiJSCConfig& config)
       : metadata_(loadMetadata(config)),
         scheduler_(config.scheduler),
         nativeInvocationInvoker_(config.nativeInvocationInvoker),
@@ -457,7 +409,7 @@ class NativeApiDirectBridge {
     buildSymbolIndexes();
   }
 
-  ~NativeApiDirectBridge() {
+  ~NativeApiJSCBridge() {
     if (selfDl_ != nullptr) {
       dlclose(selfDl_);
     }
@@ -530,23 +482,48 @@ class NativeApiDirectBridge {
     if (native == nullptr) {
       return;
     }
-    std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
-    roundTripValues_[normalizeRuntimePointer(
-        reinterpret_cast<uintptr_t>(native))] =
-        std::make_shared<Value>(runtime, value);
+    uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      roundTripValues_[key] = std::make_shared<Value>(runtime, value);
+    }
+    rootRoundTripValue(runtime, key, value);
   }
 
-  Value findRoundTripValue(Runtime& runtime, const void* native) const {
+  Value findRoundTripValue(Runtime& runtime, const void* native) {
     if (native == nullptr) {
       return Value::undefined();
     }
+    uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    Value rooted = findRootedRoundTripValue(runtime, key);
+    if (!rooted.isUndefined()) {
+      return rooted;
+    }
     std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
-    auto it = roundTripValues_.find(
-        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
+    auto it = roundTripValues_.find(key);
     if (it == roundTripValues_.end() || it->second == nullptr) {
       return Value::undefined();
     }
     return Value(runtime, *it->second);
+  }
+
+  void forgetRoundTripValue(Runtime& runtime, const void* native) {
+    if (native == nullptr) {
+      return;
+    }
+    uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    bool rooted = false;
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      roundTripValues_.erase(key);
+      rooted = rootedRoundTripValues_.erase(key) > 0;
+    }
+    if (rooted) {
+      unrootRoundTripValue(runtime, key);
+    }
   }
 
   void forgetRoundTripValue(const void* native) {
@@ -705,7 +682,7 @@ class NativeApiDirectBridge {
   const std::vector<std::string>& enumNames() const { return enumNames_; }
   const std::vector<std::string>& structNames() const { return structNames_; }
   const std::vector<std::string>& unionNames() const { return unionNames_; }
-  std::shared_ptr<NativeApiDirectScheduler> scheduler() const { return scheduler_; }
+  std::shared_ptr<NativeApiJSCScheduler> scheduler() const { return scheduler_; }
   const std::function<void(std::function<void()>)>& nativeInvocationInvoker()
       const {
     return nativeInvocationInvoker_;
@@ -723,12 +700,58 @@ class NativeApiDirectBridge {
   }
   std::thread::id jsThreadId() const { return jsThreadId_; }
 
-  void retainDirectLifetime(std::shared_ptr<void> lifetime) {
+  void retainEngineLifetime(std::shared_ptr<void> lifetime) {
     if (lifetime == nullptr) {
       return;
     }
     std::lock_guard<std::mutex> lock(retainedLifetimesMutex_);
     retainedLifetimes_.push_back(std::move(lifetime));
+  }
+
+  std::string roundTripRootKey(uintptr_t key) const {
+    char buffer[32] = {};
+    snprintf(buffer, sizeof(buffer), "p%llx",
+             static_cast<unsigned long long>(key));
+    return buffer;
+  }
+
+  Object roundTripRootObject(Runtime& runtime) const {
+    static constexpr const char* kRootName =
+        "__nativeScriptNativeApiRoundTripValues";
+    Object global = runtime.global();
+    if (global.hasProperty(runtime, kRootName)) {
+      Value existing = global.getProperty(runtime, kRootName);
+      if (existing.isObject()) {
+        return existing.asObject(runtime);
+      }
+    }
+
+    Object root(runtime);
+    global.setProperty(runtime, kRootName, root);
+    return root;
+  }
+
+  void rootRoundTripValue(Runtime& runtime, uintptr_t key, const Value& value) {
+    roundTripRootObject(runtime)
+        .setProperty(runtime, roundTripRootKey(key).c_str(), value);
+    std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+    rootedRoundTripValues_.insert(key);
+  }
+
+  Value findRootedRoundTripValue(Runtime& runtime, uintptr_t key) {
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      if (rootedRoundTripValues_.find(key) == rootedRoundTripValues_.end()) {
+        return Value::undefined();
+      }
+    }
+    Object root = roundTripRootObject(runtime);
+    return root.getProperty(runtime, roundTripRootKey(key).c_str());
+  }
+
+  void unrootRoundTripValue(Runtime& runtime, uintptr_t key) {
+    roundTripRootObject(runtime)
+        .setProperty(runtime, roundTripRootKey(key).c_str(), Value::undefined());
   }
 
   const std::vector<NativeApiMember>& membersForClass(
@@ -767,10 +790,10 @@ class NativeApiDirectBridge {
     return inserted.first->second;
   }
 
-  std::shared_ptr<NativeApiDirectAggregateInfo> aggregateInfoFor(
+  std::shared_ptr<NativeApiJSCAggregateInfo> aggregateInfoFor(
       MDSectionOffset aggregateOffset, bool isUnion);
 
-  std::shared_ptr<NativeApiDirectAggregateInfo> aggregateInfoFor(
+  std::shared_ptr<NativeApiJSCAggregateInfo> aggregateInfoFor(
       const NativeApiSymbol& symbol) {
     return aggregateInfoFor(symbol.offset,
                             symbol.kind == NativeApiSymbolKind::Union);
@@ -810,7 +833,7 @@ class NativeApiDirectBridge {
   }
 
   static std::unique_ptr<MDMetadataReader> loadMetadata(
-      const NativeApiDirectConfig& config) {
+      const NativeApiJSCConfig& config) {
     if (config.metadataPtr != nullptr &&
         *static_cast<const char*>(config.metadataPtr) != '\0') {
 #ifdef EMBED_METADATA_SIZE
@@ -979,7 +1002,7 @@ class NativeApiDirectBridge {
                                 metagen::MDVariableEvalKind evalKind) {
     switch (evalKind) {
       case metagen::mdEvalNone:
-        skipMetadataDirectType(metadata, &offset);
+        skipMetadataEngineType(metadata, &offset);
         break;
       case metagen::mdEvalInt64:
         offset += sizeof(int64_t);
@@ -1124,7 +1147,7 @@ class NativeApiDirectBridge {
       if (!isUnion) {
         offset += sizeof(uint16_t);
       }
-      skipMetadataDirectType(metadata_.get(), &offset);
+      skipMetadataEngineType(metadata_.get(), &offset);
     }
   }
 
@@ -1536,6 +1559,7 @@ class NativeApiDirectBridge {
   std::unordered_map<uintptr_t, NativeApiSymbol> protocolSymbolsByRuntimePointer_;
   mutable std::mutex roundTripValuesMutex_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> roundTripValues_;
+  std::unordered_set<uintptr_t> rootedRoundTripValues_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classValues_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classPrototypes_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> pointerValues_;
@@ -1551,7 +1575,7 @@ class NativeApiDirectBridge {
   std::vector<std::string> enumNames_;
   std::vector<std::string> structNames_;
   std::vector<std::string> unionNames_;
-  std::shared_ptr<NativeApiDirectScheduler> scheduler_;
+  std::shared_ptr<NativeApiJSCScheduler> scheduler_;
   std::function<void(std::function<void()>)> nativeInvocationInvoker_;
   std::function<void(std::function<void()>)> nativeCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker_;
@@ -1564,7 +1588,7 @@ class NativeApiDirectBridge {
       membersByProtocolOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> structSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> unionSymbolsByOffset_;
-  std::unordered_map<MDSectionOffset, std::shared_ptr<NativeApiDirectAggregateInfo>>
+  std::unordered_map<MDSectionOffset, std::shared_ptr<NativeApiJSCAggregateInfo>>
       aggregateInfoByOffset_;
   std::unordered_set<MDSectionOffset> aggregateInfoInProgress_;
   std::thread::id jsThreadId_ = std::this_thread::get_id();
@@ -1622,27 +1646,45 @@ class NativeApiPointerHostObject;
 class NativeApiObjectHostObject;
 class NativeApiClassHostObject;
 class NativeApiProtocolHostObject;
-class NativeApiDirectArgumentFrame;
+class NativeApiJSCArgumentFrame;
+struct NativeApiJSCPreparedCFunctionInvocation;
+struct NativeApiJSCPreparedObjCInvocation;
 
 Value callCFunction(Runtime& runtime,
-                    const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                    const std::shared_ptr<NativeApiJSCBridge>& bridge,
                     const NativeApiSymbol& symbol, const Value* args,
                     size_t count);
+Value callCFunction(
+    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+    const std::shared_ptr<NativeApiJSCPreparedCFunctionInvocation>& prepared,
+    const Value* args, size_t count);
 
 Value callObjCSelector(Runtime& runtime,
-                       const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                       const std::shared_ptr<NativeApiJSCBridge>& bridge,
                        id receiver, bool receiverIsClass,
                        const std::string& selectorName,
                        const NativeApiMember* member,
                        const Value* args, size_t count,
                        Class dispatchSuperClass = Nil);
 
+std::shared_ptr<NativeApiJSCPreparedObjCInvocation>
+prepareNativeApiJSCObjCInvocation(
+    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+    Class lookupClass, bool receiverIsClass, const std::string& selectorName,
+    const NativeApiMember* member);
+
+Value callPreparedObjCSelector(
+    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+    id receiver, bool receiverIsClass,
+    const NativeApiJSCPreparedObjCInvocation& prepared, const Value* args,
+    size_t count, Class dispatchSuperClass = Nil);
+
 Value makeNativeObjectValue(Runtime& runtime,
-                            const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                            const std::shared_ptr<NativeApiJSCBridge>& bridge,
                             id object, bool ownsObject);
 
 Value makeNativeClassValue(Runtime& runtime,
-                           const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                           const std::shared_ptr<NativeApiJSCBridge>& bridge,
                            NativeApiSymbol symbol);
 
 Object symbolToObject(Runtime& runtime, const NativeApiSymbol& symbol) {
@@ -1670,19 +1712,19 @@ Object symbolToObject(Runtime& runtime, const NativeApiSymbol& symbol) {
   return result;
 }
 
-size_t nativeSizeForType(const NativeApiDirectType& type);
+size_t nativeSizeForType(const NativeApiJSCType& type);
 std::optional<size_t> parseArrayIndexProperty(const std::string& property);
 
-NativeApiDirectType nativeObjectReturnType(
+NativeApiJSCType nativeObjectReturnType(
     MDTypeKind kind = metagen::mdTypeAnyObject) {
-  NativeApiDirectType type;
+  NativeApiJSCType type;
   type.kind = kind;
   type.ffiType = &ffi_type_pointer;
   type.supported = true;
   return type;
 }
 
-NativeApiDirectType nativeObjectReturnTypeForClass(Class cls) {
+NativeApiJSCType nativeObjectReturnTypeForClass(Class cls) {
   if (cls != Nil) {
     const char* name = class_getName(cls);
     if (name != nullptr && std::strcmp(name, "NSString") == 0) {
@@ -1696,10 +1738,10 @@ NativeApiDirectType nativeObjectReturnTypeForClass(Class cls) {
 }
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                               const NativeApiDirectType& type, void* value);
+                               const std::shared_ptr<NativeApiJSCBridge>& bridge,
+                               const NativeApiJSCType& type, void* value);
 Object createPointer(Runtime& runtime,
-                     const std::shared_ptr<NativeApiDirectBridge>& bridge,
+                     const std::shared_ptr<NativeApiJSCBridge>& bridge,
                      void* pointer, bool adopted = false);
 
-NativeApiDirectType primitiveInteropType(MDTypeKind kind);
+NativeApiJSCType primitiveInteropType(MDTypeKind kind);

@@ -411,8 +411,8 @@ function installRuntimeSpecGlobals(): RuntimeSpecRegistry {
     return undefined;
   };
 
-  globalObject.setTimeout = (callback: Function, timeout?: number, ...args: unknown[]) =>
-    originalSetTimeout(
+  globalObject.setTimeout = (callback: Function, timeout?: number, ...args: unknown[]) => {
+    return originalSetTimeout(
       (...callbackArgs: unknown[]) => {
         try {
           callback(...callbackArgs);
@@ -427,6 +427,7 @@ function installRuntimeSpecGlobals(): RuntimeSpecRegistry {
       timeout,
       ...args,
     );
+  };
 
   globalObject.describe = (name: string, body: Function) => {
     const suite: RuntimeSuite = {name: String(name), beforeEach: [], afterEach: []};

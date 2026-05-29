@@ -34,7 +34,7 @@
 #include "ffi.h"
 #include "NativeApiJsiSignatureDispatch.h"
 
-@protocol NativeApiDirectClassBuilderProtocol
+@protocol NativeApiHermesClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE
@@ -58,35 +58,129 @@ using facebook::jsi::StringBuffer;
 using facebook::jsi::Value;
 using facebook::jsi::JSError;
 
-using NativeApiDirectConfig = NativeApiJsiConfig;
-using NativeApiDirectScheduler = NativeApiJsiScheduler;
+using NativeApiHermesConfig = NativeApiJsiConfig;
+using NativeApiHermesScheduler = NativeApiJsiScheduler;
 using metagen::MDMemberFlag;
 using metagen::MDMetadataReader;
 using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
+void SetNativeApiHermesObjectPrototype(Runtime& runtime, Object& object,
+                                       const Object& prototype) {
+  Object objectConstructor =
+      runtime.global().getPropertyAsObject(runtime, "Object");
+  Function setPrototypeOf =
+      objectConstructor.getPropertyAsFunction(runtime, "setPrototypeOf");
+  setPrototypeOf.call(runtime, Value(runtime, object), Value(runtime, prototype));
+}
+
 // clang-format off
-#define NATIVESCRIPT_NATIVE_API_DIRECT_RUNTIME_NAME "jsi"
-#define NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME "hermes"
-#include "ffi/direct/NativeApiDirectBridge.h"
-#include "ffi/direct/NativeApiDirectHostObjects.h"
-#include "ffi/direct/NativeApiDirectCallbacks.h"
-#include "ffi/direct/NativeApiDirectConversion.h"
-#include "ffi/direct/NativeApiDirectInvocation.h"
-#include "ffi/direct/NativeApiDirectClassBuilder.h"
-#include "ffi/direct/NativeApiDirectHostObject.h"
+#define NATIVESCRIPT_NATIVE_API_HERMES_RUNTIME_NAME "jsi"
+#define NATIVESCRIPT_NATIVE_API_HERMES_BACKEND_NAME "hermes"
+#define NATIVESCRIPT_NATIVE_API_HAS_ENGINE_SELECTOR_GROUP_FUNCTION 1
+#include "ObjCBridge.mm"
+#include "HostObjects.mm"
+#include "Callbacks.mm"
+#include "TypeConv.mm"
+#include "Invocation.mm"
+#include "ClassBuilder.mm"
+#include "HostObject.mm"
 // clang-format on
+
+Function CreateNativeApiHermesSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiHermesBridge> bridge,
+    Class lookupClass, bool receiverIsClass,
+    std::shared_ptr<std::vector<NativeApiHermesSelectorGroupEntry>> selectors,
+    std::shared_ptr<
+        std::vector<std::shared_ptr<NativeApiHermesPreparedObjCInvocation>>>
+        preparedInvocations) {
+  return Function::createFromHostFunction(
+      runtime, PropNameID::forAscii(runtime, "__nativeSelectorGroup"), 0,
+      [bridge = std::move(bridge), lookupClass, receiverIsClass,
+       selectors = std::move(selectors),
+       preparedInvocations = std::move(preparedInvocations)](
+          Runtime& runtime, const Value& thisValue, const Value* args,
+          size_t count) -> Value {
+        if (count >= selectors->size() ||
+            (*selectors)[count].selectorName.empty()) {
+          throw JSError(runtime,
+                        "Objective-C selector is not available for this "
+                        "argument count.");
+        }
+
+        const NativeApiHermesSelectorGroupEntry& entry = (*selectors)[count];
+        auto& prepared = (*preparedInvocations)[count];
+        Class selectorLookupClass = lookupClass;
+        id receiver = nil;
+        std::shared_ptr<NativeApiObjectHostObject> receiverHostObject;
+        if (receiverIsClass) {
+          Class methodClass = prepared != nullptr ? prepared->receiverClass : Nil;
+          if (methodClass == Nil) {
+            SEL selector = sel_registerName(entry.selectorName.c_str());
+            methodClass =
+                NativeApiClassHostObject::classRespondingToClassSelector(
+                    lookupClass, selector);
+          }
+          if (methodClass == Nil) {
+            throw JSError(runtime,
+                          "Objective-C selector is not available: " +
+                              entry.selectorName);
+          }
+          selectorLookupClass = methodClass;
+          receiver = static_cast<id>(methodClass);
+        } else if (thisValue.isObject()) {
+          Object receiverObject = thisValue.asObject(runtime);
+          if (receiverObject.isHostObject<NativeApiObjectHostObject>(
+                  runtime)) {
+            receiverHostObject =
+                receiverObject.getHostObject<NativeApiObjectHostObject>(
+                    runtime);
+            receiver = receiverHostObject->object();
+          }
+        }
+        if (receiver == nil) {
+          throw JSError(runtime,
+                        "Objective-C selector requires a native receiver.");
+        }
+
+        if (!receiverIsClass) {
+          SEL selector = sel_registerName(entry.selectorName.c_str());
+          if (class_getInstanceMethod(selectorLookupClass, selector) == nullptr) {
+            Class receiverClass = object_getClass(receiver);
+            if (class_getInstanceMethod(receiverClass, selector) != nullptr) {
+              selectorLookupClass = receiverClass;
+            }
+          }
+        }
+
+        if (prepared == nullptr) {
+          prepared = prepareNativeApiHermesObjCInvocation(
+              runtime, bridge, selectorLookupClass, receiverIsClass, entry.selectorName,
+              entry.hasMember ? &entry.member : nullptr);
+        }
+
+        if (receiverIsClass) {
+          return callPreparedObjCSelector(runtime, bridge, receiver, true,
+                                          *prepared, args, count, Nil);
+        }
+        Class dispatchClass =
+            dispatchPrototypeClassForEngineDerivedReceiver(receiver, lookupClass);
+        return receiverHostObject->callPreparedObjectSelector(
+            runtime, (*selectors)[count].selectorName, *prepared, args, count,
+            dispatchClass);
+      });
+}
 
 }  // namespace
 
-#include "ffi/direct/NativeApiDirectInstall.h"
+#include "Install.mm"
 
 Object CreateNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
-  return CreateNativeApiDirect(runtime, config);
+  return CreateNativeApiHermes(runtime, config);
 }
 
 void InstallNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
-  InstallNativeApiDirect(runtime, config);
+  InstallNativeApiHermes(runtime, config);
 }
 
 }  // namespace nativescript
