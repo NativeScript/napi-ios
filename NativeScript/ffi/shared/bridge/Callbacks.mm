@@ -371,6 +371,16 @@ void nativeApiEngineCallbackTrampoline(ffi_cif* cif, void* ret, void* args[],
 
 std::atomic<int> gActiveNativeThreadEngineCallbacks{0};
 
+// A callback can outlive the scope in which its function argument was created
+// (e.g. a block invoked asynchronously). Round-trip the function through the
+// engine value copy constructor so any scope-bound/borrowed handle is promoted
+// to a persistent one before it is stored.
+Function persistentEngineFunction(Runtime& runtime, const Function& function) {
+  Value shared(runtime, function);
+  Value persistent(runtime, shared);
+  return persistent.asObject(runtime).asFunction(runtime);
+}
+
 class NativeApiCallback final
     : public std::enable_shared_from_this<NativeApiCallback> {
  public:
@@ -385,7 +395,8 @@ class NativeApiCallback final
         runtime_(runtimeOwner_.get()),
         bridge_(std::move(bridge)),
         signature_(std::move(signature)),
-        function_(std::make_shared<Function>(std::move(function))),
+        function_(std::make_shared<Function>(
+            persistentEngineFunction(runtime, function))),
         block_(block),
         threadPolicy_(threadPolicy),
         bindThis_(bindThis) {
