@@ -388,6 +388,17 @@ class NativeApiHostObject final : public HostObject {
             if (object == nil) {
               return Value::undefined();
             }
+            // A factory/class method may return an instance of a different
+            // class (e.g. +[TNSSwiftLikeFactory create] returns a TNSSwiftLike).
+            // Only label the object with this wrapper when it actually is an
+            // instance of the wrapper's class, so `constructor` resolves to the
+            // object's real class instead of the calling class.
+            if (args[1].isObject()) {
+              Class wrapperClass = classFromEngineValue(runtime, args[1]);
+              if (wrapperClass != Nil && ![object isKindOfClass:wrapperClass]) {
+                return Value::undefined();
+              }
+            }
             bridge->setObjectExpando(runtime, object,
                                      "__nativeApiClassWrapper", args[1]);
             if (args[1].isObject()) {
