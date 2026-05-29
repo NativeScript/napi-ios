@@ -301,27 +301,6 @@ Class dispatchSuperclassForEngineDerivedReceiver(id receiver,
   return superclass != Nil ? superclass : defaultSuperclass;
 }
 
-Class dispatchPrototypeClassForEngineDerivedReceiver(id receiver,
-                                                     Class prototypeClass) {
-  if (receiver == nil || prototypeClass == Nil) {
-    return Nil;
-  }
-
-  Class receiverClass = object_getClass(receiver);
-  if (receiverClass == Nil || receiverClass == prototypeClass ||
-      !class_conformsToProtocol(receiverClass,
-                                @protocol(NativeApiClassBuilderProtocol))) {
-    return Nil;
-  }
-
-  for (Class cls = receiverClass; cls != Nil; cls = class_getSuperclass(cls)) {
-    if (cls == prototypeClass) {
-      return prototypeClass;
-    }
-  }
-  return Nil;
-}
-
 std::optional<Function> functionForSelector(Runtime& runtime,
                                             const Object& methods,
                                             const std::string& selectorName) {
