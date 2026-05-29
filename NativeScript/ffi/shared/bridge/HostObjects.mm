@@ -612,6 +612,16 @@ class NativeApiObjectHostObject final
 
   id object() const { return object_; }
 
+  // Store a JS-owned property as a bridge expando (read back by get()). Used by
+  // engine adapters whose exotic property storage doesn't fall back to own
+  // properties when the host set handler defers.
+  void storeOwnExpando(Runtime& runtime, const std::string& property,
+                       const Value& value) {
+    if (object_ != nil) {
+      bridge_->setObjectExpando(runtime, object_, property, value);
+    }
+  }
+
   void disownObject(id expected) {
     if (object_ == expected) {
       ownsObject_ = false;
@@ -791,6 +801,119 @@ class NativeApiObjectHostObject final
     }
 
     return Value::undefined();
+  }
+
+  // Invoke a JS-prototype getter accessor with this instance as the receiver.
+  // Sets *found and returns the resolved value.
+  Value resolveEnginePrototypeGetter(Runtime& runtime,
+                                     const std::string& property, bool* found) {
+    *found = false;
+    if (object_ == nil || property.empty()) {
+      return Value::undefined();
+    }
+    Value classWrapperValue =
+        bridge_->findObjectExpando(runtime, object_, "__nativeApiClassWrapper");
+    if (!classWrapperValue.isObject()) {
+      classWrapperValue =
+          bridge_->findClassValue(runtime, object_getClass(object_));
+    }
+    if (!classWrapperValue.isObject()) {
+      return Value::undefined();
+    }
+    Value prototypeValue =
+        classWrapperValue.asObject(runtime).getProperty(runtime, "prototype");
+    if (!prototypeValue.isObject()) {
+      return Value::undefined();
+    }
+    Object objectConstructor =
+        runtime.global().getPropertyAsObject(runtime, "Object");
+    Function getOwnPropertyDescriptor =
+        objectConstructor.getPropertyAsFunction(runtime, "getOwnPropertyDescriptor");
+    Function getPrototypeOf =
+        objectConstructor.getPropertyAsFunction(runtime, "getPrototypeOf");
+    Value propertyName = makeString(runtime, property);
+    Value currentValue(runtime, prototypeValue);
+    for (size_t depth = 0; depth < 64 && currentValue.isObject(); depth++) {
+      Object current = currentValue.asObject(runtime);
+      Value descriptorValue = getOwnPropertyDescriptor.call(
+          runtime, Value(runtime, current), propertyName);
+      if (descriptorValue.isObject()) {
+        Object descriptor = descriptorValue.asObject(runtime);
+        Value getterValue = descriptor.getProperty(runtime, "get");
+        if (getterValue.isObject() &&
+            getterValue.asObject(runtime).isFunction(runtime)) {
+          Value thisValue = bridge_->findRoundTripValue(runtime, object_);
+          if (thisValue.isObject()) {
+            *found = true;
+            return getterValue.asObject(runtime).asFunction(runtime).callWithThis(
+                runtime, thisValue.asObject(runtime),
+                static_cast<const Value*>(nullptr), static_cast<size_t>(0));
+          }
+        }
+        Value dataValue = descriptor.getProperty(runtime, "value");
+        if (!dataValue.isUndefined()) {
+          *found = true;
+          return dataValue;
+        }
+        return Value::undefined();
+      }
+      currentValue = getPrototypeOf.call(runtime, Value(runtime, current));
+    }
+    return Value::undefined();
+  }
+
+  // Invoke a JS-prototype setter accessor with this instance as the receiver.
+  // Returns true when a setter was found and invoked.
+  bool invokeEnginePrototypeSetter(Runtime& runtime, const std::string& property,
+                                   const Value& value) {
+    if (object_ == nil || property.empty()) {
+      return false;
+    }
+    Value classWrapperValue =
+        bridge_->findObjectExpando(runtime, object_, "__nativeApiClassWrapper");
+    if (!classWrapperValue.isObject()) {
+      classWrapperValue =
+          bridge_->findClassValue(runtime, object_getClass(object_));
+    }
+    if (!classWrapperValue.isObject()) {
+      return false;
+    }
+    Value prototypeValue =
+        classWrapperValue.asObject(runtime).getProperty(runtime, "prototype");
+    if (!prototypeValue.isObject()) {
+      return false;
+    }
+    Object objectConstructor =
+        runtime.global().getPropertyAsObject(runtime, "Object");
+    Function getOwnPropertyDescriptor =
+        objectConstructor.getPropertyAsFunction(runtime, "getOwnPropertyDescriptor");
+    Function getPrototypeOf =
+        objectConstructor.getPropertyAsFunction(runtime, "getPrototypeOf");
+    Value propertyName = makeString(runtime, property);
+    Value currentValue(runtime, prototypeValue);
+    for (size_t depth = 0; depth < 64 && currentValue.isObject(); depth++) {
+      Object current = currentValue.asObject(runtime);
+      Value descriptorValue = getOwnPropertyDescriptor.call(
+          runtime, Value(runtime, current), propertyName);
+      if (descriptorValue.isObject()) {
+        Value setterValue =
+            descriptorValue.asObject(runtime).getProperty(runtime, "set");
+        if (setterValue.isObject() &&
+            setterValue.asObject(runtime).isFunction(runtime)) {
+          Value thisValue = bridge_->findRoundTripValue(runtime, object_);
+          if (thisValue.isObject()) {
+            Value args[] = {Value(runtime, value)};
+            setterValue.asObject(runtime).asFunction(runtime).callWithThis(
+                runtime, thisValue.asObject(runtime),
+                static_cast<const Value*>(args), static_cast<size_t>(1));
+            return true;
+          }
+        }
+        return false;
+      }
+      currentValue = getPrototypeOf.call(runtime, Value(runtime, current));
+    }
+    return false;
   }
 
   Value get(Runtime& runtime, const PropNameID& name) override {
@@ -1151,6 +1274,16 @@ class NativeApiObjectHostObject final
     // methods); defer so the engine resolves them instead of the bridge
     // returning a registered getter IMP as a raw callable.
     if (isEngineExtendedInstance) {
+#ifdef NATIVESCRIPT_NATIVE_API_HOST_EXPLICIT_OVERRIDE
+      // Engines whose exotic property handler invokes prototype accessors with
+      // the wrong receiver need the JS-prototype getter resolved here with this
+      // instance as the receiver.
+      bool found = false;
+      Value resolved = resolveEnginePrototypeGetter(runtime, property, &found);
+      if (found) {
+        return resolved;
+      }
+#endif
       return Value::undefined();
     }
 
@@ -1226,7 +1359,17 @@ class NativeApiObjectHostObject final
     // shadowing it with a bridge expando.
     if (class_conformsToProtocol(object_getClass(object_),
                                  @protocol(NativeApiClassBuilderProtocol))) {
+#ifdef NATIVESCRIPT_NATIVE_API_HOST_EXPLICIT_OVERRIDE
+      // Engines whose exotic property storage doesn't fall back to own
+      // properties need the JS-owned set resolved here: invoke a JS-prototype
+      // setter if present, otherwise store the value as a bridge expando.
+      if (!invokeEnginePrototypeSetter(runtime, property, value)) {
+        storeOwnExpando(runtime, property, value);
+      }
+      NATIVE_API_SET_RETURN(true);
+#else
       NATIVE_API_SET_RETURN(false);
+#endif
     }
 
     bridge_->setObjectExpando(runtime, object_, property, value);

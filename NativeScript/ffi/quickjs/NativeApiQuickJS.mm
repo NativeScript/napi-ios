@@ -28,6 +28,7 @@ using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
 // clang-format off
+#define NATIVESCRIPT_NATIVE_API_HOST_EXPLICIT_OVERRIDE 1
 #define NATIVESCRIPT_NATIVE_API_BACKEND_NAME "quickjs"
 #include "../shared/bridge/ObjCBridge.mm"
 // clang-format on
