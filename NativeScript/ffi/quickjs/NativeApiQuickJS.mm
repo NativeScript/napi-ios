@@ -800,7 +800,7 @@ JSValue NativeApiSelectorGroupCall(JSContext* context, JSValue thisValue,
     if (count >= data->selectors->size() ||
         (*data->selectors)[count].selectorName.empty()) {
       throw JSError(runtime,
-                    "Objective-C selector is not available for this argument "
+                    "Objective-C selector is not available for the provided arguments "
                     "count.");
     }
 

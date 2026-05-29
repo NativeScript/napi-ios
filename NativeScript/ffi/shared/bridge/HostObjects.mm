@@ -1040,7 +1040,16 @@ class NativeApiObjectHostObject final
       return Value::undefined();
     }
 
-    if (object_ != nil) {
+    // For JS-extended instances, metadata property accessors live on the
+    // prototype chain (native accessors plus any JS overrides), so defer to the
+    // engine instead of reading the native property here and shadowing a JS
+    // override.
+    bool isEngineExtendedInstance =
+        object_ != nil &&
+        class_conformsToProtocol(object_getClass(object_),
+                                 @protocol(NativeApiClassBuilderProtocol));
+
+    if (object_ != nil && !isEngineExtendedInstance) {
       if (const NativeApiSymbol* symbol =
               bridge_->findClassForRuntimeClass(object_getClass(object_))) {
         const auto& members = bridge_->membersForClass(*symbol);
@@ -1072,12 +1081,10 @@ class NativeApiObjectHostObject final
       return prototypeFunction;
     }
 
-    // JS-subclassed instances own their non-metadata members in JS (prototype
-    // accessors/methods); defer so the engine resolves them instead of the bridge
+    // JS-subclassed instances own their members in JS (prototype accessors and
+    // methods); defer so the engine resolves them instead of the bridge
     // returning a registered getter IMP as a raw callable.
-    if (object_ != nil &&
-        class_conformsToProtocol(object_getClass(object_),
-                                 @protocol(NativeApiClassBuilderProtocol))) {
+    if (isEngineExtendedInstance) {
       return Value::undefined();
     }
 
