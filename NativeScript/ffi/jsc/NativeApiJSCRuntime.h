@@ -100,7 +100,7 @@ class HostObject {
  public:
   virtual ~HostObject() = default;
   virtual Value get(Runtime& runtime, const PropNameID& name);
-  virtual void set(Runtime& runtime, const PropNameID& name, const Value& value);
+  virtual bool set(Runtime& runtime, const PropNameID& name, const Value& value);
   virtual std::vector<PropNameID> getPropertyNames(Runtime& runtime);
 };
 
