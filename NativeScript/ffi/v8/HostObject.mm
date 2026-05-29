@@ -1,31 +1,49 @@
-#ifndef NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME
-#define NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME "direct"
+#ifndef NATIVESCRIPT_NATIVE_API_V8_BACKEND_NAME
+#define NATIVESCRIPT_NATIVE_API_V8_BACKEND_NAME "v8"
 #endif
 
-#ifndef NATIVESCRIPT_NATIVE_API_DIRECT_RUNTIME_NAME
-#define NATIVESCRIPT_NATIVE_API_DIRECT_RUNTIME_NAME "direct"
+#ifndef NATIVESCRIPT_NATIVE_API_V8_RUNTIME_NAME
+#define NATIVESCRIPT_NATIVE_API_V8_RUNTIME_NAME "v8"
 #endif
 
 #ifndef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS
-inline bool InstallNativeApiEngineLazyGlobal(
-    Runtime&, std::shared_ptr<NativeApiDirectBridge>, const std::string&,
+inline bool InstallNativeApiV8LazyGlobal(
+    Runtime&, std::shared_ptr<NativeApiV8Bridge>, const std::string&,
     const std::string&, bool) {
   return false;
 }
 #endif
 
+struct NativeApiV8SelectorGroupEntry {
+  std::string selectorName;
+  NativeApiMember member;
+  bool hasMember = false;
+};
+
+#ifndef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_SELECTOR_GROUP_FUNCTION
+#error Engine backends must provide an engine selector group function.
+#endif
+
+Function CreateNativeApiV8SelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiV8Bridge> bridge,
+    Class lookupClass, bool receiverIsClass,
+    std::shared_ptr<std::vector<NativeApiV8SelectorGroupEntry>> selectors,
+    std::shared_ptr<
+        std::vector<std::shared_ptr<NativeApiV8PreparedObjCInvocation>>>
+        preparedInvocations);
+
 class NativeApiHostObject final : public HostObject {
  public:
-  explicit NativeApiHostObject(std::shared_ptr<NativeApiDirectBridge> bridge)
+  explicit NativeApiHostObject(std::shared_ptr<NativeApiV8Bridge> bridge)
       : bridge_(std::move(bridge)) {}
 
   Value get(Runtime& runtime, const PropNameID& name) override {
     std::string property = name.utf8(runtime);
     if (property == "runtime") {
-      return makeString(runtime, NATIVESCRIPT_NATIVE_API_DIRECT_RUNTIME_NAME);
+      return makeString(runtime, NATIVESCRIPT_NATIVE_API_V8_RUNTIME_NAME);
     }
     if (property == "backend") {
-      return makeString(runtime, NATIVESCRIPT_NATIVE_API_DIRECT_BACKEND_NAME);
+      return makeString(runtime, NATIVESCRIPT_NATIVE_API_V8_BACKEND_NAME);
     }
     if (property == "metadata") {
       return metadataObject(runtime);
@@ -46,7 +64,7 @@ class NativeApiHostObject final : public HostObject {
             std::string name = readStringArg(runtime, args, count, 0, "name");
             std::string kind = readStringArg(runtime, args, count, 1, "kind");
             bool force = count > 2 && args[2].isBool() && args[2].getBool();
-            return InstallNativeApiEngineLazyGlobal(runtime, bridge, name, kind,
+            return InstallNativeApiV8LazyGlobal(runtime, bridge, name, kind,
                                                     force);
           });
     }
@@ -86,7 +104,7 @@ class NativeApiHostObject final : public HostObject {
             if (scheduler == nullptr) {
               throw JSError(
                   runtime,
-                  "NativeApiDirect was installed without a UI scheduler.");
+                  "NativeApiV8 was installed without a UI scheduler.");
             }
 
             std::shared_ptr<Function> callback;
@@ -106,6 +124,7 @@ class NativeApiHostObject final : public HostObject {
             }
 
             Runtime* runtimePtr = &runtime;
+            std::thread::id jsThreadId = bridge->jsThreadId();
             auto promiseCtor =
                 runtime.global().getPropertyAsFunction(runtime, "Promise");
             return promiseCtor.callAsConstructor(
@@ -113,7 +132,7 @@ class NativeApiHostObject final : public HostObject {
                 Function::createFromHostFunction(
                     runtime, PropNameID::forAscii(runtime, "runOnUIPromise"),
                     2,
-                    [scheduler, runtimePtr, callback](
+                    [scheduler, runtimePtr, callback, jsThreadId](
                         Runtime& promiseRuntime, const Value&,
                         const Value* promiseArgs,
                         size_t promiseArgc) -> Value {
@@ -137,7 +156,7 @@ class NativeApiHostObject final : public HostObject {
                         return Value::undefined();
                       }
 
-                      scheduler->invokeOnJS([runtimePtr, callback, resolve, reject]() {
+                      auto runCallback = [runtimePtr, callback, resolve, reject]() {
                         try {
                           {
                             ScopedNativeApiUINativeCallDispatch uiDispatch;
@@ -149,7 +168,12 @@ class NativeApiHostObject final : public HostObject {
                               *runtimePtr,
                               String::createFromUtf8(*runtimePtr, error.what()));
                         }
-                      });
+                      };
+                      if (std::this_thread::get_id() == jsThreadId) {
+                        runCallback();
+                      } else {
+                        scheduler->invokeOnJS(std::move(runCallback));
+                      }
 
                       return Value::undefined();
                     }));
@@ -224,7 +248,7 @@ class NativeApiHostObject final : public HostObject {
           runtime, PropNameID::forAscii(runtime, "__extendClass"), 2,
           [bridge](Runtime& runtime, const Value&, const Value* args,
                    size_t count) -> Value {
-            return extendNativeApiDirectClass(runtime, bridge, args, count);
+            return extendNativeApiV8Class(runtime, bridge, args, count);
           });
     }
     if (property == "__invokeBase") {
@@ -233,7 +257,100 @@ class NativeApiHostObject final : public HostObject {
           runtime, PropNameID::forAscii(runtime, "__invokeBase"), 3,
           [bridge](Runtime& runtime, const Value&, const Value* args,
                    size_t count) -> Value {
-            return invokeNativeApiDirectBaseMethod(runtime, bridge, args, count);
+            return invokeNativeApiV8BaseMethod(runtime, bridge, args, count);
+          });
+    }
+    if (property == "__makeSelectorGroupFunction") {
+      auto bridge = bridge_;
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "__makeSelectorGroupFunction"),
+          3,
+          [bridge](Runtime& runtime, const Value&, const Value* args,
+                   size_t count) -> Value {
+            if (count < 3 || !args[1].isBool() || !args[2].isObject() ||
+                !args[2].asObject(runtime).isArray(runtime)) {
+              throw JSError(
+                  runtime,
+                  "__makeSelectorGroupFunction expects class, receiver kind, "
+                  "and selector table.");
+            }
+
+            Class lookupClass = classFromEngineValue(runtime, args[0]);
+            if (lookupClass == Nil) {
+              throw JSError(runtime,
+                            "__makeSelectorGroupFunction class is invalid.");
+            }
+
+            bool receiverIsClass = args[1].getBool();
+            Array selectorTable = args[2].asObject(runtime).getArray(runtime);
+            size_t selectorCount = selectorTable.size(runtime);
+            auto selectors =
+                std::make_shared<
+                    std::vector<NativeApiV8SelectorGroupEntry>>(
+                    selectorCount);
+            for (size_t i = 0; i < selectorCount; i++) {
+              Value selectorValue = selectorTable.getValueAtIndex(runtime, i);
+              if (selectorValue.isString()) {
+                (*selectors)[i].selectorName =
+                    selectorValue.asString(runtime).utf8(runtime);
+              } else if (selectorValue.isObject()) {
+                Object descriptor = selectorValue.asObject(runtime);
+                Value selectorNameValue =
+                    descriptor.getProperty(runtime, "selectorName");
+                if (!selectorNameValue.isString()) {
+                  continue;
+                }
+                NativeApiMember member;
+                member.selectorName =
+                    selectorNameValue.asString(runtime).utf8(runtime);
+                Value nameValue = descriptor.getProperty(runtime, "name");
+                if (nameValue.isString()) {
+                  member.name = nameValue.asString(runtime).utf8(runtime);
+                }
+                Value setterSelectorNameValue =
+                    descriptor.getProperty(runtime, "setterSelectorName");
+                if (setterSelectorNameValue.isString()) {
+                  member.setterSelectorName =
+                      setterSelectorNameValue.asString(runtime).utf8(runtime);
+                }
+                Value signatureOffsetValue =
+                    descriptor.getProperty(runtime, "signatureOffset");
+                if (signatureOffsetValue.isNumber()) {
+                  member.signatureOffset = static_cast<MDSectionOffset>(
+                      signatureOffsetValue.getNumber());
+                }
+                Value setterSignatureOffsetValue =
+                    descriptor.getProperty(runtime, "setterSignatureOffset");
+                if (setterSignatureOffsetValue.isNumber()) {
+                  member.setterSignatureOffset = static_cast<MDSectionOffset>(
+                      setterSignatureOffsetValue.getNumber());
+                }
+                Value flagsValue = descriptor.getProperty(runtime, "flags");
+                if (flagsValue.isNumber()) {
+                  member.flags = static_cast<metagen::MDMemberFlag>(
+                      static_cast<uint32_t>(flagsValue.getNumber()));
+                }
+                Value propertyValue = descriptor.getProperty(runtime, "property");
+                if (propertyValue.isBool()) {
+                  member.property = propertyValue.getBool();
+                }
+                Value readonlyValue = descriptor.getProperty(runtime, "readonly");
+                if (readonlyValue.isBool()) {
+                  member.readonly = readonlyValue.getBool();
+                }
+                (*selectors)[i].selectorName = member.selectorName;
+                (*selectors)[i].member = std::move(member);
+                (*selectors)[i].hasMember = true;
+              }
+            }
+
+            auto preparedInvocations = std::make_shared<std::vector<
+                std::shared_ptr<NativeApiV8PreparedObjCInvocation>>>(
+		                selectors->size());
+
+            return CreateNativeApiV8SelectorGroupFunction(
+                runtime, bridge, lookupClass, receiverIsClass, selectors,
+                preparedInvocations);
           });
     }
     if (property == "__rememberClassWrapper") {
@@ -245,7 +362,7 @@ class NativeApiHostObject final : public HostObject {
             if (count < 2) {
               return Value::undefined();
             }
-            Class cls = classFromDirectValue(runtime, args[0]);
+            Class cls = classFromEngineValue(runtime, args[0]);
             if (cls == Nil) {
               return Value::undefined();
             }
@@ -273,6 +390,17 @@ class NativeApiHostObject final : public HostObject {
             }
             bridge->setObjectExpando(runtime, object,
                                      "__nativeApiClassWrapper", args[1]);
+            if (args[1].isObject()) {
+              Object classWrapper = args[1].asObject(runtime);
+              Value prototypeValue =
+                  classWrapper.getProperty(runtime, "prototype");
+              if (prototypeValue.isObject()) {
+                Object instanceObject = args[0].asObject(runtime);
+                Object prototype = prototypeValue.asObject(runtime);
+                SetNativeApiV8ObjectPrototype(runtime, instanceObject,
+                                                 prototype);
+              }
+            }
             return Value::undefined();
           });
     }
@@ -299,9 +427,9 @@ class NativeApiHostObject final : public HostObject {
               throw JSError(runtime,
                                            "CC_SHA256 is not available.");
             }
-            NativeApiDirectArgumentFrame frame(3);
-            void* data = pointerFromDirectValue(runtime, args[0], frame);
-            void* output = pointerFromDirectValue(runtime, args[2], frame);
+            NativeApiV8ArgumentFrame frame(3);
+            void* data = pointerFromEngineValue(runtime, args[0], frame);
+            void* output = pointerFromEngineValue(runtime, args[2], frame);
             using CC_SHA256_Fn = unsigned char* (*)(const void*, unsigned long,
                                                     unsigned char*);
             auto fn = reinterpret_cast<CC_SHA256_Fn>(symbol);
@@ -323,12 +451,15 @@ class NativeApiHostObject final : public HostObject {
             if (symbol == nullptr) {
               return Value::null();
             }
+            auto prepared =
+                std::make_shared<NativeApiV8PreparedCFunctionInvocation>();
+            prepared->symbol = *symbol;
             auto function = Function::createFromHostFunction(
                 runtime, PropNameID::forAscii(runtime, symbol->name), 0,
-                [bridge, symbol = *symbol](Runtime& runtime, const Value&,
-                                           const Value* args,
-                                           size_t count) -> Value {
-                  return callCFunction(runtime, bridge, symbol, args, count);
+                [bridge, prepared](Runtime& runtime, const Value&,
+                                   const Value* args,
+                                   size_t count) -> Value {
+                  return callCFunction(runtime, bridge, prepared, args, count);
             });
             function.setProperty(runtime, "kind", makeString(runtime, "function"));
             function.setProperty(runtime, "nativeName",
@@ -420,13 +551,16 @@ class NativeApiHostObject final : public HostObject {
     }
 
     if (const NativeApiSymbol* functionSymbol = bridge_->findFunction(property)) {
+      auto prepared =
+          std::make_shared<NativeApiV8PreparedCFunctionInvocation>();
+      prepared->symbol = *functionSymbol;
       auto bridge = bridge_;
       Function function = Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
-          [bridge, symbol = *functionSymbol](Runtime& runtime, const Value&,
-                                             const Value* args,
-                                             size_t count) -> Value {
-            return callCFunction(runtime, bridge, symbol, args, count);
+          [bridge, prepared](Runtime& runtime, const Value&,
+                             const Value* args,
+                             size_t count) -> Value {
+            return callCFunction(runtime, bridge, prepared, args, count);
           });
       function.setProperty(runtime, "kind", makeString(runtime, "function"));
       function.setProperty(runtime, "nativeName",
@@ -476,6 +610,7 @@ class NativeApiHostObject final : public HostObject {
     addPropertyName(runtime, names, "getClass");
     addPropertyName(runtime, names, "__extendClass");
     addPropertyName(runtime, names, "__invokeBase");
+    addPropertyName(runtime, names, "__makeSelectorGroupFunction");
     addPropertyName(runtime, names, "__rememberClassWrapper");
     addPropertyName(runtime, names, "__rememberObjectClassWrapper");
     addPropertyName(runtime, names, "getFunction");
@@ -564,5 +699,5 @@ class NativeApiHostObject final : public HostObject {
     return metadata;
   }
 
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
+  std::shared_ptr<NativeApiV8Bridge> bridge_;
 };

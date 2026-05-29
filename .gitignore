@@ -72,4 +72,4 @@ NativeScript/ffi/*/GeneratedSignatureDispatch.inc.stamp
 packages/react-native/dist/
 packages/react-native/ios/vendor/
 packages/react-native/metadata/
-packages/react-native/native-api-jsi/
+packages/react-native/native-api/

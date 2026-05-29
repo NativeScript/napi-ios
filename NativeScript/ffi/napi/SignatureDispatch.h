@@ -4,7 +4,7 @@
 #include <objc/runtime.h>
 
 #include "Cif.h"
-#include "SignatureDispatchCore.h"
+#include "ffi/shared/SignatureDispatchCore.h"
 #include "js_native_api.h"
 
 namespace nativescript {
@@ -39,34 +39,33 @@ struct CFunctionNapiDispatchEntry {
 #define NS_HAS_GENERATED_SIGNATURE_NAPI_DISPATCH 0
 #endif
 
-#ifndef NS_GSD_BACKEND_V8
-#define NS_GSD_BACKEND_V8 0
-#endif
-
-#ifndef NS_GSD_BACKEND_JSC
-#define NS_GSD_BACKEND_JSC 0
-#endif
-
-#ifndef NS_GSD_BACKEND_QUICKJS
-#define NS_GSD_BACKEND_QUICKJS 0
-#endif
-
 #ifndef NS_GSD_BACKEND_HERMES
 #define NS_GSD_BACKEND_HERMES 0
 #endif
 
-#ifndef NS_GSD_BACKEND_ENGINE_DIRECT
-#define NS_GSD_BACKEND_ENGINE_DIRECT 0
+#ifndef NS_GSD_BACKEND_PREPARED
+#define NS_GSD_BACKEND_PREPARED 0
 #endif
 
-#ifndef NS_GSD_BACKEND_DIRECT_PREPARED
-#define NS_GSD_BACKEND_DIRECT_PREPARED 0
-#endif
+#define NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH \
+  (NS_GSD_BACKEND_HERMES || NS_GSD_BACKEND_NAPI || NS_GSD_BACKEND_PREPARED)
 
 #if defined(__has_include)
 #if __has_include("GeneratedSignatureDispatch.inc")
 #include "GeneratedSignatureDispatch.inc"
+#elif NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH
+#error GeneratedSignatureDispatch.inc is required when generated signature dispatch is enabled.
 #endif
+#elif NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH
+#error __has_include is required to validate GeneratedSignatureDispatch.inc.
+#endif
+
+#if NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH && !NS_HAS_GENERATED_SIGNATURE_DISPATCH
+#error GeneratedSignatureDispatch.inc did not enable this generated signature dispatch backend.
+#endif
+
+#if NS_GSD_BACKEND_NAPI && !NS_HAS_GENERATED_SIGNATURE_NAPI_DISPATCH
+#error GeneratedSignatureDispatch.inc did not enable Node-API generated signature dispatch.
 #endif
 
 #if !NS_HAS_GENERATED_SIGNATURE_DISPATCH

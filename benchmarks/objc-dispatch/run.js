@@ -22,7 +22,7 @@ function parseArgs(argv) {
     runtime: "all",
     iterations: 250000,
     warmupIterations: undefined,
-    includeNapiGsdOff: false,
+    includeGsdOff: false,
     includeLegacyAotOff: false,
     legacyRepo: process.env.NS_LEGACY_IOS_REPO || defaultLegacyRepo,
     metadataPath: process.env.METADATA_PATH || defaultMetadataPath,
@@ -30,8 +30,8 @@ function parseArgs(argv) {
     workRoot: defaultWorkRoot,
     timeoutMs: 120000,
     buildTimeoutMs: 15 * 60 * 1000,
-    napiPackageTgz: "",
-    napiVariantLabel: "",
+    packageTgz: "",
+    variantLabel: "",
     skipBuild: false,
     compareResults: ""
   };
@@ -58,11 +58,11 @@ function parseArgs(argv) {
     else if (arg.startsWith("--timeout-ms=")) args.timeoutMs = Number(arg.slice("--timeout-ms=".length));
     else if (arg === "--build-timeout-ms") args.buildTimeoutMs = Number(next());
     else if (arg.startsWith("--build-timeout-ms=")) args.buildTimeoutMs = Number(arg.slice("--build-timeout-ms=".length));
-    else if (arg === "--napi-package-tgz") args.napiPackageTgz = path.resolve(next());
-    else if (arg.startsWith("--napi-package-tgz=")) args.napiPackageTgz = path.resolve(arg.slice("--napi-package-tgz=".length));
-    else if (arg === "--napi-variant-label") args.napiVariantLabel = next();
-    else if (arg.startsWith("--napi-variant-label=")) args.napiVariantLabel = arg.slice("--napi-variant-label=".length);
-    else if (arg === "--include-napi-gsd-off") args.includeNapiGsdOff = true;
+    else if (arg === "--package-tgz") args.packageTgz = path.resolve(next());
+    else if (arg.startsWith("--package-tgz=")) args.packageTgz = path.resolve(arg.slice("--package-tgz=".length));
+    else if (arg === "--variant-label") args.variantLabel = next();
+    else if (arg.startsWith("--variant-label=")) args.variantLabel = arg.slice("--variant-label=".length);
+    else if (arg === "--include-gsd-off") args.includeGsdOff = true;
     else if (arg === "--include-legacy-aot-off") args.includeLegacyAotOff = true;
     else if (arg === "--skip-build") args.skipBuild = true;
     else if (arg === "--compare-results") args.compareResults = path.resolve(next());
@@ -90,15 +90,15 @@ function printUsage() {
   console.log(`Usage: node benchmarks/objc-dispatch/run.js [options]
 
 Options:
-  --runtime all|napi-node|napi-ios|legacy-ios
+  --runtime all|napi-node|ios-package|legacy-ios
   --iterations N
   --warmup N
   --legacy-repo PATH          Default: ${defaultLegacyRepo}
   --metadata-path PATH        Used by napi-node. Default: ${defaultMetadataPath}
   --destination DEST_OR_UDID  iOS simulator destination or UDID
-  --napi-package-tgz PATH     @nativescript/ios package tgz for napi-ios
-  --napi-variant-label LABEL  Prefix N-API iOS report variants with an engine/backend label
-  --include-napi-gsd-off      Also run N-API with generated signature dispatch disabled
+  --package-tgz PATH          @nativescript/ios* package tgz for iOS package benchmarks
+  --variant-label LABEL       Report iOS package results as this engine/backend label
+  --include-gsd-off           Also run iOS packages with generated signature dispatch disabled
   --include-legacy-aot-off    Also run legacy iOS V8 with AOT disabled
   --skip-build                Reuse existing derived-data app builds
   --compare-results PATH      Print report and comparison tables from a saved result JSON
@@ -288,11 +288,11 @@ function reportLabel(report) {
   return `${report.runtime} (${report.variant})`;
 }
 
-function labeledNapiVariant(options, variant) {
-  return options.napiVariantLabel ? `${options.napiVariantLabel} ${variant}` : variant;
+function labeledPackageVariant(options, variant) {
+  return options.variantLabel ? `${options.variantLabel} ${variant}` : variant;
 }
 
-function napiVariantGroup(variant) {
+function gsdVariantGroup(variant) {
   const match = String(variant).match(/^(?:(.*)\s+)?(gsd-on|gsd-off)$/);
   if (!match) {
     return null;
@@ -371,28 +371,25 @@ function printComparisons(reports) {
   const baseline = reports[0];
   printTotalsComparison(reports, baseline);
 
-  const napiGroups = new Map();
+  const gsdGroups = new Map();
   for (const report of reports) {
-    if (report.runtime !== "napi-ios") {
-      continue;
-    }
-    const group = napiVariantGroup(report.variant);
+    const group = gsdVariantGroup(report.variant);
     if (!group) {
       continue;
     }
-    const key = group.label;
-    if (!napiGroups.has(key)) {
-      napiGroups.set(key, new Map());
+    const key = group.label || report.runtime;
+    if (!gsdGroups.has(key)) {
+      gsdGroups.set(key, new Map());
     }
-    napiGroups.get(key).set(group.kind, report);
+    gsdGroups.get(key).set(group.kind, report);
   }
 
-  let napiGsdOn = null;
-  for (const group of napiGroups.values()) {
+  let firstGsdOn = null;
+  for (const group of gsdGroups.values()) {
     const gsdOn = group.get("gsd-on");
     const gsdOff = group.get("gsd-off");
-    if (gsdOn && !napiGsdOn) {
-      napiGsdOn = gsdOn;
+    if (gsdOn && !firstGsdOn) {
+      firstGsdOn = gsdOn;
     }
     if (gsdOn && gsdOff) {
       printPairComparison(gsdOn, gsdOff);
@@ -400,13 +397,13 @@ function printComparisons(reports) {
   }
 
   const legacyAotOn = reports.find((report) => report.runtime === "legacy-ios" && report.variant === "aot-on");
-  if (napiGsdOn && legacyAotOn) {
-    printPairComparison(napiGsdOn, legacyAotOn);
+  if (firstGsdOn && legacyAotOn) {
+    printPairComparison(firstGsdOn, legacyAotOn);
   }
 
   const legacyAotOff = reports.find((report) => report.runtime === "legacy-ios" && report.variant === "aot-off");
-  if (napiGsdOn && legacyAotOff) {
-    printPairComparison(napiGsdOn, legacyAotOff);
+  if (firstGsdOn && legacyAotOff) {
+    printPairComparison(firstGsdOn, legacyAotOff);
   }
 }
 
@@ -727,7 +724,7 @@ async function runLegacyIOS(options, variant = "aot-on") {
   }
 }
 
-function findDefaultNapiPackage() {
+function findDefaultIOSPackage() {
   const distDir = path.join(repoRoot, "packages/ios/dist");
   const names = fs.readdirSync(distDir)
     .filter((name) => /^nativescript-ios-.*\.tgz$/.test(name))
@@ -736,6 +733,10 @@ function findDefaultNapiPackage() {
     throw new Error(`No @nativescript/ios package tgz found in ${distDir}`);
   }
   return path.join(distDir, names[names.length - 1]);
+}
+
+function packageRuntimeLabel(options) {
+  return options.variantLabel || "ios-package";
 }
 
 function replaceInTextFiles(root, search, replacement) {
@@ -786,11 +787,11 @@ function renamePlaceholderPaths(root, search, replacement) {
   }
 }
 
-function scaffoldNapiIOSApp(options, variant, packageTgz, reportVariant = variant) {
+function scaffoldIOSPackageApp(options, variant, packageTgz, reportVariant = variant) {
   const appName = "NativeScriptDispatchBench";
-  const bundleId = "org.nativescript.bench.dispatch.napi";
-  const tgz = packageTgz || options.napiPackageTgz || findDefaultNapiPackage();
-  const root = path.join(options.workRoot, "apps", `napi-ios-${variant}`);
+  const bundleId = "org.nativescript.bench.dispatch.iospackage";
+  const tgz = packageTgz || options.packageTgz || findDefaultIOSPackage();
+  const root = path.join(options.workRoot, "apps", `ios-package-${variant}`);
   rmrf(root);
   ensureDir(root);
   run("tar", ["-xzf", tgz, "-C", root]);
@@ -828,7 +829,7 @@ function scaffoldNapiIOSApp(options, variant, packageTgz, reportVariant = varian
   ensureDir(appDir);
   fs.writeFileSync(path.join(appDir, "package.json"), JSON.stringify({ main: "index" }, null, 2) + "\n");
   fs.copyFileSync(benchmarkFile, path.join(appDir, path.basename(benchmarkFile)));
-  writeJsonRunner(path.join(appDir, "index.js"), "napi-ios", reportVariant, options);
+  writeJsonRunner(path.join(appDir, "index.js"), packageRuntimeLabel(options), reportVariant, options);
 
   const zipPath = path.join(frameworkRoot, "internal/XCFrameworks.zip");
   run("unzip", ["-q", "-o", zipPath, "-d", path.join(frameworkRoot, "internal")]);
@@ -870,9 +871,9 @@ function writeInfoPlist(plistPath) {
 `);
 }
 
-async function runNapiIOS(options, variant, packageTgz, reportVariant = variant) {
-  const app = scaffoldNapiIOSApp(options, variant, packageTgz, reportVariant);
-  const derivedDataPath = path.join(options.workRoot, `derived-data/napi-ios-${variant}`);
+async function runIOSPackage(options, variant, packageTgz, reportVariant = variant) {
+  const app = scaffoldIOSPackageApp(options, variant, packageTgz, reportVariant);
+  const derivedDataPath = path.join(options.workRoot, `derived-data/ios-package-${variant}`);
   const udid = pickSimulator(options.destination);
 
   bootSimulator(udid);
@@ -914,19 +915,19 @@ async function main() {
 
   const reports = [];
   const runtimes = options.runtime === "all"
-    ? ["napi-node", "napi-ios", "legacy-ios"]
+    ? ["napi-node", "ios-package", "legacy-ios"]
     : options.runtime.split(",").map((item) => item.trim()).filter(Boolean);
 
   for (const runtime of runtimes) {
     if (runtime === "napi-node") {
       reports.push(runNapiNode(options, "gsd-on"));
-      if (options.includeNapiGsdOff) {
+      if (options.includeGsdOff) {
         reports.push(runNapiNode(options, "gsd-off"));
       }
-    } else if (runtime === "napi-ios") {
-      reports.push(await runNapiIOS(options, "gsd-on", undefined, labeledNapiVariant(options, "gsd-on")));
-      if (options.includeNapiGsdOff) {
-        reports.push(await runNapiIOS(options, "gsd-off", undefined, labeledNapiVariant(options, "gsd-off")));
+    } else if (runtime === "ios-package") {
+      reports.push(await runIOSPackage(options, "gsd-on", undefined, labeledPackageVariant(options, "gsd-on")));
+      if (options.includeGsdOff) {
+        reports.push(await runIOSPackage(options, "gsd-off", undefined, labeledPackageVariant(options, "gsd-off")));
       }
     } else if (runtime === "legacy-ios") {
       reports.push(await runLegacyIOS(options, "aot-on"));

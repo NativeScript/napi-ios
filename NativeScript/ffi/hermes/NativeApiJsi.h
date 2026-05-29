@@ -1,32 +1,14 @@
 #ifndef NATIVE_API_JSI_H
 #define NATIVE_API_JSI_H
 
-#include <functional>
-#include <memory>
-#include <utility>
-
 #include <jsi/jsi.h>
+
+#include "ffi/shared/NativeApiBackendConfig.h"
 
 namespace nativescript {
 
-class NativeApiJsiScheduler {
- public:
-  virtual ~NativeApiJsiScheduler() = default;
-  virtual void invokeOnJS(std::function<void()> task) = 0;
-  virtual void invokeOnUI(std::function<void()> task) = 0;
-};
-
-struct NativeApiJsiConfig {
-  const char* metadataPath = nullptr;
-  const void* metadataPtr = nullptr;
-  const char* globalName = "__nativeScriptNativeApi";
-  std::shared_ptr<NativeApiJsiScheduler> scheduler = nullptr;
-  std::function<void(std::function<void()>)> nativeInvocationInvoker = nullptr;
-  std::function<void(std::function<void()>)> nativeCallbackInvoker = nullptr;
-  std::function<void(std::function<void()>)> jsThreadCallbackInvoker = nullptr;
-  bool invokeCallbacksOnNativeCallerThread = false;
-  bool installGlobalSymbols = false;
-};
+using NativeApiJsiScheduler = NativeApiBackendScheduler;
+using NativeApiJsiConfig = NativeApiBackendConfig;
 
 facebook::jsi::Object CreateNativeApiJSI(
     facebook::jsi::Runtime& runtime,

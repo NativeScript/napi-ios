@@ -671,7 +671,7 @@ void Runtime::Init(bool isWorker) {
   nativescript_init(env_, metadata_path, RuntimeConfig.MetadataPtr);
 #endif
 
-#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_V8)
+#if NS_FFI_BACKEND_V8 && defined(TARGET_ENGINE_V8)
   {
     NativeApiV8Config nativeApiV8Config;
     nativeApiV8Config.metadataPath = metadata_path;
@@ -694,9 +694,9 @@ void Runtime::Init(bool isWorker) {
         };
     InstallNativeApiV8(env_->isolate, env_->context(), nativeApiV8Config);
   }
-#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_V8
+#endif  // NS_FFI_BACKEND_V8 && TARGET_ENGINE_V8
 
-#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_HERMES)
+#if NS_FFI_BACKEND_HERMES && defined(TARGET_ENGINE_HERMES)
   if (auto* jsiRuntime = js_get_jsi_runtime(env_)) {
     NativeApiJsiConfig nativeApiJsiConfig;
     nativeApiJsiConfig.metadataPath = metadata_path;
@@ -719,9 +719,9 @@ void Runtime::Init(bool isWorker) {
         };
     InstallNativeApiJSI(*jsiRuntime, nativeApiJsiConfig);
   }
-#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_HERMES
+#endif  // NS_FFI_BACKEND_HERMES && TARGET_ENGINE_HERMES
 
-#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_JSC)
+#if NS_FFI_BACKEND_JSC && defined(TARGET_ENGINE_JSC)
   {
     NativeApiJSCConfig nativeApiJSCConfig;
     nativeApiJSCConfig.metadataPath = metadata_path;
@@ -744,9 +744,9 @@ void Runtime::Init(bool isWorker) {
         };
     InstallNativeApiJSC(env_->context, nativeApiJSCConfig);
   }
-#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_JSC
+#endif  // NS_FFI_BACKEND_JSC && TARGET_ENGINE_JSC
 
-#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_QUICKJS)
+#if NS_FFI_BACKEND_QUICKJS && defined(TARGET_ENGINE_QUICKJS)
   {
     NativeApiQuickJSConfig nativeApiQuickJSConfig;
     nativeApiQuickJSConfig.metadataPath = metadata_path;
@@ -769,7 +769,7 @@ void Runtime::Init(bool isWorker) {
         };
     InstallNativeApiQuickJS(qjs_get_context(env_), nativeApiQuickJSConfig);
   }
-#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_QUICKJS
+#endif  // NS_FFI_BACKEND_QUICKJS && TARGET_ENGINE_QUICKJS
 
   napi_close_handle_scope(env_, scope);
 }

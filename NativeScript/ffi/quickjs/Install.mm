@@ -1,10 +1,10 @@
-Object CreateNativeApiDirect(Runtime& runtime, const NativeApiDirectConfig& config) {
-  auto bridge = std::make_shared<NativeApiDirectBridge>(config);
+Object CreateNativeApiQuickJS(Runtime& runtime, const NativeApiQuickJSConfig& config) {
+  auto bridge = std::make_shared<NativeApiQuickJSBridge>(config);
   return Object::createFromHostObject(
       runtime, std::make_shared<NativeApiHostObject>(std::move(bridge)));
 }
 
-void NativeApiDirectWriteSmokeStage(const char* stage) {
+void NativeApiQuickJSWriteSmokeStage(const char* stage) {
   const char* enabled = getenv("NATIVESCRIPT_RN_TURBO_SMOKE_MARKER");
   if (enabled == nullptr || enabled[0] == '\0') {
     return;
@@ -88,9 +88,9 @@ std::string jsStringLiteral(const char* value) {
   return result;
 }
 
-void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalName) {
-  NativeApiDirectWriteSmokeStage("direct:globals:before-eval");
-  static const char* GlobalInstaller = R"Direct_GLOBALS(
+void InstallNativeApiQuickJSGlobalSymbols(Runtime& runtime, const char* globalName) {
+  NativeApiQuickJSWriteSmokeStage("engine:globals:before-eval");
+  static const char* GlobalInstaller = R"Engine_GLOBALS(
 (function(nativeApiGlobalName) {
   'use strict';
   var api = globalThis[nativeApiGlobalName];
@@ -238,28 +238,6 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
     return undefined;
   }
 
-	  Object.defineProperty(globalThis, '__nativeScriptGetNativeApiPrototypeProperty', {
-	    configurable: false,
-	    enumerable: false,
-	    writable: false,
-	    value: function(className, receiver, property) {
-	      var descriptor = findPrototypeDescriptor(className, property);
-	      if (!descriptor) {
-	        return { found: false };
-	      }
-	      if (typeof descriptor.get === 'function') {
-	        return { found: true, value: descriptor.get.call(receiver) };
-	      }
-	      if (typeof descriptor.value === 'function') {
-	        return { found: true, value: descriptor.value.bind(receiver) };
-	      }
-	      if ('value' in descriptor) {
-	        return { found: true, value: descriptor.value };
-	      }
-	      return { found: true, value: undefined };
-	    }
-	  });
-
   Object.defineProperty(globalThis, '__nativeScriptCreateNativeApiIterator', {
     configurable: false,
     enumerable: false,
@@ -320,29 +298,54 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
   }
 
   function setDescriptorValue(target, property, receiver, value) {
-    var descriptor = Object.getOwnPropertyDescriptor(target, property);
-    if (!descriptor) {
+    for (var current = target; current; current = Object.getPrototypeOf(current)) {
+      var descriptor = Object.getOwnPropertyDescriptor(current, property);
+      if (!descriptor) {
+        continue;
+      }
+      if (typeof descriptor.set === 'function') {
+        descriptor.set.call(receiver, value);
+        return true;
+      }
+      if (descriptor.writable) {
+        if (receiver && receiver !== current) {
+          Object.defineProperty(receiver, property, {
+            configurable: true,
+            enumerable: true,
+            writable: true,
+            value: value
+          });
+        } else {
+          current[property] = value;
+        }
+        return true;
+      }
       return false;
     }
-	    if (typeof descriptor.set === 'function') {
-	      descriptor.set.call(receiver, value);
-	      return true;
-	    }
-	    if (descriptor.writable) {
-	      if (receiver && receiver !== target) {
-	        Object.defineProperty(receiver, property, {
-	          configurable: true,
-	          enumerable: true,
-	          writable: true,
-	          value: value
-	        });
-	      } else {
-	        target[property] = value;
-	      }
-	      return true;
-	    }
-	    return false;
-	  }
+    return false;
+  }
+
+  function setInheritedNativeClassValue(target, property, value) {
+    for (var current = Object.getPrototypeOf(target);
+         current && current !== Function.prototype;
+         current = Object.getPrototypeOf(current)) {
+      var nativeClassValue;
+      try {
+        nativeClassValue = current.__nativeApiClass;
+      } catch (_) {
+        nativeClassValue = null;
+      }
+      if (!nativeClassValue) {
+        continue;
+      }
+      try {
+        nativeClassValue[property] = value;
+        return true;
+      } catch (_) {
+      }
+    }
+    return false;
+  }
 
   function isConstructorOptions(value) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) {
@@ -452,7 +455,9 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
   }
 
   function initializerMembers(nativeClass, argumentCount) {
-    var members = nativeClass.__instanceMembers || [];
+    var metadataMembers = nativeClass.__instanceMembers || [];
+    var runtimeMembers = nativeClass.__runtimeInstanceMembers || [];
+    var members = metadataMembers.concat(runtimeMembers);
     var result = [];
     for (var i = 0; i < members.length; i++) {
       var member = members[i];
@@ -518,7 +523,7 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
       /Objective-C selector is not available/.test(String(error.message || error));
   }
 
-  function constructNativeInstance(nativeClass, args) {
+  function constructNativeInstance(nativeClass, args, rememberInstance) {
     if (args.length === 1 &&
         args[0] &&
         typeof args[0] === 'object' &&
@@ -554,6 +559,9 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
       throw new Error('Native class cannot be allocated');
     }
     var instance = nativeClass.alloc();
+    if (typeof rememberInstance === 'function') {
+      instance = rememberInstance(instance);
+    }
     if (initializer.selectorName === 'init') {
       if (typeof instance.init !== 'function') {
         throw new Error('No initializer found that matches constructor invocation.');
@@ -562,11 +570,13 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
     }
     try {
       if (initializer.name && typeof instance[initializer.name] === 'function') {
-        return instance[initializer.name].apply(instance, actualArgs);
+        return instance[initializer.name](...actualArgs);
       }
       var invokeArgs = [initializer.selectorName];
-      Array.prototype.push.apply(invokeArgs, actualArgs);
-      return instance.invoke.apply(instance, invokeArgs);
+      for (var invokeArgIndex = 0; invokeArgIndex < actualArgs.length; invokeArgIndex++) {
+        invokeArgs.push(actualArgs[invokeArgIndex]);
+      }
+      return instance.invoke(...invokeArgs);
     } catch (error) {
       if (unavailableInitializerError(error)) {
         throw new Error('No initializer found that matches constructor invocation.');
@@ -595,49 +605,45 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
         return cached;
       }
     }
-	    var constructable = function NativeScriptNativeClass() {
-	      var args = Array.prototype.slice.call(arguments);
-	      var redirectConstructor = this && this.constructor;
-	      if (redirectConstructor &&
-	          redirectConstructor !== constructable &&
-	          redirectConstructor !== wrapper &&
-	          typeof redirectConstructor.__nativeApiEnsureClass === 'function') {
-	        var redirectedWrapper = redirectConstructor.__nativeApiEnsureClass();
-	        if (redirectedWrapper &&
-	            redirectedWrapper !== constructable &&
-	            redirectedWrapper !== wrapper &&
-	            typeof redirectedWrapper.apply === 'function') {
-	          return rememberClassOnInstance(
-	            redirectedWrapper.apply(this, args),
-	            redirectConstructor
-	          );
-	        }
-	      }
-		      if (args.length > 0) {
-			return rememberInstanceClass(constructNativeInstance(nativeClass, args));
-		      }
-      if (typeof nativeClass.alloc !== 'function') {
-        throw new Error('Native class cannot be allocated');
+    var constructable = function NativeScriptNativeClass() {
+      var args = Array.prototype.slice.call(arguments);
+      var redirectConstructor = this && this.constructor;
+      if (redirectConstructor &&
+          redirectConstructor !== constructable &&
+          redirectConstructor !== wrapper &&
+          typeof redirectConstructor.__nativeApiEnsureClass === 'function') {
+        var redirectedWrapper = redirectConstructor.__nativeApiEnsureClass();
+        if (redirectedWrapper &&
+            redirectedWrapper !== constructable &&
+            redirectedWrapper !== wrapper &&
+            typeof redirectedWrapper === 'function') {
+          return rememberClassOnInstance(
+            redirectedWrapper.call(this, ...args),
+            redirectConstructor
+          );
+        }
       }
-      var instance = nativeClass.alloc();
-      if (instance && typeof instance.init === 'function') {
-        return rememberInstanceClass(instance.init());
+      if (args.length > 0) {
+        return rememberInstanceClass(constructNativeInstance(nativeClass, args, rememberInstanceClass));
       }
-      return rememberInstanceClass(instance);
-	    };
-		    function rememberInstanceClass(instance) {
-		      return rememberClassOnInstance(instance, wrapper || constructable);
-		    }
-	    try {
-	      Object.defineProperty(constructable, 'name', {
-	        configurable: true,
-	        enumerable: false,
-	        value: nativeClassName || nativeClass.name || 'NativeScriptNativeClass'
-	      });
-	    } catch (_) {
-	    }
-	    try {
-	      Object.defineProperty(constructable, 'extend', {
+      if (typeof nativeClass.new !== 'function') {
+        throw new Error('Native class cannot be initialized');
+      }
+      return rememberInstanceClass(nativeClass.new());
+    };
+    function rememberInstanceClass(instance) {
+      return rememberClassOnInstance(instance, wrapper || constructable);
+    }
+    try {
+      Object.defineProperty(constructable, 'name', {
+        configurable: true,
+        enumerable: false,
+        value: nativeClassName || nativeClass.name || 'NativeScriptNativeClass'
+      });
+    } catch (_) {
+    }
+    try {
+      Object.defineProperty(constructable, 'extend', {
         configurable: true,
         enumerable: false,
         writable: false,
@@ -695,7 +701,10 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
         enumerable: false,
         writable: true,
         value: function() {
-          return rememberInstanceClass(nativeClass.alloc.apply(nativeClass, arguments));
+          if (arguments.length !== 0) {
+            throw new Error('alloc does not take arguments; use invoke for an explicit Objective-C selector.');
+          }
+          return rememberInstanceClass(nativeClass.alloc());
         }
       });
     } catch (_) {
@@ -709,14 +718,10 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
           if (arguments.length !== 0) {
             throw new Error('new does not take arguments; use invoke for an explicit Objective-C selector.');
           }
-          if (typeof nativeClass.alloc !== 'function') {
-            throw new Error('Native class cannot be allocated');
+          if (typeof nativeClass.new !== 'function') {
+            throw new Error('Native class cannot be initialized');
           }
-          var instance = nativeClass.alloc();
-          if (instance && typeof instance.init === 'function') {
-            return rememberInstanceClass(instance.init());
-          }
-          return rememberInstanceClass(instance);
+          return rememberInstanceClass(nativeClass.new());
         }
       });
     } catch (_) {
@@ -741,17 +746,157 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
     }
     var basePrototypeTarget = {};
     var classMembersInstalled = false;
-    function installClassMembers(target, members, receiverIsClass) {
-      if (!target || !members || typeof members.length !== 'number') {
+    function selectorArgumentCount(selectorName) {
+      var count = 0;
+      if (typeof selectorName !== 'string') {
+        return count;
+      }
+      for (var i = 0; i < selectorName.length; i++) {
+        if (selectorName.charCodeAt(i) === 58) {
+          count++;
+        }
+      }
+      return count;
+    }
+    function selectorDescriptor(member, selectorName, signatureOffset, argumentCount, runtimeOnly) {
+      return {
+        name: member.name || '',
+        selectorName: selectorName || '',
+        setterSelectorName: member.setterSelectorName || '',
+        signatureOffset: typeof signatureOffset === 'number' ? signatureOffset : 0,
+        setterSignatureOffset: typeof member.setterSignatureOffset === 'number'
+          ? member.setterSignatureOffset
+          : 0,
+        flags: typeof member.flags === 'number' ? member.flags : 0,
+        property: !!member.property,
+        readonly: !!member.readonly,
+        argumentCount: typeof argumentCount === 'number'
+          ? argumentCount
+          : selectorArgumentCount(selectorName),
+        runtimeOnly: !!runtimeOnly
+      };
+    }
+    function addSelectorGroups(groups, members, runtimeOnly) {
+      if (!groups || !members || typeof members.length !== 'number') {
         return;
       }
       for (var i = 0; i < members.length; i++) {
         var member = members[i];
-        if (!member || !member.name || Object.prototype.hasOwnProperty.call(target, member.name)) {
+        if (!member || member.property || !member.name || !member.selectorName) {
           continue;
         }
-        try {
-          if (member.property) {
+        var argumentCount = typeof member.argumentCount === 'number'
+          ? member.argumentCount
+          : 0;
+        var group = groups[member.name];
+        if (!group) {
+          group = [];
+          groups[member.name] = group;
+        }
+        if (group[argumentCount] === undefined) {
+          group[argumentCount] = selectorDescriptor(
+            member,
+            member.selectorName,
+            member.signatureOffset,
+            argumentCount,
+            runtimeOnly
+          );
+        }
+      }
+    }
+    function installSelectorGroups(target, groups, receiverIsClass) {
+      if (!target || !groups) {
+        return;
+      }
+      for (var name in groups) {
+        if (!Object.prototype.hasOwnProperty.call(groups, name) ||
+            Object.prototype.hasOwnProperty.call(target, name)) {
+          continue;
+        }
+        var selectors = groups[name];
+        if (!selectors || !selectors.length) {
+          continue;
+        }
+        var hasMetadataSelector = false;
+        for (var selectorIndex = 0; selectorIndex < selectors.length; selectorIndex++) {
+          if (selectors[selectorIndex] && !selectors[selectorIndex].runtimeOnly) {
+            hasMetadataSelector = true;
+            break;
+          }
+        }
+        if (!hasMetadataSelector && receiverIsClass && name in target) {
+          continue;
+        }
+        var selectorFunction =
+            api.__makeSelectorGroupFunction(nativeClass, !!receiverIsClass, selectors);
+          Object.defineProperty(target, name, {
+            configurable: true,
+            enumerable: false,
+            writable: true,
+            value: receiverIsClass
+              ? (function(fn, memberName) {
+                  return function() {
+                    if (this && typeof this === 'object' && this.kind === 'object') {
+                      var baseArgs = [nativeClass, this, memberName];
+                      for (var baseArgIndex = 0; baseArgIndex < arguments.length; baseArgIndex++) {
+                        baseArgs.push(arguments[baseArgIndex]);
+                      }
+                      return api.__invokeBase(...baseArgs);
+                    }
+                    var args = [];
+                    for (var argIndex = 0; argIndex < arguments.length; argIndex++) {
+                      args.push(arguments[argIndex]);
+                    }
+                    return rememberInstanceClass(fn(...args));
+                  };
+                })(selectorFunction, name)
+              : selectorFunction
+          });
+      }
+    }
+    function installClassMembers(target, members, receiverIsClass, runtimeMembers) {
+      var hasMetadataMembers = members && typeof members.length === 'number';
+      var hasRuntimeMembers = runtimeMembers && typeof runtimeMembers.length === 'number';
+      if (!target || (!hasMetadataMembers && !hasRuntimeMembers)) {
+        return;
+      }
+      var selectorGroups = Object.create(null);
+      addSelectorGroups(selectorGroups, members, false);
+      addSelectorGroups(selectorGroups, runtimeMembers, true);
+      for (var i = 0; hasMetadataMembers && i < members.length; i++) {
+        var member = members[i];
+        if (!member || !member.name) {
+          continue;
+        }
+        if (member.property) {
+            var existingDescriptor = Object.getOwnPropertyDescriptor(target, member.name);
+            if (existingDescriptor &&
+                (typeof existingDescriptor.get === 'function' ||
+                 typeof existingDescriptor.set === 'function')) {
+              continue;
+            }
+            var getterFunction = member.selectorName
+              ? api.__makeSelectorGroupFunction(
+                  nativeClass,
+                  !!receiverIsClass,
+                  [selectorDescriptor(member, member.selectorName, member.signatureOffset, 0)]
+                )
+              : undefined;
+            var setterFunction = !member.readonly && member.setterSelectorName
+              ? api.__makeSelectorGroupFunction(
+                  nativeClass,
+                  !!receiverIsClass,
+                  [
+                    null,
+                    selectorDescriptor(
+                      member,
+                      member.setterSelectorName,
+                      member.setterSignatureOffset,
+                      1
+                    )
+                  ]
+                )
+              : undefined;
             var descriptor = {
               configurable: true,
               enumerable: false,
@@ -763,11 +908,11 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
                         : nativeClass[name];
                     };
                   })(member.name, member.selectorName)
-                : (function(name) {
+                : (getterFunction || (function(name) {
                     return function() {
                       return api.__invokeBase(nativeClass, this, name);
                     };
-                  })(member.name)
+                  })(member.name))
             };
             if (!member.readonly) {
               descriptor.set = receiverIsClass
@@ -779,49 +924,36 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
                       nativeClass[name] = value;
                     };
                   })(member.name, member.setterSelectorName)
-                : (function(name) {
+                : (setterFunction || (function(name) {
                     return function(value) {
                       return api.__invokeBase(nativeClass, this, name, value);
                     };
-                  })(member.name);
+                  })(member.name));
             }
             Object.defineProperty(target, member.name, descriptor);
-          } else {
-            Object.defineProperty(target, member.name, {
-              configurable: true,
-              enumerable: false,
-              writable: true,
-              value: receiverIsClass
-                ? (function(name) {
-                    return function() {
-                      if (this && typeof this === 'object' && this.kind === 'object') {
-                        var baseArgs = [nativeClass, this, name];
-                        Array.prototype.push.apply(baseArgs, arguments);
-                        return api.__invokeBase.apply(api, baseArgs);
-                      }
-                      return nativeClass[name].apply(nativeClass, arguments);
-                    };
-                  })(member.name)
-                : (function(name) {
-                    return function() {
-                      var args = [nativeClass, this, name];
-                      Array.prototype.push.apply(args, arguments);
-                      return api.__invokeBase.apply(api, args);
-                    };
-                  })(member.name)
-            });
-          }
-        } catch (_) {
+        } else {
+          continue;
         }
       }
+      installSelectorGroups(target, selectorGroups, receiverIsClass);
     }
     function installNativeClassMembersIfNeeded() {
       if (classMembersInstalled) {
         return;
       }
       classMembersInstalled = true;
-      installClassMembers(constructable, nativeClass.__staticMembers, true);
-      installClassMembers(basePrototypeTarget, nativeClass.__instanceMembers, false);
+      installClassMembers(
+        constructable,
+        nativeClass.__staticMembers,
+        true,
+        nativeClass.__runtimeStaticMembers
+      );
+      installClassMembers(
+        basePrototypeTarget,
+        nativeClass.__instanceMembers,
+        false,
+        nativeClass.__runtimeInstanceMembers
+      );
       try {
         delete constructable.__nativeApiInstallMembers;
       } catch (_) {
@@ -870,56 +1002,7 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
       }
     } catch (_) {
     }
-    constructable.prototype = typeof Proxy === 'function'
-      ? new Proxy(basePrototypeTarget, {
-          get: function(target, property, receiver) {
-            installNativeClassMembersIfNeeded();
-            if (property in target) {
-              return Reflect.get(target, property, receiver);
-            }
-            if (typeof property === 'symbol') {
-              return undefined;
-            }
-            return function() {
-              var args = [nativeClass, this, String(property)];
-              Array.prototype.push.apply(args, arguments);
-              return api.__invokeBase.apply(api, args);
-            };
-          },
-          set: function(target, property, value, receiver) {
-            if (property === 'prototype') {
-              target[property] = value;
-              return true;
-            }
-            if (setDescriptorValue(target, property, receiver, value)) {
-              return true;
-            }
-            if (receiver && receiver !== target) {
-              Object.defineProperty(receiver, property, {
-                configurable: true,
-                enumerable: true,
-                writable: true,
-                value: value
-              });
-              return true;
-            }
-            target[property] = value;
-            return true;
-          },
-          has: function(target, property) {
-            installNativeClassMembersIfNeeded();
-            return property in target;
-          },
-          ownKeys: function(target) {
-            installNativeClassMembersIfNeeded();
-            return Reflect.ownKeys(target);
-          },
-          getOwnPropertyDescriptor: function(target, property) {
-            installNativeClassMembersIfNeeded();
-            return Reflect.getOwnPropertyDescriptor(target, property);
-          }
-        })
-      : basePrototypeTarget;
+    constructable.prototype = basePrototypeTarget;
     try {
       Object.defineProperty(constructable, Symbol.hasInstance, {
         configurable: true,
@@ -970,6 +1053,10 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
               return function() {
                 return String(nativeClass);
               };
+            }
+            if (property === 'prototype') {
+              installNativeClassMembersIfNeeded();
+              return Reflect.get(target, property, receiver);
             }
             if (property === 'hasOwnProperty') {
               return function(key) {
@@ -1024,7 +1111,11 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
               target[property] = value;
               return true;
             }
+            installNativeClassMembersIfNeeded();
             if (setDescriptorValue(target, property, receiver, value)) {
+              return true;
+            }
+            if (setInheritedNativeClassValue(target, property, value)) {
               return true;
             }
             try {
@@ -1071,6 +1162,9 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
         if (superclassWrapper && superclassWrapper !== wrapper &&
             typeof Object.setPrototypeOf === 'function') {
           Object.setPrototypeOf(wrapper, superclassWrapper);
+          if (superclassWrapper.prototype) {
+            Object.setPrototypeOf(constructable.prototype, superclassWrapper.prototype);
+          }
         }
       }
     } catch (_) {
@@ -1104,6 +1198,9 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
 	  function rememberClassOnInstance(instance, classWrapper) {
 	    if (instance && typeof instance === 'object' && classWrapper) {
 	      try {
+	        if (typeof classWrapper.__nativeApiInstallMembers === 'function') {
+	          classWrapper.__nativeApiInstallMembers();
+	        }
 	        if (typeof api.__rememberObjectClassWrapper === 'function') {
 	          api.__rememberObjectClassWrapper(instance, classWrapper);
 	        } else {
@@ -1239,7 +1336,11 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
 	        if (typeof member !== 'function') {
 	          throw new TypeError(String(name) + ' is not a function');
 	        }
-	        var result = member.apply(wrapper, arguments);
+	        var memberArgs = [];
+	        for (var memberArgIndex = 0; memberArgIndex < arguments.length; memberArgIndex++) {
+	          memberArgs.push(arguments[memberArgIndex]);
+	        }
+	        var result = wrapper[name](...memberArgs);
 	        if (name === 'alloc' || name === 'new' || name === 'construct') {
 	          return rememberClassOnInstance(result, constructor);
 	        }
@@ -1361,7 +1462,9 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
 	      var protocols = Array.prototype.slice.call(arguments);
 	      return function(constructor) {
 	        if (constructor.ObjCProtocols) {
-	          Array.prototype.push.apply(constructor.ObjCProtocols, protocols);
+	          for (var protocolIndex = 0; protocolIndex < protocols.length; protocolIndex++) {
+	            constructor.ObjCProtocols.push(protocols[protocolIndex]);
+	          }
 	        } else {
 	          constructor.ObjCProtocols = protocols;
 	        }
@@ -1378,7 +1481,11 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
 	      return nativeFactory;
 	    }
     var constructable = function NativeScriptInteropValue() {
-      return nativeFactory.apply(undefined, arguments);
+      var factoryArgs = [];
+      for (var factoryArgIndex = 0; factoryArgIndex < arguments.length; factoryArgIndex++) {
+        factoryArgs.push(arguments[factoryArgIndex]);
+      }
+      return nativeFactory(...factoryArgs);
     };
     try {
       if (nativeFactory.prototype) {
@@ -1638,38 +1745,38 @@ void InstallNativeApiDirectGlobalSymbols(Runtime& runtime, const char* globalNam
   } catch (_) {
   }
 })
-)Direct_GLOBALS";
+)Engine_GLOBALS";
 
   std::string script(GlobalInstaller);
   script += "(";
   script += jsStringLiteral(globalName);
   script += ");";
   runtime.evaluateJavaScript(std::make_shared<StringBuffer>(std::move(script)),
-                             "NativeApiDirectGlobals.js");
-  NativeApiDirectWriteSmokeStage("direct:globals:after-eval");
+                             "NativeApiQuickJSGlobals.js");
+  NativeApiQuickJSWriteSmokeStage("engine:globals:after-eval");
 }
 
-void InstallNativeApiDirect(Runtime& runtime, const NativeApiDirectConfig& config) {
+void InstallNativeApiQuickJS(Runtime& runtime, const NativeApiQuickJSConfig& config) {
   const char* globalName = config.globalName != nullptr && config.globalName[0] != '\0'
                                ? config.globalName
                                : "__nativeScriptNativeApi";
-  NativeApiDirectWriteSmokeStage("direct:create-api");
-  Object api = CreateNativeApiDirect(runtime, config);
+  NativeApiQuickJSWriteSmokeStage("engine:create-api");
+  Object api = CreateNativeApiQuickJS(runtime, config);
   Object global = runtime.global();
-  NativeApiDirectWriteSmokeStage("direct:set-global");
+  NativeApiQuickJSWriteSmokeStage("engine:set-global");
   global.setProperty(runtime, globalName, api);
 
-  NativeApiDirectWriteSmokeStage("direct:set-interop");
+  NativeApiQuickJSWriteSmokeStage("engine:set-interop");
   Value existingInterop = global.getProperty(runtime, "interop");
   if (existingInterop.isUndefined() || existingInterop.isNull()) {
     global.setProperty(runtime, "interop", api.getProperty(runtime, "interop"));
   }
   if (config.installGlobalSymbols) {
-    NativeApiDirectWriteSmokeStage("direct:install-globals");
-    InstallNativeApiDirectGlobalSymbols(runtime, globalName);
+    NativeApiQuickJSWriteSmokeStage("engine:install-globals");
+    InstallNativeApiQuickJSGlobalSymbols(runtime, globalName);
   } else {
-    NativeApiDirectWriteSmokeStage("direct:install-aggregate-globals");
+    NativeApiQuickJSWriteSmokeStage("engine:install-aggregate-globals");
     InstallAggregateGlobals(runtime, api, "protocolNames");
   }
-  NativeApiDirectWriteSmokeStage("direct:installed");
+  NativeApiQuickJSWriteSmokeStage("engine:installed");
 }

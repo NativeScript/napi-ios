@@ -1,12 +1,13 @@
 #ifndef NATIVESCRIPT_FFI_V8_NATIVE_API_V8_H
 #define NATIVESCRIPT_FFI_V8_NATIVE_API_V8_H
 
-#include "ffi/direct/NativeApiDirect.h"
+#include "ffi/shared/NativeApiBackendConfig.h"
 #include "v8.h"
 
 namespace nativescript {
 
-using NativeApiV8Config = NativeApiDirectConfig;
+using NativeApiV8Scheduler = NativeApiBackendScheduler;
+using NativeApiV8Config = NativeApiBackendConfig;
 
 void InstallNativeApiV8(v8::Isolate* isolate,
                         v8::Local<v8::Context> context,

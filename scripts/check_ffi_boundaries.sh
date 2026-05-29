@@ -5,22 +5,32 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 NAPI_ENGINE_DIR="$ROOT_DIR/NativeScript/ffi/napi/engine"
 FFI_DIR="$ROOT_DIR/NativeScript/ffi"
 SHARED_DIR="$FFI_DIR/shared"
-DIRECT_DIR="$FFI_DIR/direct"
 NAPI_DIR="$FFI_DIR/napi"
 HERMES_DIR="$FFI_DIR/hermes"
 V8_DIR="$FFI_DIR/v8"
 JSC_DIR="$FFI_DIR/jsc"
 QUICKJS_DIR="$FFI_DIR/quickjs"
-REACT_NATIVE_JSI_DIR="$ROOT_DIR/packages/react-native/native-api-jsi"
 
 if [ -d "$NAPI_ENGINE_DIR" ] && find "$NAPI_ENGINE_DIR" -type f | grep -q .; then
   echo "ffi/napi must remain a pure Node-API backend; do not add ffi/napi/engine." >&2
   exit 1
 fi
 
+FORBIDDEN_DIRS=(
+  "$FFI_DIR/direct"
+  "$FFI_DIR/engine"
+  "$SHARED_DIR/jsi"
+)
+
+for dir in "${FORBIDDEN_DIRS[@]}"; do
+  if [ -e "$dir" ]; then
+    echo "${dir#$ROOT_DIR/} is not an allowed FFI layer." >&2
+    exit 1
+  fi
+done
+
 ENGINE_AND_SHARED_DIRS=(
   "$SHARED_DIR"
-  "$DIRECT_DIR"
   "$HERMES_DIR"
   "$V8_DIR"
   "$JSC_DIR"
@@ -64,12 +74,12 @@ search_sources() {
 
 if search_sources '(^|[^[:alnum:]_])(napi_|napi_env|napi_value|js_native_api|node_api)($|[^[:alnum:]_])' \
   "${EXISTING_ENGINE_AND_SHARED_DIRS[@]}"; then
-  echo "Node-API symbols are not allowed in shared or direct engine FFI folders." >&2
+  echo "Node-API symbols are not allowed in shared or engine FFI folders." >&2
   exit 1
 fi
 
 ENGINE_NEUTRAL_DIRS=()
-for dir in "$SHARED_DIR" "$DIRECT_DIR"; do
+for dir in "$SHARED_DIR"; do
   if [ -d "$dir" ]; then
     ENGINE_NEUTRAL_DIRS+=("$dir")
   fi
@@ -78,7 +88,7 @@ done
 if [ "${#ENGINE_NEUTRAL_DIRS[@]}" -gt 0 ] &&
   search_sources '(^|[^[:alnum:]_])(napi_|napi_env|napi_value|js_native_api|node_api|facebook::jsi|v8::|JSContextRef|JSValueRef|JSContext|JSValue|JSRuntime|quickjs)($|[^[:alnum:]_])|(<jsi/|<v8|JavaScriptCore|quickjs\.h)' \
     "${ENGINE_NEUTRAL_DIRS[@]}"; then
-  echo "ffi/shared and ffi/direct must remain engine-neutral; JS engine APIs are not allowed there." >&2
+  echo "ffi/shared must remain engine-neutral; JS engine APIs are not allowed there." >&2
   exit 1
 fi
 
@@ -107,14 +117,13 @@ check_no_backend_dependency() {
 }
 
 check_no_backend_dependency "napi" "$NAPI_DIR" hermes v8 jsc quickjs
-check_no_backend_dependency "direct" "$DIRECT_DIR" napi hermes v8 jsc quickjs
 check_no_backend_dependency "hermes" "$HERMES_DIR" napi v8 jsc quickjs
 check_no_backend_dependency "v8" "$V8_DIR" napi hermes jsc quickjs
 check_no_backend_dependency "jsc" "$JSC_DIR" napi hermes v8 quickjs
 check_no_backend_dependency "quickjs" "$QUICKJS_DIR" napi hermes v8 jsc
 
 NON_HERMES_JSI_DIRS=()
-for dir in "$SHARED_DIR" "$DIRECT_DIR" "$NAPI_DIR" "$V8_DIR" "$JSC_DIR" "$QUICKJS_DIR"; do
+for dir in "$SHARED_DIR" "$NAPI_DIR" "$V8_DIR" "$JSC_DIR" "$QUICKJS_DIR"; do
   if [ -d "$dir" ]; then
     NON_HERMES_JSI_DIRS+=("$dir")
   fi
@@ -123,12 +132,23 @@ done
 if [ "${#NON_HERMES_JSI_DIRS[@]}" -gt 0 ] &&
   search_sources '(NativeApiJsi|facebook::jsi|<jsi/|#include[[:space:]]+"jsi/)' \
     "${NON_HERMES_JSI_DIRS[@]}"; then
-  echo "JSI is Hermes-only; shared, direct, V8, JSC, and QuickJS FFI code must not reference NativeApiJsi or JSI APIs." >&2
+  echo "JSI is Hermes-only; shared, V8, JSC, and QuickJS FFI code must not reference NativeApiJsi or JSI APIs." >&2
   exit 1
 fi
 
-if search_sources '(^|[^[:alnum:]_])(EngineDirect|FastNative|HermesFast|V8Fast|JSCFast|QuickJSFast)($|[^[:alnum:]_])' \
+if search_sources '(^|[^[:alnum:]_])(EngineDispatch|FastNative|HermesFast|V8Fast|JSCFast|QuickJSFast)($|[^[:alnum:]_])' \
   "$ROOT_DIR/NativeScript/ffi/napi" | grep -v 'GeneratedSignatureDispatch.inc'; then
-  echo "Direct-engine FFI code is not allowed in ffi/napi." >&2
+  echo "Engine FFI code is not allowed in ffi/napi." >&2
   exit 1
+fi
+
+if command -v rg >/dev/null 2>&1; then
+  STALE_FFI_PATTERN='NS_FFI_BACKEND=''engine|--ffi-''engine|native-api-''jsi|ffi/(direct|engine|shared/jsi)'
+  if rg -n "$STALE_FFI_PATTERN" \
+    "$ROOT_DIR/NativeScript" "$ROOT_DIR/scripts" "$ROOT_DIR/packages" \
+    "$ROOT_DIR/metadata-generator" "$ROOT_DIR/benchmarks" \
+    -g '!NativeScript/ffi/napi/GeneratedSignatureDispatch.inc'; then
+    echo "Stale FFI layer names are not allowed." >&2
+    exit 1
+  fi
 fi

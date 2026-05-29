@@ -3,7 +3,7 @@
 #ifdef TARGET_ENGINE_V8
 
 namespace nativescript {
-namespace direct {
+namespace engine {
 
 Value HostObject::get(Runtime&, const PropNameID&) { return Value::undefined(); }
 
@@ -12,7 +12,7 @@ void HostObject::set(Runtime&, const PropNameID&, const Value&) {}
 std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 
 String::String(Runtime& runtime, v8::Local<v8::String> value)
-    : storage_(std::make_shared<v8direct::ValueStorage>(v8direct::ValueStorage::Kind::V8)) {
+    : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
   storage_->value.Reset(runtime.isolate(), value);
 }
 
@@ -29,7 +29,10 @@ Value::Value(Runtime&, const ArrayBuffer& arrayBuffer) : storage_(arrayBuffer.st
 Value::Value(Runtime&, const BigInt& bigint) : storage_(bigint.storage_) {}
 
 bool Value::isObject() const {
-  if (storage_->kind != v8direct::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    return !storage_->borrowedValue.IsEmpty() && storage_->borrowedValue->IsObject();
+  }
+  if (storage_->kind != v8engine::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
     return false;
   }
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
@@ -37,10 +40,13 @@ bool Value::isObject() const {
 }
 
 bool Value::isUndefined() const {
-  if (storage_->kind == v8direct::ValueStorage::Kind::Undefined) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::Undefined) {
     return true;
   }
-  if (storage_->kind != v8direct::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    return storage_->borrowedValue.IsEmpty() || storage_->borrowedValue->IsUndefined();
+  }
+  if (storage_->kind != v8engine::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
     return false;
   }
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
@@ -48,10 +54,13 @@ bool Value::isUndefined() const {
 }
 
 bool Value::isNull() const {
-  if (storage_->kind == v8direct::ValueStorage::Kind::Null) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::Null) {
     return true;
   }
-  if (storage_->kind != v8direct::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    return !storage_->borrowedValue.IsEmpty() && storage_->borrowedValue->IsNull();
+  }
+  if (storage_->kind != v8engine::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
     return false;
   }
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
@@ -59,10 +68,13 @@ bool Value::isNull() const {
 }
 
 bool Value::isBool() const {
-  if (storage_->kind == v8direct::ValueStorage::Kind::Bool) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::Bool) {
     return true;
   }
-  if (storage_->kind != v8direct::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    return !storage_->borrowedValue.IsEmpty() && storage_->borrowedValue->IsBoolean();
+  }
+  if (storage_->kind != v8engine::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
     return false;
   }
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
@@ -70,10 +82,16 @@ bool Value::isBool() const {
 }
 
 bool Value::getBool() const {
-  if (storage_->kind == v8direct::ValueStorage::Kind::Bool) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::Bool) {
     return storage_->boolValue;
   }
-  if (storage_->kind == v8direct::ValueStorage::Kind::V8 && !storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    return isolate != nullptr && !storage_->borrowedValue.IsEmpty()
+               ? storage_->borrowedValue->BooleanValue(isolate)
+               : false;
+  }
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8 && !storage_->value.IsEmpty()) {
     v8::Isolate* isolate = v8::Isolate::GetCurrent();
     if (isolate != nullptr) {
       return storage_->value.Get(isolate)->BooleanValue(isolate);
@@ -83,10 +101,13 @@ bool Value::getBool() const {
 }
 
 bool Value::isNumber() const {
-  if (storage_->kind == v8direct::ValueStorage::Kind::Number) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::Number) {
     return true;
   }
-  if (storage_->kind != v8direct::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    return !storage_->borrowedValue.IsEmpty() && storage_->borrowedValue->IsNumber();
+  }
+  if (storage_->kind != v8engine::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
     return false;
   }
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
@@ -94,10 +115,17 @@ bool Value::isNumber() const {
 }
 
 double Value::getNumber() const {
-  if (storage_->kind == v8direct::ValueStorage::Kind::Number) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::Number) {
     return storage_->numberValue;
   }
-  if (storage_->kind == v8direct::ValueStorage::Kind::V8 && !storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    if (isolate != nullptr && !storage_->borrowedValue.IsEmpty()) {
+      return storage_->borrowedValue->NumberValue(isolate->GetCurrentContext()).FromMaybe(0);
+    }
+    return 0;
+  }
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8 && !storage_->value.IsEmpty()) {
     v8::Isolate* isolate = v8::Isolate::GetCurrent();
     if (isolate != nullptr) {
       return storage_->value.Get(isolate)->NumberValue(isolate->GetCurrentContext()).FromMaybe(0);
@@ -107,7 +135,10 @@ double Value::getNumber() const {
 }
 
 bool Value::isString() const {
-  if (storage_->kind != v8direct::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    return !storage_->borrowedValue.IsEmpty() && storage_->borrowedValue->IsString();
+  }
+  if (storage_->kind != v8engine::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
     return false;
   }
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
@@ -115,7 +146,10 @@ bool Value::isString() const {
 }
 
 bool Value::isBigInt() const {
-  if (storage_->kind != v8direct::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    return !storage_->borrowedValue.IsEmpty() && storage_->borrowedValue->IsBigInt();
+  }
+  if (storage_->kind != v8engine::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
     return false;
   }
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
@@ -123,7 +157,10 @@ bool Value::isBigInt() const {
 }
 
 bool Value::isSymbol() const {
-  if (storage_->kind != v8direct::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
+  if (storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    return !storage_->borrowedValue.IsEmpty() && storage_->borrowedValue->IsSymbol();
+  }
+  if (storage_->kind != v8engine::ValueStorage::Kind::V8 || storage_->value.IsEmpty()) {
     return false;
   }
   v8::Isolate* isolate = v8::Isolate::GetCurrent();
@@ -154,7 +191,7 @@ Array Object::getPropertyNames(Runtime& runtime) const {
   v8::TryCatch tryCatch(runtime.isolate());
   v8::Local<v8::Array> result;
   if (!local(runtime)->GetPropertyNames(runtime.context()).ToLocal(&result)) {
-    throw JSError(runtime, v8direct::currentExceptionMessage(runtime.isolate(), tryCatch));
+    throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
   }
   return Array(Object::fromValueStorage(Value(runtime, result).storage_));
 }
@@ -171,7 +208,7 @@ void Object::setProperty(Runtime& runtime, const char* name, const ArrayBuffer& 
   setProperty(runtime, name, Value(runtime, value));
 }
 
-}  // namespace direct
+}  // namespace engine
 }  // namespace nativescript
 
 #endif  // TARGET_ENGINE_V8

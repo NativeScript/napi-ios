@@ -36,7 +36,7 @@
     "types",
     "ios",
     "metadata",
-    "native-api-jsi",
+    "native-api",
     "NativeScriptNativeApi.podspec",
     "README.md",
     "LICENSE"

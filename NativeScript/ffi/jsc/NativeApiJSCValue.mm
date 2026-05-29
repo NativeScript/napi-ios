@@ -3,21 +3,21 @@
 #ifdef TARGET_ENGINE_JSC
 
 namespace nativescript {
-namespace direct {
+namespace engine {
 
 Value HostObject::get(Runtime&, const PropNameID&) { return Value::undefined(); }
 void HostObject::set(Runtime&, const PropNameID&, const Value&) {}
 std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 
 String::String(Runtime& runtime, JSStringRef string)
-    : storage_(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::JSC)) {
+    : storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
   storage_->context = runtime.context();
   storage_->value = JSValueMakeString(runtime.context(), string);
   JSValueProtect(runtime.context(), storage_->value);
 }
 
 std::string String::utf8(Runtime& runtime) const {
-  return jscdirect::valueToUtf8(runtime.context(), storage_->value);
+  return jscengine::valueToUtf8(runtime.context(), storage_->value);
 }
 
 String::operator Value() const {
@@ -38,7 +38,7 @@ String Value::asString(Runtime& runtime) const {
   JSValueRef exception = nullptr;
   JSStringRef string = JSValueToStringCopy(runtime.context(), local(runtime), &exception);
   if (string == nullptr || exception != nullptr) {
-    throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+    throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
   }
   String result(runtime, string);
   JSStringRelease(string);
@@ -77,7 +77,7 @@ void Object::setProperty(Runtime& runtime, const char* name, const ArrayBuffer& 
   setProperty(runtime, name, Value(runtime, value));
 }
 
-}  // namespace direct
+}  // namespace engine
 }  // namespace nativescript
 
 #endif  // TARGET_ENGINE_JSC

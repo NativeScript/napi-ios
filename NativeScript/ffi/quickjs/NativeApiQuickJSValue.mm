@@ -3,20 +3,20 @@
 #ifdef TARGET_ENGINE_QUICKJS
 
 namespace nativescript {
-namespace direct {
+namespace engine {
 
 Value HostObject::get(Runtime&, const PropNameID&) { return Value::undefined(); }
 void HostObject::set(Runtime&, const PropNameID&, const Value&) {}
 std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 String::String(Runtime& runtime, JSValue value)
-    : storage_(std::make_shared<quickjsdirect::ValueStorage>(
-          quickjsdirect::ValueStorage::Kind::QuickJS)) {
+    : storage_(std::make_shared<quickjsengine::ValueStorage>(
+          quickjsengine::ValueStorage::Kind::QuickJS)) {
   storage_->context = runtime.context();
   storage_->value = JS_DupValue(runtime.context(), value);
 }
 std::string String::utf8(Runtime& runtime) const {
   JSValue value = local(runtime);
-  std::string result = quickjsdirect::valueToUtf8(runtime.context(), value);
+  std::string result = quickjsengine::valueToUtf8(runtime.context(), value);
   JS_FreeValue(runtime.context(), value);
   return result;
 }
@@ -82,7 +82,7 @@ void Object::setProperty(Runtime& runtime, const char* name, const ArrayBuffer& 
   setProperty(runtime, name, Value(runtime, value));
 }
 
-}  // namespace direct
+}  // namespace engine
 }  // namespace nativescript
 
 #endif  // TARGET_ENGINE_QUICKJS

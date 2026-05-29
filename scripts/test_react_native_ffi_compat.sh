@@ -202,6 +202,7 @@ function poll() {
         if (content.startsWith('stage=')) {
           lastStage = content;
           console.log(`${marker} ${JSON.stringify({markerFile, stage: content.slice('stage='.length)})}`);
+          setTimeout(poll, 2000);
           return;
         }
         console.error(`Invalid ${marker} marker content at ${markerFile}: ${content}`);

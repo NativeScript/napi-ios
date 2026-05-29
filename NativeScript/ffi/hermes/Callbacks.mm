@@ -1,4 +1,4 @@
-bool isObjectiveCObjectType(const NativeApiDirectType& type) {
+bool isObjectiveCObjectType(const NativeApiHermesType& type) {
   switch (type.kind) {
     case metagen::mdTypeAnyObject:
     case metagen::mdTypeProtocolObject:
@@ -13,22 +13,22 @@ bool isObjectiveCObjectType(const NativeApiDirectType& type) {
 }
 
 #ifndef NATIVESCRIPT_NATIVE_API_RETAIN_RUNTIME
-std::shared_ptr<Runtime> retainNativeApiDirectRuntime(Runtime& runtime) {
+std::shared_ptr<Runtime> retainNativeApiHermesRuntime(Runtime& runtime) {
   return std::shared_ptr<Runtime>(&runtime, [](Runtime*) {});
 }
 #endif
 
 #ifndef NATIVESCRIPT_NATIVE_API_RUNTIME_SCOPE
-class NativeApiDirectRuntimeScope final {
+class NativeApiHermesRuntimeScope final {
  public:
-  explicit NativeApiDirectRuntimeScope(Runtime&) {}
+  explicit NativeApiHermesRuntimeScope(Runtime&) {}
 };
 #endif
 
-struct NativeApiDirectSignature {
+struct NativeApiHermesSignature {
   ffi_cif cif = {};
-  NativeApiDirectType returnType;
-  std::vector<NativeApiDirectType> argumentTypes;
+  NativeApiHermesType returnType;
+  std::vector<NativeApiHermesType> argumentTypes;
   std::vector<ffi_type*> ffiTypes;
   std::string selectorName;
   uint64_t signatureHash = 0;
@@ -38,33 +38,33 @@ struct NativeApiDirectSignature {
   unsigned int implicitArgumentCount = 0;
 };
 
-enum class NativeApiDirectCallbackThreadPolicy {
+enum class NativeApiHermesCallbackThreadPolicy {
   Default,
   UI,
   JS,
 };
 
-NativeApiDirectCallbackThreadPolicy readDirectCallbackThreadPolicy(
+NativeApiHermesCallbackThreadPolicy readEngineCallbackThreadPolicy(
     Runtime& runtime, Object& functionObject) {
   constexpr const char* propertyName = "__nativeScriptCallbackThread";
   try {
     if (!functionObject.hasProperty(runtime, propertyName)) {
-      return NativeApiDirectCallbackThreadPolicy::Default;
+      return NativeApiHermesCallbackThreadPolicy::Default;
     }
     Value policyValue = functionObject.getProperty(runtime, propertyName);
     if (!policyValue.isString()) {
-      return NativeApiDirectCallbackThreadPolicy::Default;
+      return NativeApiHermesCallbackThreadPolicy::Default;
     }
     std::string policy = policyValue.asString(runtime).utf8(runtime);
     if (policy == "ui") {
-      return NativeApiDirectCallbackThreadPolicy::UI;
+      return NativeApiHermesCallbackThreadPolicy::UI;
     }
     if (policy == "js") {
-      return NativeApiDirectCallbackThreadPolicy::JS;
+      return NativeApiHermesCallbackThreadPolicy::JS;
     }
   } catch (const std::exception&) {
   }
-  return NativeApiDirectCallbackThreadPolicy::Default;
+  return NativeApiHermesCallbackThreadPolicy::Default;
 }
 
 bool selectorEndsWithNSErrorParam(const std::string& selectorName) {
@@ -75,7 +75,7 @@ bool selectorEndsWithNSErrorParam(const std::string& selectorName) {
                               suffix) == 0;
 }
 
-bool isNSErrorOutDirectMethodSignature(const NativeApiDirectSignature& signature) {
+bool isNSErrorOutEngineMethodSignature(const NativeApiHermesSignature& signature) {
   if (signature.argumentTypes.empty() || signature.variadic ||
       !selectorEndsWithNSErrorParam(signature.selectorName)) {
     return false;
@@ -84,17 +84,22 @@ bool isNSErrorOutDirectMethodSignature(const NativeApiDirectSignature& signature
   return signature.argumentTypes.back().kind == metagen::mdTypePointer;
 }
 
-bool isNSErrorOutDirectMethodCallback(const NativeApiDirectSignature& signature) {
+bool isNSErrorOutEngineMethodCallback(const NativeApiHermesSignature& signature) {
   return signature.returnType.kind == metagen::mdTypeBool &&
          signature.implicitArgumentCount >= 2 &&
-         isNSErrorOutDirectMethodSignature(signature);
+         isNSErrorOutEngineMethodSignature(signature);
 }
 
-class NativeApiDirectArgumentFrame {
+class NativeApiHermesArgumentFrame {
  public:
-  explicit NativeApiDirectArgumentFrame(size_t count) : storage_(count), values_(count) {}
+  explicit NativeApiHermesArgumentFrame(size_t count) : count_(count) {
+    if (count_ > kInlineArgumentCount) {
+      heapStorage_.resize(count_);
+      heapValues_.resize(count_);
+    }
+  }
 
-  ~NativeApiDirectArgumentFrame() {
+  ~NativeApiHermesArgumentFrame() {
     for (char* string : ownedCStrings_) {
       free(string);
     }
@@ -105,17 +110,34 @@ class NativeApiDirectArgumentFrame {
       [object release];
     }
     for (const auto& entry : temporaryRoundTripValues_) {
-      if (entry.first != nullptr) {
-        entry.first->forgetRoundTripValue(entry.second);
+      if (entry.bridge != nullptr && entry.runtime != nullptr) {
+        entry.bridge->forgetRoundTripValue(*entry.runtime, entry.native);
       }
     }
     ownedLifetimes_.clear();
   }
 
   void* storageAt(size_t index, size_t size) {
-    storage_[index].assign(std::max<size_t>(size, sizeof(void*)), 0);
-    values_[index] = storage_[index].data();
-    return values_[index];
+    if (index >= count_) {
+      throw std::out_of_range("Native argument index out of range.");
+    }
+
+    size = std::max<size_t>(size, sizeof(void*));
+    if (count_ <= kInlineArgumentCount && size <= kInlineStorageSize) {
+      std::memset(inlineStorage_[index], 0, kInlineStorageSize);
+      inlineValues_[index] = inlineStorage_[index];
+      return inlineValues_[index];
+    }
+
+    if (count_ <= kInlineArgumentCount) {
+      overflowStorage_.emplace_back(size, 0);
+      inlineValues_[index] = overflowStorage_.back().data();
+      return inlineValues_[index];
+    }
+
+    heapStorage_[index].assign(size, 0);
+    heapValues_[index] = heapStorage_[index].data();
+    return heapValues_[index];
   }
 
   void addCString(char* value) { ownedCStrings_.push_back(value); }
@@ -128,31 +150,54 @@ class NativeApiDirectArgumentFrame {
     return buffer;
   }
   void addObject(id value) { ownedObjects_.push_back(value); }
+  void retainObject(id value) {
+    if (value != nil) {
+      [value retain];
+      ownedObjects_.push_back(value);
+    }
+  }
   void addLifetime(std::shared_ptr<void> value) {
     if (value != nullptr) {
       ownedLifetimes_.push_back(std::move(value));
     }
   }
   void rememberRoundTripValue(
-      const std::shared_ptr<NativeApiDirectBridge>& bridge, Runtime& runtime,
+      const std::shared_ptr<NativeApiHermesBridge>& bridge, Runtime& runtime,
       const void* native, const Value& value) {
     if (bridge == nullptr || native == nullptr) {
       return;
     }
     bridge->rememberRoundTripValue(runtime, native, value);
-    temporaryRoundTripValues_.push_back({bridge, native});
+    temporaryRoundTripValues_.push_back({bridge, &runtime, native});
   }
-  void** values() { return values_.empty() ? nullptr : values_.data(); }
+  void** values() {
+    if (count_ == 0) {
+      return nullptr;
+    }
+    return count_ <= kInlineArgumentCount ? inlineValues_ : heapValues_.data();
+  }
 
  private:
-  std::vector<std::vector<unsigned char>> storage_;
-  std::vector<void*> values_;
+  static constexpr size_t kInlineArgumentCount = 8;
+  static constexpr size_t kInlineStorageSize = 32;
+
+  size_t count_ = 0;
+  alignas(void*) unsigned char
+      inlineStorage_[kInlineArgumentCount][kInlineStorageSize] = {};
+  void* inlineValues_[kInlineArgumentCount] = {};
+  std::vector<std::vector<unsigned char>> heapStorage_;
+  std::vector<void*> heapValues_;
+  std::vector<std::vector<unsigned char>> overflowStorage_;
   std::vector<char*> ownedCStrings_;
   std::vector<void*> ownedBuffers_;
   std::vector<id> ownedObjects_;
   std::vector<std::shared_ptr<void>> ownedLifetimes_;
-  std::vector<std::pair<std::shared_ptr<NativeApiDirectBridge>, const void*>>
-      temporaryRoundTripValues_;
+  struct TemporaryRoundTripValue {
+    std::shared_ptr<NativeApiHermesBridge> bridge;
+    Runtime* runtime = nullptr;
+    const void* native = nullptr;
+  };
+  std::vector<TemporaryRoundTripValue> temporaryRoundTripValues_;
 };
 
 class NativeApiMutableBuffer final : public MutableBuffer {
@@ -171,24 +216,24 @@ class NativeApiMutableBuffer final : public MutableBuffer {
   std::vector<uint8_t> data_;
 };
 
-void convertDirectArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                        const NativeApiDirectType& type,
+void convertEngineArgument(Runtime& runtime,
+                        const std::shared_ptr<NativeApiHermesBridge>& bridge,
+                        const NativeApiHermesType& type,
                         const Value& value, void* target,
-                        NativeApiDirectArgumentFrame& frame);
+                        NativeApiHermesArgumentFrame& frame);
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                               const NativeApiDirectType& type, void* value);
+                               const std::shared_ptr<NativeApiHermesBridge>& bridge,
+                               const NativeApiHermesType& type, void* value);
 
 Value wrapNativeFunctionPointer(Runtime& runtime,
-                                const std::shared_ptr<NativeApiDirectBridge>& bridge,
-                                const NativeApiDirectType& type, void* pointer,
+                                const std::shared_ptr<NativeApiHermesBridge>& bridge,
+                                const NativeApiHermesType& type, void* pointer,
                                 bool block);
 
-bool isObjectiveCObjectType(const NativeApiDirectType& type);
+bool isObjectiveCObjectType(const NativeApiHermesType& type);
 
-struct NativeApiDirectBlockDescriptor {
+struct NativeApiHermesBlockDescriptor {
   unsigned long reserved = 0;
   unsigned long size = 0;
   void (*copyHelper)(void*, void*) = nullptr;
@@ -196,29 +241,29 @@ struct NativeApiDirectBlockDescriptor {
   const char* signature = nullptr;
 };
 
-struct NativeApiDirectBlockLiteral {
+struct NativeApiHermesBlockLiteral {
   void* isa = nullptr;
   int flags = 0;
   int reserved = 0;
   void* invoke = nullptr;
-  NativeApiDirectBlockDescriptor* descriptor = nullptr;
+  NativeApiHermesBlockDescriptor* descriptor = nullptr;
   void* callback = nullptr;
 };
 
-constexpr int kNativeApiDirectBlockNeedsFree = (1 << 24);
-constexpr int kNativeApiDirectBlockHasCopyDispose = (1 << 25);
-constexpr int kNativeApiDirectBlockRefCountOne = (1 << 1);
-constexpr int kNativeApiDirectBlockHasSignature = (1 << 30);
+constexpr int kNativeApiHermesBlockNeedsFree = (1 << 24);
+constexpr int kNativeApiHermesBlockHasCopyDispose = (1 << 25);
+constexpr int kNativeApiHermesBlockRefCountOne = (1 << 1);
+constexpr int kNativeApiHermesBlockHasSignature = (1 << 30);
 
-void* nativeApiDirectStackBlockIsa() {
-  static void* isa = dlsym(RTLD_DEFAULT, "_NSConcreteStackBlock");
+void* nativeApiEngineMallocBlockIsa() {
+  static void* isa = dlsym(RTLD_DEFAULT, "_NSConcreteMallocBlock");
   return isa;
 }
 
-void nativeApiDirectBlockCopy(void* dst, void* src);
-void nativeApiDirectBlockDispose(void* src);
+void nativeApiEngineBlockCopy(void* dst, void* src);
+void nativeApiEngineBlockDispose(void* src);
 
-std::string objcEncodingForDirectType(const NativeApiDirectType& type) {
+std::string objcEncodingForEngineType(const NativeApiHermesType& type) {
   switch (type.kind) {
     case metagen::mdTypeVoid:
       return "v";
@@ -268,7 +313,7 @@ std::string objcEncodingForDirectType(const NativeApiDirectType& type) {
     case metagen::mdTypeOpaquePointer:
       if (type.elementType != nullptr &&
           type.elementType->kind != metagen::mdTypeVoid) {
-        return "^" + objcEncodingForDirectType(*type.elementType);
+        return "^" + objcEncodingForEngineType(*type.elementType);
       }
       return "^v";
     case metagen::mdTypeStruct:
@@ -278,65 +323,65 @@ std::string objcEncodingForDirectType(const NativeApiDirectType& type) {
              "=}";
     case metagen::mdTypeArray:
       return "[" + std::to_string(type.arraySize) +
-             (type.elementType != nullptr ? objcEncodingForDirectType(*type.elementType)
+             (type.elementType != nullptr ? objcEncodingForEngineType(*type.elementType)
                                           : std::string("?")) +
              "]";
     case metagen::mdTypeVector:
     case metagen::mdTypeExtVector:
     case metagen::mdTypeComplex:
-      return type.elementType != nullptr ? objcEncodingForDirectType(*type.elementType)
+      return type.elementType != nullptr ? objcEncodingForEngineType(*type.elementType)
                                          : "?";
     default:
       return "?";
   }
 }
 
-std::string objcBlockSignatureForDirectSignature(
-    const NativeApiDirectSignature& signature) {
-  std::string encoding = objcEncodingForDirectType(signature.returnType);
+std::string objcBlockSignatureForEngineSignature(
+    const NativeApiHermesSignature& signature) {
+  std::string encoding = objcEncodingForEngineType(signature.returnType);
   encoding += "@?";
   for (const auto& argType : signature.argumentTypes) {
-    encoding += objcEncodingForDirectType(argType);
+    encoding += objcEncodingForEngineType(argType);
   }
   return encoding;
 }
 
-std::string objcMethodSignatureForDirectSignature(
-    const NativeApiDirectSignature& signature) {
-  std::string encoding = objcEncodingForDirectType(signature.returnType);
+std::string objcMethodSignatureForEngineSignature(
+    const NativeApiHermesSignature& signature) {
+  std::string encoding = objcEncodingForEngineType(signature.returnType);
   encoding += "@:";
   for (const auto& argType : signature.argumentTypes) {
-    encoding += objcEncodingForDirectType(argType);
+    encoding += objcEncodingForEngineType(argType);
   }
   return encoding;
 }
 
-[[noreturn]] void throwNativeApiDirectCallbackException(
+[[noreturn]] void throwNativeApiHermesCallbackException(
     const std::string& message) {
   NSString* reason = [NSString stringWithUTF8String:message.c_str()];
-  @throw [NSException exceptionWithName:@"NativeScriptDirectCallbackException"
+  @throw [NSException exceptionWithName:@"NativeScriptEngineCallbackException"
                                  reason:reason
                                userInfo:nil];
 }
 
-class NativeApiDirectCallback;
+class NativeApiHermesCallback;
 
-void nativeApiDirectCallbackTrampoline(ffi_cif* cif, void* ret, void* args[],
+void nativeApiEngineCallbackTrampoline(ffi_cif* cif, void* ret, void* args[],
                                     void* data);
 
-std::atomic<int> gActiveNativeThreadDirectCallbacks{0};
+std::atomic<int> gActiveNativeThreadEngineCallbacks{0};
 
-class NativeApiDirectCallback final
-    : public std::enable_shared_from_this<NativeApiDirectCallback> {
+class NativeApiHermesCallback final
+    : public std::enable_shared_from_this<NativeApiHermesCallback> {
  public:
-  NativeApiDirectCallback(Runtime& runtime,
-                       std::shared_ptr<NativeApiDirectBridge> bridge,
-                       std::shared_ptr<NativeApiDirectSignature> signature,
+  NativeApiHermesCallback(Runtime& runtime,
+                       std::shared_ptr<NativeApiHermesBridge> bridge,
+                       std::shared_ptr<NativeApiHermesSignature> signature,
                        Function function, bool block,
-                       NativeApiDirectCallbackThreadPolicy threadPolicy =
-                           NativeApiDirectCallbackThreadPolicy::Default,
+                       NativeApiHermesCallbackThreadPolicy threadPolicy =
+                           NativeApiHermesCallbackThreadPolicy::Default,
                        bool bindThis = false)
-      : runtimeOwner_(retainNativeApiDirectRuntime(runtime)),
+      : runtimeOwner_(retainNativeApiHermesRuntime(runtime)),
         runtime_(runtimeOwner_.get()),
         bridge_(std::move(bridge)),
         signature_(std::move(signature)),
@@ -349,40 +394,54 @@ class NativeApiDirectCallback final
     if (closure_ == nullptr || executable_ == nullptr ||
         signature_ == nullptr || !signature_->prepared) {
       throw JSError(runtime,
-                                   "Unable to allocate native Direct callback.");
+                                   "Unable to allocate native Hermes callback.");
     }
 
     ffi_status status = ffi_prep_closure_loc(
-        closure_, &signature_->cif, nativeApiDirectCallbackTrampoline, this,
+        closure_, &signature_->cif, nativeApiEngineCallbackTrampoline, this,
         executable_);
     if (status != FFI_OK) {
       ffi_closure_free(closure_);
       closure_ = nullptr;
       executable_ = nullptr;
       throw JSError(runtime,
-                                   "Unable to prepare native Direct callback.");
+                                   "Unable to prepare native Hermes callback.");
     }
 
     if (block_) {
-      blockSignature_ = objcBlockSignatureForDirectSignature(*signature_);
-      descriptor_ = std::make_unique<NativeApiDirectBlockDescriptor>();
+      blockSignature_ = objcBlockSignatureForEngineSignature(*signature_);
+      descriptor_ = std::make_unique<NativeApiHermesBlockDescriptor>();
       descriptor_->reserved = 0;
-      descriptor_->size = sizeof(NativeApiDirectBlockLiteral);
-      descriptor_->copyHelper = nativeApiDirectBlockCopy;
-      descriptor_->disposeHelper = nativeApiDirectBlockDispose;
+      descriptor_->size = sizeof(NativeApiHermesBlockLiteral);
+      descriptor_->copyHelper = nativeApiEngineBlockCopy;
+      descriptor_->disposeHelper = nativeApiEngineBlockDispose;
       descriptor_->signature = blockSignature_.c_str();
 
-      blockLiteral_ = std::make_unique<NativeApiDirectBlockLiteral>();
-      blockLiteral_->isa = nativeApiDirectStackBlockIsa();
-      blockLiteral_->flags = kNativeApiDirectBlockHasCopyDispose |
-                             kNativeApiDirectBlockHasSignature;
+      blockLiteral_ = static_cast<NativeApiHermesBlockLiteral*>(
+          calloc(1, sizeof(NativeApiHermesBlockLiteral)));
+      if (blockLiteral_ == nullptr) {
+        throw JSError(runtime,
+                     "Unable to allocate native Hermes block callback.");
+      }
+      void* blockIsa = nativeApiEngineMallocBlockIsa();
+      if (blockIsa == nullptr) {
+        free(blockLiteral_);
+        blockLiteral_ = nullptr;
+        throw JSError(runtime,
+                     "Objective-C malloc block runtime is unavailable.");
+      }
+      blockLiteral_->isa = blockIsa;
+      blockLiteral_->flags = kNativeApiHermesBlockNeedsFree |
+                             kNativeApiHermesBlockHasCopyDispose |
+                             kNativeApiHermesBlockRefCountOne |
+                             kNativeApiHermesBlockHasSignature;
       blockLiteral_->invoke = executable_;
       blockLiteral_->descriptor = descriptor_.get();
       blockLiteral_->callback = this;
     }
   }
 
-  ~NativeApiDirectCallback() {
+  ~NativeApiHermesCallback() {
     if (closure_ != nullptr) {
       ffi_closure_free(closure_);
       closure_ = nullptr;
@@ -392,11 +451,18 @@ class NativeApiDirectCallback final
 
   void* functionPointer() const {
     return block_ && blockLiteral_ != nullptr
-               ? static_cast<void*>(blockLiteral_.get())
+               ? static_cast<void*>(blockLiteral_)
                : executable_;
   }
 
-  const NativeApiDirectSignature& signature() const { return *signature_; }
+  const NativeApiHermesSignature& signature() const { return *signature_; }
+
+  void retainInitialBlockLifetime(
+      std::shared_ptr<NativeApiHermesCallback> lifetime) {
+    if (block_) {
+      initialBlockLifetime_ = std::move(lifetime);
+    }
+  }
 
   void retainBlockCopy(const void* blockPointer) {
     if (!block_) {
@@ -416,7 +482,7 @@ class NativeApiDirectCallback final
     if (!block_) {
       return false;
     }
-    std::shared_ptr<NativeApiDirectCallback> keepAlive;
+    std::shared_ptr<NativeApiHermesCallback> keepAlive;
     try {
       keepAlive = shared_from_this();
     } catch (const std::bad_weak_ptr&) {
@@ -432,10 +498,19 @@ class NativeApiDirectCallback final
           });
     }
     if (it != retainedBlockCopies_.end()) {
-      if (bridge_ != nullptr && it->blockPointer != nullptr) {
-        bridge_->forgetRoundTripValue(it->blockPointer);
+      if (bridge_ != nullptr && runtime_ != nullptr &&
+          it->blockPointer != nullptr) {
+        bridge_->forgetRoundTripValue(*runtime_, it->blockPointer);
       }
       retainedBlockCopies_.erase(it);
+      return true;
+    }
+    if (blockPointer == blockLiteral_) {
+      if (bridge_ != nullptr && runtime_ != nullptr) {
+        bridge_->forgetRoundTripValue(*runtime_, blockPointer);
+      }
+      blockLiteral_ = nullptr;
+      initialBlockLifetime_.reset();
       return true;
     }
     return false;
@@ -443,7 +518,7 @@ class NativeApiDirectCallback final
 
   void invoke(void* ret, void* args[]) {
     if (runtime_ == nullptr || function_ == nullptr || signature_ == nullptr) {
-      throwNativeApiDirectCallbackException("Invalid Direct callback.");
+      throwNativeApiHermesCallbackException("Invalid Hermes callback.");
     }
 
     std::string error;
@@ -454,7 +529,7 @@ class NativeApiDirectCallback final
         std::this_thread::get_id() == bridge_->jsThreadId();
 
     auto callOnNativeCallerThread = [&]() {
-      ScopedNativeCallerThreadDirectCallback callbackScope;
+      ScopedNativeCallerThreadEngineCallback callbackScope;
       if (nativeCallbackInvoker) {
         nativeCallbackInvoker(call);
       } else {
@@ -497,20 +572,20 @@ class NativeApiDirectCallback final
       error = "Native callback was invoked off the JS thread without a JS scheduler.";
     };
 
-    if (threadPolicy_ == NativeApiDirectCallbackThreadPolicy::UI) {
+    if (threadPolicy_ == NativeApiHermesCallbackThreadPolicy::UI) {
       callOnUIThread();
       if (!error.empty()) {
         if (!recordNativeCallbackException(error)) {
-          throwNativeApiDirectCallbackException(error);
+          throwNativeApiHermesCallbackException(error);
         }
       }
       return;
     }
-    if (threadPolicy_ == NativeApiDirectCallbackThreadPolicy::JS) {
+    if (threadPolicy_ == NativeApiHermesCallbackThreadPolicy::JS) {
       callOnJSThread();
       if (!error.empty()) {
         if (!recordNativeCallbackException(error)) {
-          throwNativeApiDirectCallbackException(error);
+          throwNativeApiHermesCallbackException(error);
         }
       }
       return;
@@ -532,7 +607,7 @@ class NativeApiDirectCallback final
                   nativeCallerThreadCallback;
     bool waitForNativeThreadCallback =
         currentThreadIsJs && nativeCallbackInvoker &&
-        gActiveNativeThreadDirectCallbacks.load(std::memory_order_acquire) > 0;
+        gActiveNativeThreadEngineCallbacks.load(std::memory_order_acquire) > 0;
     if (direct && !waitForNativeThreadCallback) {
       if (nativeCallerThreadCallback) {
         callOnNativeCallerThread();
@@ -547,20 +622,20 @@ class NativeApiDirectCallback final
     } else if (nativeCallbackInvoker) {
       bool nativeThreadCallback = !currentThreadIsJs;
       if (nativeThreadCallback) {
-        gActiveNativeThreadDirectCallbacks.fetch_add(1,
+        gActiveNativeThreadEngineCallbacks.fetch_add(1,
                                                   std::memory_order_acq_rel);
       }
       try {
         nativeCallbackInvoker(call);
       } catch (...) {
         if (nativeThreadCallback) {
-          gActiveNativeThreadDirectCallbacks.fetch_sub(
+          gActiveNativeThreadEngineCallbacks.fetch_sub(
               1, std::memory_order_acq_rel);
         }
         throw;
       }
       if (nativeThreadCallback) {
-        gActiveNativeThreadDirectCallbacks.fetch_sub(1,
+        gActiveNativeThreadEngineCallbacks.fetch_sub(1,
                                                   std::memory_order_acq_rel);
       }
     } else if (auto scheduler = bridge_->scheduler()) {
@@ -576,7 +651,7 @@ class NativeApiDirectCallback final
 
     if (!error.empty()) {
       if (!recordNativeCallbackException(error)) {
-        throwNativeApiDirectCallbackException(error);
+        throwNativeApiHermesCallbackException(error);
       }
     }
   }
@@ -584,7 +659,7 @@ class NativeApiDirectCallback final
  private:
   void invokeOnCurrentThread(void* ret, void* args[], std::string* error) {
     try {
-      NativeApiDirectRuntimeScope runtimeScope(*runtime_);
+      NativeApiHermesRuntimeScope runtimeScope(*runtime_);
       size_t nativeArgOffset = signature_->implicitArgumentCount;
       std::vector<Value> jsArgs;
       jsArgs.reserve(signature_->argumentTypes.size());
@@ -622,7 +697,7 @@ class NativeApiDirectCallback final
         runtime_->drainMicrotasks();
       }
     } catch (const std::exception& exception) {
-      if (isNSErrorOutDirectMethodCallback(*signature_)) {
+      if (isNSErrorOutEngineMethodCallback(*signature_)) {
         zeroReturnValue(ret);
         populateNSErrorOutArgument(args, exception.what());
         return;
@@ -632,13 +707,13 @@ class NativeApiDirectCallback final
       }
       zeroReturnValue(ret);
     } catch (...) {
-      if (isNSErrorOutDirectMethodCallback(*signature_)) {
+      if (isNSErrorOutEngineMethodCallback(*signature_)) {
         zeroReturnValue(ret);
-        populateNSErrorOutArgument(args, "Unknown exception in native Direct callback.");
+        populateNSErrorOutArgument(args, "Unknown exception in native Hermes callback.");
         return;
       }
       if (error != nullptr) {
-        *error = "Unknown exception in native Direct callback.";
+        *error = "Unknown exception in native Hermes callback.";
       }
       zeroReturnValue(ret);
     }
@@ -706,8 +781,8 @@ class NativeApiDirectCallback final
       return;
     }
 
-    NativeApiDirectArgumentFrame frame(1);
-    convertDirectArgument(*runtime_, bridge_, returnType, result, ret, frame);
+    NativeApiHermesArgumentFrame frame(1);
+    convertEngineArgument(*runtime_, bridge_, returnType, result, ret, frame);
     if (isObjectiveCObjectType(returnType)) {
       id object = *static_cast<id*>(ret);
       if (object != nil) {
@@ -719,53 +794,54 @@ class NativeApiDirectCallback final
 
   std::shared_ptr<Runtime> runtimeOwner_;
   Runtime* runtime_ = nullptr;
-  std::shared_ptr<NativeApiDirectBridge> bridge_;
-  std::shared_ptr<NativeApiDirectSignature> signature_;
+  std::shared_ptr<NativeApiHermesBridge> bridge_;
+  std::shared_ptr<NativeApiHermesSignature> signature_;
   std::shared_ptr<Function> function_;
   bool block_ = false;
-  NativeApiDirectCallbackThreadPolicy threadPolicy_ =
-      NativeApiDirectCallbackThreadPolicy::Default;
+  NativeApiHermesCallbackThreadPolicy threadPolicy_ =
+      NativeApiHermesCallbackThreadPolicy::Default;
   bool bindThis_ = false;
   ffi_closure* closure_ = nullptr;
   void* executable_ = nullptr;
   std::string blockSignature_;
-  std::unique_ptr<NativeApiDirectBlockDescriptor> descriptor_;
-  std::unique_ptr<NativeApiDirectBlockLiteral> blockLiteral_;
+  std::unique_ptr<NativeApiHermesBlockDescriptor> descriptor_;
+  NativeApiHermesBlockLiteral* blockLiteral_ = nullptr;
+  std::shared_ptr<NativeApiHermesCallback> initialBlockLifetime_;
   struct RetainedBlockCopy {
     const void* blockPointer = nullptr;
-    std::shared_ptr<NativeApiDirectCallback> lifetime;
+    std::shared_ptr<NativeApiHermesCallback> lifetime;
   };
   std::mutex retainedBlockCopiesMutex_;
   std::vector<RetainedBlockCopy> retainedBlockCopies_;
 };
 
-void nativeApiDirectBlockCopy(void* dst, void* src) {
-  auto* dstBlock = static_cast<NativeApiDirectBlockLiteral*>(dst);
-  auto* srcBlock = static_cast<NativeApiDirectBlockLiteral*>(src);
+void nativeApiEngineBlockCopy(void* dst, void* src) {
+  auto* dstBlock = static_cast<NativeApiHermesBlockLiteral*>(dst);
+  auto* srcBlock = static_cast<NativeApiHermesBlockLiteral*>(src);
   if (dstBlock == nullptr || srcBlock == nullptr ||
       srcBlock->callback == nullptr) {
     return;
   }
   dstBlock->callback = srcBlock->callback;
-  static_cast<NativeApiDirectCallback*>(srcBlock->callback)
+  static_cast<NativeApiHermesCallback*>(srcBlock->callback)
       ->retainBlockCopy(dstBlock);
 }
 
-void nativeApiDirectBlockDispose(void* src) {
-  auto* block = static_cast<NativeApiDirectBlockLiteral*>(src);
+void nativeApiEngineBlockDispose(void* src) {
+  auto* block = static_cast<NativeApiHermesBlockLiteral*>(src);
   if (block == nullptr || block->callback == nullptr) {
     return;
   }
   bool released =
-      static_cast<NativeApiDirectCallback*>(block->callback)->releaseBlockCopy(block);
+      static_cast<NativeApiHermesCallback*>(block->callback)->releaseBlockCopy(block);
   if (released) {
     block->callback = nullptr;
   }
 }
 
-void nativeApiDirectCallbackTrampoline(ffi_cif*, void* ret, void* args[],
+void nativeApiEngineCallbackTrampoline(ffi_cif*, void* ret, void* args[],
                                     void* data) {
-  auto callback = static_cast<NativeApiDirectCallback*>(data);
+  auto callback = static_cast<NativeApiHermesCallback*>(data);
   if (callback == nullptr) {
     return;
   }
@@ -776,14 +852,14 @@ void nativeApiDirectCallbackTrampoline(ffi_cif*, void* ret, void* args[],
         exception.description != nil ? exception.description.UTF8String : nullptr;
     std::string message = description != nullptr
                               ? description
-                              : "Objective-C exception in native Direct callback.";
+                              : "Objective-C exception in native Hermes callback.";
     if (!recordNativeCallbackException(message)) {
       @throw;
     }
   }
 }
 
-size_t nativeSizeForType(const NativeApiDirectType& type) {
+size_t nativeSizeForType(const NativeApiHermesType& type) {
   switch (type.kind) {
     case metagen::mdTypeStruct:
       if (type.aggregateInfo != nullptr) {
@@ -818,7 +894,7 @@ size_t nativeSizeForType(const NativeApiDirectType& type) {
   return sizeof(void*);
 }
 
-Value signedInteger64ToDirectValue(Runtime& runtime, int64_t value) {
+Value signedInteger64ToEngineValue(Runtime& runtime, int64_t value) {
   constexpr int64_t maxSafeInteger = 9007199254740991LL;
   constexpr int64_t minSafeInteger = -9007199254740991LL;
   if (value >= minSafeInteger && value <= maxSafeInteger) {
@@ -827,7 +903,7 @@ Value signedInteger64ToDirectValue(Runtime& runtime, int64_t value) {
   return BigInt::fromInt64(runtime, value);
 }
 
-Value unsignedInteger64ToDirectValue(Runtime& runtime, uint64_t value) {
+Value unsignedInteger64ToEngineValue(Runtime& runtime, uint64_t value) {
   constexpr uint64_t maxSafeInteger = 9007199254740991ULL;
   if (value <= maxSafeInteger) {
     return static_cast<double>(value);
@@ -873,7 +949,7 @@ bool parseBigIntToUintptr(Runtime& runtime, const BigInt& bigint,
                                    address);
 }
 
-bool readDirectBuffer(Runtime& runtime, const Object& object, const uint8_t** data,
+bool readEngineBuffer(Runtime& runtime, const Object& object, const uint8_t** data,
                    size_t* byteLength) {
   if (data == nullptr || byteLength == nullptr) {
     return false;
@@ -936,7 +1012,7 @@ size_t alignUp(size_t value, size_t alignment) {
   return ((value + alignment - 1) / alignment) * alignment;
 }
 
-ffi_type* ffiTypeForDirectKind(MDTypeKind kind) {
+ffi_type* ffiTypeForEngineKind(MDTypeKind kind) {
   switch (kind) {
     case metagen::mdTypeChar:
       return &ffi_type_sint8;
@@ -983,23 +1059,23 @@ ffi_type* ffiTypeForDirectKind(MDTypeKind kind) {
   }
 }
 
-bool isSupportedDirectKind(MDTypeKind kind) {
+bool isSupportedEngineKind(MDTypeKind kind) {
   switch (kind) {
     default:
-      return ffiTypeForDirectKind(kind) != nullptr;
+      return ffiTypeForEngineKind(kind) != nullptr;
   }
 }
 
-void skipMetadataDirectTypePayload(MDMetadataReader* metadata, MDSectionOffset* offset,
+void skipMetadataEngineTypePayload(MDMetadataReader* metadata, MDSectionOffset* offset,
                                 MDTypeKind kind);
 
-void skipMetadataDirectType(MDMetadataReader* metadata, MDSectionOffset* offset) {
+void skipMetadataEngineType(MDMetadataReader* metadata, MDSectionOffset* offset) {
   MDTypeKind kind = stripTypeFlags(metadata->getTypeKind(*offset));
   *offset += sizeof(MDTypeKind);
-  skipMetadataDirectTypePayload(metadata, offset, kind);
+  skipMetadataEngineTypePayload(metadata, offset, kind);
 }
 
-void skipMetadataDirectTypePayload(MDMetadataReader* metadata, MDSectionOffset* offset,
+void skipMetadataEngineTypePayload(MDMetadataReader* metadata, MDSectionOffset* offset,
                                 MDTypeKind kind) {
   switch (kind) {
     case metagen::mdTypeClassObject: {
@@ -1027,13 +1103,13 @@ void skipMetadataDirectTypePayload(MDMetadataReader* metadata, MDSectionOffset* 
     case metagen::mdTypeExtVector:
     case metagen::mdTypeComplex:
       *offset += sizeof(uint16_t);
-      skipMetadataDirectType(metadata, offset);
+      skipMetadataEngineType(metadata, offset);
       break;
     case metagen::mdTypeStruct:
       *offset += sizeof(MDSectionOffset);
       break;
     case metagen::mdTypePointer:
-      skipMetadataDirectType(metadata, offset);
+      skipMetadataEngineType(metadata, offset);
       break;
     case metagen::mdTypeBlock:
     case metagen::mdTypeFunctionPointer:
@@ -1044,14 +1120,14 @@ void skipMetadataDirectTypePayload(MDMetadataReader* metadata, MDSectionOffset* 
   }
 }
 
-NativeApiDirectType parseMetadataDirectType(MDMetadataReader* metadata,
+NativeApiHermesType parseMetadataEngineType(MDMetadataReader* metadata,
                                       MDSectionOffset* offset,
-                                      NativeApiDirectBridge* bridge) {
+                                      NativeApiHermesBridge* bridge) {
   MDTypeKind rawKind = metadata->getTypeKind(*offset);
   MDTypeKind kind = stripTypeFlags(rawKind);
   *offset += sizeof(MDTypeKind);
 
-  NativeApiDirectType type;
+  NativeApiHermesType type;
   type.kind = kind;
 
   switch (kind) {
@@ -1059,9 +1135,9 @@ NativeApiDirectType parseMetadataDirectType(MDMetadataReader* metadata,
       type.arraySize = metadata->getArraySize(*offset);
       *offset += sizeof(uint16_t);
       type.elementType =
-          std::make_shared<NativeApiDirectType>(
-              parseMetadataDirectType(metadata, offset, bridge));
-      auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
+          std::make_shared<NativeApiHermesType>(
+              parseMetadataEngineType(metadata, offset, bridge));
+      auto ffiOwner = std::make_shared<NativeApiHermesFfiType>();
       ffiOwner->elements.reserve(static_cast<size_t>(type.arraySize) + 1);
       ffi_type* elementFfiType = type.elementType->ffiType != nullptr
                                      ? type.elementType->ffiType
@@ -1081,9 +1157,9 @@ NativeApiDirectType parseMetadataDirectType(MDMetadataReader* metadata,
       type.arraySize = metadata->getArraySize(*offset);
       *offset += sizeof(uint16_t);
       type.elementType =
-          std::make_shared<NativeApiDirectType>(
-              parseMetadataDirectType(metadata, offset, bridge));
-      auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
+          std::make_shared<NativeApiHermesType>(
+              parseMetadataEngineType(metadata, offset, bridge));
+      auto ffiOwner = std::make_shared<NativeApiHermesFfiType>();
 #if defined(FFI_TYPE_EXT_VECTOR)
       ffiOwner->type.type =
           kind == metagen::mdTypeComplex ? FFI_TYPE_COMPLEX : FFI_TYPE_EXT_VECTOR;
@@ -1143,8 +1219,8 @@ NativeApiDirectType parseMetadataDirectType(MDMetadataReader* metadata,
     }
     case metagen::mdTypePointer:
       type.elementType =
-          std::make_shared<NativeApiDirectType>(
-              parseMetadataDirectType(metadata, offset, bridge));
+          std::make_shared<NativeApiHermesType>(
+              parseMetadataEngineType(metadata, offset, bridge));
       type.ffiType = &ffi_type_pointer;
       type.supported = true;
       return type;
@@ -1179,12 +1255,12 @@ NativeApiDirectType parseMetadataDirectType(MDMetadataReader* metadata,
       break;
   }
 
-  type.ffiType = ffiTypeForDirectKind(kind);
-  type.supported = type.ffiType != nullptr && isSupportedDirectKind(kind);
+  type.ffiType = ffiTypeForEngineKind(kind);
+  type.supported = type.ffiType != nullptr && isSupportedEngineKind(kind);
   return type;
 }
 
-std::shared_ptr<NativeApiDirectAggregateInfo> NativeApiDirectBridge::aggregateInfoFor(
+std::shared_ptr<NativeApiHermesAggregateInfo> NativeApiHermesBridge::aggregateInfoFor(
     MDSectionOffset aggregateOffset, bool isUnion) {
   if (metadata_ == nullptr || aggregateOffset == MD_SECTION_OFFSET_NULL) {
     return nullptr;
@@ -1195,14 +1271,14 @@ std::shared_ptr<NativeApiDirectAggregateInfo> NativeApiDirectBridge::aggregateIn
     return cached->second;
   }
 
-  auto info = std::make_shared<NativeApiDirectAggregateInfo>();
+  auto info = std::make_shared<NativeApiHermesAggregateInfo>();
   info->offset = aggregateOffset;
   info->isUnion = isUnion;
   aggregateInfoByOffset_[aggregateOffset] = info;
 
   if (aggregateInfoInProgress_.find(aggregateOffset) !=
       aggregateInfoInProgress_.end()) {
-    auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
+    auto ffiOwner = std::make_shared<NativeApiHermesFfiType>();
     ffiOwner->elements.push_back(&ffi_type_pointer);
     ffiOwner->finalize();
     info->ffi = ffiOwner;
@@ -1228,18 +1304,18 @@ std::shared_ptr<NativeApiDirectAggregateInfo> NativeApiDirectBridge::aggregateIn
       break;
     }
 
-    NativeApiDirectAggregateField field;
+    NativeApiHermesAggregateField field;
     const char* fieldName = metadata_->resolveString(nameOffset);
     field.name = fieldName != nullptr ? fieldName : "";
     if (!isUnion) {
       field.offset = metadata_->getArraySize(offset);
       offset += sizeof(uint16_t);
     }
-    field.type = parseMetadataDirectType(metadata_.get(), &offset, this);
+    field.type = parseMetadataEngineType(metadata_.get(), &offset, this);
     info->fields.push_back(std::move(field));
   }
 
-  auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
+  auto ffiOwner = std::make_shared<NativeApiHermesFfiType>();
   if (isUnion) {
     ffi_type* largest = &ffi_type_uint8;
     size_t largestSize = 0;
@@ -1267,7 +1343,7 @@ std::shared_ptr<NativeApiDirectAggregateInfo> NativeApiDirectBridge::aggregateIn
   return info;
 }
 
-ffi_type* ffiTypeForDirectArgument(const NativeApiDirectType& type) {
+ffi_type* ffiTypeForEngineArgument(const NativeApiHermesType& type) {
   switch (type.kind) {
     case metagen::mdTypeArray:
       return &ffi_type_pointer;
@@ -1276,17 +1352,19 @@ ffi_type* ffiTypeForDirectArgument(const NativeApiDirectType& type) {
   }
 }
 
-std::optional<NativeApiDirectSignature> parseMetadataDirectSignature(
+std::optional<NativeApiHermesSignature> parseMetadataEngineSignature(
     MDMetadataReader* metadata, MDSectionOffset signatureOffset,
-    unsigned int implicitArgumentCount, NativeApiDirectBridge* bridge,
+    unsigned int implicitArgumentCount, NativeApiHermesBridge* bridge,
     bool returnOwned = false) {
   if (metadata == nullptr || signatureOffset == MD_SECTION_OFFSET_NULL) {
     return std::nullopt;
   }
 
-  NativeApiDirectSignature signature;
+  NativeApiHermesSignature signature;
   signature.implicitArgumentCount = implicitArgumentCount;
-  signature.signatureHash = metadataSignatureHash(metadata, signatureOffset);
+  signature.signatureHash = isPreparedGeneratedDispatchRequired()
+      ? metadataSignatureHash(metadata, signatureOffset)
+      : 0;
   signature.dispatchFlags = returnOwned ? 1 : 0;
 
   MDSectionOffset offset = signatureOffset;
@@ -1296,14 +1374,14 @@ std::optional<NativeApiDirectSignature> parseMetadataDirectSignature(
       (returnKindRaw & static_cast<uint32_t>(metagen::mdTypeFlagNext)) != 0;
   signature.variadic =
       (returnKindRaw & static_cast<uint32_t>(metagen::mdTypeFlagVariadic)) != 0;
-  signature.returnType = parseMetadataDirectType(metadata, &offset, bridge);
+  signature.returnType = parseMetadataEngineType(metadata, &offset, bridge);
   signature.returnType.returnOwned = returnOwned;
 
   while (next) {
     MDTypeKind argKind = metadata->getTypeKind(offset);
     next = (rawTypeKind(argKind) &
             static_cast<uint32_t>(metagen::mdTypeFlagNext)) != 0;
-    signature.argumentTypes.push_back(parseMetadataDirectType(metadata, &offset, bridge));
+    signature.argumentTypes.push_back(parseMetadataEngineType(metadata, &offset, bridge));
   }
 
   signature.ffiTypes.reserve(signature.argumentTypes.size() +
@@ -1312,7 +1390,7 @@ std::optional<NativeApiDirectSignature> parseMetadataDirectSignature(
     signature.ffiTypes.push_back(&ffi_type_pointer);
   }
   for (const auto& argType : signature.argumentTypes) {
-    signature.ffiTypes.push_back(ffiTypeForDirectArgument(argType));
+    signature.ffiTypes.push_back(ffiTypeForEngineArgument(argType));
   }
 
   ffi_status status = ffi_prep_cif(
@@ -1388,7 +1466,7 @@ std::vector<std::string> knownObjCAggregateFieldNames(
 }
 
 const NativeApiSymbol* findObjCAggregateSymbol(
-    NativeApiDirectBridge* bridge, const std::string& name, bool isUnion) {
+    NativeApiHermesBridge* bridge, const std::string& name, bool isUnion) {
   if (bridge == nullptr || name.empty()) {
     return nullptr;
   }
@@ -1426,7 +1504,7 @@ const NativeApiSymbol* findObjCAggregateSymbol(
 }
 
 void applyObjCEncodingSizeAndAlignment(const char* encoding,
-                                       NativeApiDirectFfiType* ffiType,
+                                       NativeApiHermesFfiType* ffiType,
                                        uint16_t* sizeOut = nullptr) {
   if (encoding == nullptr || ffiType == nullptr) {
     return;
@@ -1447,15 +1525,15 @@ void applyObjCEncodingSizeAndAlignment(const char* encoding,
   }
 }
 
-NativeApiDirectType parseObjCEncodedDirectType(
-    const char* encoding, NativeApiDirectBridge* bridge = nullptr,
+NativeApiHermesType parseObjCEncodedEngineType(
+    const char* encoding, NativeApiHermesBridge* bridge = nullptr,
     const char** endEncoding = nullptr);
 
-bool unsupportedDirectType(const NativeApiDirectType& type);
+bool unsupportedEngineType(const NativeApiHermesType& type);
 
-NativeApiDirectType parseObjCEncodedAggregateDirectType(
-    const char* encoding, NativeApiDirectBridge* bridge, const char** endEncoding) {
-  NativeApiDirectType type;
+NativeApiHermesType parseObjCEncodedAggregateEngineType(
+    const char* encoding, NativeApiHermesBridge* bridge, const char** endEncoding) {
+  NativeApiHermesType type;
   type.kind = metagen::mdTypeStruct;
 
   const bool isUnion = *encoding == '(';
@@ -1493,7 +1571,7 @@ NativeApiDirectType parseObjCEncodedAggregateDirectType(
     return type;
   }
 
-  auto info = std::make_shared<NativeApiDirectAggregateInfo>();
+  auto info = std::make_shared<NativeApiHermesAggregateInfo>();
   info->name = aggregateName;
   info->isUnion = isUnion;
   info->offset = MD_SECTION_OFFSET_NULL;
@@ -1506,13 +1584,13 @@ NativeApiDirectType parseObjCEncodedAggregateDirectType(
   size_t maxFieldSize = 0;
   size_t fieldIndex = 0;
   while (*cursor != '\0' && *cursor != close) {
-    NativeApiDirectAggregateField field;
+    NativeApiHermesAggregateField field;
     std::string encodedFieldName;
     cursor = skipObjCTypeFieldName(cursor, &encodedFieldName);
     const char* fieldStart = cursor;
     const char* fieldEnd = cursor;
-    field.type = parseObjCEncodedDirectType(cursor, bridge, &fieldEnd);
-    if (fieldEnd == fieldStart || unsupportedDirectType(field.type)) {
+    field.type = parseObjCEncodedEngineType(cursor, bridge, &fieldEnd);
+    if (fieldEnd == fieldStart || unsupportedEngineType(field.type)) {
       type.supported = false;
       type.ffiType = nullptr;
       if (endEncoding != nullptr) {
@@ -1561,7 +1639,7 @@ NativeApiDirectType parseObjCEncodedAggregateDirectType(
     info->fields[i].name = knownNames[i];
   }
 
-  auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
+  auto ffiOwner = std::make_shared<NativeApiHermesFfiType>();
   if (isUnion) {
     ffi_type* largest = &ffi_type_uint8;
     size_t largestSize = 0;
@@ -1601,9 +1679,9 @@ NativeApiDirectType parseObjCEncodedAggregateDirectType(
   return type;
 }
 
-NativeApiDirectType parseObjCEncodedArrayDirectType(
-    const char* encoding, NativeApiDirectBridge* bridge, const char** endEncoding) {
-  NativeApiDirectType type;
+NativeApiHermesType parseObjCEncodedArrayEngineType(
+    const char* encoding, NativeApiHermesBridge* bridge, const char** endEncoding) {
+  NativeApiHermesType type;
   type.kind = metagen::mdTypeArray;
 
   const char* cursor = encoding + 1;
@@ -1617,8 +1695,8 @@ NativeApiDirectType parseObjCEncodedArrayDirectType(
   type.arraySize = count;
 
   const char* elementEnd = cursor;
-  type.elementType = std::make_shared<NativeApiDirectType>(
-      parseObjCEncodedDirectType(cursor, bridge, &elementEnd));
+  type.elementType = std::make_shared<NativeApiHermesType>(
+      parseObjCEncodedEngineType(cursor, bridge, &elementEnd));
   cursor = elementEnd;
   if (*cursor == ']') {
     cursor++;
@@ -1627,7 +1705,7 @@ NativeApiDirectType parseObjCEncodedArrayDirectType(
     *endEncoding = cursor;
   }
 
-  auto ffiOwner = std::make_shared<NativeApiDirectFfiType>();
+  auto ffiOwner = std::make_shared<NativeApiHermesFfiType>();
   ffi_type* elementFfiType =
       type.elementType != nullptr && type.elementType->ffiType != nullptr
           ? type.elementType->ffiType
@@ -1647,10 +1725,10 @@ NativeApiDirectType parseObjCEncodedArrayDirectType(
   return type;
 }
 
-NativeApiDirectType parseObjCEncodedDirectType(
-    const char* encoding, NativeApiDirectBridge* bridge, const char** endEncoding) {
+NativeApiHermesType parseObjCEncodedEngineType(
+    const char* encoding, NativeApiHermesBridge* bridge, const char** endEncoding) {
   encoding = skipObjCTypeQualifiers(encoding);
-  NativeApiDirectType type;
+  NativeApiHermesType type;
 
   if (encoding == nullptr || *encoding == '\0') {
     type.kind = metagen::mdTypePointer;
@@ -1662,7 +1740,7 @@ NativeApiDirectType parseObjCEncodedDirectType(
   }
 
   auto finishPrimitive = [&](const char* end) {
-    type.ffiType = ffiTypeForDirectKind(type.kind);
+    type.ffiType = ffiTypeForEngineKind(type.kind);
     type.supported = type.ffiType != nullptr;
     if (endEncoding != nullptr) {
       *endEncoding = end;
@@ -1747,8 +1825,8 @@ NativeApiDirectType parseObjCEncodedDirectType(
       type.kind = metagen::mdTypePointer;
       {
         const char* elementEnd = encoding + 1;
-        type.elementType = std::make_shared<NativeApiDirectType>(
-            parseObjCEncodedDirectType(encoding + 1, bridge, &elementEnd));
+        type.elementType = std::make_shared<NativeApiHermesType>(
+            parseObjCEncodedEngineType(encoding + 1, bridge, &elementEnd));
         type.ffiType = &ffi_type_pointer;
         type.supported = true;
         if (elementEnd == encoding + 1 && encoding[1] != '\0') {
@@ -1761,9 +1839,9 @@ NativeApiDirectType parseObjCEncodedDirectType(
       return type;
     case '{':
     case '(':
-      return parseObjCEncodedAggregateDirectType(encoding, bridge, endEncoding);
+      return parseObjCEncodedAggregateEngineType(encoding, bridge, endEncoding);
     case '[':
-      return parseObjCEncodedArrayDirectType(encoding, bridge, endEncoding);
+      return parseObjCEncodedArrayEngineType(encoding, bridge, endEncoding);
     case 'b': {
       type.kind = metagen::mdTypeUInt;
       const char* cursor = encoding + 1;
@@ -1783,17 +1861,17 @@ NativeApiDirectType parseObjCEncodedDirectType(
   return finishPrimitive(encoding + 1);
 }
 
-std::optional<NativeApiDirectSignature> parseObjCMethodDirectSignature(
-    Method method, NativeApiDirectBridge* bridge = nullptr) {
+std::optional<NativeApiHermesSignature> parseObjCMethodEngineSignature(
+    Method method, NativeApiHermesBridge* bridge = nullptr) {
   if (method == nullptr) {
     return std::nullopt;
   }
 
-  NativeApiDirectSignature signature;
+  NativeApiHermesSignature signature;
   signature.implicitArgumentCount = 2;
 
   char* returnEncoding = method_copyReturnType(method);
-  signature.returnType = parseObjCEncodedDirectType(returnEncoding, bridge);
+  signature.returnType = parseObjCEncodedEngineType(returnEncoding, bridge);
   if (returnEncoding != nullptr) {
     free(returnEncoding);
   }
@@ -1801,7 +1879,7 @@ std::optional<NativeApiDirectSignature> parseObjCMethodDirectSignature(
   unsigned int totalArgc = method_getNumberOfArguments(method);
   for (unsigned int i = 2; i < totalArgc; i++) {
     char* argEncoding = method_copyArgumentType(method, i);
-    signature.argumentTypes.push_back(parseObjCEncodedDirectType(argEncoding, bridge));
+    signature.argumentTypes.push_back(parseObjCEncodedEngineType(argEncoding, bridge));
     if (argEncoding != nullptr) {
       free(argEncoding);
     }
@@ -1811,7 +1889,7 @@ std::optional<NativeApiDirectSignature> parseObjCMethodDirectSignature(
   signature.ffiTypes.push_back(&ffi_type_pointer);
   signature.ffiTypes.push_back(&ffi_type_pointer);
   for (const auto& argType : signature.argumentTypes) {
-    signature.ffiTypes.push_back(ffiTypeForDirectArgument(argType));
+    signature.ffiTypes.push_back(ffiTypeForEngineArgument(argType));
   }
 
   ffi_status status = ffi_prep_cif(
@@ -1824,7 +1902,7 @@ std::optional<NativeApiDirectSignature> parseObjCMethodDirectSignature(
   return signature;
 }
 
-bool prepareDirectMethodSignature(NativeApiDirectSignature* signature) {
+bool prepareEngineMethodSignature(NativeApiHermesSignature* signature) {
   if (signature == nullptr) {
     return false;
   }
@@ -1834,7 +1912,7 @@ bool prepareDirectMethodSignature(NativeApiDirectSignature* signature) {
   signature->ffiTypes.push_back(&ffi_type_pointer);
   signature->ffiTypes.push_back(&ffi_type_pointer);
   for (const auto& argType : signature->argumentTypes) {
-    ffi_type* ffiType = ffiTypeForDirectArgument(argType);
+    ffi_type* ffiType = ffiTypeForEngineArgument(argType);
     if (ffiType == nullptr) {
       signature->prepared = false;
       return false;
@@ -1851,30 +1929,71 @@ bool prepareDirectMethodSignature(NativeApiDirectSignature* signature) {
   return signature->prepared;
 }
 
-bool reconcileObjCMethodRuntimeSignature(NativeApiDirectSignature* signature,
-                                         const NativeApiDirectSignature& runtime) {
+bool isRuntimeAggregateType(const NativeApiHermesType& type) {
+  switch (type.kind) {
+    case metagen::mdTypeStruct:
+    case metagen::mdTypeArray:
+    case metagen::mdTypeVector:
+    case metagen::mdTypeExtVector:
+    case metagen::mdTypeComplex:
+      return true;
+    default:
+      return false;
+  }
+}
+
+bool reconcileObjCMethodRuntimeType(NativeApiHermesType* metadataType,
+                                    const NativeApiHermesType& runtimeType,
+                                    bool* abiChanged) {
+  if (metadataType == nullptr || unsupportedEngineType(runtimeType)) {
+    return false;
+  }
+
+  if (runtimeType.kind == metagen::mdTypeBlock &&
+      metadataType->kind == metagen::mdTypeFunctionPointer) {
+    metadataType->kind = metagen::mdTypeBlock;
+    metadataType->ffiType = runtimeType.ffiType;
+    metadataType->supported = runtimeType.supported;
+    return true;
+  }
+
+  if (!isRuntimeAggregateType(runtimeType)) {
+    return false;
+  }
+
+  bool returnOwned = metadataType->returnOwned;
+  *metadataType = runtimeType;
+  metadataType->returnOwned = returnOwned;
+  if (abiChanged != nullptr) {
+    *abiChanged = true;
+  }
+  return true;
+}
+
+bool reconcileObjCMethodRuntimeSignature(NativeApiHermesSignature* signature,
+                                         const NativeApiHermesSignature& runtime) {
   if (signature == nullptr ||
       signature->argumentTypes.size() != runtime.argumentTypes.size()) {
     return false;
   }
 
   bool changed = false;
+  bool abiChanged = false;
+  changed |= reconcileObjCMethodRuntimeType(&signature->returnType,
+                                            runtime.returnType, &abiChanged);
   for (size_t i = 0; i < signature->argumentTypes.size(); i++) {
-    NativeApiDirectType& metadataType = signature->argumentTypes[i];
-    const NativeApiDirectType& runtimeType = runtime.argumentTypes[i];
-    if (runtimeType.kind == metagen::mdTypeBlock &&
-        metadataType.kind == metagen::mdTypeFunctionPointer) {
-      metadataType.kind = metagen::mdTypeBlock;
-      metadataType.ffiType = runtimeType.ffiType;
-      metadataType.supported = runtimeType.supported;
-      changed = true;
-    }
+    changed |= reconcileObjCMethodRuntimeType(&signature->argumentTypes[i],
+                                              runtime.argumentTypes[i],
+                                              &abiChanged);
   }
 
-  return !changed || prepareDirectMethodSignature(signature);
+  if (abiChanged) {
+    signature->signatureHash = 0;
+  }
+  return !changed || prepareEngineMethodSignature(signature);
 }
 
-bool unsupportedDirectType(const NativeApiDirectType& type) {
+bool unsupportedEngineType(const NativeApiHermesType& type) {
   if (type.kind == metagen::mdTypeStruct && type.aggregateInfo != nullptr &&
       type.aggregateInfo->ffi != nullptr) {
     return false;
@@ -1882,50 +2001,52 @@ bool unsupportedDirectType(const NativeApiDirectType& type) {
   return !type.supported || type.ffiType == nullptr;
 }
 
-bool signatureSupportedForDirectCallback(const NativeApiDirectSignature& signature) {
+bool signatureSupportedForEngineCallback(const NativeApiHermesSignature& signature) {
   if (!signature.prepared || signature.variadic ||
-      unsupportedDirectType(signature.returnType)) {
+      unsupportedEngineType(signature.returnType)) {
     return false;
   }
   for (const auto& argType : signature.argumentTypes) {
-    if (unsupportedDirectType(argType)) {
+    if (unsupportedEngineType(argType)) {
       return false;
     }
   }
   return true;
 }
 
-std::shared_ptr<NativeApiDirectCallback> createDirectCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
-    const NativeApiDirectType& type, Function function, bool block,
-    NativeApiDirectCallbackThreadPolicy threadPolicy =
-        NativeApiDirectCallbackThreadPolicy::Default) {
+std::shared_ptr<NativeApiHermesCallback> createEngineCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
+    const NativeApiHermesType& type, Function function, bool block,
+    NativeApiHermesCallbackThreadPolicy threadPolicy =
+        NativeApiHermesCallbackThreadPolicy::Default) {
   if (bridge == nullptr || bridge->metadata() == nullptr ||
       type.signatureOffset == MD_SECTION_OFFSET_NULL) {
     throw JSError(
         runtime, "Native callback metadata is unavailable.");
   }
 
-  auto parsed = parseMetadataDirectSignature(
+  auto parsed = parseMetadataEngineSignature(
       bridge->metadata(), type.signatureOffset, block ? 1 : 0, bridge.get());
-  if (!parsed || !signatureSupportedForDirectCallback(*parsed)) {
+  if (!parsed || !signatureSupportedForEngineCallback(*parsed)) {
     throw JSError(
-        runtime, "Native callback signature is not supported by direct engine.");
+        runtime, "Native callback signature is not supported by backend.");
   }
 
   auto signature =
-      std::make_shared<NativeApiDirectSignature>(std::move(*parsed));
-  auto callback = std::make_shared<NativeApiDirectCallback>(
+      std::make_shared<NativeApiHermesSignature>(std::move(*parsed));
+  auto callback = std::make_shared<NativeApiHermesCallback>(
       runtime, bridge, std::move(signature), std::move(function), block,
       threadPolicy);
-  if (!block) {
-    bridge->retainDirectLifetime(callback);
+  if (block) {
+    callback->retainInitialBlockLifetime(callback);
+  } else {
+    bridge->retainEngineLifetime(callback);
   }
   return callback;
 }
 
-std::shared_ptr<NativeApiDirectCallback> createDirectMethodCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
+std::shared_ptr<NativeApiHermesCallback> createEngineMethodCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
     const std::string& selectorName, MDSectionOffset signatureOffset,
     Function function, bool returnOwned) {
   if (bridge == nullptr || bridge->metadata() == nullptr ||
@@ -1934,41 +2055,41 @@ std::shared_ptr<NativeApiDirectCallback> createDirectMethodCallback(
         runtime, "Native method callback metadata is unavailable.");
   }
 
-  auto parsed = parseMetadataDirectSignature(
+  auto parsed = parseMetadataEngineSignature(
       bridge->metadata(), signatureOffset, 2, bridge.get(), returnOwned);
-  if (!parsed || !signatureSupportedForDirectCallback(*parsed)) {
+  if (!parsed || !signatureSupportedForEngineCallback(*parsed)) {
     throw JSError(
-        runtime, "Native method callback signature is not supported by direct engine.");
+        runtime, "Native method callback signature is not supported by backend.");
   }
   parsed->selectorName = selectorName;
 
   auto signature =
-      std::make_shared<NativeApiDirectSignature>(std::move(*parsed));
-  auto threadPolicy = readDirectCallbackThreadPolicy(runtime, function);
-  auto callback = std::make_shared<NativeApiDirectCallback>(
+      std::make_shared<NativeApiHermesSignature>(std::move(*parsed));
+  auto threadPolicy = readEngineCallbackThreadPolicy(runtime, function);
+  auto callback = std::make_shared<NativeApiHermesCallback>(
       runtime, bridge, std::move(signature), std::move(function), false,
       threadPolicy, true);
-  bridge->retainDirectLifetime(callback);
+  bridge->retainEngineLifetime(callback);
   return callback;
 }
 
-std::shared_ptr<NativeApiDirectCallback> createDirectMethodCallback(
-    Runtime& runtime, const std::shared_ptr<NativeApiDirectBridge>& bridge,
-    const std::string& selectorName, NativeApiDirectSignature signature,
+std::shared_ptr<NativeApiHermesCallback> createEngineMethodCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiHermesBridge>& bridge,
+    const std::string& selectorName, NativeApiHermesSignature signature,
     Function function) {
   signature.selectorName = selectorName;
-  prepareDirectMethodSignature(&signature);
-  if (!signatureSupportedForDirectCallback(signature)) {
+  prepareEngineMethodSignature(&signature);
+  if (!signatureSupportedForEngineCallback(signature)) {
     throw JSError(
-        runtime, "Native method callback signature is not supported by direct engine.");
+        runtime, "Native method callback signature is not supported by backend.");
   }
 
   auto sharedSignature =
-      std::make_shared<NativeApiDirectSignature>(std::move(signature));
-  auto threadPolicy = readDirectCallbackThreadPolicy(runtime, function);
-  auto callback = std::make_shared<NativeApiDirectCallback>(
+      std::make_shared<NativeApiHermesSignature>(std::move(signature));
+  auto threadPolicy = readEngineCallbackThreadPolicy(runtime, function);
+  auto callback = std::make_shared<NativeApiHermesCallback>(
       runtime, bridge, std::move(sharedSignature), std::move(function), false,
       threadPolicy, true);
-  bridge->retainDirectLifetime(callback);
+  bridge->retainEngineLifetime(callback);
   return callback;
 }

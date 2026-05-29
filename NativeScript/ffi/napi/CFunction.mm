@@ -13,7 +13,7 @@
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
 #include "runtime/NativeScriptException.h"
-#include "Tasks.h"
+#include "ffi/shared/Tasks.h"
 #ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"
 #endif
