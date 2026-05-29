@@ -747,7 +747,7 @@ JSValueRef NativeApiSelectorGroupCall(
 
     Class dispatchClass = data->receiverIsClass
                               ? Nil
-                              : dispatchPrototypeClassForEngineDerivedReceiver(
+                              : dispatchSuperclassForEngineDerivedReceiver(
                                     receiver, data->lookupClass);
     return setJSCEnginePreparedObjCResult(
         runtime, data->bridge, receiver, *prepared, receiverHostObject,

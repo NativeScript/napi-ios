@@ -73,9 +73,8 @@ bool hostSetProperty(JSContextRef context, JSObjectRef object, JSStringRef prope
   }
   Runtime runtime(holder->state);
   try {
-    holder->hostObject->set(runtime, PropNameID(stringToUtf8(propertyName)),
+    return holder->hostObject->set(runtime, PropNameID(stringToUtf8(propertyName)),
                             Value::borrowed(runtime, value));
-    return true;
   } catch (const std::exception& error) {
     setException(context, exception, error);
     return true;

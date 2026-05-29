@@ -885,7 +885,7 @@ JSValue NativeApiSelectorGroupCall(JSContext* context, JSValue thisValue,
 
     Class dispatchClass = data->receiverIsClass
                               ? Nil
-                              : dispatchPrototypeClassForEngineDerivedReceiver(
+                              : dispatchSuperclassForEngineDerivedReceiver(
                                     receiver, data->lookupClass);
     return setQuickJSEnginePreparedObjCResult(
         runtime, data->bridge, receiver, *prepared, receiverHostObject,

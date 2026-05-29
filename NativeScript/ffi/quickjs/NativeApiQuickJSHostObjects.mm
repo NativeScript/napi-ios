@@ -110,9 +110,10 @@ static int nativeHostSet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSValueC
     return 0;
   }
   try {
-    holder->hostObject->set(runtime, PropNameID(atomToUtf8(ctx, atom)),
-                            Value::borrowed(runtime, value));
-    return 1;
+    bool handled = holder->hostObject->set(
+        runtime, PropNameID(atomToUtf8(ctx, atom)),
+        Value::borrowed(runtime, value));
+    return handled ? 1 : 0;
   } catch (const std::exception& error) {
     throwError(ctx, error);
     return -1;
