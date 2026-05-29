@@ -831,6 +831,20 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
             runtimeOnly
           );
         }
+        // Methods with a trailing NSError** out-parameter (selector ending in
+        // "error:") may be called with the error argument omitted, so register
+        // the error-omitted arity too.
+        if (argumentCount > 0 &&
+            /error:$/.test(member.selectorName) &&
+            group[argumentCount - 1] === undefined) {
+          group[argumentCount - 1] = selectorDescriptor(
+            member,
+            member.selectorName,
+            member.signatureOffset,
+            argumentCount - 1,
+            runtimeOnly
+          );
+        }
       }
     }
     function installSelectorGroups(target, groups, receiverIsClass) {
