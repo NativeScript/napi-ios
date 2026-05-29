@@ -179,6 +179,14 @@ inline std::string valueToUtf8(JSContext* context, JSValueConst value) {
   return result;
 }
 
+inline std::string currentExceptionMessage(JSContext* context) {
+  JSValue exception = JS_GetException(context);
+  std::string message = valueToUtf8(context, exception);
+  JS_FreeValue(context, exception);
+  return message.empty() ? std::string("QuickJS function call failed.")
+                         : message;
+}
+
 inline std::string atomToUtf8(JSContext* context, JSAtom atom) {
   const char* cString = JS_AtomToCString(context, atom);
   if (cString == nullptr) {
@@ -588,7 +596,7 @@ class Function : public Object {
     JS_FreeValue(runtime.context(), global);
     JS_FreeValue(runtime.context(), function);
     if (JS_IsException(result)) {
-      throw JSError(runtime, "QuickJS function call failed.");
+      throw JSError(runtime, quickjsengine::currentExceptionMessage(runtime.context()));
     }
     Value value(runtime, result);
     JS_FreeValue(runtime.context(), result);
@@ -626,7 +634,7 @@ class Function : public Object {
     JS_FreeValue(runtime.context(), thisValue);
     JS_FreeValue(runtime.context(), function);
     if (JS_IsException(result)) {
-      throw JSError(runtime, "QuickJS function call failed.");
+      throw JSError(runtime, quickjsengine::currentExceptionMessage(runtime.context()));
     }
     Value value(runtime, result);
     JS_FreeValue(runtime.context(), result);
