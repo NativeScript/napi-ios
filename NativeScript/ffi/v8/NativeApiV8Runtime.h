@@ -99,7 +99,7 @@ class HostObject {
  public:
   virtual ~HostObject() = default;
   virtual Value get(Runtime& runtime, const PropNameID& name);
-  virtual void set(Runtime& runtime, const PropNameID& name, const Value& value);
+  virtual bool set(Runtime& runtime, const PropNameID& name, const Value& value);
   virtual std::vector<PropNameID> getPropertyNames(Runtime& runtime);
 };
 
@@ -114,7 +114,10 @@ struct RuntimeState {
 
   ~RuntimeState() { context.Reset(); }
 
-  v8::Local<v8::Context> localContext() const { return context.Get(isolate); }
+  v8::Local<v8::Context> localContext() const {
+    v8::Local<v8::Context> ctx = context.Get(isolate);
+    return ctx.IsEmpty() ? isolate->GetCurrentContext() : ctx;
+  }
 
   v8::Isolate* isolate = nullptr;
   v8::Global<v8::Context> context;

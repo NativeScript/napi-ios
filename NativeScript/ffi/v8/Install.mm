@@ -891,7 +891,6 @@ void InstallNativeApiV8GlobalSymbols(Runtime& runtime, const char* globalName) {
       }
       var selectorGroups = Object.create(null);
       addSelectorGroups(selectorGroups, members, false);
-      addSelectorGroups(selectorGroups, runtimeMembers, true);
       for (var i = 0; hasMetadataMembers && i < members.length; i++) {
         var member = members[i];
         if (!member || !member.name) {

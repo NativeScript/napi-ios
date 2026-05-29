@@ -7,7 +7,7 @@ namespace engine {
 
 Value HostObject::get(Runtime&, const PropNameID&) { return Value::undefined(); }
 
-void HostObject::set(Runtime&, const PropNameID&, const Value&) {}
+bool HostObject::set(Runtime&, const PropNameID&, const Value&) { return true; }
 
 std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 

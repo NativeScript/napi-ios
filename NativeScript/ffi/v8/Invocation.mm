@@ -569,7 +569,6 @@ bool isFastEngineUnsignedIntegerType(const NativeApiV8Type& type) {
   switch (type.kind) {
     case metagen::mdTypeUChar:
     case metagen::mdTypeUInt8:
-    case metagen::mdTypeUShort:
     case metagen::mdTypeUInt:
     case metagen::mdTypeULong:
     case metagen::mdTypeUInt64:
