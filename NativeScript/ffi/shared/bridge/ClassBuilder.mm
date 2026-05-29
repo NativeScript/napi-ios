@@ -376,7 +376,13 @@ std::optional<NativeApiSignature> exposedMethodSignature(
     }
   }
 
-  if (selectorArgumentCount(selectorName) != signature.argumentTypes.size()) {
+  // A colon-less selector may still declare params (@nativescript/core
+  // exposes onReceive with one NSNotification param); the Objective-C runtime
+  // accepts such methods and callers like NSNotificationCenter invoke them
+  // with the argument. Only reject a mismatch when the selector explicitly
+  // declares argument slots.
+  size_t selectorArguments = selectorArgumentCount(selectorName);
+  if (selectorArguments != signature.argumentTypes.size() && selectorArguments != 0) {
     throw JSError(
         runtime, "exposedMethods selector argument count does not match params.");
   }

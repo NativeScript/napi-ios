@@ -277,6 +277,7 @@ std::string objcEncodingForEngineType(const NativeApiType& type) {
     case metagen::mdTypeSShort:
       return "s";
     case metagen::mdTypeUShort:
+    case metagen::mdTypeUnichar:
       return "S";
     case metagen::mdTypeSInt:
       return "i";
@@ -1039,6 +1040,7 @@ ffi_type* ffiTypeForEngineKind(MDTypeKind kind) {
     case metagen::mdTypeSShort:
       return &ffi_type_sint16;
     case metagen::mdTypeUShort:
+    case metagen::mdTypeUnichar:
       return &ffi_type_uint16;
     case metagen::mdTypeSInt:
       return &ffi_type_sint32;
