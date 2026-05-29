@@ -487,32 +487,38 @@ class NativeApiCallback final
     } catch (const std::bad_weak_ptr&) {
       return false;
     }
-    std::lock_guard<std::mutex> lock(retainedBlockCopiesMutex_);
-    auto it = retainedBlockCopies_.end();
-    if (blockPointer != nullptr) {
-      it = std::find_if(
-          retainedBlockCopies_.begin(), retainedBlockCopies_.end(),
-          [blockPointer](const RetainedBlockCopy& retained) {
-            return retained.blockPointer == blockPointer;
-          });
-    }
-    if (it != retainedBlockCopies_.end()) {
-      if (bridge_ != nullptr && runtime_ != nullptr &&
-          it->blockPointer != nullptr) {
-        bridge_->forgetRoundTripValue(*runtime_, it->blockPointer);
+    const void* pointerToForget = nullptr;
+    bool released = false;
+    {
+      std::lock_guard<std::mutex> lock(retainedBlockCopiesMutex_);
+      auto it = retainedBlockCopies_.end();
+      if (blockPointer != nullptr) {
+        it = std::find_if(
+            retainedBlockCopies_.begin(), retainedBlockCopies_.end(),
+            [blockPointer](const RetainedBlockCopy& retained) {
+              return retained.blockPointer == blockPointer;
+            });
       }
-      retainedBlockCopies_.erase(it);
-      return true;
-    }
-    if (blockPointer == blockLiteral_) {
-      if (bridge_ != nullptr && runtime_ != nullptr) {
-        bridge_->forgetRoundTripValue(*runtime_, blockPointer);
+      if (it != retainedBlockCopies_.end()) {
+        pointerToForget = it->blockPointer;
+        retainedBlockCopies_.erase(it);
+        released = true;
+      } else if (blockPointer == blockLiteral_) {
+        pointerToForget = blockPointer;
+        blockLiteral_ = nullptr;
+        initialBlockLifetime_.reset();
+        released = true;
       }
-      blockLiteral_ = nullptr;
-      initialBlockLifetime_.reset();
-      return true;
     }
-    return false;
+    // Block disposal can run during an autorelease-pool drain outside any JS
+    // engine scope, so enter a runtime scope before touching the round-trip
+    // root object (which reads the engine global/context).
+    if (released && bridge_ != nullptr && runtime_ != nullptr &&
+        pointerToForget != nullptr) {
+      NativeApiRuntimeScope runtimeScope(*runtime_);
+      bridge_->forgetRoundTripValue(*runtime_, pointerToForget);
+    }
+    return released;
   }
 
   void invoke(void* ret, void* args[]) {
