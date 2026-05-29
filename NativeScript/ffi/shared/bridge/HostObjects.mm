@@ -1073,6 +1073,60 @@ class NativeApiObjectHostObject final
           }
         }
 
+        // Resolve metadata methods to a freshly created host function that
+        // dispatches the right overload by argument count. This keeps full
+        // metadata-driven marshalling while staying reliably callable in a
+        // method-call context (a prototype selector-group function injected
+        // through the property interceptor is not).
+        if (hasMethodMember(members, property, false)) {
+          auto bridge = bridge_;
+          id object = object_;
+          std::weak_ptr<NativeApiObjectHostObject> weakSelf =
+              shared_from_this();
+          std::string memberName = property;
+          return Function::createFromHostFunction(
+              runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
+              [bridge, object, weakSelf, memberName](
+                  Runtime& runtime, const Value&, const Value* args,
+                  size_t count) -> Value {
+                const NativeApiSymbol* symbol =
+                    bridge->findClassForRuntimeClass(object_getClass(object));
+                if (symbol == nullptr) {
+                  throw JSError(
+                      runtime,
+                      "Objective-C metadata is not available for object.");
+                }
+                const NativeApiMember* selected = selectMethodMember(
+                    bridge->membersForClass(*symbol), memberName, false, count);
+                if (selected == nullptr) {
+                  // NSError-out methods (selector ending in "error:") may be
+                  // called with the trailing error argument omitted.
+                  const auto& classMembers = bridge->membersForClass(*symbol);
+                  if (const NativeApiMember* withError = selectMethodMember(
+                          classMembers, memberName, false, count + 1)) {
+                    const std::string& sel = withError->selectorName;
+                    if (sel.size() >= 6 &&
+                        sel.compare(sel.size() - 6, 6, "error:") == 0) {
+                      selected = withError;
+                    }
+                  }
+                }
+                if (selected == nullptr) {
+                  throw JSError(
+                      runtime,
+                      "Objective-C selector is not available for the provided "
+                      "arguments count: " +
+                          memberName);
+                }
+                if (auto self = weakSelf.lock()) {
+                  return self->callObjectSelector(
+                      runtime, selected->selectorName, selected, args, count);
+                }
+                return callObjCSelector(runtime, bridge, object, false,
+                                        selected->selectorName, selected, args,
+                                        count);
+              });
+        }
       }
     }
 
