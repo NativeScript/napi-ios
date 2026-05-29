@@ -147,8 +147,18 @@ napi_value drainMicrotasks(napi_env env, napi_callback_info cbinfo) {
   return nullptr;
 }
 
-std::mutex gRuntimePromiseRunLoopMutex;
-std::unordered_map<std::string, CFRunLoopRef> gRuntimePromiseRunLoops;
+// Leaked, never-destroyed singletons: the Runtime destructor can run during
+// process teardown after file-scope statics are destroyed, so a destroyed
+// mutex would fail to lock (std::system_error). Heap-allocating and never
+// freeing avoids the static-destruction-order fiasco.
+std::mutex& gRuntimePromiseRunLoopMutex() {
+  static std::mutex* mutex = new std::mutex();
+  return *mutex;
+}
+std::unordered_map<std::string, CFRunLoopRef>& gRuntimePromiseRunLoops() {
+  static auto* runLoops = new std::unordered_map<std::string, CFRunLoopRef>();
+  return *runLoops;
+}
 
 std::string runtimePromiseRunLoopToken(CFRunLoopRef runLoop) {
   char buffer[(sizeof(void*) * 2) + 3] = {};
@@ -162,9 +172,9 @@ std::string registerRuntimePromiseRunLoop(CFRunLoopRef runLoop) {
   }
 
   std::string token = runtimePromiseRunLoopToken(runLoop);
-  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex);
-  if (gRuntimePromiseRunLoops.find(token) == gRuntimePromiseRunLoops.end()) {
-    gRuntimePromiseRunLoops.emplace(token, (CFRunLoopRef)CFRetain(runLoop));
+  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex());
+  if (gRuntimePromiseRunLoops().find(token) == gRuntimePromiseRunLoops().end()) {
+    gRuntimePromiseRunLoops().emplace(token, (CFRunLoopRef)CFRetain(runLoop));
   }
   return token;
 }
@@ -175,19 +185,19 @@ void unregisterRuntimePromiseRunLoop(CFRunLoopRef runLoop) {
   }
 
   std::string token = runtimePromiseRunLoopToken(runLoop);
-  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex);
-  auto it = gRuntimePromiseRunLoops.find(token);
-  if (it == gRuntimePromiseRunLoops.end()) {
+  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex());
+  auto it = gRuntimePromiseRunLoops().find(token);
+  if (it == gRuntimePromiseRunLoops().end()) {
     return;
   }
   CFRelease(it->second);
-  gRuntimePromiseRunLoops.erase(it);
+  gRuntimePromiseRunLoops().erase(it);
 }
 
 CFRunLoopRef copyRuntimePromiseRunLoop(const std::string& token) {
-  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex);
-  auto it = gRuntimePromiseRunLoops.find(token);
-  if (it == gRuntimePromiseRunLoops.end()) {
+  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex());
+  auto it = gRuntimePromiseRunLoops().find(token);
+  if (it == gRuntimePromiseRunLoops().end()) {
     return nullptr;
   }
   return (CFRunLoopRef)CFRetain(it->second);
