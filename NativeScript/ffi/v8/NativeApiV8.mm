@@ -375,6 +375,15 @@ bool prepareV8EngineArgument(
       return true;
     }
     case metagen::mdTypeUShort: {
+      if (value->IsString()) {
+        std::string text = v8StringToUtf8(runtime.isolate(), value);
+        if (text.size() != 1) {
+          return false;
+        }
+        *static_cast<uint16_t*>(target) =
+            static_cast<uint16_t>(static_cast<unsigned char>(text[0]));
+        return true;
+      }
       uint32_t converted = 0;
       if (!value->Uint32Value(runtime.context()).To(&converted)) {
         return false;
@@ -886,9 +895,12 @@ void NativeApiV8SelectorGroupCallback(
       data->bridge->forgetObjectExpandos(receiver);
     }
 
+    // For JS-extended receivers, dispatch from the immediate native
+    // superclass so native-derived overrides are honored (not the method's
+    // defining ancestor, which would skip intermediate native overrides).
     Class dispatchClass = data->receiverIsClass
                               ? Nil
-                              : dispatchPrototypeClassForEngineDerivedReceiver(
+                              : dispatchSuperclassForEngineDerivedReceiver(
                                     receiver, data->lookupClass);
     setV8EnginePreparedObjCResult(runtime, data->bridge, receiver, *prepared,
                                   receiverHostObject, initializerClassWrapper,

@@ -1956,17 +1956,11 @@ bool reconcileObjCMethodRuntimeType(NativeApiV8Type* metadataType,
     return true;
   }
 
-  if (!isRuntimeAggregateType(runtimeType)) {
-    return false;
-  }
-
-  bool returnOwned = metadataType->returnOwned;
-  *metadataType = runtimeType;
-  metadataType->returnOwned = returnOwned;
-  if (abiChanged != nullptr) {
-    *abiChanged = true;
-  }
-  return true;
+  // Do not overwrite aggregate (struct/union) metadata types with the
+  // anonymous ObjC runtime encoding: the metadata type carries the real
+  // field names and layout that the runtime encoding (e.g. "{?=qqq}") lacks.
+  (void)abiChanged;
+  return false;
 }
 
 bool reconcileObjCMethodRuntimeSignature(NativeApiV8Signature* signature,

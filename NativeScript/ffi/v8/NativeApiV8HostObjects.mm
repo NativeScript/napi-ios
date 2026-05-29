@@ -83,10 +83,10 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
           }
           Runtime runtime(holder->state);
           try {
-            holder->hostObject->set(runtime,
-                                    PropNameID(propertyNameToUtf8(info.GetIsolate(), property)),
-                                    Value(runtime, value));
-            return v8::Intercepted::kYes;
+            bool handled = holder->hostObject->set(
+                runtime, PropNameID(propertyNameToUtf8(info.GetIsolate(), property)),
+                Value(runtime, value));
+            return handled ? v8::Intercepted::kYes : v8::Intercepted::kNo;
           } catch (const std::exception& exception) {
             throwV8Exception(info.GetIsolate(), exception);
             return v8::Intercepted::kYes;
@@ -116,7 +116,7 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
             throwV8Exception(info.GetIsolate(), exception);
           }
         },
-        v8::Local<v8::Value>(), v8::PropertyHandlerFlags::kNonMasking));
+        v8::Local<v8::Value>(), v8::PropertyHandlerFlags::kNone));
     objectTemplate->SetHandler(v8::IndexedPropertyHandlerConfiguration(
         [](uint32_t index, const v8::PropertyCallbackInfo<v8::Value>& info) -> v8::Intercepted {
           auto* holder =
@@ -155,7 +155,7 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
           }
         },
         nullptr, nullptr, nullptr, v8::Local<v8::Value>(),
-        v8::PropertyHandlerFlags::kNonMasking));
+        v8::PropertyHandlerFlags::kNone));
     state->hostObjectTemplate.Reset(runtime.isolate(), objectTemplate);
   }
   return state->hostObjectTemplate.Get(runtime.isolate());

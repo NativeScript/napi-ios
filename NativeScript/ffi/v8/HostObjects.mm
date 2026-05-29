@@ -189,7 +189,7 @@ class NativeApiReferenceHostObject final : public HostObject {
                      NativeApiV8ArgumentFrame& frame, size_t elements = 1);
 
   Value get(Runtime& runtime, const PropNameID& name) override;
-  void set(Runtime& runtime, const PropNameID& name, const Value& value) override;
+  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override;
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override {
     std::vector<PropNameID> names;
     addPropertyName(runtime, names, "kind");
@@ -245,7 +245,7 @@ class NativeApiStructObjectHostObject final : public HostObject {
   std::shared_ptr<Value> backingValue() const { return backingValue_; }
 
   Value get(Runtime& runtime, const PropNameID& name) override;
-  void set(Runtime& runtime, const PropNameID& name, const Value& value) override;
+  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override;
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override;
 
  private:
@@ -431,7 +431,7 @@ class NativeApiSuperHostObject final : public HostObject {
     return Value::undefined();
   }
 
-  void set(Runtime& runtime, const PropNameID& name, const Value& value) override {
+  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override {
     std::string property = name.utf8(runtime);
     if (receiver_ == nil || dispatchClass_ == Nil) {
       throw JSError(runtime, "Cannot set property on nil super.");
@@ -454,7 +454,7 @@ class NativeApiSuperHostObject final : public HostObject {
         callObjCSelector(runtime, bridge_, receiver_, false,
                          setterMember.selectorName, &setterMember, args, 1,
                          dispatchClass_);
-        return;
+        return true;
       }
     }
 
@@ -464,7 +464,7 @@ class NativeApiSuperHostObject final : public HostObject {
       Value args[] = {Value(runtime, value)};
       callObjCSelector(runtime, bridge_, receiver_, false, setterSelectorName,
                        nullptr, args, 1, dispatchClass_);
-      return;
+      return true;
     }
 
     throw JSError(runtime,
@@ -1072,6 +1072,29 @@ class NativeApiObjectHostObject final
       return prototypeFunction;
     }
 
+    // JS-subclassed instances own their non-metadata members in JS (prototype
+    // accessors/methods); defer so V8 resolves them instead of the bridge
+    // returning a registered getter IMP as a raw callable.
+    if (object_ != nil &&
+        class_conformsToProtocol(object_getClass(object_),
+                                 @protocol(NativeApiV8ClassBuilderProtocol))) {
+      return Value::undefined();
+    }
+
+    if (object_ != nil) {
+      // A runtime ObjC property (e.g. from a protocol the concrete, non-metadata
+      // class adopts) must be invoked as a getter, not returned as a callable.
+      if (objc_property_t prop =
+              class_getProperty(object_getClass(object_), property.c_str())) {
+        std::string getter = property;
+        if (char* customGetter = property_copyAttributeValue(prop, "G")) {
+          getter = customGetter;
+          free(customGetter);
+        }
+        return callObjectSelector(runtime, getter, nullptr, nullptr, 0);
+      }
+    }
+
     if (object_ != nil &&
         hasRuntimeMemberForName(object_getClass(object_), false, property)) {
       std::weak_ptr<NativeApiObjectHostObject> weakSelf = shared_from_this();
@@ -1100,7 +1123,7 @@ class NativeApiObjectHostObject final
     return Value::undefined();
   }
 
-  void set(Runtime& runtime, const PropNameID& name, const Value& value) override {
+  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override {
     std::string property = name.utf8(runtime);
     if (object_ == nil) {
       throw JSError(runtime, "Cannot set property on nil object.");
@@ -1121,11 +1144,20 @@ class NativeApiObjectHostObject final
         Value args[] = {Value(runtime, value)};
         callObjCSelector(runtime, bridge_, object_, false,
                          setterMember.selectorName, &setterMember, args, 1);
-        return;
+        return true;
       }
     }
 
+    // For JS-subclassed instances, an unknown property is owned by the JS
+    // prototype (e.g. a JS-defined accessor); defer so V8 runs it instead of
+    // shadowing it with a bridge expando.
+    if (class_conformsToProtocol(object_getClass(object_),
+                                 @protocol(NativeApiV8ClassBuilderProtocol))) {
+      return false;
+    }
+
     bridge_->setObjectExpando(runtime, object_, property, value);
+    return true;
   }
 
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override {
@@ -1395,7 +1427,7 @@ class NativeApiClassHostObject final : public HostObject {
     return Value::undefined();
   }
 
-  void set(Runtime& runtime, const PropNameID& name, const Value& value) override {
+  bool set(Runtime& runtime, const PropNameID& name, const Value& value) override {
     std::string property = name.utf8(runtime);
     Class cls = objc_lookUpClass(symbol_.runtimeName.c_str());
     if (cls == nil) {
@@ -1423,7 +1455,7 @@ class NativeApiClassHostObject final : public HostObject {
       Value args[] = {Value(runtime, value)};
       callObjCSelector(runtime, bridge_, static_cast<id>(dispatchClass), true,
                        setterMember.selectorName, &setterMember, args, 1);
-      return;
+      return true;
     }
 
     throw JSError(runtime,
@@ -1461,10 +1493,19 @@ Value makeNativeObjectValue(Runtime& runtime,
 
   Value cached = bridge->findRoundTripValue(runtime, object);
   if (!cached.isUndefined()) {
-    if (ownsObject) {
-      [object release];
+    // A consumed wrapper (e.g. an alloc'd placeholder singleton already passed
+    // to an initializer) must not be reused: drop the stale entry and re-wrap.
+    auto cachedHost =
+        cached.isObject()
+            ? cached.asObject(runtime).getHostObject<NativeApiObjectHostObject>(runtime)
+            : nullptr;
+    if (cachedHost == nullptr || cachedHost->object() != nil) {
+      if (ownsObject) {
+        [object release];
+      }
+      return cached;
     }
-    return cached;
+    bridge->forgetRoundTripValue(runtime, object);
   }
 
   Object result = Object::createFromHostObject(
