@@ -78,6 +78,7 @@ void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
 #define NATIVESCRIPT_NATIVE_API_RUNTIME_NAME "jsi"
 #define NATIVESCRIPT_NATIVE_API_BACKEND_NAME "hermes"
 #define NATIVESCRIPT_NATIVE_API_HOST_SET_VOID 1
+#define NATIVESCRIPT_NATIVE_API_HOST_EXPLICIT_OVERRIDE 1
 #define NATIVESCRIPT_NATIVE_API_HAS_ENGINE_SELECTOR_GROUP_FUNCTION 1
 #include "../shared/bridge/ObjCBridge.mm"
 #include "../shared/bridge/HostObjects.mm"
