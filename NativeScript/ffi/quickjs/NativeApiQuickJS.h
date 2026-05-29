@@ -6,16 +6,16 @@
 
 namespace nativescript {
 
-using NativeApiQuickJSScheduler = NativeApiBackendScheduler;
-using NativeApiQuickJSConfig = NativeApiBackendConfig;
+using NativeApiScheduler = NativeApiBackendScheduler;
+using NativeApiConfig = NativeApiBackendConfig;
 
-void InstallNativeApiQuickJS(JSContext* context,
-                             const NativeApiQuickJSConfig& config =
-                                 NativeApiQuickJSConfig{});
+void InstallNativeApi(JSContext* context,
+                             const NativeApiConfig& config =
+                                 NativeApiConfig{});
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApiQuickJS(JSContext* context,
+extern "C" void NativeScriptInstallNativeApi(JSContext* context,
                                                      const char* metadataPath);
 
 #endif  // NATIVESCRIPT_FFI_QUICKJS_NATIVE_API_QUICKJS_H

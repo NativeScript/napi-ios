@@ -2,7 +2,7 @@ class NativeApiPointerHostObject final
     : public HostObject,
       public std::enable_shared_from_this<NativeApiPointerHostObject> {
  public:
-  NativeApiPointerHostObject(std::shared_ptr<NativeApiV8Bridge> bridge,
+  NativeApiPointerHostObject(std::shared_ptr<NativeApiBridge> bridge,
                              void* pointer, std::string kind = "pointer",
                              bool adopted = false)
       : bridge_(std::move(bridge)),
@@ -128,7 +128,7 @@ class NativeApiPointerHostObject final
               return makeString(runtime,
                                 "<Pointer: " + std::string(address) + ">");
             }
-            return makeString(runtime, "[NativeApiV8 " + kind + " " +
+            return makeString(runtime, "[NativeApi " + kind + " " +
                                            std::string(address) + "]");
           });
     }
@@ -154,7 +154,7 @@ class NativeApiPointerHostObject final
   }
 
  private:
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
+  std::shared_ptr<NativeApiBridge> bridge_;
   void* pointer_ = nullptr;
   std::string kind_;
   bool adopted_ = false;
@@ -163,8 +163,8 @@ class NativeApiPointerHostObject final
 
 class NativeApiReferenceHostObject final : public HostObject {
  public:
-  NativeApiReferenceHostObject(std::shared_ptr<NativeApiV8Bridge> bridge,
-                               NativeApiV8Type type, void* data, bool ownsData,
+  NativeApiReferenceHostObject(std::shared_ptr<NativeApiBridge> bridge,
+                               NativeApiType type, void* data, bool ownsData,
                                size_t byteLength = 0,
                                std::shared_ptr<Value> pendingValue = nullptr,
                                std::shared_ptr<Value> backingValue = nullptr)
@@ -184,9 +184,9 @@ class NativeApiReferenceHostObject final : public HostObject {
   }
 
   void* data() const { return data_; }
-  const NativeApiV8Type& type() const { return type_; }
-  void ensureStorage(Runtime& runtime, NativeApiV8Type type,
-                     NativeApiV8ArgumentFrame& frame, size_t elements = 1);
+  const NativeApiType& type() const { return type_; }
+  void ensureStorage(Runtime& runtime, NativeApiType type,
+                     NativeApiArgumentFrame& frame, size_t elements = 1);
 
   Value get(Runtime& runtime, const PropNameID& name) override;
   bool set(Runtime& runtime, const PropNameID& name, const Value& value) override;
@@ -200,8 +200,8 @@ class NativeApiReferenceHostObject final : public HostObject {
   }
 
  private:
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
-  NativeApiV8Type type_;
+  std::shared_ptr<NativeApiBridge> bridge_;
+  NativeApiType type_;
   void* data_ = nullptr;
   bool ownsData_ = false;
   size_t byteLength_ = 0;
@@ -212,8 +212,8 @@ class NativeApiReferenceHostObject final : public HostObject {
 class NativeApiStructObjectHostObject final : public HostObject {
  public:
   NativeApiStructObjectHostObject(
-      std::shared_ptr<NativeApiV8Bridge> bridge,
-      std::shared_ptr<NativeApiV8AggregateInfo> info,
+      std::shared_ptr<NativeApiBridge> bridge,
+      std::shared_ptr<NativeApiAggregateInfo> info,
       const void* data = nullptr, bool ownsData = true,
       std::shared_ptr<std::vector<unsigned char>> storageOwner = nullptr,
       std::shared_ptr<Value> backingValue = nullptr)
@@ -238,7 +238,7 @@ class NativeApiStructObjectHostObject final : public HostObject {
   }
 
   void* data() const { return data_; }
-  std::shared_ptr<NativeApiV8AggregateInfo> info() const { return info_; }
+  std::shared_ptr<NativeApiAggregateInfo> info() const { return info_; }
   std::shared_ptr<std::vector<unsigned char>> storageOwner() const {
     return ownedData_;
   }
@@ -249,8 +249,8 @@ class NativeApiStructObjectHostObject final : public HostObject {
   std::vector<PropNameID> getPropertyNames(Runtime& runtime) override;
 
  private:
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
-  std::shared_ptr<NativeApiV8AggregateInfo> info_;
+  std::shared_ptr<NativeApiBridge> bridge_;
+  std::shared_ptr<NativeApiAggregateInfo> info_;
   std::shared_ptr<std::vector<unsigned char>> ownedData_;
   std::shared_ptr<Value> backingValue_;
   void* data_ = nullptr;
@@ -260,7 +260,7 @@ class NativeApiStructObjectHostObject final : public HostObject {
 class NativeApiFastEnumerationIteratorHostObject final : public HostObject {
  public:
   NativeApiFastEnumerationIteratorHostObject(
-      std::shared_ptr<NativeApiV8Bridge> bridge, id<NSFastEnumeration> collection)
+      std::shared_ptr<NativeApiBridge> bridge, id<NSFastEnumeration> collection)
       : bridge_(std::move(bridge)), collection_(collection) {
     [(id)collection_ retain];
   }
@@ -309,14 +309,14 @@ class NativeApiFastEnumerationIteratorHostObject final : public HostObject {
     }
 
     id value = state_.itemsPtr[stackIndex_++];
-    NativeApiV8Type valueType = nativeObjectReturnTypeForClass(object_getClass(value));
+    NativeApiType valueType = nativeObjectReturnTypeForClass(object_getClass(value));
     result.setProperty(runtime, "value",
                        convertNativeReturnValue(runtime, bridge_, valueType, &value));
     result.setProperty(runtime, "done", false);
     return result;
   }
 
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
+  std::shared_ptr<NativeApiBridge> bridge_;
   id<NSFastEnumeration> collection_ = nil;
   NSFastEnumerationState state_ = {};
   id __unsafe_unretained stack_[16] = {};
@@ -326,7 +326,7 @@ class NativeApiFastEnumerationIteratorHostObject final : public HostObject {
 };
 
 NativeApiSymbol nativeApiSymbolForRuntimeClass(
-    const std::shared_ptr<NativeApiV8Bridge>& bridge, Class cls) {
+    const std::shared_ptr<NativeApiBridge>& bridge, Class cls) {
   const char* name = cls != Nil ? class_getName(cls) : "";
   if (bridge != nullptr) {
     if (const NativeApiSymbol* symbol = bridge->findClassForRuntimePointer(cls)) {
@@ -352,7 +352,7 @@ NativeApiSymbol nativeApiSymbolForRuntimeClass(
 
 class NativeApiSuperHostObject final : public HostObject {
  public:
-  NativeApiSuperHostObject(std::shared_ptr<NativeApiV8Bridge> bridge,
+  NativeApiSuperHostObject(std::shared_ptr<NativeApiBridge> bridge,
                            id receiver, Class dispatchClass)
       : bridge_(std::move(bridge)),
         receiver_(receiver),
@@ -378,7 +378,7 @@ class NativeApiSuperHostObject final : public HostObject {
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "toString"), 0,
           [](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
-            return makeString(runtime, "[NativeApiV8Super]");
+            return makeString(runtime, "[NativeApiSuper]");
           });
     }
     if (receiver_ == nil || dispatchClass_ == Nil) {
@@ -480,20 +480,20 @@ class NativeApiSuperHostObject final : public HostObject {
   }
 
  private:
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
+  std::shared_ptr<NativeApiBridge> bridge_;
   id receiver_ = nil;
   Class dispatchClass_ = Nil;
 };
 
-struct NativeApiV8RuntimeMember {
+struct NativeApiRuntimeMember {
   std::string name;
   std::string selectorName;
   size_t argumentCount = 0;
 };
 
-std::vector<NativeApiV8RuntimeMember> runtimeMembersForClass(Class cls,
+std::vector<NativeApiRuntimeMember> runtimeMembersForClass(Class cls,
                                                                  bool staticMembers) {
-  std::vector<NativeApiV8RuntimeMember> members;
+  std::vector<NativeApiRuntimeMember> members;
   if (cls == Nil) {
     return members;
   }
@@ -522,7 +522,7 @@ std::vector<NativeApiV8RuntimeMember> runtimeMembersForClass(Class cls,
         continue;
       }
 
-      members.push_back(NativeApiV8RuntimeMember{
+      members.push_back(NativeApiRuntimeMember{
           .name = std::move(name),
           .selectorName = std::move(selectorString),
           .argumentCount = argumentCount,
@@ -582,7 +582,7 @@ class NativeApiObjectHostObject final
     : public HostObject,
       public std::enable_shared_from_this<NativeApiObjectHostObject> {
  public:
-  NativeApiObjectHostObject(std::shared_ptr<NativeApiV8Bridge> bridge,
+  NativeApiObjectHostObject(std::shared_ptr<NativeApiBridge> bridge,
                             id object, bool ownsObject)
       : bridge_(std::move(bridge)), object_(object), ownsObject_(ownsObject) {
     if (object_ != nil && !ownsObject_) {
@@ -668,7 +668,7 @@ class NativeApiObjectHostObject final
           if (prototypeValue.isObject()) {
             Object resultValue = result.asObject(runtime);
             Object prototype = prototypeValue.asObject(runtime);
-            SetNativeApiV8ObjectPrototype(runtime, resultValue, prototype);
+            SetNativeApiObjectPrototype(runtime, resultValue, prototype);
           }
         }
       }
@@ -678,7 +678,7 @@ class NativeApiObjectHostObject final
 
   Value callPreparedObjectSelector(
       Runtime& runtime, const std::string& selectorName,
-      const NativeApiV8PreparedObjCInvocation& prepared, const Value* args,
+      const NativeApiPreparedObjCInvocation& prepared, const Value* args,
       size_t count, Class dispatchSuperClass = Nil) {
     id receiver = object_;
     if (receiver == nil) {
@@ -713,7 +713,7 @@ class NativeApiObjectHostObject final
           if (prototypeValue.isObject()) {
             Object resultValue = result.asObject(runtime);
             Object prototype = prototypeValue.asObject(runtime);
-            SetNativeApiV8ObjectPrototype(runtime, resultValue, prototype);
+            SetNativeApiObjectPrototype(runtime, resultValue, prototype);
           }
         }
       }
@@ -1013,7 +1013,7 @@ class NativeApiObjectHostObject final
               performDirectObjCInvocation(runtime, [&]() {
                 element = [array objectAtIndex:index];
               });
-              NativeApiV8Type elementType = nativeObjectReturnType();
+              NativeApiType elementType = nativeObjectReturnType();
               return convertNativeReturnValue(runtime, bridge, elementType,
                                               &element);
             });
@@ -1026,7 +1026,7 @@ class NativeApiObjectHostObject final
           return Value::undefined();
         }
         id element = [array objectAtIndex:*index];
-        NativeApiV8Type elementType = nativeObjectReturnType();
+        NativeApiType elementType = nativeObjectReturnType();
         return convertNativeReturnValue(runtime, bridge_, elementType, &element);
       }
     }
@@ -1073,11 +1073,11 @@ class NativeApiObjectHostObject final
     }
 
     // JS-subclassed instances own their non-metadata members in JS (prototype
-    // accessors/methods); defer so V8 resolves them instead of the bridge
+    // accessors/methods); defer so the engine resolves them instead of the bridge
     // returning a registered getter IMP as a raw callable.
     if (object_ != nil &&
         class_conformsToProtocol(object_getClass(object_),
-                                 @protocol(NativeApiV8ClassBuilderProtocol))) {
+                                 @protocol(NativeApiClassBuilderProtocol))) {
       return Value::undefined();
     }
 
@@ -1149,10 +1149,10 @@ class NativeApiObjectHostObject final
     }
 
     // For JS-subclassed instances, an unknown property is owned by the JS
-    // prototype (e.g. a JS-defined accessor); defer so V8 runs it instead of
+    // prototype (e.g. a JS-defined accessor); defer so the engine runs it instead of
     // shadowing it with a bridge expando.
     if (class_conformsToProtocol(object_getClass(object_),
-                                 @protocol(NativeApiV8ClassBuilderProtocol))) {
+                                 @protocol(NativeApiClassBuilderProtocol))) {
       return false;
     }
 
@@ -1178,7 +1178,7 @@ class NativeApiObjectHostObject final
   }
 
  private:
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
+  std::shared_ptr<NativeApiBridge> bridge_;
   id object_ = nil;
   bool ownsObject_ = false;
   bool consumed_ = false;
@@ -1186,7 +1186,7 @@ class NativeApiObjectHostObject final
 
 class NativeApiClassHostObject final : public HostObject {
  public:
-  NativeApiClassHostObject(std::shared_ptr<NativeApiV8Bridge> bridge,
+  NativeApiClassHostObject(std::shared_ptr<NativeApiBridge> bridge,
                            NativeApiSymbol symbol)
       : bridge_(std::move(bridge)), symbol_(std::move(symbol)) {}
 
@@ -1280,7 +1280,7 @@ class NativeApiClassHostObject final : public HostObject {
           [symbol = symbol_](Runtime& runtime, const Value&,
                              const Value*, size_t) -> Value {
             return makeString(runtime,
-                              "[NativeApiV8Class " + symbol.name + "]");
+                              "[NativeApiClass " + symbol.name + "]");
           });
     }
     if (property == "construct" || property == "alloc" || property == "new") {
@@ -1480,12 +1480,12 @@ class NativeApiClassHostObject final : public HostObject {
   }
 
  private:
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
+  std::shared_ptr<NativeApiBridge> bridge_;
   NativeApiSymbol symbol_;
 };
 
 Value makeNativeObjectValue(Runtime& runtime,
-                            const std::shared_ptr<NativeApiV8Bridge>& bridge,
+                            const std::shared_ptr<NativeApiBridge>& bridge,
                             id object, bool ownsObject) {
   if (object == nil) {
     return Value::null();
@@ -1523,7 +1523,7 @@ Value makeNativeObjectValue(Runtime& runtime,
   }
   if (prototypeValue.isObject()) {
     Object prototype = prototypeValue.asObject(runtime);
-    SetNativeApiV8ObjectPrototype(runtime, result, prototype);
+    SetNativeApiObjectPrototype(runtime, result, prototype);
   }
   bridge->rememberRoundTripValue(runtime, object, Value(runtime, result));
   return result;
@@ -1637,7 +1637,7 @@ Value globalNativeSymbolValue(Runtime& runtime, const NativeApiSymbol& symbol,
 }
 
 Value makeNativeClassValue(Runtime& runtime,
-                           const std::shared_ptr<NativeApiV8Bridge>& bridge,
+                           const std::shared_ptr<NativeApiBridge>& bridge,
                            NativeApiSymbol symbol) {
   Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
   Value cachedClass = bridge->findClassValue(runtime, cls);
@@ -1670,7 +1670,7 @@ Protocol* lookupProtocolByNativeName(const std::string& name) {
 
 class NativeApiProtocolHostObject final : public HostObject {
  public:
-  NativeApiProtocolHostObject(std::shared_ptr<NativeApiV8Bridge> bridge,
+  NativeApiProtocolHostObject(std::shared_ptr<NativeApiBridge> bridge,
                               NativeApiSymbol symbol)
       : bridge_(std::move(bridge)), symbol_(std::move(symbol)) {}
 
@@ -1727,7 +1727,7 @@ class NativeApiProtocolHostObject final : public HostObject {
           runtime, PropNameID::forAscii(runtime, "toString"), 0,
           [symbol](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
             return makeString(runtime,
-                              "[NativeApiV8Protocol " + symbol.name + "]");
+                              "[NativeApiProtocol " + symbol.name + "]");
           });
     }
     const auto& members = bridge_->membersForProtocol(symbol_);
@@ -1949,12 +1949,12 @@ class NativeApiProtocolHostObject final : public HostObject {
     }
   }
 
-  std::shared_ptr<NativeApiV8Bridge> bridge_;
+  std::shared_ptr<NativeApiBridge> bridge_;
   NativeApiSymbol symbol_;
 };
 
 Value makeNativeProtocolValue(Runtime& runtime,
-                              const std::shared_ptr<NativeApiV8Bridge>& bridge,
+                              const std::shared_ptr<NativeApiBridge>& bridge,
                               NativeApiSymbol symbol) {
   Value globalValue = globalNativeSymbolValue(runtime, symbol, "protocol");
   if (!globalValue.isUndefined()) {

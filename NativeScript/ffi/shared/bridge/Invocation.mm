@@ -38,9 +38,9 @@ bool isNSComparisonResultOrderingName(const std::string& enumName,
   return member == "Ascending" || member == "Same" || member == "Descending";
 }
 
-class NativeApiQuickJSReturnStorage {
+class NativeApiReturnStorage {
  public:
-  explicit NativeApiQuickJSReturnStorage(size_t size)
+  explicit NativeApiReturnStorage(size_t size)
       : size_(std::max<size_t>(size, sizeof(void*))) {
     if (size_ > kInlineSize) {
       heap_.assign(size_, 0);
@@ -60,9 +60,9 @@ class NativeApiQuickJSReturnStorage {
   std::vector<unsigned char> heap_;
 };
 
-class NativeApiQuickJSPointerFrame {
+class NativeApiPointerFrame {
  public:
-  explicit NativeApiQuickJSPointerFrame(size_t count) : count_(count) {
+  explicit NativeApiPointerFrame(size_t count) : count_(count) {
     if (count_ > kInlineCount) {
       heap_.resize(count_);
     }
@@ -170,7 +170,7 @@ Value enumToObject(Runtime& runtime, MDMetadataReader* metadata,
 }
 
 Value constantToValue(Runtime& runtime,
-                      const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                      const std::shared_ptr<NativeApiBridge>& bridge,
                       const NativeApiSymbol& symbol) {
   MDMetadataReader* metadata = bridge->metadata();
   if (metadata == nullptr || symbol.offset == MD_SECTION_OFFSET_NULL) {
@@ -197,7 +197,7 @@ Value constantToValue(Runtime& runtime,
         return Value::undefined();
       }
 
-      NativeApiQuickJSType stringObjectType;
+      NativeApiType stringObjectType;
       stringObjectType.kind = metagen::mdTypeNSStringObject;
       stringObjectType.ffiType = &ffi_type_pointer;
       stringObjectType.supported = true;
@@ -209,7 +209,7 @@ Value constantToValue(Runtime& runtime,
   }
 
   MDSectionOffset typeOffset = offset;
-  NativeApiQuickJSType type = parseMetadataEngineType(metadata, &typeOffset, bridge.get());
+  NativeApiType type = parseMetadataEngineType(metadata, &typeOffset, bridge.get());
   if (unsupportedEngineType(type)) {
     throw JSError(
         runtime, "Native constant type is not supported by backend: " +
@@ -224,9 +224,9 @@ Value constantToValue(Runtime& runtime,
 }
 
 void prepareEngineArgument(Runtime& runtime,
-                        const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-                        const NativeApiQuickJSType& type, const Value& arg,
-                        size_t index, NativeApiQuickJSArgumentFrame& frame) {
+                        const std::shared_ptr<NativeApiBridge>& bridge,
+                        const NativeApiType& type, const Value& arg,
+                        size_t index, NativeApiArgumentFrame& frame) {
   ffi_type* ffiType = ffiTypeForEngineArgument(type);
   size_t size =
       ffiType != nullptr && ffiType->size > 0 ? ffiType->size : nativeSizeForType(type);
@@ -235,10 +235,10 @@ void prepareEngineArgument(Runtime& runtime,
 }
 
 void prepareEngineArguments(Runtime& runtime,
-                         const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-                         const NativeApiQuickJSSignature& signature,
+                         const std::shared_ptr<NativeApiBridge>& bridge,
+                         const NativeApiSignature& signature,
                          const Value* args, size_t count,
-                         NativeApiQuickJSArgumentFrame& frame) {
+                         NativeApiArgumentFrame& frame) {
   if (count != signature.argumentTypes.size()) {
     throw JSError(
         runtime, "Actual arguments count: \"" + std::to_string(count) +
@@ -253,7 +253,7 @@ void prepareEngineArguments(Runtime& runtime,
 }
 
 inline uint64_t dispatchIdForEngineSignature(
-    const NativeApiQuickJSSignature& signature, SignatureCallKind kind) {
+    const NativeApiSignature& signature, SignatureCallKind kind) {
   if (signature.signatureHash == 0) {
     return 0;
   }
@@ -261,22 +261,22 @@ inline uint64_t dispatchIdForEngineSignature(
                                     signature.dispatchFlags);
 }
 
-struct NativeApiQuickJSPreparedCFunctionInvocation {
+struct NativeApiPreparedCFunctionInvocation {
   NativeApiSymbol symbol;
   bool initialized = false;
   void* function = nullptr;
-  NativeApiQuickJSSignature signature;
+  NativeApiSignature signature;
   CFunctionPreparedInvoker preparedInvoker = nullptr;
 };
 
 bool tryCallFastEngineCFunction(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    void* function, const NativeApiQuickJSSignature& signature, const Value* args,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    void* function, const NativeApiSignature& signature, const Value* args,
     size_t count, Value* result);
 
 Value callNativeFunctionPointer(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    const NativeApiQuickJSType& type, void* pointer, bool block, const Value* args,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const NativeApiType& type, void* pointer, bool block, const Value* args,
     size_t count) {
   if (pointer == nullptr) {
     throw JSError(runtime, "Native function pointer is null.");
@@ -296,10 +296,10 @@ Value callNativeFunctionPointer(
         "Native function pointer signature is not supported by backend.");
   }
 
-  NativeApiQuickJSArgumentFrame frame(signature->argumentTypes.size());
+  NativeApiArgumentFrame frame(signature->argumentTypes.size());
   prepareEngineArguments(runtime, bridge, *signature, args, count, frame);
 
-  NativeApiQuickJSPointerFrame values(signature->argumentTypes.size() + 1);
+  NativeApiPointerFrame values(signature->argumentTypes.size() + 1);
   if (block) {
     values.set(0, &pointer);
     for (size_t i = 0; i < signature->argumentTypes.size(); i++) {
@@ -309,7 +309,7 @@ Value callNativeFunctionPointer(
 
   void* callable = pointer;
   if (block) {
-    auto literal = static_cast<NativeApiQuickJSBlockLiteral*>(pointer);
+    auto literal = static_cast<NativeApiBlockLiteral*>(pointer);
     if (literal == nullptr || literal->invoke == nullptr) {
       throw JSError(runtime, "Native block invoke pointer is null.");
     }
@@ -324,7 +324,7 @@ Value callNativeFunctionPointer(
     }
   }
 
-  NativeApiQuickJSReturnStorage returnStorage(
+  NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature->returnType));
   BlockPreparedInvoker blockPreparedInvoker = nullptr;
   CFunctionPreparedInvoker functionPreparedInvoker = nullptr;
@@ -356,10 +356,10 @@ Value callNativeFunctionPointer(
 }
 
 Value wrapNativeFunctionPointer(Runtime& runtime,
-                                const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-                                const NativeApiQuickJSType& type, void* pointer,
+                                const std::shared_ptr<NativeApiBridge>& bridge,
+                                const NativeApiType& type, void* pointer,
                                 bool block) {
-  const char* functionName = block ? "NativeApiQuickJSBlock" : "NativeApiQuickJSFunctionPointer";
+  const char* functionName = block ? "NativeApiBlock" : "NativeApiFunctionPointer";
   auto function = Function::createFromHostFunction(
       runtime, PropNameID::forAscii(runtime, functionName), 0,
       [bridge, type, pointer, block](Runtime& runtime, const Value&,
@@ -389,7 +389,7 @@ Value wrapNativeFunctionPointer(Runtime& runtime,
             char address[32] = {};
             snprintf(address, sizeof(address), "%p", pointer);
             return makeString(runtime,
-                              std::string("[NativeApiQuickJS ") +
+                              std::string("[NativeApi ") +
                                   (block ? "Block " : "FunctionPointer ") +
                                   address + "]");
           }));
@@ -397,8 +397,8 @@ Value wrapNativeFunctionPointer(Runtime& runtime,
 }
 
 Value callCFunction(Runtime& runtime,
-                    const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-                    const std::shared_ptr<NativeApiQuickJSPreparedCFunctionInvocation>& prepared,
+                    const std::shared_ptr<NativeApiBridge>& bridge,
+                    const std::shared_ptr<NativeApiPreparedCFunctionInvocation>& prepared,
                     const Value* args,
                     size_t count) {
   if (prepared == nullptr) {
@@ -441,14 +441,14 @@ Value callCFunction(Runtime& runtime,
     prepared->initialized = true;
   }
 
-  NativeApiQuickJSSignature& signature = prepared->signature;
+  NativeApiSignature& signature = prepared->signature;
   Value fastResult;
   if (tryCallFastEngineCFunction(runtime, bridge, prepared->function, signature,
                                  args, count, &fastResult)) {
     return fastResult;
   }
 
-  NativeApiQuickJSArgumentFrame frame(signature.argumentTypes.size());
+  NativeApiArgumentFrame frame(signature.argumentTypes.size());
   prepareEngineArguments(runtime, bridge, signature, args, count, frame);
 
   if (prepared->symbol.name == "NSApplicationMain" ||
@@ -456,7 +456,7 @@ Value callCFunction(Runtime& runtime,
     runtime.drainMicrotasks();
   }
 
-  NativeApiQuickJSReturnStorage returnStorage(
+  NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
@@ -479,7 +479,7 @@ Value callCFunction(Runtime& runtime,
     }
   });
 
-  NativeApiQuickJSType returnType = signature.returnType;
+  NativeApiType returnType = signature.returnType;
   if (retainedReturn) {
     returnType.returnOwned = true;
   }
@@ -494,16 +494,16 @@ Value callCFunction(Runtime& runtime,
 }
 
 Value callCFunction(Runtime& runtime,
-                    const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                    const std::shared_ptr<NativeApiBridge>& bridge,
                     const NativeApiSymbol& symbol, const Value* args,
                     size_t count) {
-  auto prepared = std::make_shared<NativeApiQuickJSPreparedCFunctionInvocation>();
+  auto prepared = std::make_shared<NativeApiPreparedCFunctionInvocation>();
   prepared->symbol = symbol;
   return callCFunction(runtime, bridge, prepared, args, count);
 }
 
 bool signatureSupportedForEngineInvocation(
-    const std::optional<NativeApiQuickJSSignature>& signature) {
+    const std::optional<NativeApiSignature>& signature) {
   if (!signature || !signature->prepared || signature->variadic ||
       unsupportedEngineType(signature->returnType)) {
     return false;
@@ -517,7 +517,7 @@ bool signatureSupportedForEngineInvocation(
 }
 
 bool signatureSupportedForEngineInvocation(
-    const NativeApiQuickJSSignature& signature) {
+    const NativeApiSignature& signature) {
   if (!signature.prepared || signature.variadic ||
       unsupportedEngineType(signature.returnType)) {
     return false;
@@ -530,15 +530,15 @@ bool signatureSupportedForEngineInvocation(
   return true;
 }
 
-struct NativeApiQuickJSPreparedObjCInvocation {
+struct NativeApiPreparedObjCInvocation {
   SEL selector = nullptr;
   Class receiverClass = Nil;
   std::string selectorName;
-  NativeApiQuickJSSignature signature;
+  NativeApiSignature signature;
   ObjCPreparedInvoker preparedInvoker = nullptr;
 };
 
-bool isFastEngineObjectType(const NativeApiQuickJSType& type) {
+bool isFastEngineObjectType(const NativeApiType& type) {
   switch (type.kind) {
     case metagen::mdTypeAnyObject:
     case metagen::mdTypeProtocolObject:
@@ -552,7 +552,7 @@ bool isFastEngineObjectType(const NativeApiQuickJSType& type) {
   }
 }
 
-bool isFastEngineSignedIntegerType(const NativeApiQuickJSType& type) {
+bool isFastEngineSignedIntegerType(const NativeApiType& type) {
   switch (type.kind) {
     case metagen::mdTypeChar:
     case metagen::mdTypeSShort:
@@ -565,11 +565,10 @@ bool isFastEngineSignedIntegerType(const NativeApiQuickJSType& type) {
   }
 }
 
-bool isFastEngineUnsignedIntegerType(const NativeApiQuickJSType& type) {
+bool isFastEngineUnsignedIntegerType(const NativeApiType& type) {
   switch (type.kind) {
     case metagen::mdTypeUChar:
     case metagen::mdTypeUInt8:
-    case metagen::mdTypeUShort:
     case metagen::mdTypeUInt:
     case metagen::mdTypeULong:
     case metagen::mdTypeUInt64:
@@ -591,7 +590,7 @@ enum class NativeApiFastEngineArgKind : uint8_t {
 };
 
 std::optional<NativeApiFastEngineArgKind> fastEngineArgKind(
-    const NativeApiQuickJSType& type) {
+    const NativeApiType& type) {
   if (isFastEngineObjectType(type)) {
     return NativeApiFastEngineArgKind::Object;
   }
@@ -667,9 +666,9 @@ bool readFastEngineDoubleArgument(Runtime&, const Value& value, double* result) 
 }
 
 bool readFastEngineObjectArgument(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    const NativeApiQuickJSType& type, const Value& value,
-    NativeApiQuickJSArgumentFrame& frame, id* result) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const NativeApiType& type, const Value& value,
+    NativeApiArgumentFrame& frame, id* result) {
   if (result == nullptr) {
     return false;
   }
@@ -728,13 +727,13 @@ bool readFastEngineSelectorArgument(Runtime& runtime, const Value& value,
 
 template <typename... Args>
 Value callFastEngineCFunctionWithReturn(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    void* function, NativeApiQuickJSType returnType, Args... nativeArgs) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    void* function, NativeApiType returnType, Args... nativeArgs) {
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
 
   auto finalizeObjectReturn = [&](id object) -> Value {
-    NativeApiQuickJSType effectiveReturnType = returnType;
+    NativeApiType effectiveReturnType = returnType;
     if (dispatchingNativeCallToUI && !effectiveReturnType.returnOwned &&
         object != nil) {
       [object retain];
@@ -829,7 +828,7 @@ Value callFastEngineCFunctionWithReturn(
   throw JSError(runtime, "C function return type is not engine fast-callable.");
 }
 
-bool isFastEngineCallableReturnType(const NativeApiQuickJSType& returnType) {
+bool isFastEngineCallableReturnType(const NativeApiType& returnType) {
   return isFastEngineObjectType(returnType) ||
          returnType.kind == metagen::mdTypeVoid ||
          returnType.kind == metagen::mdTypeBool ||
@@ -842,8 +841,8 @@ bool isFastEngineCallableReturnType(const NativeApiQuickJSType& returnType) {
 }
 
 bool tryCallFastEngineCFunction(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    void* function, const NativeApiQuickJSSignature& signature, const Value* args,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    void* function, const NativeApiSignature& signature, const Value* args,
     size_t count, Value* result) {
   if (result == nullptr || function == nullptr || signature.variadic ||
       count != signature.argumentTypes.size() || count > 2 ||
@@ -873,7 +872,7 @@ bool tryCallFastEngineCFunction(
     return true;
   }
 
-  NativeApiQuickJSArgumentFrame frame(count);
+  NativeApiArgumentFrame frame(count);
   auto callOne = [&](auto nativeArg0) -> Value {
     return callFastEngineCFunctionWithReturn(runtime, bridge, function,
                                              signature.returnType, nativeArg0);
@@ -1054,8 +1053,8 @@ bool tryCallFastEngineCFunction(
 
 template <typename... Args>
 Value callFastEngineObjCWithReturn(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    id receiver, SEL selector, NativeApiQuickJSType returnType,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, SEL selector, NativeApiType returnType,
     const std::string& selectorName, Args... nativeArgs) {
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
@@ -1063,7 +1062,7 @@ Value callFastEngineObjCWithReturn(
       dispatchingNativeCallToUI ? receiver : nil);
 
   auto finalizeObjectReturn = [&](id object) -> Value {
-    NativeApiQuickJSType effectiveReturnType = returnType;
+    NativeApiType effectiveReturnType = returnType;
     if ((selectorName == "valueForKey:" || selectorName == "valueForKeyPath:") &&
         isObjectiveCObjectType(effectiveReturnType)) {
       effectiveReturnType.kind = metagen::mdTypeAnyObject;
@@ -1163,8 +1162,8 @@ Value callFastEngineObjCWithReturn(
 
 template <typename A0>
 Value callFastEngineObjC1(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    id receiver, SEL selector, const NativeApiQuickJSType& returnType,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, SEL selector, const NativeApiType& returnType,
     const std::string& selectorName, A0 arg0) {
   return callFastEngineObjCWithReturn(runtime, bridge, receiver, selector,
                                       returnType, selectorName, arg0);
@@ -1172,22 +1171,22 @@ Value callFastEngineObjC1(
 
 template <typename A0, typename A1>
 Value callFastEngineObjC2(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    id receiver, SEL selector, const NativeApiQuickJSType& returnType,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, SEL selector, const NativeApiType& returnType,
     const std::string& selectorName, A0 arg0, A1 arg1) {
   return callFastEngineObjCWithReturn(runtime, bridge, receiver, selector,
                                       returnType, selectorName, arg0, arg1);
 }
 
 bool tryCallFastEngineObjCSelector(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
-    id receiver, const NativeApiQuickJSPreparedObjCInvocation& prepared,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
     const Value* args, size_t count, Class dispatchSuperClass, Value* result) {
   if (result == nullptr || receiver == nil || dispatchSuperClass != Nil) {
     return false;
   }
 
-  const NativeApiQuickJSSignature& signature = prepared.signature;
+  const NativeApiSignature& signature = prepared.signature;
   if (signature.variadic || count != signature.argumentTypes.size() ||
       count > 2 || isNSErrorOutEngineMethodSignature(signature)) {
     return false;
@@ -1227,7 +1226,7 @@ bool tryCallFastEngineObjCSelector(
     return true;
   }
 
-  NativeApiQuickJSArgumentFrame frame(count);
+  NativeApiArgumentFrame frame(count);
   auto callOne = [&](auto nativeArg0) -> Value {
     return callFastEngineObjC1(runtime, bridge, receiver, selector,
                                signature.returnType, prepared.selectorName,
@@ -1405,9 +1404,9 @@ bool tryCallFastEngineObjCSelector(
   return false;
 }
 
-std::shared_ptr<NativeApiQuickJSPreparedObjCInvocation>
-prepareNativeApiQuickJSObjCInvocation(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+std::shared_ptr<NativeApiPreparedObjCInvocation>
+prepareNativeApiObjCInvocation(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     Class lookupClass, bool receiverIsClass, const std::string& selectorName,
     const NativeApiMember* member) {
   if (lookupClass == Nil) {
@@ -1424,8 +1423,8 @@ prepareNativeApiQuickJSObjCInvocation(
                   "Objective-C selector is not available: " + selectorName);
   }
 
-  std::optional<NativeApiQuickJSSignature> signature;
-  std::optional<NativeApiQuickJSSignature> runtimeSignature;
+  std::optional<NativeApiSignature> signature;
+  std::optional<NativeApiSignature> runtimeSignature;
   if (member != nullptr &&
       member->signatureOffset != MD_SECTION_OFFSET_NULL &&
       member->signatureOffset != 0) {
@@ -1451,7 +1450,7 @@ prepareNativeApiQuickJSObjCInvocation(
   }
   signature->selectorName = selectorName;
 
-  auto prepared = std::make_shared<NativeApiQuickJSPreparedObjCInvocation>();
+  auto prepared = std::make_shared<NativeApiPreparedObjCInvocation>();
   prepared->selector = selector;
   prepared->receiverClass = receiverIsClass ? lookupClass : Nil;
   prepared->selectorName = selectorName;
@@ -1463,23 +1462,23 @@ prepareNativeApiQuickJSObjCInvocation(
 }
 
 Value callPreparedObjCSelector(
-    Runtime& runtime, const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     id receiver, bool receiverIsClass,
-    const NativeApiQuickJSPreparedObjCInvocation& prepared, const Value* args,
+    const NativeApiPreparedObjCInvocation& prepared, const Value* args,
     size_t count, Class dispatchSuperClass) {
   if (receiver == nil) {
     throw JSError(runtime,
                   "Cannot send Objective-C selector to nil.");
   }
 
-  const NativeApiQuickJSSignature& signature = prepared.signature;
+  const NativeApiSignature& signature = prepared.signature;
   Value fastResult;
   if (tryCallFastEngineObjCSelector(runtime, bridge, receiver, prepared, args,
                                     count, dispatchSuperClass, &fastResult)) {
     return fastResult;
   }
 
-  NativeApiQuickJSArgumentFrame frame(signature.argumentTypes.size());
+  NativeApiArgumentFrame frame(signature.argumentTypes.size());
   frame.retainObject(receiver);
   const bool isNSErrorOutMethod = isNSErrorOutEngineMethodSignature(signature);
   if (isNSErrorOutMethod) {
@@ -1508,7 +1507,7 @@ Value callPreparedObjCSelector(
     prepareEngineArguments(runtime, bridge, signature, args, count, frame);
   }
 
-  NativeApiQuickJSPointerFrame values(signature.argumentTypes.size() + 2);
+  NativeApiPointerFrame values(signature.argumentTypes.size() + 2);
   size_t valueIndex = 0;
   struct objc_super superReceiver = {receiver, dispatchSuperClass};
   struct objc_super* superReceiverPtr = &superReceiver;
@@ -1522,7 +1521,7 @@ Value callPreparedObjCSelector(
     values.set(valueIndex++, frame.values()[i]);
   }
 
-  NativeApiQuickJSReturnStorage returnStorage(
+  NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
@@ -1559,7 +1558,7 @@ Value callPreparedObjCSelector(
     }
   });
 
-  NativeApiQuickJSType returnType = signature.returnType;
+  NativeApiType returnType = signature.returnType;
   if ((prepared.selectorName == "valueForKey:" ||
        prepared.selectorName == "valueForKeyPath:") &&
       isObjectiveCObjectType(returnType)) {
@@ -1582,7 +1581,7 @@ Value callPreparedObjCSelector(
 }
 
 Value callObjCSelector(Runtime& runtime,
-                       const std::shared_ptr<NativeApiQuickJSBridge>& bridge,
+                       const std::shared_ptr<NativeApiBridge>& bridge,
                        id receiver, bool receiverIsClass,
                        const std::string& selectorName,
                        const NativeApiMember* member,
@@ -1606,8 +1605,8 @@ Value callObjCSelector(Runtime& runtime,
                                      selectorName);
   }
 
-  std::optional<NativeApiQuickJSSignature> signature;
-  std::optional<NativeApiQuickJSSignature> runtimeSignature;
+  std::optional<NativeApiSignature> signature;
+  std::optional<NativeApiSignature> runtimeSignature;
   if (member != nullptr &&
       member->signatureOffset != MD_SECTION_OFFSET_NULL &&
       member->signatureOffset != 0) {
@@ -1633,7 +1632,7 @@ Value callObjCSelector(Runtime& runtime,
   }
   signature->selectorName = selectorName;
 
-  NativeApiQuickJSPreparedObjCInvocation engineInvocation;
+  NativeApiPreparedObjCInvocation engineInvocation;
   engineInvocation.selector = selector;
   engineInvocation.selectorName = selectorName;
   engineInvocation.signature = *signature;
@@ -1644,7 +1643,7 @@ Value callObjCSelector(Runtime& runtime,
     return fastResult;
   }
 
-  NativeApiQuickJSArgumentFrame frame(signature->argumentTypes.size());
+  NativeApiArgumentFrame frame(signature->argumentTypes.size());
   const bool isNSErrorOutMethod = isNSErrorOutEngineMethodSignature(*signature);
   if (isNSErrorOutMethod) {
     size_t expected = signature->argumentTypes.size();
@@ -1672,7 +1671,7 @@ Value callObjCSelector(Runtime& runtime,
     prepareEngineArguments(runtime, bridge, *signature, args, count, frame);
   }
 
-  NativeApiQuickJSPointerFrame values(signature->argumentTypes.size() + 2);
+  NativeApiPointerFrame values(signature->argumentTypes.size() + 2);
   size_t valueIndex = 0;
   struct objc_super superReceiver = {receiver, dispatchSuperClass};
   struct objc_super* superReceiverPtr = &superReceiver;
@@ -1686,7 +1685,7 @@ Value callObjCSelector(Runtime& runtime,
     values.set(valueIndex++, frame.values()[i]);
   }
 
-  NativeApiQuickJSReturnStorage returnStorage(
+  NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature->returnType));
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
@@ -1727,7 +1726,7 @@ Value callObjCSelector(Runtime& runtime,
     }
   });
 
-  NativeApiQuickJSType returnType = signature->returnType;
+  NativeApiType returnType = signature->returnType;
   if ((selectorName == "valueForKey:" || selectorName == "valueForKeyPath:") &&
       isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeAnyObject;

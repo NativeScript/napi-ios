@@ -4,20 +4,20 @@ thread_local int gSynchronousNativeInvocationDepth = 0;
 thread_local int gNativeCallerThreadEngineCallbackDepth = 0;
 thread_local std::vector<std::string*> gNativeCallbackExceptionCaptureStack;
 std::atomic<int> gActiveSynchronousNativeInvocationDepth{0};
-static char gNativeApiJSCExtendedClassKey;
+static char gNativeApiExtendedClassKey;
 
-void markNativeApiJSCExtendedClass(Class cls) {
+void markNativeApiExtendedClass(Class cls) {
   if (cls == Nil) {
     return;
   }
-  objc_setAssociatedObject(cls, &gNativeApiJSCExtendedClassKey, @YES,
+  objc_setAssociatedObject(cls, &gNativeApiExtendedClassKey, @YES,
                            OBJC_ASSOCIATION_RETAIN_NONATOMIC);
 }
 
-bool isNativeApiJSCExtendedClass(Class cls) {
+bool isNativeApiExtendedClass(Class cls) {
   Class current = cls;
   while (current != Nil) {
-    if (objc_getAssociatedObject(current, &gNativeApiJSCExtendedClassKey) != nil) {
+    if (objc_getAssociatedObject(current, &gNativeApiExtendedClassKey) != nil) {
       return true;
     }
     current = class_getSuperclass(current);
@@ -218,13 +218,13 @@ struct NativeApiMember {
   bool readonly = false;
 };
 
-struct NativeApiJSCAggregateInfo;
+struct NativeApiAggregateInfo;
 
-struct NativeApiJSCFfiType {
+struct NativeApiFfiType {
   ffi_type type = {};
   std::vector<ffi_type*> elements;
 
-  NativeApiJSCFfiType() {
+  NativeApiFfiType() {
     type.type = FFI_TYPE_STRUCT;
     type.size = 0;
     type.alignment = 0;
@@ -237,7 +237,7 @@ struct NativeApiJSCFfiType {
   }
 };
 
-struct NativeApiJSCType {
+struct NativeApiType {
   MDTypeKind kind = metagen::mdTypeVoid;
   ffi_type* ffiType = &ffi_type_void;
   bool supported = true;
@@ -246,24 +246,24 @@ struct NativeApiJSCType {
   MDSectionOffset aggregateOffset = MD_SECTION_OFFSET_NULL;
   bool aggregateIsUnion = false;
   uint16_t arraySize = 0;
-  std::shared_ptr<NativeApiJSCType> elementType;
-  std::shared_ptr<NativeApiJSCAggregateInfo> aggregateInfo;
-  std::shared_ptr<NativeApiJSCFfiType> ownedFfiType;
+  std::shared_ptr<NativeApiType> elementType;
+  std::shared_ptr<NativeApiAggregateInfo> aggregateInfo;
+  std::shared_ptr<NativeApiFfiType> ownedFfiType;
 };
 
-struct NativeApiJSCAggregateField {
+struct NativeApiAggregateField {
   std::string name;
   uint16_t offset = 0;
-  NativeApiJSCType type;
+  NativeApiType type;
 };
 
-struct NativeApiJSCAggregateInfo {
+struct NativeApiAggregateInfo {
   std::string name;
   uint16_t size = 0;
   bool isUnion = false;
   MDSectionOffset offset = MD_SECTION_OFFSET_NULL;
-  std::vector<NativeApiJSCAggregateField> fields;
-  std::shared_ptr<NativeApiJSCFfiType> ffi;
+  std::vector<NativeApiAggregateField> fields;
+  std::shared_ptr<NativeApiFfiType> ffi;
 };
 
 std::string jsifySelector(const char* selector) {
@@ -395,9 +395,9 @@ inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
 #endif
 }
 
-class NativeApiJSCBridge {
+class NativeApiBridge {
  public:
-  explicit NativeApiJSCBridge(const NativeApiJSCConfig& config)
+  explicit NativeApiBridge(const NativeApiConfig& config)
       : metadata_(loadMetadata(config)),
         scheduler_(config.scheduler),
         nativeInvocationInvoker_(config.nativeInvocationInvoker),
@@ -409,7 +409,7 @@ class NativeApiJSCBridge {
     buildSymbolIndexes();
   }
 
-  ~NativeApiJSCBridge() {
+  ~NativeApiBridge() {
     if (selfDl_ != nullptr) {
       dlclose(selfDl_);
     }
@@ -682,7 +682,7 @@ class NativeApiJSCBridge {
   const std::vector<std::string>& enumNames() const { return enumNames_; }
   const std::vector<std::string>& structNames() const { return structNames_; }
   const std::vector<std::string>& unionNames() const { return unionNames_; }
-  std::shared_ptr<NativeApiJSCScheduler> scheduler() const { return scheduler_; }
+  std::shared_ptr<NativeApiScheduler> scheduler() const { return scheduler_; }
   const std::function<void(std::function<void()>)>& nativeInvocationInvoker()
       const {
     return nativeInvocationInvoker_;
@@ -790,10 +790,10 @@ class NativeApiJSCBridge {
     return inserted.first->second;
   }
 
-  std::shared_ptr<NativeApiJSCAggregateInfo> aggregateInfoFor(
+  std::shared_ptr<NativeApiAggregateInfo> aggregateInfoFor(
       MDSectionOffset aggregateOffset, bool isUnion);
 
-  std::shared_ptr<NativeApiJSCAggregateInfo> aggregateInfoFor(
+  std::shared_ptr<NativeApiAggregateInfo> aggregateInfoFor(
       const NativeApiSymbol& symbol) {
     return aggregateInfoFor(symbol.offset,
                             symbol.kind == NativeApiSymbolKind::Union);
@@ -833,7 +833,7 @@ class NativeApiJSCBridge {
   }
 
   static std::unique_ptr<MDMetadataReader> loadMetadata(
-      const NativeApiJSCConfig& config) {
+      const NativeApiConfig& config) {
     if (config.metadataPtr != nullptr &&
         *static_cast<const char*>(config.metadataPtr) != '\0') {
 #ifdef EMBED_METADATA_SIZE
@@ -1575,7 +1575,7 @@ class NativeApiJSCBridge {
   std::vector<std::string> enumNames_;
   std::vector<std::string> structNames_;
   std::vector<std::string> unionNames_;
-  std::shared_ptr<NativeApiJSCScheduler> scheduler_;
+  std::shared_ptr<NativeApiScheduler> scheduler_;
   std::function<void(std::function<void()>)> nativeInvocationInvoker_;
   std::function<void(std::function<void()>)> nativeCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker_;
@@ -1588,7 +1588,7 @@ class NativeApiJSCBridge {
       membersByProtocolOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> structSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> unionSymbolsByOffset_;
-  std::unordered_map<MDSectionOffset, std::shared_ptr<NativeApiJSCAggregateInfo>>
+  std::unordered_map<MDSectionOffset, std::shared_ptr<NativeApiAggregateInfo>>
       aggregateInfoByOffset_;
   std::unordered_set<MDSectionOffset> aggregateInfoInProgress_;
   std::thread::id jsThreadId_ = std::this_thread::get_id();
@@ -1646,45 +1646,45 @@ class NativeApiPointerHostObject;
 class NativeApiObjectHostObject;
 class NativeApiClassHostObject;
 class NativeApiProtocolHostObject;
-class NativeApiJSCArgumentFrame;
-struct NativeApiJSCPreparedCFunctionInvocation;
-struct NativeApiJSCPreparedObjCInvocation;
+class NativeApiArgumentFrame;
+struct NativeApiPreparedCFunctionInvocation;
+struct NativeApiPreparedObjCInvocation;
 
 Value callCFunction(Runtime& runtime,
-                    const std::shared_ptr<NativeApiJSCBridge>& bridge,
+                    const std::shared_ptr<NativeApiBridge>& bridge,
                     const NativeApiSymbol& symbol, const Value* args,
                     size_t count);
 Value callCFunction(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
-    const std::shared_ptr<NativeApiJSCPreparedCFunctionInvocation>& prepared,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const std::shared_ptr<NativeApiPreparedCFunctionInvocation>& prepared,
     const Value* args, size_t count);
 
 Value callObjCSelector(Runtime& runtime,
-                       const std::shared_ptr<NativeApiJSCBridge>& bridge,
+                       const std::shared_ptr<NativeApiBridge>& bridge,
                        id receiver, bool receiverIsClass,
                        const std::string& selectorName,
                        const NativeApiMember* member,
                        const Value* args, size_t count,
                        Class dispatchSuperClass = Nil);
 
-std::shared_ptr<NativeApiJSCPreparedObjCInvocation>
-prepareNativeApiJSCObjCInvocation(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+std::shared_ptr<NativeApiPreparedObjCInvocation>
+prepareNativeApiObjCInvocation(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     Class lookupClass, bool receiverIsClass, const std::string& selectorName,
     const NativeApiMember* member);
 
 Value callPreparedObjCSelector(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     id receiver, bool receiverIsClass,
-    const NativeApiJSCPreparedObjCInvocation& prepared, const Value* args,
+    const NativeApiPreparedObjCInvocation& prepared, const Value* args,
     size_t count, Class dispatchSuperClass = Nil);
 
 Value makeNativeObjectValue(Runtime& runtime,
-                            const std::shared_ptr<NativeApiJSCBridge>& bridge,
+                            const std::shared_ptr<NativeApiBridge>& bridge,
                             id object, bool ownsObject);
 
 Value makeNativeClassValue(Runtime& runtime,
-                           const std::shared_ptr<NativeApiJSCBridge>& bridge,
+                           const std::shared_ptr<NativeApiBridge>& bridge,
                            NativeApiSymbol symbol);
 
 Object symbolToObject(Runtime& runtime, const NativeApiSymbol& symbol) {
@@ -1712,19 +1712,19 @@ Object symbolToObject(Runtime& runtime, const NativeApiSymbol& symbol) {
   return result;
 }
 
-size_t nativeSizeForType(const NativeApiJSCType& type);
+size_t nativeSizeForType(const NativeApiType& type);
 std::optional<size_t> parseArrayIndexProperty(const std::string& property);
 
-NativeApiJSCType nativeObjectReturnType(
+NativeApiType nativeObjectReturnType(
     MDTypeKind kind = metagen::mdTypeAnyObject) {
-  NativeApiJSCType type;
+  NativeApiType type;
   type.kind = kind;
   type.ffiType = &ffi_type_pointer;
   type.supported = true;
   return type;
 }
 
-NativeApiJSCType nativeObjectReturnTypeForClass(Class cls) {
+NativeApiType nativeObjectReturnTypeForClass(Class cls) {
   if (cls != Nil) {
     const char* name = class_getName(cls);
     if (name != nullptr && std::strcmp(name, "NSString") == 0) {
@@ -1738,10 +1738,10 @@ NativeApiJSCType nativeObjectReturnTypeForClass(Class cls) {
 }
 
 Value convertNativeReturnValue(Runtime& runtime,
-                               const std::shared_ptr<NativeApiJSCBridge>& bridge,
-                               const NativeApiJSCType& type, void* value);
+                               const std::shared_ptr<NativeApiBridge>& bridge,
+                               const NativeApiType& type, void* value);
 Object createPointer(Runtime& runtime,
-                     const std::shared_ptr<NativeApiJSCBridge>& bridge,
+                     const std::shared_ptr<NativeApiBridge>& bridge,
                      void* pointer, bool adopted = false);
 
-NativeApiJSCType primitiveInteropType(MDTypeKind kind);
+NativeApiType primitiveInteropType(MDTypeKind kind);

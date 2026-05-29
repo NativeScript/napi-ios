@@ -28,8 +28,8 @@ using metagen::MDSectionOffset;
 using metagen::MDTypeKind;
 
 // clang-format off
-#define NATIVESCRIPT_NATIVE_API_V8_BACKEND_NAME "v8"
-#include "ObjCBridge.mm"
+#define NATIVESCRIPT_NATIVE_API_BACKEND_NAME "v8"
+#include "../shared/bridge/ObjCBridge.mm"
 // clang-format on
 
 #define NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS 1
@@ -37,14 +37,14 @@ using metagen::MDTypeKind;
 #define NATIVESCRIPT_NATIVE_API_RETAIN_RUNTIME 1
 #define NATIVESCRIPT_NATIVE_API_RUNTIME_SCOPE 1
 
-struct NativeApiV8LazyGlobalData {
-  NativeApiV8LazyGlobalData(v8::Isolate* isolate, const std::string& name,
+struct NativeApiLazyGlobalData {
+  NativeApiLazyGlobalData(v8::Isolate* isolate, const std::string& name,
                             const std::string& kind) {
     nameValue.Reset(isolate, engine::v8engine::makeV8String(isolate, name));
     kindValue.Reset(isolate, engine::v8engine::makeV8String(isolate, kind));
   }
 
-  ~NativeApiV8LazyGlobalData() {
+  ~NativeApiLazyGlobalData() {
     nameValue.Reset();
     kindValue.Reset();
   }
@@ -53,13 +53,13 @@ struct NativeApiV8LazyGlobalData {
   v8::Global<v8::String> kindValue;
 };
 
-std::shared_ptr<Runtime> retainNativeApiV8Runtime(Runtime& runtime) {
+std::shared_ptr<Runtime> retainNativeApiRuntime(Runtime& runtime) {
   return std::make_shared<Runtime>(runtime.state());
 }
 
-class NativeApiV8RuntimeScope final {
+class NativeApiRuntimeScope final {
  public:
-  explicit NativeApiV8RuntimeScope(Runtime& runtime)
+  explicit NativeApiRuntimeScope(Runtime& runtime)
       : locker_(runtime.isolate()),
         isolateScope_(runtime.isolate()),
         handleScope_(runtime.isolate()),
@@ -74,7 +74,7 @@ class NativeApiV8RuntimeScope final {
   v8::Context::Scope contextScope_;
 };
 
-void NativeApiV8LazyGlobalGetter(v8::Local<v8::Name>,
+void NativeApiLazyGlobalGetter(v8::Local<v8::Name>,
                                  const v8::PropertyCallbackInfo<v8::Value>& info) {
   v8::Isolate* isolate = info.GetIsolate();
   v8::HandleScope handleScope(isolate);
@@ -83,7 +83,7 @@ void NativeApiV8LazyGlobalGetter(v8::Local<v8::Name>,
     return;
   }
 
-  auto* data = static_cast<NativeApiV8LazyGlobalData*>(info.Data().As<v8::External>()->Value());
+  auto* data = static_cast<NativeApiLazyGlobalData*>(info.Data().As<v8::External>()->Value());
   if (data == nullptr) {
     return;
   }
@@ -115,7 +115,7 @@ void NativeApiV8LazyGlobalGetter(v8::Local<v8::Name>,
   info.GetReturnValue().Set(result);
 }
 
-bool InstallNativeApiV8LazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiV8Bridge>,
+bool InstallNativeApiLazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiBridge>,
                                       const std::string& name, const std::string& kind,
                                       bool force) {
   if (name.empty() || kind.empty()) {
@@ -131,11 +131,11 @@ bool InstallNativeApiV8LazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiV8B
     return false;
   }
 
-  auto data = std::make_shared<NativeApiV8LazyGlobalData>(isolate, name, kind);
+  auto data = std::make_shared<NativeApiLazyGlobalData>(isolate, name, kind);
   v8::Local<v8::External> external = v8::External::New(isolate, data.get());
 
   bool installed = global
-                       ->SetNativeDataProperty(context, property, NativeApiV8LazyGlobalGetter,
+                       ->SetNativeDataProperty(context, property, NativeApiLazyGlobalGetter,
                                                nullptr, external, v8::DontEnum)
                        .FromMaybe(false);
   if (installed) {
@@ -144,7 +144,7 @@ bool InstallNativeApiV8LazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiV8B
   return installed;
 }
 
-void SetNativeApiV8ObjectPrototype(Runtime& runtime, Object& object,
+void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
                                        const Object& prototype) {
   v8::TryCatch tryCatch(runtime.isolate());
   if (!object.local(runtime)
@@ -157,23 +157,23 @@ void SetNativeApiV8ObjectPrototype(Runtime& runtime, Object& object,
 }
 
 // clang-format off
-#include "HostObjects.mm"
-#include "Callbacks.mm"
-#include "TypeConv.mm"
-#include "Invocation.mm"
-#include "ClassBuilder.mm"
-#include "HostObject.mm"
+#include "../shared/bridge/HostObjects.mm"
+#include "../shared/bridge/Callbacks.mm"
+#include "../shared/bridge/TypeConv.mm"
+#include "../shared/bridge/Invocation.mm"
+#include "../shared/bridge/ClassBuilder.mm"
+#include "../shared/bridge/HostObject.mm"
 // clang-format on
 
-struct NativeApiV8SelectorGroupData {
-  NativeApiV8SelectorGroupData(
+struct NativeApiSelectorGroupData {
+  NativeApiSelectorGroupData(
       std::shared_ptr<engine::v8engine::RuntimeState> state,
-      std::shared_ptr<NativeApiV8Bridge> bridge, Class lookupClass,
+      std::shared_ptr<NativeApiBridge> bridge, Class lookupClass,
       bool receiverIsClass,
-      std::shared_ptr<std::vector<NativeApiV8SelectorGroupEntry>>
+      std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>>
           selectors,
       std::shared_ptr<
-          std::vector<std::shared_ptr<NativeApiV8PreparedObjCInvocation>>>
+          std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
           preparedInvocations)
       : state(std::move(state)),
         bridge(std::move(bridge)),
@@ -183,12 +183,12 @@ struct NativeApiV8SelectorGroupData {
         preparedInvocations(std::move(preparedInvocations)) {}
 
   std::shared_ptr<engine::v8engine::RuntimeState> state;
-  std::shared_ptr<NativeApiV8Bridge> bridge;
+  std::shared_ptr<NativeApiBridge> bridge;
   Class lookupClass = Nil;
   bool receiverIsClass = false;
-  std::shared_ptr<std::vector<NativeApiV8SelectorGroupEntry>> selectors;
+  std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors;
   std::shared_ptr<
-      std::vector<std::shared_ptr<NativeApiV8PreparedObjCInvocation>>>
+      std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
       preparedInvocations;
 };
 
@@ -217,10 +217,10 @@ std::shared_ptr<T> v8HostObject(Runtime& runtime, v8::Local<v8::Value> value) {
 }
 
 id v8NativeObjectArgument(Runtime& runtime,
-                          const std::shared_ptr<NativeApiV8Bridge>& bridge,
-                          const NativeApiV8Type& type,
+                          const std::shared_ptr<NativeApiBridge>& bridge,
+                          const NativeApiType& type,
                           v8::Local<v8::Value> value,
-                          NativeApiV8ArgumentFrame& frame) {
+                          NativeApiArgumentFrame& frame) {
   v8::Isolate* isolate = runtime.isolate();
   if (value.IsEmpty() || value->IsNullOrUndefined()) {
     return nil;
@@ -333,9 +333,9 @@ bool readV8EngineSelectorArgument(Runtime& runtime, v8::Local<v8::Value> value,
 }
 
 bool prepareV8EngineArgument(
-    Runtime& runtime, const std::shared_ptr<NativeApiV8Bridge>& bridge,
-    const NativeApiV8Type& type, v8::Local<v8::Value> value,
-    NativeApiV8ArgumentFrame& frame, size_t index) {
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const NativeApiType& type, v8::Local<v8::Value> value,
+    NativeApiArgumentFrame& frame, size_t index) {
   ffi_type* ffiType = ffiTypeForEngineArgument(type);
   size_t size =
       ffiType != nullptr && ffiType->size > 0 ? ffiType->size : nativeSizeForType(type);
@@ -482,8 +482,8 @@ v8::Local<v8::Value> v8UnsignedInteger64Value(v8::Isolate* isolate,
 }
 
 bool setV8EngineObjectReturn(
-    Runtime& runtime, const std::shared_ptr<NativeApiV8Bridge>& bridge,
-    NativeApiV8Type type, id object,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    NativeApiType type, id object,
     const v8::FunctionCallbackInfo<v8::Value>& info) {
   v8::Isolate* isolate = runtime.isolate();
   if (object == nil) {
@@ -558,8 +558,8 @@ bool setV8EngineObjectReturn(
 }
 
 bool setV8EngineReturnValue(
-    Runtime& runtime, const std::shared_ptr<NativeApiV8Bridge>& bridge,
-    NativeApiV8Type type, void* value, const std::string& selectorName,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    NativeApiType type, void* value, const std::string& selectorName,
     const v8::FunctionCallbackInfo<v8::Value>& info) {
   v8::Isolate* isolate = runtime.isolate();
   switch (type.kind) {
@@ -673,13 +673,13 @@ bool setV8EngineReturnValue(
 }
 
 void setV8EnginePreparedObjCResult(
-    Runtime& runtime, const std::shared_ptr<NativeApiV8Bridge>& bridge,
-    id receiver, const NativeApiV8PreparedObjCInvocation& prepared,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
     const std::shared_ptr<NativeApiObjectHostObject>& receiverHostObject,
     const std::optional<Object>& initializerClassWrapper,
     const v8::FunctionCallbackInfo<v8::Value>& info,
     Class dispatchSuperClass) {
-  const NativeApiV8Signature& signature = prepared.signature;
+  const NativeApiSignature& signature = prepared.signature;
   if (receiver == nil || signature.variadic ||
       unsupportedEngineType(signature.returnType)) {
     throw JSError(runtime,
@@ -718,7 +718,7 @@ void setV8EnginePreparedObjCResult(
     }
   }
 
-  NativeApiV8ArgumentFrame frame(signature.argumentTypes.size());
+  NativeApiArgumentFrame frame(signature.argumentTypes.size());
   for (size_t i = 0; i < providedCount; i++) {
     if (!prepareV8EngineArgument(runtime, bridge, signature.argumentTypes[i],
                                  info[static_cast<int>(i)], frame, i)) {
@@ -738,7 +738,7 @@ void setV8EnginePreparedObjCResult(
     *static_cast<void**>(target) = implicitNSErrorOutArg;
   }
 
-  NativeApiV8PointerFrame values(signature.argumentTypes.size() + 2);
+  NativeApiPointerFrame values(signature.argumentTypes.size() + 2);
   size_t valueIndex = 0;
   struct objc_super superReceiver = {receiver, dispatchSuperClass};
   struct objc_super* superReceiverPtr = &superReceiver;
@@ -752,7 +752,7 @@ void setV8EnginePreparedObjCResult(
     values.set(valueIndex++, frame.values()[i]);
   }
 
-  NativeApiV8ReturnStorage returnStorage(
+  NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
   bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
@@ -788,7 +788,7 @@ void setV8EnginePreparedObjCResult(
     }
   });
 
-  NativeApiV8Type returnType = signature.returnType;
+  NativeApiType returnType = signature.returnType;
   if (retainedReturn) {
     returnType.returnOwned = true;
   }
@@ -815,9 +815,9 @@ void setV8EnginePreparedObjCResult(
                          prepared.selectorName, info);
 }
 
-void NativeApiV8SelectorGroupCallback(
+void NativeApiSelectorGroupCallback(
     const v8::FunctionCallbackInfo<v8::Value>& info) {
-  auto* data = static_cast<NativeApiV8SelectorGroupData*>(
+  auto* data = static_cast<NativeApiSelectorGroupData*>(
       info.Data().As<v8::External>()->Value());
   if (data == nullptr || data->selectors == nullptr ||
       data->preparedInvocations == nullptr) {
@@ -835,7 +835,7 @@ void NativeApiV8SelectorGroupCallback(
                     "count.");
     }
 
-    const NativeApiV8SelectorGroupEntry& entry = (*data->selectors)[count];
+    const NativeApiSelectorGroupEntry& entry = (*data->selectors)[count];
     auto& prepared = (*data->preparedInvocations)[count];
     Class selectorLookupClass = data->lookupClass;
     id receiver = nil;
@@ -878,7 +878,7 @@ void NativeApiV8SelectorGroupCallback(
     }
 
     if (prepared == nullptr) {
-      prepared = prepareNativeApiV8ObjCInvocation(
+      prepared = prepareNativeApiObjCInvocation(
           runtime, data->bridge, selectorLookupClass, data->receiverIsClass,
           entry.selectorName, entry.hasMember ? &entry.member : nullptr);
     }
@@ -910,14 +910,14 @@ void NativeApiV8SelectorGroupCallback(
   }
 }
 
-Function CreateNativeApiV8SelectorGroupFunction(
-    Runtime& runtime, std::shared_ptr<NativeApiV8Bridge> bridge,
+Function CreateNativeApiSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
     Class lookupClass, bool receiverIsClass,
-    std::shared_ptr<std::vector<NativeApiV8SelectorGroupEntry>> selectors,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
     std::shared_ptr<
-        std::vector<std::shared_ptr<NativeApiV8PreparedObjCInvocation>>>
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
         preparedInvocations) {
-  auto data = std::make_shared<NativeApiV8SelectorGroupData>(
+  auto data = std::make_shared<NativeApiSelectorGroupData>(
       runtime.state(), std::move(bridge), lookupClass, receiverIsClass,
       std::move(selectors), std::move(preparedInvocations));
   auto* rawData = data.get();
@@ -927,7 +927,7 @@ Function CreateNativeApiV8SelectorGroupFunction(
       v8::External::New(runtime.isolate(), rawData);
   v8::Local<v8::FunctionTemplate> functionTemplate =
       v8::FunctionTemplate::New(runtime.isolate(),
-                                NativeApiV8SelectorGroupCallback, external);
+                                NativeApiSelectorGroupCallback, external);
   v8::Local<v8::Function> function =
       functionTemplate->GetFunction(runtime.context()).ToLocalChecked();
   function->SetName(
@@ -938,10 +938,10 @@ Function CreateNativeApiV8SelectorGroupFunction(
 
 }  // namespace
 
-#include "Install.mm"
+#include "../shared/bridge/Install.mm"
 
-void InstallNativeApiV8(v8::Isolate* isolate, v8::Local<v8::Context> context,
-                        const NativeApiV8Config& config) {
+void InstallNativeApi(v8::Isolate* isolate, v8::Local<v8::Context> context,
+                        const NativeApiConfig& config) {
   if (isolate == nullptr || context.IsEmpty()) {
     return;
   }
@@ -950,16 +950,16 @@ void InstallNativeApiV8(v8::Isolate* isolate, v8::Local<v8::Context> context,
   v8::HandleScope handleScope(isolate);
   v8::Context::Scope contextScope(context);
   Runtime runtime(isolate, context);
-  InstallNativeApiV8(runtime, config);
+  InstallNativeApi(runtime, config);
 }
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApiV8(v8::Isolate* isolate, v8::Local<v8::Context> context,
+extern "C" void NativeScriptInstallNativeApi(v8::Isolate* isolate, v8::Local<v8::Context> context,
                                                const char* metadataPath) {
-  nativescript::NativeApiV8Config config;
+  nativescript::NativeApiConfig config;
   config.metadataPath = metadataPath;
-  nativescript::InstallNativeApiV8(isolate, context, config);
+  nativescript::InstallNativeApi(isolate, context, config);
 }
 
 #endif  // TARGET_ENGINE_V8

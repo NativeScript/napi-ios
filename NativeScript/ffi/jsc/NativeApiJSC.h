@@ -6,15 +6,15 @@
 
 namespace nativescript {
 
-using NativeApiJSCScheduler = NativeApiBackendScheduler;
-using NativeApiJSCConfig = NativeApiBackendConfig;
+using NativeApiScheduler = NativeApiBackendScheduler;
+using NativeApiConfig = NativeApiBackendConfig;
 
-void InstallNativeApiJSC(JSGlobalContextRef context,
-                         const NativeApiJSCConfig& config = NativeApiJSCConfig{});
+void InstallNativeApi(JSGlobalContextRef context,
+                         const NativeApiConfig& config = NativeApiConfig{});
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApiJSC(JSGlobalContextRef context,
+extern "C" void NativeScriptInstallNativeApi(JSGlobalContextRef context,
                                                  const char* metadataPath);
 
 #endif  // NATIVESCRIPT_FFI_JSC_NATIVE_API_JSC_H

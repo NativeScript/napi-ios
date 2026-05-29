@@ -7,72 +7,72 @@ std::string readOptionalStringProperty(Runtime& runtime, const Object& object,
   return value.isString() ? value.asString(runtime).utf8(runtime) : "";
 }
 
-struct NativeApiJSCClassBuilderRegistration {
+struct NativeApiClassBuilderRegistration {
   std::shared_ptr<Runtime> runtimeOwner;
   Runtime* runtime = nullptr;
-  std::shared_ptr<NativeApiJSCBridge> bridge;
+  std::shared_ptr<NativeApiBridge> bridge;
 };
 
-std::mutex gNativeApiJSCClassBuilderMutex;
-std::unordered_map<Class, NativeApiJSCClassBuilderRegistration>
-    gNativeApiJSCClassBuilders;
-struct NativeApiJSCKnownExposedMethod {
+std::mutex gNativeApiClassBuilderMutex;
+std::unordered_map<Class, NativeApiClassBuilderRegistration>
+    gNativeApiClassBuilders;
+struct NativeApiKnownExposedMethod {
   std::string selectorName;
-  NativeApiJSCSignature signature;
+  NativeApiSignature signature;
 };
-std::mutex gNativeApiJSCKnownExposedMethodsMutex;
-std::unordered_map<std::string, NativeApiJSCKnownExposedMethod>
-    gNativeApiJSCKnownExposedMethods;
+std::mutex gNativeApiKnownExposedMethodsMutex;
+std::unordered_map<std::string, NativeApiKnownExposedMethod>
+    gNativeApiKnownExposedMethods;
 
-void rememberNativeApiJSCClassBuilder(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+void rememberNativeApiClassBuilder(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     Class cls) {
   if (cls == Nil) {
     return;
   }
-  std::lock_guard<std::mutex> lock(gNativeApiJSCClassBuilderMutex);
-  auto runtimeOwner = retainNativeApiJSCRuntime(runtime);
-  gNativeApiJSCClassBuilders[cls] = NativeApiJSCClassBuilderRegistration{
+  std::lock_guard<std::mutex> lock(gNativeApiClassBuilderMutex);
+  auto runtimeOwner = retainNativeApiRuntime(runtime);
+  gNativeApiClassBuilders[cls] = NativeApiClassBuilderRegistration{
       .runtimeOwner = runtimeOwner,
       .runtime = runtimeOwner.get(),
       .bridge = bridge,
   };
 }
 
-void rememberNativeApiJSCKnownExposedMethod(
-    const std::string& selectorName, const NativeApiJSCSignature& signature) {
+void rememberNativeApiKnownExposedMethod(
+    const std::string& selectorName, const NativeApiSignature& signature) {
   if (selectorName.empty()) {
     return;
   }
-  NativeApiJSCKnownExposedMethod method{
+  NativeApiKnownExposedMethod method{
       .selectorName = selectorName,
       .signature = signature,
   };
-  std::lock_guard<std::mutex> lock(gNativeApiJSCKnownExposedMethodsMutex);
-  gNativeApiJSCKnownExposedMethods[selectorName] = method;
-  gNativeApiJSCKnownExposedMethods[jsifySelector(selectorName.c_str())] =
+  std::lock_guard<std::mutex> lock(gNativeApiKnownExposedMethodsMutex);
+  gNativeApiKnownExposedMethods[selectorName] = method;
+  gNativeApiKnownExposedMethods[jsifySelector(selectorName.c_str())] =
       std::move(method);
 }
 
-std::optional<NativeApiJSCKnownExposedMethod> knownNativeApiJSCExposedMethod(
+std::optional<NativeApiKnownExposedMethod> knownNativeApiExposedMethod(
     const std::string& name) {
-  std::lock_guard<std::mutex> lock(gNativeApiJSCKnownExposedMethodsMutex);
-  auto it = gNativeApiJSCKnownExposedMethods.find(name);
-  if (it == gNativeApiJSCKnownExposedMethods.end()) {
+  std::lock_guard<std::mutex> lock(gNativeApiKnownExposedMethodsMutex);
+  auto it = gNativeApiKnownExposedMethods.find(name);
+  if (it == gNativeApiKnownExposedMethods.end()) {
     return std::nullopt;
   }
-  NativeApiJSCKnownExposedMethod method = it->second;
+  NativeApiKnownExposedMethod method = it->second;
   prepareEngineMethodSignature(&method.signature);
   return method;
 }
 
-std::optional<NativeApiJSCClassBuilderRegistration>
-findNativeApiJSCClassBuilder(id object) {
+std::optional<NativeApiClassBuilderRegistration>
+findNativeApiClassBuilder(id object) {
   Class cls = object != nil ? object_getClass(object) : Nil;
-  std::lock_guard<std::mutex> lock(gNativeApiJSCClassBuilderMutex);
+  std::lock_guard<std::mutex> lock(gNativeApiClassBuilderMutex);
   while (cls != Nil) {
-    auto it = gNativeApiJSCClassBuilders.find(cls);
-    if (it != gNativeApiJSCClassBuilders.end()) {
+    auto it = gNativeApiClassBuilders.find(cls);
+    if (it != gNativeApiClassBuilders.end()) {
       return it->second;
     }
     cls = class_getSuperclass(cls);
@@ -98,14 +98,14 @@ NSUInteger nativeApiEngineSymbolIteratorCountByEnumerating(
     return 0;
   }
 
-  auto registration = findNativeApiJSCClassBuilder(self);
+  auto registration = findNativeApiClassBuilder(self);
   if (!registration || registration->runtime == nullptr ||
       registration->bridge == nullptr) {
     return 0;
   }
 
   Runtime& runtime = *registration->runtime;
-  NativeApiJSCRuntimeScope runtimeScope(runtime);
+  NativeApiRuntimeScope runtimeScope(runtime);
   auto bridge = registration->bridge;
   try {
     Value receiver = makeNativeObjectValue(runtime, bridge, self, false);
@@ -170,7 +170,7 @@ NSUInteger nativeApiEngineSymbolIteratorCountByEnumerating(
       }
 
       Value value = nextObject.getProperty(runtime, "value");
-      NativeApiJSCArgumentFrame frame(1);
+      NativeApiArgumentFrame frame(1);
       id nativeValue = objectFromEngineValue(runtime, bridge, value, frame, false);
       if (nativeValue != nil) {
         [nativeValue retain];
@@ -190,7 +190,7 @@ NSUInteger nativeApiEngineSymbolIteratorCountByEnumerating(
 }
 
 NativeApiSymbol runtimeSymbolForClass(
-    const std::shared_ptr<NativeApiJSCBridge>& bridge, Class cls) {
+    const std::shared_ptr<NativeApiBridge>& bridge, Class cls) {
   if (bridge != nullptr) {
     if (const NativeApiSymbol* symbol = bridge->findClassForRuntimeClass(cls)) {
       return *symbol;
@@ -257,7 +257,7 @@ const NativeApiMember* propertyOverrideForName(
 }
 
 void addEngineOverrideMethod(Runtime& runtime,
-                          const std::shared_ptr<NativeApiJSCBridge>& bridge,
+                          const std::shared_ptr<NativeApiBridge>& bridge,
                           Class nativeClass, Class baseClass,
                           const std::string& selectorName,
                           MDSectionOffset signatureOffset,
@@ -293,7 +293,7 @@ Class dispatchSuperclassForEngineDerivedReceiver(id receiver,
   Class receiverClass = object_getClass(receiver);
   if (receiverClass == Nil ||
       !class_conformsToProtocol(receiverClass,
-                                @protocol(NativeApiJSCClassBuilderProtocol))) {
+                                @protocol(NativeApiClassBuilderProtocol))) {
     return Nil;
   }
 
@@ -310,7 +310,7 @@ Class dispatchPrototypeClassForEngineDerivedReceiver(id receiver,
   Class receiverClass = object_getClass(receiver);
   if (receiverClass == Nil || receiverClass == prototypeClass ||
       !class_conformsToProtocol(receiverClass,
-                                @protocol(NativeApiJSCClassBuilderProtocol))) {
+                                @protocol(NativeApiClassBuilderProtocol))) {
     return Nil;
   }
 
@@ -338,8 +338,8 @@ std::optional<Function> functionForSelector(Runtime& runtime,
   return value.asObject(runtime).asFunction(runtime);
 }
 
-std::optional<NativeApiJSCType> readExposedType(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+std::optional<NativeApiType> readExposedType(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     const Object& descriptor, const char* propertyName) {
   if (!descriptor.hasProperty(runtime, propertyName)) {
     return std::nullopt;
@@ -348,10 +348,10 @@ std::optional<NativeApiJSCType> readExposedType(
                               descriptor.getProperty(runtime, propertyName));
 }
 
-std::optional<NativeApiJSCSignature> exposedMethodSignature(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+std::optional<NativeApiSignature> exposedMethodSignature(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     const std::string& selectorName, const Object& descriptor) {
-  NativeApiJSCSignature signature;
+  NativeApiSignature signature;
   if (auto returnType = readExposedType(runtime, bridge, descriptor, "returns")) {
     signature.returnType = *returnType;
   } else {
@@ -385,7 +385,7 @@ std::optional<NativeApiJSCSignature> exposedMethodSignature(
   return signature;
 }
 
-std::optional<NativeApiJSCSignature> runtimeProtocolMethodSignature(
+std::optional<NativeApiSignature> runtimeProtocolMethodSignature(
     const char* types) {
   if (types == nullptr) {
     return std::nullopt;
@@ -397,7 +397,7 @@ std::optional<NativeApiJSCSignature> runtimeProtocolMethodSignature(
     return std::nullopt;
   }
 
-  NativeApiJSCSignature signature;
+  NativeApiSignature signature;
   signature.implicitArgumentCount = 2;
   signature.returnType =
       parseObjCEncodedEngineType(methodSignature.methodReturnType);
@@ -417,7 +417,7 @@ std::optional<NativeApiJSCSignature> runtimeProtocolMethodSignature(
 }
 
 std::optional<NativeApiSymbol> protocolSymbolFromEngineValue(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     const Value& value) {
   if (value.isString()) {
     std::string name = value.asString(runtime).utf8(runtime);
@@ -457,9 +457,9 @@ std::optional<NativeApiSymbol> protocolSymbolFromEngineValue(
 }
 
 void addEngineExposedMethod(Runtime& runtime,
-                         const std::shared_ptr<NativeApiJSCBridge>& bridge,
+                         const std::shared_ptr<NativeApiBridge>& bridge,
                          Class nativeClass, const std::string& selectorName,
-                         NativeApiJSCSignature signature, Function function) {
+                         NativeApiSignature signature, Function function) {
   if (selectorName.empty()) {
     return;
   }
@@ -472,7 +472,7 @@ void addEngineExposedMethod(Runtime& runtime,
 }
 
 bool addRuntimeProtocolOverrideForName(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     Class nativeClass, const std::vector<Protocol*>& protocols,
     const std::string& propertyName, Function function) {
   std::unordered_set<Protocol*> visited;
@@ -541,8 +541,8 @@ Object getOwnPropertyDescriptor(Runtime& runtime, const Object& object,
                                     : Object(runtime);
 }
 
-Value extendNativeApiJSCClass(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+Value extendNativeApiClass(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     const Value* args, size_t count) {
   if (count < 2 || !args[0].isObject() || !args[1].isObject()) {
     throw JSError(
@@ -555,7 +555,7 @@ Value extendNativeApiJSCClass(
         runtime, "extendClass can only extend native class constructors.");
   }
   if (class_conformsToProtocol(baseClass,
-                               @protocol(NativeApiJSCClassBuilderProtocol))) {
+                               @protocol(NativeApiClassBuilderProtocol))) {
     throw JSError(runtime,
                                  "Cannot extend an already extended class.");
   }
@@ -577,9 +577,9 @@ Value extendNativeApiJSCClass(
     throw JSError(runtime, "Failed to allocate Objective-C class.");
   }
 
-  markNativeApiJSCExtendedClass(nativeClass);
-  class_addProtocol(nativeClass, @protocol(NativeApiJSCClassBuilderProtocol));
-  rememberNativeApiJSCClassBuilder(runtime, bridge, nativeClass);
+  markNativeApiExtendedClass(nativeClass);
+  class_addProtocol(nativeClass, @protocol(NativeApiClassBuilderProtocol));
+  rememberNativeApiClassBuilder(runtime, bridge, nativeClass);
 
   NativeApiSymbol baseSymbol = runtimeSymbolForClass(bridge, baseClass);
   std::vector<NativeApiMember> extensionMembers =
@@ -645,7 +645,7 @@ Value extendNativeApiJSCClass(
 	            runtime, bridge, nativeClass, optionProtocols, propertyName,
 	            value.asObject(runtime).asFunction(runtime));
 	        if (!addedRuntimeProtocolOverride) {
-	          if (auto known = knownNativeApiJSCExposedMethod(propertyName)) {
+	          if (auto known = knownNativeApiExposedMethod(propertyName)) {
 	            addEngineExposedMethod(runtime, bridge, nativeClass,
 	                                known->selectorName,
 	                                std::move(known->signature),
@@ -719,7 +719,7 @@ Value extendNativeApiJSCClass(
 	      auto signature = exposedMethodSignature(
 	          runtime, bridge, selectorName, descriptorValue.asObject(runtime));
 	      if (signature) {
-	        rememberNativeApiJSCKnownExposedMethod(selectorName, *signature);
+	        rememberNativeApiKnownExposedMethod(selectorName, *signature);
 	        addEngineExposedMethod(runtime, bridge, nativeClass, selectorName,
 	                            std::move(*signature), std::move(*function));
 	      }
@@ -748,8 +748,8 @@ Value extendNativeApiJSCClass(
 	  return makeNativeClassValue(runtime, bridge, std::move(newSymbol));
 	}
 
-Value invokeNativeApiJSCBaseMethod(
-    Runtime& runtime, const std::shared_ptr<NativeApiJSCBridge>& bridge,
+Value invokeNativeApiBaseMethod(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     const Value* args, size_t count) {
   if (count < 3 || !args[0].isObject() || !args[1].isObject() ||
       !args[2].isString()) {

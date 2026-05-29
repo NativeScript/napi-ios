@@ -37,7 +37,7 @@
 #include "MetadataReader.h"
 #include "ffi.h"
 
-@protocol NativeApiJSCClassBuilderProtocol
+@protocol NativeApiClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE

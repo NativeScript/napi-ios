@@ -36,7 +36,7 @@
 #include "ffi.h"
 #include "v8.h"
 
-@protocol NativeApiV8ClassBuilderProtocol
+@protocol NativeApiClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE
