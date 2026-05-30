@@ -1000,7 +1000,7 @@ describe(module.id, function () {
     it('Derived_DerivedPropertyReadOnly', function () {
         "use strict";
         var instance = TNSDerivedInterface.alloc().init();
-        expect(() => instance.derivedPropertyReadOnly = 1).toThrowError(/Attempted to assign to readonly property/);
+        expect(() => instance.derivedPropertyReadOnly = 1).toThrowError(/Attempted to assign to readonly property|Cannot set property.*which has only a getter/);
         UNUSED(instance.derivedPropertyReadOnly);
 
         var actual = TNSGetOutput();
