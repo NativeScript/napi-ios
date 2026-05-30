@@ -991,6 +991,22 @@ class NativeApiObjectHostObject final
       if (superclass == Nil) {
         return Value::null();
       }
+      // Try cached class value.
+      Value cached = bridge_->findClassValue(runtime, superclass);
+      if (!cached.isUndefined()) {
+        return cached;
+      }
+      // Try global lookup by class name.
+      const char* name = class_getName(superclass);
+      if (name != nullptr && name[0] != '\0') {
+        Object global = runtime.global();
+        if (global.hasProperty(runtime, name)) {
+          Value globalClass = global.getProperty(runtime, name);
+          if (!globalClass.isUndefined()) {
+            return globalClass;
+          }
+        }
+      }
       NativeApiSymbol symbol = nativeApiSymbolForRuntimeClass(bridge_, superclass);
       return makeNativeClassValue(runtime, bridge_, std::move(symbol));
     }
