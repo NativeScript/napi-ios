@@ -23,11 +23,9 @@ include_directories(
 set(EXEC_SOURCE_FILES
   src/main.cpp
   src/SignatureDispatchEmitter.cpp
-  src/SignatureDispatchEmitter/EngineDirect.cpp
-  src/SignatureDispatchEmitter/Hermes.cpp
   src/SignatureDispatchEmitter/Napi.cpp
+  src/SignatureDispatchEmitter/Prepared.cpp
   src/SignatureDispatchEmitter/Shared.cpp
-  src/SignatureDispatchEmitter/V8.cpp
   src/Umbrella.cpp
   src/IR/Category.cpp
   src/IR/Class.cpp

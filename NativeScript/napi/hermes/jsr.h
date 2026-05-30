@@ -17,30 +17,9 @@ class JSR {
   std::unique_ptr<facebook::jsi::ThreadSafeRuntime> runtime;
   facebook::jsi::Runtime* rt;
   std::recursive_mutex js_mutex;
-  static inline thread_local std::unordered_map<JSR*, int> lock_depth;
-  void lock() {
-    runtime->lock();
-    js_mutex.lock();
-    lock_depth[this] += 1;
-  }
-  void unlock() {
-    auto depth = lock_depth.find(this);
-    if (depth != lock_depth.end()) {
-      depth->second -= 1;
-      if (depth->second <= 0) {
-        lock_depth.erase(depth);
-      }
-    }
-    js_mutex.unlock();
-    runtime->unlock();
-  }
-  int currentLockDepth() const {
-    auto depth = lock_depth.find(const_cast<JSR*>(this));
-    if (depth == lock_depth.end()) {
-      return 0;
-    }
-    return depth->second;
-  }
+  void lock();
+  void unlock();
+  int currentLockDepth() const;
 
   static std::unordered_map<napi_env, JSR*> env_to_jsr_cache;
 };

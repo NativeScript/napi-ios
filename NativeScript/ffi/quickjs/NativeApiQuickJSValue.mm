@@ -2,38 +2,61 @@
 
 #ifdef TARGET_ENGINE_QUICKJS
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace engine {
 
 Value HostObject::get(Runtime&, const PropNameID&) { return Value::undefined(); }
-void HostObject::set(Runtime&, const PropNameID&, const Value&) {}
+bool HostObject::set(Runtime&, const PropNameID&, const Value&) { return true; }
 std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 String::String(Runtime& runtime, JSValue value)
-    : storage_(std::make_shared<quickjsdirect::ValueStorage>(
-          quickjsdirect::ValueStorage::Kind::QuickJS)) {
+    : storage_(std::make_shared<quickjsengine::ValueStorage>(
+          quickjsengine::ValueStorage::Kind::QuickJS)) {
   storage_->context = runtime.context();
   storage_->value = JS_DupValue(runtime.context(), value);
 }
 std::string String::utf8(Runtime& runtime) const {
   JSValue value = local(runtime);
-  std::string result = quickjsdirect::valueToUtf8(runtime.context(), value);
+  std::string result = quickjsengine::valueToUtf8(runtime.context(), value);
   JS_FreeValue(runtime.context(), value);
   return result;
 }
 JSValue String::local(Runtime& runtime) const {
   return JS_DupValue(runtime.context(), storage_->value);
 }
-String::operator Value() const {
-  Value value;
-  value.storage_ = storage_;
-  return value;
+String::operator Value() const { return Value::fromStorage(storage_); }
+Value::Value(Runtime&, const Object& object) {
+  storage_ = object.storage_;
+  kind_ = storage_ ? storage_->kind : quickjsengine::ValueStorage::Kind::Undefined;
 }
-Value::Value(Runtime&, const Object& object) : storage_(object.storage_) {}
-Value::Value(Runtime&, const Function& function) : storage_(function.storage_) {}
-Value::Value(Runtime&, const Array& array) : storage_(array.storage_) {}
-Value::Value(Runtime&, const ArrayBuffer& arrayBuffer) : storage_(arrayBuffer.storage_) {}
-Value::Value(Runtime&, const BigInt& bigint) : storage_(bigint.storage_) {}
-Object Value::asObject(Runtime&) const { return Object::fromValueStorage(storage_); }
+Value::Value(Runtime&, const Function& function) {
+  storage_ = function.storage_;
+  kind_ = storage_ ? storage_->kind : quickjsengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const Array& array) {
+  storage_ = array.storage_;
+  kind_ = storage_ ? storage_->kind : quickjsengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const ArrayBuffer& arrayBuffer) {
+  storage_ = arrayBuffer.storage_;
+  kind_ = storage_ ? storage_->kind : quickjsengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const BigInt& bigint) {
+  storage_ = bigint.storage_;
+  kind_ = storage_ ? storage_->kind : quickjsengine::ValueStorage::Kind::Undefined;
+}
+Object Value::asObject(Runtime& runtime) const {
+  if (storage_) {
+    return Object::fromValueStorage(storage_);
+  }
+  // Promote to owned storage for Object.
+  auto s = std::make_shared<quickjsengine::ValueStorage>(kind_);
+  if (kind_ == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) {
+    s->kind = quickjsengine::ValueStorage::Kind::QuickJS;
+    s->context = borrowedContext_;
+    s->value = JS_DupValue(borrowedContext_, borrowedValue_);
+  }
+  return Object::fromValueStorage(std::move(s));
+}
 String Value::asString(Runtime& runtime) const {
   JSValue value = local(runtime);
   String result(runtime, value);
@@ -82,7 +105,7 @@ void Object::setProperty(Runtime& runtime, const char* name, const ArrayBuffer& 
   setProperty(runtime, name, Value(runtime, value));
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace engine
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_QUICKJS

@@ -2,10 +2,10 @@
 
 #ifdef TARGET_ENGINE_QUICKJS
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace engine {
 
-namespace quickjsdirect {
+namespace quickjsengine {
 
 JSClassID gHostClassId = 0;
 JSClassID gFunctionClassId = 0;
@@ -21,6 +21,44 @@ std::unordered_map<JSContext*, std::shared_ptr<RuntimeState>>& runtimeStates() {
   return *states;
 }
 }  // namespace
+
+template <size_t InlineCount>
+class StackValueArray {
+ public:
+  explicit StackValueArray(size_t count) : count_(count) {
+    if (count_ > InlineCount) {
+      values_ = static_cast<Value*>(::operator new(sizeof(Value) * count_));
+    } else {
+      values_ = reinterpret_cast<Value*>(inlineStorage_);
+    }
+  }
+
+  ~StackValueArray() {
+    for (size_t i = 0; i < constructed_; i++) {
+      values_[i].~Value();
+    }
+    if (count_ > InlineCount) {
+      ::operator delete(values_);
+    }
+  }
+
+  StackValueArray(const StackValueArray&) = delete;
+  StackValueArray& operator=(const StackValueArray&) = delete;
+
+  void emplace(size_t index, Value&& value) {
+    new (&values_[index]) Value(std::move(value));
+    constructed_++;
+  }
+
+  Value* data() { return count_ == 0 ? nullptr : values_; }
+  size_t size() const { return count_; }
+
+ private:
+  size_t count_ = 0;
+  size_t constructed_ = 0;
+  Value* values_ = nullptr;
+  alignas(Value) unsigned char inlineStorage_[sizeof(Value) * InlineCount];
+};
 
 std::shared_ptr<RuntimeState> stateForContext(JSContext* context) {
   std::lock_guard<std::mutex> lock(runtimeStatesMutex());
@@ -43,7 +81,10 @@ static JSValue nativeHostGet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSVa
   }
   try {
     Value result = holder->hostObject->get(runtime, PropNameID(atomToUtf8(ctx, atom)));
-    return result.local(runtime);
+    if (!result.isUndefined()) {
+      return result.local(runtime);
+    }
+    return JS_UNDEFINED;
   } catch (const std::exception& error) {
     return throwError(ctx, error);
   }
@@ -57,8 +98,10 @@ static int nativeHostSet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSValueC
     return 0;
   }
   try {
-    holder->hostObject->set(runtime, PropNameID(atomToUtf8(ctx, atom)), Value(runtime, value));
-    return 1;
+    bool handled = holder->hostObject->set(
+        runtime, PropNameID(atomToUtf8(ctx, atom)),
+        Value::borrowed(runtime, value));
+    return handled ? 1 : 0;
   } catch (const std::exception& error) {
     throwError(ctx, error);
     return -1;
@@ -114,15 +157,14 @@ static JSValue invokeFunctionHolder(JSContext* ctx, FunctionHolder* holder, JSVa
   if (holder == nullptr || !holder->callback) {
     return JS_UNDEFINED;
   }
-  std::vector<Value> args;
-  args.reserve(argc);
+  StackValueArray<8> args(static_cast<size_t>(argc));
   for (int i = 0; i < argc; i++) {
-    args.emplace_back(runtime, argv[i]);
+    args.emplace(static_cast<size_t>(i), Value::borrowed(runtime, argv[i]));
   }
   try {
-    Value self(runtime, thisValue);
+    Value self = Value::borrowed(runtime, thisValue);
     Value result =
-        holder->callback(runtime, self, args.empty() ? nullptr : args.data(), args.size());
+        holder->callback(runtime, self, args.size() == 0 ? nullptr : args.data(), args.size());
     return result.local(runtime);
   } catch (const std::exception& error) {
     return throwError(ctx, error);
@@ -164,7 +206,7 @@ void ensureClasses(Runtime& runtime) {
   }
   if (!state->hostClassRegistered) {
     JSClassDef def = {};
-    def.class_name = "NativeScriptDirectHostObject";
+    def.class_name = "NativeScriptEngineHostObject";
     def.exotic = &hostExoticMethods;
     def.finalizer = nativeHostFinalize;
     JS_NewClass(rt, gHostClassId, &def);
@@ -176,7 +218,7 @@ void ensureClasses(Runtime& runtime) {
   }
   if (!state->functionClassRegistered) {
     JSClassDef def = {};
-    def.class_name = "NativeScriptDirectFunction";
+    def.class_name = "NativeScriptEngineFunction";
     def.call = nativeFunctionCall;
     def.finalizer = nativeFunctionFinalize;
     JS_NewClass(rt, gFunctionClassId, &def);
@@ -185,22 +227,22 @@ void ensureClasses(Runtime& runtime) {
   }
 }
 
-}  // namespace quickjsdirect
+}  // namespace quickjsengine
 
-quickjsdirect::HostObjectHolder* Object::hostObjectHolder(Runtime& runtime) const {
-  quickjsdirect::ensureClasses(runtime);
+quickjsengine::HostObjectHolder* Object::hostObjectHolder(Runtime& runtime) const {
+  quickjsengine::ensureClasses(runtime);
   JSValue object = local(runtime);
-  auto* holder = static_cast<quickjsdirect::HostObjectHolder*>(
-      JS_GetOpaque(object, quickjsdirect::gHostClassId));
+  auto* holder = static_cast<quickjsengine::HostObjectHolder*>(
+      JS_GetOpaque(object, quickjsengine::gHostClassId));
   JS_FreeValue(runtime.context(), object);
   return holder;
 }
 
 Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
                                              const void* typeToken) {
-  quickjsdirect::ensureClasses(runtime);
-  auto* holder = new quickjsdirect::HostObjectHolder(runtime.state(), std::move(host), typeToken);
-  JSValue object = JS_NewObjectClass(runtime.context(), quickjsdirect::gHostClassId);
+  quickjsengine::ensureClasses(runtime);
+  auto* holder = new quickjsengine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
+  JSValue object = JS_NewObjectClass(runtime.context(), quickjsengine::gHostClassId);
   JS_SetOpaque(object, holder);
   Object result = Object::fromValueStorage(Value(runtime, object).storage_);
   JS_FreeValue(runtime.context(), object);
@@ -209,16 +251,16 @@ Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<H
 
 Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& name,
                                           unsigned int parameterCount, HostFunctionType callback) {
-  quickjsdirect::ensureClasses(runtime);
-  auto* holder = new quickjsdirect::FunctionHolder(runtime.state(), std::move(callback));
-  JSValue data = JS_NewObjectClass(runtime.context(), quickjsdirect::gFunctionClassId);
+  quickjsengine::ensureClasses(runtime);
+  auto* holder = new quickjsengine::FunctionHolder(runtime.state(), std::move(callback));
+  JSValue data = JS_NewObjectClass(runtime.context(), quickjsengine::gFunctionClassId);
   if (JS_IsException(data)) {
     delete holder;
     throw JSError(runtime, "QuickJS host function data allocation failed.");
   }
   JS_SetOpaque(data, holder);
 
-  JSValue function = JS_NewCFunctionData(runtime.context(), quickjsdirect::nativeFunctionCallData,
+  JSValue function = JS_NewCFunctionData(runtime.context(), quickjsengine::nativeFunctionCallData,
                                          static_cast<int>(parameterCount), 0, 1, &data);
   JS_FreeValue(runtime.context(), data);
   if (JS_IsException(function)) {
@@ -233,7 +275,7 @@ Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& na
   return result;
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace engine
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_QUICKJS

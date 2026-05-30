@@ -4,6 +4,7 @@
 #include "js_native_api.h"
 
 #include <atomic>
+#include <functional>
 #include <memory>
 
 #if defined(ENABLE_JS_RUNTIME)
@@ -66,8 +67,9 @@ class NativeCallRuntimeUnlockScope final {
       jsr_->unlock();
     }
     if (unlockedDepth_ == 0 && jsr_->runtime != nullptr) {
-      runtime_ = jsr_->runtime.get();
-      runtime_->unlock();
+      auto* runtime = jsr_->runtime.get();
+      runtime->unlock();
+      relockRuntime_ = [runtime]() { runtime->lock(); };
       unlockedRuntime_ = true;
     }
     if (unlockedDepth_ > 0 || unlockedRuntime_) {
@@ -91,8 +93,8 @@ class NativeCallRuntimeUnlockScope final {
         jsr_->lock();
       }
     }
-    if (unlockedRuntime_ && runtime_ != nullptr) {
-      runtime_->lock();
+    if (unlockedRuntime_ && relockRuntime_) {
+      relockRuntime_();
     }
 #endif
   }
@@ -104,7 +106,7 @@ class NativeCallRuntimeUnlockScope final {
  private:
 #if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
   JSR* jsr_ = nullptr;
-  facebook::jsi::ThreadSafeRuntime* runtime_ = nullptr;
+  std::function<void()> relockRuntime_;
 #endif
   int unlockedDepth_ = 0;
   bool unlockedRuntime_ = false;

@@ -2,43 +2,68 @@
 
 #ifdef TARGET_ENGINE_JSC
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace engine {
 
 Value HostObject::get(Runtime&, const PropNameID&) { return Value::undefined(); }
-void HostObject::set(Runtime&, const PropNameID&, const Value&) {}
+bool HostObject::set(Runtime&, const PropNameID&, const Value&) { return true; }
 std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 
 String::String(Runtime& runtime, JSStringRef string)
-    : storage_(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::JSC)) {
+    : storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
   storage_->context = runtime.context();
   storage_->value = JSValueMakeString(runtime.context(), string);
   JSValueProtect(runtime.context(), storage_->value);
 }
 
 std::string String::utf8(Runtime& runtime) const {
-  return jscdirect::valueToUtf8(runtime.context(), storage_->value);
+  return jscengine::valueToUtf8(runtime.context(), storage_->value);
 }
 
-String::operator Value() const {
-  Value value;
-  value.storage_ = storage_;
-  return value;
+String::operator Value() const { return Value::fromStorage(storage_); }
+
+Value::Value(Runtime&, const String& value) {
+  storage_ = value.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const Object& object) {
+  storage_ = object.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const Function& function) {
+  storage_ = function.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const Array& array) {
+  storage_ = array.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const ArrayBuffer& arrayBuffer) {
+  storage_ = arrayBuffer.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const BigInt& bigint) {
+  storage_ = bigint.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
 }
 
-Value::Value(Runtime&, const Object& object) : storage_(object.storage_) {}
-Value::Value(Runtime&, const Function& function) : storage_(function.storage_) {}
-Value::Value(Runtime&, const Array& array) : storage_(array.storage_) {}
-Value::Value(Runtime&, const ArrayBuffer& arrayBuffer) : storage_(arrayBuffer.storage_) {}
-Value::Value(Runtime&, const BigInt& bigint) : storage_(bigint.storage_) {}
-
-Object Value::asObject(Runtime&) const { return Object::fromValueStorage(storage_); }
+Object Value::asObject(Runtime& runtime) const {
+  if (storage_) {
+    return Object::fromValueStorage(storage_);
+  }
+  // Promote borrowed to owned storage for Object.
+  auto s = std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC);
+  s->context = runtime.context();
+  s->value = borrowedValue_ != nullptr ? borrowedValue_ : JSValueMakeUndefined(runtime.context());
+  JSValueProtect(runtime.context(), s->value);
+  return Object::fromValueStorage(std::move(s));
+}
 
 String Value::asString(Runtime& runtime) const {
   JSValueRef exception = nullptr;
   JSStringRef string = JSValueToStringCopy(runtime.context(), local(runtime), &exception);
   if (string == nullptr || exception != nullptr) {
-    throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+    throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
   }
   String result(runtime, string);
   JSStringRelease(string);
@@ -77,7 +102,7 @@ void Object::setProperty(Runtime& runtime, const char* name, const ArrayBuffer& 
   setProperty(runtime, name, Value(runtime, value));
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace engine
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_JSC

@@ -1,7 +1,7 @@
 # Objective-C Dispatch Benchmarks
 
-This benchmark compares hot Objective-C dispatch shapes across the generated
-signature dispatch runtime and the PR #366 AOT direct-call runtime.
+This benchmark compares hot Objective-C dispatch shapes across the current
+engine package runtime and the legacy iOS AOT direct-call runtime.
 
 The benchmark body is plain NativeScript JavaScript:
 
@@ -10,7 +10,7 @@ The benchmark body is plain NativeScript JavaScript:
 The runner can execute it in three modes:
 
 - `napi-node`: fastest smoke run using the packaged macOS Node-API runtime.
-- `napi-ios`: builds a temporary iOS app from the packaged `@nativescript/ios`
+- `ios-package`: builds a temporary iOS app from a packaged `@nativescript/ios*`
   template and runs it in Simulator.
 - `legacy-ios`: temporarily injects the benchmark into the PR branch
   `TestRunner` app, builds it, runs it in Simulator, then restores the app
@@ -30,8 +30,9 @@ Examples:
 
 ```sh
 npm run benchmark:objc-dispatch -- --runtime napi-node --iterations 100000
-npm run benchmark:objc-dispatch -- --runtime napi-ios,legacy-ios --iterations 250000
-npm run benchmark:objc-dispatch -- --runtime all --include-napi-gsd-off
+npm run benchmark:objc-dispatch -- --runtime ios-package,legacy-ios --iterations 250000
+npm run benchmark:objc-dispatch -- --runtime all --include-gsd-off
+npm run benchmark:objc-dispatch -- --runtime ios-package --package-tgz packages/ios-v8/dist/nativescript-ios-v8-0.0.2.tgz --variant-label ios-v8 --include-gsd-off
 ```
 
 Useful options:
@@ -39,7 +40,8 @@ Useful options:
 ```sh
 --legacy-repo /path/to/NativeScript/ios
 --destination "platform=iOS Simulator,id=<UDID>"
---napi-package-tgz /path/to/nativescript-ios.tgz
+--package-tgz /path/to/nativescript-ios-v8.tgz
+--variant-label ios-v8
 --iterations 250000
---include-napi-gsd-off
+--include-gsd-off
 ```

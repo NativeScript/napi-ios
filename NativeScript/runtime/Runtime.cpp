@@ -15,7 +15,7 @@
 #include "v8-api.h"
 #endif  // TARGET_ENGINE_V8
 #ifdef TARGET_ENGINE_HERMES
-#include "ffi/hermes/jsi/NativeApiJsi.h"
+#include "ffi/hermes/NativeApiJsi.h"
 #endif  // TARGET_ENGINE_HERMES
 #ifdef TARGET_ENGINE_JSC
 #include "ffi/jsc/NativeApiJSC.h"
@@ -24,8 +24,12 @@
 #include "ffi/quickjs/NativeApiQuickJS.h"
 #endif  // TARGET_ENGINE_QUICKJS
 #include <CoreFoundation/CFRunLoop.h>
+#include <cstdio>
 #include <cstdlib>
 #include <functional>
+#include <mutex>
+#include <string>
+#include <unordered_map>
 
 #include "NativeScript.h"
 #include "robin_hood.h"
@@ -43,6 +47,8 @@ std::unordered_map<std::string, napi_module_init> napiModuleRegistry;
 static robin_hood::unordered_map<napi_env, Runtime*> runtimes_;
 
 std::atomic<int> Runtime::nextIsolateId{0};
+
+void unregisterRuntimePromiseRunLoop(CFRunLoopRef runLoop);
 
 Runtime* Runtime::GetRuntime(napi_env env) {
   auto it = runtimes_.find(env);
@@ -102,11 +108,16 @@ void InvokeWithUnlockedHermesRuntime(napi_env env,
 Runtime::Runtime() {
   currentRuntime_ = this;
   workerId_ = -1;
+  runtimeLoop_ = nullptr;
   // workerCache_ = Caches::Workers;
 }
 
 Runtime::~Runtime() {
   currentRuntime_ = nullptr;
+  if (runtimeLoop_ != nullptr) {
+    unregisterRuntimePromiseRunLoop(runtimeLoop_);
+    runtimeLoop_ = nullptr;
+  }
 
   if (env_) {
     {
@@ -133,6 +144,174 @@ Runtime::~Runtime() {
 
 napi_value drainMicrotasks(napi_env env, napi_callback_info cbinfo) {
   js_execute_pending_jobs(env);
+  return nullptr;
+}
+
+// Leaked, never-destroyed singletons: the Runtime destructor can run during
+// process teardown after file-scope statics are destroyed, so a destroyed
+// mutex would fail to lock (std::system_error). Heap-allocating and never
+// freeing avoids the static-destruction-order fiasco.
+std::mutex& gRuntimePromiseRunLoopMutex() {
+  static std::mutex* mutex = new std::mutex();
+  return *mutex;
+}
+std::unordered_map<std::string, CFRunLoopRef>& gRuntimePromiseRunLoops() {
+  static auto* runLoops = new std::unordered_map<std::string, CFRunLoopRef>();
+  return *runLoops;
+}
+
+std::string runtimePromiseRunLoopToken(CFRunLoopRef runLoop) {
+  char buffer[(sizeof(void*) * 2) + 3] = {};
+  std::snprintf(buffer, sizeof(buffer), "%p", runLoop);
+  return buffer;
+}
+
+std::string registerRuntimePromiseRunLoop(CFRunLoopRef runLoop) {
+  if (runLoop == nullptr) {
+    return "";
+  }
+
+  std::string token = runtimePromiseRunLoopToken(runLoop);
+  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex());
+  if (gRuntimePromiseRunLoops().find(token) == gRuntimePromiseRunLoops().end()) {
+    gRuntimePromiseRunLoops().emplace(token, (CFRunLoopRef)CFRetain(runLoop));
+  }
+  return token;
+}
+
+void unregisterRuntimePromiseRunLoop(CFRunLoopRef runLoop) {
+  if (runLoop == nullptr) {
+    return;
+  }
+
+  std::string token = runtimePromiseRunLoopToken(runLoop);
+  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex());
+  auto it = gRuntimePromiseRunLoops().find(token);
+  if (it == gRuntimePromiseRunLoops().end()) {
+    return;
+  }
+  CFRelease(it->second);
+  gRuntimePromiseRunLoops().erase(it);
+}
+
+CFRunLoopRef copyRuntimePromiseRunLoop(const std::string& token) {
+  std::lock_guard<std::mutex> lock(gRuntimePromiseRunLoopMutex());
+  auto it = gRuntimePromiseRunLoops().find(token);
+  if (it == gRuntimePromiseRunLoops().end()) {
+    return nullptr;
+  }
+  return (CFRunLoopRef)CFRetain(it->second);
+}
+
+bool readRuntimeStringArgument(napi_env env, napi_value value,
+                               std::string* result) {
+  if (result == nullptr) {
+    return false;
+  }
+
+  napi_valuetype type = napi_undefined;
+  if (napi_typeof(env, value, &type) != napi_ok || type != napi_string) {
+    return false;
+  }
+
+  size_t length = 0;
+  if (napi_get_value_string_utf8(env, value, nullptr, 0, &length) != napi_ok) {
+    return false;
+  }
+
+  std::string buffer(length + 1, '\0');
+  size_t copied = 0;
+  if (napi_get_value_string_utf8(env, value, buffer.data(), buffer.size(),
+                                 &copied) != napi_ok) {
+    return false;
+  }
+  buffer.resize(copied);
+  *result = std::move(buffer);
+  return true;
+}
+
+napi_value runtimeCurrentRunLoopToken(napi_env env, napi_callback_info) {
+  std::string token = registerRuntimePromiseRunLoop(CFRunLoopGetCurrent());
+  napi_value result;
+  napi_create_string_utf8(env, token.c_str(), token.size(), &result);
+  return result;
+}
+
+napi_value runtimeIsCurrentRunLoopToken(napi_env env, napi_callback_info cbinfo) {
+  napi_value argv[1];
+  size_t argc = 1;
+  napi_value jsThis;
+  void* data;
+  if (napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, &data) != napi_ok ||
+      argc < 1) {
+    napi_throw_type_error(env, nullptr, "Expected a run loop token.");
+    return nullptr;
+  }
+
+  std::string token;
+  if (!readRuntimeStringArgument(env, argv[0], &token)) {
+    napi_throw_type_error(env, nullptr, "Expected a run loop token string.");
+    return nullptr;
+  }
+
+  napi_value result;
+  napi_get_boolean(env,
+                   token == runtimePromiseRunLoopToken(CFRunLoopGetCurrent()),
+                   &result);
+  return result;
+}
+
+napi_value runtimeScheduleOnRunLoop(napi_env env, napi_callback_info cbinfo) {
+  napi_value argv[2];
+  size_t argc = 2;
+  napi_value jsThis;
+  void* data;
+  if (napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, &data) != napi_ok ||
+      argc < 2) {
+    napi_throw_type_error(env, nullptr,
+                          "Expected a run loop token and callback.");
+    return nullptr;
+  }
+
+  std::string token;
+  if (!readRuntimeStringArgument(env, argv[0], &token)) {
+    napi_throw_type_error(env, nullptr, "Expected a run loop token string.");
+    return nullptr;
+  }
+
+  napi_valuetype callbackType = napi_undefined;
+  if (napi_typeof(env, argv[1], &callbackType) != napi_ok ||
+      callbackType != napi_function) {
+    napi_throw_type_error(env, nullptr, "Expected a callback function.");
+    return nullptr;
+  }
+
+  CFRunLoopRef runLoop = copyRuntimePromiseRunLoop(token);
+  if (runLoop == nullptr) {
+    napi_throw_error(env, nullptr, "Run loop token is no longer valid.");
+    return nullptr;
+  }
+
+  napi_ref callbackRef = nullptr;
+  if (napi_create_reference(env, argv[1], 1, &callbackRef) != napi_ok) {
+    CFRelease(runLoop);
+    napi_throw_error(env, nullptr, "Unable to retain scheduled callback.");
+    return nullptr;
+  }
+
+  CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^{
+    NapiScope scope(env);
+    napi_value callback = nullptr;
+    napi_value global = nullptr;
+    if (napi_get_reference_value(env, callbackRef, &callback) == napi_ok &&
+        callback != nullptr && napi_get_global(env, &global) == napi_ok) {
+      napi_call_function(env, global, callback, 0, nullptr, nullptr);
+      js_execute_pending_jobs(env);
+    }
+    napi_delete_reference(env, callbackRef);
+    CFRelease(runLoop);
+  });
+  CFRunLoopWakeUp(runLoop);
   return nullptr;
 }
 
@@ -335,11 +514,33 @@ void Runtime::Init(bool isWorker) {
   napi_create_string_utf8(env_, CompatScript, NAPI_AUTO_LENGTH, &compatScript);
   napi_run_script(env_, compatScript, &result);
 
+  napi_property_descriptor runtimeProps[] = {
+      napi_util::desc("__drainMicrotaskQueue", drainMicrotasks, nullptr),
+      napi_util::desc("__runtimeCurrentRunLoopToken",
+                      runtimeCurrentRunLoopToken, nullptr),
+      napi_util::desc("__runtimeIsCurrentRunLoopToken",
+                      runtimeIsCurrentRunLoopToken, nullptr),
+      napi_util::desc("__runtimeScheduleOnRunLoop", runtimeScheduleOnRunLoop,
+                      nullptr),
+  };
+  napi_define_properties(env_, global,
+                         sizeof(runtimeProps) / sizeof(runtimeProps[0]),
+                         runtimeProps);
+
 #if defined(TARGET_ENGINE_V8) || defined(TARGET_ENGINE_HERMES)
   const char* PromiseProxyScript = R"(
         // Ensure that Promise callbacks are executed on the
         // same thread on which they were created
         (() => {
+            const currentRunLoopToken = globalThis.__runtimeCurrentRunLoopToken;
+            const isCurrentRunLoop = globalThis.__runtimeIsCurrentRunLoopToken;
+            const scheduleRunLoop = globalThis.__runtimeScheduleOnRunLoop;
+            if (typeof currentRunLoopToken !== "function" ||
+                typeof isCurrentRunLoop !== "function" ||
+                typeof scheduleRunLoop !== "function") {
+                return;
+            }
+
             const runLoopQueues = [];
 
             function getRunLoopQueue(runloop) {
@@ -361,8 +562,7 @@ void Runtime::Init(bool isWorker) {
                         }
                         if (queue.callbacks.length > 0 && !queue.pending) {
                             queue.pending = true;
-                            CFRunLoopPerformBlock(queue.runloop, kCFRunLoopDefaultMode, queue.drain);
-                            CFRunLoopWakeUp(queue.runloop);
+                            scheduleRunLoop(queue.runloop, queue.drain);
                         }
                     }
                 };
@@ -376,14 +576,13 @@ void Runtime::Init(bool isWorker) {
                     return;
                 }
                 queue.pending = true;
-                CFRunLoopPerformBlock(queue.runloop, kCFRunLoopDefaultMode, queue.drain);
-                CFRunLoopWakeUp(queue.runloop);
+                scheduleRunLoop(queue.runloop, queue.drain);
             }
 
             global.Promise = new Proxy(global.Promise, {
                 construct: function(target, args) {
                     let origFunc = args[0];
-                    let runloop = CFRunLoopGetCurrent();
+                    let runloop = currentRunLoopToken();
                     let runloopQueue = getRunLoopQueue(runloop);
 
                     let promise = new target(function(resolve, reject) {
@@ -403,7 +602,7 @@ void Runtime::Init(bool isWorker) {
                             const resolveCall = function() {
                                 resolveFn(value);
                             };
-                            if (runloop === CFRunLoopGetCurrent()) {
+                            if (isCurrentRunLoop(runloop)) {
                                 markFulfilled();
                                 resolveCall();
                             } else {
@@ -418,7 +617,7 @@ void Runtime::Init(bool isWorker) {
                             const rejectCall = function() {
                                 rejectFn(reason);
                             };
-                            if (runloop === CFRunLoopGetCurrent()) {
+                            if (isCurrentRunLoop(runloop)) {
                                 markFulfilled();
                                 rejectCall();
                             } else {
@@ -435,12 +634,11 @@ void Runtime::Init(bool isWorker) {
                                 return orig.bind(target);
                             }
                             return typeof orig === 'function' ? function(x) {
-                                if (runloop === CFRunLoopGetCurrent()) {
+                                if (isCurrentRunLoop(runloop)) {
                                     orig.bind(target, x)();
                                     return target;
                                 }
-                                CFRunLoopPerformBlock(runloop, kCFRunLoopDefaultMode, orig.bind(target, x));
-                                CFRunLoopWakeUp(runloop);
+                                scheduleRunLoop(runloop, orig.bind(target, x));
                                 return target;
                             } : orig;
                         }
@@ -460,11 +658,6 @@ void Runtime::Init(bool isWorker) {
     napi_property_descriptor prop = napi_util::desc("self", global);
     napi_define_properties(env_, global, 1, &prop);
   }
-
-  napi_property_descriptor prop =
-      napi_util::desc("__drainMicrotaskQueue", drainMicrotasks, nullptr);
-  napi_define_properties(env_, global, 1, &prop);
-
   modules_.Init(env_, global);
 
 #ifdef TARGET_ENGINE_HERMES
@@ -488,9 +681,9 @@ void Runtime::Init(bool isWorker) {
   nativescript_init(env_, metadata_path, RuntimeConfig.MetadataPtr);
 #endif
 
-#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_V8)
+#if NS_FFI_BACKEND_V8 && defined(TARGET_ENGINE_V8)
   {
-    NativeApiV8Config nativeApiV8Config;
+    NativeApiConfig nativeApiV8Config;
     nativeApiV8Config.metadataPath = metadata_path;
     nativeApiV8Config.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiV8Config.installGlobalSymbols = true;
@@ -509,24 +702,20 @@ void Runtime::Init(bool isWorker) {
               },
               false);
         };
-    InstallNativeApiV8(env_->isolate, env_->context(), nativeApiV8Config);
+    InstallNativeApi(env_->isolate, env_->context(), nativeApiV8Config);
   }
-#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_V8
+#endif  // NS_FFI_BACKEND_V8 && TARGET_ENGINE_V8
 
-#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_HERMES)
+#if NS_FFI_BACKEND_HERMES && defined(TARGET_ENGINE_HERMES)
   if (auto* jsiRuntime = js_get_jsi_runtime(env_)) {
     NativeApiJsiConfig nativeApiJsiConfig;
     nativeApiJsiConfig.metadataPath = metadata_path;
     nativeApiJsiConfig.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiJsiConfig.installGlobalSymbols = true;
+    nativeApiJsiConfig.invokeCallbacksOnNativeCallerThread = true;
     nativeApiJsiConfig.nativeInvocationInvoker =
         [env = env_](std::function<void()> task) {
           InvokeWithUnlockedHermesRuntime(env, task);
-        };
-    nativeApiJsiConfig.nativeCallbackInvoker =
-        [env = env_](std::function<void()> task) {
-          NapiScope scope(env);
-          task();
         };
     nativeApiJsiConfig.jsThreadCallbackInvoker =
         [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
@@ -540,11 +729,11 @@ void Runtime::Init(bool isWorker) {
         };
     InstallNativeApiJSI(*jsiRuntime, nativeApiJsiConfig);
   }
-#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_HERMES
+#endif  // NS_FFI_BACKEND_HERMES && TARGET_ENGINE_HERMES
 
-#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_JSC)
+#if NS_FFI_BACKEND_JSC && defined(TARGET_ENGINE_JSC)
   {
-    NativeApiJSCConfig nativeApiJSCConfig;
+    NativeApiConfig nativeApiJSCConfig;
     nativeApiJSCConfig.metadataPath = metadata_path;
     nativeApiJSCConfig.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiJSCConfig.installGlobalSymbols = true;
@@ -563,13 +752,13 @@ void Runtime::Init(bool isWorker) {
               },
               false);
         };
-    InstallNativeApiJSC(env_->context, nativeApiJSCConfig);
+    InstallNativeApi(env_->context, nativeApiJSCConfig);
   }
-#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_JSC
+#endif  // NS_FFI_BACKEND_JSC && TARGET_ENGINE_JSC
 
-#if NS_FFI_BACKEND_DIRECT && defined(TARGET_ENGINE_QUICKJS)
+#if NS_FFI_BACKEND_QUICKJS && defined(TARGET_ENGINE_QUICKJS)
   {
-    NativeApiQuickJSConfig nativeApiQuickJSConfig;
+    NativeApiConfig nativeApiQuickJSConfig;
     nativeApiQuickJSConfig.metadataPath = metadata_path;
     nativeApiQuickJSConfig.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiQuickJSConfig.installGlobalSymbols = true;
@@ -588,9 +777,9 @@ void Runtime::Init(bool isWorker) {
               },
               false);
         };
-    InstallNativeApiQuickJS(qjs_get_context(env_), nativeApiQuickJSConfig);
+    InstallNativeApi(qjs_get_context(env_), nativeApiQuickJSConfig);
   }
-#endif  // NS_FFI_BACKEND_DIRECT && TARGET_ENGINE_QUICKJS
+#endif  // NS_FFI_BACKEND_QUICKJS && TARGET_ENGINE_QUICKJS
 
   napi_close_handle_scope(env_, scope);
 }
