@@ -216,6 +216,26 @@ std::shared_ptr<T> v8HostObject(Runtime& runtime, v8::Local<v8::Value> value) {
   return std::static_pointer_cast<T>(holder->hostObject);
 }
 
+// Fast version that returns raw pointer (no atomic ref count).
+// Only safe when the caller guarantees the object stays alive.
+template <typename T>
+T* v8HostObjectRaw(v8::Local<v8::Value> value) {
+  if (value.IsEmpty() || !value->IsObject()) {
+    return nullptr;
+  }
+  v8::Local<v8::Object> object = value.As<v8::Object>();
+  if (object->InternalFieldCount() < 1) {
+    return nullptr;
+  }
+  auto* holder = static_cast<engine::v8engine::HostObjectHolder*>(
+      object->GetAlignedPointerFromInternalField(0));
+  if (holder == nullptr ||
+      holder->typeToken != engine::v8engine::hostObjectTypeToken<T>()) {
+    return nullptr;
+  }
+  return static_cast<T*>(holder->hostObject.get());
+}
+
 id v8NativeObjectArgument(Runtime& runtime,
                           const std::shared_ptr<NativeApiBridge>& bridge,
                           const NativeApiType& type,
@@ -856,10 +876,12 @@ void NativeApiSelectorGroupCallback(
       selectorLookupClass = methodClass;
       receiver = static_cast<id>(methodClass);
     } else {
-      receiverHostObject =
-          v8HostObject<NativeApiObjectHostObject>(runtime, info.This());
-      if (receiverHostObject != nullptr) {
-        receiver = receiverHostObject->object();
+      // Use raw pointer for receiver lookup (avoids atomic ref count on hot path).
+      // The receiver host object is kept alive by the V8 GC handle.
+      auto* rawHost = v8HostObjectRaw<NativeApiObjectHostObject>(info.This());
+      if (rawHost != nullptr) {
+        receiver = rawHost->object();
+        // Only get shared_ptr if needed for init handling below.
       }
     }
     if (receiver == nil) {
@@ -867,17 +889,17 @@ void NativeApiSelectorGroupCallback(
                     "Objective-C selector requires a native receiver.");
     }
 
-    if (!data->receiverIsClass) {
-      SEL selector = sel_registerName(entry.selectorName.c_str());
-      if (class_getInstanceMethod(selectorLookupClass, selector) == nullptr) {
-        Class receiverClass = object_getClass(receiver);
-        if (class_getInstanceMethod(receiverClass, selector) != nullptr) {
-          selectorLookupClass = receiverClass;
+    if (prepared == nullptr) {
+      // First call: resolve the method and cache the prepared invocation.
+      if (!data->receiverIsClass) {
+        SEL selector = sel_registerName(entry.selectorName.c_str());
+        if (class_getInstanceMethod(selectorLookupClass, selector) == nullptr) {
+          Class receiverClass = object_getClass(receiver);
+          if (class_getInstanceMethod(receiverClass, selector) != nullptr) {
+            selectorLookupClass = receiverClass;
+          }
         }
       }
-    }
-
-    if (prepared == nullptr) {
       prepared = prepareNativeApiObjCInvocation(
           runtime, data->bridge, selectorLookupClass, data->receiverIsClass,
           entry.selectorName, entry.hasMember ? &entry.member : nullptr);
@@ -886,6 +908,11 @@ void NativeApiSelectorGroupCallback(
     std::optional<Object> initializerClassWrapper;
     if (!data->receiverIsClass &&
         prepared->selectorName.rfind("init", 0) == 0) {
+      // Init methods need the shared_ptr for disown handling.
+      if (!receiverHostObject) {
+        receiverHostObject =
+            v8HostObject<NativeApiObjectHostObject>(runtime, info.This());
+      }
       Value classWrapperValue = data->bridge->findObjectExpando(
           runtime, receiver, "__nativeApiClassWrapper");
       if (classWrapperValue.isObject()) {
