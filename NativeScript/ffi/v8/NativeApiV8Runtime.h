@@ -122,6 +122,7 @@ struct RuntimeState {
   v8::Isolate* isolate = nullptr;
   v8::Global<v8::Context> context;
   v8::Global<v8::ObjectTemplate> hostObjectTemplate;
+  v8::Global<v8::ObjectTemplate> nativeObjectTemplate;  // kNonMasking for instances
   std::vector<std::shared_ptr<void>> retainedNativeData;
 };
 
@@ -420,6 +421,18 @@ class Object {
     return createFromHostObjectWithToken(runtime, std::move(baseHost),
                                          v8engine::hostObjectTypeToken<T>());
   }
+
+  // Create a native object instance using kNonMasking template for fast
+  // prototype-based property access.
+  template <typename T>
+  static Object createNativeInstanceHostObject(Runtime& runtime, std::shared_ptr<T> host) {
+    auto baseHost = std::static_pointer_cast<HostObject>(std::move(host));
+    return createNativeInstanceWithToken(runtime, std::move(baseHost),
+                                         v8engine::hostObjectTypeToken<T>());
+  }
+
+  static Object createNativeInstanceWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
+                                              const void* typeToken);
 
   Value getProperty(Runtime& runtime, const char* name) const {
     return getProperty(runtime,
