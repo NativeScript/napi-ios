@@ -52,6 +52,34 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
   if (state->hostObjectTemplate.IsEmpty()) {
     v8::Local<v8::ObjectTemplate> objectTemplate = v8::ObjectTemplate::New(runtime.isolate());
     objectTemplate->SetInternalFieldCount(1);
+    // toString must be own property to override Object.prototype.toString
+    // when using kNonMasking interceptor.
+    objectTemplate->Set(
+        makeV8String(runtime.isolate(), "toString"),
+        v8::FunctionTemplate::New(runtime.isolate(),
+            [](const v8::FunctionCallbackInfo<v8::Value>& info) {
+              v8::Local<v8::Object> self = info.This();
+              if (self.IsEmpty() || self->InternalFieldCount() < 1) return;
+              auto* holder = static_cast<HostObjectHolder*>(
+                  self->GetAlignedPointerFromInternalField(0));
+              if (holder == nullptr || holder->hostObject == nullptr) return;
+              Runtime rt(holder->state);
+              try {
+                Value toStr = holder->hostObject->get(rt, PropNameID("toString"));
+                if (!toStr.isUndefined()) {
+                  v8::Local<v8::Value> v8Val = toStr.local(rt);
+                  if (v8Val->IsFunction()) {
+                    v8::Local<v8::Value> result;
+                    if (v8Val.As<v8::Function>()->Call(rt.context(), self, 0, nullptr)
+                            .ToLocal(&result)) {
+                      info.GetReturnValue().Set(result);
+                      return;
+                    }
+                  }
+                }
+              } catch (...) {}
+            }),
+        v8::DontEnum);
     objectTemplate->SetHandler(v8::NamedPropertyHandlerConfiguration(
         [](v8::Local<v8::Name> property,
            const v8::PropertyCallbackInfo<v8::Value>& info) -> v8::Intercepted {

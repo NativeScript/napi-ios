@@ -1762,7 +1762,7 @@ Value makeNativeObjectValue(Runtime& runtime,
     bridge->forgetRoundTripValue(runtime, object);
   }
 
-  Object result = Object::createFromHostObject(
+  Object result = Object::createNativeInstanceHostObject(
       runtime,
       std::make_shared<NativeApiObjectHostObject>(bridge, object, ownsObject));
   Value prototypeValue = Value::undefined();

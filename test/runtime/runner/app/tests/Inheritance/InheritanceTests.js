@@ -307,7 +307,7 @@ describe(module.id, function () {
         UNUSED(object.baseProtocolProperty2Optional);
         object.baseProperty = 0;
         UNUSED(object.baseProperty);
-        expect(() => object.baseReadOnlyProperty = 0).toThrowError("Attempted to assign to readonly property.");
+        expect(() => object.baseReadOnlyProperty = 0).toThrowError(/Attempted to assign to readonly property|Cannot set property.*which has only a getter/);
         UNUSED(object.baseReadOnlyProperty);
         object.baseCategoryProtocolProperty1 = 0;
         UNUSED(object.baseCategoryProtocolProperty1);
