@@ -1219,7 +1219,7 @@ class NativeApiObjectHostObject final
           std::weak_ptr<NativeApiObjectHostObject> weakSelf =
               shared_from_this();
           std::string memberName = property;
-          return Function::createFromHostFunction(
+          Value methodFunction = Function::createFromHostFunction(
               runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
               [bridge, object, weakSelf, memberName](
                   Runtime& runtime, const Value&, const Value* args,
@@ -1261,6 +1261,10 @@ class NativeApiObjectHostObject final
                                         selected->selectorName, selected, args,
                                         count);
               });
+          // Cache the resolved host function so repeated method access does not
+          // reallocate it on every call (hot path).
+          bridge_->setObjectExpando(runtime, object_, property, methodFunction);
+          return methodFunction;
         }
       }
     }
