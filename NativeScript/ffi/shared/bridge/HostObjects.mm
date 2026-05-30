@@ -932,6 +932,13 @@ class NativeApiObjectHostObject final
 
   Value get(Runtime& runtime, const PropNameID& name) override {
     std::string property = name.utf8(runtime);
+
+    // Fast path: check expando cache first (hot path for method calls).
+    Value expando = bridge_->findObjectExpando(runtime, object_, property);
+    if (!expando.isUndefined()) {
+      return expando;
+    }
+
     if (property == "kind") {
       return makeString(runtime, "object");
     }
@@ -1124,11 +1131,6 @@ class NativeApiObjectHostObject final
                   nullptr, args + 1, count - 1);
             });
       }
-    }
-
-    Value expando = bridge_->findObjectExpando(runtime, object_, property);
-    if (!expando.isUndefined()) {
-      return expando;
     }
 
     if (object_ != nil && [object_ isKindOfClass:[NSArray class]]) {

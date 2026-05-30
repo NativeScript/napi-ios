@@ -60,10 +60,19 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
           if (holder == nullptr || holder->hostObject == nullptr) {
             return v8::Intercepted::kNo;
           }
+          // Fast path: skip symbols entirely (they never match our properties).
+          if (!property->IsString()) {
+            return v8::Intercepted::kNo;
+          }
           Runtime runtime(holder->state);
           try {
+            v8::Isolate* isolate = info.GetIsolate();
+            v8::String::Utf8Value utf8(isolate, property);
+            if (*utf8 == nullptr) {
+              return v8::Intercepted::kNo;
+            }
             Value result = holder->hostObject->get(
-                runtime, PropNameID(propertyNameToUtf8(info.GetIsolate(), property)));
+                runtime, PropNameID(std::string(*utf8, utf8.length())));
             if (!result.isUndefined()) {
               info.GetReturnValue().Set(result.local(runtime));
               return v8::Intercepted::kYes;
