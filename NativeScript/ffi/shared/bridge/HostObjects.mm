@@ -974,13 +974,40 @@ class NativeApiObjectHostObject final
       if (object_ == nil) {
         return Value::undefined();
       }
+      // Check class wrapper expando first (set during class setup).
       Value classWrapper = bridge_->findObjectExpando(
           runtime, object_, "__nativeApiClassWrapper");
       if (classWrapper.isObject()) {
         return classWrapper;
       }
+      // Try cached class value.
+      Class objClass = object_getClass(object_);
+      Value cached = bridge_->findClassValue(runtime, objClass);
+      if (!cached.isUndefined()) {
+        return cached;
+      }
+      // Resolve through metadata and global.
       NativeApiSymbol symbol =
-          nativeApiSymbolForRuntimeClass(bridge_, object_getClass(object_));
+          nativeApiSymbolForRuntimeClass(bridge_, objClass);
+      // Try the global by the symbol's name (which may be the JS-friendly name
+      // from metadata, different from the ObjC runtime name for Swift classes).
+      if (!symbol.name.empty()) {
+        Object global = runtime.global();
+        if (global.hasProperty(runtime, symbol.name.c_str())) {
+          Value globalClass = global.getProperty(runtime, symbol.name.c_str());
+          if (!globalClass.isUndefined() && !globalClass.isNull()) {
+            return globalClass;
+          }
+        }
+        // Also try the runtime name if different.
+        if (symbol.runtimeName != symbol.name &&
+            global.hasProperty(runtime, symbol.runtimeName.c_str())) {
+          Value globalClass = global.getProperty(runtime, symbol.runtimeName.c_str());
+          if (!globalClass.isUndefined() && !globalClass.isNull()) {
+            return globalClass;
+          }
+        }
+      }
       return makeNativeClassValue(runtime, bridge_, std::move(symbol));
     }
     if (property == "superclass") {
