@@ -2,50 +2,12 @@
 
 #ifdef TARGET_ENGINE_V8
 
-namespace nativescript {
-namespace engine {
+namespace facebook {
+namespace jsi {
 
-namespace v8engine {
+namespace v8direct {
 
 Value valueFromLocal(Runtime& runtime, v8::Local<v8::Value> value) { return Value(runtime, value); }
-
-template <size_t InlineCount>
-class StackValueArray {
- public:
-  explicit StackValueArray(size_t count) : count_(count) {
-    if (count_ > InlineCount) {
-      values_ = static_cast<Value*>(::operator new(sizeof(Value) * count_));
-    } else {
-      values_ = reinterpret_cast<Value*>(inlineStorage_);
-    }
-  }
-
-  ~StackValueArray() {
-    for (size_t i = 0; i < constructed_; i++) {
-      values_[i].~Value();
-    }
-    if (count_ > InlineCount) {
-      ::operator delete(values_);
-    }
-  }
-
-  StackValueArray(const StackValueArray&) = delete;
-  StackValueArray& operator=(const StackValueArray&) = delete;
-
-  void emplace(size_t index, Value&& value) {
-    new (&values_[index]) Value(std::move(value));
-    constructed_++;
-  }
-
-  Value* data() { return count_ == 0 ? nullptr : values_; }
-  size_t size() const { return count_; }
-
- private:
-  size_t count_ = 0;
-  size_t constructed_ = 0;
-  Value* values_ = nullptr;
-  alignas(Value) unsigned char inlineStorage_[sizeof(Value) * InlineCount];
-};
 
 v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
   auto state = runtime.state();
@@ -83,10 +45,10 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
           }
           Runtime runtime(holder->state);
           try {
-            bool handled = holder->hostObject->set(
-                runtime, PropNameID(propertyNameToUtf8(info.GetIsolate(), property)),
-                Value(runtime, value));
-            return handled ? v8::Intercepted::kYes : v8::Intercepted::kNo;
+            holder->hostObject->set(runtime,
+                                    PropNameID(propertyNameToUtf8(info.GetIsolate(), property)),
+                                    Value(runtime, value));
+            return v8::Intercepted::kYes;
           } catch (const std::exception& exception) {
             throwV8Exception(info.GetIsolate(), exception);
             return v8::Intercepted::kYes;
@@ -154,8 +116,7 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
             return v8::Intercepted::kYes;
           }
         },
-        nullptr, nullptr, nullptr, v8::Local<v8::Value>(),
-        v8::PropertyHandlerFlags::kNone));
+        nullptr, nullptr, nullptr, v8::Local<v8::Value>(), v8::PropertyHandlerFlags::kNone));
     state->hostObjectTemplate.Reset(runtime.isolate(), objectTemplate);
   }
   return state->hostObjectTemplate.Get(runtime.isolate());
@@ -169,41 +130,42 @@ void functionWeakCallback(const v8::WeakCallbackInfo<FunctionHolder>& info) {
   delete info.GetParameter();
 }
 
-}  // namespace v8engine
+}  // namespace v8direct
 
 Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
                                              const void* typeToken) {
   v8::Local<v8::Object> object =
-      v8engine::hostObjectTemplate(runtime)->NewInstance(runtime.context()).ToLocalChecked();
-  auto* holder = new v8engine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
+      v8direct::hostObjectTemplate(runtime)->NewInstance(runtime.context()).ToLocalChecked();
+  auto* holder = new v8direct::HostObjectHolder(runtime.state(), std::move(host), typeToken);
   object->SetAlignedPointerInInternalField(0, holder);
   holder->object.Reset(runtime.isolate(), object);
-  holder->object.SetWeak(holder, v8engine::hostObjectWeakCallback,
+  holder->object.SetWeak(holder, v8direct::hostObjectWeakCallback,
                          v8::WeakCallbackType::kParameter);
   return Object::fromValueStorage(Value(runtime, object).storage_);
 }
 
 Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& name, unsigned int,
                                           HostFunctionType callback) {
-  auto* holder = new v8engine::FunctionHolder(runtime.state(), std::move(callback));
+  auto* holder = new v8direct::FunctionHolder(runtime.state(), std::move(callback));
   v8::Local<v8::External> data = v8::External::New(runtime.isolate(), holder);
   v8::Local<v8::FunctionTemplate> functionTemplate = v8::FunctionTemplate::New(
       runtime.isolate(),
       [](const v8::FunctionCallbackInfo<v8::Value>& info) {
         auto* holder =
-            static_cast<v8engine::FunctionHolder*>(info.Data().As<v8::External>()->Value());
+            static_cast<v8direct::FunctionHolder*>(info.Data().As<v8::External>()->Value());
         Runtime runtime(holder->state);
-        v8engine::StackValueArray<8> args(static_cast<size_t>(info.Length()));
+        std::vector<Value> args;
+        args.reserve(info.Length());
         for (int i = 0; i < info.Length(); i++) {
-          args.emplace(static_cast<size_t>(i), Value::borrowed(runtime, info[i]));
+          args.push_back(Value(runtime, info[i]));
         }
         try {
-          Value thisValue = Value::borrowed(runtime, info.This());
-          Value result = holder->callback(runtime, thisValue, args.size() == 0 ? nullptr : args.data(),
+          Value thisValue(runtime, info.This());
+          Value result = holder->callback(runtime, thisValue, args.empty() ? nullptr : args.data(),
                                           args.size());
           info.GetReturnValue().Set(result.local(runtime));
         } catch (const std::exception& exception) {
-          v8engine::throwV8Exception(info.GetIsolate(), exception);
+          v8direct::throwV8Exception(info.GetIsolate(), exception);
         }
       },
       data);
@@ -211,15 +173,15 @@ Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& na
       functionTemplate->GetFunction(runtime.context()).ToLocalChecked();
   std::string functionName = name.utf8(runtime);
   if (!functionName.empty()) {
-    function->SetName(v8engine::makeV8String(runtime.isolate(), functionName));
+    function->SetName(v8direct::makeV8String(runtime.isolate(), functionName));
   }
   holder->function.Reset(runtime.isolate(), function);
-  holder->function.SetWeak(holder, v8engine::functionWeakCallback,
+  holder->function.SetWeak(holder, v8direct::functionWeakCallback,
                            v8::WeakCallbackType::kParameter);
   return Function(Object::fromValueStorage(Value(runtime, function).storage_));
 }
 
-}  // namespace engine
-}  // namespace nativescript
+}  // namespace jsi
+}  // namespace facebook
 
 #endif  // TARGET_ENGINE_V8

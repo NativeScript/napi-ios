@@ -13,7 +13,6 @@
 #import "Api/TNSPseudoDataTypes.h"
 #import "Api/TNSReturnsRetained.h"
 #import "Api/TNSReturnsUnmanaged.h"
-#import "Api/TNSRuntimeOnlyStructs.h"
 #import "Api/TNSVersions.h"
 #import "Functions/TNSFunctions.h"
 #import "Interfaces/TNSClassWithPlaceholder.h"

@@ -14,7 +14,6 @@
 //  - IOS_SWIFT_VERSION overrides default Swift version (default: 5.0).
 //  - IOS_COMMAND_TIMEOUT_MS overrides timeout for build/install/simctl commands (default: 3 minutes).
 //  - IOS_SIMCTL_QUERY_TIMEOUT_MS overrides timeout for polling simctl queries (default: 10 seconds).
-//  - IOS_APP_CONTAINER_READY_TIMEOUT_MS overrides how long to wait for simctl to expose app containers (default: 60 seconds).
 //  - IOS_BUILD_TIMEOUT_MS overrides timeout for xcodebuild app build (default: IOS_COMMAND_TIMEOUT_MS).
 //  - IOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
 //  - IOS_TEST_TIMEOUT_MS overrides max test runtime (default: 10 minutes).
@@ -100,10 +99,6 @@ const buildTimeoutMs = parseTimeoutMs("IOS_BUILD_TIMEOUT_MS", 10 * 60 * 1000);
 const simctlQueryTimeoutMs = parseTimeoutMs(
     "IOS_SIMCTL_QUERY_TIMEOUT_MS",
     Math.min(commandTimeoutMs, 10 * 1000)
-);
-const appContainerReadyTimeoutMs = parseTimeoutMs(
-    "IOS_APP_CONTAINER_READY_TIMEOUT_MS",
-    Math.max(60 * 1000, simctlQueryTimeoutMs * 6)
 );
 const commandMaxBufferBytes = parsePositiveInt("IOS_COMMAND_MAX_BUFFER_BYTES", 64 * 1024 * 1024);
 const testTimeoutMs = Number(process.env.IOS_TEST_TIMEOUT_MS || 10 * 60 * 1000);
@@ -646,31 +641,16 @@ function buildTestRunnerApp(destination, swiftVersion) {
 
 const appContainerPathCache = new Map();
 
-function getAppContainerPath(udid, containerType, options = {}) {
+function getAppContainerPath(udid, containerType) {
     const cacheKey = `${udid}:${containerType}`;
     if (appContainerPathCache.has(cacheKey)) {
         return appContainerPathCache.get(cacheKey);
     }
 
-    let result;
-    try {
-        result = run("xcrun", ["simctl", "get_app_container", udid, bundleId, containerType], {
-            timeout: options.timeout ?? simctlQueryTimeoutMs
-        });
-    } catch (error) {
-        if (!options.quiet) {
-            console.warn(`WARNING: Unable to resolve ${containerType} container yet (${error.message}).`);
-        }
-        return null;
-    }
-
+    const result = run("xcrun", ["simctl", "get_app_container", udid, bundleId, containerType], {
+        timeout: simctlQueryTimeoutMs
+    });
     if (result.status !== 0) {
-        if (!options.quiet) {
-            const stderr = (result.stderr || "").trim();
-            console.warn(
-                `WARNING: Unable to resolve ${containerType} container yet (simctl exited ${result.status}${stderr ? `: ${stderr}` : ""}).`
-            );
-        }
         return null;
     }
 
@@ -681,42 +661,16 @@ function getAppContainerPath(udid, containerType, options = {}) {
     return out || null;
 }
 
-function getAppDataContainerPath(udid, options = {}) {
-    return getAppContainerPath(udid, "data", options);
+function getAppDataContainerPath(udid) {
+    return getAppContainerPath(udid, "data");
 }
 
-function getInstalledAppPath(udid, options = {}) {
-    return getAppContainerPath(udid, "app", options);
+function getInstalledAppPath(udid) {
+    return getAppContainerPath(udid, "app");
 }
 
-async function waitForAppContainerPath(udid, containerType, timeoutMs = appContainerReadyTimeoutMs) {
-    const deadline = Date.now() + timeoutMs;
-    let attempt = 0;
-
-    while (Date.now() < deadline) {
-        const remaining = Math.max(1, deadline - Date.now());
-        const containerPath = getAppContainerPath(udid, containerType, {
-            quiet: attempt > 0,
-            timeout: Math.min(simctlQueryTimeoutMs, remaining)
-        });
-        if (containerPath) {
-            return containerPath;
-        }
-
-        attempt += 1;
-        await sleep(Math.min(250 * attempt, 2000));
-    }
-
-    console.warn(`WARNING: ${containerType} container was not available after ${timeoutMs}ms.`);
-    return null;
-}
-
-function waitForAppDataContainerPath(udid, timeoutMs) {
-    return waitForAppContainerPath(udid, "data", timeoutMs);
-}
-
-function removeOldJunitFile(udid, options = {}) {
-    const dataContainer = getAppDataContainerPath(udid, options);
+function removeOldJunitFile(udid) {
+    const dataContainer = getAppDataContainerPath(udid);
     if (!dataContainer) {
         return;
     }
@@ -1200,11 +1154,11 @@ async function main() {
     const builtApp = buildTestRunnerApp(destination, swiftVersion);
     const appPath = builtApp.appPath;
 
-    removeOldJunitFile(udid, { quiet: true });
+    removeOldJunitFile(udid);
 
     let shouldInstallApp = true;
     if (builtApp.reusedBuild && process.env.IOS_TEST_FORCE_INSTALL !== "1") {
-        const installedAppPath = getInstalledAppPath(udid, { quiet: true });
+        const installedAppPath = getInstalledAppPath(udid);
         if (installedAppPath && fs.existsSync(installedAppPath)) {
             try {
                 syncAppResources(path.join(installedAppPath, "app"));
@@ -1223,7 +1177,6 @@ async function main() {
     }
 
     // Ensure stale result does not get picked up if a previous run already created the container after install.
-    await waitForAppDataContainerPath(udid);
     removeOldJunitFile(udid);
 
     let launchProcess;

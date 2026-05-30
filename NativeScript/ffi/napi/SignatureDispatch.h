@@ -3,17 +3,46 @@
 
 #include <objc/runtime.h>
 
+#include <cstddef>
+#include <cstdint>
+#include <cstdlib>
+
 #include "Cif.h"
-#include "ffi/shared/SignatureDispatchCore.h"
 #include "js_native_api.h"
 
 namespace nativescript {
 
+enum class SignatureCallKind : uint8_t {
+  ObjCMethod = 1,
+  CFunction = 2,
+  BlockInvoke = 3,
+};
+
+using ObjCPreparedInvoker = void (*)(void* fnptr, void** avalues, void* rvalue);
+using CFunctionPreparedInvoker = void (*)(void* fnptr, void** avalues,
+                                          void* rvalue);
+using BlockPreparedInvoker = void (*)(void* fnptr, void** avalues,
+                                      void* rvalue);
 using ObjCNapiInvoker = bool (*)(napi_env env, Cif* cif, void* fnptr, id self,
                                  SEL selector, const napi_value* argv,
                                  void* rvalue);
 using CFunctionNapiInvoker = bool (*)(napi_env env, Cif* cif, void* fnptr,
                                       const napi_value* argv, void* rvalue);
+
+struct ObjCDispatchEntry {
+  uint64_t dispatchId;
+  ObjCPreparedInvoker invoker;
+};
+
+struct CFunctionDispatchEntry {
+  uint64_t dispatchId;
+  CFunctionPreparedInvoker invoker;
+};
+
+struct BlockDispatchEntry {
+  uint64_t dispatchId;
+  BlockPreparedInvoker invoker;
+};
 
 struct ObjCNapiDispatchEntry {
   uint64_t dispatchId;
@@ -24,6 +53,29 @@ struct CFunctionNapiDispatchEntry {
   uint64_t dispatchId;
   CFunctionNapiInvoker invoker;
 };
+
+inline constexpr uint64_t kSignatureHashOffsetBasis = 14695981039346656037ull;
+inline constexpr uint64_t kSignatureHashPrime = 1099511628211ull;
+
+inline uint64_t hashBytesFnv1a(const void* data, size_t size,
+                               uint64_t seed = kSignatureHashOffsetBasis) {
+  const auto* bytes = static_cast<const uint8_t*>(data);
+  uint64_t hash = seed;
+  for (size_t i = 0; i < size; i++) {
+    hash ^= static_cast<uint64_t>(bytes[i]);
+    hash *= kSignatureHashPrime;
+  }
+  return hash;
+}
+
+inline uint64_t composeSignatureDispatchId(uint64_t signatureHash,
+                                           SignatureCallKind kind,
+                                           uint8_t flags) {
+  const uint8_t kindByte = static_cast<uint8_t>(kind);
+  uint64_t hash = hashBytesFnv1a(&kindByte, sizeof(kindByte));
+  hash = hashBytesFnv1a(&flags, sizeof(flags), hash);
+  return hashBytesFnv1a(&signatureHash, sizeof(signatureHash), hash);
+}
 
 }  // namespace nativescript
 
@@ -39,33 +91,30 @@ struct CFunctionNapiDispatchEntry {
 #define NS_HAS_GENERATED_SIGNATURE_NAPI_DISPATCH 0
 #endif
 
+#ifndef NS_GSD_BACKEND_V8
+#define NS_GSD_BACKEND_V8 0
+#endif
+
+#ifndef NS_GSD_BACKEND_JSC
+#define NS_GSD_BACKEND_JSC 0
+#endif
+
+#ifndef NS_GSD_BACKEND_QUICKJS
+#define NS_GSD_BACKEND_QUICKJS 0
+#endif
+
 #ifndef NS_GSD_BACKEND_HERMES
 #define NS_GSD_BACKEND_HERMES 0
 #endif
 
-#ifndef NS_GSD_BACKEND_PREPARED
-#define NS_GSD_BACKEND_PREPARED 0
+#ifndef NS_GSD_BACKEND_ENGINE_DIRECT
+#define NS_GSD_BACKEND_ENGINE_DIRECT 0
 #endif
-
-#define NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH \
-  (NS_GSD_BACKEND_HERMES || NS_GSD_BACKEND_NAPI || NS_GSD_BACKEND_PREPARED)
 
 #if defined(__has_include)
 #if __has_include("GeneratedSignatureDispatch.inc")
 #include "GeneratedSignatureDispatch.inc"
-#elif NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH
-#error GeneratedSignatureDispatch.inc is required when generated signature dispatch is enabled.
 #endif
-#elif NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH
-#error __has_include is required to validate GeneratedSignatureDispatch.inc.
-#endif
-
-#if NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH && !NS_HAS_GENERATED_SIGNATURE_DISPATCH
-#error GeneratedSignatureDispatch.inc did not enable this generated signature dispatch backend.
-#endif
-
-#if NS_GSD_BACKEND_NAPI && !NS_HAS_GENERATED_SIGNATURE_NAPI_DISPATCH
-#error GeneratedSignatureDispatch.inc did not enable Node-API generated signature dispatch.
 #endif
 
 #if !NS_HAS_GENERATED_SIGNATURE_DISPATCH
@@ -89,6 +138,42 @@ inline constexpr CFunctionNapiDispatchEntry
 #endif
 
 namespace nativescript {
+
+template <typename Entry, typename Invoker, size_t N>
+inline Invoker lookupDispatchInvoker(const Entry (&entries)[N],
+                                     uint64_t dispatchId) {
+  if (dispatchId == 0 || N <= 1) {
+    return nullptr;
+  }
+
+  size_t low = 1;
+  size_t high = N;
+  while (low < high) {
+    const size_t mid = low + ((high - low) >> 1);
+    const uint64_t midId = entries[mid].dispatchId;
+    if (midId < dispatchId) {
+      low = mid + 1;
+    } else {
+      high = mid;
+    }
+  }
+
+  if (low < N && entries[low].dispatchId == dispatchId) {
+    return entries[low].invoker;
+  }
+  return nullptr;
+}
+
+inline bool isGeneratedDispatchEnabled() {
+  static const bool enabled = []() {
+    const char* disableFlag = std::getenv("NS_DISABLE_GSD");
+    if (disableFlag == nullptr || disableFlag[0] == '\0') {
+      return true;
+    }
+    return !(disableFlag[0] == '0' && disableFlag[1] == '\0');
+  }();
+  return enabled;
+}
 
 inline ObjCPreparedInvoker lookupObjCPreparedInvoker(uint64_t dispatchId) {
   if (!isGeneratedDispatchEnabled()) {

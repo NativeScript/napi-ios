@@ -22,21 +22,14 @@
   "main": "src/index.ts",
   "react-native": "src/index.ts",
   "types": "src/index.d.ts",
-  "bin": {
-    "nativescript-rn": "cli/configure.js",
-    "nativescript-rn-generate-metadata": "cli/generate-metadata.js"
-  },
   "files": [
     "app.plugin.js",
-    "babel-plugin.js",
-    "cli",
-    "examples",
     "plugin",
     "src",
     "types",
     "ios",
     "metadata",
-    "native-api",
+    "native-api-jsi",
     "NativeScriptNativeApi.podspec",
     "README.md",
     "LICENSE"

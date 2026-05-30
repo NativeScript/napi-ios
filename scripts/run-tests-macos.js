@@ -8,10 +8,7 @@
 //  - MACOS_TEST_ENGINE selects the runtime engine build to use when runtime
 //    artifacts need rebuilding. Supported: v8, hermes, quickjs, jsc. Defaults to v8.
 //  - MACOS_TEST_FFI_BACKEND selects the FFI backend build to use when runtime
-//    artifacts need rebuilding. Supported: auto, napi, v8, hermes, quickjs, jsc.
-//    Defaults to auto.
-//  - MACOS_TEST_GSD_BACKEND selects generated signature dispatch backend.
-//    Supported: auto, v8, jsc, quickjs, hermes, napi, none. Defaults to auto.
+//    artifacts need rebuilding. Supported: auto, napi, direct. Defaults to auto.
 //  - MACOS_COMMAND_TIMEOUT_MS overrides timeout for build commands (default: 10 minutes).
 //  - MACOS_COMMAND_MAX_BUFFER_BYTES overrides spawnSync maxBuffer for captured command output (default: 64 MiB).
 //  - MACOS_TEST_TIMEOUT_MS overrides max test runtime after launch (default: 2 minutes).
@@ -98,7 +95,6 @@ const requestedSpecs = (process.env.MACOS_TEST_SPECS || "").trim();
 const verboseSpecs = process.env.MACOS_TEST_VERBOSE_SPECS === "1";
 const requestedEngine = (process.env.MACOS_TEST_ENGINE || "v8").trim().toLowerCase();
 const requestedFfiBackend = (process.env.MACOS_TEST_FFI_BACKEND || "auto").trim().toLowerCase();
-const requestedGsdBackend = (process.env.MACOS_TEST_GSD_BACKEND || process.env.NS_GSD_BACKEND || "auto").trim().toLowerCase();
 
 const launchedMarker = "Application Start!";
 const junitPrefix = "TKUnit: ";
@@ -107,15 +103,7 @@ const consoleLogMarker = "CONSOLE LOG:";
 const crashReportsDir = path.join(os.homedir(), "Library", "Logs", "DiagnosticReports");
 const generatedRuntimeBuildOutputs = new Set([
     path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "hermes", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "hermes", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "v8", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "v8", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "jsc", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "jsc", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "quickjs", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "quickjs", "GeneratedSignatureDispatch.inc.stamp")
+    path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc.stamp")
 ]);
 
 function parseArgs() {
@@ -511,7 +499,6 @@ function ensureMacOSRuntimeArtifactsBuilt() {
     const artifactMtime = getPathStats(nativeScriptXCFramework).maxMtimeMs;
     let configuredEngine = null;
     let configuredFfiBackend = null;
-    let configuredGsdBackend = null;
 
     if (fs.existsSync(cachePath)) {
         try {
@@ -524,10 +511,6 @@ function ensureMacOSRuntimeArtifactsBuilt() {
             if (ffiBackendMatch) {
                 configuredFfiBackend = ffiBackendMatch[1].trim().toLowerCase();
             }
-            const gsdBackendMatch = cache.match(/^NS_GSD_BACKEND:STRING=(.+)$/m);
-            if (gsdBackendMatch) {
-                configuredGsdBackend = gsdBackendMatch[1].trim().toLowerCase();
-            }
         } catch (_) {
             configuredEngine = null;
             configuredFfiBackend = null;
@@ -537,8 +520,7 @@ function ensureMacOSRuntimeArtifactsBuilt() {
     if (artifactMtime > 0 &&
         artifactMtime >= sourceMtime &&
         configuredEngine === requestedEngine &&
-        configuredFfiBackend === requestedFfiBackend &&
-        configuredGsdBackend === requestedGsdBackend) {
+        configuredFfiBackend === requestedFfiBackend) {
         return;
     }
 
@@ -547,20 +529,15 @@ function ensureMacOSRuntimeArtifactsBuilt() {
         throw new Error(`Unsupported MACOS_TEST_ENGINE: ${requestedEngine}`);
     }
 
-    const supportedFfiBackends = new Set(["auto", "napi", "v8", "hermes", "quickjs", "jsc"]);
+    const supportedFfiBackends = new Set(["auto", "napi", "direct"]);
     if (!supportedFfiBackends.has(requestedFfiBackend)) {
         throw new Error(`Unsupported MACOS_TEST_FFI_BACKEND: ${requestedFfiBackend}`);
     }
 
-    const supportedGsdBackends = new Set(["auto", "v8", "jsc", "quickjs", "hermes", "napi", "none"]);
-    if (!supportedGsdBackends.has(requestedGsdBackend)) {
-        throw new Error(`Unsupported MACOS_TEST_GSD_BACKEND: ${requestedGsdBackend}`);
-    }
-
-    console.log(`NativeScript macOS artifacts are missing, stale, or built for '${configuredEngine ?? "unknown"}/${configuredFfiBackend ?? "unknown"}/${configuredGsdBackend ?? "unknown"}'; running ${requestedEngine}/${requestedFfiBackend}/${requestedGsdBackend} build...`);
+    console.log(`NativeScript macOS artifacts are missing, stale, or built for '${configuredEngine ?? "unknown"}/${configuredFfiBackend ?? "unknown"}'; running ${requestedEngine}/${requestedFfiBackend} build...`);
     runBuildAndRequireSuccess(
         path.join(__dirname, "build_nativescript.sh"),
-        ["--macos", "--no-iphone", "--no-simulator", `--${requestedEngine}`, `--ffi-backend=${requestedFfiBackend}`, `--gsd-backend=${requestedGsdBackend}`],
+        ["--macos", "--no-iphone", "--no-simulator", `--${requestedEngine}`, `--ffi-backend=${requestedFfiBackend}`],
         commandTimeoutMs
     );
 }
@@ -583,7 +560,7 @@ function buildTestRunnerApp() {
     ensureMetadataGeneratorBuilt();
     ensureMacOSRuntimeArtifactsBuilt();
 
-    const nativeFingerprint = `${requestedEngine}:${requestedFfiBackend}:${requestedGsdBackend}:${createBuildFingerprint(macosBuildInputs)}`;
+    const nativeFingerprint = `${requestedEngine}:${requestedFfiBackend}:${createBuildFingerprint(macosBuildInputs)}`;
     const existingBuildState = readBuildState();
     const canReuseBuild = process.env.MACOS_TEST_CLEAN_BUILD !== "1" &&
         fs.existsSync(appPath) &&

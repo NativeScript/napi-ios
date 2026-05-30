@@ -35,7 +35,6 @@ fs.writeFileSync(target, `import React from 'react';
 import {useEffect, useState} from 'react';
 import {SafeAreaView, Text} from 'react-native';
 import NativeScript from '@nativescript/react-native';
-import NativeScriptNativeApi from '@nativescript/react-native/src/NativeScriptNativeApi';
 
 const marker = 'NATIVESCRIPT_RN_TURBO_SMOKE_PASS';
 
@@ -82,9 +81,7 @@ async function runSmoke(): Promise<string> {
       turboBackend: NativeScript.getRuntimeBackend(),
     };
 
-    const payload = marker + ' ' + JSON.stringify(summary);
-    console.log(payload);
-    NativeScriptNativeApi.__writeTestMarker(payload);
+    console.log(marker + ' ' + JSON.stringify(summary));
     return JSON.stringify(summary, null, 2);
   } catch (error) {
     console.error('NATIVESCRIPT_RN_TURBO_SMOKE_FAIL', error);

@@ -44,10 +44,6 @@ on:
         required: false
         type: string
         default: next
-      npm-tag:
-        description: "Optional npm dist-tag override for publish, e.g. latest for the RN preview default install"
-        required: false
-        type: string
       dry-run:
         description: "Run release steps without making changes (no git push, no publish)"
         required: false
@@ -144,14 +140,12 @@ jobs:
           RELEASE_TYPE: ${{ inputs.release-type }}
           PACKAGE_VERSION: ${{ inputs.version }}
           PREID: ${{ inputs.preid }}
-          NPM_TAG_OVERRIDE: ${{ inputs.npm-tag }}
           TARGET: ${{ matrix.target }}
         run: |
           set -euo pipefail
           release_type="$RELEASE_TYPE"
           package_version="$PACKAGE_VERSION"
           preid="$PREID"
-          npm_tag_override="$NPM_TAG_OVERRIDE"
           target="$TARGET"
           if [ "$target" = "react-native" ]; then
             pkg_dir="packages/react-native"
@@ -178,20 +172,7 @@ jobs:
           popd >/dev/null
 
           NPM_TAG=$(NPM_VERSION="$NPM_VERSION" node ./scripts/get-npm-tag.js "$npm_tag_target")
-          if [ -n "$npm_tag_override" ]; then
-            case "$npm_tag_override" in
-              *[[:space:]]*)
-                echo "Invalid npm tag override '$npm_tag_override': dist-tags cannot contain whitespace." >&2
-                exit 1
-                ;;
-            esac
-            if printf '%s\n' "$npm_tag_override" | grep -Eq '^[0-9]+(\.[0-9]+)*$'; then
-              echo "Invalid npm tag override '$npm_tag_override': dist-tags must not look like semver versions." >&2
-              exit 1
-            fi
-            NPM_TAG="$npm_tag_override"
-          fi
-          if [ -n "$package_version" ] && [ "$release_type" = "prerelease" ] && [ -z "$npm_tag_override" ] && [ "$NPM_TAG" = "latest" ]; then
+          if [ -n "$package_version" ] && [ "$release_type" = "prerelease" ] && [ "$NPM_TAG" = "latest" ]; then
             echo "Exact prerelease publishes must include a prerelease identifier (for example 9.0.0-preview.0)." >&2
             exit 1
           fi
@@ -365,7 +346,6 @@ jobs:
           RELEASE_TYPE: ${{ inputs.release-type }}
           PACKAGE_VERSION: ${{ inputs.version }}
           PREID: ${{ inputs.preid }}
-          NPM_TAG_OVERRIDE: ${{ inputs.npm-tag }}
           DRY_RUN: ${{ inputs.dry-run }}
           TARGETS: ${{ needs.matrix.outputs.targets }}
           BUILD_RESULT: ${{ needs.build.result }}
@@ -375,7 +355,6 @@ jobs:
           echo "Release type:     $RELEASE_TYPE"
           echo "Exact version:    $PACKAGE_VERSION"
           echo "Preid:            $PREID"
-          echo "NPM tag override: $NPM_TAG_OVERRIDE"
           echo "Dry run:          $DRY_RUN"
           echo "Targets:          $TARGETS"
           echo "Build result:     $BUILD_RESULT"

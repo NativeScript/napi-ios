@@ -167,30 +167,16 @@ const fs = require('fs');
 const [markerFile, marker, timeoutSecondsText] = process.argv.slice(2);
 const timeoutMs = Number(timeoutSecondsText) * 1000;
 const startedAt = Date.now();
-let lastContent = '';
 
 function poll() {
   if (fs.existsSync(markerFile)) {
-    const content = fs.readFileSync(markerFile, 'utf8').trim();
-    if (content && content !== lastContent) {
-      lastContent = content;
-      if (content.startsWith('stage=')) {
-        console.log(`${marker} ${JSON.stringify({markerFile, stage: content.slice('stage='.length)})}`);
-      } else if (!marker || content.includes(marker)) {
-        console.log(`${marker} ${JSON.stringify({markerFile, content})}`);
-        process.exit(0);
-      } else {
-        console.error(`Unexpected ${marker} marker content at ${markerFile}: ${content}`);
-        process.exit(1);
-      }
-    }
+    const content = fs.readFileSync(markerFile, 'utf8');
+    console.log(`${marker} ${JSON.stringify({markerFile, content: content.trim()})}`);
+    process.exit(0);
   }
 
   if (Date.now() - startedAt > timeoutMs) {
     console.error(`Timed out waiting for ${marker} file at ${markerFile}.`);
-    if (lastContent) {
-      console.error(`Last ${marker} marker content: ${lastContent}`);
-    }
     process.exit(1);
   }
 

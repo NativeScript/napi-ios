@@ -1,21 +1,20 @@
 #ifndef NATIVESCRIPT_FFI_V8_NATIVE_API_V8_H
 #define NATIVESCRIPT_FFI_V8_NATIVE_API_V8_H
 
-#include "ffi/shared/NativeApiBackendConfig.h"
+#include "ffi/shared/direct/NativeApiDirect.h"
 #include "v8.h"
 
 namespace nativescript {
 
-using NativeApiScheduler = NativeApiBackendScheduler;
-using NativeApiConfig = NativeApiBackendConfig;
+using NativeApiV8Config = NativeApiDirectConfig;
 
-void InstallNativeApi(v8::Isolate* isolate,
+void InstallNativeApiV8(v8::Isolate* isolate,
                         v8::Local<v8::Context> context,
-                        const NativeApiConfig& config = NativeApiConfig{});
+                        const NativeApiV8Config& config = NativeApiV8Config{});
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApi(v8::Isolate* isolate,
+extern "C" void NativeScriptInstallNativeApiV8(v8::Isolate* isolate,
                                                 v8::Local<v8::Context> context,
                                                 const char* metadataPath);
 
