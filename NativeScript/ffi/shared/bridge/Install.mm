@@ -882,6 +882,12 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
           continue;
         }
         if (member.property) {
+            // Skip properties that need special interceptor handling (they
+            // return wrapped class constructors, not raw native values).
+            if (member.name === 'superclass' || member.name === 'class' ||
+                member.name === 'constructor' || member.name === 'debugDescription') {
+              continue;
+            }
             var existingDescriptor = Object.getOwnPropertyDescriptor(target, member.name);
             if (existingDescriptor &&
                 (typeof existingDescriptor.get === 'function' ||

@@ -170,6 +170,143 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
   return state->hostObjectTemplate.Get(runtime.isolate());
 }
 
+// Template for native object instances — uses kNonMasking so V8 checks
+// prototype chain first (methods/properties installed there are found
+// without calling the interceptor).
+v8::Local<v8::ObjectTemplate> nativeObjectTemplate(Runtime& runtime) {
+  auto state = runtime.state();
+  if (state->nativeObjectTemplate.IsEmpty()) {
+    v8::Local<v8::ObjectTemplate> objectTemplate = v8::ObjectTemplate::New(runtime.isolate());
+    objectTemplate->SetInternalFieldCount(1);
+    // toString must be own property to override Object.prototype.toString
+    objectTemplate->Set(
+        makeV8String(runtime.isolate(), "toString"),
+        v8::FunctionTemplate::New(runtime.isolate(),
+            [](const v8::FunctionCallbackInfo<v8::Value>& info) {
+              v8::Local<v8::Object> self = info.This();
+              if (self.IsEmpty() || self->InternalFieldCount() < 1) return;
+              auto* holder = static_cast<HostObjectHolder*>(
+                  self->GetAlignedPointerFromInternalField(0));
+              if (holder == nullptr || holder->hostObject == nullptr) return;
+              Runtime rt(holder->state);
+              try {
+                Value toStr = holder->hostObject->get(rt, PropNameID("toString"));
+                if (!toStr.isUndefined()) {
+                  v8::Local<v8::Value> v8Val = toStr.local(rt);
+                  if (v8Val->IsFunction()) {
+                    v8::Local<v8::Value> result;
+                    if (v8Val.As<v8::Function>()->Call(rt.context(), self, 0, nullptr)
+                            .ToLocal(&result)) {
+                      info.GetReturnValue().Set(result);
+                      return;
+                    }
+                  }
+                }
+              } catch (...) {}
+            }),
+        v8::DontEnum);
+    objectTemplate->SetHandler(v8::NamedPropertyHandlerConfiguration(
+        [](v8::Local<v8::Name> property,
+           const v8::PropertyCallbackInfo<v8::Value>& info) -> v8::Intercepted {
+          auto* holder =
+              static_cast<HostObjectHolder*>(info.Holder()->GetAlignedPointerFromInternalField(0));
+          if (holder == nullptr || holder->hostObject == nullptr) {
+            return v8::Intercepted::kNo;
+          }
+          if (!property->IsString()) {
+            return v8::Intercepted::kNo;
+          }
+          Runtime runtime(holder->state);
+          try {
+            v8::Isolate* isolate = info.GetIsolate();
+            v8::String::Utf8Value utf8(isolate, property);
+            if (*utf8 == nullptr) {
+              return v8::Intercepted::kNo;
+            }
+            Value result = holder->hostObject->get(
+                runtime, PropNameID(std::string(*utf8, utf8.length())));
+            if (!result.isUndefined()) {
+              info.GetReturnValue().Set(result.local(runtime));
+              return v8::Intercepted::kYes;
+            }
+          } catch (const std::exception& exception) {
+            throwV8Exception(info.GetIsolate(), exception);
+            return v8::Intercepted::kYes;
+          }
+          return v8::Intercepted::kNo;
+        },
+        [](v8::Local<v8::Name> property, v8::Local<v8::Value> value,
+           const v8::PropertyCallbackInfo<void>& info) -> v8::Intercepted {
+          auto* holder =
+              static_cast<HostObjectHolder*>(info.Holder()->GetAlignedPointerFromInternalField(0));
+          if (holder == nullptr || holder->hostObject == nullptr) {
+            return v8::Intercepted::kNo;
+          }
+          if (!property->IsString()) {
+            return v8::Intercepted::kNo;
+          }
+          Runtime runtime(holder->state);
+          try {
+            v8::Isolate* isolate = info.GetIsolate();
+            v8::String::Utf8Value utf8(isolate, property);
+            if (*utf8 == nullptr) {
+              return v8::Intercepted::kNo;
+            }
+            bool handled = holder->hostObject->set(
+                runtime, PropNameID(std::string(*utf8, utf8.length())),
+                Value(runtime, value));
+            return handled ? v8::Intercepted::kYes : v8::Intercepted::kNo;
+          } catch (const std::exception& exception) {
+            throwV8Exception(info.GetIsolate(), exception);
+            return v8::Intercepted::kYes;
+          }
+        },
+        nullptr, nullptr, nullptr, v8::Local<v8::Value>(),
+        v8::PropertyHandlerFlags::kNonMasking));
+    objectTemplate->SetHandler(v8::IndexedPropertyHandlerConfiguration(
+        [](uint32_t index, const v8::PropertyCallbackInfo<v8::Value>& info) -> v8::Intercepted {
+          auto* holder =
+              static_cast<HostObjectHolder*>(info.Holder()->GetAlignedPointerFromInternalField(0));
+          if (holder == nullptr || holder->hostObject == nullptr) {
+            return v8::Intercepted::kNo;
+          }
+          Runtime runtime(holder->state);
+          try {
+            Value result = holder->hostObject->get(runtime, PropNameID(std::to_string(index)));
+            if (!result.isUndefined()) {
+              info.GetReturnValue().Set(result.local(runtime));
+              return v8::Intercepted::kYes;
+            }
+          } catch (const std::exception& exception) {
+            throwV8Exception(info.GetIsolate(), exception);
+            return v8::Intercepted::kYes;
+          }
+          return v8::Intercepted::kNo;
+        },
+        [](uint32_t index, v8::Local<v8::Value> value,
+           const v8::PropertyCallbackInfo<void>& info) -> v8::Intercepted {
+          auto* holder =
+              static_cast<HostObjectHolder*>(info.Holder()->GetAlignedPointerFromInternalField(0));
+          if (holder == nullptr || holder->hostObject == nullptr) {
+            return v8::Intercepted::kNo;
+          }
+          Runtime runtime(holder->state);
+          try {
+            holder->hostObject->set(runtime, PropNameID(std::to_string(index)),
+                                    Value(runtime, value));
+            return v8::Intercepted::kYes;
+          } catch (const std::exception& exception) {
+            throwV8Exception(info.GetIsolate(), exception);
+            return v8::Intercepted::kYes;
+          }
+        },
+        nullptr, nullptr, nullptr, v8::Local<v8::Value>(),
+        v8::PropertyHandlerFlags::kNonMasking));
+    state->nativeObjectTemplate.Reset(runtime.isolate(), objectTemplate);
+  }
+  return state->nativeObjectTemplate.Get(runtime.isolate());
+}
+
 void hostObjectWeakCallback(const v8::WeakCallbackInfo<HostObjectHolder>& info) {
   delete info.GetParameter();
 }
@@ -184,6 +321,18 @@ Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<H
                                              const void* typeToken) {
   v8::Local<v8::Object> object =
       v8engine::hostObjectTemplate(runtime)->NewInstance(runtime.context()).ToLocalChecked();
+  auto* holder = new v8engine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
+  object->SetAlignedPointerInInternalField(0, holder);
+  holder->object.Reset(runtime.isolate(), object);
+  holder->object.SetWeak(holder, v8engine::hostObjectWeakCallback,
+                         v8::WeakCallbackType::kParameter);
+  return Object::fromValueStorage(Value(runtime, object).storage_);
+}
+
+Object Object::createNativeInstanceWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
+                                             const void* typeToken) {
+  v8::Local<v8::Object> object =
+      v8engine::nativeObjectTemplate(runtime)->NewInstance(runtime.context()).ToLocalChecked();
   auto* holder = new v8engine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
   object->SetAlignedPointerInInternalField(0, holder);
   holder->object.Reset(runtime.isolate(), object);
