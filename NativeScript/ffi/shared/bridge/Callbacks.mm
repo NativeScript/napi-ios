@@ -522,13 +522,29 @@ class NativeApiCallback final
         released = true;
       }
     }
-    // Block disposal can run during an autorelease-pool drain outside any JS
-    // engine scope, so enter a runtime scope before touching the round-trip
-    // root object (which reads the engine global/context).
+    // Forgetting the round-trip value touches the JS engine global/context.
+    // Block disposal can run during an autorelease-pool drain on an arbitrary
+    // thread (e.g. an NSOperationQueue worker), so run the cleanup on the JS
+    // thread (engines such as JSI are strictly single-threaded).
     if (released && bridge_ != nullptr && runtime_ != nullptr &&
         pointerToForget != nullptr) {
-      NativeApiRuntimeScope runtimeScope(*runtime_);
-      bridge_->forgetRoundTripValue(*runtime_, pointerToForget);
+      auto bridge = bridge_;
+      auto* runtime = runtime_;
+      auto runtimeOwner = runtimeOwner_;
+      const void* pointer = pointerToForget;
+      auto forget = [bridge, runtime, runtimeOwner, pointer, keepAlive]() {
+        NativeApiRuntimeScope runtimeScope(*runtime);
+        bridge->forgetRoundTripValue(*runtime, pointer);
+      };
+      if (std::this_thread::get_id() == bridge_->jsThreadId()) {
+        forget();
+      } else if (const auto& invoker = bridge_->jsThreadCallbackInvoker()) {
+        invoker(forget);
+      } else if (auto scheduler = bridge_->scheduler()) {
+        scheduler->invokeOnJS(forget);
+      } else {
+        forget();
+      }
     }
     return released;
   }
