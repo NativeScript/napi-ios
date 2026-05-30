@@ -250,41 +250,50 @@ class String {
 
 class Value {
  public:
-  Value()
-      : storage_(std::make_shared<quickjsengine::ValueStorage>(
-            quickjsengine::ValueStorage::Kind::Undefined)) {}
-  Value(bool value)
-      : storage_(std::make_shared<quickjsengine::ValueStorage>(
-            quickjsengine::ValueStorage::Kind::Bool)) {
-    storage_->boolValue = value;
-  }
-  Value(double value)
-      : storage_(std::make_shared<quickjsengine::ValueStorage>(
-            quickjsengine::ValueStorage::Kind::Number)) {
-    storage_->numberValue = value;
-  }
+  Value() : kind_(quickjsengine::ValueStorage::Kind::Undefined) {}
+
+  Value(bool value) : kind_(quickjsengine::ValueStorage::Kind::Bool), boolValue_(value) {}
+
+  Value(double value) : kind_(quickjsengine::ValueStorage::Kind::Number), numberValue_(value) {}
+
   Value(int value) : Value(static_cast<double>(value)) {}
   Value(uint32_t value) : Value(static_cast<double>(value)) {}
 
   Value(Runtime& runtime, const Value& value) {
-    if (value.storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) {
+    if (value.kind_ == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) {
+      // Promote borrowed to owned
       storage_ = std::make_shared<quickjsengine::ValueStorage>(
           quickjsengine::ValueStorage::Kind::QuickJS);
       storage_->context = runtime.context();
-      storage_->value = JS_DupValue(runtime.context(), value.storage_->value);
+      storage_->value = JS_DupValue(runtime.context(), value.borrowedValue_);
+      kind_ = quickjsengine::ValueStorage::Kind::QuickJS;
       return;
     }
+    kind_ = value.kind_;
+    boolValue_ = value.boolValue_;
+    numberValue_ = value.numberValue_;
+    borrowedContext_ = value.borrowedContext_;
+    borrowedValue_ = value.borrowedValue_;
     storage_ = value.storage_;
   }
-  Value(Runtime& runtime, Value&& value) : storage_(std::move(value.storage_)) {}
-  Value(Runtime& runtime, const String& value) : storage_(value.storage_) {}
+  Value(Runtime& runtime, Value&& value)
+      : kind_(value.kind_),
+        boolValue_(value.boolValue_),
+        numberValue_(value.numberValue_),
+        borrowedContext_(value.borrowedContext_),
+        borrowedValue_(value.borrowedValue_),
+        storage_(std::move(value.storage_)) {}
+  Value(Runtime& runtime, const String& value) : storage_(value.storage_) {
+    kind_ = storage_ ? storage_->kind : quickjsengine::ValueStorage::Kind::Undefined;
+  }
   Value(Runtime& runtime, const Object& object);
   Value(Runtime& runtime, const Function& function);
   Value(Runtime& runtime, const Array& array);
   Value(Runtime& runtime, const ArrayBuffer& arrayBuffer);
   Value(Runtime& runtime, const BigInt& bigint);
   Value(Runtime& runtime, JSValue value)
-      : storage_(std::make_shared<quickjsengine::ValueStorage>(
+      : kind_(quickjsengine::ValueStorage::Kind::QuickJS),
+        storage_(std::make_shared<quickjsengine::ValueStorage>(
             quickjsengine::ValueStorage::Kind::QuickJS)) {
     storage_->context = runtime.context();
     storage_->value = JS_DupValue(runtime.context(), value);
@@ -292,108 +301,97 @@ class Value {
 
   static Value borrowed(Runtime& runtime, JSValueConst value) {
     Value result;
-    result.storage_->kind = quickjsengine::ValueStorage::Kind::QuickJSBorrowed;
-    result.storage_->context = runtime.context();
-    result.storage_->value = value;
+    result.kind_ = quickjsengine::ValueStorage::Kind::QuickJSBorrowed;
+    result.borrowedContext_ = runtime.context();
+    result.borrowedValue_ = value;
     return result;
   }
 
   static Value undefined() { return Value(); }
   static Value null() {
     Value value;
-    value.storage_ =
-        std::make_shared<quickjsengine::ValueStorage>(quickjsengine::ValueStorage::Kind::Null);
+    value.kind_ = quickjsengine::ValueStorage::Kind::Null;
     return value;
   }
   bool isUndefined() const {
-    return storage_->kind == quickjsengine::ValueStorage::Kind::Undefined ||
-           (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS &&
-            JS_IsUndefined(storage_->value)) ||
-           (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed &&
-            JS_IsUndefined(storage_->value));
+    if (kind_ == quickjsengine::ValueStorage::Kind::Undefined) {
+      return true;
+    }
+    return isQuickJS() && JS_IsUndefined(jsValue());
   }
   bool isNull() const {
-    return storage_->kind == quickjsengine::ValueStorage::Kind::Null ||
-           (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS &&
-            JS_IsNull(storage_->value)) ||
-           (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed &&
-            JS_IsNull(storage_->value));
+    if (kind_ == quickjsengine::ValueStorage::Kind::Null) {
+      return true;
+    }
+    return isQuickJS() && JS_IsNull(jsValue());
   }
   bool isBool() const {
-    return storage_->kind == quickjsengine::ValueStorage::Kind::Bool ||
-           (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS &&
-            JS_IsBool(storage_->value)) ||
-           (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed &&
-            JS_IsBool(storage_->value));
+    if (kind_ == quickjsengine::ValueStorage::Kind::Bool) {
+      return true;
+    }
+    return isQuickJS() && JS_IsBool(jsValue());
   }
   bool getBool() const {
-    if (storage_->kind == quickjsengine::ValueStorage::Kind::Bool) {
-      return storage_->boolValue;
+    if (kind_ == quickjsengine::ValueStorage::Kind::Bool) {
+      return boolValue_;
     }
-    if (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS ||
-        storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) {
-      return JS_ToBool(storage_->context, storage_->value) != 0;
+    if (isQuickJS()) {
+      return JS_ToBool(jsContext(), jsValue()) != 0;
     }
     return false;
   }
   bool isNumber() const {
-    return storage_->kind == quickjsengine::ValueStorage::Kind::Number ||
-           (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS &&
-            JS_IsNumber(storage_->value)) ||
-           (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed &&
-            JS_IsNumber(storage_->value));
+    if (kind_ == quickjsengine::ValueStorage::Kind::Number) {
+      return true;
+    }
+    return isQuickJS() && JS_IsNumber(jsValue());
   }
   double getNumber() const {
-    if (storage_->kind == quickjsengine::ValueStorage::Kind::Number) {
-      return storage_->numberValue;
+    if (kind_ == quickjsengine::ValueStorage::Kind::Number) {
+      return numberValue_;
     }
-    if (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS ||
-        storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) {
+    if (isQuickJS()) {
       double value = 0;
-      JS_ToFloat64(storage_->context, &value, storage_->value);
+      JS_ToFloat64(jsContext(), &value, jsValue());
       return value;
     }
     return 0;
   }
-  bool isObject() const {
-    return (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS ||
-            storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) &&
-           JS_IsObject(storage_->value);
-  }
-  bool isString() const {
-    return (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS ||
-            storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) &&
-           JS_IsString(storage_->value);
-  }
-  bool isBigInt() const {
-    return (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS ||
-            storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) &&
-           JS_IsBigInt(storage_->context, storage_->value);
-  }
-  bool isSymbol() const {
-    return (storage_->kind == quickjsengine::ValueStorage::Kind::QuickJS ||
-            storage_->kind == quickjsengine::ValueStorage::Kind::QuickJSBorrowed) &&
-           JS_IsSymbol(storage_->value);
-  }
+  bool isObject() const { return isQuickJS() && JS_IsObject(jsValue()); }
+  bool isString() const { return isQuickJS() && JS_IsString(jsValue()); }
+  bool isBigInt() const { return isQuickJS() && JS_IsBigInt(jsContext(), jsValue()); }
+  bool isSymbol() const { return isQuickJS() && JS_IsSymbol(jsValue()); }
 
   Object asObject(Runtime& runtime) const;
   String asString(Runtime& runtime) const;
   BigInt getBigInt(Runtime& runtime) const;
 
   JSValue local(Runtime& runtime) const {
-    switch (storage_->kind) {
+    switch (kind_) {
       case quickjsengine::ValueStorage::Kind::Undefined:
         return JS_UNDEFINED;
       case quickjsengine::ValueStorage::Kind::Null:
         return JS_NULL;
       case quickjsengine::ValueStorage::Kind::Bool:
-        return JS_NewBool(runtime.context(), storage_->boolValue);
+        return JS_NewBool(runtime.context(), boolValue_);
       case quickjsengine::ValueStorage::Kind::Number:
-        return JS_NewFloat64(runtime.context(), storage_->numberValue);
+        return JS_NewFloat64(runtime.context(), numberValue_);
       case quickjsengine::ValueStorage::Kind::QuickJS:
       case quickjsengine::ValueStorage::Kind::QuickJSBorrowed:
-        return JS_DupValue(runtime.context(), storage_->value);
+        return JS_DupValue(runtime.context(), jsValue());
     }
+  }
+
+  // Access the shared storage (for Object/Function/Array interop)
+  std::shared_ptr<quickjsengine::ValueStorage> storage() const { return storage_; }
+
+  static Value fromStorage(std::shared_ptr<quickjsengine::ValueStorage> s) {
+    Value v;
+    v.kind_ = s->kind;
+    v.boolValue_ = s->boolValue;
+    v.numberValue_ = s->numberValue;
+    v.storage_ = std::move(s);
+    return v;
   }
 
  private:
@@ -404,6 +402,25 @@ class Value {
   friend class ArrayBuffer;
   friend class Function;
   friend class Array;
+
+  bool isQuickJS() const {
+    return kind_ == quickjsengine::ValueStorage::Kind::QuickJS ||
+           kind_ == quickjsengine::ValueStorage::Kind::QuickJSBorrowed;
+  }
+  JSContext* jsContext() const {
+    return kind_ == quickjsengine::ValueStorage::Kind::QuickJSBorrowed ? borrowedContext_
+                                                                       : storage_->context;
+  }
+  JSValue jsValue() const {
+    return kind_ == quickjsengine::ValueStorage::Kind::QuickJSBorrowed ? borrowedValue_
+                                                                       : storage_->value;
+  }
+
+  quickjsengine::ValueStorage::Kind kind_ = quickjsengine::ValueStorage::Kind::Undefined;
+  bool boolValue_ = false;
+  double numberValue_ = 0;
+  JSContext* borrowedContext_ = nullptr;
+  JSValue borrowedValue_ = JS_UNINITIALIZED;
   std::shared_ptr<quickjsengine::ValueStorage> storage_;
 };
 
@@ -554,11 +571,7 @@ class Object {
     return std::static_pointer_cast<T>(holder->hostObject);
   }
   JSValue local(Runtime& runtime) const { return JS_DupValue(runtime.context(), storage_->value); }
-  operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
-  }
+  operator Value() const { return Value::fromStorage(storage_); }
 
  protected:
   friend class Value;
@@ -738,11 +751,7 @@ class BigInt {
   }
   String toString(Runtime& runtime, int) const;
   JSValue local(Runtime& runtime) const { return JS_DupValue(runtime.context(), storage_->value); }
-  operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
-  }
+  operator Value() const { return Value::fromStorage(storage_); }
 
  private:
   friend class Value;

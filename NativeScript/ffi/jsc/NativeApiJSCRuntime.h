@@ -311,45 +311,49 @@ class String {
 
 class Value {
  public:
-  Value()
-      : storage_(
-            std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::Undefined)) {}
+  Value() : kind_(jscengine::ValueStorage::Kind::Undefined) {}
 
-  Value(bool value)
-      : storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::Bool)) {
-    storage_->boolValue = value;
-  }
+  Value(bool value) : kind_(jscengine::ValueStorage::Kind::Bool), boolValue_(value) {}
 
-  Value(double value)
-      : storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::Number)) {
-    storage_->numberValue = value;
-  }
+  Value(double value) : kind_(jscengine::ValueStorage::Kind::Number), numberValue_(value) {}
 
   Value(int value) : Value(static_cast<double>(value)) {}
   Value(uint32_t value) : Value(static_cast<double>(value)) {}
 
   Value(Runtime& runtime, const Value& value) {
-    if (value.storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed) {
-      storage_ =
-          std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC);
+    if (value.kind_ == jscengine::ValueStorage::Kind::JSCBorrowed) {
+      // Promote borrowed to owned
+      storage_ = std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC);
       storage_->context = runtime.context();
-      storage_->value = value.storage_->value != nullptr
-                            ? value.storage_->value
-                            : JSValueMakeUndefined(runtime.context());
+      storage_->value = value.borrowedValue_ != nullptr ? value.borrowedValue_
+                                                        : JSValueMakeUndefined(runtime.context());
       JSValueProtect(runtime.context(), storage_->value);
+      kind_ = jscengine::ValueStorage::Kind::JSC;
       return;
     }
+    kind_ = value.kind_;
+    boolValue_ = value.boolValue_;
+    numberValue_ = value.numberValue_;
+    borrowedContext_ = value.borrowedContext_;
+    borrowedValue_ = value.borrowedValue_;
     storage_ = value.storage_;
   }
-  Value(Runtime& runtime, Value&& value) : storage_(std::move(value.storage_)) {}
-  Value(Runtime& runtime, const String& value) : storage_(value.storage_) {}
+  Value(Runtime& runtime, Value&& value)
+      : kind_(value.kind_),
+        boolValue_(value.boolValue_),
+        numberValue_(value.numberValue_),
+        borrowedContext_(value.borrowedContext_),
+        borrowedValue_(value.borrowedValue_),
+        storage_(std::move(value.storage_)) {}
+  Value(Runtime& runtime, const String& value);
   Value(Runtime& runtime, const Object& object);
   Value(Runtime& runtime, const Function& function);
   Value(Runtime& runtime, const Array& array);
   Value(Runtime& runtime, const ArrayBuffer& arrayBuffer);
   Value(Runtime& runtime, const BigInt& bigint);
   Value(Runtime& runtime, JSValueRef value)
-      : storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
+      : kind_(jscengine::ValueStorage::Kind::JSC),
+        storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
     storage_->context = runtime.context();
     storage_->value = value != nullptr ? value : JSValueMakeUndefined(runtime.context());
     JSValueProtect(runtime.context(), storage_->value);
@@ -357,112 +361,92 @@ class Value {
 
   static Value borrowed(Runtime& runtime, JSValueRef value) {
     Value result;
-    result.storage_->kind = jscengine::ValueStorage::Kind::JSCBorrowed;
-    result.storage_->context = runtime.context();
-    result.storage_->value = value != nullptr ? value : JSValueMakeUndefined(runtime.context());
+    result.kind_ = jscengine::ValueStorage::Kind::JSCBorrowed;
+    result.borrowedContext_ = runtime.context();
+    result.borrowedValue_ = value != nullptr ? value : JSValueMakeUndefined(runtime.context());
     return result;
   }
 
   static Value undefined() { return Value(); }
   static Value null() {
     Value value;
-    value.storage_ = std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::Null);
+    value.kind_ = jscengine::ValueStorage::Kind::Null;
     return value;
   }
 
   bool isUndefined() const {
-    return storage_->kind == jscengine::ValueStorage::Kind::Undefined ||
-           (storage_->kind == jscengine::ValueStorage::Kind::JSC &&
-            JSValueIsUndefined(storage_->context, storage_->value)) ||
-           (storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed &&
-            JSValueIsUndefined(storage_->context, storage_->value));
+    return kind_ == jscengine::ValueStorage::Kind::Undefined ||
+           (isJSC() && JSValueIsUndefined(jscContext(), jscValue()));
   }
   bool isNull() const {
-    return storage_->kind == jscengine::ValueStorage::Kind::Null ||
-           (storage_->kind == jscengine::ValueStorage::Kind::JSC &&
-            JSValueIsNull(storage_->context, storage_->value)) ||
-           (storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed &&
-            JSValueIsNull(storage_->context, storage_->value));
+    return kind_ == jscengine::ValueStorage::Kind::Null ||
+           (isJSC() && JSValueIsNull(jscContext(), jscValue()));
   }
   bool isBool() const {
-    return storage_->kind == jscengine::ValueStorage::Kind::Bool ||
-           (storage_->kind == jscengine::ValueStorage::Kind::JSC &&
-            JSValueIsBoolean(storage_->context, storage_->value)) ||
-           (storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed &&
-            JSValueIsBoolean(storage_->context, storage_->value));
+    return kind_ == jscengine::ValueStorage::Kind::Bool ||
+           (isJSC() && JSValueIsBoolean(jscContext(), jscValue()));
   }
   bool getBool() const {
-    if (storage_->kind == jscengine::ValueStorage::Kind::Bool) {
-      return storage_->boolValue;
+    if (kind_ == jscengine::ValueStorage::Kind::Bool) {
+      return boolValue_;
     }
-    if (storage_->kind == jscengine::ValueStorage::Kind::JSC ||
-        storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed) {
-      return JSValueToBoolean(storage_->context, storage_->value);
-    }
-    return false;
+    return isJSC() && JSValueToBoolean(jscContext(), jscValue());
   }
   bool isNumber() const {
-    return storage_->kind == jscengine::ValueStorage::Kind::Number ||
-           (storage_->kind == jscengine::ValueStorage::Kind::JSC &&
-            JSValueIsNumber(storage_->context, storage_->value)) ||
-           (storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed &&
-            JSValueIsNumber(storage_->context, storage_->value));
+    return kind_ == jscengine::ValueStorage::Kind::Number ||
+           (isJSC() && JSValueIsNumber(jscContext(), jscValue()));
   }
   double getNumber() const {
-    if (storage_->kind == jscengine::ValueStorage::Kind::Number) {
-      return storage_->numberValue;
+    if (kind_ == jscengine::ValueStorage::Kind::Number) {
+      return numberValue_;
     }
-    if (storage_->kind == jscengine::ValueStorage::Kind::JSC ||
-        storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed) {
-      return JSValueToNumber(storage_->context, storage_->value, nullptr);
-    }
-    return 0;
+    return isJSC() ? JSValueToNumber(jscContext(), jscValue(), nullptr) : 0;
   }
 
-  bool isObject() const {
-    return (storage_->kind == jscengine::ValueStorage::Kind::JSC ||
-            storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed) &&
-           JSValueIsObject(storage_->context, storage_->value);
-  }
-  bool isString() const {
-    return (storage_->kind == jscengine::ValueStorage::Kind::JSC ||
-            storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed) &&
-           JSValueIsString(storage_->context, storage_->value);
-  }
+  bool isObject() const { return isJSC() && JSValueIsObject(jscContext(), jscValue()); }
+  bool isString() const { return isJSC() && JSValueIsString(jscContext(), jscValue()); }
   bool isBigInt() const {
-    if (storage_->kind != jscengine::ValueStorage::Kind::JSC &&
-        storage_->kind != jscengine::ValueStorage::Kind::JSCBorrowed) {
+    if (!isJSC()) {
       return false;
     }
     if (__builtin_available(macOS 15.0, iOS 18.0, *)) {
-      return JSValueIsBigInt(storage_->context, storage_->value);
+      return JSValueIsBigInt(jscContext(), jscValue());
     }
     return false;
   }
-  bool isSymbol() const {
-    return (storage_->kind == jscengine::ValueStorage::Kind::JSC ||
-            storage_->kind == jscengine::ValueStorage::Kind::JSCBorrowed) &&
-           JSValueIsSymbol(storage_->context, storage_->value);
-  }
+  bool isSymbol() const { return isJSC() && JSValueIsSymbol(jscContext(), jscValue()); }
 
   Object asObject(Runtime& runtime) const;
   String asString(Runtime& runtime) const;
   BigInt getBigInt(Runtime& runtime) const;
 
   JSValueRef local(Runtime& runtime) const {
-    switch (storage_->kind) {
+    switch (kind_) {
       case jscengine::ValueStorage::Kind::Undefined:
         return JSValueMakeUndefined(runtime.context());
       case jscengine::ValueStorage::Kind::Null:
         return JSValueMakeNull(runtime.context());
       case jscengine::ValueStorage::Kind::Bool:
-        return JSValueMakeBoolean(runtime.context(), storage_->boolValue);
+        return JSValueMakeBoolean(runtime.context(), boolValue_);
       case jscengine::ValueStorage::Kind::Number:
-        return JSValueMakeNumber(runtime.context(), storage_->numberValue);
+        return JSValueMakeNumber(runtime.context(), numberValue_);
       case jscengine::ValueStorage::Kind::JSC:
-      case jscengine::ValueStorage::Kind::JSCBorrowed:
         return storage_->value;
+      case jscengine::ValueStorage::Kind::JSCBorrowed:
+        return borrowedValue_;
     }
+  }
+
+  // Access the shared storage (for Object/Function/Array interop)
+  std::shared_ptr<jscengine::ValueStorage> storage() const { return storage_; }
+
+  static Value fromStorage(std::shared_ptr<jscengine::ValueStorage> s) {
+    Value v;
+    v.kind_ = s->kind;
+    v.boolValue_ = s->boolValue;
+    v.numberValue_ = s->numberValue;
+    v.storage_ = std::move(s);
+    return v;
   }
 
  private:
@@ -473,6 +457,24 @@ class Value {
   friend class ArrayBuffer;
   friend class Function;
   friend class Array;
+
+  bool isJSC() const {
+    return kind_ == jscengine::ValueStorage::Kind::JSC ||
+           kind_ == jscengine::ValueStorage::Kind::JSCBorrowed;
+  }
+  JSContextRef jscContext() const {
+    return kind_ == jscengine::ValueStorage::Kind::JSCBorrowed ? borrowedContext_
+                                                               : storage_->context;
+  }
+  JSValueRef jscValue() const {
+    return kind_ == jscengine::ValueStorage::Kind::JSCBorrowed ? borrowedValue_ : storage_->value;
+  }
+
+  jscengine::ValueStorage::Kind kind_ = jscengine::ValueStorage::Kind::Undefined;
+  bool boolValue_ = false;
+  double numberValue_ = 0;
+  JSGlobalContextRef borrowedContext_ = nullptr;
+  JSValueRef borrowedValue_ = nullptr;
   std::shared_ptr<jscengine::ValueStorage> storage_;
 };
 
@@ -626,11 +628,7 @@ class Object {
     return reinterpret_cast<JSObjectRef>(const_cast<OpaqueJSValue*>(storage_->value));
   }
 
-  operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
-  }
+  operator Value() const { return Value::fromStorage(storage_); }
 
  protected:
   friend class Value;
@@ -829,11 +827,7 @@ class BigInt {
 
   JSValueRef local(Runtime& runtime) const { return storage_->value; }
 
-  operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
-  }
+  operator Value() const { return Value::fromStorage(storage_); }
 
  private:
   friend class Value;
