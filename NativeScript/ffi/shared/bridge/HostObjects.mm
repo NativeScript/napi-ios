@@ -681,16 +681,23 @@ class NativeApiObjectHostObject final
     if (initializer) {
       id resultObject = nativeObjectFromValue(runtime, result);
       disownObject(receiver);
-      if (resultObject != nil && classWrapper) {
-        bridge_->setObjectExpando(runtime, resultObject,
-                                  "__nativeApiClassWrapper",
-                                  Value(runtime, *classWrapper));
-        if (result.isObject()) {
-          Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
-          if (prototypeValue.isObject()) {
-            Object resultValue = result.asObject(runtime);
-            Object prototype = prototypeValue.asObject(runtime);
-            SetNativeApiObjectPrototype(runtime, resultValue, prototype);
+      if (resultObject != nil) {
+        // Re-adopt the init result on this host object so that JS overrides
+        // returning `this` still have a valid native object.
+        object_ = resultObject;
+        ownsObject_ = true;
+        [object_ retain];
+        if (classWrapper) {
+          bridge_->setObjectExpando(runtime, resultObject,
+                                    "__nativeApiClassWrapper",
+                                    Value(runtime, *classWrapper));
+          if (result.isObject()) {
+            Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
+            if (prototypeValue.isObject()) {
+              Object resultValue = result.asObject(runtime);
+              Object prototype = prototypeValue.asObject(runtime);
+              SetNativeApiObjectPrototype(runtime, resultValue, prototype);
+            }
           }
         }
       }
@@ -726,16 +733,23 @@ class NativeApiObjectHostObject final
     if (initializer) {
       id resultObject = nativeObjectFromValue(runtime, result);
       disownObject(receiver);
-      if (resultObject != nil && classWrapper) {
-        bridge_->setObjectExpando(runtime, resultObject,
-                                  "__nativeApiClassWrapper",
-                                  Value(runtime, *classWrapper));
-        if (result.isObject()) {
-          Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
-          if (prototypeValue.isObject()) {
-            Object resultValue = result.asObject(runtime);
-            Object prototype = prototypeValue.asObject(runtime);
-            SetNativeApiObjectPrototype(runtime, resultValue, prototype);
+      if (resultObject != nil) {
+        // Re-adopt the init result on this host object so that JS overrides
+        // returning `this` still have a valid native object.
+        object_ = resultObject;
+        ownsObject_ = true;
+        [object_ retain];
+        if (classWrapper) {
+          bridge_->setObjectExpando(runtime, resultObject,
+                                    "__nativeApiClassWrapper",
+                                    Value(runtime, *classWrapper));
+          if (result.isObject()) {
+            Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
+            if (prototypeValue.isObject()) {
+              Object resultValue = result.asObject(runtime);
+              Object prototype = prototypeValue.asObject(runtime);
+              SetNativeApiObjectPrototype(runtime, resultValue, prototype);
+            }
           }
         }
       }
