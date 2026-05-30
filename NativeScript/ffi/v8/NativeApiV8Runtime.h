@@ -126,7 +126,7 @@ struct RuntimeState {
 };
 
 struct ValueStorage {
-  enum class Kind {
+  enum class Kind : uint8_t {
     Undefined,
     Null,
     Bool,
@@ -279,34 +279,37 @@ class String {
 
 class Value {
  public:
-  Value()
-      : storage_(
-            std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::Undefined)) {}
+  Value() : kind_(v8engine::ValueStorage::Kind::Undefined) {}
 
-  Value(bool value)
-      : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::Bool)) {
-    storage_->boolValue = value;
-  }
+  Value(bool value) : kind_(v8engine::ValueStorage::Kind::Bool), boolValue_(value) {}
 
-  Value(double value)
-      : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::Number)) {
-    storage_->numberValue = value;
-  }
+  Value(double value) : kind_(v8engine::ValueStorage::Kind::Number), numberValue_(value) {}
 
   Value(int value) : Value(static_cast<double>(value)) {}
   Value(uint32_t value) : Value(static_cast<double>(value)) {}
 
   Value(Runtime& runtime, const Value& value) {
-    if (value.storage_->kind == v8engine::ValueStorage::Kind::V8Borrowed) {
+    if (value.kind_ == v8engine::ValueStorage::Kind::V8Borrowed) {
+      // Promote borrowed to owned
       storage_ =
           std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8);
-      storage_->value.Reset(runtime.isolate(), value.storage_->borrowedValue);
+      storage_->value.Reset(runtime.isolate(), value.borrowedValue_);
+      kind_ = v8engine::ValueStorage::Kind::V8;
       return;
     }
+    kind_ = value.kind_;
+    boolValue_ = value.boolValue_;
+    numberValue_ = value.numberValue_;
+    borrowedValue_ = value.borrowedValue_;
     storage_ = value.storage_;
   }
-  Value(Runtime& runtime, Value&& value) : storage_(std::move(value.storage_)) {}
-  Value(Runtime& runtime, const String& value) : storage_(value.storage_) {}
+  Value(Runtime& runtime, Value&& value)
+      : kind_(value.kind_),
+        boolValue_(value.boolValue_),
+        numberValue_(value.numberValue_),
+        borrowedValue_(value.borrowedValue_),
+        storage_(std::move(value.storage_)) {}
+  Value(Runtime& runtime, const String& value);
   Value(Runtime& runtime, const Object& object);
   Value(Runtime& runtime, const Function& function);
   Value(Runtime& runtime, const Array& array);
@@ -317,7 +320,7 @@ class Value {
 
   static Value null() {
     Value value;
-    value.storage_ = std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::Null);
+    value.kind_ = v8engine::ValueStorage::Kind::Null;
     return value;
   }
 
@@ -339,32 +342,46 @@ class Value {
 
   v8::Local<v8::Value> local(Runtime& runtime) const {
     v8::Isolate* isolate = runtime.isolate();
-    switch (storage_->kind) {
+    switch (kind_) {
       case v8engine::ValueStorage::Kind::Undefined:
         return v8::Undefined(isolate);
       case v8engine::ValueStorage::Kind::Null:
         return v8::Null(isolate);
       case v8engine::ValueStorage::Kind::Bool:
-        return v8::Boolean::New(isolate, storage_->boolValue);
+        return v8::Boolean::New(isolate, boolValue_);
       case v8engine::ValueStorage::Kind::Number:
-        return v8::Number::New(isolate, storage_->numberValue);
+        return v8::Number::New(isolate, numberValue_);
       case v8engine::ValueStorage::Kind::V8:
         return storage_->value.Get(isolate);
       case v8engine::ValueStorage::Kind::V8Borrowed:
-        return storage_->borrowedValue;
+        return borrowedValue_;
     }
   }
 
   Value(Runtime& runtime, v8::Local<v8::Value> value)
-      : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
+      : kind_(v8engine::ValueStorage::Kind::V8),
+        storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
     storage_->value.Reset(runtime.isolate(), value);
   }
 
   static Value borrowed(Runtime&, v8::Local<v8::Value> value) {
     Value result;
-    result.storage_->kind = v8engine::ValueStorage::Kind::V8Borrowed;
-    result.storage_->borrowedValue = value;
+    result.kind_ = v8engine::ValueStorage::Kind::V8Borrowed;
+    result.borrowedValue_ = value;
     return result;
+  }
+
+  // Access the shared storage (for Object/Function/Array interop)
+  std::shared_ptr<v8engine::ValueStorage> storage() const { return storage_; }
+
+  static Value fromStorage(std::shared_ptr<v8engine::ValueStorage> s) {
+    Value v;
+    v.kind_ = s->kind;
+    v.boolValue_ = s->boolValue;
+    v.numberValue_ = s->numberValue;
+    v.borrowedValue_ = s->borrowedValue;
+    v.storage_ = std::move(s);
+    return v;
   }
 
  private:
@@ -376,6 +393,10 @@ class Value {
   friend class Function;
   friend class Array;
 
+  v8engine::ValueStorage::Kind kind_ = v8engine::ValueStorage::Kind::Undefined;
+  bool boolValue_ = false;
+  double numberValue_ = 0;
+  v8::Local<v8::Value> borrowedValue_;
   std::shared_ptr<v8engine::ValueStorage> storage_;
 };
 
@@ -506,9 +527,7 @@ class Object {
   }
 
   operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
+    return Value::fromStorage(storage_);
   }
 
  protected:
@@ -631,9 +650,7 @@ class Function : public Object {
   }
 
   operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
+    return Value::fromStorage(storage_);
   }
 };
 
@@ -672,9 +689,7 @@ class Array : public Object {
   }
 
   operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
+    return Value::fromStorage(storage_);
   }
 };
 
@@ -709,9 +724,7 @@ class BigInt {
   }
 
   operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
+    return Value::fromStorage(storage_);
   }
 
  private:
@@ -748,9 +761,7 @@ class ArrayBuffer : public Object {
   }
 
   operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
+    return Value::fromStorage(storage_);
   }
 };
 }  // namespace engine
