@@ -62,6 +62,7 @@ rm -rf \
 mkdir -p \
   "$PACKAGE_DIR/native-api/ffi/hermes" \
   "$PACKAGE_DIR/native-api/ffi/shared" \
+  "$PACKAGE_DIR/native-api/ffi/shared/bridge" \
   "$PACKAGE_DIR/native-api/metadata/include" \
   "$PACKAGE_DIR/metadata" \
   "$PACKAGE_DIR/ios/vendor/libffi/include" \
@@ -73,14 +74,14 @@ cp NativeScript/ffi/hermes/NativeApiJsi.h "$PACKAGE_DIR/native-api/ffi/hermes/"
 cp NativeScript/ffi/hermes/NativeApiJsi.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
 cp NativeScript/ffi/hermes/NativeApiJsi*.h "$PACKAGE_DIR/native-api/ffi/hermes/"
 cp NativeScript/ffi/hermes/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/ObjCBridge.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/Callbacks.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/ClassBuilder.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/HostObject.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/HostObjects.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/Install.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/Invocation.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/TypeConv.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
+cp NativeScript/ffi/shared/bridge/ObjCBridge.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
+cp NativeScript/ffi/shared/bridge/Callbacks.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
+cp NativeScript/ffi/shared/bridge/ClassBuilder.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
+cp NativeScript/ffi/shared/bridge/HostObject.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
+cp NativeScript/ffi/shared/bridge/HostObjects.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
+cp NativeScript/ffi/shared/bridge/Install.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
+cp NativeScript/ffi/shared/bridge/Invocation.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
+cp NativeScript/ffi/shared/bridge/TypeConv.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
 cp NativeScript/ffi/shared/NativeApiBackendConfig.h "$PACKAGE_DIR/native-api/ffi/shared/"
 cp NativeScript/ffi/shared/SignatureDispatchCore.h "$PACKAGE_DIR/native-api/ffi/shared/"
 cp NativeScript/ffi/shared/PreparedSignatureDispatch.h "$PACKAGE_DIR/native-api/ffi/shared/"
