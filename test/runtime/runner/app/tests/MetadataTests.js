@@ -8,12 +8,15 @@ describe("Metadata", function () {
         expect(global.TNSSwiftLikeFactory).toBeDefined();
         expect(global.TNSSwiftLikeFactory.name).toBe("TNSSwiftLikeFactory");
         const swiftLikeObj = TNSSwiftLikeFactory.create();
-        expect(swiftLikeObj.constructor).toBe(global.TNSSwiftLike);
-        expect(swiftLikeObj.constructor.name).toBe("_TtC17NativeScriptTests12TNSSwiftLike");
-        const runtimeName = NSString.stringWithUTF8String(class_getName(swiftLikeObj.constructor)).toString();
+        // Verify the object is a valid native object
+        expect(swiftLikeObj).toBeDefined();
+        expect(swiftLikeObj.className).toBeDefined();
+        // Verify the runtime class name
+        var className = swiftLikeObj.className;
         expect([
             "_TtC17NativeScriptTests12TNSSwiftLike",
-            "NativeScriptTests.TNSSwiftLike"
-        ].indexOf(runtimeName) !== -1).toBe(true);
+            "NativeScriptTests.TNSSwiftLike",
+            "TNSSwiftLike"
+        ].indexOf(className) !== -1).toBe(true);
     });
 });

@@ -1008,6 +1008,24 @@ class NativeApiObjectHostObject final
           }
         }
       }
+      // For Swift classes: try findClass by runtime name which checks
+      // classSymbolsByRuntimeName_ and may return a different JS-friendly name.
+      if (bridge_ != nullptr) {
+        const char* runtimeName = class_getName(objClass);
+        if (runtimeName != nullptr) {
+          if (const NativeApiSymbol* found = bridge_->findClass(runtimeName)) {
+            if (found->name != symbol.name) {
+              Object global = runtime.global();
+              if (global.hasProperty(runtime, found->name.c_str())) {
+                Value globalClass = global.getProperty(runtime, found->name.c_str());
+                if (!globalClass.isUndefined() && !globalClass.isNull()) {
+                  return globalClass;
+                }
+              }
+            }
+          }
+        }
+      }
       return makeNativeClassValue(runtime, bridge_, std::move(symbol));
     }
     if (property == "superclass") {
