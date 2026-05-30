@@ -96,6 +96,20 @@ describe(module.id, function () {
         expect(actual).toBe("simple block called");
     });
 
+    it("Block callback JS error propagates to the native caller", function () {
+        var error;
+        try {
+            TNSObjCTypes.alloc().init().methodWithSimpleBlock(function () {
+                throw new Error("block callback failed");
+            });
+        } catch (e) {
+            error = e;
+        }
+
+        expect(error).toBeDefined();
+        expect(String(error && error.message ? error.message : error)).toContain("block callback failed");
+    });
+
     it("Block releases after call", function (done) {
         const functionRef = new WeakRef(function () {
             TNSLog('simple block called');

@@ -37,15 +37,15 @@
 #include "MetadataReader.h"
 #include "ffi.h"
 
-@protocol NativeApiJsiClassBuilderProtocol
+@protocol NativeApiClassBuilderProtocol
 @end
 
 #ifdef EMBED_METADATA_SIZE
 extern const unsigned char embedded_metadata[EMBED_METADATA_SIZE];
 #endif
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace engine {
 
 class Runtime;
 class Value;
@@ -100,13 +100,13 @@ class HostObject {
  public:
   virtual ~HostObject() = default;
   virtual Value get(Runtime& runtime, const PropNameID& name);
-  virtual void set(Runtime& runtime, const PropNameID& name, const Value& value);
+  virtual bool set(Runtime& runtime, const PropNameID& name, const Value& value);
   virtual std::vector<PropNameID> getPropertyNames(Runtime& runtime);
 };
 
 using HostFunctionType = std::function<Value(Runtime&, const Value&, const Value*, size_t)>;
 
-namespace jscdirect {
+namespace jscengine {
 
 inline std::string stringToUtf8(JSStringRef string) {
   if (string == nullptr) {
@@ -188,11 +188,15 @@ struct RuntimeState {
     if (functionClass != nullptr) {
       JSClassRelease(functionClass);
     }
+    if (selectorGroupFunctionClass != nullptr) {
+      JSClassRelease(selectorGroupFunctionClass);
+    }
   }
 
   JSGlobalContextRef context = nullptr;
   JSClassRef hostClass = nullptr;
   JSClassRef functionClass = nullptr;
+  JSClassRef selectorGroupFunctionClass = nullptr;
 };
 
 struct ValueStorage {
@@ -202,12 +206,13 @@ struct ValueStorage {
     Bool,
     Number,
     JSC,
+    JSCBorrowed,
   };
 
   explicit ValueStorage(Kind kind) : kind(kind) {}
 
   ~ValueStorage() {
-    if (context != nullptr && value != nullptr) {
+    if (kind == Kind::JSC && context != nullptr && value != nullptr) {
       JSValueUnprotect(context, value);
     }
   }
@@ -249,24 +254,26 @@ struct ArrayBufferHolder {
   std::shared_ptr<MutableBuffer> buffer;
 };
 
-}  // namespace jscdirect
+void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function);
+
+}  // namespace jscengine
 
 class Runtime {
  public:
   explicit Runtime(JSGlobalContextRef context)
-      : state_(std::make_shared<jscdirect::RuntimeState>(context)) {}
+      : state_(std::make_shared<jscengine::RuntimeState>(context)) {}
 
-  explicit Runtime(std::shared_ptr<jscdirect::RuntimeState> state) : state_(std::move(state)) {}
+  explicit Runtime(std::shared_ptr<jscengine::RuntimeState> state) : state_(std::move(state)) {}
 
   JSGlobalContextRef context() const { return state_->context; }
-  std::shared_ptr<jscdirect::RuntimeState> state() const { return state_; }
+  std::shared_ptr<jscengine::RuntimeState> state() const { return state_; }
 
   Object global();
   Value evaluateJavaScript(std::shared_ptr<StringBuffer> buffer, const std::string& sourceURL);
   void drainMicrotasks() {}
 
  private:
-  std::shared_ptr<jscdirect::RuntimeState> state_;
+  std::shared_ptr<jscengine::RuntimeState> state_;
 };
 
 class String {
@@ -275,14 +282,14 @@ class String {
   String(Runtime& runtime, JSStringRef string);
 
   static String createFromUtf8(Runtime& runtime, const char* value) {
-    JSStringRef string = jscdirect::makeJSString(value);
+    JSStringRef string = jscengine::makeJSString(value);
     String result(runtime, string);
     JSStringRelease(string);
     return result;
   }
 
   static String createFromUtf8(Runtime& runtime, const std::string& value) {
-    JSStringRef string = jscdirect::makeJSString(value);
+    JSStringRef string = jscengine::makeJSString(value);
     String result(runtime, string);
     JSStringRelease(string);
     return result;
@@ -299,128 +306,147 @@ class String {
 
  private:
   friend class Value;
-  std::shared_ptr<jscdirect::ValueStorage> storage_;
+  std::shared_ptr<jscengine::ValueStorage> storage_;
 };
 
 class Value {
  public:
-  Value()
-      : storage_(
-            std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::Undefined)) {}
+  Value() : kind_(jscengine::ValueStorage::Kind::Undefined) {}
 
-  Value(bool value)
-      : storage_(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::Bool)) {
-    storage_->boolValue = value;
-  }
+  Value(bool value) : kind_(jscengine::ValueStorage::Kind::Bool), boolValue_(value) {}
 
-  Value(double value)
-      : storage_(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::Number)) {
-    storage_->numberValue = value;
-  }
+  Value(double value) : kind_(jscengine::ValueStorage::Kind::Number), numberValue_(value) {}
 
   Value(int value) : Value(static_cast<double>(value)) {}
   Value(uint32_t value) : Value(static_cast<double>(value)) {}
 
-  Value(Runtime& runtime, const Value& value) : storage_(value.storage_) {}
-  Value(Runtime& runtime, Value&& value) : storage_(std::move(value.storage_)) {}
-  Value(Runtime& runtime, const String& value) : storage_(value.storage_) {}
+  Value(Runtime& runtime, const Value& value) {
+    if (value.kind_ == jscengine::ValueStorage::Kind::JSCBorrowed) {
+      // Promote borrowed to owned
+      storage_ = std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC);
+      storage_->context = runtime.context();
+      storage_->value = value.borrowedValue_ != nullptr ? value.borrowedValue_
+                                                        : JSValueMakeUndefined(runtime.context());
+      JSValueProtect(runtime.context(), storage_->value);
+      kind_ = jscengine::ValueStorage::Kind::JSC;
+      return;
+    }
+    kind_ = value.kind_;
+    boolValue_ = value.boolValue_;
+    numberValue_ = value.numberValue_;
+    borrowedContext_ = value.borrowedContext_;
+    borrowedValue_ = value.borrowedValue_;
+    storage_ = value.storage_;
+  }
+  Value(Runtime& runtime, Value&& value)
+      : kind_(value.kind_),
+        boolValue_(value.boolValue_),
+        numberValue_(value.numberValue_),
+        borrowedContext_(value.borrowedContext_),
+        borrowedValue_(value.borrowedValue_),
+        storage_(std::move(value.storage_)) {}
+  Value(Runtime& runtime, const String& value);
   Value(Runtime& runtime, const Object& object);
   Value(Runtime& runtime, const Function& function);
   Value(Runtime& runtime, const Array& array);
   Value(Runtime& runtime, const ArrayBuffer& arrayBuffer);
   Value(Runtime& runtime, const BigInt& bigint);
   Value(Runtime& runtime, JSValueRef value)
-      : storage_(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::JSC)) {
+      : kind_(jscengine::ValueStorage::Kind::JSC),
+        storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
     storage_->context = runtime.context();
     storage_->value = value != nullptr ? value : JSValueMakeUndefined(runtime.context());
     JSValueProtect(runtime.context(), storage_->value);
   }
 
+  static Value borrowed(Runtime& runtime, JSValueRef value) {
+    Value result;
+    result.kind_ = jscengine::ValueStorage::Kind::JSCBorrowed;
+    result.borrowedContext_ = runtime.context();
+    result.borrowedValue_ = value != nullptr ? value : JSValueMakeUndefined(runtime.context());
+    return result;
+  }
+
   static Value undefined() { return Value(); }
   static Value null() {
     Value value;
-    value.storage_ = std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::Null);
+    value.kind_ = jscengine::ValueStorage::Kind::Null;
     return value;
   }
 
   bool isUndefined() const {
-    return storage_->kind == jscdirect::ValueStorage::Kind::Undefined ||
-           (storage_->kind == jscdirect::ValueStorage::Kind::JSC &&
-            JSValueIsUndefined(storage_->context, storage_->value));
+    return kind_ == jscengine::ValueStorage::Kind::Undefined ||
+           (isJSC() && JSValueIsUndefined(jscContext(), jscValue()));
   }
   bool isNull() const {
-    return storage_->kind == jscdirect::ValueStorage::Kind::Null ||
-           (storage_->kind == jscdirect::ValueStorage::Kind::JSC &&
-            JSValueIsNull(storage_->context, storage_->value));
+    return kind_ == jscengine::ValueStorage::Kind::Null ||
+           (isJSC() && JSValueIsNull(jscContext(), jscValue()));
   }
   bool isBool() const {
-    return storage_->kind == jscdirect::ValueStorage::Kind::Bool ||
-           (storage_->kind == jscdirect::ValueStorage::Kind::JSC &&
-            JSValueIsBoolean(storage_->context, storage_->value));
+    return kind_ == jscengine::ValueStorage::Kind::Bool ||
+           (isJSC() && JSValueIsBoolean(jscContext(), jscValue()));
   }
   bool getBool() const {
-    if (storage_->kind == jscdirect::ValueStorage::Kind::Bool) {
-      return storage_->boolValue;
+    if (kind_ == jscengine::ValueStorage::Kind::Bool) {
+      return boolValue_;
     }
-    if (storage_->kind == jscdirect::ValueStorage::Kind::JSC) {
-      return JSValueToBoolean(storage_->context, storage_->value);
-    }
-    return false;
+    return isJSC() && JSValueToBoolean(jscContext(), jscValue());
   }
   bool isNumber() const {
-    return storage_->kind == jscdirect::ValueStorage::Kind::Number ||
-           (storage_->kind == jscdirect::ValueStorage::Kind::JSC &&
-            JSValueIsNumber(storage_->context, storage_->value));
+    return kind_ == jscengine::ValueStorage::Kind::Number ||
+           (isJSC() && JSValueIsNumber(jscContext(), jscValue()));
   }
   double getNumber() const {
-    if (storage_->kind == jscdirect::ValueStorage::Kind::Number) {
-      return storage_->numberValue;
+    if (kind_ == jscengine::ValueStorage::Kind::Number) {
+      return numberValue_;
     }
-    if (storage_->kind == jscdirect::ValueStorage::Kind::JSC) {
-      return JSValueToNumber(storage_->context, storage_->value, nullptr);
-    }
-    return 0;
+    return isJSC() ? JSValueToNumber(jscContext(), jscValue(), nullptr) : 0;
   }
 
-  bool isObject() const {
-    return storage_->kind == jscdirect::ValueStorage::Kind::JSC &&
-           JSValueIsObject(storage_->context, storage_->value);
-  }
-  bool isString() const {
-    return storage_->kind == jscdirect::ValueStorage::Kind::JSC &&
-           JSValueIsString(storage_->context, storage_->value);
-  }
+  bool isObject() const { return isJSC() && JSValueIsObject(jscContext(), jscValue()); }
+  bool isString() const { return isJSC() && JSValueIsString(jscContext(), jscValue()); }
   bool isBigInt() const {
-    if (storage_->kind != jscdirect::ValueStorage::Kind::JSC) {
+    if (!isJSC()) {
       return false;
     }
     if (__builtin_available(macOS 15.0, iOS 18.0, *)) {
-      return JSValueIsBigInt(storage_->context, storage_->value);
+      return JSValueIsBigInt(jscContext(), jscValue());
     }
     return false;
   }
-  bool isSymbol() const {
-    return storage_->kind == jscdirect::ValueStorage::Kind::JSC &&
-           JSValueIsSymbol(storage_->context, storage_->value);
-  }
+  bool isSymbol() const { return isJSC() && JSValueIsSymbol(jscContext(), jscValue()); }
 
   Object asObject(Runtime& runtime) const;
   String asString(Runtime& runtime) const;
   BigInt getBigInt(Runtime& runtime) const;
 
   JSValueRef local(Runtime& runtime) const {
-    switch (storage_->kind) {
-      case jscdirect::ValueStorage::Kind::Undefined:
+    switch (kind_) {
+      case jscengine::ValueStorage::Kind::Undefined:
         return JSValueMakeUndefined(runtime.context());
-      case jscdirect::ValueStorage::Kind::Null:
+      case jscengine::ValueStorage::Kind::Null:
         return JSValueMakeNull(runtime.context());
-      case jscdirect::ValueStorage::Kind::Bool:
-        return JSValueMakeBoolean(runtime.context(), storage_->boolValue);
-      case jscdirect::ValueStorage::Kind::Number:
-        return JSValueMakeNumber(runtime.context(), storage_->numberValue);
-      case jscdirect::ValueStorage::Kind::JSC:
+      case jscengine::ValueStorage::Kind::Bool:
+        return JSValueMakeBoolean(runtime.context(), boolValue_);
+      case jscengine::ValueStorage::Kind::Number:
+        return JSValueMakeNumber(runtime.context(), numberValue_);
+      case jscengine::ValueStorage::Kind::JSC:
         return storage_->value;
+      case jscengine::ValueStorage::Kind::JSCBorrowed:
+        return borrowedValue_;
     }
+  }
+
+  // Access the shared storage (for Object/Function/Array interop)
+  std::shared_ptr<jscengine::ValueStorage> storage() const { return storage_; }
+
+  static Value fromStorage(std::shared_ptr<jscengine::ValueStorage> s) {
+    Value v;
+    v.kind_ = s->kind;
+    v.boolValue_ = s->boolValue;
+    v.numberValue_ = s->numberValue;
+    v.storage_ = std::move(s);
+    return v;
   }
 
  private:
@@ -431,20 +457,38 @@ class Value {
   friend class ArrayBuffer;
   friend class Function;
   friend class Array;
-  std::shared_ptr<jscdirect::ValueStorage> storage_;
+
+  bool isJSC() const {
+    return kind_ == jscengine::ValueStorage::Kind::JSC ||
+           kind_ == jscengine::ValueStorage::Kind::JSCBorrowed;
+  }
+  JSContextRef jscContext() const {
+    return kind_ == jscengine::ValueStorage::Kind::JSCBorrowed ? borrowedContext_
+                                                               : storage_->context;
+  }
+  JSValueRef jscValue() const {
+    return kind_ == jscengine::ValueStorage::Kind::JSCBorrowed ? borrowedValue_ : storage_->value;
+  }
+
+  jscengine::ValueStorage::Kind kind_ = jscengine::ValueStorage::Kind::Undefined;
+  bool boolValue_ = false;
+  double numberValue_ = 0;
+  JSGlobalContextRef borrowedContext_ = nullptr;
+  JSValueRef borrowedValue_ = nullptr;
+  std::shared_ptr<jscengine::ValueStorage> storage_;
 };
 
 class Object {
  public:
   Object() = default;
   explicit Object(Runtime& runtime)
-      : storage_(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::JSC)) {
+      : storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
     storage_->context = runtime.context();
     storage_->value = JSObjectMake(runtime.context(), nullptr, nullptr);
     JSValueProtect(runtime.context(), storage_->value);
   }
 
-  static Object fromValueStorage(std::shared_ptr<jscdirect::ValueStorage> storage) {
+  static Object fromValueStorage(std::shared_ptr<jscengine::ValueStorage> storage) {
     Object object;
     object.storage_ = std::move(storage);
     return object;
@@ -454,17 +498,17 @@ class Object {
   static Object createFromHostObject(Runtime& runtime, std::shared_ptr<T> host) {
     auto baseHost = std::static_pointer_cast<HostObject>(std::move(host));
     return createFromHostObjectWithToken(runtime, std::move(baseHost),
-                                         jscdirect::hostObjectTypeToken<T>());
+                                         jscengine::hostObjectTypeToken<T>());
   }
 
   Value getProperty(Runtime& runtime, const char* name) const {
-    JSStringRef property = jscdirect::makeJSString(name);
+    JSStringRef property = jscengine::makeJSString(name);
     JSValueRef exception = nullptr;
     JSValueRef result =
         JSObjectGetProperty(runtime.context(), local(runtime), property, &exception);
     JSStringRelease(property);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     return Value(runtime, result);
   }
@@ -478,7 +522,7 @@ class Object {
     JSValueRef result = JSObjectGetPropertyForKey(runtime.context(), local(runtime),
                                                   key.local(runtime), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     return Value(runtime, result);
   }
@@ -490,13 +534,13 @@ class Object {
   Function getPropertyAsFunction(Runtime& runtime, const char* name) const;
 
   void setProperty(Runtime& runtime, const char* name, const Value& value) {
-    JSStringRef property = jscdirect::makeJSString(name);
+    JSStringRef property = jscengine::makeJSString(name);
     JSValueRef exception = nullptr;
     JSObjectSetProperty(runtime.context(), local(runtime), property, value.local(runtime),
                         kJSPropertyAttributeNone, &exception);
     JSStringRelease(property);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
   }
 
@@ -523,12 +567,12 @@ class Object {
     JSObjectSetPropertyForKey(runtime.context(), local(runtime), key.local(runtime),
                               value.local(runtime), kJSPropertyAttributeNone, &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
   }
 
   bool hasProperty(Runtime& runtime, const char* name) const {
-    JSStringRef property = jscdirect::makeJSString(name);
+    JSStringRef property = jscengine::makeJSString(name);
     bool result = JSObjectHasProperty(runtime.context(), local(runtime), property);
     JSStringRelease(property);
     return result;
@@ -539,7 +583,7 @@ class Object {
   }
 
   bool isArray(Runtime& runtime) const {
-    JSStringRef name = jscdirect::makeJSString("Array");
+    JSStringRef name = jscengine::makeJSString("Array");
     JSValueRef constructorValue = JSObjectGetProperty(
         runtime.context(), JSContextGetGlobalObject(runtime.context()), name, nullptr);
     JSStringRelease(name);
@@ -568,13 +612,13 @@ class Object {
   template <typename T>
   bool isHostObject(Runtime& runtime) const {
     auto holder = hostObjectHolder(runtime);
-    return holder != nullptr && holder->typeToken == jscdirect::hostObjectTypeToken<T>();
+    return holder != nullptr && holder->typeToken == jscengine::hostObjectTypeToken<T>();
   }
 
   template <typename T>
   std::shared_ptr<T> getHostObject(Runtime& runtime) const {
     auto holder = hostObjectHolder(runtime);
-    if (holder == nullptr || holder->typeToken != jscdirect::hostObjectTypeToken<T>()) {
+    if (holder == nullptr || holder->typeToken != jscengine::hostObjectTypeToken<T>()) {
       return nullptr;
     }
     return std::static_pointer_cast<T>(holder->hostObject);
@@ -584,11 +628,7 @@ class Object {
     return reinterpret_cast<JSObjectRef>(const_cast<OpaqueJSValue*>(storage_->value));
   }
 
-  operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
-  }
+  operator Value() const { return Value::fromStorage(storage_); }
 
  protected:
   friend class Value;
@@ -597,17 +637,17 @@ class Object {
   friend class Array;
   friend class ArrayBuffer;
 
-  explicit Object(std::shared_ptr<jscdirect::ValueStorage> storage)
+  explicit Object(std::shared_ptr<jscengine::ValueStorage> storage)
       : storage_(std::move(storage)) {}
 
   static Object createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
                                               const void* typeToken);
 
-  jscdirect::HostObjectHolder* hostObjectHolder(Runtime& runtime) const {
-    return static_cast<jscdirect::HostObjectHolder*>(JSObjectGetPrivate(local(runtime)));
+  jscengine::HostObjectHolder* hostObjectHolder(Runtime& runtime) const {
+    return static_cast<jscengine::HostObjectHolder*>(JSObjectGetPrivate(local(runtime)));
   }
 
-  std::shared_ptr<jscdirect::ValueStorage> storage_;
+  std::shared_ptr<jscengine::ValueStorage> storage_;
 };
 
 class Function : public Object {
@@ -629,7 +669,7 @@ class Function : public Object {
         runtime.context(), local(runtime), JSContextGetGlobalObject(runtime.context()), argv.size(),
         argv.empty() ? nullptr : argv.data(), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     return Value(runtime, result);
   }
@@ -662,7 +702,7 @@ class Function : public Object {
         JSObjectCallAsFunction(runtime.context(), local(runtime), thisObject.local(runtime),
                                argv.size(), argv.empty() ? nullptr : argv.data(), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     return Value(runtime, result);
   }
@@ -677,7 +717,7 @@ class Function : public Object {
     JSValueRef result = JSObjectCallAsConstructor(runtime.context(), local(runtime), argv.size(),
                                                   argv.empty() ? nullptr : argv.data(), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     return Value(runtime, result);
   }
@@ -698,14 +738,14 @@ class Function : public Object {
 class Array : public Object {
  public:
   explicit Array(Runtime& runtime, size_t size)
-      : Object(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::JSC)) {
+      : Object(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
     std::vector<JSValueRef> initial(size, JSValueMakeUndefined(runtime.context()));
     JSValueRef exception = nullptr;
     storage_->context = runtime.context();
     storage_->value =
         JSObjectMakeArray(runtime.context(), initial.size(), initial.data(), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     JSValueProtect(runtime.context(), storage_->value);
   }
@@ -722,7 +762,7 @@ class Array : public Object {
     JSValueRef result = JSObjectGetPropertyAtIndex(runtime.context(), local(runtime),
                                                    static_cast<unsigned>(index), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     return Value(runtime, result);
   }
@@ -732,7 +772,7 @@ class Array : public Object {
     JSObjectSetPropertyAtIndex(runtime.context(), local(runtime), static_cast<unsigned>(index),
                                value.local(runtime), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
   }
   void setValueAtIndex(Runtime& runtime, size_t index, const String& value) {
@@ -744,7 +784,7 @@ class BigInt {
  public:
   BigInt() = default;
   BigInt(Runtime& runtime, JSValueRef value)
-      : storage_(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::JSC)) {
+      : storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
     storage_->context = runtime.context();
     storage_->value = value;
     JSValueProtect(runtime.context(), storage_->value);
@@ -778,7 +818,7 @@ class BigInt {
     JSValueRef exception = nullptr;
     JSStringRef string = JSValueToStringCopy(runtime.context(), local(runtime), &exception);
     if (string == nullptr || exception != nullptr) {
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     String result(runtime, string);
     JSStringRelease(string);
@@ -787,33 +827,29 @@ class BigInt {
 
   JSValueRef local(Runtime& runtime) const { return storage_->value; }
 
-  operator Value() const {
-    Value value;
-    value.storage_ = storage_;
-    return value;
-  }
+  operator Value() const { return Value::fromStorage(storage_); }
 
  private:
   friend class Value;
-  std::shared_ptr<jscdirect::ValueStorage> storage_;
+  std::shared_ptr<jscengine::ValueStorage> storage_;
 };
 
 class ArrayBuffer : public Object {
  public:
   ArrayBuffer(Runtime& runtime, std::shared_ptr<MutableBuffer> buffer)
-      : Object(std::make_shared<jscdirect::ValueStorage>(jscdirect::ValueStorage::Kind::JSC)) {
-    auto* holder = new jscdirect::ArrayBufferHolder(std::move(buffer));
+      : Object(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
+    auto* holder = new jscengine::ArrayBufferHolder(std::move(buffer));
     JSValueRef exception = nullptr;
     storage_->context = runtime.context();
     storage_->value = JSObjectMakeArrayBufferWithBytesNoCopy(
         runtime.context(), holder->buffer->data(), holder->buffer->size(),
         [](void*, void* deallocatorContext) {
-          delete static_cast<jscdirect::ArrayBufferHolder*>(deallocatorContext);
+          delete static_cast<jscengine::ArrayBufferHolder*>(deallocatorContext);
         },
         holder, &exception);
     if (exception != nullptr) {
       delete holder;
-      throw JSError(runtime, jscdirect::valueToUtf8(runtime.context(), exception));
+      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
     }
     JSValueProtect(runtime.context(), storage_->value);
   }
@@ -831,8 +867,8 @@ class ArrayBuffer : public Object {
         JSObjectGetArrayBufferBytesPtr(runtime.context(), local(runtime), &exception));
   }
 };
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace engine
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_JSC
 

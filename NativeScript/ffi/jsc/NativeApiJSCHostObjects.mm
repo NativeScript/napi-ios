@@ -2,13 +2,52 @@
 
 #ifdef TARGET_ENGINE_JSC
 
-namespace facebook {
-namespace jsi {
+namespace nativescript {
+namespace engine {
 
-namespace jscdirect {
+namespace jscengine {
 
 JSClassRef hostClass(Runtime& runtime);
 JSClassRef functionClass(Runtime& runtime);
+void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function);
+
+template <size_t InlineCount>
+class StackValueArray {
+ public:
+  explicit StackValueArray(size_t count) : count_(count) {
+    if (count_ > InlineCount) {
+      values_ = static_cast<Value*>(::operator new(sizeof(Value) * count_));
+    } else {
+      values_ = reinterpret_cast<Value*>(inlineStorage_);
+    }
+  }
+
+  ~StackValueArray() {
+    for (size_t i = 0; i < constructed_; i++) {
+      values_[i].~Value();
+    }
+    if (count_ > InlineCount) {
+      ::operator delete(values_);
+    }
+  }
+
+  StackValueArray(const StackValueArray&) = delete;
+  StackValueArray& operator=(const StackValueArray&) = delete;
+
+  void emplace(size_t index, Value&& value) {
+    new (&values_[index]) Value(std::move(value));
+    constructed_++;
+  }
+
+  Value* data() { return count_ == 0 ? nullptr : values_; }
+  size_t size() const { return count_; }
+
+ private:
+  size_t count_ = 0;
+  size_t constructed_ = 0;
+  Value* values_ = nullptr;
+  alignas(Value) unsigned char inlineStorage_[sizeof(Value) * InlineCount];
+};
 
 JSValueRef hostGetProperty(JSContextRef context, JSObjectRef object, JSStringRef propertyName,
                            JSValueRef* exception) {
@@ -34,8 +73,8 @@ bool hostSetProperty(JSContextRef context, JSObjectRef object, JSStringRef prope
   }
   Runtime runtime(holder->state);
   try {
-    holder->hostObject->set(runtime, PropNameID(stringToUtf8(propertyName)), Value(runtime, value));
-    return true;
+    return holder->hostObject->set(runtime, PropNameID(stringToUtf8(propertyName)),
+                            Value::borrowed(runtime, value));
   } catch (const std::exception& error) {
     setException(context, exception, error);
     return true;
@@ -70,15 +109,15 @@ JSValueRef functionCall(JSContextRef context, JSObjectRef function, JSObjectRef 
     return JSValueMakeUndefined(context);
   }
   Runtime runtime(holder->state);
-  std::vector<Value> args;
-  args.reserve(argumentCount);
+  StackValueArray<8> args(argumentCount);
   for (size_t i = 0; i < argumentCount; i++) {
-    args.emplace_back(runtime, arguments[i]);
+    args.emplace(i, Value::borrowed(runtime, arguments[i]));
   }
   try {
-    Value thisValue(runtime, thisObject);
+    Value thisValue = Value::borrowed(runtime, thisObject);
     Value result =
-        holder->callback(runtime, thisValue, args.empty() ? nullptr : args.data(), args.size());
+        holder->callback(runtime, thisValue, args.size() == 0 ? nullptr : args.data(),
+                         args.size());
     return result.local(runtime);
   } catch (const std::exception& error) {
     setException(context, exception, error);
@@ -94,7 +133,7 @@ JSClassRef hostClass(Runtime& runtime) {
   auto state = runtime.state();
   if (state->hostClass == nullptr) {
     JSClassDefinition definition = kJSClassDefinitionEmpty;
-    definition.className = "NativeScriptDirectHostObject";
+    definition.className = "NativeScriptEngineHostObject";
     definition.getProperty = hostGetProperty;
     definition.setProperty = hostSetProperty;
     definition.getPropertyNames = hostGetPropertyNames;
@@ -108,7 +147,7 @@ JSClassRef functionClass(Runtime& runtime) {
   auto state = runtime.state();
   if (state->functionClass == nullptr) {
     JSClassDefinition definition = kJSClassDefinitionEmpty;
-    definition.className = "NativeScriptDirectFunction";
+    definition.className = "NativeScriptEngineFunction";
     definition.callAsFunction = functionCall;
     definition.finalize = functionFinalize;
     state->functionClass = JSClassCreate(&definition);
@@ -149,24 +188,24 @@ void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function) {
   JSObjectSetPrototype(context, function, prototypeValue);
 }
 
-}  // namespace jscdirect
+}  // namespace jscengine
 
 Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
                                              const void* typeToken) {
-  auto* holder = new jscdirect::HostObjectHolder(runtime.state(), std::move(host), typeToken);
-  JSObjectRef object = JSObjectMake(runtime.context(), jscdirect::hostClass(runtime), holder);
+  auto* holder = new jscengine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
+  JSObjectRef object = JSObjectMake(runtime.context(), jscengine::hostClass(runtime), holder);
   return Object::fromValueStorage(Value(runtime, object).storage_);
 }
 
 Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& name, unsigned int,
                                           HostFunctionType callback) {
-  auto* holder = new jscdirect::FunctionHolder(runtime.state(), std::move(callback));
-  JSObjectRef function = JSObjectMake(runtime.context(), jscdirect::functionClass(runtime), holder);
-  jscdirect::setFunctionPrototype(runtime.context(), function);
+  auto* holder = new jscengine::FunctionHolder(runtime.state(), std::move(callback));
+  JSObjectRef function = JSObjectMake(runtime.context(), jscengine::functionClass(runtime), holder);
+  jscengine::setFunctionPrototype(runtime.context(), function);
   std::string functionName = name.utf8(runtime);
   if (!functionName.empty()) {
-    JSStringRef property = jscdirect::makeJSString("name");
-    JSStringRef valueString = jscdirect::makeJSString(functionName);
+    JSStringRef property = jscengine::makeJSString("name");
+    JSStringRef valueString = jscengine::makeJSString(functionName);
     JSValueRef value = JSValueMakeString(runtime.context(), valueString);
     JSObjectSetProperty(runtime.context(), function, property, value, kJSPropertyAttributeReadOnly,
                         nullptr);
@@ -176,7 +215,7 @@ Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& na
   return Function(Object::fromValueStorage(Value(runtime, function).storage_));
 }
 
-}  // namespace jsi
-}  // namespace facebook
+}  // namespace engine
+}  // namespace nativescript
 
 #endif  // TARGET_ENGINE_JSC

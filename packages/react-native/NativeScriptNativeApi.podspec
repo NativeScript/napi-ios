@@ -18,7 +18,9 @@ Pod::Spec.new do |s|
 
   s.source_files = [
     "ios/**/*.{h,mm}",
-    "native-api-jsi/**/*.{h,mm}"
+    "native-api/ffi/hermes/**/*.h",
+    "native-api/ffi/shared/**/*.h",
+    "native-api/ffi/hermes/NativeApiJsi.mm"
   ]
   s.exclude_files = "ios/Fabric/**/*" unless fabric_enabled
   s.public_header_files = "ios/**/*.h"
@@ -31,11 +33,11 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = {
     "CLANG_CXX_LANGUAGE_STANDARD" => "c++20",
     "CLANG_CXX_LIBRARY" => "libc++",
-    "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited) TARGET_ENGINE_HERMES=1",
+    "GCC_PREPROCESSOR_DEFINITIONS" => "$(inherited) TARGET_ENGINE_HERMES=1 NS_GSD_BACKEND_HERMES=1",
     "HEADER_SEARCH_PATHS" => [
       "\"$(PODS_TARGET_SRCROOT)/ios\"",
-      "\"$(PODS_TARGET_SRCROOT)/native-api-jsi\"",
-      "\"$(PODS_TARGET_SRCROOT)/native-api-jsi/metadata/include\"",
+      "\"$(PODS_TARGET_SRCROOT)/native-api\"",
+      "\"$(PODS_TARGET_SRCROOT)/native-api/metadata/include\"",
       "\"$(PODS_TARGET_SRCROOT)/ios/vendor/libffi/include\"",
       "\"$(PODS_ROOT)/Headers/Public/React-Codegen\"",
       "\"$(PODS_ROOT)/Headers/Private/React-Codegen\"",

@@ -65,6 +65,28 @@ function getSDKPath(platform) {
   return output.stdout.trim();
 }
 
+const sdkVersionCache = new Map();
+
+function getSDKVersion(platform) {
+  const cached = sdkVersionCache.get(platform);
+  if (cached) {
+    return cached;
+  }
+
+  const output = spawnSync("xcrun", ["--sdk", platform, "--show-sdk-version"], {
+    stdio: ["ignore", "pipe", "inherit"],
+    encoding: "utf8",
+  });
+
+  if (output.status !== 0) {
+    throw new Error(`Failed to get SDK version for ${platform}`);
+  }
+
+  const version = output.stdout.trim();
+  sdkVersionCache.set(platform, version);
+  return version;
+}
+
 function sleep(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
@@ -263,7 +285,7 @@ const sdks = {
     path: getSDKPath("iphoneos"),
     frameworks: [...COMMON_FRAMEWORKS, ...IOS_FRAMEWORKS],
     targets: {
-      arm64: "arm64-apple-ios13.0",
+      arm64: `arm64-apple-ios${getSDKVersion("iphoneos")}`,
     },
     tnsTarget: "ios-arm64",
   },
@@ -271,8 +293,8 @@ const sdks = {
     path: getSDKPath("iphonesimulator"),
     frameworks: [...COMMON_FRAMEWORKS, ...IOS_FRAMEWORKS],
     targets: {
-      x86_64: "x86_64-apple-ios13.0-simulator",
-      arm64: "arm64-apple-ios13.0-simulator",
+      x86_64: `x86_64-apple-ios${getSDKVersion("iphonesimulator")}-simulator`,
+      arm64: `arm64-apple-ios${getSDKVersion("iphonesimulator")}-simulator`,
     },
     tnsTarget: "ios-arm64_x86_64-simulator",
   },
@@ -280,8 +302,8 @@ const sdks = {
     path: getSDKPath("iphoneos"),
     frameworks: [...COMMON_FRAMEWORKS, ...MACOS_FRAMEWORKS, ...IOS_FRAMEWORKS],
     targets: {
-      x86_64: "x86_64-apple-ios13.0-macabi",
-      arm64: "arm64-apple-ios13.0-macabi",
+      x86_64: `x86_64-apple-ios${getSDKVersion("iphoneos")}-macabi`,
+      arm64: `arm64-apple-ios${getSDKVersion("iphoneos")}-macabi`,
     },
     tnsTarget: "ios-arm64_x86_64-maccatalyst",
   },

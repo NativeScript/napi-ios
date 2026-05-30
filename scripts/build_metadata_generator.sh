@@ -2,6 +2,10 @@
 set -e
 source "$(dirname "$0")/build_utils.sh"
 
+function metadata_generator_source_hash {
+    find src include CMakeLists.txt -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}'
+}
+
 function build {
     rm -rf build
     mkdir build
@@ -25,5 +29,6 @@ otool -L  dist/x86_64/bin/objc-metadata-generator
 checkpoint "Building metadata generator for arm64 ..."
 build "arm64"
 otool -L  dist/arm64/bin/objc-metadata-generator
+metadata_generator_source_hash > dist/.source_hash
 rm -rf build
 popd
