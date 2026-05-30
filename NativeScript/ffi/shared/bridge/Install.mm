@@ -785,6 +785,11 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
         if (!member || member.property || !member.name || !member.selectorName) {
           continue;
         }
+        // Skip methods that need special interceptor handling with kNonMasking.
+        if (member.name === 'superclass' || member.name === 'class' ||
+            member.name === 'constructor' || member.name === 'className') {
+          continue;
+        }
         var argumentCount = typeof member.argumentCount === 'number'
           ? member.argumentCount
           : 0;
@@ -885,7 +890,8 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
             // Skip properties that need special interceptor handling (they
             // return wrapped class constructors, not raw native values).
             if (member.name === 'superclass' || member.name === 'class' ||
-                member.name === 'constructor' || member.name === 'debugDescription') {
+                member.name === 'constructor' || member.name === 'debugDescription' ||
+                member.name === 'className') {
               continue;
             }
             var existingDescriptor = Object.getOwnPropertyDescriptor(target, member.name);
