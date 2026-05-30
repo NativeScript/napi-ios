@@ -52,39 +52,6 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
   if (state->hostObjectTemplate.IsEmpty()) {
     v8::Local<v8::ObjectTemplate> objectTemplate = v8::ObjectTemplate::New(runtime.isolate());
     objectTemplate->SetInternalFieldCount(1);
-    // With kNonMasking, toString must be a real property to override
-    // Object.prototype.toString during string coercion.
-    objectTemplate->Set(
-        v8engine::makeV8String(runtime.isolate(), "toString"),
-        v8::FunctionTemplate::New(runtime.isolate(),
-            [](const v8::FunctionCallbackInfo<v8::Value>& info) {
-              v8::Local<v8::Object> self = info.This();
-              if (self.IsEmpty() || self->InternalFieldCount() < 1) return;
-              auto* holder = static_cast<HostObjectHolder*>(
-                  self->GetAlignedPointerFromInternalField(0));
-              if (holder == nullptr || holder->hostObject == nullptr) return;
-              Runtime rt(holder->state);
-              try {
-                // Get the toString function from the host object and call it.
-                Value toStringValue = holder->hostObject->get(rt, PropNameID("toString"));
-                if (!toStringValue.isUndefined()) {
-                  v8::Local<v8::Value> v8Val = toStringValue.local(rt);
-                  if (v8Val->IsFunction()) {
-                    v8::Local<v8::Value> callResult;
-                    v8::TryCatch tryCatch(rt.isolate());
-                    if (v8Val.As<v8::Function>()->Call(rt.context(), self, 0, nullptr)
-                            .ToLocal(&callResult)) {
-                      info.GetReturnValue().Set(callResult);
-                      return;
-                    }
-                  } else if (v8Val->IsString()) {
-                    info.GetReturnValue().Set(v8Val);
-                    return;
-                  }
-                }
-              } catch (...) {}
-            }),
-        v8::DontEnum);
     objectTemplate->SetHandler(v8::NamedPropertyHandlerConfiguration(
         [](v8::Local<v8::Name> property,
            const v8::PropertyCallbackInfo<v8::Value>& info) -> v8::Intercepted {
@@ -158,7 +125,7 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
             throwV8Exception(info.GetIsolate(), exception);
           }
         },
-        v8::Local<v8::Value>(), v8::PropertyHandlerFlags::kNonMasking));
+        v8::Local<v8::Value>(), v8::PropertyHandlerFlags::kNone));
     objectTemplate->SetHandler(v8::IndexedPropertyHandlerConfiguration(
         [](uint32_t index, const v8::PropertyCallbackInfo<v8::Value>& info) -> v8::Intercepted {
           auto* holder =
