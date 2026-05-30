@@ -20,19 +20,44 @@ std::string String::utf8(Runtime& runtime) const {
   return jscengine::valueToUtf8(runtime.context(), storage_->value);
 }
 
-String::operator Value() const {
-  Value value;
-  value.storage_ = storage_;
-  return value;
+String::operator Value() const { return Value::fromStorage(storage_); }
+
+Value::Value(Runtime&, const String& value) {
+  storage_ = value.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const Object& object) {
+  storage_ = object.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const Function& function) {
+  storage_ = function.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const Array& array) {
+  storage_ = array.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const ArrayBuffer& arrayBuffer) {
+  storage_ = arrayBuffer.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
+}
+Value::Value(Runtime&, const BigInt& bigint) {
+  storage_ = bigint.storage_;
+  kind_ = storage_ ? storage_->kind : jscengine::ValueStorage::Kind::Undefined;
 }
 
-Value::Value(Runtime&, const Object& object) : storage_(object.storage_) {}
-Value::Value(Runtime&, const Function& function) : storage_(function.storage_) {}
-Value::Value(Runtime&, const Array& array) : storage_(array.storage_) {}
-Value::Value(Runtime&, const ArrayBuffer& arrayBuffer) : storage_(arrayBuffer.storage_) {}
-Value::Value(Runtime&, const BigInt& bigint) : storage_(bigint.storage_) {}
-
-Object Value::asObject(Runtime&) const { return Object::fromValueStorage(storage_); }
+Object Value::asObject(Runtime& runtime) const {
+  if (storage_) {
+    return Object::fromValueStorage(storage_);
+  }
+  // Promote borrowed to owned storage for Object.
+  auto s = std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC);
+  s->context = runtime.context();
+  s->value = borrowedValue_ != nullptr ? borrowedValue_ : JSValueMakeUndefined(runtime.context());
+  JSValueProtect(runtime.context(), s->value);
+  return Object::fromValueStorage(std::move(s));
+}
 
 String Value::asString(Runtime& runtime) const {
   JSValueRef exception = nullptr;
