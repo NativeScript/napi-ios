@@ -1,20 +1,19 @@
 #ifndef NATIVESCRIPT_FFI_JSC_NATIVE_API_JSC_H
 #define NATIVESCRIPT_FFI_JSC_NATIVE_API_JSC_H
 
-#include "ffi/shared/NativeApiBackendConfig.h"
+#include "ffi/shared/direct/NativeApiDirect.h"
 #include <JavaScriptCore/JavaScript.h>
 
 namespace nativescript {
 
-using NativeApiScheduler = NativeApiBackendScheduler;
-using NativeApiConfig = NativeApiBackendConfig;
+using NativeApiJSCConfig = NativeApiDirectConfig;
 
-void InstallNativeApi(JSGlobalContextRef context,
-                         const NativeApiConfig& config = NativeApiConfig{});
+void InstallNativeApiJSC(JSGlobalContextRef context,
+                         const NativeApiJSCConfig& config = NativeApiJSCConfig{});
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApi(JSGlobalContextRef context,
+extern "C" void NativeScriptInstallNativeApiJSC(JSGlobalContextRef context,
                                                  const char* metadataPath);
 
 #endif  // NATIVESCRIPT_FFI_JSC_NATIVE_API_JSC_H

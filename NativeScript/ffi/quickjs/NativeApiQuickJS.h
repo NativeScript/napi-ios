@@ -1,21 +1,20 @@
 #ifndef NATIVESCRIPT_FFI_QUICKJS_NATIVE_API_QUICKJS_H
 #define NATIVESCRIPT_FFI_QUICKJS_NATIVE_API_QUICKJS_H
 
-#include "ffi/shared/NativeApiBackendConfig.h"
+#include "ffi/shared/direct/NativeApiDirect.h"
 #include "quickjs.h"
 
 namespace nativescript {
 
-using NativeApiScheduler = NativeApiBackendScheduler;
-using NativeApiConfig = NativeApiBackendConfig;
+using NativeApiQuickJSConfig = NativeApiDirectConfig;
 
-void InstallNativeApi(JSContext* context,
-                             const NativeApiConfig& config =
-                                 NativeApiConfig{});
+void InstallNativeApiQuickJS(JSContext* context,
+                             const NativeApiQuickJSConfig& config =
+                                 NativeApiQuickJSConfig{});
 
 }  // namespace nativescript
 
-extern "C" void NativeScriptInstallNativeApi(JSContext* context,
+extern "C" void NativeScriptInstallNativeApiQuickJS(JSContext* context,
                                                      const char* metadataPath);
 
 #endif  // NATIVESCRIPT_FFI_QUICKJS_NATIVE_API_QUICKJS_H

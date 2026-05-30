@@ -57,7 +57,6 @@ _functionWithUnichar
 _functionWithUShort
 _functionWithUShortPtr
 _TNSIsConfigurationDebug
-_TNSRuntimeOnlyStructProviderMake
 _TNSClearOutput
 _TNSConstant
 _TNSConstant1_0Plus
@@ -156,8 +155,6 @@ _TNSFunction15_5Plus
 _TNSFunctionWithCFTypeRefArgument
 _TNSFunctionWithCreateCFTypeRefReturn
 _TNSFunctionWithSimpleCFTypeRefReturn
-_TNSRNMeasureNativeUIColorFactory
-_TNSRNMeasureNativeUITabBarControllerNew
 _TNSGetOutput
 _TNSLog
 _TNSMutableObjectGet
