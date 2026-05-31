@@ -497,10 +497,10 @@ class NativeApiBridge {
     }
     uintptr_t key =
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
-    Value rooted = findRootedRoundTripValue(runtime, key);
-    if (!rooted.isUndefined()) {
-      return rooted;
-    }
+    // roundTripValues_ stores a strong engine handle (kept in lock-step with
+    // the GC root set), so it is authoritative for both liveness and identity.
+    // Retrieve from it directly instead of doing a string-keyed JS property
+    // lookup on the root object — the latter cost dominates object returns.
     std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
     auto it = roundTripValues_.find(key);
     if (it == roundTripValues_.end() || it->second == nullptr) {
