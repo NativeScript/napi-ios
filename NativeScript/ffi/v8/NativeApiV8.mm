@@ -789,6 +789,16 @@ struct GsdObjCContext {
       return true;
     }
     if (!v->IsString()) return false;
+    v8::Local<v8::String> s = v.As<v8::String>();
+    // Selectors are short; write into a stack buffer to avoid the heap
+    // allocation that v8::String::Utf8Value performs on every call.
+    char stackBuffer[128];
+    if (s->Utf8LengthV2(isolate) + 1 <= sizeof(stackBuffer)) {
+      s->WriteUtf8V2(isolate, stackBuffer, sizeof(stackBuffer),
+                     v8::String::WriteFlags::kNullTerminate);
+      *out = sel_registerName(stackBuffer);
+      return true;
+    }
     v8::String::Utf8Value utf8(isolate, v);
     if (*utf8 == nullptr) return false;
     *out = sel_registerName(*utf8);
