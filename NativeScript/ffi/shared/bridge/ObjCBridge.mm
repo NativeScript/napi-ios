@@ -609,6 +609,32 @@ class NativeApiBridge {
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
   }
 
+  // Per-class cache of resolved metadata property-getter members. Lets the
+  // instance property interceptor skip the special-name chain + metadata
+  // discovery on every `object.prop` access (the engines without V8's
+  // kNonMasking prototype fast path otherwise re-resolve on each access).
+  // membersByClassOffset_ vectors are permanent, so the member pointer is
+  // stable for the bridge's lifetime.
+  struct CachedPropertyGetter {
+    const NativeApiMember* member;
+    std::string selectorName;
+  };
+  const CachedPropertyGetter* findCachedPropertyGetter(
+      Class cls, const std::string& property) const {
+    auto classIt = propertyGetterCache_.find(cls);
+    if (classIt == propertyGetterCache_.end()) {
+      return nullptr;
+    }
+    auto propIt = classIt->second.find(property);
+    return propIt != classIt->second.end() ? &propIt->second : nullptr;
+  }
+  void cachePropertyGetter(Class cls, const std::string& property,
+                           const NativeApiMember* member,
+                           const std::string& selectorName) {
+    propertyGetterCache_[cls][property] =
+        CachedPropertyGetter{member, selectorName};
+  }
+
   void rememberPointerValue(Runtime& runtime, const void* native,
                             const Value& value) {
     pointerValues_[reinterpret_cast<uintptr_t>(native)] =
@@ -1575,6 +1601,8 @@ class NativeApiBridge {
   std::unordered_map<uintptr_t,
                      std::unordered_map<std::string, std::shared_ptr<Value>>>
       objectExpandos_;
+  std::unordered_map<Class, std::unordered_map<std::string, CachedPropertyGetter>>
+      propertyGetterCache_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> classSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> protocolSymbolsByOffset_;
   std::vector<std::string> classNames_;

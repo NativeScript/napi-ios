@@ -953,6 +953,18 @@ class NativeApiObjectHostObject final
       return expando;
     }
 
+    // Fast path: cached metadata property-getter resolution. Skips the
+    // special-name chain + per-access metadata discovery for hot getters
+    // (hash/length/count/...). Only populated for genuine non-extended
+    // metadata property members below, so a hit is always safe to serve.
+    if (object_ != nil) {
+      if (const auto* cached = bridge_->findCachedPropertyGetter(
+              object_getClass(object_), property)) {
+        return callObjectSelector(runtime, cached->selectorName, cached->member,
+                                  nullptr, 0);
+      }
+    }
+
     if (property == "kind") {
       return makeString(runtime, "object");
     }
@@ -1283,6 +1295,9 @@ class NativeApiObjectHostObject final
                 selectPropertyMember(members, property, false)) {
           SEL selector = sel_getUid(propertyMember->selectorName.c_str());
           if ([object_ respondsToSelector:selector]) {
+            bridge_->cachePropertyGetter(object_getClass(object_), property,
+                                         propertyMember,
+                                         propertyMember->selectorName);
             return callObjectSelector(runtime, propertyMember->selectorName,
                                       propertyMember, nullptr, 0);
           }
