@@ -108,6 +108,7 @@ struct GsdObjCContext {
   id self;
   SEL selector;
   const Value* arguments;
+  const NativeApiType& returnType;
   Value result = Value::undefined();
 
   bool readNumber(size_t i, double* out) {
@@ -214,6 +215,9 @@ struct GsdObjCContext {
       symbol = *found;
     }
     result = makeNativeClassValue(runtime, bridge, std::move(symbol));
+  }
+  void setObject(id obj) {
+    result = convertNativeReturnValue(runtime, bridge, returnType, &obj);
   }
 };
 
@@ -337,11 +341,11 @@ Function CreateNativeApiSelectorGroupFunction(
         if (prepared->engineInvoker != nullptr && gsdDispatchClass == Nil &&
             count == prepared->signature.argumentTypes.size() &&
             !(!receiverIsClass && prepared->isInitMethod) &&
-            !prepared->isNSErrorOutMethod) {
+            !prepared->isNSErrorOutMethod && !shouldDispatchNativeCallToUI()) {
           auto invoker =
               reinterpret_cast<ObjCGsdInvoker>(prepared->engineInvoker);
           GsdObjCContext ctx{runtime, bridge, receiver, prepared->selector,
-                             args};
+                             args, prepared->signature.returnType};
           if (invoker(ctx)) {
             return std::move(ctx.result);
           }
