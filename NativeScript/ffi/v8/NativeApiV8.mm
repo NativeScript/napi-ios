@@ -176,12 +176,13 @@ struct NativeApiSelectorGroupData {
       std::shared_ptr<
           std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
           preparedInvocations)
-      : state(std::move(state)),
+      : state(state),
         bridge(std::move(bridge)),
         lookupClass(lookupClass),
         receiverIsClass(receiverIsClass),
         selectors(std::move(selectors)),
-        preparedInvocations(std::move(preparedInvocations)) {}
+        preparedInvocations(std::move(preparedInvocations)),
+        runtime(state) {}
 
   std::shared_ptr<engine::v8engine::RuntimeState> state;
   std::shared_ptr<NativeApiBridge> bridge;
@@ -191,6 +192,9 @@ struct NativeApiSelectorGroupData {
   std::shared_ptr<
       std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
       preparedInvocations;
+  // Cached Runtime wrapper reused per call (avoids per-call shared_ptr
+  // atomic refcount on the hot dispatch path).
+  Runtime runtime;
 };
 
 std::string v8StringToUtf8(v8::Isolate* isolate,
@@ -714,6 +718,7 @@ struct GsdObjCContext {
   const v8::FunctionCallbackInfo<v8::Value>& info;
   v8::Isolate* isolate;
   v8::Local<v8::Context> jsContext;
+  const NativeApiType& returnType;
 
   v8::Local<v8::Value> arg(size_t i) const {
     return info[static_cast<int>(i)];
@@ -864,6 +869,9 @@ struct GsdObjCContext {
     Value result = makeNativeClassValue(runtime, bridge, std::move(symbol));
     info.GetReturnValue().Set(result.local(runtime));
   }
+  void setObject(id obj) {
+    setV8EngineObjectReturn(runtime, bridge, returnType, obj, info);
+  }
 };
 
 // Close the anonymous namespace so the generated dispatch table lives in
@@ -930,11 +938,17 @@ void setV8EnginePreparedObjCResult(
   // return via the V8 API — all in one generated function. Bypasses all
   // generic marshalling.
   if (prepared.engineInvoker != nullptr && dispatchSuperClass == Nil &&
-      !initializerClassWrapper && !isNSErrorOutMethod) {
+      !initializerClassWrapper && !isNSErrorOutMethod &&
+      !shouldDispatchNativeCallToUI()) {
     auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared.engineInvoker);
-    GsdObjCContext ctx{runtime,           bridge, receiver, prepared.selector,
-                       info,              runtime.isolate(),
-                       runtime.context()};
+    GsdObjCContext ctx{runtime,
+                       bridge,
+                       receiver,
+                       prepared.selector,
+                       info,
+                       runtime.isolate(),
+                       runtime.context(),
+                       signature.returnType};
     if (invoker(ctx)) {
       return;
     }
@@ -1061,7 +1075,7 @@ void NativeApiSelectorGroupCallback(
     return;
   }
 
-  Runtime runtime(data->state);
+  Runtime& runtime = data->runtime;
   v8::HandleScope handleScope(runtime.isolate());
   try {
     size_t count = static_cast<size_t>(info.Length());

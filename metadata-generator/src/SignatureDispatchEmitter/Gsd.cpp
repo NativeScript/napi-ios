@@ -125,17 +125,25 @@ static void writeGsdReturnConversion(std::ostringstream& out,
     case mdTypeClass:
       out << "  ctx.setClass(nativeResult);\n";
       break;
+    case mdTypeAnyObject:
+    case mdTypeProtocolObject:
+    case mdTypeClassObject:
+    case mdTypeInstanceObject:
+    case mdTypeNSStringObject:
+    case mdTypeNSMutableStringObject:
+      // Object returns use the exact metadata return type (carried by the
+      // context) so JS conversion + ownership match the generic path exactly.
+      out << "  ctx.setObject(nativeResult);\n";
+      break;
     default:
       out << "  return false;\n";
       break;
   }
 }
 
-static bool isGsdFastType(const MDTypeInfo* type, bool allowVoid) {
+static bool isGsdFastScalarType(const MDTypeInfo* type) {
   if (type == nullptr) return false;
   switch (type->kind) {
-    case mdTypeVoid:
-      return allowVoid;
     case mdTypeBool:
     case mdTypeChar:
     case mdTypeUChar:
@@ -158,12 +166,7 @@ static bool isGsdFastType(const MDTypeInfo* type, bool allowVoid) {
   }
 }
 
-// Arguments additionally accept Objective-C object types: the reader unwraps a
-// native host object's backing pointer (cheap) or falls back for anything that
-// would need allocation/conversion. Object *returns* are intentionally not
-// supported here (their JS conversion depends on the exact metadata type kind
-// and ownership, which the generic path handles correctly).
-static bool isGsdFastArgType(const MDTypeInfo* type) {
+static bool isGsdObjectType(const MDTypeInfo* type) {
   if (type == nullptr) return false;
   switch (type->kind) {
     case mdTypeAnyObject:
@@ -174,14 +177,27 @@ static bool isGsdFastArgType(const MDTypeInfo* type) {
     case mdTypeNSMutableStringObject:
       return true;
     default:
-      return isGsdFastType(type, false);
+      return false;
   }
+}
+
+// Arguments accept scalars + Objective-C object types (the reader unwraps a
+// native host object's backing pointer or falls back). Returns additionally
+// accept void; object returns route through setObject with the exact metadata
+// return type so JS conversion and ownership match the generic path.
+static bool isGsdFastArgType(const MDTypeInfo* type) {
+  return isGsdFastScalarType(type) || isGsdObjectType(type);
+}
+
+static bool isGsdFastReturnType(const MDTypeInfo* type) {
+  if (type != nullptr && type->kind == mdTypeVoid) return true;
+  return isGsdFastScalarType(type) || isGsdObjectType(type);
 }
 
 bool isGsdSignatureSupported(const MDSignature* signature) {
   if (signature == nullptr || signature->isVariadic) return false;
   if (signature->arguments.size() > 8) return false;
-  if (!isGsdFastType(signature->returnType, true)) return false;
+  if (!isGsdFastReturnType(signature->returnType)) return false;
   for (const auto* arg : signature->arguments) {
     if (!isGsdFastArgType(arg)) return false;
   }
