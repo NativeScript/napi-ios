@@ -1190,6 +1190,27 @@ void NativeApiSelectorGroupCallback(
         data->cachedDispatchClass = dispatchClass;
       }
     }
+    // Inline GSD fast path: skip the setV8EnginePreparedObjCResult call and its
+    // argument-count/NSError preamble entirely for the common case. The
+    // generated invoker reads args, calls objc_msgSend, and sets the return.
+    const NativeApiSignature& sig = prepared->signature;
+    if (prepared->engineInvoker != nullptr && dispatchClass == Nil &&
+        !prepared->isInitMethod && !prepared->isNSErrorOutMethod &&
+        !sig.variadic && count == sig.argumentTypes.size() &&
+        !shouldDispatchNativeCallToUI()) {
+      auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared->engineInvoker);
+      GsdObjCContext ctx{runtime,
+                         data->bridge,
+                         receiver,
+                         prepared->selector,
+                         info,
+                         runtime.isolate(),
+                         runtime.context(),
+                         sig.returnType};
+      if (invoker(ctx)) {
+        return;
+      }
+    }
     setV8EnginePreparedObjCResult(runtime, data->bridge, receiver, *prepared,
                                   receiverHostObject, initializerClassWrapper,
                                   info, dispatchClass);
