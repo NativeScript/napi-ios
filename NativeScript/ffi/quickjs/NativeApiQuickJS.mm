@@ -655,6 +655,7 @@ struct GsdObjCContext {
   SEL selector;
   JSContext* context;
   JSValueConst* arguments;
+  const NativeApiType& returnType;
   JSValue result = JS_UNDEFINED;
 
   bool readNumber(size_t i, double* out) {
@@ -758,6 +759,9 @@ struct GsdObjCContext {
     Value classValue = makeNativeClassValue(runtime, bridge, std::move(symbol));
     result = classValue.local(runtime);
   }
+  void setObject(id obj) {
+    result = setQuickJSEngineObjectReturn(runtime, bridge, returnType, obj);
+  }
 };
 
 // Close the anonymous namespace so the generated dispatch table lives in
@@ -822,10 +826,11 @@ JSValue setQuickJSEnginePreparedObjCResult(
   // arguments, calls objc_msgSend with a typed cast, and produces the JS
   // return value — bypassing all generic marshalling.
   if (prepared.engineInvoker != nullptr && dispatchSuperClass == Nil &&
-      !initializerClassWrapper && !isNSErrorOutMethod) {
+      !initializerClassWrapper && !isNSErrorOutMethod &&
+      !shouldDispatchNativeCallToUI()) {
     auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared.engineInvoker);
     GsdObjCContext ctx{runtime,           bridge,    receiver, prepared.selector,
-                       runtime.context(), arguments};
+                       runtime.context(), arguments, signature.returnType};
     if (invoker(ctx)) {
       return ctx.result;
     }
