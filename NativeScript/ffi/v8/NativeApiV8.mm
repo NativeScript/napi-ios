@@ -195,6 +195,9 @@ struct NativeApiSelectorGroupData {
   // Cached Runtime wrapper reused per call (avoids per-call shared_ptr
   // atomic refcount on the hot dispatch path).
   Runtime runtime;
+  // 1-entry memo for dispatchSuperclassForEngineDerivedReceiver.
+  Class cachedReceiverClass = Nil;
+  Class cachedDispatchClass = Nil;
 };
 
 std::string v8StringToUtf8(v8::Isolate* isolate,
@@ -1163,10 +1166,21 @@ void NativeApiSelectorGroupCallback(
     // For JS-extended receivers, dispatch from the immediate native
     // superclass so native-derived overrides are honored (not the method's
     // defining ancestor, which would skip intermediate native overrides).
-    Class dispatchClass = data->receiverIsClass
-                              ? Nil
-                              : dispatchSuperclassForEngineDerivedReceiver(
-                                    receiver, data->lookupClass);
+    // dispatchSuperclassForEngineDerivedReceiver is a pure function of the
+    // receiver's class + lookupClass, so memoize it (1-entry cache) to avoid a
+    // per-call class_conformsToProtocol on the hot path.
+    Class dispatchClass = Nil;
+    if (!data->receiverIsClass) {
+      Class receiverClass = object_getClass(receiver);
+      if (receiverClass == data->cachedReceiverClass) {
+        dispatchClass = data->cachedDispatchClass;
+      } else {
+        dispatchClass = dispatchSuperclassForEngineDerivedReceiver(
+            receiver, data->lookupClass);
+        data->cachedReceiverClass = receiverClass;
+        data->cachedDispatchClass = dispatchClass;
+      }
+    }
     setV8EnginePreparedObjCResult(runtime, data->bridge, receiver, *prepared,
                                   receiverHostObject, initializerClassWrapper,
                                   info, dispatchClass);
