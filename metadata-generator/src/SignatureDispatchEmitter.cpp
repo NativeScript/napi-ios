@@ -59,11 +59,14 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       wrappersByKey;
   std::unordered_map<std::string, std::pair<DispatchKind, const MDSignature*>>
       preparedWrappersByKey;
+  // Engine-neutral GSD wrappers keyed by signature shape.
+  std::unordered_map<std::string, const MDSignature*> gsdWrappersByKey;
   std::unordered_map<uint64_t, std::string> objcPreparedEntries;
   std::unordered_map<uint64_t, std::string> cFunctionPreparedEntries;
   std::unordered_map<uint64_t, std::string> blockPreparedEntries;
   std::unordered_map<uint64_t, std::string> objcNapiEntries;
   std::unordered_map<uint64_t, std::string> cFunctionNapiEntries;
+  std::unordered_map<uint64_t, std::string> objcGsdEntries;
   std::unordered_map<uint64_t, std::string> dispatchEncoding;
   std::unordered_set<uint64_t> collidedDispatchIds;
 
@@ -96,6 +99,7 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       blockPreparedEntries.erase(dispatchId);
       objcNapiEntries.erase(dispatchId);
       cFunctionNapiEntries.erase(dispatchId);
+      objcGsdEntries.erase(dispatchId);
       dispatchEncoding.erase(dispatchId);
       continue;
     }
@@ -115,6 +119,14 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
                                     std::make_pair(use.kind, signature));
       objcPreparedEntries.emplace(dispatchId, wrapperKey);
       objcNapiEntries.emplace(dispatchId, wrapperKey);
+      // Engine-neutral GSD invokers for supported signatures.
+      if (isGsdSignatureSupported(signature)) {
+        const std::string gsdKey = makeGsdWrapperShapeKey(signature);
+        if (!gsdKey.empty()) {
+          gsdWrappersByKey.emplace(gsdKey, signature);
+          objcGsdEntries.emplace(dispatchId, gsdKey);
+        }
+      }
     } else if (use.kind == DispatchKind::CFunction) {
       wrappersByKey.emplace(wrapperKey, std::make_pair(use.kind, signature));
       preparedWrappersByKey.emplace(wrapperKey,
@@ -161,6 +173,22 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
         makePreparedWrapperName(wrapper.second.first, preparedWrapperIndex++));
   }
 
+  // Engine-neutral GSD wrappers
+  std::vector<std::pair<std::string, const MDSignature*>> gsdWrappers(
+      gsdWrappersByKey.begin(), gsdWrappersByKey.end());
+  std::sort(gsdWrappers.begin(), gsdWrappers.end(),
+            [](const auto& lhs, const auto& rhs) {
+              return lhs.first < rhs.first;
+            });
+
+  std::unordered_map<std::string, std::string> gsdWrapperNameByKey;
+  gsdWrapperNameByKey.reserve(gsdWrappers.size());
+  size_t gsdWrapperIndex = 0;
+  for (const auto& wrapper : gsdWrappers) {
+    gsdWrapperNameByKey.emplace(wrapper.first,
+                                makeGsdWrapperName(gsdWrapperIndex++));
+  }
+
   std::vector<std::pair<uint64_t, std::string>> sortedObjCNapiEntries(
       objcNapiEntries.begin(), objcNapiEntries.end());
   std::sort(
@@ -191,6 +219,12 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
       blockPreparedEntries.begin(), blockPreparedEntries.end());
   std::sort(
       sortedBlockPreparedEntries.begin(), sortedBlockPreparedEntries.end(),
+      [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
+
+  std::vector<std::pair<uint64_t, std::string>> sortedObjCGsdEntries(
+      objcGsdEntries.begin(), objcGsdEntries.end());
+  std::sort(
+      sortedObjCGsdEntries.begin(), sortedObjCGsdEntries.end(),
       [](const auto& lhs, const auto& rhs) { return lhs.first < rhs.first; });
 
   std::ostringstream generated;
@@ -278,6 +312,50 @@ void writeSignatureDispatchBindings(const MDMetadataWriter& writer,
 
   std::ofstream outFile(outputPath, std::ios::trunc | std::ios::binary);
   outFile << generated.str();
+
+  // Write engine-neutral GSD invokers + dispatch table to a separate file.
+  // It is included from each engine backend after that engine's
+  // GsdObjCContext struct is defined (avoiding namespace ordering issues).
+  // The generated code only references the engine-neutral GsdObjCContext
+  // interface, so the same file compiles unchanged in every backend.
+  if (!sortedObjCGsdEntries.empty()) {
+    std::string gsdOutputPath = outputPath;
+    auto lastSlash = gsdOutputPath.rfind('/');
+    if (lastSlash != std::string::npos) {
+      gsdOutputPath = gsdOutputPath.substr(0, lastSlash + 1) +
+                      "GeneratedGsdSignatureDispatch.inc";
+    } else {
+      gsdOutputPath = "GeneratedGsdSignatureDispatch.inc";
+    }
+
+    std::ostringstream gsdGenerated;
+    gsdGenerated << "#ifndef NS_GENERATED_GSD_SIGNATURE_DISPATCH_INC\n";
+    gsdGenerated << "#define NS_GENERATED_GSD_SIGNATURE_DISPATCH_INC\n\n";
+    gsdGenerated << "#undef NS_HAS_GENERATED_SIGNATURE_GSD_DISPATCH\n";
+    gsdGenerated << "#define NS_HAS_GENERATED_SIGNATURE_GSD_DISPATCH 1\n\n";
+    gsdGenerated << "#include <objc/message.h>\n\n";
+    // No namespace wrapper — included from within namespace nativescript in
+    // each engine backend, after GsdObjCContext is defined.
+
+    for (const auto& wrapper : gsdWrappers) {
+      writeGsdWrapper(gsdGenerated, gsdWrapperNameByKey.at(wrapper.first),
+                      wrapper.second);
+    }
+
+    gsdGenerated << "inline constexpr ObjCGsdDispatchEntry "
+                    "kGeneratedObjCGsdDispatchEntries[] = {\n";
+    gsdGenerated << "    {0, nullptr},\n";
+    for (const auto& entry : sortedObjCGsdEntries) {
+      gsdGenerated << "    {" << toHexLiteral(entry.first) << ", &"
+                   << gsdWrapperNameByKey.at(entry.second) << "},\n";
+    }
+    gsdGenerated << "};\n\n";
+
+    gsdGenerated << "#endif  // NS_GENERATED_GSD_SIGNATURE_DISPATCH_INC\n";
+
+    std::ofstream gsdOutFile(gsdOutputPath, std::ios::trunc | std::ios::binary);
+    gsdOutFile << gsdGenerated.str();
+  }
 }
 
 }  // namespace metagen

@@ -51,11 +51,16 @@ void collectMethodUses(const std::vector<MDMember*>& members,
 
 std::string makeNapiWrapperName(DispatchKind kind, size_t index);
 std::string makePreparedWrapperName(DispatchKind kind, size_t index);
+std::string makeGsdWrapperName(size_t index);
 void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
                       const std::string& wrapperName,
                       const MDSignature* signature);
 void writePreparedWrapper(std::ostringstream& out, DispatchKind kind,
                           const std::string& wrapperName,
                           const MDSignature* signature);
+void writeGsdWrapper(std::ostringstream& out, const std::string& wrapperName,
+                     const MDSignature* signature);
+bool isGsdSignatureSupported(const MDSignature* signature);
+std::string makeGsdWrapperShapeKey(const MDSignature* signature);
 
 }  // namespace metagen::signature_dispatch

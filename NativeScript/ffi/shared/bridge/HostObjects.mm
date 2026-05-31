@@ -10,6 +10,20 @@ using NativeApiHostSetResult = bool;
 #define NATIVE_API_SET_RETURN(handled) return (handled)
 #endif
 
+// Engine-neutral factory for native object instance wrappers. V8 uses its
+// kNonMasking native instance template (fast prototype-based property access);
+// every other engine uses its standard host-object creation. Selected at
+// compile time so the shared bridge code stays engine-agnostic.
+template <typename T>
+Object createNativeInstanceHostObject(Runtime& runtime, std::shared_ptr<T> host) {
+#ifdef TARGET_ENGINE_V8
+  return Object::createNativeInstanceHostObject(runtime, std::move(host));
+#else
+  return Object::createFromHostObject(runtime, std::move(host));
+#endif
+}
+
+
 class NativeApiPointerHostObject final
     : public HostObject,
       public std::enable_shared_from_this<NativeApiPointerHostObject> {
@@ -1823,7 +1837,7 @@ Value makeNativeObjectValue(Runtime& runtime,
     bridge->forgetRoundTripValue(runtime, object);
   }
 
-  Object result = Object::createNativeInstanceHostObject(
+  Object result = createNativeInstanceHostObject(
       runtime,
       std::make_shared<NativeApiObjectHostObject>(bridge, object, ownsObject));
   Value prototypeValue = Value::undefined();

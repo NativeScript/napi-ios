@@ -86,8 +86,13 @@ cp NativeScript/ffi/shared/NativeApiBackendConfig.h "$PACKAGE_DIR/native-api/ffi
 cp NativeScript/ffi/shared/SignatureDispatchCore.h "$PACKAGE_DIR/native-api/ffi/shared/"
 cp NativeScript/ffi/shared/PreparedSignatureDispatch.h "$PACKAGE_DIR/native-api/ffi/shared/"
 cp "$GENERATED_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/hermes/GeneratedSignatureDispatch.inc"
+GENERATED_GSD_SIGNATURE_DISPATCH="$(dirname "$GENERATED_SIGNATURE_DISPATCH")/GeneratedGsdSignatureDispatch.inc"
+if [ -f "$GENERATED_GSD_SIGNATURE_DISPATCH" ]; then
+  cp "$GENERATED_GSD_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/hermes/GeneratedGsdSignatureDispatch.inc"
+fi
 if [ -z "$GENERATED_SIGNATURE_DISPATCH_OVERRIDE" ]; then
-  rm -f "$GENERATED_SIGNATURE_DISPATCH" "$GENERATED_SIGNATURE_DISPATCH.stamp"
+  rm -f "$GENERATED_SIGNATURE_DISPATCH" "$GENERATED_SIGNATURE_DISPATCH.stamp" \
+    "$GENERATED_GSD_SIGNATURE_DISPATCH"
 fi
 cp metadata-generator/include/Metadata.h "$PACKAGE_DIR/native-api/metadata/include/"
 cp metadata-generator/include/MetadataReader.h "$PACKAGE_DIR/native-api/metadata/include/"

@@ -536,6 +536,9 @@ struct NativeApiPreparedObjCInvocation {
   std::string selectorName;
   NativeApiSignature signature;
   ObjCPreparedInvoker preparedInvoker = nullptr;
+  void* engineInvoker = nullptr;  // Engine-neutral GSD invoker (ObjCGsdInvoker)
+  bool isNSErrorOutMethod = false;  // Cached: avoids per-call selector scan.
+  bool isInitMethod = false;        // Cached: avoids per-call "init" rfind.
 };
 
 bool isFastEngineObjectType(const NativeApiType& type) {
@@ -1458,6 +1461,9 @@ prepareNativeApiObjCInvocation(
   prepared->preparedInvoker = lookupObjCPreparedInvoker(
       dispatchIdForEngineSignature(prepared->signature,
                                    SignatureCallKind::ObjCMethod));
+  prepared->isNSErrorOutMethod =
+      isNSErrorOutEngineMethodSignature(prepared->signature);
+  prepared->isInitMethod = prepared->selectorName.rfind("init", 0) == 0;
   return prepared;
 }
 
