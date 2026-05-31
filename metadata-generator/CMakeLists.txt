@@ -26,6 +26,7 @@ set(EXEC_SOURCE_FILES
   src/SignatureDispatchEmitter/Napi.cpp
   src/SignatureDispatchEmitter/Prepared.cpp
   src/SignatureDispatchEmitter/Shared.cpp
+  src/SignatureDispatchEmitter/Gsd.cpp
   src/Umbrella.cpp
   src/IR/Category.cpp
   src/IR/Class.cpp

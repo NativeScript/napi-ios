@@ -617,6 +617,158 @@ JSValue setQuickJSEngineReturnValue(
   return result.local(runtime);
 }
 
+// --- GSD (Generated Signature Dispatch) for QuickJS ---
+// GsdObjCContext is the engine-neutral interface the generated invokers use:
+// it reads JS arguments and writes the JS return value via the QuickJS API.
+// Readers require an actual JS number so coercion edge cases defer to the
+// fully correct generic path.
+struct GsdObjCContext;
+using ObjCGsdInvoker = bool (*)(GsdObjCContext&);
+struct ObjCGsdDispatchEntry {
+  uint64_t dispatchId;
+  ObjCGsdInvoker invoker;
+};
+
+struct GsdObjCContext {
+  Runtime& runtime;
+  const std::shared_ptr<NativeApiBridge>& bridge;
+  id self;
+  SEL selector;
+  JSContext* context;
+  JSValueConst* arguments;
+  JSValue result = JS_UNDEFINED;
+
+  bool readNumber(size_t i, double* out) {
+    JSValueConst v = arguments[i];
+    if (!JS_IsNumber(v)) return false;
+    return quickJSNumberValue(context, v, out);
+  }
+  bool readBool(size_t i, uint8_t* out) {
+    JSValueConst v = arguments[i];
+    if (!JS_IsBool(v)) return false;
+    *out = JS_ToBool(context, v) != 0 ? 1 : 0;
+    return true;
+  }
+  template <class T>
+  bool readSigned(size_t i, T* out) {
+    double tmp = 0;
+    if (!readNumber(i, &tmp)) return false;
+    *out = static_cast<T>(tmp);
+    return true;
+  }
+  template <class T>
+  bool readUnsigned(size_t i, T* out) {
+    double tmp = 0;
+    if (!readNumber(i, &tmp)) return false;
+    *out = static_cast<T>(tmp);
+    return true;
+  }
+  bool readFloat(size_t i, float* out) {
+    double tmp = 0;
+    if (!readNumber(i, &tmp)) return false;
+    *out = static_cast<float>(tmp);
+    return true;
+  }
+  bool readDouble(size_t i, double* out) { return readNumber(i, out); }
+  bool readSelector(size_t i, SEL* out) {
+    return readQuickJSEngineSelectorArgument(runtime, arguments[i], out);
+  }
+  bool readClass(size_t i, Class* out) {
+    Class cls = quickJSNativeClassArgument(runtime, arguments[i]);
+    if (cls == Nil) return false;
+    *out = cls;
+    return true;
+  }
+  bool readObject(size_t i, id* out) {
+    JSValueConst v = arguments[i];
+    if (JS_IsNull(v) || JS_IsUndefined(v)) {
+      *out = nil;
+      return true;
+    }
+    if (auto h = quickJSHostObject<NativeApiObjectHostObject>(runtime, v)) {
+      *out = h->object();
+      return true;
+    }
+    if (auto c = quickJSHostObject<NativeApiClassHostObject>(runtime, v)) {
+      *out = static_cast<id>(c->nativeClass());
+      return true;
+    }
+    if (auto p = quickJSHostObject<NativeApiProtocolHostObject>(runtime, v)) {
+      *out = static_cast<id>(p->nativeProtocol());
+      return true;
+    }
+    return false;
+  }
+
+  void setVoid() { result = JS_UNDEFINED; }
+  void setBool(bool v) { result = JS_NewBool(context, v); }
+  void setInt32(int32_t v) { result = JS_NewInt32(context, v); }
+  void setUInt32(uint32_t v) { result = JS_NewUint32(context, v); }
+  void setUInt16(uint16_t v) {
+    if (v >= 32 && v <= 126) {
+      char buffer[2] = {static_cast<char>(v), '\0'};
+      result = JS_NewStringLen(context, buffer, 1);
+    } else {
+      result = JS_NewUint32(context, v);
+    }
+  }
+  void setInt64(int64_t v) { result = quickJSInteger64Value(runtime, v); }
+  void setUInt64(uint64_t v) {
+    result = quickJSUnsignedInteger64Value(runtime, v);
+  }
+  void setDouble(double v) { result = JS_NewFloat64(context, v); }
+  void setSelector(SEL v) {
+    const char* name = v != nullptr ? sel_getName(v) : nullptr;
+    result = name == nullptr ? JS_NULL : JS_NewString(context, name);
+  }
+  void setClass(Class v) {
+    if (v == nil) {
+      result = JS_NULL;
+      return;
+    }
+    const char* name = class_getName(v);
+    NativeApiSymbol symbol{
+        .kind = NativeApiSymbolKind::Class,
+        .offset = MD_SECTION_OFFSET_NULL,
+        .name = name != nullptr ? name : "",
+        .runtimeName = name != nullptr ? name : "",
+    };
+    if (const NativeApiSymbol* found = bridge->findClass(symbol.name)) {
+      symbol = *found;
+    }
+    Value classValue = makeNativeClassValue(runtime, bridge, std::move(symbol));
+    result = classValue.local(runtime);
+  }
+};
+
+// Close the anonymous namespace so the generated dispatch table lives in
+// namespace nativescript; GsdObjCContext/ObjCGsdDispatchEntry stay reachable
+// via the unnamed namespace's implicit using-directive.
+}  // namespace (temporary close for GSD .inc)
+
+#if defined(__has_include)
+#if __has_include("GeneratedGsdSignatureDispatch.inc")
+#include "GeneratedGsdSignatureDispatch.inc"
+#endif
+#endif
+
+#ifndef NS_HAS_GENERATED_SIGNATURE_GSD_DISPATCH
+inline constexpr ObjCGsdDispatchEntry kGeneratedObjCGsdDispatchEntries[] = {
+    {0, nullptr}};
+#endif
+
+ObjCGsdInvoker lookupObjCGsdInvoker(uint64_t dispatchId) {
+  if (!isGeneratedDispatchEnabled()) {
+    return nullptr;
+  }
+  return lookupDispatchInvoker<ObjCGsdDispatchEntry, ObjCGsdInvoker>(
+      kGeneratedObjCGsdDispatchEntries, dispatchId);
+}
+
+namespace {  // reopen anonymous namespace
+
+// --- End GSD ---
+
 JSValue setQuickJSEnginePreparedObjCResult(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     id receiver, const NativeApiPreparedObjCInvocation& prepared,
@@ -632,7 +784,7 @@ JSValue setQuickJSEnginePreparedObjCResult(
                       prepared.selectorName);
   }
 
-  const bool isNSErrorOutMethod = isNSErrorOutEngineMethodSignature(signature);
+  const bool isNSErrorOutMethod = prepared.isNSErrorOutMethod;
   if (isNSErrorOutMethod) {
     size_t expected = signature.argumentTypes.size();
     if (providedCount > expected || providedCount + 1 < expected) {
@@ -645,6 +797,19 @@ JSValue setQuickJSEnginePreparedObjCResult(
         runtime, "Actual arguments count: \"" + std::to_string(providedCount) +
                      "\". Expected: \"" +
                      std::to_string(signature.argumentTypes.size()) + "\".");
+  }
+
+  // GSD fast path: the generated invoker reads args directly from the QuickJS
+  // arguments, calls objc_msgSend with a typed cast, and produces the JS
+  // return value — bypassing all generic marshalling.
+  if (prepared.engineInvoker != nullptr && dispatchSuperClass == Nil &&
+      !initializerClassWrapper && !isNSErrorOutMethod) {
+    auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared.engineInvoker);
+    GsdObjCContext ctx{runtime,           bridge,    receiver, prepared.selector,
+                       runtime.context(), arguments};
+    if (invoker(ctx)) {
+      return ctx.result;
+    }
   }
 
   if (dispatchSuperClass == Nil && !initializerClassWrapper &&
@@ -851,11 +1016,18 @@ JSValue NativeApiSelectorGroupCall(JSContext* context, JSValue thisValue,
       prepared = prepareNativeApiObjCInvocation(
           runtime, data->bridge, selectorLookupClass, data->receiverIsClass,
           entry.selectorName, entry.hasMember ? &entry.member : nullptr);
+      // Look up the engine-neutral GSD invoker for this signature.
+      if (prepared->engineInvoker == nullptr) {
+        uint64_t dispatchId = dispatchIdForEngineSignature(
+            prepared->signature, SignatureCallKind::ObjCMethod);
+        if (auto gsdInvoker = lookupObjCGsdInvoker(dispatchId)) {
+          prepared->engineInvoker = reinterpret_cast<void*>(gsdInvoker);
+        }
+      }
     }
 
     std::optional<Object> initializerClassWrapper;
-    if (!data->receiverIsClass &&
-        prepared->selectorName.rfind("init", 0) == 0) {
+    if (!data->receiverIsClass && prepared->isInitMethod) {
       Value classWrapperValue = data->bridge->findObjectExpando(
           runtime, receiver, "__nativeApiClassWrapper");
       if (classWrapperValue.isObject()) {
