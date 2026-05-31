@@ -518,21 +518,33 @@ bool setV8EngineObjectReturn(
     info.GetReturnValue().Set(v8::Null(isolate));
     return true;
   }
-  if ([object isKindOfClass:[NSNull class]]) {
-    if (type.returnOwned) {
-      [object release];
-    }
-    info.GetReturnValue().Set(v8::Null(isolate));
-    return true;
-  }
-  if ([object respondsToSelector:@selector(UTF8String)] &&
-      (type.kind == metagen::mdTypeAnyObject ||
-       type.kind == metagen::mdTypeNSStringObject)) {
+  if ((type.kind == metagen::mdTypeAnyObject ||
+       type.kind == metagen::mdTypeNSStringObject) &&
+      [object respondsToSelector:@selector(UTF8String)]) {
     std::string utf8 = utf8StringFromNSString(static_cast<NSString*>(object));
     if (type.returnOwned) {
       [object release];
     }
     info.GetReturnValue().Set(engine::v8engine::makeV8String(isolate, utf8));
+    return true;
+  }
+  // The round-trip cache only ever holds wrapped native objects (NSNull,
+  // NSNumber and string-convertibles are returned as JS primitives and never
+  // cached), so checking it before those isKindOfClass probes is both safe and
+  // skips two objc_msgSend calls on the hot object-return path.
+  Value roundTrip = bridge->findRoundTripValue(runtime, object);
+  if (!roundTrip.isUndefined()) {
+    info.GetReturnValue().Set(roundTrip.local(runtime));
+    if (type.returnOwned) {
+      [object release];
+    }
+    return true;
+  }
+  if ([object isKindOfClass:[NSNull class]]) {
+    if (type.returnOwned) {
+      [object release];
+    }
+    info.GetReturnValue().Set(v8::Null(isolate));
     return true;
   }
   if ([object isKindOfClass:[NSNumber class]] &&
@@ -554,14 +566,6 @@ bool setV8EngineObjectReturn(
     return true;
   }
 
-  Value roundTrip = bridge->findRoundTripValue(runtime, object);
-  if (!roundTrip.isUndefined()) {
-    info.GetReturnValue().Set(roundTrip.local(runtime));
-    if (type.returnOwned) {
-      [object release];
-    }
-    return true;
-  }
   if (const NativeApiSymbol* classSymbol =
           bridge->findClassForRuntimePointer((void*)object)) {
     Value result = makeNativeClassValue(runtime, bridge, *classSymbol);
@@ -791,7 +795,12 @@ struct GsdObjCContext {
     return true;
   }
   bool readClass(size_t i, Class* out) {
-    Class cls = v8NativeClassArgument(runtime, arg(i));
+    v8::Local<v8::Value> v = arg(i);
+    if (auto* c = v8HostObjectRaw<NativeApiClassHostObject>(v)) {
+      *out = c->nativeClass();
+      return true;
+    }
+    Class cls = v8NativeClassArgument(runtime, v);
     if (cls == Nil) return false;
     *out = cls;
     return true;
@@ -803,15 +812,15 @@ struct GsdObjCContext {
       return true;
     }
     if (!v->IsObject()) return false;
-    if (auto h = v8HostObject<NativeApiObjectHostObject>(runtime, v)) {
+    if (auto* h = v8HostObjectRaw<NativeApiObjectHostObject>(v)) {
       *out = h->object();
       return true;
     }
-    if (auto c = v8HostObject<NativeApiClassHostObject>(runtime, v)) {
+    if (auto* c = v8HostObjectRaw<NativeApiClassHostObject>(v)) {
       *out = static_cast<id>(c->nativeClass());
       return true;
     }
-    if (auto p = v8HostObject<NativeApiProtocolHostObject>(runtime, v)) {
+    if (auto* p = v8HostObjectRaw<NativeApiProtocolHostObject>(v)) {
       *out = static_cast<id>(p->nativeProtocol());
       return true;
     }
