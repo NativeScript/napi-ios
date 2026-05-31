@@ -177,12 +177,13 @@ struct NativeApiSelectorGroupData {
       std::shared_ptr<
           std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
           preparedInvocations)
-      : state(std::move(state)),
+      : state(state),
         bridge(std::move(bridge)),
         lookupClass(lookupClass),
         receiverIsClass(receiverIsClass),
         selectors(std::move(selectors)),
-        preparedInvocations(std::move(preparedInvocations)) {}
+        preparedInvocations(std::move(preparedInvocations)),
+        runtime(state) {}
 
   std::shared_ptr<engine::quickjsengine::RuntimeState> state;
   std::shared_ptr<NativeApiBridge> bridge;
@@ -192,6 +193,9 @@ struct NativeApiSelectorGroupData {
   std::shared_ptr<
       std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
       preparedInvocations;
+  Runtime runtime;
+  Class cachedReceiverClass = Nil;
+  Class cachedDispatchClass = Nil;
 };
 
 std::string quickJSValueToUtf8(JSContext* context, JSValueConst value) {
@@ -984,7 +988,7 @@ JSValue NativeApiSelectorGroupCall(JSContext* context, JSValue thisValue,
     return JS_UNDEFINED;
   }
 
-  Runtime runtime(data->state);
+  Runtime& runtime = data->runtime;
   try {
     size_t count = argc > 0 ? static_cast<size_t>(argc) : 0;
     if (count >= data->selectors->size() ||
@@ -1061,10 +1065,18 @@ JSValue NativeApiSelectorGroupCall(JSContext* context, JSValue thisValue,
       data->bridge->forgetObjectExpandos(receiver);
     }
 
-    Class dispatchClass = data->receiverIsClass
-                              ? Nil
-                              : dispatchSuperclassForEngineDerivedReceiver(
-                                    receiver, data->lookupClass);
+    Class dispatchClass = Nil;
+    if (!data->receiverIsClass) {
+      Class receiverClass = object_getClass(receiver);
+      if (receiverClass == data->cachedReceiverClass) {
+        dispatchClass = data->cachedDispatchClass;
+      } else {
+        dispatchClass = dispatchSuperclassForEngineDerivedReceiver(
+            receiver, data->lookupClass);
+        data->cachedReceiverClass = receiverClass;
+        data->cachedDispatchClass = dispatchClass;
+      }
+    }
     return setQuickJSEnginePreparedObjCResult(
         runtime, data->bridge, receiver, *prepared, receiverHostObject,
         initializerClassWrapper, count, argv, dispatchClass);

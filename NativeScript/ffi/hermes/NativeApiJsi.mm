@@ -260,9 +260,11 @@ Function CreateNativeApiSelectorGroupFunction(
       runtime, PropNameID::forAscii(runtime, "__nativeSelectorGroup"), 0,
       [bridge = std::move(bridge), lookupClass, receiverIsClass,
        selectors = std::move(selectors),
-       preparedInvocations = std::move(preparedInvocations)](
+       preparedInvocations = std::move(preparedInvocations),
+       cachedReceiverClass = Class(Nil),
+       cachedDispatchClass = Class(Nil)](
           Runtime& runtime, const Value& thisValue, const Value* args,
-          size_t count) -> Value {
+          size_t count) mutable -> Value {
         if (count >= selectors->size() ||
             (*selectors)[count].selectorName.empty()) {
           throw JSError(runtime,
@@ -329,11 +331,21 @@ Function CreateNativeApiSelectorGroupFunction(
           }
         }
 
-        Class gsdDispatchClass =
-            receiverIsClass
-                ? Nil
-                : dispatchSuperclassForEngineDerivedReceiver(receiver,
-                                                             lookupClass);
+        // Memoized dispatch-superclass resolution (pure function of the
+        // receiver's class + lookupClass) — avoids a per-call
+        // class_conformsToProtocol probe.
+        Class gsdDispatchClass = Nil;
+        if (!receiverIsClass) {
+          Class receiverClass = object_getClass(receiver);
+          if (receiverClass == cachedReceiverClass) {
+            gsdDispatchClass = cachedDispatchClass;
+          } else {
+            gsdDispatchClass =
+                dispatchSuperclassForEngineDerivedReceiver(receiver, lookupClass);
+            cachedReceiverClass = receiverClass;
+            cachedDispatchClass = gsdDispatchClass;
+          }
+        }
         // GSD fast path: read jsi args directly, call objc_msgSend with a
         // typed cast, produce the jsi return value — bypassing all generic
         // marshalling. Only engages for plain calls (no super dispatch, init
@@ -355,11 +367,9 @@ Function CreateNativeApiSelectorGroupFunction(
           return callPreparedObjCSelector(runtime, bridge, receiver, true,
                                           *prepared, args, count, Nil);
         }
-        Class dispatchClass =
-            dispatchSuperclassForEngineDerivedReceiver(receiver, lookupClass);
         return receiverHostObject->callPreparedObjectSelector(
             runtime, (*selectors)[count].selectorName, *prepared, args, count,
-            dispatchClass);
+            gsdDispatchClass);
       });
 }
 
