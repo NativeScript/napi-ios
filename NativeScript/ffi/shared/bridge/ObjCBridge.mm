@@ -716,18 +716,26 @@ class NativeApiBridge {
   }
 
   Object roundTripRootObject(Runtime& runtime) const {
+    // Cache the root object: it is otherwise re-resolved via two V8 property
+    // operations (global hasProperty + getProperty) on every object return.
+    if (roundTripRootCache_) {
+      return roundTripRootCache_->asObject(runtime);
+    }
     static constexpr const char* kRootName =
         "__nativeScriptNativeApiRoundTripValues";
     Object global = runtime.global();
     if (global.hasProperty(runtime, kRootName)) {
       Value existing = global.getProperty(runtime, kRootName);
       if (existing.isObject()) {
-        return existing.asObject(runtime);
+        Object root = existing.asObject(runtime);
+        roundTripRootCache_ = std::make_shared<Value>(runtime, root);
+        return root;
       }
     }
 
     Object root(runtime);
     global.setProperty(runtime, kRootName, root);
+    roundTripRootCache_ = std::make_shared<Value>(runtime, root);
     return root;
   }
 
@@ -1560,6 +1568,7 @@ class NativeApiBridge {
   mutable std::mutex roundTripValuesMutex_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> roundTripValues_;
   std::unordered_set<uintptr_t> rootedRoundTripValues_;
+  mutable std::shared_ptr<Value> roundTripRootCache_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classValues_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classPrototypes_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> pointerValues_;
