@@ -1269,40 +1269,6 @@ class NativeApiObjectHostObject final
       if (property == "length") {
         return static_cast<double>(array.count);
       }
-      if (property == "objectAtIndex") {
-        auto bridge = bridge_;
-        std::weak_ptr<NativeApiObjectHostObject> weakSelf =
-            shared_from_this();
-        Function function = Function::createFromHostFunction(
-            runtime, PropNameID::forAscii(runtime, "objectAtIndex"), 1,
-            [bridge, weakSelf](Runtime& runtime, const Value&,
-                               const Value* args, size_t count) -> Value {
-              auto self = weakSelf.lock();
-              if (!self || self->object_ == nil ||
-                  ![self->object_ isKindOfClass:[NSArray class]]) {
-                throw JSError(runtime,
-                              "Cannot send objectAtIndex to nil array.");
-              }
-              if (count < 1 || !args[0].isNumber()) {
-                throw JSError(runtime,
-                              "objectAtIndex expects a numeric index.");
-              }
-
-              NSArray* array = static_cast<NSArray*>(self->object_);
-              NSUInteger index =
-                  static_cast<NSUInteger>(args[0].getNumber());
-              id element = nil;
-              performDirectObjCInvocation(runtime, [&]() {
-                element = [array objectAtIndex:index];
-              });
-              NativeApiType elementType = nativeObjectReturnType();
-              return convertNativeReturnValue(runtime, bridge, elementType,
-                                              &element);
-            });
-        Value functionValue(runtime, function);
-        bridge_->setObjectExpando(runtime, object_, property, functionValue);
-        return functionValue;
-      }
       if (auto index = parseArrayIndexProperty(property)) {
         if (*index >= array.count) {
           return Value::undefined();

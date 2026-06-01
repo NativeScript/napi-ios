@@ -515,7 +515,7 @@ JSValue quickJSUnsignedInteger64Value(Runtime& runtime, uint64_t value) {
 
 JSValue setQuickJSEngineObjectReturn(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
-    NativeApiType type, id object) {
+    const NativeApiType& type, id object) {
   JSContext* context = runtime.context();
   if (object == nil) {
     return JS_NULL;
