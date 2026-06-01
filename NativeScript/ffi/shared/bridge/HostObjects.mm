@@ -1293,24 +1293,14 @@ class NativeApiObjectHostObject final
         const auto& members = bridge_->membersForClass(*symbol);
         if (const NativeApiMember* propertyMember =
                 selectPropertyMember(members, property, false)) {
-          SEL selector = sel_getUid(propertyMember->selectorName.c_str());
-          if ([object_ respondsToSelector:selector]) {
+          if (auto getter = respondingPropertyGetterSelector(
+                  object_, property, propertyMember->selectorName)) {
+            NativeApiMember getterMember = *propertyMember;
+            getterMember.selectorName = *getter;
             bridge_->cachePropertyGetter(object_getClass(object_), property,
-                                         propertyMember,
-                                         propertyMember->selectorName);
-            return callObjectSelector(runtime, propertyMember->selectorName,
-                                      propertyMember, nullptr, 0);
-          }
-          std::string booleanSelectorName =
-              booleanGetterSelectorForProperty(property);
-          if (booleanSelectorName != propertyMember->selectorName) {
-            SEL booleanSelector = sel_getUid(booleanSelectorName.c_str());
-            if ([object_ respondsToSelector:booleanSelector]) {
-              NativeApiMember getterMember = *propertyMember;
-              getterMember.selectorName = booleanSelectorName;
-              return callObjectSelector(runtime, getterMember.selectorName,
-                                        &getterMember, nullptr, 0);
-            }
+                                         propertyMember, getterMember.selectorName);
+            return callObjectSelector(runtime, getterMember.selectorName,
+                                      &getterMember, nullptr, 0);
           }
         }
 
@@ -1370,7 +1360,10 @@ class NativeApiObjectHostObject final
           getter = customGetter;
           free(customGetter);
         }
-        return callObjectSelector(runtime, getter, nullptr, nullptr, 0);
+        if (auto selector =
+                respondingPropertyGetterSelector(object_, property, getter)) {
+          return callObjectSelector(runtime, *selector, nullptr, nullptr, 0);
+        }
       }
     }
 
@@ -2154,8 +2147,14 @@ class NativeApiProtocolHostObject final : public HostObject {
             throw JSError(
                 runtime, "Protocol property requires a native receiver.");
           }
+          NativeApiMember getterMember = member;
+          if (auto selector = respondingPropertyGetterSelector(
+                  receiver, member.name, member.selectorName)) {
+            getterMember.selectorName = *selector;
+          }
           return callObjCSelector(runtime, bridge, receiver, receiverIsClass,
-                                  member.selectorName, &member, nullptr, 0);
+                                  getterMember.selectorName, &getterMember,
+                                  nullptr, 0);
         });
   }
 
