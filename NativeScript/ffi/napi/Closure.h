@@ -17,6 +17,33 @@ namespace nativescript {
 
 class ObjCBridgeState;
 
+struct NapiNativeCallbackExceptionCapture {
+  napi_env env = nullptr;
+  napi_ref errorRef = nullptr;
+
+  ~NapiNativeCallbackExceptionCapture();
+  void clear();
+};
+
+class ScopedNapiNativeCallbackExceptionCapture {
+ public:
+  explicit ScopedNapiNativeCallbackExceptionCapture(
+      NapiNativeCallbackExceptionCapture* capture);
+  ~ScopedNapiNativeCallbackExceptionCapture();
+
+  ScopedNapiNativeCallbackExceptionCapture(
+      const ScopedNapiNativeCallbackExceptionCapture&) = delete;
+  ScopedNapiNativeCallbackExceptionCapture& operator=(
+      const ScopedNapiNativeCallbackExceptionCapture&) = delete;
+
+ private:
+  NapiNativeCallbackExceptionCapture* capture_ = nullptr;
+};
+
+bool recordNapiNativeCallbackException(napi_env env, napi_value error);
+bool rethrowNapiNativeCallbackException(
+    napi_env env, NapiNativeCallbackExceptionCapture& capture);
+
 class Closure {
  public:
   static void callBlockFromMainThread(napi_env env, napi_value js_cb,

@@ -23,6 +23,25 @@ Object createNativeInstanceHostObject(Runtime& runtime, std::shared_ptr<T> host)
 #endif
 }
 
+class NativeApiObjectLifetimeState final {
+ public:
+  explicit NativeApiObjectLifetimeState(id object)
+      : object_(reinterpret_cast<void*>(object)) {}
+
+  id object() const {
+    return reinterpret_cast<id>(object_.load(std::memory_order_relaxed));
+  }
+
+  void setObject(id object) {
+    object_.store(reinterpret_cast<void*>(object), std::memory_order_relaxed);
+  }
+
+  void clear() { object_.store(nullptr, std::memory_order_relaxed); }
+
+ private:
+  std::atomic<void*> object_{nullptr};
+};
+
 
 class NativeApiPointerHostObject final
     : public HostObject,
@@ -610,7 +629,10 @@ class NativeApiObjectHostObject final
  public:
   NativeApiObjectHostObject(std::shared_ptr<NativeApiBridge> bridge,
                             id object, bool ownsObject)
-      : bridge_(std::move(bridge)), object_(object), ownsObject_(ownsObject) {
+      : bridge_(std::move(bridge)),
+        object_(object),
+        ownsObject_(ownsObject),
+        lifetimeState_(std::make_shared<NativeApiObjectLifetimeState>(object)) {
     if (object_ != nil && !ownsObject_) {
       [object_ retain];
       ownsObject_ = true;
@@ -618,6 +640,9 @@ class NativeApiObjectHostObject final
   }
 
   ~NativeApiObjectHostObject() override {
+    if (lifetimeState_ != nullptr) {
+      lifetimeState_->clear();
+    }
     if (ownsObject_ && object_ != nil) {
       [object_ release];
       object_ = nil;
@@ -625,6 +650,9 @@ class NativeApiObjectHostObject final
   }
 
   id object() const { return object_; }
+  std::shared_ptr<NativeApiObjectLifetimeState> lifetimeState() const {
+    return lifetimeState_;
+  }
 
   // Store a JS-owned property as a bridge expando (read back by get()). Used by
   // engine adapters whose exotic property storage doesn't fall back to own
@@ -640,6 +668,9 @@ class NativeApiObjectHostObject final
     if (object_ == expected) {
       ownsObject_ = false;
       object_ = nil;
+      if (lifetimeState_ != nullptr) {
+        lifetimeState_->clear();
+      }
     }
   }
 
@@ -700,6 +731,9 @@ class NativeApiObjectHostObject final
         // returning `this` still have a valid native object.
         object_ = resultObject;
         ownsObject_ = true;
+        if (lifetimeState_ != nullptr) {
+          lifetimeState_->setObject(object_);
+        }
         [object_ retain];
         if (classWrapper) {
           bridge_->setObjectExpando(runtime, resultObject,
@@ -720,16 +754,15 @@ class NativeApiObjectHostObject final
   }
 
   Value callPreparedObjectSelector(
-      Runtime& runtime, const std::string& selectorName,
-      const NativeApiPreparedObjCInvocation& prepared, const Value* args,
-      size_t count, Class dispatchSuperClass = Nil) {
+      Runtime& runtime, const NativeApiPreparedObjCInvocation& prepared,
+      const Value* args, size_t count, Class dispatchSuperClass = Nil) {
     id receiver = object_;
     if (receiver == nil) {
       throw JSError(runtime,
                     "Cannot send Objective-C selector to nil.");
     }
 
-    const bool initializer = isInitializerSelector(selectorName);
+    const bool initializer = preparedObjCInvocationIsInit(prepared);
     std::optional<Object> classWrapper;
     if (initializer) {
       Value classWrapperValue = bridge_->findObjectExpando(
@@ -752,6 +785,9 @@ class NativeApiObjectHostObject final
         // returning `this` still have a valid native object.
         object_ = resultObject;
         ownsObject_ = true;
+        if (lifetimeState_ != nullptr) {
+          lifetimeState_->setObject(object_);
+        }
         [object_ retain];
         if (classWrapper) {
           bridge_->setObjectExpando(runtime, resultObject,
@@ -960,6 +996,11 @@ class NativeApiObjectHostObject final
     if (object_ != nil) {
       if (const auto* cached = bridge_->findCachedPropertyGetter(
               object_getClass(object_), property)) {
+        if (cached->preparedInvocation != nullptr) {
+          return callPreparedObjectSelector(runtime,
+                                            *cached->preparedInvocation,
+                                            nullptr, 0);
+        }
         return callObjectSelector(runtime, cached->selectorName, cached->member,
                                   nullptr, 0);
       }
@@ -1129,6 +1170,9 @@ class NativeApiObjectHostObject final
             }
             self->object_ = nil;
             self->ownsObject_ = false;
+            if (self->lifetimeState_ != nullptr) {
+              self->lifetimeState_->clear();
+            }
             self->consumed_ = true;
             return makeNativeObjectValue(runtime, self->bridge_, object, retained);
           });
@@ -1297,8 +1341,21 @@ class NativeApiObjectHostObject final
                   object_, property, propertyMember->selectorName)) {
             NativeApiMember getterMember = *propertyMember;
             getterMember.selectorName = *getter;
+            std::shared_ptr<NativeApiPreparedObjCInvocation> preparedGetter;
+            try {
+              preparedGetter = prepareNativeApiObjCInvocation(
+                  runtime, bridge_, object_getClass(object_), false,
+                  getterMember.selectorName, &getterMember);
+            } catch (const std::exception&) {
+            }
             bridge_->cachePropertyGetter(object_getClass(object_), property,
-                                         propertyMember, getterMember.selectorName);
+                                         propertyMember,
+                                         getterMember.selectorName,
+                                         preparedGetter);
+            if (preparedGetter != nullptr) {
+              return callPreparedObjectSelector(runtime, *preparedGetter,
+                                                nullptr, 0);
+            }
             return callObjectSelector(runtime, getterMember.selectorName,
                                       &getterMember, nullptr, 0);
           }
@@ -1464,6 +1521,7 @@ class NativeApiObjectHostObject final
   id object_ = nil;
   bool ownsObject_ = false;
   bool consumed_ = false;
+  std::shared_ptr<NativeApiObjectLifetimeState> lifetimeState_;
 };
 
 class NativeApiClassHostObject final : public HostObject {

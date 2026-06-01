@@ -28,6 +28,9 @@ namespace nativescript {
 
 namespace {
 
+thread_local std::vector<NapiNativeCallbackExceptionCapture*>
+    gNativeCallbackExceptionCaptureStack;
+
 inline void deleteClosureOnOwningThread(Closure* closure) {
   if (closure == nullptr) {
     return;
@@ -60,6 +63,73 @@ inline void deleteClosureOnOwningThread(Closure* closure) {
 }
 
 }  // namespace
+
+NapiNativeCallbackExceptionCapture::~NapiNativeCallbackExceptionCapture() {
+  clear();
+}
+
+void NapiNativeCallbackExceptionCapture::clear() {
+  if (env != nullptr && errorRef != nullptr) {
+    napi_delete_reference(env, errorRef);
+  }
+  env = nullptr;
+  errorRef = nullptr;
+}
+
+ScopedNapiNativeCallbackExceptionCapture::
+    ScopedNapiNativeCallbackExceptionCapture(
+        NapiNativeCallbackExceptionCapture* capture)
+    : capture_(capture) {
+  gNativeCallbackExceptionCaptureStack.push_back(capture_);
+}
+
+ScopedNapiNativeCallbackExceptionCapture::
+    ~ScopedNapiNativeCallbackExceptionCapture() {
+  if (!gNativeCallbackExceptionCaptureStack.empty() &&
+      gNativeCallbackExceptionCaptureStack.back() == capture_) {
+    gNativeCallbackExceptionCaptureStack.pop_back();
+  }
+}
+
+bool recordNapiNativeCallbackException(napi_env env, napi_value error) {
+  if (env == nullptr || error == nullptr ||
+      gNativeCallbackExceptionCaptureStack.empty()) {
+    return false;
+  }
+
+  auto* capture = gNativeCallbackExceptionCaptureStack.back();
+  if (capture == nullptr || capture->errorRef != nullptr) {
+    return capture != nullptr;
+  }
+
+  capture->env = env;
+  return napi_create_reference(env, error, 1, &capture->errorRef) == napi_ok;
+}
+
+bool rethrowNapiNativeCallbackException(
+    napi_env env, NapiNativeCallbackExceptionCapture& capture) {
+  if (env == nullptr || capture.errorRef == nullptr) {
+    return false;
+  }
+
+  napi_value error = nullptr;
+  napi_ref errorRef = capture.errorRef;
+  capture.errorRef = nullptr;
+  napi_get_reference_value(env, errorRef, &error);
+  napi_delete_reference(env, errorRef);
+  capture.env = nullptr;
+
+  if (error != nullptr) {
+    NativeScriptException nativeScriptException(
+        env, error, "JS implemented closure threw an exception");
+    nativeScriptException.ReThrowToJS(env);
+  } else {
+    NativeScriptException nativeScriptException(
+        "Unable to obtain the error thrown by the JS implemented closure");
+    nativeScriptException.ReThrowToJS(env);
+  }
+  return true;
+}
 
 void Closure::destroyOnOwningThread(Closure* closure) { deleteClosureOnOwningThread(closure); }
 
@@ -135,7 +205,11 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
       napi_create_error(env, code, msg, &result);
     }
 
-    NativeScriptException::OnUncaughtError(env, result);
+    if (recordNapiNativeCallbackException(env, result)) {
+      napi_get_undefined(env, &result);
+    } else {
+      NativeScriptException::OnUncaughtError(env, result);
+    }
   }
 
   // Even if call was failed and result is just undefined, let's still try to
@@ -251,7 +325,11 @@ void JSMethodCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
       napi_create_error(env, code, msg, &result);
     }
 
-    NativeScriptException::OnUncaughtError(env, result);
+    if (recordNapiNativeCallbackException(env, result)) {
+      napi_get_undefined(env, &result);
+    } else {
+      NativeScriptException::OnUncaughtError(env, result);
+    }
   }
 
   bool shouldFree;
