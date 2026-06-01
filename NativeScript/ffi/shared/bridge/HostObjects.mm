@@ -1314,81 +1314,26 @@ class NativeApiObjectHostObject final
           }
         }
 
-        // Resolve metadata methods to a freshly created host function that
-        // dispatches the right overload by argument count. This keeps full
-        // metadata-driven marshalling while staying reliably callable in a
-        // method-call context (a prototype selector-group function injected
-        // through the property interceptor is not).
+        // Resolve metadata methods to a bound selector-group function. The
+        // bound receiver keeps method-call semantics correct even on engines
+        // whose host-object interceptor does not preserve `this`, while the
+        // engine backend can still use its direct selector-group/GSD path.
         if (hasMethodMember(members, property, false)) {
-          auto bridge = bridge_;
-          std::weak_ptr<NativeApiObjectHostObject> weakSelf =
-              shared_from_this();
-          std::string memberName = property;
-          // Cache the prepared invocation per argument count so the metadata
-          // and ObjC signatures are parsed once instead of on every call.
-          auto preparedCache = std::make_shared<std::unordered_map<
-              size_t,
-              std::pair<std::string,
-                        std::shared_ptr<NativeApiPreparedObjCInvocation>>>>();
-          Value methodFunction = Function::createFromHostFunction(
-              runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
-              [bridge, weakSelf, memberName, preparedCache](
-                  Runtime& runtime, const Value&, const Value* args,
-                  size_t count) -> Value {
-                auto self = weakSelf.lock();
-                if (!self || self->object_ == nil) {
-                  throw JSError(runtime,
-                                "Cannot send Objective-C selector to nil.");
-                }
-                auto cached = preparedCache->find(count);
-                if (cached == preparedCache->end()) {
-                  const NativeApiSymbol* symbol =
-                      bridge->findClassForRuntimeClass(
-                          object_getClass(self->object_));
-                  if (symbol == nullptr) {
-                    throw JSError(
-                        runtime,
-                        "Objective-C metadata is not available for object.");
-                  }
-                  const auto& classMembers = bridge->membersForClass(*symbol);
-                  const NativeApiMember* selected =
-                      selectMethodMember(classMembers, memberName, false, count);
-                  if (selected == nullptr) {
-                    // NSError-out methods (selector ending in "error:") may be
-                    // called with the trailing error argument omitted.
-                    if (const NativeApiMember* withError = selectMethodMember(
-                            classMembers, memberName, false, count + 1)) {
-                      const std::string& sel = withError->selectorName;
-                      if (sel.size() >= 6 &&
-                          sel.compare(sel.size() - 6, 6, "error:") == 0) {
-                        selected = withError;
-                      }
-                    }
-                  }
-                  if (selected == nullptr) {
-                    throw JSError(
-                        runtime,
-                        "Objective-C selector is not available for the provided "
-                        "arguments count: " +
-                            memberName);
-                  }
-                  auto prepared = prepareNativeApiObjCInvocation(
-                      runtime, bridge, object_getClass(self->object_), false,
-                      selected->selectorName, selected);
-                  cached = preparedCache
-                               ->emplace(count, std::make_pair(
-                                                    selected->selectorName,
-                                                    std::move(prepared)))
-                               .first;
-                }
-                return self->callPreparedObjectSelector(
-                    runtime, cached->second.first, *cached->second.second, args,
-                    count);
-              });
-          // Cache the resolved host function so repeated method access does not
-          // reallocate it on every call (hot path).
-          bridge_->setObjectExpando(runtime, object_, property, methodFunction);
-          return methodFunction;
+          auto selectors =
+              selectorGroupEntriesForMethod(members, property, false);
+          if (selectors != nullptr) {
+            auto preparedInvocations = std::make_shared<std::vector<
+                std::shared_ptr<NativeApiPreparedObjCInvocation>>>(
+                selectors->size());
+            Value methodFunction = CreateNativeApiBoundSelectorGroupFunction(
+                runtime, bridge_, object_getClass(object_), shared_from_this(),
+                selectors, preparedInvocations);
+            // Cache the resolved host function so repeated method access does
+            // not reallocate it on every call (hot path).
+            bridge_->setObjectExpando(runtime, object_, property,
+                                      methodFunction);
+            return methodFunction;
+          }
         }
       }
     }
@@ -1712,6 +1657,14 @@ class NativeApiClassHostObject final : public HostObject {
           });
     }
 
+    Class cls = nativeClass();
+    if (cls != Nil) {
+      Value expando = bridge_->findObjectExpando(runtime, cls, property);
+      if (!expando.isUndefined()) {
+        return expando;
+      }
+    }
+
     const auto& members = bridge_->membersForClass(symbol_);
     if (const NativeApiMember* propertyMember =
             selectWritablePropertyMember(members, property, true)) {
@@ -1731,41 +1684,18 @@ class NativeApiClassHostObject final : public HostObject {
       }
     }
 
-    if (hasMethodMember(members, property, true)) {
-      auto bridge = bridge_;
-      auto symbol = symbol_;
-      std::string memberName = property;
-      return Function::createFromHostFunction(
-          runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
-          [bridge, symbol, memberName](Runtime& runtime, const Value&,
-                                       const Value* args,
-                                       size_t count) -> Value {
-            Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
-            if (cls == nil) {
-              throw JSError(
-                  runtime, "Objective-C class is not available: " + symbol.name);
-            }
-            const NativeApiMember* selected = selectMethodMember(
-                bridge->membersForClass(symbol), memberName, true, count);
-            if (selected == nullptr) {
-              throw JSError(
-                  runtime, "Objective-C selector is not available: " +
-                               memberName);
-            }
-            SEL selector = sel_getUid(selected->selectorName.c_str());
-            Class dispatchClass =
-                NativeApiClassHostObject::classRespondingToClassSelector(
-                    cls, selector);
-            if (dispatchClass == Nil) {
-              throw JSError(runtime,
-                            "Objective-C selector is not available: " +
-                                selected->selectorName);
-            }
-            return callObjCSelector(runtime, bridge,
-                                    static_cast<id>(dispatchClass), true,
-                                    selected->selectorName, selected, args,
-                                    count);
-          });
+    auto selectors = selectorGroupEntriesForMethod(members, property, true);
+    if (selectors != nullptr) {
+      if (cls == Nil) {
+        throw JSError(
+            runtime, "Objective-C class is not available: " + symbol_.name);
+      }
+      auto preparedInvocations = std::make_shared<std::vector<
+          std::shared_ptr<NativeApiPreparedObjCInvocation>>>(selectors->size());
+      Value methodFunction = CreateNativeApiSelectorGroupFunction(
+          runtime, bridge_, cls, true, selectors, preparedInvocations);
+      bridge_->setObjectExpando(runtime, cls, property, methodFunction);
+      return methodFunction;
     }
 
     return Value::undefined();
