@@ -62,13 +62,15 @@ struct NativeApiSelectorGroupData {
           selectors,
       std::shared_ptr<
           std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
-          preparedInvocations)
+          preparedInvocations,
+      std::weak_ptr<NativeApiObjectHostObject> boundReceiver = {})
       : state(state),
         bridge(std::move(bridge)),
         lookupClass(lookupClass),
         receiverIsClass(receiverIsClass),
         selectors(std::move(selectors)),
         preparedInvocations(std::move(preparedInvocations)),
+        boundReceiver(std::move(boundReceiver)),
         runtime(state) {}
 
   std::shared_ptr<engine::jscengine::RuntimeState> state;
@@ -79,6 +81,7 @@ struct NativeApiSelectorGroupData {
   std::shared_ptr<
       std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
       preparedInvocations;
+  std::weak_ptr<NativeApiObjectHostObject> boundReceiver;
   // Reused per call (avoids per-call shared_ptr refcount + dispatch-superclass
   // probe on the hot path).
   Runtime runtime;
@@ -549,6 +552,11 @@ struct GsdObjCContext {
   const NativeApiType& returnType;
   JSValueRef result = nullptr;
 
+  template <typename Invocation>
+  void invokeNative(Invocation&& invocation) {
+    performGeneratedObjCInvocation(runtime, bridge, [&]() { invocation(); });
+  }
+
   bool readNumber(size_t i, double* out) {
     JSValueRef v = arguments[i];
     if (!JSValueIsNumber(context, v)) return false;
@@ -889,6 +897,9 @@ JSValueRef NativeApiSelectorGroupCall(
       }
       selectorLookupClass = methodClass;
       receiver = static_cast<id>(methodClass);
+    } else if (auto boundReceiver = data->boundReceiver.lock()) {
+      receiverHostObject = std::move(boundReceiver);
+      receiver = receiverHostObject->object();
     } else if (thisObject != nullptr) {
       auto* holder = static_cast<engine::jscengine::HostObjectHolder*>(
           JSObjectGetPrivate(thisObject));
@@ -980,16 +991,18 @@ JSClassRef NativeApiSelectorGroupFunctionClass(Runtime& runtime) {
   return state->selectorGroupFunctionClass;
 }
 
-Function CreateNativeApiSelectorGroupFunction(
+Function CreateNativeApiSelectorGroupFunctionImpl(
     Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
     Class lookupClass, bool receiverIsClass,
     std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
     std::shared_ptr<
         std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
-        preparedInvocations) {
+        preparedInvocations,
+    std::weak_ptr<NativeApiObjectHostObject> boundReceiver) {
   auto* data = new NativeApiSelectorGroupData(
       runtime.state(), std::move(bridge), lookupClass, receiverIsClass,
-      std::move(selectors), std::move(preparedInvocations));
+      std::move(selectors), std::move(preparedInvocations),
+      std::move(boundReceiver));
   JSObjectRef function =
       JSObjectMake(runtime.context(),
                    NativeApiSelectorGroupFunctionClass(runtime), data);
@@ -1006,6 +1019,30 @@ Function CreateNativeApiSelectorGroupFunction(
 
   Value functionValue(runtime, function);
   return functionValue.asObject(runtime).asFunction(runtime);
+}
+
+Function CreateNativeApiSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
+    Class lookupClass, bool receiverIsClass,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
+    std::shared_ptr<
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
+        preparedInvocations) {
+  return CreateNativeApiSelectorGroupFunctionImpl(
+      runtime, std::move(bridge), lookupClass, receiverIsClass,
+      std::move(selectors), std::move(preparedInvocations), {});
+}
+
+Function CreateNativeApiBoundSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge, Class lookupClass,
+    std::shared_ptr<NativeApiObjectHostObject> receiverHostObject,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
+    std::shared_ptr<
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
+        preparedInvocations) {
+  return CreateNativeApiSelectorGroupFunctionImpl(
+      runtime, std::move(bridge), lookupClass, false, std::move(selectors),
+      std::move(preparedInvocations), receiverHostObject);
 }
 
 }  // namespace

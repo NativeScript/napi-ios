@@ -111,6 +111,11 @@ struct GsdObjCContext {
   const NativeApiType& returnType;
   Value result = Value::undefined();
 
+  template <typename Invocation>
+  void invokeNative(Invocation&& invocation) {
+    performGeneratedObjCInvocation(runtime, bridge, [&]() { invocation(); });
+  }
+
   bool readNumber(size_t i, double* out) {
     const Value& v = arguments[i];
     if (!v.isNumber()) return false;
@@ -249,18 +254,20 @@ namespace {  // reopen anonymous namespace
 
 // --- End GSD ---
 
-Function CreateNativeApiSelectorGroupFunction(
+Function CreateNativeApiSelectorGroupFunctionImpl(
     Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
     Class lookupClass, bool receiverIsClass,
     std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
     std::shared_ptr<
         std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
-        preparedInvocations) {
+        preparedInvocations,
+    std::weak_ptr<NativeApiObjectHostObject> boundReceiver = {}) {
   return Function::createFromHostFunction(
       runtime, PropNameID::forAscii(runtime, "__nativeSelectorGroup"), 0,
       [bridge = std::move(bridge), lookupClass, receiverIsClass,
        selectors = std::move(selectors),
        preparedInvocations = std::move(preparedInvocations),
+       boundReceiver = std::move(boundReceiver),
        cachedReceiverClass = Class(Nil),
        cachedDispatchClass = Class(Nil)](
           Runtime& runtime, const Value& thisValue, const Value* args,
@@ -268,8 +275,8 @@ Function CreateNativeApiSelectorGroupFunction(
         if (count >= selectors->size() ||
             (*selectors)[count].selectorName.empty()) {
           throw JSError(runtime,
-                        "Objective-C selector is not available for this "
-                        "argument count.");
+                        "Objective-C selector is not available for the provided "
+                        "arguments count.");
         }
 
         const NativeApiSelectorGroupEntry& entry = (*selectors)[count];
@@ -292,6 +299,9 @@ Function CreateNativeApiSelectorGroupFunction(
           }
           selectorLookupClass = methodClass;
           receiver = static_cast<id>(methodClass);
+        } else if (auto bound = boundReceiver.lock()) {
+          receiverHostObject = std::move(bound);
+          receiver = receiverHostObject->object();
         } else if (thisValue.isObject()) {
           Object receiverObject = thisValue.asObject(runtime);
           if (receiverObject.isHostObject<NativeApiObjectHostObject>(
@@ -371,6 +381,30 @@ Function CreateNativeApiSelectorGroupFunction(
             runtime, (*selectors)[count].selectorName, *prepared, args, count,
             gsdDispatchClass);
       });
+}
+
+Function CreateNativeApiSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
+    Class lookupClass, bool receiverIsClass,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
+    std::shared_ptr<
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
+        preparedInvocations) {
+  return CreateNativeApiSelectorGroupFunctionImpl(
+      runtime, std::move(bridge), lookupClass, receiverIsClass,
+      std::move(selectors), std::move(preparedInvocations));
+}
+
+Function CreateNativeApiBoundSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge, Class lookupClass,
+    std::shared_ptr<NativeApiObjectHostObject> receiverHostObject,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
+    std::shared_ptr<
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
+        preparedInvocations) {
+  return CreateNativeApiSelectorGroupFunctionImpl(
+      runtime, std::move(bridge), lookupClass, false, std::move(selectors),
+      std::move(preparedInvocations), receiverHostObject);
 }
 
 }  // namespace

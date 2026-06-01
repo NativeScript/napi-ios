@@ -14,12 +14,6 @@ inline bool InstallNativeApiLazyGlobal(
 }
 #endif
 
-struct NativeApiSelectorGroupEntry {
-  std::string selectorName;
-  NativeApiMember member;
-  bool hasMember = false;
-};
-
 #ifndef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_SELECTOR_GROUP_FUNCTION
 #error Engine backends must provide an engine selector group function.
 #endif

@@ -9,16 +9,18 @@
 // every embedded engine backend (V8, JSC, QuickJS, Hermes). Each invoker takes
 // a single `GsdObjCContext&` argument. The context is a small concrete struct
 // defined per engine that knows how to read JS arguments and write the JS
-// return value using that engine's native value API. The generated code only
-// references the engine-neutral `GsdObjCContext` interface, so the same `.inc`
-// compiles unchanged in every backend translation unit with zero overhead
-// (all context methods inline).
+// return value using that engine's native value API. Native calls are routed
+// through ctx.invokeNative so backends that must release/coordinate their JS
+// runtime around Objective-C dispatch can do so without moving JS conversion
+// outside the engine thread. Backends without that requirement take the direct
+// exception-safe path. The generated code only references the engine-neutral
+// `GsdObjCContext` interface, so the same `.inc` compiles unchanged in every
+// backend translation unit with inline context calls.
 //
-// GSD only handles primitive arguments/returns plus SEL and Class. Any value
-// that does not match the fast representation makes the relevant reader return
-// false, which makes the whole invoker return false and fall back to the fully
-// correct generic marshalling path. Object arguments/returns are never handled
-// here and fall back to the generic path as well.
+// GSD handles primitives, SEL, Class, and already-native Objective-C object
+// values. Any value that does not match the fast representation makes the
+// relevant reader return false, which makes the whole invoker fall back to the
+// fully correct generic marshalling path.
 
 namespace metagen::signature_dispatch {
 
@@ -233,13 +235,18 @@ void writeGsdWrapper(std::ostringstream& out, const std::string& wrapperName,
   }
 
   if (returnType == "void") {
-    out << "  fn(ctx.self, ctx.selector";
+    out << "  ctx.invokeNative([&]() {\n";
+    out << "    fn(ctx.self, ctx.selector";
     for (size_t i = 0; i < argTypes.size(); i++) out << ", arg" << i;
     out << ");\n";
+    out << "  });\n";
   } else {
-    out << "  " << returnType << " nativeResult = fn(ctx.self, ctx.selector";
+    out << "  " << returnType << " nativeResult{};\n";
+    out << "  ctx.invokeNative([&]() {\n";
+    out << "    nativeResult = fn(ctx.self, ctx.selector";
     for (size_t i = 0; i < argTypes.size(); i++) out << ", arg" << i;
     out << ");\n";
+    out << "  });\n";
   }
 
   writeGsdReturnConversion(out, signature->returnType);

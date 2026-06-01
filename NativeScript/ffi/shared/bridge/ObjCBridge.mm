@@ -218,6 +218,12 @@ struct NativeApiMember {
   bool readonly = false;
 };
 
+struct NativeApiSelectorGroupEntry {
+  std::string selectorName;
+  NativeApiMember member;
+  bool hasMember = false;
+};
+
 struct NativeApiAggregateInfo;
 
 struct NativeApiFfiType {
@@ -342,6 +348,47 @@ bool hasMethodMember(const std::vector<NativeApiMember>& members,
     }
   }
   return false;
+}
+
+std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>>
+selectorGroupEntriesForMethod(const std::vector<NativeApiMember>& members,
+                              const std::string& property, bool staticMethod) {
+  auto selectors = std::make_shared<std::vector<NativeApiSelectorGroupEntry>>();
+  for (const auto& member : members) {
+    if (member.property || member.name != property || member.selectorName.empty()) {
+      continue;
+    }
+
+    bool memberIsStatic = (member.flags & metagen::mdMemberStatic) != 0;
+    if (memberIsStatic != staticMethod) {
+      continue;
+    }
+
+    size_t argumentCount = selectorArgumentCount(member.selectorName);
+    if (selectors->size() <= argumentCount) {
+      selectors->resize(argumentCount + 1);
+    }
+    if ((*selectors)[argumentCount].selectorName.empty()) {
+      (*selectors)[argumentCount].selectorName = member.selectorName;
+      (*selectors)[argumentCount].member = member;
+      (*selectors)[argumentCount].hasMember = true;
+    }
+
+    if (argumentCount > 0 && member.selectorName.size() >= 6 &&
+        member.selectorName.compare(member.selectorName.size() - 6, 6,
+                                    "error:") == 0) {
+      size_t omittedErrorCount = argumentCount - 1;
+      if (selectors->size() <= omittedErrorCount) {
+        selectors->resize(omittedErrorCount + 1);
+      }
+      if ((*selectors)[omittedErrorCount].selectorName.empty()) {
+        (*selectors)[omittedErrorCount].selectorName = member.selectorName;
+        (*selectors)[omittedErrorCount].member = member;
+        (*selectors)[omittedErrorCount].hasMember = true;
+      }
+    }
+  }
+  return selectors->empty() ? nullptr : selectors;
 }
 
 const NativeApiMember* selectPropertyMember(
@@ -1633,6 +1680,18 @@ class NativeApiBridge {
   std::vector<std::shared_ptr<void>> retainedLifetimes_;
 };
 
+template <typename Invocation>
+void performGeneratedObjCInvocation(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    Invocation&& invocation) {
+  const auto& invoker = bridge->nativeInvocationInvoker();
+  if (invoker || bridge->invokeCallbacksOnNativeCallerThread()) {
+    performNativeInvocation(runtime, invoker, [&]() { invocation(); });
+  } else {
+    performDirectObjCInvocation(runtime, [&]() { invocation(); });
+  }
+}
+
 Value makeString(Runtime& runtime, const std::string& value) {
   return String::createFromUtf8(runtime, value);
 }
@@ -1715,6 +1774,22 @@ Value callPreparedObjCSelector(
     id receiver, bool receiverIsClass,
     const NativeApiPreparedObjCInvocation& prepared, const Value* args,
     size_t count, Class dispatchSuperClass = Nil);
+
+Function CreateNativeApiSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
+    Class lookupClass, bool receiverIsClass,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
+    std::shared_ptr<
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
+        preparedInvocations);
+
+Function CreateNativeApiBoundSelectorGroupFunction(
+    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge, Class lookupClass,
+    std::shared_ptr<NativeApiObjectHostObject> receiverHostObject,
+    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
+    std::shared_ptr<
+        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
+        preparedInvocations);
 
 Value makeNativeObjectValue(Runtime& runtime,
                             const std::shared_ptr<NativeApiBridge>& bridge,
