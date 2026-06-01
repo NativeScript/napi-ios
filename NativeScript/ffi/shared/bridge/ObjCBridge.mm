@@ -643,7 +643,8 @@ class NativeApiBridge {
   }
 
   void rememberRoundTripValue(Runtime& runtime, const void* native,
-                              const Value& value) {
+                              const Value& value,
+                              bool stringLikeNative = false) {
     if (native == nullptr) {
       return;
     }
@@ -652,12 +653,21 @@ class NativeApiBridge {
     {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
       roundTripValues_[key] = std::make_shared<Value>(runtime, value);
+      if (stringLikeNative) {
+        roundTripStringLikeValues_.insert(key);
+      } else {
+        roundTripStringLikeValues_.erase(key);
+      }
       roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
     rootRoundTripValue(runtime, key, value);
   }
 
-  Value findRoundTripValue(Runtime& runtime, const void* native) {
+  Value findRoundTripValue(Runtime& runtime, const void* native,
+                           bool* stringLikeNative = nullptr) {
+    if (stringLikeNative != nullptr) {
+      *stringLikeNative = false;
+    }
     if (native == nullptr) {
       return Value::undefined();
     }
@@ -668,6 +678,8 @@ class NativeApiBridge {
       uintptr_t key = 0;
       uint64_t generation = 0;
       std::weak_ptr<Value> value;
+      bool miss = false;
+      bool stringLikeNative = false;
     };
     static thread_local RoundTripCacheEntry cache[4];
     const uint64_t generation =
@@ -677,9 +689,15 @@ class NativeApiBridge {
       RoundTripCacheEntry& entry = cache[(firstSlot + i) & 3];
       if (entry.bridge == this && entry.key == key &&
           entry.generation == generation) {
+        if (entry.miss) {
+          return Value::undefined();
+        }
         if (auto cached = entry.value.lock()) {
           if (roundTripValuesGeneration_.load(std::memory_order_acquire) ==
               generation) {
+            if (stringLikeNative != nullptr) {
+              *stringLikeNative = entry.stringLikeNative;
+            }
             return Value(runtime, *cached);
           }
         }
@@ -694,9 +712,17 @@ class NativeApiBridge {
     std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
     auto it = roundTripValues_.find(key);
     if (it == roundTripValues_.end() || it->second == nullptr) {
+      cache[firstSlot] =
+          RoundTripCacheEntry{this, key, generation, {}, true, false};
       return Value::undefined();
     }
-    cache[firstSlot] = RoundTripCacheEntry{this, key, generation, it->second};
+    bool cachedStringLike =
+        roundTripStringLikeValues_.find(key) != roundTripStringLikeValues_.end();
+    cache[firstSlot] = RoundTripCacheEntry{
+        this, key, generation, it->second, false, cachedStringLike};
+    if (stringLikeNative != nullptr) {
+      *stringLikeNative = cachedStringLike;
+    }
     return Value(runtime, *it->second);
   }
 
@@ -710,6 +736,7 @@ class NativeApiBridge {
     {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
       roundTripValues_.erase(key);
+      roundTripStringLikeValues_.erase(key);
       rooted = rootedRoundTripValues_.erase(key) > 0;
       roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
@@ -723,8 +750,10 @@ class NativeApiBridge {
       return;
     }
     std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
-    roundTripValues_.erase(
-        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
+    uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    roundTripValues_.erase(key);
+    roundTripStringLikeValues_.erase(key);
     roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
   }
 
@@ -1794,6 +1823,7 @@ class NativeApiBridge {
   std::unordered_map<uintptr_t, NativeApiSymbol> protocolSymbolsByRuntimePointer_;
   mutable std::mutex roundTripValuesMutex_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> roundTripValues_;
+  std::unordered_set<uintptr_t> roundTripStringLikeValues_;
   std::unordered_set<uintptr_t> rootedRoundTripValues_;
   std::atomic<uint64_t> roundTripValuesGeneration_{1};
   mutable std::shared_ptr<Value> roundTripRootCache_;
@@ -1842,9 +1872,56 @@ void performGeneratedObjCInvocation(
   const auto& invoker = bridge->nativeInvocationInvoker();
   if (invoker || bridge->invokeCallbacksOnNativeCallerThread()) {
     performNativeInvocation(runtime, invoker, [&]() { invocation(); });
-  } else {
+  } else if (shouldDispatchNativeCallToUI()) {
     performDirectObjCInvocation(runtime, [&]() { invocation(); });
+  } else {
+    invocation();
   }
+}
+
+bool nativeObjectReturnMayCoerceToString(const NativeApiType& type) {
+  return type.kind == metagen::mdTypeAnyObject ||
+         type.kind == metagen::mdTypeNSStringObject;
+}
+
+bool nativeObjectIsStringLike(id object) {
+  if (object == nil) {
+    return false;
+  }
+  Class cls = object_getClass(object);
+  struct StringLikeClassCacheEntry {
+    Class cls = Nil;
+    bool stringLike = false;
+  };
+  static thread_local StringLikeClassCacheEntry cache[4];
+  const size_t firstSlot = (reinterpret_cast<uintptr_t>(cls) >> 4) & 3;
+  for (size_t i = 0; i < 4; i++) {
+    const auto& entry = cache[(firstSlot + i) & 3];
+    if (entry.cls == cls) {
+      return entry.stringLike;
+    }
+  }
+  bool stringLike = [object isKindOfClass:[NSString class]];
+  cache[firstSlot] = StringLikeClassCacheEntry{cls, stringLike};
+  return stringLike;
+}
+
+Value findCachedNativeObjectReturn(Runtime& runtime,
+                                   const std::shared_ptr<NativeApiBridge>& bridge,
+                                   const NativeApiType& type, id object) {
+  bool roundTripStringLike = false;
+  const bool stringReturnCandidate = nativeObjectReturnMayCoerceToString(type);
+  // AnyObject/NSString returns intentionally coerce string-like native objects
+  // to JS strings, so cached identity is only valid for non-string wrappers.
+  if (stringReturnCandidate && nativeObjectIsStringLike(object)) {
+    return Value::undefined();
+  }
+  Value roundTrip = bridge->findRoundTripValue(
+      runtime, object, stringReturnCandidate ? &roundTripStringLike : nullptr);
+  if (!roundTrip.isUndefined() && !roundTripStringLike) {
+    return roundTrip;
+  }
+  return Value::undefined();
 }
 
 Value makeString(Runtime& runtime, const std::string& value) {

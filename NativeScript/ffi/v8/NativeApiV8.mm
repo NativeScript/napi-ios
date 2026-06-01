@@ -598,26 +598,22 @@ bool setV8EngineObjectReturn(
     info.GetReturnValue().Set(v8::Null(isolate));
     return true;
   }
-  if ((type.kind == metagen::mdTypeAnyObject ||
-       type.kind == metagen::mdTypeNSStringObject) &&
-      [object respondsToSelector:@selector(UTF8String)]) {
-    std::string utf8 = utf8StringFromNSString(static_cast<NSString*>(object));
-    if (type.returnOwned) {
-      [object release];
-    }
-    info.GetReturnValue().Set(engine::v8engine::makeV8String(isolate, utf8));
-    return true;
-  }
-  // The round-trip cache only ever holds wrapped native objects (NSNull,
-  // NSNumber and string-convertibles are returned as JS primitives and never
-  // cached), so checking it before those isKindOfClass probes is both safe and
-  // skips two objc_msgSend calls on the hot object-return path.
-  Value roundTrip = bridge->findRoundTripValue(runtime, object);
+  Value roundTrip =
+      findCachedNativeObjectReturn(runtime, bridge, type, object);
   if (!roundTrip.isUndefined()) {
     info.GetReturnValue().Set(roundTrip.local(runtime));
     if (type.returnOwned) {
       [object release];
     }
+    return true;
+  }
+  if (nativeObjectReturnMayCoerceToString(type) &&
+      nativeObjectIsStringLike(object)) {
+    std::string utf8 = utf8StringFromNSString(static_cast<NSString*>(object));
+    if (type.returnOwned) {
+      [object release];
+    }
+    info.GetReturnValue().Set(engine::v8engine::makeV8String(isolate, utf8));
     return true;
   }
   if ([object isKindOfClass:[NSNull class]]) {

@@ -1850,7 +1850,9 @@ Value makeNativeObjectValue(Runtime& runtime,
     Object prototype = prototypeValue.asObject(runtime);
     SetNativeApiObjectPrototype(runtime, result, prototype);
   }
-  bridge->rememberRoundTripValue(runtime, object, Value(runtime, result));
+  bridge->rememberRoundTripValue(
+      runtime, object, Value(runtime, result),
+      nativeObjectIsStringLike(object));
   return result;
 }
 
