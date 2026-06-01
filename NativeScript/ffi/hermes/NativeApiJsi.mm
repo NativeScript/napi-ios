@@ -282,12 +282,41 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
         const NativeApiSelectorGroupEntry& entry = (*selectors)[count];
         auto& prepared = (*preparedInvocations)[count];
         Class selectorLookupClass = lookupClass;
-        id receiver = nil;
+        id receiver = receiverIsClass ? static_cast<id>(lookupClass) : nil;
         std::shared_ptr<NativeApiObjectHostObject> receiverHostObject;
+        if (!receiverIsClass) {
+          if (auto bound = boundReceiver.lock()) {
+            receiverHostObject = std::move(bound);
+            receiver = receiverHostObject->object();
+          } else if (thisValue.isObject()) {
+            Object receiverObject = thisValue.asObject(runtime);
+            if (receiverObject.isHostObject<NativeApiObjectHostObject>(
+                    runtime)) {
+              receiverHostObject =
+                  receiverObject.getHostObject<NativeApiObjectHostObject>(
+                      runtime);
+              receiver = receiverHostObject->object();
+            }
+          }
+        }
+        if (receiver == nil) {
+          throw JSError(runtime,
+                        "Objective-C selector requires a native receiver.");
+        }
+
+        std::string selectorName;
+        NativeApiMember adjustedMember;
+        const NativeApiMember* selectedMember = selectorGroupMemberForCall(
+            receiver, selectorLookupClass, receiverIsClass, entry, count,
+            adjustedMember, selectorName);
+        if (prepared != nullptr && prepared->selectorName != selectorName) {
+          prepared = nullptr;
+        }
+
         if (receiverIsClass) {
           Class methodClass = prepared != nullptr ? prepared->receiverClass : Nil;
           if (methodClass == Nil) {
-            SEL selector = sel_registerName(entry.selectorName.c_str());
+            SEL selector = sel_registerName(selectorName.c_str());
             methodClass =
                 NativeApiClassHostObject::classRespondingToClassSelector(
                     lookupClass, selector);
@@ -299,26 +328,16 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
           }
           selectorLookupClass = methodClass;
           receiver = static_cast<id>(methodClass);
-        } else if (auto bound = boundReceiver.lock()) {
-          receiverHostObject = std::move(bound);
-          receiver = receiverHostObject->object();
-        } else if (thisValue.isObject()) {
-          Object receiverObject = thisValue.asObject(runtime);
-          if (receiverObject.isHostObject<NativeApiObjectHostObject>(
-                  runtime)) {
-            receiverHostObject =
-                receiverObject.getHostObject<NativeApiObjectHostObject>(
-                    runtime);
-            receiver = receiverHostObject->object();
-          }
         }
-        if (receiver == nil) {
-          throw JSError(runtime,
-                        "Objective-C selector requires a native receiver.");
+        if (entry.hasMember && entry.member.property && count == 0 &&
+            !selectorGroupCanPrepareSelector(receiver, selectorLookupClass,
+                                             receiverIsClass, selectorName)) {
+          return callObjCSelector(runtime, bridge, receiver, receiverIsClass,
+                                  selectorName, selectedMember, nullptr, 0);
         }
 
         if (!receiverIsClass) {
-          SEL selector = sel_registerName(entry.selectorName.c_str());
+          SEL selector = sel_registerName(selectorName.c_str());
           if (class_getInstanceMethod(selectorLookupClass, selector) == nullptr) {
             Class receiverClass = object_getClass(receiver);
             if (class_getInstanceMethod(receiverClass, selector) != nullptr) {
@@ -329,8 +348,8 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
 
         if (prepared == nullptr) {
           prepared = prepareNativeApiObjCInvocation(
-              runtime, bridge, selectorLookupClass, receiverIsClass, entry.selectorName,
-              entry.hasMember ? &entry.member : nullptr);
+              runtime, bridge, selectorLookupClass, receiverIsClass, selectorName,
+              selectedMember);
           // Look up the engine-neutral GSD invoker for this signature.
           if (prepared->engineInvoker == nullptr) {
             uint64_t dispatchId = dispatchIdForEngineSignature(

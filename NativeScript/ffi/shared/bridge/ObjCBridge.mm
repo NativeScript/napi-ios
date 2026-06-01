@@ -299,6 +299,34 @@ std::string booleanGetterSelectorForProperty(const std::string& property) {
   return selector;
 }
 
+std::optional<std::string> respondingPropertyGetterSelector(
+    id receiver, const std::string& property,
+    const std::string& preferredSelector) {
+  if (receiver == nil) {
+    return std::nullopt;
+  }
+
+  auto respondsToSelectorName = [receiver](const std::string& selectorName) {
+    return !selectorName.empty() &&
+           [receiver respondsToSelector:sel_getUid(selectorName.c_str())];
+  };
+
+  if (respondsToSelectorName(preferredSelector)) {
+    return preferredSelector;
+  }
+  if (preferredSelector != property && respondsToSelectorName(property)) {
+    return property;
+  }
+
+  std::string booleanSelector = booleanGetterSelectorForProperty(property);
+  if (booleanSelector != preferredSelector && booleanSelector != property &&
+      respondsToSelectorName(booleanSelector)) {
+    return booleanSelector;
+  }
+
+  return std::nullopt;
+}
+
 std::string setterSelectorForProperty(const std::string& property) {
   if (property.empty()) {
     return property;
@@ -389,6 +417,73 @@ selectorGroupEntriesForMethod(const std::vector<NativeApiMember>& members,
     }
   }
   return selectors->empty() ? nullptr : selectors;
+}
+
+bool selectorGroupCanPrepareSelector(id receiver, Class lookupClass,
+                                     bool receiverIsClass,
+                                     const std::string& selectorName) {
+  if (selectorName.empty()) {
+    return false;
+  }
+  SEL selector = sel_registerName(selectorName.c_str());
+  if (receiverIsClass) {
+    return lookupClass != Nil &&
+           class_getClassMethod(lookupClass, selector) != nullptr;
+  }
+  if (lookupClass != Nil &&
+      class_getInstanceMethod(lookupClass, selector) != nullptr) {
+    return true;
+  }
+  return receiver != nil &&
+         class_getInstanceMethod(object_getClass(receiver), selector) != nullptr;
+}
+
+std::string selectorGroupPropertyGetterSelector(
+    id receiver, Class lookupClass, bool receiverIsClass,
+    const NativeApiMember& member) {
+  if (selectorGroupCanPrepareSelector(receiver, lookupClass, receiverIsClass,
+                                      member.selectorName)) {
+    return member.selectorName;
+  }
+  if (member.selectorName != member.name &&
+      selectorGroupCanPrepareSelector(receiver, lookupClass, receiverIsClass,
+                                      member.name)) {
+    return member.name;
+  }
+
+  std::string booleanSelector = booleanGetterSelectorForProperty(member.name);
+  if (booleanSelector != member.selectorName && booleanSelector != member.name &&
+      selectorGroupCanPrepareSelector(receiver, lookupClass, receiverIsClass,
+                                      booleanSelector)) {
+    return booleanSelector;
+  }
+
+  if (auto responding = respondingPropertyGetterSelector(
+          receiver, member.name, member.selectorName)) {
+    return *responding;
+  }
+
+  return member.selectorName != member.name ? member.name : member.selectorName;
+}
+
+const NativeApiMember* selectorGroupMemberForCall(
+    id receiver, Class lookupClass, bool receiverIsClass,
+    const NativeApiSelectorGroupEntry& entry, size_t count,
+    NativeApiMember& adjustedMember, std::string& selectorName) {
+  selectorName = entry.selectorName;
+  if (!entry.hasMember) {
+    return nullptr;
+  }
+  if (count == 0 && entry.member.property) {
+    selectorName = selectorGroupPropertyGetterSelector(
+        receiver, lookupClass, receiverIsClass, entry.member);
+    if (selectorName != entry.member.selectorName) {
+      adjustedMember = entry.member;
+      adjustedMember.selectorName = selectorName;
+      return &adjustedMember;
+    }
+  }
+  return &entry.member;
 }
 
 const NativeApiMember* selectPropertyMember(
