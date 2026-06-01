@@ -393,9 +393,17 @@ JSValueRef setJSCEngineObjectReturn(
   if (object == nil) {
     return JSValueMakeNull(runtime.context());
   }
-  if ([object respondsToSelector:@selector(UTF8String)] &&
-      (type.kind == metagen::mdTypeAnyObject ||
-       type.kind == metagen::mdTypeNSStringObject)) {
+  Value roundTrip =
+      findCachedNativeObjectReturn(runtime, bridge, type, object);
+  if (!roundTrip.isUndefined()) {
+    JSValueRef result = roundTrip.local(runtime);
+    if (type.returnOwned) {
+      [object release];
+    }
+    return result;
+  }
+  if (nativeObjectReturnMayCoerceToString(type) &&
+      nativeObjectIsStringLike(object)) {
     std::string utf8 = utf8StringFromNSString(static_cast<NSString*>(object));
     if (type.returnOwned) {
       [object release];
@@ -403,15 +411,6 @@ JSValueRef setJSCEngineObjectReturn(
     JSStringRef string = engine::jscengine::makeJSString(utf8);
     JSValueRef result = JSValueMakeString(runtime.context(), string);
     JSStringRelease(string);
-    return result;
-  }
-
-  Value roundTrip = bridge->findRoundTripValue(runtime, object);
-  if (!roundTrip.isUndefined()) {
-    JSValueRef result = roundTrip.local(runtime);
-    if (type.returnOwned) {
-      [object release];
-    }
     return result;
   }
   if ([object isKindOfClass:[NSNull class]]) {

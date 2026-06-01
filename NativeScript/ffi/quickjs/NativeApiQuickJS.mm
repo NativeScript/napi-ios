@@ -501,23 +501,22 @@ JSValue setQuickJSEngineObjectReturn(
   if (object == nil) {
     return JS_NULL;
   }
-  if ([object respondsToSelector:@selector(UTF8String)] &&
-      (type.kind == metagen::mdTypeAnyObject ||
-       type.kind == metagen::mdTypeNSStringObject)) {
-    std::string utf8 = utf8StringFromNSString(static_cast<NSString*>(object));
-    if (type.returnOwned) {
-      [object release];
-    }
-    return JS_NewStringLen(context, utf8.data(), utf8.size());
-  }
-
-  Value roundTrip = bridge->findRoundTripValue(runtime, object);
+  Value roundTrip =
+      findCachedNativeObjectReturn(runtime, bridge, type, object);
   if (!roundTrip.isUndefined()) {
     JSValue result = roundTrip.local(runtime);
     if (type.returnOwned) {
       [object release];
     }
     return result;
+  }
+  if (nativeObjectReturnMayCoerceToString(type) &&
+      nativeObjectIsStringLike(object)) {
+    std::string utf8 = utf8StringFromNSString(static_cast<NSString*>(object));
+    if (type.returnOwned) {
+      [object release];
+    }
+    return JS_NewStringLen(context, utf8.data(), utf8.size());
   }
   if ([object isKindOfClass:[NSNull class]]) {
     if (type.returnOwned) {

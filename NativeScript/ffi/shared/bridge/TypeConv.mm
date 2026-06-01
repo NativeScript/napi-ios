@@ -895,23 +895,22 @@ Value convertNativeReturnValue(Runtime& runtime,
       if (object == nil) {
         return Value::null();
       }
-      if ([object respondsToSelector:@selector(UTF8String)]) {
-        bool untypedObject = type.kind == metagen::mdTypeAnyObject;
-        bool explicitNSString = type.kind == metagen::mdTypeNSStringObject;
-        if (untypedObject || explicitNSString) {
-          std::string utf8 = utf8StringFromNSString(static_cast<NSString*>(object));
-          if (type.returnOwned) {
-            [object release];
-          }
-          return makeString(runtime, utf8);
-        }
-      }
-      Value roundTrip = bridge->findRoundTripValue(runtime, object);
+      Value roundTrip =
+          findCachedNativeObjectReturn(runtime, bridge, type, object);
       if (!roundTrip.isUndefined()) {
         if (type.returnOwned) {
           [object release];
         }
         return roundTrip;
+      }
+      if (nativeObjectReturnMayCoerceToString(type) &&
+          nativeObjectIsStringLike(object)) {
+        std::string utf8 =
+            utf8StringFromNSString(static_cast<NSString*>(object));
+        if (type.returnOwned) {
+          [object release];
+        }
+        return makeString(runtime, utf8);
       }
       if ([object isKindOfClass:[NSNull class]]) {
         if (type.returnOwned) {
