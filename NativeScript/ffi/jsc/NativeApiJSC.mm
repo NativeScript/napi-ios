@@ -389,7 +389,7 @@ JSValueRef jscUnsignedInteger64Value(Runtime& runtime, uint64_t value) {
 
 JSValueRef setJSCEngineObjectReturn(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
-    NativeApiType type, id object) {
+    const NativeApiType& type, id object) {
   if (object == nil) {
     return JSValueMakeNull(runtime.context());
   }

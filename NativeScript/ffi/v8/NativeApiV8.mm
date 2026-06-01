@@ -591,7 +591,7 @@ v8::Local<v8::Value> v8UnsignedInteger64Value(v8::Isolate* isolate,
 
 bool setV8EngineObjectReturn(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
-    NativeApiType type, id object,
+    const NativeApiType& type, id object,
     const v8::FunctionCallbackInfo<v8::Value>& info) {
   v8::Isolate* isolate = runtime.isolate();
   if (object == nil) {
@@ -884,12 +884,7 @@ struct GsdObjCContext {
     return readV8EngineSelectorArgument(runtime, arg(i), out);
   }
   bool readClass(size_t i, Class* out) {
-    v8::Local<v8::Value> v = arg(i);
-    if (auto* c = v8HostObjectRaw<NativeApiClassHostObject>(v)) {
-      *out = c->nativeClass();
-      return true;
-    }
-    Class cls = v8NativeClassArgument(runtime, v);
+    Class cls = v8NativeClassArgument(runtime, arg(i));
     if (cls == Nil) return false;
     *out = cls;
     return true;

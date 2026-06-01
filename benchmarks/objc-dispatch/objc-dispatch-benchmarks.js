@@ -174,21 +174,25 @@
     return cases;
   }
 
-  var startedAt = nowMs();
   var results = [];
   var skipped = [];
   var cases = buildCases();
 
+  var startedAt = nowMs();
   for (var i = 0; i < cases.length; i++) {
     var item = cases[i];
     if (item.skip) {
       var skippedCase = { name: item.name, error: item.error };
       skipped.push(skippedCase);
-      emit({ kind: "skip", name: skippedCase.name, error: skippedCase.error });
       continue;
     }
     var result = bench(item.name, item.factor, item.fn);
     results.push(result);
+  }
+  var totalMs = nowMs() - startedAt;
+
+  for (var resultIndex = 0; resultIndex < results.length; resultIndex++) {
+    var result = results[resultIndex];
     emit({
       kind: "case",
       name: result.name,
@@ -198,6 +202,11 @@
     });
   }
 
+  for (var skippedIndex = 0; skippedIndex < skipped.length; skippedIndex++) {
+    var skippedCase = skipped[skippedIndex];
+    emit({ kind: "skip", name: skippedCase.name, error: skippedCase.error });
+  }
+
   var report = {
     kind: "done",
     version: 1,
@@ -205,7 +214,7 @@
     variant: variant,
     baseIterations: baseIterations,
     warmupIterations: warmupIterations,
-    totalMs: nowMs() - startedAt,
+    totalMs: totalMs,
     sink: sink,
     resultCount: results.length,
     skippedCount: skipped.length

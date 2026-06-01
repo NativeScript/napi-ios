@@ -3,6 +3,10 @@
 #ifdef TARGET_ENGINE_JSC
 
 namespace nativescript {
+class NativeApiObjectHostObject;
+}
+
+namespace nativescript {
 namespace engine {
 
 namespace jscengine {
@@ -49,10 +53,56 @@ class StackValueArray {
   alignas(Value) unsigned char inlineStorage_[sizeof(Value) * InlineCount];
 };
 
+bool isNativeInstancePrototypeBypassExcluded(JSStringRef propertyName) {
+  return JSStringIsEqualToUTF8CString(propertyName, "kind") ||
+         JSStringIsEqualToUTF8CString(propertyName, "className") ||
+         JSStringIsEqualToUTF8CString(propertyName, "nativeAddress") ||
+         JSStringIsEqualToUTF8CString(propertyName, "class") ||
+         JSStringIsEqualToUTF8CString(propertyName, "constructor") ||
+         JSStringIsEqualToUTF8CString(propertyName, "super") ||
+         JSStringIsEqualToUTF8CString(propertyName, "invoke") ||
+         JSStringIsEqualToUTF8CString(propertyName, "send") ||
+         JSStringIsEqualToUTF8CString(propertyName, "takeRetainedValue") ||
+         JSStringIsEqualToUTF8CString(propertyName, "takeUnretainedValue") ||
+         JSStringIsEqualToUTF8CString(propertyName, "toString");
+}
+
+bool shouldDeferToNativeInstancePrototype(JSContextRef context,
+                                          JSObjectRef object,
+                                          JSStringRef propertyName,
+                                          HostObjectHolder* holder) {
+  if (context == nullptr || object == nullptr || propertyName == nullptr ||
+      holder == nullptr ||
+      holder->typeToken != hostObjectTypeToken<NativeApiObjectHostObject>() ||
+      isNativeInstancePrototypeBypassExcluded(propertyName)) {
+    return false;
+  }
+
+  JSValueRef prototypeValue = JSObjectGetPrototype(context, object);
+  if (prototypeValue == nullptr || !JSValueIsObject(context, prototypeValue)) {
+    return false;
+  }
+
+  JSValueRef exception = nullptr;
+  JSObjectRef prototypeObject =
+      JSValueToObject(context, prototypeValue, &exception);
+  if (exception != nullptr || prototypeObject == nullptr) {
+    return false;
+  }
+
+  exception = nullptr;
+  bool found = JSObjectHasProperty(context, prototypeObject, propertyName);
+  return exception == nullptr && found;
+}
+
 JSValueRef hostGetProperty(JSContextRef context, JSObjectRef object, JSStringRef propertyName,
                            JSValueRef* exception) {
   auto* holder = static_cast<HostObjectHolder*>(JSObjectGetPrivate(object));
   if (holder == nullptr || holder->hostObject == nullptr) {
+    return nullptr;
+  }
+  if (shouldDeferToNativeInstancePrototype(context, object, propertyName,
+                                           holder)) {
     return nullptr;
   }
   Runtime runtime(holder->state);

@@ -808,6 +808,7 @@ class NativeApiBridge {
     }
     objectExpandos_[normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native))]
                   [property] = std::make_shared<Value>(runtime, value);
+    objectExpandosGeneration_.fetch_add(1, std::memory_order_release);
   }
 
   Value findObjectExpando(Runtime& runtime, const void* native,
@@ -815,15 +816,49 @@ class NativeApiBridge {
     if (native == nullptr || property.empty()) {
       return Value::undefined();
     }
-    auto objectIt = objectExpandos_.find(
-        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
+    struct ObjectExpandoCacheEntry {
+      const NativeApiBridge* bridge = nullptr;
+      uintptr_t key = 0;
+      uint64_t generation = 0;
+      std::string property;
+      std::weak_ptr<Value> value;
+      bool miss = false;
+    };
+    static thread_local ObjectExpandoCacheEntry cache[8];
+    static thread_local size_t nextSlot = 0;
+
+    const uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    const uint64_t generation =
+        objectExpandosGeneration_.load(std::memory_order_acquire);
+    for (auto& entry : cache) {
+      if (entry.bridge == this && entry.key == key &&
+          entry.generation == generation && entry.property == property) {
+        if (entry.miss) {
+          return Value::undefined();
+        }
+        if (auto cached = entry.value.lock()) {
+          return Value(runtime, *cached);
+        }
+        break;
+      }
+    }
+
+    auto objectIt = objectExpandos_.find(key);
+    const size_t slot = nextSlot++ & 7;
     if (objectIt == objectExpandos_.end()) {
+      cache[slot] =
+          ObjectExpandoCacheEntry{this, key, generation, property, {}, true};
       return Value::undefined();
     }
     auto propertyIt = objectIt->second.find(property);
     if (propertyIt == objectIt->second.end() || propertyIt->second == nullptr) {
+      cache[slot] =
+          ObjectExpandoCacheEntry{this, key, generation, property, {}, true};
       return Value::undefined();
     }
+    cache[slot] = ObjectExpandoCacheEntry{
+        this, key, generation, property, propertyIt->second, false};
     return Value(runtime, *propertyIt->second);
   }
 
@@ -833,6 +868,7 @@ class NativeApiBridge {
     }
     objectExpandos_.erase(
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
+    objectExpandosGeneration_.fetch_add(1, std::memory_order_release);
   }
 
   // Per-class cache of resolved metadata property-getter members. Lets the
@@ -848,12 +884,46 @@ class NativeApiBridge {
   };
   const CachedPropertyGetter* findCachedPropertyGetter(
       Class cls, const std::string& property) const {
+    if (cls == Nil || property.empty()) {
+      return nullptr;
+    }
+    struct PropertyGetterCacheEntry {
+      const NativeApiBridge* bridge = nullptr;
+      Class cls = Nil;
+      uint64_t generation = 0;
+      std::string property;
+      const CachedPropertyGetter* getter = nullptr;
+      bool miss = false;
+    };
+    static thread_local PropertyGetterCacheEntry cache[8];
+    static thread_local size_t nextSlot = 0;
+
+    const uint64_t generation =
+        propertyGetterCacheGeneration_.load(std::memory_order_acquire);
+    for (auto& entry : cache) {
+      if (entry.bridge == this && entry.cls == cls &&
+          entry.generation == generation && entry.property == property) {
+        return entry.miss ? nullptr : entry.getter;
+      }
+    }
+
     auto classIt = propertyGetterCache_.find(cls);
+    const size_t slot = nextSlot++ & 7;
     if (classIt == propertyGetterCache_.end()) {
+      cache[slot] = PropertyGetterCacheEntry{
+          this, cls, generation, property, nullptr, true};
       return nullptr;
     }
     auto propIt = classIt->second.find(property);
-    return propIt != classIt->second.end() ? &propIt->second : nullptr;
+    if (propIt == classIt->second.end()) {
+      cache[slot] = PropertyGetterCacheEntry{
+          this, cls, generation, property, nullptr, true};
+      return nullptr;
+    }
+    cache[slot] =
+        PropertyGetterCacheEntry{this, cls, generation, property,
+                                 &propIt->second, false};
+    return &propIt->second;
   }
   void cachePropertyGetter(Class cls, const std::string& property,
                            const NativeApiMember* member,
@@ -863,6 +933,7 @@ class NativeApiBridge {
     propertyGetterCache_[cls][property] =
         CachedPropertyGetter{member, selectorName,
                              std::move(preparedInvocation)};
+    propertyGetterCacheGeneration_.fetch_add(1, std::memory_order_release);
   }
 
   void rememberPointerValue(Runtime& runtime, const void* native,
@@ -1833,8 +1904,10 @@ class NativeApiBridge {
   std::unordered_map<uintptr_t,
                      std::unordered_map<std::string, std::shared_ptr<Value>>>
       objectExpandos_;
+  std::atomic<uint64_t> objectExpandosGeneration_{1};
   std::unordered_map<Class, std::unordered_map<std::string, CachedPropertyGetter>>
       propertyGetterCache_;
+  std::atomic<uint64_t> propertyGetterCacheGeneration_{1};
   std::unordered_map<MDSectionOffset, NativeApiSymbol> classSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> protocolSymbolsByOffset_;
   std::vector<std::string> classNames_;
