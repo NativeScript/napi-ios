@@ -176,7 +176,9 @@ struct NativeApiSelectorGroupData {
       std::shared_ptr<
           std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
           preparedInvocations,
-      std::weak_ptr<NativeApiObjectHostObject> boundReceiver = {})
+      std::weak_ptr<NativeApiObjectHostObject> boundReceiver = {},
+      std::shared_ptr<NativeApiObjectLifetimeState> boundReceiverState =
+          nullptr)
       : state(state),
         bridge(std::move(bridge)),
         lookupClass(lookupClass),
@@ -184,6 +186,7 @@ struct NativeApiSelectorGroupData {
         selectors(std::move(selectors)),
         preparedInvocations(std::move(preparedInvocations)),
         boundReceiver(std::move(boundReceiver)),
+        boundReceiverState(std::move(boundReceiverState)),
         runtime(state) {}
 
   std::shared_ptr<engine::v8engine::RuntimeState> state;
@@ -195,6 +198,7 @@ struct NativeApiSelectorGroupData {
       std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
       preparedInvocations;
   std::weak_ptr<NativeApiObjectHostObject> boundReceiver;
+  std::shared_ptr<NativeApiObjectLifetimeState> boundReceiverState;
   // Cached Runtime wrapper reused per call (avoids per-call shared_ptr
   // atomic refcount on the hot dispatch path).
   Runtime runtime;
@@ -325,10 +329,27 @@ Class v8NativeClassArgument(Runtime& runtime, v8::Local<v8::Value> value) {
   if (value.IsEmpty() || value->IsNullOrUndefined()) {
     return Nil;
   }
-  if (auto classHost = v8HostObject<NativeApiClassHostObject>(runtime, value)) {
-    return classHost->nativeClass();
+  auto* state = runtime.rawState();
+  if (state != nullptr && value->IsObject()) {
+    if (state->nativeClassArgumentLast.nativeClass != Nil &&
+        !state->nativeClassArgumentLast.value.IsEmpty() &&
+        state->nativeClassArgumentLast.value.Get(runtime.isolate()) == value) {
+      return state->nativeClassArgumentLast.nativeClass;
+    }
+    for (auto& entry : state->nativeClassArgumentCache) {
+      if (entry.nativeClass != Nil && !entry.value.IsEmpty() &&
+          entry.value.Get(runtime.isolate()) == value) {
+        state->nativeClassArgumentLast.value.Reset(runtime.isolate(), value);
+        state->nativeClassArgumentLast.nativeClass = entry.nativeClass;
+        return entry.nativeClass;
+      }
+    }
   }
-  if (value->IsObject()) {
+
+  Class result = Nil;
+  if (auto classHost = v8HostObject<NativeApiClassHostObject>(runtime, value)) {
+    result = classHost->nativeClass();
+  } else if (value->IsObject()) {
     v8::Local<v8::Value> wrappedClassValue;
     if (value.As<v8::Object>()
             ->Get(runtime.context(),
@@ -338,12 +359,28 @@ Class v8NativeClassArgument(Runtime& runtime, v8::Local<v8::Value> value) {
       if (auto classHost =
               v8HostObject<NativeApiClassHostObject>(runtime,
                                                      wrappedClassValue)) {
-        return classHost->nativeClass();
+        result = classHost->nativeClass();
       }
     }
   }
-  Value wrapped = Value::borrowed(runtime, value);
-  return classFromEngineValue(runtime, wrapped);
+
+  if (result == Nil) {
+    Value wrapped = Value::borrowed(runtime, value);
+    result = classFromEngineValue(runtime, wrapped);
+  }
+
+  if (result != Nil && state != nullptr && value->IsObject()) {
+    constexpr size_t cacheSize =
+        sizeof(state->nativeClassArgumentCache) /
+        sizeof(state->nativeClassArgumentCache[0]);
+    auto& entry = state->nativeClassArgumentCache[
+        state->nativeClassArgumentCacheNext++ % cacheSize];
+    entry.value.Reset(runtime.isolate(), value);
+    entry.nativeClass = result;
+    state->nativeClassArgumentLast.value.Reset(runtime.isolate(), value);
+    state->nativeClassArgumentLast.nativeClass = result;
+  }
+  return result;
 }
 
 bool readV8EngineSelectorArgument(Runtime& runtime, v8::Local<v8::Value> value,
@@ -358,8 +395,48 @@ bool readV8EngineSelectorArgument(Runtime& runtime, v8::Local<v8::Value> value,
   if (!value->IsString()) {
     return false;
   }
-  std::string selectorName = v8StringToUtf8(runtime.isolate(), value);
-  *result = sel_registerName(selectorName.c_str());
+  auto* state = runtime.rawState();
+  if (state != nullptr) {
+    if (state->nativeSelectorArgumentLast.selector != nullptr &&
+        !state->nativeSelectorArgumentLast.value.IsEmpty() &&
+        state->nativeSelectorArgumentLast.value.Get(runtime.isolate()) ==
+            value) {
+      *result = state->nativeSelectorArgumentLast.selector;
+      return true;
+    }
+    for (auto& entry : state->nativeSelectorArgumentCache) {
+      if (entry.selector != nullptr && !entry.value.IsEmpty() &&
+          entry.value.Get(runtime.isolate()) == value) {
+        *result = entry.selector;
+        state->nativeSelectorArgumentLast.value.Reset(runtime.isolate(), value);
+        state->nativeSelectorArgumentLast.selector = entry.selector;
+        return true;
+      }
+    }
+  }
+
+  v8::Isolate* isolate = runtime.isolate();
+  v8::Local<v8::String> string = value.As<v8::String>();
+  char stackBuffer[128];
+  if (string->Utf8LengthV2(isolate) + 1 <= sizeof(stackBuffer)) {
+    string->WriteUtf8V2(isolate, stackBuffer, sizeof(stackBuffer),
+                        v8::String::WriteFlags::kNullTerminate);
+    *result = sel_registerName(stackBuffer);
+  } else {
+    std::string selectorName = v8StringToUtf8(isolate, value);
+    *result = sel_registerName(selectorName.c_str());
+  }
+  if (*result != nullptr && state != nullptr) {
+    constexpr size_t cacheSize =
+        sizeof(state->nativeSelectorArgumentCache) /
+        sizeof(state->nativeSelectorArgumentCache[0]);
+    auto& entry = state->nativeSelectorArgumentCache[
+        state->nativeSelectorArgumentCacheNext++ % cacheSize];
+    entry.value.Reset(isolate, value);
+    entry.selector = *result;
+    state->nativeSelectorArgumentLast.value.Reset(isolate, value);
+    state->nativeSelectorArgumentLast.selector = *result;
+  }
   return true;
 }
 
@@ -746,6 +823,10 @@ struct GsdObjCContext {
   template <class T>
   bool readSigned(size_t i, T* out) {
     v8::Local<v8::Value> v = arg(i);
+    if (v->IsInt32()) {
+      *out = static_cast<T>(v.As<v8::Int32>()->Value());
+      return true;
+    }
     if constexpr (sizeof(T) <= 4) {
       int32_t tmp = 0;
       if (!v->Int32Value(jsContext).To(&tmp)) return false;
@@ -765,6 +846,14 @@ struct GsdObjCContext {
   template <class T>
   bool readUnsigned(size_t i, T* out) {
     v8::Local<v8::Value> v = arg(i);
+    if (v->IsUint32()) {
+      *out = static_cast<T>(v.As<v8::Uint32>()->Value());
+      return true;
+    }
+    if (v->IsInt32()) {
+      *out = static_cast<T>(v.As<v8::Int32>()->Value());
+      return true;
+    }
     if constexpr (sizeof(T) <= 4) {
       uint32_t tmp = 0;
       if (!v->Uint32Value(jsContext).To(&tmp)) return false;
@@ -783,34 +872,20 @@ struct GsdObjCContext {
   }
   bool readFloat(size_t i, float* out) {
     double tmp = 0.0;
-    if (!arg(i)->NumberValue(jsContext).To(&tmp)) return false;
+    if (!readDouble(i, &tmp)) return false;
     *out = static_cast<float>(tmp);
     return true;
   }
   bool readDouble(size_t i, double* out) {
-    return arg(i)->NumberValue(jsContext).To(out);
+    v8::Local<v8::Value> v = arg(i);
+    if (v->IsNumber()) {
+      *out = v.As<v8::Number>()->Value();
+      return true;
+    }
+    return v->NumberValue(jsContext).To(out);
   }
   bool readSelector(size_t i, SEL* out) {
-    v8::Local<v8::Value> v = arg(i);
-    if (v.IsEmpty() || v->IsNullOrUndefined()) {
-      *out = nullptr;
-      return true;
-    }
-    if (!v->IsString()) return false;
-    v8::Local<v8::String> s = v.As<v8::String>();
-    // Selectors are short; write into a stack buffer to avoid the heap
-    // allocation that v8::String::Utf8Value performs on every call.
-    char stackBuffer[128];
-    if (s->Utf8LengthV2(isolate) + 1 <= sizeof(stackBuffer)) {
-      s->WriteUtf8V2(isolate, stackBuffer, sizeof(stackBuffer),
-                     v8::String::WriteFlags::kNullTerminate);
-      *out = sel_registerName(stackBuffer);
-      return true;
-    }
-    v8::String::Utf8Value utf8(isolate, v);
-    if (*utf8 == nullptr) return false;
-    *out = sel_registerName(*utf8);
-    return true;
+    return readV8EngineSelectorArgument(runtime, arg(i), out);
   }
   bool readClass(size_t i, Class* out) {
     v8::Local<v8::Value> v = arg(i);
@@ -836,6 +911,11 @@ struct GsdObjCContext {
     }
     if (auto* c = v8HostObjectRaw<NativeApiClassHostObject>(v)) {
       *out = static_cast<id>(c->nativeClass());
+      return true;
+    }
+    Class cls = v8NativeClassArgument(runtime, v);
+    if (cls != Nil) {
+      *out = static_cast<id>(cls);
       return true;
     }
     if (auto* p = v8HostObjectRaw<NativeApiProtocolHostObject>(v)) {
@@ -932,6 +1012,17 @@ namespace {  // reopen anonymous namespace
 
 // --- End GSD ---
 
+void* lookupGeneratedEngineObjCGsdInvoker(uint64_t dispatchId) {
+  return reinterpret_cast<void*>(lookupObjCGsdInvoker(dispatchId));
+}
+
+bool tryCallGeneratedEngineObjCSelector(
+    Runtime&, const std::shared_ptr<NativeApiBridge>&, id,
+    const NativeApiPreparedObjCInvocation&, const Value*, size_t, Class,
+    Value*) {
+  return false;
+}
+
 void setV8EnginePreparedObjCResult(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     id receiver, const NativeApiPreparedObjCInvocation& prepared,
@@ -967,9 +1058,11 @@ void setV8EnginePreparedObjCResult(
   // FunctionCallbackInfo, calls objc_msgSend with a typed cast, and sets the
   // return via the V8 API — all in one generated function. Bypasses all
   // generic marshalling.
-  if (prepared.engineInvoker != nullptr && dispatchSuperClass == Nil &&
+  const bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
+  if (prepared.gsdEngineCallable && dispatchSuperClass == Nil &&
+      providedCount == prepared.gsdEngineArgumentCount &&
       !initializerClassWrapper && !isNSErrorOutMethod &&
-      !shouldDispatchNativeCallToUI()) {
+      !dispatchingNativeCallToUI) {
     auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared.engineInvoker);
     GsdObjCContext ctx{runtime,
                        bridge,
@@ -1035,7 +1128,6 @@ void setV8EnginePreparedObjCResult(
 
   NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
-  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
     if (prepared.preparedInvoker != nullptr && dispatchSuperClass == Nil) {
@@ -1116,15 +1208,18 @@ void NativeApiSelectorGroupCallback(
                     "count.");
     }
 
-    const NativeApiSelectorGroupEntry& entry = (*data->selectors)[count];
+    NativeApiSelectorGroupEntry& entry = (*data->selectors)[count];
     auto& prepared = (*data->preparedInvocations)[count];
     Class selectorLookupClass = data->lookupClass;
     id receiver = data->receiverIsClass ? static_cast<id>(data->lookupClass) : nil;
     std::shared_ptr<NativeApiObjectHostObject> receiverHostObject;
     if (!data->receiverIsClass) {
-      if (auto boundReceiver = data->boundReceiver.lock()) {
-        receiverHostObject = std::move(boundReceiver);
-        receiver = receiverHostObject->object();
+      if (data->boundReceiverState != nullptr) {
+        receiver = data->boundReceiverState->object();
+        if (receiver == nil) {
+          throw JSError(runtime,
+                        "Objective-C selector requires a native receiver.");
+        }
       } else {
         // Use raw pointer for receiver lookup (avoids atomic ref count on hot path).
         // The receiver host object is kept alive by the V8 GC handle.
@@ -1140,14 +1235,25 @@ void NativeApiSelectorGroupCallback(
                     "Objective-C selector requires a native receiver.");
     }
 
-    std::string selectorName;
-    NativeApiMember adjustedMember;
-    const NativeApiMember* selectedMember = selectorGroupMemberForCall(
-        receiver, selectorLookupClass, data->receiverIsClass, entry, count,
-        adjustedMember, selectorName);
-    if (prepared != nullptr && prepared->selectorName != selectorName) {
-      prepared = nullptr;
+    const bool propertyGetterCall =
+        entry.hasMember && entry.member.property && count == 0;
+    const std::string* selectorNamePtr = &entry.selectorName;
+    const NativeApiMember* selectedMember =
+        entry.hasMember ? &entry.member : nullptr;
+    bool callTargetCanPrepare = true;
+    if (prepared == nullptr || propertyGetterCall) {
+      NativeApiSelectorGroupCallTarget callTarget = selectorGroupMemberForCall(
+          receiver, selectorLookupClass, data->receiverIsClass, entry, count);
+      selectorNamePtr = callTarget.selectorName;
+      selectedMember = callTarget.member;
+      callTargetCanPrepare = callTarget.canPrepare;
+      if (prepared != nullptr && prepared->selectorName != *selectorNamePtr) {
+        prepared = nullptr;
+      }
     }
+    const std::string& selectorName =
+        prepared != nullptr && !propertyGetterCall ? prepared->selectorName
+                                                   : *selectorNamePtr;
 
     if (data->receiverIsClass) {
       Class methodClass = prepared != nullptr ? prepared->receiverClass : Nil;
@@ -1165,9 +1271,7 @@ void NativeApiSelectorGroupCallback(
       selectorLookupClass = methodClass;
       receiver = static_cast<id>(methodClass);
     }
-    if (entry.hasMember && entry.member.property && count == 0 &&
-        !selectorGroupCanPrepareSelector(receiver, selectorLookupClass,
-                                         data->receiverIsClass, selectorName)) {
+    if (propertyGetterCall && !callTargetCanPrepare) {
       Value result = callObjCSelector(runtime, data->bridge, receiver,
                                       data->receiverIsClass, selectorName,
                                       selectedMember, nullptr, 0);
@@ -1195,6 +1299,7 @@ void NativeApiSelectorGroupCallback(
             prepared->signature, SignatureCallKind::ObjCMethod);
         if (auto gsdInvoker = lookupObjCGsdInvoker(dispatchId)) {
           prepared->engineInvoker = reinterpret_cast<void*>(gsdInvoker);
+          configureGeneratedEngineObjCInvocation(*prepared);
         }
       }
     }
@@ -1202,6 +1307,13 @@ void NativeApiSelectorGroupCallback(
     std::optional<Object> initializerClassWrapper;
     if (!data->receiverIsClass && prepared->isInitMethod) {
       // Init methods need the shared_ptr for disown handling.
+      if (!receiverHostObject) {
+        if (data->boundReceiverState != nullptr) {
+          if (auto boundReceiver = data->boundReceiver.lock()) {
+            receiverHostObject = std::move(boundReceiver);
+          }
+        }
+      }
       if (!receiverHostObject) {
         receiverHostObject =
             v8HostObject<NativeApiObjectHostObject>(runtime, info.This());
@@ -1236,11 +1348,11 @@ void NativeApiSelectorGroupCallback(
     // Inline GSD fast path: skip the setV8EnginePreparedObjCResult call and its
     // argument-count/NSError preamble entirely for the common case. The
     // generated invoker reads args, calls objc_msgSend, and sets the return.
-    const NativeApiSignature& sig = prepared->signature;
-    if (prepared->engineInvoker != nullptr && dispatchClass == Nil &&
-        !prepared->isInitMethod && !prepared->isNSErrorOutMethod &&
-        !sig.variadic && count == sig.argumentTypes.size() &&
-        !shouldDispatchNativeCallToUI()) {
+    const bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
+    if (prepared->gsdEngineCallable && dispatchClass == Nil &&
+        !prepared->isInitMethod &&
+        count == prepared->gsdEngineArgumentCount &&
+        !dispatchingNativeCallToUI) {
       auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared->engineInvoker);
       GsdObjCContext ctx{runtime,
                          data->bridge,
@@ -1249,7 +1361,7 @@ void NativeApiSelectorGroupCallback(
                          info,
                          runtime.isolate(),
                          runtime.context(),
-                         sig.returnType};
+                         prepared->signature.returnType};
       if (invoker(ctx)) {
         return;
       }
@@ -1269,11 +1381,13 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
     std::shared_ptr<
         std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
         preparedInvocations,
-    std::weak_ptr<NativeApiObjectHostObject> boundReceiver) {
+    std::weak_ptr<NativeApiObjectHostObject> boundReceiver,
+    std::shared_ptr<NativeApiObjectLifetimeState> boundReceiverState =
+        nullptr) {
   auto data = std::make_shared<NativeApiSelectorGroupData>(
       runtime.state(), std::move(bridge), lookupClass, receiverIsClass,
       std::move(selectors), std::move(preparedInvocations),
-      std::move(boundReceiver));
+      std::move(boundReceiver), std::move(boundReceiverState));
   auto* rawData = data.get();
   runtime.state()->retainedNativeData.push_back(std::move(data));
 
@@ -1299,7 +1413,7 @@ Function CreateNativeApiSelectorGroupFunction(
         preparedInvocations) {
   return CreateNativeApiSelectorGroupFunctionImpl(
       runtime, std::move(bridge), lookupClass, receiverIsClass,
-      std::move(selectors), std::move(preparedInvocations), {});
+      std::move(selectors), std::move(preparedInvocations), {}, nullptr);
 }
 
 Function CreateNativeApiBoundSelectorGroupFunction(
@@ -1311,7 +1425,9 @@ Function CreateNativeApiBoundSelectorGroupFunction(
         preparedInvocations) {
   return CreateNativeApiSelectorGroupFunctionImpl(
       runtime, std::move(bridge), lookupClass, false, std::move(selectors),
-      std::move(preparedInvocations), receiverHostObject);
+      std::move(preparedInvocations), receiverHostObject,
+      receiverHostObject != nullptr ? receiverHostObject->lifetimeState()
+                                    : nullptr);
 }
 
 }  // namespace

@@ -407,8 +407,13 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
   bool isStret = cif->returnType->type->size > 16 && cif->returnType->type->type == FFI_TYPE_STRUCT;
 #endif
 
+  NapiNativeCallbackExceptionCapture callbackException;
+  ScopedNapiNativeCallbackExceptionCapture callbackExceptionCapture(
+      &callbackException);
+
   @try {
     if (!supercall) {
+      bool preparedInvoked = false;
       if (cif != nullptr && cif->signatureHash != 0) {
         if (descriptor != nullptr &&
             (!descriptor->dispatchLookupCached ||
@@ -432,22 +437,24 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
         if (invoker != nullptr) {
           NativeCallRuntimeUnlockScope unlockRuntime(env);
           invoker((void*)objc_msgSend, avalues, rvalue);
-          return true;
+          preparedInvoked = true;
         }
       }
 
+      if (!preparedInvoked) {
 #if defined(__x86_64__)
-      if (isStret) {
-        NativeCallRuntimeUnlockScope unlockRuntime(env);
-        ffi_call(&cif->cif, FFI_FN(objc_msgSend_stret), rvalue, avalues);
-      } else {
+        if (isStret) {
+          NativeCallRuntimeUnlockScope unlockRuntime(env);
+          ffi_call(&cif->cif, FFI_FN(objc_msgSend_stret), rvalue, avalues);
+        } else {
+          NativeCallRuntimeUnlockScope unlockRuntime(env);
+          ffi_call(&cif->cif, FFI_FN(objc_msgSend), rvalue, avalues);
+        }
+#else
         NativeCallRuntimeUnlockScope unlockRuntime(env);
         ffi_call(&cif->cif, FFI_FN(objc_msgSend), rvalue, avalues);
-      }
-#else
-      NativeCallRuntimeUnlockScope unlockRuntime(env);
-      ffi_call(&cif->cif, FFI_FN(objc_msgSend), rvalue, avalues);
 #endif
+      }
     } else {
       Class superClass = classMethod ? class_getSuperclass(object_getClass((id)receiverClass))
                                      : class_getSuperclass(receiverClass);
@@ -472,6 +479,10 @@ inline bool objcNativeCall(napi_env env, Cif* cif, id self, bool classMethod,
     std::string message = exception.description.UTF8String;
     nativescript::NativeScriptException nativeScriptException(message);
     nativeScriptException.ReThrowToJS(env);
+    return false;
+  }
+
+  if (rethrowNapiNativeCallbackException(env, callbackException)) {
     return false;
   }
 

@@ -112,7 +112,21 @@ struct RuntimeState {
     this->context.Reset(isolate, context);
   }
 
-  ~RuntimeState() { context.Reset(); }
+  ~RuntimeState() {
+    nativeClassArgumentLast.value.Reset();
+    nativeClassArgumentLast.nativeClass = Nil;
+    for (auto& entry : nativeClassArgumentCache) {
+      entry.value.Reset();
+      entry.nativeClass = Nil;
+    }
+    nativeSelectorArgumentLast.value.Reset();
+    nativeSelectorArgumentLast.selector = nullptr;
+    for (auto& entry : nativeSelectorArgumentCache) {
+      entry.value.Reset();
+      entry.selector = nullptr;
+    }
+    context.Reset();
+  }
 
   v8::Local<v8::Context> localContext() const {
     v8::Local<v8::Context> ctx = context.Get(isolate);
@@ -124,6 +138,20 @@ struct RuntimeState {
   v8::Global<v8::ObjectTemplate> hostObjectTemplate;
   v8::Global<v8::ObjectTemplate> nativeObjectTemplate;  // kNonMasking for instances
   std::vector<std::shared_ptr<void>> retainedNativeData;
+  struct NativeClassArgumentCacheEntry {
+    v8::Global<v8::Value> value;
+    Class nativeClass = Nil;
+  };
+  NativeClassArgumentCacheEntry nativeClassArgumentLast;
+  NativeClassArgumentCacheEntry nativeClassArgumentCache[4];
+  size_t nativeClassArgumentCacheNext = 0;
+  struct NativeSelectorArgumentCacheEntry {
+    v8::Global<v8::Value> value;
+    SEL selector = nullptr;
+  };
+  NativeSelectorArgumentCacheEntry nativeSelectorArgumentLast;
+  NativeSelectorArgumentCacheEntry nativeSelectorArgumentCache[4];
+  size_t nativeSelectorArgumentCacheNext = 0;
 };
 
 struct ValueStorage {
@@ -228,6 +256,7 @@ class Runtime {
 
   v8::Isolate* isolate() const { return state_->isolate; }
   v8::Local<v8::Context> context() const { return state_->localContext(); }
+  v8engine::RuntimeState* rawState() const { return state_.get(); }
   std::shared_ptr<v8engine::RuntimeState> state() const { return state_; }
 
   Object global();

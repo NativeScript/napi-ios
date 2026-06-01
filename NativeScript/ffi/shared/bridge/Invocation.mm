@@ -539,7 +539,18 @@ struct NativeApiPreparedObjCInvocation {
   void* engineInvoker = nullptr;  // Engine-neutral GSD invoker (ObjCGsdInvoker)
   bool isNSErrorOutMethod = false;  // Cached: avoids per-call selector scan.
   bool isInitMethod = false;        // Cached: avoids per-call "init" rfind.
+  bool gsdEngineCallable = false;
+  uint8_t gsdEngineArgumentCount = 0;
+  bool fastEngineCallable = false;
+  uint8_t fastEngineArgumentCount = 0;
+  uint8_t fastEngineFirstArgKind = 0;
+  uint8_t fastEngineSecondArgKind = 0;
 };
+
+bool preparedObjCInvocationIsInit(
+    const NativeApiPreparedObjCInvocation& prepared) {
+  return prepared.isInitMethod;
+}
 
 bool isFastEngineObjectType(const NativeApiType& type) {
   switch (type.kind) {
@@ -1190,36 +1201,15 @@ bool tryCallFastEngineObjCSelector(
   }
 
   const NativeApiSignature& signature = prepared.signature;
-  if (signature.variadic || count != signature.argumentTypes.size() ||
-      count > 2 || isNSErrorOutEngineMethodSignature(signature)) {
-    return false;
-  }
-  if (unsupportedEngineType(signature.returnType) ||
-      (!isFastEngineObjectType(signature.returnType) &&
-       signature.returnType.kind != metagen::mdTypeVoid &&
-       signature.returnType.kind != metagen::mdTypeBool &&
-       signature.returnType.kind != metagen::mdTypeFloat &&
-       signature.returnType.kind != metagen::mdTypeDouble &&
-       signature.returnType.kind != metagen::mdTypeClass &&
-       !isFastEngineSignedIntegerType(signature.returnType) &&
-       !isFastEngineUnsignedIntegerType(signature.returnType))) {
+  if (!prepared.fastEngineCallable ||
+      count != prepared.fastEngineArgumentCount) {
     return false;
   }
 
-  std::optional<NativeApiFastEngineArgKind> firstArgKind;
-  std::optional<NativeApiFastEngineArgKind> secondArgKind;
-  if (count > 0) {
-    firstArgKind = fastEngineArgKind(signature.argumentTypes[0]);
-    if (!firstArgKind) {
-      return false;
-    }
-  }
-  if (count > 1) {
-    secondArgKind = fastEngineArgKind(signature.argumentTypes[1]);
-    if (!secondArgKind) {
-      return false;
-    }
-  }
+  NativeApiFastEngineArgKind firstArgKind =
+      static_cast<NativeApiFastEngineArgKind>(prepared.fastEngineFirstArgKind);
+  NativeApiFastEngineArgKind secondArgKind =
+      static_cast<NativeApiFastEngineArgKind>(prepared.fastEngineSecondArgKind);
 
   SEL selector = prepared.selector;
   if (count == 0) {
@@ -1241,7 +1231,7 @@ bool tryCallFastEngineObjCSelector(
                                nativeArg0, nativeArg1);
   };
   auto callWithSecondArg = [&](auto nativeArg0) -> bool {
-    switch (*secondArgKind) {
+    switch (secondArgKind) {
       case NativeApiFastEngineArgKind::Bool: {
         BOOL arg1 = NO;
         if (!readFastEngineBoolArgument(runtime, args[1], &arg1)) {
@@ -1312,7 +1302,7 @@ bool tryCallFastEngineObjCSelector(
     return false;
   };
 
-  switch (*firstArgKind) {
+  switch (firstArgKind) {
     case NativeApiFastEngineArgKind::Bool: {
       BOOL arg0 = NO;
       if (!readFastEngineBoolArgument(runtime, args[0], &arg0)) {
@@ -1407,6 +1397,70 @@ bool tryCallFastEngineObjCSelector(
   return false;
 }
 
+bool isFastEngineObjCReturnType(const NativeApiType& returnType) {
+  return !unsupportedEngineType(returnType) &&
+         (isFastEngineObjectType(returnType) ||
+          returnType.kind == metagen::mdTypeVoid ||
+          returnType.kind == metagen::mdTypeBool ||
+          returnType.kind == metagen::mdTypeFloat ||
+          returnType.kind == metagen::mdTypeDouble ||
+          returnType.kind == metagen::mdTypeClass ||
+          isFastEngineSignedIntegerType(returnType) ||
+          isFastEngineUnsignedIntegerType(returnType));
+}
+
+void configureFastEngineObjCInvocation(
+    NativeApiPreparedObjCInvocation& prepared) {
+  prepared.fastEngineCallable = false;
+  prepared.fastEngineArgumentCount = 0;
+  prepared.fastEngineFirstArgKind = 0;
+  prepared.fastEngineSecondArgKind = 0;
+
+  const NativeApiSignature& signature = prepared.signature;
+  if (signature.variadic || prepared.isNSErrorOutMethod ||
+      signature.argumentTypes.size() > 2 ||
+      !isFastEngineObjCReturnType(signature.returnType)) {
+    return;
+  }
+
+  if (!signature.argumentTypes.empty()) {
+    std::optional<NativeApiFastEngineArgKind> firstArgKind =
+        fastEngineArgKind(signature.argumentTypes[0]);
+    if (!firstArgKind) {
+      return;
+    }
+    prepared.fastEngineFirstArgKind = static_cast<uint8_t>(*firstArgKind);
+  }
+  if (signature.argumentTypes.size() > 1) {
+    std::optional<NativeApiFastEngineArgKind> secondArgKind =
+        fastEngineArgKind(signature.argumentTypes[1]);
+    if (!secondArgKind) {
+      return;
+    }
+    prepared.fastEngineSecondArgKind = static_cast<uint8_t>(*secondArgKind);
+  }
+
+  prepared.fastEngineArgumentCount =
+      static_cast<uint8_t>(signature.argumentTypes.size());
+  prepared.fastEngineCallable = true;
+}
+
+void configureGeneratedEngineObjCInvocation(
+    NativeApiPreparedObjCInvocation& prepared) {
+  prepared.gsdEngineCallable = false;
+  prepared.gsdEngineArgumentCount = 0;
+
+  const NativeApiSignature& signature = prepared.signature;
+  if (prepared.engineInvoker == nullptr || signature.variadic ||
+      prepared.isNSErrorOutMethod || signature.argumentTypes.size() > 255) {
+    return;
+  }
+
+  prepared.gsdEngineArgumentCount =
+      static_cast<uint8_t>(signature.argumentTypes.size());
+  prepared.gsdEngineCallable = true;
+}
+
 std::shared_ptr<NativeApiPreparedObjCInvocation>
 prepareNativeApiObjCInvocation(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
@@ -1461,9 +1515,14 @@ prepareNativeApiObjCInvocation(
   prepared->preparedInvoker = lookupObjCPreparedInvoker(
       dispatchIdForEngineSignature(prepared->signature,
                                    SignatureCallKind::ObjCMethod));
+  prepared->engineInvoker = lookupGeneratedEngineObjCGsdInvoker(
+      dispatchIdForEngineSignature(prepared->signature,
+                                   SignatureCallKind::ObjCMethod));
   prepared->isNSErrorOutMethod =
       isNSErrorOutEngineMethodSignature(prepared->signature);
   prepared->isInitMethod = prepared->selectorName.rfind("init", 0) == 0;
+  configureGeneratedEngineObjCInvocation(*prepared);
+  configureFastEngineObjCInvocation(*prepared);
   return prepared;
 }
 
@@ -1479,6 +1538,11 @@ Value callPreparedObjCSelector(
 
   const NativeApiSignature& signature = prepared.signature;
   Value fastResult;
+  if (tryCallGeneratedEngineObjCSelector(runtime, bridge, receiver, prepared,
+                                         args, count, dispatchSuperClass,
+                                         &fastResult)) {
+    return fastResult;
+  }
   if (tryCallFastEngineObjCSelector(runtime, bridge, receiver, prepared, args,
                                     count, dispatchSuperClass, &fastResult)) {
     return fastResult;
@@ -1486,7 +1550,7 @@ Value callPreparedObjCSelector(
 
   NativeApiArgumentFrame frame(signature.argumentTypes.size());
   frame.retainObject(receiver);
-  const bool isNSErrorOutMethod = isNSErrorOutEngineMethodSignature(signature);
+  const bool isNSErrorOutMethod = prepared.isNSErrorOutMethod;
   if (isNSErrorOutMethod) {
     size_t expected = signature.argumentTypes.size();
     if (count > expected || count + 1 < expected) {
@@ -1570,7 +1634,7 @@ Value callPreparedObjCSelector(
       isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeAnyObject;
   }
-  if (startsWith(prepared.selectorName, "init") &&
+  if (prepared.isInitMethod &&
       isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeInstanceObject;
   }
@@ -1642,7 +1706,19 @@ Value callObjCSelector(Runtime& runtime,
   engineInvocation.selector = selector;
   engineInvocation.selectorName = selectorName;
   engineInvocation.signature = *signature;
+  engineInvocation.engineInvoker = lookupGeneratedEngineObjCGsdInvoker(
+      dispatchIdForEngineSignature(*signature, SignatureCallKind::ObjCMethod));
+  engineInvocation.isNSErrorOutMethod =
+      isNSErrorOutEngineMethodSignature(*signature);
+  engineInvocation.isInitMethod = selectorName.rfind("init", 0) == 0;
+  configureGeneratedEngineObjCInvocation(engineInvocation);
+  configureFastEngineObjCInvocation(engineInvocation);
   Value fastResult;
+  if (tryCallGeneratedEngineObjCSelector(runtime, bridge, receiver,
+                                         engineInvocation, args, count,
+                                         dispatchSuperClass, &fastResult)) {
+    return fastResult;
+  }
   if (tryCallFastEngineObjCSelector(runtime, bridge, receiver,
                                     engineInvocation, args, count,
                                     dispatchSuperClass, &fastResult)) {
@@ -1650,7 +1726,7 @@ Value callObjCSelector(Runtime& runtime,
   }
 
   NativeApiArgumentFrame frame(signature->argumentTypes.size());
-  const bool isNSErrorOutMethod = isNSErrorOutEngineMethodSignature(*signature);
+  const bool isNSErrorOutMethod = engineInvocation.isNSErrorOutMethod;
   if (isNSErrorOutMethod) {
     size_t expected = signature->argumentTypes.size();
     if (count > expected || count + 1 < expected) {
@@ -1737,7 +1813,7 @@ Value callObjCSelector(Runtime& runtime,
       isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeAnyObject;
   }
-  if (startsWith(selectorName, "init") && isObjectiveCObjectType(returnType)) {
+  if (engineInvocation.isInitMethod && isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeInstanceObject;
   }
   if (retainedReturn) {

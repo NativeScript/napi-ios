@@ -492,14 +492,8 @@ class NativeApiCallback final
     if (!block_) {
       return false;
     }
-    std::shared_ptr<NativeApiCallback> keepAlive;
-    try {
-      keepAlive = shared_from_this();
-    } catch (const std::bad_weak_ptr&) {
-      return false;
-    }
-    const void* pointerToForget = nullptr;
-    bool released = false;
+
+    bool canRelease = false;
     {
       std::lock_guard<std::mutex> lock(retainedBlockCopiesMutex_);
       auto it = retainedBlockCopies_.end();
@@ -510,42 +504,68 @@ class NativeApiCallback final
               return retained.blockPointer == blockPointer;
             });
       }
-      if (it != retainedBlockCopies_.end()) {
-        pointerToForget = it->blockPointer;
-        retainedBlockCopies_.erase(it);
-        released = true;
-      } else if (blockPointer == blockLiteral_) {
-        pointerToForget = blockPointer;
-        blockLiteral_ = nullptr;
-        initialBlockLifetime_.reset();
-        released = true;
-      }
+      canRelease =
+          it != retainedBlockCopies_.end() || blockPointer == blockLiteral_;
     }
     // Forgetting the round-trip value touches the JS engine global/context.
     // Block disposal can run during an autorelease-pool drain on an arbitrary
-    // thread (e.g. an NSOperationQueue worker), so run the cleanup on the JS
-    // thread (engines such as JSI are strictly single-threaded).
-    if (released && bridge_ != nullptr && runtime_ != nullptr &&
-        pointerToForget != nullptr) {
-      auto bridge = bridge_;
-      auto* runtime = runtime_;
-      auto runtimeOwner = runtimeOwner_;
-      const void* pointer = pointerToForget;
-      auto forget = [bridge, runtime, runtimeOwner, pointer, keepAlive]() {
-        NativeApiRuntimeScope runtimeScope(*runtime);
-        bridge->forgetRoundTripValue(*runtime, pointer);
-      };
-      if (std::this_thread::get_id() == bridge_->jsThreadId()) {
-        forget();
-      } else if (const auto& invoker = bridge_->jsThreadCallbackInvoker()) {
-        invoker(forget);
-      } else if (auto scheduler = bridge_->scheduler()) {
-        scheduler->invokeOnJS(forget);
-      } else {
-        forget();
-      }
+    // thread (e.g. an NSOperationQueue worker). Keep the retained block entry
+    // in place until the JS-thread task runs so the callback and its engine
+    // function are also destroyed on the JS thread.
+    if (!canRelease) {
+      return false;
     }
-    return released;
+
+    auto bridge = bridge_;
+    auto* runtime = runtime_;
+    auto runtimeOwner = runtimeOwner_;
+    auto releaseOnJS = [this, bridge, runtime, runtimeOwner, blockPointer]() {
+      std::shared_ptr<NativeApiCallback> keepAlive;
+      try {
+        keepAlive = shared_from_this();
+      } catch (const std::bad_weak_ptr&) {
+        return;
+      }
+
+      const void* pointerToForget = nullptr;
+      {
+        std::lock_guard<std::mutex> lock(retainedBlockCopiesMutex_);
+        auto it = retainedBlockCopies_.end();
+        if (blockPointer != nullptr) {
+          it = std::find_if(
+              retainedBlockCopies_.begin(), retainedBlockCopies_.end(),
+              [blockPointer](const RetainedBlockCopy& retained) {
+                return retained.blockPointer == blockPointer;
+              });
+        }
+        if (it != retainedBlockCopies_.end()) {
+          pointerToForget = it->blockPointer;
+          retainedBlockCopies_.erase(it);
+        } else if (blockPointer == blockLiteral_) {
+          pointerToForget = blockPointer;
+          blockLiteral_ = nullptr;
+          initialBlockLifetime_.reset();
+        }
+      }
+
+      if (bridge != nullptr && runtime != nullptr &&
+          pointerToForget != nullptr) {
+        NativeApiRuntimeScope runtimeScope(*runtime);
+        bridge->forgetRoundTripValue(*runtime, pointerToForget);
+      }
+    };
+
+    if (bridge == nullptr ||
+        std::this_thread::get_id() == bridge->jsThreadId()) {
+      releaseOnJS();
+    } else if (const auto& invoker = bridge->jsThreadCallbackInvoker()) {
+      invoker(std::move(releaseOnJS));
+    } else if (auto scheduler = bridge->scheduler()) {
+      scheduler->invokeOnJS(std::move(releaseOnJS));
+    } else {
+      releaseOnJS();
+    }
+    return true;
   }
 
   void invoke(void* ret, void* args[]) {

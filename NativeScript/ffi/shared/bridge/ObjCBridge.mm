@@ -222,6 +222,17 @@ struct NativeApiSelectorGroupEntry {
   std::string selectorName;
   NativeApiMember member;
   bool hasMember = false;
+  bool propertyGetterResolved = false;
+  bool propertyGetterCanPrepare = true;
+  bool propertyGetterHasAdjustedMember = false;
+  std::string propertyGetterSelectorName;
+  NativeApiMember propertyGetterMember;
+};
+
+struct NativeApiSelectorGroupCallTarget {
+  const std::string* selectorName = nullptr;
+  const NativeApiMember* member = nullptr;
+  bool canPrepare = true;
 };
 
 struct NativeApiAggregateInfo;
@@ -466,24 +477,33 @@ std::string selectorGroupPropertyGetterSelector(
   return member.selectorName != member.name ? member.name : member.selectorName;
 }
 
-const NativeApiMember* selectorGroupMemberForCall(
+NativeApiSelectorGroupCallTarget selectorGroupMemberForCall(
     id receiver, Class lookupClass, bool receiverIsClass,
-    const NativeApiSelectorGroupEntry& entry, size_t count,
-    NativeApiMember& adjustedMember, std::string& selectorName) {
-  selectorName = entry.selectorName;
+    NativeApiSelectorGroupEntry& entry, size_t count) {
   if (!entry.hasMember) {
-    return nullptr;
+    return {&entry.selectorName, nullptr, true};
   }
   if (count == 0 && entry.member.property) {
-    selectorName = selectorGroupPropertyGetterSelector(
-        receiver, lookupClass, receiverIsClass, entry.member);
-    if (selectorName != entry.member.selectorName) {
-      adjustedMember = entry.member;
-      adjustedMember.selectorName = selectorName;
-      return &adjustedMember;
+    if (!entry.propertyGetterResolved) {
+      entry.propertyGetterSelectorName = selectorGroupPropertyGetterSelector(
+          receiver, lookupClass, receiverIsClass, entry.member);
+      entry.propertyGetterCanPrepare = selectorGroupCanPrepareSelector(
+          receiver, lookupClass, receiverIsClass,
+          entry.propertyGetterSelectorName);
+      if (entry.propertyGetterSelectorName != entry.member.selectorName) {
+        entry.propertyGetterMember = entry.member;
+        entry.propertyGetterMember.selectorName =
+            entry.propertyGetterSelectorName;
+        entry.propertyGetterHasAdjustedMember = true;
+      }
+      entry.propertyGetterResolved = true;
     }
+    return {&entry.propertyGetterSelectorName,
+            entry.propertyGetterHasAdjustedMember ? &entry.propertyGetterMember
+                                                  : &entry.member,
+            entry.propertyGetterCanPrepare};
   }
-  return &entry.member;
+  return {&entry.selectorName, &entry.member, true};
 }
 
 const NativeApiMember* selectPropertyMember(
@@ -528,6 +548,9 @@ const NativeApiMember* selectWritablePropertyMember(
 
 void skipMetadataEngineType(MDMetadataReader* metadata, MDSectionOffset* offset);
 Protocol* lookupProtocolByNativeName(const std::string& name);
+struct NativeApiPreparedObjCInvocation;
+bool preparedObjCInvocationIsInit(
+    const NativeApiPreparedObjCInvocation& prepared);
 
 inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
 #if INTPTR_MAX == INT64_MAX
@@ -629,6 +652,7 @@ class NativeApiBridge {
     {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
       roundTripValues_[key] = std::make_shared<Value>(runtime, value);
+      roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
     rootRoundTripValue(runtime, key, value);
   }
@@ -639,6 +663,30 @@ class NativeApiBridge {
     }
     uintptr_t key =
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    struct RoundTripCacheEntry {
+      const NativeApiBridge* bridge = nullptr;
+      uintptr_t key = 0;
+      uint64_t generation = 0;
+      std::weak_ptr<Value> value;
+    };
+    static thread_local RoundTripCacheEntry cache[4];
+    const uint64_t generation =
+        roundTripValuesGeneration_.load(std::memory_order_acquire);
+    const size_t firstSlot = (key >> 4) & 3;
+    for (size_t i = 0; i < 4; i++) {
+      RoundTripCacheEntry& entry = cache[(firstSlot + i) & 3];
+      if (entry.bridge == this && entry.key == key &&
+          entry.generation == generation) {
+        if (auto cached = entry.value.lock()) {
+          if (roundTripValuesGeneration_.load(std::memory_order_acquire) ==
+              generation) {
+            return Value(runtime, *cached);
+          }
+        }
+        break;
+      }
+    }
+
     // roundTripValues_ stores a strong engine handle (kept in lock-step with
     // the GC root set), so it is authoritative for both liveness and identity.
     // Retrieve from it directly instead of doing a string-keyed JS property
@@ -648,6 +696,7 @@ class NativeApiBridge {
     if (it == roundTripValues_.end() || it->second == nullptr) {
       return Value::undefined();
     }
+    cache[firstSlot] = RoundTripCacheEntry{this, key, generation, it->second};
     return Value(runtime, *it->second);
   }
 
@@ -662,6 +711,7 @@ class NativeApiBridge {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
       roundTripValues_.erase(key);
       rooted = rootedRoundTripValues_.erase(key) > 0;
+      roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
     if (rooted) {
       unrootRoundTripValue(runtime, key);
@@ -675,6 +725,11 @@ class NativeApiBridge {
     std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
     roundTripValues_.erase(
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
+    roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
+  }
+
+  uint64_t roundTripValuesGeneration() const {
+    return roundTripValuesGeneration_.load(std::memory_order_acquire);
   }
 
   void rememberClassValue(Runtime& runtime, Class cls, const Value& value) {
@@ -760,6 +815,7 @@ class NativeApiBridge {
   struct CachedPropertyGetter {
     const NativeApiMember* member;
     std::string selectorName;
+    std::shared_ptr<NativeApiPreparedObjCInvocation> preparedInvocation;
   };
   const CachedPropertyGetter* findCachedPropertyGetter(
       Class cls, const std::string& property) const {
@@ -772,9 +828,12 @@ class NativeApiBridge {
   }
   void cachePropertyGetter(Class cls, const std::string& property,
                            const NativeApiMember* member,
-                           const std::string& selectorName) {
+                           const std::string& selectorName,
+                           std::shared_ptr<NativeApiPreparedObjCInvocation>
+                               preparedInvocation = nullptr) {
     propertyGetterCache_[cls][property] =
-        CachedPropertyGetter{member, selectorName};
+        CachedPropertyGetter{member, selectorName,
+                             std::move(preparedInvocation)};
   }
 
   void rememberPointerValue(Runtime& runtime, const void* native,
@@ -1736,6 +1795,7 @@ class NativeApiBridge {
   mutable std::mutex roundTripValuesMutex_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> roundTripValues_;
   std::unordered_set<uintptr_t> rootedRoundTripValues_;
+  std::atomic<uint64_t> roundTripValuesGeneration_{1};
   mutable std::shared_ptr<Value> roundTripRootCache_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classValues_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classPrototypes_;
@@ -1869,6 +1929,12 @@ Value callPreparedObjCSelector(
     id receiver, bool receiverIsClass,
     const NativeApiPreparedObjCInvocation& prepared, const Value* args,
     size_t count, Class dispatchSuperClass = Nil);
+
+void* lookupGeneratedEngineObjCGsdInvoker(uint64_t dispatchId);
+bool tryCallGeneratedEngineObjCSelector(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
+    const Value* args, size_t count, Class dispatchSuperClass, Value* result);
 
 Function CreateNativeApiSelectorGroupFunction(
     Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,

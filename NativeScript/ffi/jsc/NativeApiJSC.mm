@@ -63,7 +63,9 @@ struct NativeApiSelectorGroupData {
       std::shared_ptr<
           std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
           preparedInvocations,
-      std::weak_ptr<NativeApiObjectHostObject> boundReceiver = {})
+      std::weak_ptr<NativeApiObjectHostObject> boundReceiver = {},
+      std::shared_ptr<NativeApiObjectLifetimeState> boundReceiverState =
+          nullptr)
       : state(state),
         bridge(std::move(bridge)),
         lookupClass(lookupClass),
@@ -71,6 +73,7 @@ struct NativeApiSelectorGroupData {
         selectors(std::move(selectors)),
         preparedInvocations(std::move(preparedInvocations)),
         boundReceiver(std::move(boundReceiver)),
+        boundReceiverState(std::move(boundReceiverState)),
         runtime(state) {}
 
   std::shared_ptr<engine::jscengine::RuntimeState> state;
@@ -82,6 +85,7 @@ struct NativeApiSelectorGroupData {
       std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
       preparedInvocations;
   std::weak_ptr<NativeApiObjectHostObject> boundReceiver;
+  std::shared_ptr<NativeApiObjectLifetimeState> boundReceiverState;
   // Reused per call (avoids per-call shared_ptr refcount + dispatch-superclass
   // probe on the hot path).
   Runtime runtime;
@@ -133,6 +137,25 @@ std::shared_ptr<T> jscHostObject(Runtime& runtime, JSValueRef value) {
     return nullptr;
   }
   return std::static_pointer_cast<T>(holder->hostObject);
+}
+
+template <typename T>
+T* jscHostObjectRaw(Runtime& runtime, JSValueRef value) {
+  if (value == nullptr || !JSValueIsObject(runtime.context(), value)) {
+    return nullptr;
+  }
+  JSValueRef exception = nullptr;
+  JSObjectRef object = JSValueToObject(runtime.context(), value, &exception);
+  if (exception != nullptr || object == nullptr) {
+    return nullptr;
+  }
+  auto* holder = static_cast<engine::jscengine::HostObjectHolder*>(
+      JSObjectGetPrivate(object));
+  if (holder == nullptr ||
+      holder->typeToken != engine::jscengine::hostObjectTypeToken<T>()) {
+    return nullptr;
+  }
+  return static_cast<T*>(holder->hostObject.get());
 }
 
 id jscNativeObjectArgument(Runtime& runtime,
@@ -367,10 +390,7 @@ JSValueRef jscUnsignedInteger64Value(Runtime& runtime, uint64_t value) {
 JSValueRef setJSCEngineObjectReturn(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     NativeApiType type, id object) {
-  if (object == nil || [object isKindOfClass:[NSNull class]]) {
-    if (object != nil && type.returnOwned) {
-      [object release];
-    }
+  if (object == nil) {
     return JSValueMakeNull(runtime.context());
   }
   if ([object respondsToSelector:@selector(UTF8String)] &&
@@ -384,6 +404,21 @@ JSValueRef setJSCEngineObjectReturn(
     JSValueRef result = JSValueMakeString(runtime.context(), string);
     JSStringRelease(string);
     return result;
+  }
+
+  Value roundTrip = bridge->findRoundTripValue(runtime, object);
+  if (!roundTrip.isUndefined()) {
+    JSValueRef result = roundTrip.local(runtime);
+    if (type.returnOwned) {
+      [object release];
+    }
+    return result;
+  }
+  if ([object isKindOfClass:[NSNull class]]) {
+    if (type.returnOwned) {
+      [object release];
+    }
+    return JSValueMakeNull(runtime.context());
   }
   if ([object isKindOfClass:[NSNumber class]] &&
       ![object isKindOfClass:[NSDecimalNumber class]]) {
@@ -402,14 +437,6 @@ JSValueRef setJSCEngineObjectReturn(
     return result;
   }
 
-  Value roundTrip = bridge->findRoundTripValue(runtime, object);
-  if (!roundTrip.isUndefined()) {
-    JSValueRef result = roundTrip.local(runtime);
-    if (type.returnOwned) {
-      [object release];
-    }
-    return result;
-  }
   if (const NativeApiSymbol* classSymbol =
           bridge->findClassForRuntimePointer((void*)object)) {
     Value result = makeNativeClassValue(runtime, bridge, *classSymbol);
@@ -551,6 +578,9 @@ struct GsdObjCContext {
   const JSValueRef* arguments;
   const NativeApiType& returnType;
   JSValueRef result = nullptr;
+  const Value* valueArguments = nullptr;
+  bool materializeValueResult = false;
+  Value valueResult = Value::undefined();
 
   template <typename Invocation>
   void invokeNative(Invocation&& invocation) {
@@ -558,6 +588,12 @@ struct GsdObjCContext {
   }
 
   bool readNumber(size_t i, double* out) {
+    if (valueArguments != nullptr) {
+      const Value& v = valueArguments[i];
+      if (!v.isNumber()) return false;
+      *out = v.getNumber();
+      return true;
+    }
     JSValueRef v = arguments[i];
     if (!JSValueIsNumber(context, v)) return false;
     JSValueRef exception = nullptr;
@@ -567,6 +603,12 @@ struct GsdObjCContext {
     return true;
   }
   bool readBool(size_t i, uint8_t* out) {
+    if (valueArguments != nullptr) {
+      const Value& v = valueArguments[i];
+      if (!v.isBool()) return false;
+      *out = v.getBool() ? 1 : 0;
+      return true;
+    }
     JSValueRef v = arguments[i];
     if (!JSValueIsBoolean(context, v)) return false;
     *out = JSValueToBoolean(context, v) ? 1 : 0;
@@ -594,41 +636,124 @@ struct GsdObjCContext {
   }
   bool readDouble(size_t i, double* out) { return readNumber(i, out); }
   bool readSelector(size_t i, SEL* out) {
+    if (valueArguments != nullptr) {
+      return readFastEngineSelectorArgument(runtime, valueArguments[i], out);
+    }
     return readJSCEngineSelectorArgument(runtime, arguments[i], out);
   }
   bool readClass(size_t i, Class* out) {
+    if (valueArguments != nullptr) {
+      Class cls = classFromEngineValue(runtime, valueArguments[i]);
+      if (cls == Nil) return false;
+      *out = cls;
+      return true;
+    }
+    if (auto* c = jscHostObjectRaw<NativeApiClassHostObject>(
+            runtime, arguments[i])) {
+      *out = c->nativeClass();
+      return true;
+    }
     Class cls = jscNativeClassArgument(runtime, arguments[i]);
     if (cls == Nil) return false;
     *out = cls;
     return true;
   }
   bool readObject(size_t i, id* out) {
+    if (valueArguments != nullptr) {
+      const Value& v = valueArguments[i];
+      if (v.isNull() || v.isUndefined()) {
+        *out = nil;
+        return true;
+      }
+      if (!v.isObject()) return false;
+      Object object = v.asObject(runtime);
+      if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
+        *out = object.getHostObject<NativeApiObjectHostObject>(runtime)->object();
+        return true;
+      }
+      if (object.isHostObject<NativeApiClassHostObject>(runtime)) {
+        *out = static_cast<id>(
+            object.getHostObject<NativeApiClassHostObject>(runtime)->nativeClass());
+        return true;
+      }
+      Class cls = classFromEngineValue(runtime, v);
+      if (cls != Nil) {
+        *out = static_cast<id>(cls);
+        return true;
+      }
+      if (object.isHostObject<NativeApiProtocolHostObject>(runtime)) {
+        *out = static_cast<id>(
+            object.getHostObject<NativeApiProtocolHostObject>(runtime)
+                ->nativeProtocol());
+        return true;
+      }
+      return false;
+    }
     JSValueRef v = arguments[i];
     if (v == nullptr || JSValueIsNull(context, v) ||
         JSValueIsUndefined(context, v)) {
       *out = nil;
       return true;
     }
-    if (auto h = jscHostObject<NativeApiObjectHostObject>(runtime, v)) {
+    if (auto* h = jscHostObjectRaw<NativeApiObjectHostObject>(runtime, v)) {
       *out = h->object();
       return true;
     }
-    if (auto c = jscHostObject<NativeApiClassHostObject>(runtime, v)) {
+    if (auto* c = jscHostObjectRaw<NativeApiClassHostObject>(runtime, v)) {
       *out = static_cast<id>(c->nativeClass());
       return true;
     }
-    if (auto p = jscHostObject<NativeApiProtocolHostObject>(runtime, v)) {
+    if (JSValueIsObject(context, v)) {
+      Class cls = jscNativeClassArgument(runtime, v);
+      if (cls != Nil) {
+        *out = static_cast<id>(cls);
+        return true;
+      }
+    }
+    if (auto* p = jscHostObjectRaw<NativeApiProtocolHostObject>(runtime, v)) {
       *out = static_cast<id>(p->nativeProtocol());
       return true;
     }
     return false;
   }
 
-  void setVoid() { result = JSValueMakeUndefined(context); }
-  void setBool(bool v) { result = JSValueMakeBoolean(context, v); }
-  void setInt32(int32_t v) { result = JSValueMakeNumber(context, v); }
-  void setUInt32(uint32_t v) { result = JSValueMakeNumber(context, v); }
+  void setVoid() {
+    if (materializeValueResult) {
+      valueResult = Value::undefined();
+      return;
+    }
+    result = JSValueMakeUndefined(context);
+  }
+  void setBool(bool v) {
+    if (materializeValueResult) {
+      valueResult = Value(v);
+      return;
+    }
+    result = JSValueMakeBoolean(context, v);
+  }
+  void setInt32(int32_t v) {
+    if (materializeValueResult) {
+      valueResult = Value(static_cast<double>(v));
+      return;
+    }
+    result = JSValueMakeNumber(context, v);
+  }
+  void setUInt32(uint32_t v) {
+    if (materializeValueResult) {
+      valueResult = Value(static_cast<double>(v));
+      return;
+    }
+    result = JSValueMakeNumber(context, v);
+  }
   void setUInt16(uint16_t v) {
+    if (materializeValueResult) {
+      if (v >= 32 && v <= 126) {
+        valueResult = makeString(runtime, std::string(1, static_cast<char>(v)));
+      } else {
+        valueResult = Value(static_cast<double>(v));
+      }
+      return;
+    }
     if (v >= 32 && v <= 126) {
       char buffer[2] = {static_cast<char>(v), '\0'};
       JSStringRef string = engine::jscengine::makeJSString(buffer);
@@ -638,11 +763,33 @@ struct GsdObjCContext {
       result = JSValueMakeNumber(context, v);
     }
   }
-  void setInt64(int64_t v) { result = jscInteger64Value(runtime, v); }
-  void setUInt64(uint64_t v) { result = jscUnsignedInteger64Value(runtime, v); }
-  void setDouble(double v) { result = JSValueMakeNumber(context, v); }
+  void setInt64(int64_t v) {
+    if (materializeValueResult) {
+      valueResult = signedInteger64ToEngineValue(runtime, v);
+      return;
+    }
+    result = jscInteger64Value(runtime, v);
+  }
+  void setUInt64(uint64_t v) {
+    if (materializeValueResult) {
+      valueResult = unsignedInteger64ToEngineValue(runtime, v);
+      return;
+    }
+    result = jscUnsignedInteger64Value(runtime, v);
+  }
+  void setDouble(double v) {
+    if (materializeValueResult) {
+      valueResult = Value(v);
+      return;
+    }
+    result = JSValueMakeNumber(context, v);
+  }
   void setSelector(SEL v) {
     const char* name = v != nullptr ? sel_getName(v) : nullptr;
+    if (materializeValueResult) {
+      valueResult = name != nullptr ? makeString(runtime, name) : Value::null();
+      return;
+    }
     if (name == nullptr) {
       result = JSValueMakeNull(context);
       return;
@@ -652,6 +799,24 @@ struct GsdObjCContext {
     JSStringRelease(string);
   }
   void setClass(Class v) {
+    if (materializeValueResult) {
+      if (v == nil) {
+        valueResult = Value::null();
+        return;
+      }
+      const char* name = class_getName(v);
+      NativeApiSymbol symbol{
+          .kind = NativeApiSymbolKind::Class,
+          .offset = MD_SECTION_OFFSET_NULL,
+          .name = name != nullptr ? name : "",
+          .runtimeName = name != nullptr ? name : "",
+      };
+      if (const NativeApiSymbol* found = bridge->findClass(symbol.name)) {
+        symbol = *found;
+      }
+      valueResult = makeNativeClassValue(runtime, bridge, std::move(symbol));
+      return;
+    }
     if (v == nil) {
       result = JSValueMakeNull(context);
       return;
@@ -670,6 +835,10 @@ struct GsdObjCContext {
     result = classValue.local(runtime);
   }
   void setObject(id obj) {
+    if (materializeValueResult) {
+      valueResult = convertNativeReturnValue(runtime, bridge, returnType, &obj);
+      return;
+    }
     result = setJSCEngineObjectReturn(runtime, bridge, returnType, obj);
   }
 };
@@ -701,6 +870,33 @@ ObjCGsdInvoker lookupObjCGsdInvoker(uint64_t dispatchId) {
 namespace {  // reopen anonymous namespace
 
 // --- End GSD ---
+
+void* lookupGeneratedEngineObjCGsdInvoker(uint64_t dispatchId) {
+  return reinterpret_cast<void*>(lookupObjCGsdInvoker(dispatchId));
+}
+
+bool tryCallGeneratedEngineObjCSelector(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
+    const Value* args, size_t count, Class dispatchSuperClass, Value* result) {
+  const bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
+  if (result == nullptr || receiver == nil ||
+      !prepared.gsdEngineCallable || dispatchSuperClass != Nil ||
+      count != prepared.gsdEngineArgumentCount || dispatchingNativeCallToUI) {
+    return false;
+  }
+
+  auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared.engineInvoker);
+  GsdObjCContext ctx{runtime,  bridge,    receiver, prepared.selector,
+                     runtime.context(), nullptr,    prepared.signature.returnType};
+  ctx.valueArguments = args;
+  ctx.materializeValueResult = true;
+  if (!invoker(ctx)) {
+    return false;
+  }
+  *result = std::move(ctx.valueResult);
+  return true;
+}
 
 JSValueRef setJSCEnginePreparedObjCResult(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
@@ -735,9 +931,11 @@ JSValueRef setJSCEnginePreparedObjCResult(
   // GSD fast path: the generated invoker reads args directly from the JSC
   // arguments, calls objc_msgSend with a typed cast, and produces the JS
   // return value — bypassing all generic marshalling.
-  if (prepared.engineInvoker != nullptr && dispatchSuperClass == Nil &&
+  const bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
+  if (prepared.gsdEngineCallable && dispatchSuperClass == Nil &&
+      providedCount == prepared.gsdEngineArgumentCount &&
       !initializerClassWrapper && !isNSErrorOutMethod &&
-      !shouldDispatchNativeCallToUI()) {
+      !dispatchingNativeCallToUI) {
     auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared.engineInvoker);
     GsdObjCContext ctx{runtime,  bridge,    receiver, prepared.selector,
                        runtime.context(), arguments, signature.returnType};
@@ -796,7 +994,6 @@ JSValueRef setJSCEnginePreparedObjCResult(
 
   NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
-  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
   bool retainedReturn = false;
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
     if (prepared.preparedInvoker != nullptr && dispatchSuperClass == Nil) {
@@ -876,16 +1073,18 @@ JSValueRef NativeApiSelectorGroupCall(
                     "count.");
     }
 
-    const NativeApiSelectorGroupEntry& entry =
-        (*data->selectors)[argumentCount];
+    NativeApiSelectorGroupEntry& entry = (*data->selectors)[argumentCount];
     auto& prepared = (*data->preparedInvocations)[argumentCount];
     Class selectorLookupClass = data->lookupClass;
     id receiver = data->receiverIsClass ? static_cast<id>(data->lookupClass) : nil;
     std::shared_ptr<NativeApiObjectHostObject> receiverHostObject;
     if (!data->receiverIsClass) {
-      if (auto boundReceiver = data->boundReceiver.lock()) {
-        receiverHostObject = std::move(boundReceiver);
-        receiver = receiverHostObject->object();
+      if (data->boundReceiverState != nullptr) {
+        receiver = data->boundReceiverState->object();
+        if (receiver == nil) {
+          throw JSError(runtime,
+                        "Objective-C selector requires a native receiver.");
+        }
       } else if (thisObject != nullptr) {
         auto* holder = static_cast<engine::jscengine::HostObjectHolder*>(
             JSObjectGetPrivate(thisObject));
@@ -893,10 +1092,9 @@ JSValueRef NativeApiSelectorGroupCall(
             holder->typeToken ==
                 engine::jscengine::hostObjectTypeToken<
                     NativeApiObjectHostObject>()) {
-          receiverHostObject =
-              std::static_pointer_cast<NativeApiObjectHostObject>(
-                  holder->hostObject);
-          receiver = receiverHostObject->object();
+          receiver =
+              static_cast<NativeApiObjectHostObject*>(holder->hostObject.get())
+                  ->object();
         }
       }
     }
@@ -905,14 +1103,26 @@ JSValueRef NativeApiSelectorGroupCall(
                     "Objective-C selector requires a native receiver.");
     }
 
-    std::string selectorName;
-    NativeApiMember adjustedMember;
-    const NativeApiMember* selectedMember = selectorGroupMemberForCall(
-        receiver, selectorLookupClass, data->receiverIsClass, entry,
-        argumentCount, adjustedMember, selectorName);
-    if (prepared != nullptr && prepared->selectorName != selectorName) {
-      prepared = nullptr;
+    const bool propertyGetterCall =
+        entry.hasMember && entry.member.property && argumentCount == 0;
+    const std::string* selectorNamePtr = &entry.selectorName;
+    const NativeApiMember* selectedMember =
+        entry.hasMember ? &entry.member : nullptr;
+    bool callTargetCanPrepare = true;
+    if (prepared == nullptr || propertyGetterCall) {
+      NativeApiSelectorGroupCallTarget callTarget = selectorGroupMemberForCall(
+          receiver, selectorLookupClass, data->receiverIsClass, entry,
+          argumentCount);
+      selectorNamePtr = callTarget.selectorName;
+      selectedMember = callTarget.member;
+      callTargetCanPrepare = callTarget.canPrepare;
+      if (prepared != nullptr && prepared->selectorName != *selectorNamePtr) {
+        prepared = nullptr;
+      }
     }
+    const std::string& selectorName =
+        prepared != nullptr && !propertyGetterCall ? prepared->selectorName
+                                                   : *selectorNamePtr;
 
     if (data->receiverIsClass) {
       Class methodClass = prepared != nullptr ? prepared->receiverClass : Nil;
@@ -930,26 +1140,23 @@ JSValueRef NativeApiSelectorGroupCall(
       selectorLookupClass = methodClass;
       receiver = static_cast<id>(methodClass);
     }
-    if (entry.hasMember && entry.member.property && argumentCount == 0 &&
-        !selectorGroupCanPrepareSelector(receiver, selectorLookupClass,
-                                         data->receiverIsClass, selectorName)) {
+    if (propertyGetterCall && !callTargetCanPrepare) {
       return callObjCSelector(runtime, data->bridge, receiver,
                               data->receiverIsClass, selectorName,
                               selectedMember, nullptr, 0)
           .local(runtime);
     }
 
-    if (!data->receiverIsClass) {
-      SEL selector = sel_registerName(selectorName.c_str());
-      if (class_getInstanceMethod(selectorLookupClass, selector) == nullptr) {
-        Class receiverClass = object_getClass(receiver);
-        if (class_getInstanceMethod(receiverClass, selector) != nullptr) {
-          selectorLookupClass = receiverClass;
+    if (prepared == nullptr) {
+      if (!data->receiverIsClass) {
+        SEL selector = sel_registerName(selectorName.c_str());
+        if (class_getInstanceMethod(selectorLookupClass, selector) == nullptr) {
+          Class receiverClass = object_getClass(receiver);
+          if (class_getInstanceMethod(receiverClass, selector) != nullptr) {
+            selectorLookupClass = receiverClass;
+          }
         }
       }
-    }
-
-    if (prepared == nullptr) {
       prepared = prepareNativeApiObjCInvocation(
           runtime, data->bridge, selectorLookupClass, data->receiverIsClass,
           selectorName, selectedMember);
@@ -959,12 +1166,31 @@ JSValueRef NativeApiSelectorGroupCall(
             prepared->signature, SignatureCallKind::ObjCMethod);
         if (auto gsdInvoker = lookupObjCGsdInvoker(dispatchId)) {
           prepared->engineInvoker = reinterpret_cast<void*>(gsdInvoker);
+          configureGeneratedEngineObjCInvocation(*prepared);
         }
       }
     }
 
     std::optional<Object> initializerClassWrapper;
     if (!data->receiverIsClass && prepared->isInitMethod) {
+      if (!receiverHostObject) {
+        if (data->boundReceiverState != nullptr) {
+          if (auto boundReceiver = data->boundReceiver.lock()) {
+            receiverHostObject = std::move(boundReceiver);
+          }
+        } else if (thisObject != nullptr) {
+          auto* holder = static_cast<engine::jscengine::HostObjectHolder*>(
+              JSObjectGetPrivate(thisObject));
+          if (holder != nullptr &&
+              holder->typeToken ==
+                  engine::jscengine::hostObjectTypeToken<
+                      NativeApiObjectHostObject>()) {
+            receiverHostObject =
+                std::static_pointer_cast<NativeApiObjectHostObject>(
+                    holder->hostObject);
+          }
+        }
+      }
       Value classWrapperValue = data->bridge->findObjectExpando(
           runtime, receiver, "__nativeApiClassWrapper");
       if (classWrapperValue.isObject()) {
@@ -1019,11 +1245,13 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
     std::shared_ptr<
         std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
         preparedInvocations,
-    std::weak_ptr<NativeApiObjectHostObject> boundReceiver) {
+    std::weak_ptr<NativeApiObjectHostObject> boundReceiver,
+    std::shared_ptr<NativeApiObjectLifetimeState> boundReceiverState =
+        nullptr) {
   auto* data = new NativeApiSelectorGroupData(
       runtime.state(), std::move(bridge), lookupClass, receiverIsClass,
       std::move(selectors), std::move(preparedInvocations),
-      std::move(boundReceiver));
+      std::move(boundReceiver), std::move(boundReceiverState));
   JSObjectRef function =
       JSObjectMake(runtime.context(),
                    NativeApiSelectorGroupFunctionClass(runtime), data);
@@ -1051,7 +1279,7 @@ Function CreateNativeApiSelectorGroupFunction(
         preparedInvocations) {
   return CreateNativeApiSelectorGroupFunctionImpl(
       runtime, std::move(bridge), lookupClass, receiverIsClass,
-      std::move(selectors), std::move(preparedInvocations), {});
+      std::move(selectors), std::move(preparedInvocations), {}, nullptr);
 }
 
 Function CreateNativeApiBoundSelectorGroupFunction(
@@ -1063,7 +1291,9 @@ Function CreateNativeApiBoundSelectorGroupFunction(
         preparedInvocations) {
   return CreateNativeApiSelectorGroupFunctionImpl(
       runtime, std::move(bridge), lookupClass, false, std::move(selectors),
-      std::move(preparedInvocations), receiverHostObject);
+      std::move(preparedInvocations), receiverHostObject,
+      receiverHostObject != nullptr ? receiverHostObject->lifetimeState()
+                                    : nullptr);
 }
 
 }  // namespace

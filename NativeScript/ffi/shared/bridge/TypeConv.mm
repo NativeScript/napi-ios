@@ -895,12 +895,6 @@ Value convertNativeReturnValue(Runtime& runtime,
       if (object == nil) {
         return Value::null();
       }
-      if ([object isKindOfClass:[NSNull class]]) {
-        if (type.returnOwned) {
-          [object release];
-        }
-        return Value::null();
-      }
       if ([object respondsToSelector:@selector(UTF8String)]) {
         bool untypedObject = type.kind == metagen::mdTypeAnyObject;
         bool explicitNSString = type.kind == metagen::mdTypeNSStringObject;
@@ -911,6 +905,19 @@ Value convertNativeReturnValue(Runtime& runtime,
           }
           return makeString(runtime, utf8);
         }
+      }
+      Value roundTrip = bridge->findRoundTripValue(runtime, object);
+      if (!roundTrip.isUndefined()) {
+        if (type.returnOwned) {
+          [object release];
+        }
+        return roundTrip;
+      }
+      if ([object isKindOfClass:[NSNull class]]) {
+        if (type.returnOwned) {
+          [object release];
+        }
+        return Value::null();
       }
       if ([object isKindOfClass:[NSNumber class]] &&
           ![object isKindOfClass:[NSDecimalNumber class]]) {
@@ -926,13 +933,6 @@ Value convertNativeReturnValue(Runtime& runtime,
           [object release];
         }
         return result;
-      }
-      Value roundTrip = bridge->findRoundTripValue(runtime, object);
-      if (!roundTrip.isUndefined()) {
-        if (type.returnOwned) {
-          [object release];
-        }
-        return roundTrip;
       }
       if (const NativeApiSymbol* classSymbol =
               bridge->findClassForRuntimePointer((void*)object)) {
