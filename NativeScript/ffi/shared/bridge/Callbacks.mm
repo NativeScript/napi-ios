@@ -391,7 +391,8 @@ class NativeApiCallback final
                        Function function, bool block,
                        NativeApiCallbackThreadPolicy threadPolicy =
                            NativeApiCallbackThreadPolicy::Default,
-                       bool bindThis = false)
+                       bool bindThis = false,
+                       uintptr_t roundTripValidationKey = 0)
       : runtimeOwner_(retainNativeApiRuntime(runtime)),
         runtime_(runtimeOwner_.get()),
         bridge_(std::move(bridge)),
@@ -400,7 +401,8 @@ class NativeApiCallback final
             persistentEngineFunction(runtime, function))),
         block_(block),
         threadPolicy_(threadPolicy),
-        bindThis_(bindThis) {
+        bindThis_(bindThis),
+        roundTripValidationKey_(roundTripValidationKey) {
     closure_ = static_cast<ffi_closure*>(
         ffi_closure_alloc(sizeof(ffi_closure), &executable_));
     if (closure_ == nullptr || executable_ == nullptr ||
@@ -483,7 +485,8 @@ class NativeApiCallback final
     if (bridge_ != nullptr && runtime_ != nullptr && function_ != nullptr &&
         blockPointer != nullptr) {
       bridge_->rememberRoundTripValue(*runtime_, blockPointer,
-                                      Value(*runtime_, *function_));
+                                      Value(*runtime_, *function_), false,
+                                      roundTripValidationKey_);
     }
     std::lock_guard<std::mutex> lock(retainedBlockCopiesMutex_);
     retainedBlockCopies_.push_back({blockPointer, std::move(self)});
@@ -896,6 +899,7 @@ class NativeApiCallback final
   NativeApiCallbackThreadPolicy threadPolicy_ =
       NativeApiCallbackThreadPolicy::Default;
   bool bindThis_ = false;
+  uintptr_t roundTripValidationKey_ = 0;
   ffi_closure* closure_ = nullptr;
   void* executable_ = nullptr;
   std::string blockSignature_;
@@ -2124,9 +2128,11 @@ std::shared_ptr<NativeApiCallback> createEngineCallback(
 
   auto signature =
       std::make_shared<NativeApiSignature>(std::move(*parsed));
+  uintptr_t roundTripValidationKey =
+      NativeApiBridge::callbackRoundTripValidationKey(type);
   auto callback = std::make_shared<NativeApiCallback>(
       runtime, bridge, std::move(signature), std::move(function), block,
-      threadPolicy);
+      threadPolicy, false, roundTripValidationKey);
   if (block) {
     callback->retainInitialBlockLifetime(callback);
   } else {

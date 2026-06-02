@@ -565,7 +565,7 @@ class NativeApiBridge {
     std::shared_ptr<Value> value;
     bool stringLikeNative = false;
     bool persistBeyondFrame = true;
-    uintptr_t objectClassKey = 0;
+    uintptr_t validationKey = 0;
   };
   using NativeApiRoundTripReleaseList =
       std::vector<NativeApiRoundTripValue>;
@@ -657,9 +657,20 @@ class NativeApiBridge {
     return it != functionSymbolsByName_.end() ? &it->second : nullptr;
   }
 
+  static uintptr_t callbackRoundTripValidationKey(
+      const NativeApiType& type) {
+    if (type.signatureOffset == 0 ||
+        type.signatureOffset == MD_SECTION_OFFSET_NULL) {
+      return 0;
+    }
+    return (static_cast<uintptr_t>(type.signatureOffset) << 8) |
+           (static_cast<uintptr_t>(type.kind) & 0xff);
+  }
+
   void rememberRoundTripValue(Runtime& runtime, const void* native,
                               const Value& value,
-                              bool stringLikeNative = false) {
+                              bool stringLikeNative = false,
+                              uintptr_t validationKey = 0) {
     if (native == nullptr) {
       return;
     }
@@ -672,7 +683,7 @@ class NativeApiBridge {
           roundTripValues_, key,
           NativeApiRoundTripValue{
               std::make_shared<Value>(runtime, value), stringLikeNative, true,
-              0},
+              validationKey},
           releaseAfterUnlock);
       roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
@@ -685,7 +696,7 @@ class NativeApiBridge {
                                     const Value& value,
                                     bool stringLikeNative = false,
                                     bool persistBeyondFrame = true) {
-    rememberScopedRoundTripValueWithClassKey(
+    rememberScopedRoundTripValueWithValidationKey(
         runtime, native, value, stringLikeNative, persistBeyondFrame,
         nativeObjectClassKey(native));
   }
@@ -694,17 +705,17 @@ class NativeApiBridge {
                                        const Value& value,
                                        bool stringLikeNative = false,
                                        bool persistBeyondFrame = true) {
-    rememberScopedRoundTripValueWithClassKey(runtime, native, value,
-                                             stringLikeNative,
-                                             persistBeyondFrame, 0);
+    rememberScopedRoundTripValueWithValidationKey(runtime, native, value,
+                                                  stringLikeNative,
+                                                  persistBeyondFrame, 0);
   }
 
-  void rememberScopedRoundTripValueWithClassKey(Runtime& runtime,
-                                                const void* native,
-                                                const Value& value,
-                                                bool stringLikeNative,
-                                                bool persistBeyondFrame,
-                                                uintptr_t objectClassKey) {
+  void rememberScopedRoundTripValueWithValidationKey(Runtime& runtime,
+                                                     const void* native,
+                                                     const Value& value,
+                                                     bool stringLikeNative,
+                                                     bool persistBeyondFrame,
+                                                     uintptr_t validationKey) {
     if (native == nullptr) {
       return;
     }
@@ -712,8 +723,8 @@ class NativeApiBridge {
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
     NativeApiRoundTripValue entry{
         std::make_shared<Value>(runtime, value), stringLikeNative,
-        persistBeyondFrame, objectClassKey};
-      NativeApiRoundTripReleaseList releaseAfterUnlock;
+        persistBeyondFrame, validationKey};
+    NativeApiRoundTripReleaseList releaseAfterUnlock;
     {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
       auto framesIt =
@@ -732,7 +743,8 @@ class NativeApiBridge {
 
   Value findRoundTripValue(Runtime& runtime, const void* native,
                            bool* stringLikeNative = nullptr,
-                           bool nativeIsObject = false) {
+                           bool nativeIsObject = false,
+                           uintptr_t validationKey = 0) {
     if (stringLikeNative != nullptr) {
       *stringLikeNative = false;
     }
@@ -741,6 +753,10 @@ class NativeApiBridge {
     }
     uintptr_t key =
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    const uintptr_t expectedValidationKey =
+        validationKey != 0
+            ? validationKey
+            : (nativeIsObject ? nativeObjectClassKey(native) : 0);
     struct RoundTripCacheEntry {
       const NativeApiBridge* bridge = nullptr;
       uintptr_t key = 0;
@@ -748,6 +764,7 @@ class NativeApiBridge {
       std::weak_ptr<Value> value;
       bool miss = false;
       bool stringLikeNative = false;
+      uintptr_t validationKey = 0;
     };
     static thread_local RoundTripCacheEntry cache[4];
     const uint64_t generation =
@@ -757,6 +774,9 @@ class NativeApiBridge {
       RoundTripCacheEntry& entry = cache[(firstSlot + i) & 3];
       if (entry.bridge == this && entry.key == key &&
           entry.generation == generation) {
+        if (entry.validationKey != expectedValidationKey) {
+          break;
+        }
         if (entry.miss) {
           return Value::undefined();
         }
@@ -782,11 +802,8 @@ class NativeApiBridge {
         if (it == map.end() || it->second.value == nullptr) {
           return nullptr;
         }
-        if (it->second.objectClassKey != 0) {
-          if (!nativeIsObject ||
-              it->second.objectClassKey != nativeObjectClassKey(native)) {
-            return nullptr;
-          }
+        if (it->second.validationKey != expectedValidationKey) {
+          return nullptr;
         }
         return &it->second;
       };
@@ -809,14 +826,15 @@ class NativeApiBridge {
         entry = findEntry(recentRoundTripValues_);
       }
       if (entry == nullptr) {
-        cache[firstSlot] =
-            RoundTripCacheEntry{this, key, generation, {}, true, false};
+        cache[firstSlot] = RoundTripCacheEntry{
+            this, key, generation, {}, true, false, expectedValidationKey};
         return Value::undefined();
       }
       storedValue = entry->value;
       cachedStringLike = entry->stringLikeNative;
       cache[firstSlot] = RoundTripCacheEntry{
-          this, key, generation, storedValue, false, cachedStringLike};
+          this, key, generation, storedValue, false, cachedStringLike,
+          entry->validationKey};
     }
     if (stringLikeNative != nullptr) {
       *stringLikeNative = cachedStringLike;

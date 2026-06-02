@@ -646,6 +646,7 @@ class NativeApiObjectHostObject final
     if (object_ != nil && !ownsObject_) {
       [object_ retain];
       ownsObject_ = true;
+      wrapperRetainedObject_ = true;
     }
   }
 
@@ -685,6 +686,7 @@ class NativeApiObjectHostObject final
         bridge_->forgetObjectExpandos(expected);
       }
       ownsObject_ = false;
+      wrapperRetainedObject_ = false;
       object_ = nil;
       if (lifetimeState_ != nullptr) {
         lifetimeState_->clear();
@@ -749,6 +751,7 @@ class NativeApiObjectHostObject final
         // returning `this` still have a valid native object.
         object_ = resultObject;
         ownsObject_ = true;
+        wrapperRetainedObject_ = true;
         if (lifetimeState_ != nullptr) {
           lifetimeState_->setObject(object_);
         }
@@ -803,6 +806,7 @@ class NativeApiObjectHostObject final
         // returning `this` still have a valid native object.
         object_ = resultObject;
         ownsObject_ = true;
+        wrapperRetainedObject_ = true;
         if (lifetimeState_ != nullptr) {
           lifetimeState_->setObject(object_);
         }
@@ -1183,25 +1187,29 @@ class NativeApiObjectHostObject final
 
             id object = self->object_;
             bool ownsObject = self->ownsObject_;
+            bool wrapperRetainedObject = self->wrapperRetainedObject_;
             if (self->bridge_ != nullptr) {
               self->bridge_->forgetRoundTripValue(runtime, object);
               self->bridge_->forgetObjectExpandos(object);
             }
             self->object_ = nil;
             self->ownsObject_ = false;
+            self->wrapperRetainedObject_ = false;
             if (self->lifetimeState_ != nullptr) {
               self->lifetimeState_->clear();
             }
             self->consumed_ = true;
+            const bool releasePreviousOwnership =
+                ownsObject && (!retained || wrapperRetainedObject);
             try {
               Value result =
                   makeNativeObjectValue(runtime, self->bridge_, object, retained);
-              if (!retained && ownsObject) {
+              if (releasePreviousOwnership) {
                 [object release];
               }
               return result;
             } catch (...) {
-              if (!retained && ownsObject) {
+              if (releasePreviousOwnership) {
                 [object release];
               }
               throw;
@@ -1517,6 +1525,7 @@ class NativeApiObjectHostObject final
   std::shared_ptr<NativeApiBridge> bridge_;
   id object_ = nil;
   bool ownsObject_ = false;
+  bool wrapperRetainedObject_ = false;
   bool consumed_ = false;
   std::shared_ptr<NativeApiObjectLifetimeState> lifetimeState_;
 };
@@ -1864,6 +1873,15 @@ Value makeNativeObjectValue(Runtime& runtime,
   }
   if (!prototypeValue.isObject()) {
     prototypeValue = bridge->findClassPrototype(runtime, object_getClass(object));
+  }
+  if (!prototypeValue.isObject()) {
+    Value classWrapper = makeNativeClassValue(
+        runtime, bridge,
+        nativeApiSymbolForRuntimeClass(bridge, object_getClass(object)));
+    if (classWrapper.isObject()) {
+      prototypeValue =
+          classWrapper.asObject(runtime).getProperty(runtime, "prototype");
+    }
   }
   if (prototypeValue.isObject()) {
     Object prototype = prototypeValue.asObject(runtime);
