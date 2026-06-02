@@ -561,6 +561,20 @@ inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
 }
 
 class NativeApiBridge {
+  struct NativeApiRoundTripValue {
+    std::shared_ptr<Value> value;
+    bool stringLikeNative = false;
+    bool persistBeyondFrame = true;
+    uintptr_t objectClassKey = 0;
+  };
+  using NativeApiRoundTripReleaseList =
+      std::vector<NativeApiRoundTripValue>;
+  using NativeApiRoundTripFrame =
+      std::unordered_map<uintptr_t, NativeApiRoundTripValue>;
+  using NativeApiRoundTripFrameStack = std::vector<NativeApiRoundTripFrame>;
+
+  static constexpr size_t kRecentRoundTripValueLimit = 2;
+
  public:
   explicit NativeApiBridge(const NativeApiConfig& config)
       : metadata_(loadMetadata(config)),
@@ -568,6 +582,7 @@ class NativeApiBridge {
         nativeInvocationInvoker_(config.nativeInvocationInvoker),
         nativeCallbackInvoker_(config.nativeCallbackInvoker),
         jsThreadCallbackInvoker_(config.jsThreadCallbackInvoker),
+        jsThreadAsyncCallbackInvoker_(config.jsThreadAsyncCallbackInvoker),
         invokeCallbacksOnNativeCallerThread_(
             config.invokeCallbacksOnNativeCallerThread) {
     selfDl_ = dlopen(nullptr, RTLD_NOW);
@@ -589,21 +604,21 @@ class NativeApiBridge {
     return it != symbolsByName_.end() ? &it->second : nullptr;
   }
 
-	  const NativeApiSymbol* findClass(const std::string& name) const {
-	    const NativeApiSymbol* symbol = find(name);
-	    if (symbol != nullptr && symbol->kind == NativeApiSymbolKind::Class) {
-	      return symbol;
-	    }
-	    auto it = classSymbolsByRuntimeName_.find(name);
-	    return it != classSymbolsByRuntimeName_.end() ? &it->second : nullptr;
-	  }
+  const NativeApiSymbol* findClass(const std::string& name) const {
+    const NativeApiSymbol* symbol = find(name);
+    if (symbol != nullptr && symbol->kind == NativeApiSymbolKind::Class) {
+      return symbol;
+    }
+    auto it = classSymbolsByRuntimeName_.find(name);
+    return it != classSymbolsByRuntimeName_.end() ? &it->second : nullptr;
+  }
 
-	  const NativeApiSymbol* findClassByOffset(MDSectionOffset offset) const {
-	    auto it = classSymbolsByOffset_.find(offset);
-	    return it != classSymbolsByOffset_.end() ? &it->second : nullptr;
-	  }
+  const NativeApiSymbol* findClassByOffset(MDSectionOffset offset) const {
+    auto it = classSymbolsByOffset_.find(offset);
+    return it != classSymbolsByOffset_.end() ? &it->second : nullptr;
+  }
 
-	  const NativeApiSymbol* findClassForRuntimeClass(Class cls) const {
+  const NativeApiSymbol* findClassForRuntimeClass(Class cls) const {
     Class current = cls;
     while (current != Nil) {
       const char* name = class_getName(current);
@@ -650,21 +665,74 @@ class NativeApiBridge {
     }
     uintptr_t key =
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    NativeApiRoundTripReleaseList releaseAfterUnlock;
     {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
-      roundTripValues_[key] = std::make_shared<Value>(runtime, value);
-      if (stringLikeNative) {
-        roundTripStringLikeValues_.insert(key);
-      } else {
-        roundTripStringLikeValues_.erase(key);
+      storeRoundTripEntry(
+          roundTripValues_, key,
+          NativeApiRoundTripValue{
+              std::make_shared<Value>(runtime, value), stringLikeNative, true,
+              0},
+          releaseAfterUnlock);
+      roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
+    }
+#ifdef TARGET_ENGINE_HERMES
+    rootRoundTripValue(runtime, key, value);
+#endif
+  }
+
+  void rememberScopedRoundTripValue(Runtime& runtime, const void* native,
+                                    const Value& value,
+                                    bool stringLikeNative = false,
+                                    bool persistBeyondFrame = true) {
+    rememberScopedRoundTripValueWithClassKey(
+        runtime, native, value, stringLikeNative, persistBeyondFrame,
+        nativeObjectClassKey(native));
+  }
+
+  void rememberScopedRawRoundTripValue(Runtime& runtime, const void* native,
+                                       const Value& value,
+                                       bool stringLikeNative = false,
+                                       bool persistBeyondFrame = true) {
+    rememberScopedRoundTripValueWithClassKey(runtime, native, value,
+                                             stringLikeNative,
+                                             persistBeyondFrame, 0);
+  }
+
+  void rememberScopedRoundTripValueWithClassKey(Runtime& runtime,
+                                                const void* native,
+                                                const Value& value,
+                                                bool stringLikeNative,
+                                                bool persistBeyondFrame,
+                                                uintptr_t objectClassKey) {
+    if (native == nullptr) {
+      return;
+    }
+    uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    NativeApiRoundTripValue entry{
+        std::make_shared<Value>(runtime, value), stringLikeNative,
+        persistBeyondFrame, objectClassKey};
+      NativeApiRoundTripReleaseList releaseAfterUnlock;
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      auto framesIt =
+          roundTripCacheFramesByThread_.find(std::this_thread::get_id());
+      if (framesIt != roundTripCacheFramesByThread_.end() &&
+          !framesIt->second.empty()) {
+        storeRoundTripEntry(framesIt->second.back(), key, std::move(entry),
+                            releaseAfterUnlock);
+      } else if (persistBeyondFrame) {
+        rememberRecentRoundTripValue(key, std::move(entry),
+                                     releaseAfterUnlock);
       }
       roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
-    rootRoundTripValue(runtime, key, value);
   }
 
   Value findRoundTripValue(Runtime& runtime, const void* native,
-                           bool* stringLikeNative = nullptr) {
+                           bool* stringLikeNative = nullptr,
+                           bool nativeIsObject = false) {
     if (stringLikeNative != nullptr) {
       *stringLikeNative = false;
     }
@@ -705,25 +773,55 @@ class NativeApiBridge {
       }
     }
 
-    // roundTripValues_ stores a strong engine handle (kept in lock-step with
-    // the GC root set), so it is authoritative for both liveness and identity.
-    // Retrieve from it directly instead of doing a string-keyed JS property
-    // lookup on the root object — the latter cost dominates object returns.
-    std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
-    auto it = roundTripValues_.find(key);
-    if (it == roundTripValues_.end() || it->second == nullptr) {
-      cache[firstSlot] =
-          RoundTripCacheEntry{this, key, generation, {}, true, false};
-      return Value::undefined();
+    std::shared_ptr<Value> storedValue;
+    bool cachedStringLike = false;
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      auto findEntry = [&](const auto& map) -> const NativeApiRoundTripValue* {
+        auto it = map.find(key);
+        if (it == map.end() || it->second.value == nullptr) {
+          return nullptr;
+        }
+        if (it->second.objectClassKey != 0) {
+          if (!nativeIsObject ||
+              it->second.objectClassKey != nativeObjectClassKey(native)) {
+            return nullptr;
+          }
+        }
+        return &it->second;
+      };
+
+      const NativeApiRoundTripValue* entry = findEntry(roundTripValues_);
+      if (entry == nullptr) {
+        auto framesIt =
+            roundTripCacheFramesByThread_.find(std::this_thread::get_id());
+        if (framesIt != roundTripCacheFramesByThread_.end()) {
+          for (auto frame = framesIt->second.rbegin();
+               frame != framesIt->second.rend(); ++frame) {
+            entry = findEntry(*frame);
+            if (entry != nullptr) {
+              break;
+            }
+          }
+        }
+      }
+      if (entry == nullptr) {
+        entry = findEntry(recentRoundTripValues_);
+      }
+      if (entry == nullptr) {
+        cache[firstSlot] =
+            RoundTripCacheEntry{this, key, generation, {}, true, false};
+        return Value::undefined();
+      }
+      storedValue = entry->value;
+      cachedStringLike = entry->stringLikeNative;
+      cache[firstSlot] = RoundTripCacheEntry{
+          this, key, generation, storedValue, false, cachedStringLike};
     }
-    bool cachedStringLike =
-        roundTripStringLikeValues_.find(key) != roundTripStringLikeValues_.end();
-    cache[firstSlot] = RoundTripCacheEntry{
-        this, key, generation, it->second, false, cachedStringLike};
     if (stringLikeNative != nullptr) {
       *stringLikeNative = cachedStringLike;
     }
-    return Value(runtime, *it->second);
+    return Value(runtime, *storedValue);
   }
 
   void forgetRoundTripValue(Runtime& runtime, const void* native) {
@@ -732,16 +830,34 @@ class NativeApiBridge {
     }
     uintptr_t key =
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+#ifdef TARGET_ENGINE_HERMES
     bool rooted = false;
+    NativeApiRoundTripReleaseList releaseAfterUnlock;
     {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
-      roundTripValues_.erase(key);
-      roundTripStringLikeValues_.erase(key);
+      eraseRoundTripMapKey(roundTripValues_, key, releaseAfterUnlock);
+      eraseRoundTripKeyFromScopedCaches(key, releaseAfterUnlock);
       rooted = rootedRoundTripValues_.erase(key) > 0;
       roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
     if (rooted) {
       unrootRoundTripValue(runtime, key);
+    }
+#else
+    forgetRoundTripKey(key);
+#endif
+  }
+
+  void forgetRoundTripKey(uintptr_t key) {
+    if (key == 0) {
+      return;
+    }
+    NativeApiRoundTripReleaseList releaseAfterUnlock;
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      eraseRoundTripMapKey(roundTripValues_, key, releaseAfterUnlock);
+      eraseRoundTripKeyFromScopedCaches(key, releaseAfterUnlock);
+      roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
   }
 
@@ -749,16 +865,60 @@ class NativeApiBridge {
     if (native == nullptr) {
       return;
     }
-    std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
     uintptr_t key =
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
-    roundTripValues_.erase(key);
-    roundTripStringLikeValues_.erase(key);
-    roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
+    NativeApiRoundTripReleaseList releaseAfterUnlock;
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      eraseRoundTripMapKey(roundTripValues_, key, releaseAfterUnlock);
+      eraseRoundTripKeyFromScopedCaches(key, releaseAfterUnlock);
+      roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
+    }
   }
 
   uint64_t roundTripValuesGeneration() const {
     return roundTripValuesGeneration_.load(std::memory_order_acquire);
+  }
+
+  void beginRoundTripCacheFrame() {
+    std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+    roundTripCacheFramesByThread_[std::this_thread::get_id()].emplace_back();
+  }
+
+  void endRoundTripCacheFrame() {
+    NativeApiRoundTripReleaseList releaseAfterUnlock;
+    NativeApiRoundTripFrame frame;
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      auto framesIt =
+          roundTripCacheFramesByThread_.find(std::this_thread::get_id());
+      if (framesIt == roundTripCacheFramesByThread_.end() ||
+          framesIt->second.empty()) {
+        return;
+      }
+
+      auto& frames = framesIt->second;
+      frame = std::move(frames.back());
+      frames.pop_back();
+      if (!frames.empty()) {
+        auto& parent = frames.back();
+        for (auto& entry : frame) {
+          storeRoundTripEntry(parent, entry.first, std::move(entry.second),
+                              releaseAfterUnlock);
+        }
+      } else {
+        roundTripCacheFramesByThread_.erase(framesIt);
+        for (auto& entry : frame) {
+          if (entry.second.persistBeyondFrame) {
+            rememberRecentRoundTripValue(entry.first, std::move(entry.second),
+                                         releaseAfterUnlock);
+          } else {
+            releaseAfterUnlock.push_back(std::move(entry.second));
+          }
+        }
+      }
+      roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
+    }
   }
 
   void rememberClassValue(Runtime& runtime, Class cls, const Value& value) {
@@ -1022,9 +1182,14 @@ class NativeApiBridge {
       const {
     return jsThreadCallbackInvoker_;
   }
+  const std::function<void(std::function<void()>)>&
+  jsThreadAsyncCallbackInvoker() const {
+    return jsThreadAsyncCallbackInvoker_;
+  }
   bool invokeCallbacksOnNativeCallerThread() const {
     return invokeCallbacksOnNativeCallerThread_;
   }
+
   std::thread::id jsThreadId() const { return jsThreadId_; }
 
   void retainEngineLifetime(std::shared_ptr<void> lifetime) {
@@ -1035,6 +1200,7 @@ class NativeApiBridge {
     retainedLifetimes_.push_back(std::move(lifetime));
   }
 
+#ifdef TARGET_ENGINE_HERMES
   std::string roundTripRootKey(uintptr_t key) const {
     char buffer[32] = {};
     snprintf(buffer, sizeof(buffer), "p%llx",
@@ -1042,9 +1208,7 @@ class NativeApiBridge {
     return buffer;
   }
 
-  Object roundTripRootObject(Runtime& runtime) const {
-    // Cache the root object: it is otherwise re-resolved via two V8 property
-    // operations (global hasProperty + getProperty) on every object return.
+  Object roundTripRootObject(Runtime& runtime) {
     if (roundTripRootCache_) {
       return roundTripRootCache_->asObject(runtime);
     }
@@ -1066,27 +1230,83 @@ class NativeApiBridge {
     return root;
   }
 
-  void rootRoundTripValue(Runtime& runtime, uintptr_t key, const Value& value) {
+  void rootRoundTripValue(Runtime& runtime, uintptr_t key,
+                          const Value& value) {
     roundTripRootObject(runtime)
         .setProperty(runtime, roundTripRootKey(key).c_str(), value);
     std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
     rootedRoundTripValues_.insert(key);
   }
 
-  Value findRootedRoundTripValue(Runtime& runtime, uintptr_t key) {
-    {
-      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
-      if (rootedRoundTripValues_.find(key) == rootedRoundTripValues_.end()) {
-        return Value::undefined();
-      }
-    }
-    Object root = roundTripRootObject(runtime);
-    return root.getProperty(runtime, roundTripRootKey(key).c_str());
-  }
-
   void unrootRoundTripValue(Runtime& runtime, uintptr_t key) {
     roundTripRootObject(runtime)
-        .setProperty(runtime, roundTripRootKey(key).c_str(), Value::undefined());
+        .setProperty(runtime, roundTripRootKey(key).c_str(),
+                     Value::undefined());
+  }
+#endif
+
+  uintptr_t nativeObjectClassKey(const void* native) const {
+    if (native == nullptr) {
+      return 0;
+    }
+    return normalizeRuntimePointer(
+        reinterpret_cast<uintptr_t>(object_getClass(static_cast<id>(native))));
+  }
+
+  void storeRoundTripEntry(
+      std::unordered_map<uintptr_t, NativeApiRoundTripValue>& map,
+      uintptr_t key, NativeApiRoundTripValue&& entry,
+      NativeApiRoundTripReleaseList& releaseAfterUnlock) {
+    auto it = map.find(key);
+    if (it == map.end()) {
+      map.emplace(key, std::move(entry));
+      return;
+    }
+
+    releaseAfterUnlock.push_back(std::move(it->second));
+    it->second = std::move(entry);
+  }
+
+  void eraseRoundTripMapKey(
+      std::unordered_map<uintptr_t, NativeApiRoundTripValue>& map,
+      uintptr_t key, NativeApiRoundTripReleaseList& releaseAfterUnlock) {
+    auto it = map.find(key);
+    if (it == map.end()) {
+      return;
+    }
+
+    releaseAfterUnlock.push_back(std::move(it->second));
+    map.erase(it);
+  }
+
+  void eraseRoundTripKeyFromScopedCaches(
+      uintptr_t key, NativeApiRoundTripReleaseList& releaseAfterUnlock) {
+    eraseRoundTripMapKey(recentRoundTripValues_, key, releaseAfterUnlock);
+    recentRoundTripValueOrder_.erase(
+        std::remove(recentRoundTripValueOrder_.begin(),
+                    recentRoundTripValueOrder_.end(), key),
+        recentRoundTripValueOrder_.end());
+    for (auto& stackEntry : roundTripCacheFramesByThread_) {
+      for (auto& frame : stackEntry.second) {
+        eraseRoundTripMapKey(frame, key, releaseAfterUnlock);
+      }
+    }
+  }
+
+  void rememberRecentRoundTripValue(uintptr_t key,
+                                    NativeApiRoundTripValue&& entry,
+                                    NativeApiRoundTripReleaseList& releaseAfterUnlock) {
+    if (recentRoundTripValues_.find(key) == recentRoundTripValues_.end()) {
+      recentRoundTripValueOrder_.push_back(key);
+    }
+    storeRoundTripEntry(recentRoundTripValues_, key, std::move(entry),
+                        releaseAfterUnlock);
+    while (recentRoundTripValueOrder_.size() > kRecentRoundTripValueLimit) {
+      uintptr_t evicted = recentRoundTripValueOrder_.front();
+      recentRoundTripValueOrder_.erase(recentRoundTripValueOrder_.begin());
+      eraseRoundTripMapKey(recentRoundTripValues_, evicted,
+                           releaseAfterUnlock);
+    }
   }
 
   const std::vector<NativeApiMember>& membersForClass(
@@ -1893,11 +2113,17 @@ class NativeApiBridge {
   std::unordered_map<uintptr_t, NativeApiSymbol> classSymbolsByRuntimePointer_;
   std::unordered_map<uintptr_t, NativeApiSymbol> protocolSymbolsByRuntimePointer_;
   mutable std::mutex roundTripValuesMutex_;
-  std::unordered_map<uintptr_t, std::shared_ptr<Value>> roundTripValues_;
-  std::unordered_set<uintptr_t> roundTripStringLikeValues_;
+  std::unordered_map<uintptr_t, NativeApiRoundTripValue> roundTripValues_;
+  std::unordered_map<std::thread::id, NativeApiRoundTripFrameStack>
+      roundTripCacheFramesByThread_;
+  std::unordered_map<uintptr_t, NativeApiRoundTripValue>
+      recentRoundTripValues_;
+  std::vector<uintptr_t> recentRoundTripValueOrder_;
+#ifdef TARGET_ENGINE_HERMES
   std::unordered_set<uintptr_t> rootedRoundTripValues_;
+  std::shared_ptr<Value> roundTripRootCache_;
+#endif
   std::atomic<uint64_t> roundTripValuesGeneration_{1};
-  mutable std::shared_ptr<Value> roundTripRootCache_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classValues_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classPrototypes_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> pointerValues_;
@@ -1921,6 +2147,7 @@ class NativeApiBridge {
   std::function<void(std::function<void()>)> nativeInvocationInvoker_;
   std::function<void(std::function<void()>)> nativeCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker_;
+  std::function<void(std::function<void()>)> jsThreadAsyncCallbackInvoker_;
   bool invokeCallbacksOnNativeCallerThread_ = false;
   mutable std::unordered_map<MDSectionOffset, std::vector<NativeApiMember>>
       membersByClassOffset_;
@@ -1936,6 +2163,31 @@ class NativeApiBridge {
   std::thread::id jsThreadId_ = std::this_thread::get_id();
   std::mutex retainedLifetimesMutex_;
   std::vector<std::shared_ptr<void>> retainedLifetimes_;
+};
+
+class NativeApiRoundTripCacheFrameGuard final {
+ public:
+  explicit NativeApiRoundTripCacheFrameGuard(
+      const std::shared_ptr<NativeApiBridge>& bridge)
+      : bridge_(bridge) {
+    if (bridge_ != nullptr) {
+      bridge_->beginRoundTripCacheFrame();
+    }
+  }
+
+  ~NativeApiRoundTripCacheFrameGuard() {
+    if (bridge_ != nullptr) {
+      bridge_->endRoundTripCacheFrame();
+    }
+  }
+
+  NativeApiRoundTripCacheFrameGuard(
+      const NativeApiRoundTripCacheFrameGuard&) = delete;
+  NativeApiRoundTripCacheFrameGuard& operator=(
+      const NativeApiRoundTripCacheFrameGuard&) = delete;
+
+ private:
+  std::shared_ptr<NativeApiBridge> bridge_;
 };
 
 template <typename Invocation>
@@ -1990,7 +2242,8 @@ Value findCachedNativeObjectReturn(Runtime& runtime,
     return Value::undefined();
   }
   Value roundTrip = bridge->findRoundTripValue(
-      runtime, object, stringReturnCandidate ? &roundTripStringLike : nullptr);
+      runtime, object, stringReturnCandidate ? &roundTripStringLike : nullptr,
+      true);
   if (!roundTrip.isUndefined() && !roundTripStringLike) {
     return roundTrip;
   }
@@ -2165,6 +2418,7 @@ Value convertNativeReturnValue(Runtime& runtime,
                                const NativeApiType& type, void* value);
 Object createPointer(Runtime& runtime,
                      const std::shared_ptr<NativeApiBridge>& bridge,
-                     void* pointer, bool adopted = false);
+                     void* pointer, bool adopted = false,
+                     std::shared_ptr<Value> backingValue = nullptr);
 
 NativeApiType primitiveInteropType(MDTypeKind kind);

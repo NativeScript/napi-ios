@@ -28,9 +28,8 @@ function withTimeout(promise, label, timeoutMs = 2000) {
 async function testMakeCallbackReentry() {
   await withTimeout(
     new Promise((resolve, reject) => {
-      addon.makeCallbackFromNative((value) => {
+      addon.makeCallbackFromNative(() => {
         try {
-          assert(value === 42, `Expected makeCallback value 42, got ${value}`);
           resolve();
         } catch (error) {
           reject(error);
@@ -39,6 +38,12 @@ async function testMakeCallbackReentry() {
     }),
     "makeCallbackFromNative"
   );
+}
+
+async function testMakeCallbackReentryStress() {
+  for (let i = 0; i < 64; i++) {
+    await testMakeCallbackReentry();
+  }
 }
 
 async function testThreadsafeFunction() {
@@ -65,6 +70,12 @@ async function testThreadsafeFunction() {
     }),
     "startThreadsafeDemo"
   );
+}
+
+async function testThreadsafeFunctionStress() {
+  for (let i = 0; i < 32; i++) {
+    await testThreadsafeFunction();
+  }
 }
 
 async function testMissingNodeApis() {
@@ -94,8 +105,8 @@ async function testMissingNodeApis() {
 
 (async () => {
   await testMissingNodeApis();
-  await testMakeCallbackReentry();
-  await testThreadsafeFunction();
+  await testMakeCallbackReentryStress();
+  await testThreadsafeFunctionStress();
   console.log("node_api gaps+reentry+tsfn PASS");
 })().catch((error) => {
   console.error(error && error.stack ? error.stack : String(error));

@@ -9,6 +9,7 @@ const memoryThresholdsKB = {
   "weakref-finalization": 40 * 1024,
   "js-heap-throughput": 120 * 1024,
   "objc-ownership-rules": 60 * 1024,
+  "objc-unmanaged-transfer-semantics": 60 * 1024,
   "objc-wrapper-churn": 80 * 1024,
   "appkit-navigation-throughput": 140 * 1024,
   "appkit-navigation-extreme": 220 * 1024,
@@ -272,7 +273,7 @@ function printRunSummary(run) {
 
 async function main() {
   const opts = parseArgs(process.argv);
-  const repoRoot = path.resolve(__dirname, "..", "..");
+  const repoRoot = path.resolve(__dirname, "..", "..", "..");
   const memoryDir = path.resolve(__dirname);
   const nsrPath = opts.runtime
     ? path.resolve(repoRoot, opts.runtime)

@@ -702,6 +702,16 @@ void Runtime::Init(bool isWorker) {
               },
               false);
         };
+    nativeApiV8Config.jsThreadAsyncCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              true);
+        };
     InstallNativeApi(env_->isolate, env_->context(), nativeApiV8Config);
   }
 #endif  // NS_FFI_BACKEND_V8 && TARGET_ENGINE_V8
@@ -726,6 +736,16 @@ void Runtime::Init(bool isWorker) {
                 task();
               },
               false);
+        };
+    nativeApiJsiConfig.jsThreadAsyncCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              true);
         };
     InstallNativeApiJSI(*jsiRuntime, nativeApiJsiConfig);
   }
@@ -752,6 +772,16 @@ void Runtime::Init(bool isWorker) {
               },
               false);
         };
+    nativeApiJSCConfig.jsThreadAsyncCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              true);
+        };
     InstallNativeApi(env_->context, nativeApiJSCConfig);
   }
 #endif  // NS_FFI_BACKEND_JSC && TARGET_ENGINE_JSC
@@ -776,6 +806,16 @@ void Runtime::Init(bool isWorker) {
                 task();
               },
               false);
+        };
+    nativeApiQuickJSConfig.jsThreadAsyncCallbackInvoker =
+        [env = env_, runLoop = runtimeLoop_](std::function<void()> task) {
+          ExecuteOnRunLoop(
+              runLoop,
+              [env, task = std::move(task)]() mutable {
+                NapiScope scope(env);
+                task();
+              },
+              true);
         };
     InstallNativeApi(qjs_get_context(env_), nativeApiQuickJSConfig);
   }

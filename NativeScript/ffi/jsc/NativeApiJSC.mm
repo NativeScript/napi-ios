@@ -1065,6 +1065,7 @@ JSValueRef NativeApiSelectorGroupCall(
 
   Runtime& runtime = data->runtime;
   try {
+    NativeApiRoundTripCacheFrameGuard roundTripFrame(data->bridge);
     if (argumentCount >= data->selectors->size() ||
         (*data->selectors)[argumentCount].selectorName.empty()) {
       throw JSError(runtime,

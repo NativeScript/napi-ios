@@ -1,5 +1,6 @@
 
 #include <CoreFoundation/CFRunLoop.h>
+#include <memory>
 #include "runtime/NativeScriptException.h"
 #include "jsr_common.h"
 #include "native_api_util.h"
@@ -124,21 +125,20 @@ struct LockAndCV {
 inline void ExecuteOnRunLoop(CFRunLoopRef queue, std::function<void()> func, bool async) {
   if (!async) {
     bool __block finished = false;
-    auto v = new LockAndCV;
-    std::unique_lock<std::mutex> lock(v->m);
+    auto state = std::make_shared<LockAndCV>();
+    std::unique_lock<std::mutex> lock(state->m);
     CFRunLoopPerformBlock(queue, kCFRunLoopCommonModes, ^(void) {
       func();
       {
-        std::unique_lock lk(v->m);
+        std::lock_guard<std::mutex> lk(state->m);
         finished = true;
       }
-      v->cv.notify_all();
+      state->cv.notify_all();
     });
     CFRunLoopWakeUp(queue);
     while (!finished) {
-      v->cv.wait(lock);
+      state->cv.wait(lock);
     }
-    delete v;
   } else {
     CFRunLoopPerformBlock(queue, kCFRunLoopCommonModes, ^(void) {
       func();

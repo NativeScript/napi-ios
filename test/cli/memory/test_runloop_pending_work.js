@@ -1,8 +1,8 @@
 "use strict";
 
-const { runAsyncMemoryTest } = require("./_harness");
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-runAsyncMemoryTest("runloop-pending-work", async (t) => {
+runPlainMemoryTest("runloop-pending-work", async (t) => {
   const totalMainQueueCallbacks = 1500;
   let completedMainQueueCallbacks = 0;
   let checksum = 0;

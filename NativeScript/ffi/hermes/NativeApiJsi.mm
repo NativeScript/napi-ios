@@ -305,6 +305,7 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
        cachedDispatchClass = Class(Nil)](
           Runtime& runtime, const Value& thisValue, const Value* args,
           size_t count) mutable -> Value {
+        NativeApiRoundTripCacheFrameGuard roundTripFrame(bridge);
         if (count >= selectors->size() ||
             (*selectors)[count].selectorName.empty()) {
           throw JSError(runtime,

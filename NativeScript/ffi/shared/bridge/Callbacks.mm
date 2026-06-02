@@ -555,13 +555,17 @@ class NativeApiCallback final
       }
     };
 
-    if (bridge == nullptr ||
-        std::this_thread::get_id() == bridge->jsThreadId()) {
+    if (bridge == nullptr) {
+      releaseOnJS();
+    } else if (const auto& asyncInvoker =
+                   bridge->jsThreadAsyncCallbackInvoker()) {
+      asyncInvoker(std::move(releaseOnJS));
+    } else if (auto scheduler = bridge->scheduler()) {
+      scheduler->invokeOnJS(std::move(releaseOnJS));
+    } else if (std::this_thread::get_id() == bridge->jsThreadId()) {
       releaseOnJS();
     } else if (const auto& invoker = bridge->jsThreadCallbackInvoker()) {
       invoker(std::move(releaseOnJS));
-    } else if (auto scheduler = bridge->scheduler()) {
-      scheduler->invokeOnJS(std::move(releaseOnJS));
     } else {
       releaseOnJS();
     }
@@ -660,6 +664,43 @@ class NativeApiCallback final
     bool waitForNativeThreadCallback =
         currentThreadIsJs && nativeCallbackInvoker &&
         gActiveNativeThreadEngineCallbacks.load(std::memory_order_acquire) > 0;
+    auto dispatchZeroArgVoidBlockAsync = [&]() -> bool {
+      if (currentThreadIsJs || !returnsVoid || !block_ ||
+          !signature_->argumentTypes.empty()) {
+        return false;
+      }
+
+      std::shared_ptr<NativeApiCallback> keepAlive;
+      try {
+        keepAlive = shared_from_this();
+      } catch (const std::bad_weak_ptr&) {
+        return false;
+      }
+
+      auto asyncCall = [keepAlive = std::move(keepAlive)]() mutable {
+        std::string asyncError;
+        keepAlive->invokeOnCurrentThread(nullptr, nullptr, &asyncError);
+        if (!asyncError.empty()) {
+          recordNativeCallbackException(asyncError);
+        }
+      };
+
+      const auto& asyncInvoker = bridge_->jsThreadAsyncCallbackInvoker();
+      if (asyncInvoker) {
+        asyncInvoker(std::move(asyncCall));
+        return true;
+      }
+      if (auto scheduler = bridge_->scheduler()) {
+        scheduler->invokeOnJS(std::move(asyncCall));
+        return true;
+      }
+      return false;
+    };
+
+    if (dispatchZeroArgVoidBlockAsync()) {
+      return;
+    }
+
     if (direct && !waitForNativeThreadCallback) {
       if (nativeCallerThreadCallback) {
         callOnNativeCallerThread();
@@ -745,7 +786,8 @@ class NativeApiCallback final
                                   static_cast<size_t>(jsArgs.size()));
       }
       storeReturnValue(result, ret);
-      if (std::this_thread::get_id() == bridge_->jsThreadId()) {
+      if (std::this_thread::get_id() == bridge_->jsThreadId() &&
+          gSynchronousNativeInvocationDepth == 0) {
         runtime_->drainMicrotasks();
       }
     } catch (const std::exception& exception) {

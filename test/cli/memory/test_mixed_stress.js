@@ -1,8 +1,8 @@
 "use strict";
 
-const { runAsyncMemoryTest } = require("./_harness");
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-runAsyncMemoryTest("mixed-stress", async (t) => {
+runPlainMemoryTest("mixed-stress", async (t) => {
   const rounds = 20;
   const perRound = 500;
   let blockHits = 0;

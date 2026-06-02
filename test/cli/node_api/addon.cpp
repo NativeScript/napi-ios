@@ -64,7 +64,6 @@ struct MakeCallbackContext {
   // Keep values alive across the async boundary.
   napi_ref recv_ref = nullptr;
   napi_ref callback_ref = nullptr;
-  napi_ref arg_ref = nullptr;
 };
 
 void RunMakeCallbackOnWorker(MakeCallbackContext* context) {
@@ -72,17 +71,19 @@ void RunMakeCallbackOnWorker(MakeCallbackContext* context) {
 
   napi_value recv = nullptr;
   napi_value callback = nullptr;
-  napi_value arg = nullptr;
   napi_get_reference_value(context->env, context->recv_ref, &recv);
   napi_get_reference_value(context->env, context->callback_ref, &callback);
-  napi_get_reference_value(context->env, context->arg_ref, &arg);
-  napi_value argv[1] = {arg};
 
   napi_status status = napi_make_callback(context->env, nullptr, recv, callback,
-                                          1, argv, nullptr);
+                                          0, nullptr, nullptr);
   if (status != napi_ok) {
     fprintf(stderr, "napi_make_callback failed: %d\n", static_cast<int>(status));
   }
+
+  napi_delete_reference(context->env, context->recv_ref);
+  napi_delete_reference(context->env, context->callback_ref);
+  napi_async_destroy(context->env, context->async_context);
+  delete context;
 }
 
 void RunMakeCallbackOnBackgroundQueue(void* data) {
@@ -112,33 +113,30 @@ napi_value MakeCallbackFromNative(napi_env env, napi_callback_info info) {
   auto* context = new MakeCallbackContext();
   context->env = env;
 
-  napi_value asyncResource = nullptr;
-  napi_value asyncResourceName = nullptr;
-  CHECK_VALUE(napi_create_object(env, &asyncResource),
-              "Failed to create async resource");
-  CHECK_VALUE(napi_create_string_utf8(env, "make-callback-reentry",
-                                      NAPI_AUTO_LENGTH, &asyncResourceName),
-              "Failed to create async resource name");
-  CHECK_VALUE(napi_async_init(env, asyncResource, asyncResourceName,
-                              &context->async_context),
+  CHECK_VALUE(napi_async_init(env, nullptr, nullptr, &context->async_context),
               "Failed to init async context");
 
   napi_value recvValue = nullptr;
   CHECK_VALUE(napi_get_global(env, &recvValue),
               "Failed to get global receiver");
-  napi_value argValue = nullptr;
-  CHECK_VALUE(napi_create_int32(env, 42, &argValue),
-              "Failed to create callback argument");
 
-  CHECK_VALUE(napi_create_reference(env, recvValue, 1,
-                                    &context->recv_ref),
-              "Failed to create receiver ref");
-  CHECK_VALUE(napi_create_reference(env, argv[0], 1,
-                                    &context->callback_ref),
-              "Failed to create callback ref");
-  CHECK_VALUE(napi_create_reference(env, argValue, 1,
-                                    &context->arg_ref),
-              "Failed to create argument ref");
+  napi_status status =
+      napi_create_reference(env, recvValue, 1, &context->recv_ref);
+  if (status != napi_ok) {
+    napi_async_destroy(env, context->async_context);
+    delete context;
+    ThrowStatusError(env, status, "Failed to create receiver ref");
+    return nullptr;
+  }
+
+  status = napi_create_reference(env, argv[0], 1, &context->callback_ref);
+  if (status != napi_ok) {
+    napi_delete_reference(env, context->recv_ref);
+    napi_async_destroy(env, context->async_context);
+    delete context;
+    ThrowStatusError(env, status, "Failed to create callback ref");
+    return nullptr;
+  }
 
   dispatch_async_f(dispatch_get_global_queue(QOS_CLASS_BACKGROUND, 0), context,
                    RunMakeCallbackOnBackgroundQueue);

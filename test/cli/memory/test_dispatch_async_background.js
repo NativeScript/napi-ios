@@ -1,8 +1,8 @@
 "use strict";
 
-const { runAsyncMemoryTest } = require("./_harness");
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-runAsyncMemoryTest("dispatch-async-background", async (t) => {
+runPlainMemoryTest("dispatch-async-background", async (t) => {
   const total = 1200;
   let backgroundExecuted = 0;
   let checksum = 0;

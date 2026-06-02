@@ -1,5 +1,6 @@
 #include "jsr.h"
 
+#include "jsr_common.h"
 #include "js_runtime.h"
 
 using namespace facebook::jsi;
@@ -111,6 +112,7 @@ facebook::jsi::Runtime* js_get_jsi_runtime(napi_env env) {
 napi_status js_set_runtime_flags(const char* flags) { return napi_ok; }
 
 napi_status js_free_napi_env(napi_env env) {
+  js_run_env_cleanup_hooks(env);
   JSR::env_to_jsr_cache.erase(env);
   return napi_ok;
 }

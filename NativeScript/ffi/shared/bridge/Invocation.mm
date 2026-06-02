@@ -404,6 +404,7 @@ Value callCFunction(Runtime& runtime,
   if (prepared == nullptr) {
     throw JSError(runtime, "Native function state is unavailable.");
   }
+  NativeApiRoundTripCacheFrameGuard roundTripFrame(bridge);
 
   MDMetadataReader* metadata = bridge->metadata();
   if (metadata == nullptr) {
@@ -1535,6 +1536,7 @@ Value callPreparedObjCSelector(
     throw JSError(runtime,
                   "Cannot send Objective-C selector to nil.");
   }
+  NativeApiRoundTripCacheFrameGuard roundTripFrame(bridge);
 
   const NativeApiSignature& signature = prepared.signature;
   Value fastResult;
@@ -1661,6 +1663,7 @@ Value callObjCSelector(Runtime& runtime,
     throw JSError(runtime,
                                  "Cannot send Objective-C selector to nil.");
   }
+  NativeApiRoundTripCacheFrameGuard roundTripFrame(bridge);
 
   SEL selector = sel_registerName(selectorName.c_str());
   Class receiverClass =

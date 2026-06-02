@@ -1191,6 +1191,7 @@ void NativeApiSelectorGroupCallback(
   Runtime& runtime = data->runtime;
   v8::HandleScope handleScope(runtime.isolate());
   try {
+    NativeApiRoundTripCacheFrameGuard roundTripFrame(data->bridge);
     size_t count = static_cast<size_t>(info.Length());
     if (count >= data->selectors->size() ||
         (*data->selectors)[count].selectorName.empty()) {

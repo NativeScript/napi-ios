@@ -1,8 +1,8 @@
 "use strict";
 
-const { runAsyncMemoryTest } = require("./_harness");
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-runAsyncMemoryTest("js-heap-throughput", async (t) => {
+runPlainMemoryTest("js-heap-throughput", async (t) => {
   const outerRounds = 8;
   const chunkSize = 128 * 1024;
   const chunksPerRound = 350;
