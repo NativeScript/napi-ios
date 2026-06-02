@@ -1210,9 +1210,9 @@ type UIKitAdapterDefinition<Props extends object, NativeView> =
 
 let targetActionClass: any;
 let observerClass: any;
-const targetActionCallbacks = new WeakMap<object, (sender: unknown) => void>();
-const observerCallbacks = new WeakMap<
-  object,
+const targetActionCallbacks = new Map<string, (sender: unknown) => void>();
+const observerCallbacks = new Map<
+  string,
   (keyPath: string, object: unknown, change: unknown) => void
 >();
 
@@ -1228,6 +1228,20 @@ function requireNSObject(): any {
   return nsObject;
 }
 
+function nativeCallbackKey(value: unknown): string {
+  const handleof = (globalThis as Record<string, any>).interop?.handleof;
+  if (value != null && typeof handleof === 'function') {
+    const handle = handleof(value);
+    if (handle != null) {
+      if (typeof handle.toHexString === 'function') {
+        return handle.toHexString();
+      }
+      return String(handle);
+    }
+  }
+  return String(value);
+}
+
 function getTargetActionClass(): any {
   if (targetActionClass) {
     return targetActionClass;
@@ -1237,7 +1251,7 @@ function getTargetActionClass(): any {
   targetActionClass = NSObject.extend(
     {
       nativeScriptHandleAction(sender: unknown) {
-        const callback = targetActionCallbacks.get(this as object);
+        const callback = targetActionCallbacks.get(nativeCallbackKey(this));
         if (typeof callback === 'function') {
           callback(sender);
         }
@@ -1273,7 +1287,7 @@ function getObserverClass(): any {
         object: unknown,
         change: unknown,
       ) {
-        const callback = observerCallbacks.get(this as object);
+        const callback = observerCallbacks.get(nativeCallbackKey(this));
         if (typeof callback === 'function') {
           callback(keyPath, object, change);
         }
@@ -1331,7 +1345,8 @@ function createUIKitContext<Props extends object>(
         return;
       }
       const target = getTargetActionClass().alloc().init();
-      targetActionCallbacks.set(target as object, uiInvoker(() => {
+      const targetKey = nativeCallbackKey(target);
+      targetActionCallbacks.set(targetKey, uiInvoker(() => {
         if (!disposed) {
           callback();
         }
@@ -1347,7 +1362,7 @@ function createUIKitContext<Props extends object>(
         if (typeof nativeControl.removeTargetActionForControlEvents === 'function') {
           nativeControl.removeTargetActionForControlEvents(target, selector, events);
         }
-        targetActionCallbacks.delete(target as object);
+        targetActionCallbacks.delete(targetKey);
       });
     },
     delegate(object, protocolRef, implementation) {
@@ -1389,7 +1404,8 @@ function createUIKitContext<Props extends object>(
         throw new Error('observe expects a KVO-compatible NSObject');
       }
       const observer = getObserverClass().alloc().init();
-      observerCallbacks.set(observer as object, (
+      const observerKey = nativeCallbackKey(observer);
+      observerCallbacks.set(observerKey, (
         observedKeyPath: string,
         _observedObject: unknown,
         change: unknown,
@@ -1422,7 +1438,7 @@ function createUIKitContext<Props extends object>(
             nativeObject.removeObserverForKeyPath(observer, keyPath);
           }
         } finally {
-          observerCallbacks.delete(observer as object);
+          observerCallbacks.delete(observerKey);
         }
       });
     },
@@ -1814,10 +1830,13 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
               height: measuredSize.height,
             }
           : undefined;
+      const {children, ...nativePropsWithoutChildren} =
+        nativeProps as ViewProps & {children?: React.ReactNode};
 
       return React.createElement(NativeScriptUIViewNativeComponent, {
-        ...nativeProps,
+        ...nativePropsWithoutChildren,
         collapsable: false,
+        children: childrenViewHandle ? children : undefined,
         childrenViewHandle,
         controllerHandle,
         debugName,

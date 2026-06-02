@@ -12,6 +12,7 @@ const semanticsTests = [
   "test_weakref_finalization.js",
   "test_weakref_plain_script.js",
   "test_objc_ownership_rules.js",
+  "test_objc_unmanaged_transfer_semantics.js",
   "test_objc_wrapper_finalization.js",
   "test_pointer_c_buffer_semantics.js",
   "test_reference_lifecycle.js",
@@ -117,7 +118,7 @@ function printSemanticsRunSummary(run) {
 
 async function main() {
   const opts = parseArgs(process.argv);
-  const repoRoot = path.resolve(__dirname, "..", "..");
+  const repoRoot = path.resolve(__dirname, "..", "..", "..");
   const memoryDir = path.resolve(__dirname);
   const nsrPath = opts.runtime
     ? path.resolve(repoRoot, opts.runtime)

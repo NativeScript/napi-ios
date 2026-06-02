@@ -14,6 +14,8 @@ RCT_EXPORT_MODULE(NativeScriptUIView)
 }
 
 RCT_EXPORT_VIEW_PROPERTY(nativeViewHandle, NSString)
+RCT_EXPORT_VIEW_PROPERTY(childrenViewHandle, NSString)
+RCT_EXPORT_VIEW_PROPERTY(controllerHandle, NSString)
 RCT_EXPORT_VIEW_PROPERTY(debugName, NSString)
 
 @end

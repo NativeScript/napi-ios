@@ -1,8 +1,8 @@
 "use strict";
 
-const { runAsyncMemoryTest } = require("./_harness");
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-runAsyncMemoryTest("objc-wrapper-churn", async (t) => {
+runPlainMemoryTest("objc-wrapper-churn", async (t) => {
   const outerRounds = 16;
   const innerRounds = 2000;
   let checksum = 0;

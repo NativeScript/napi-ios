@@ -1,8 +1,8 @@
 "use strict";
 
-const { runAsyncMemoryTest } = require("./_harness");
+const { runPlainMemoryTest } = require("./_plain_harness");
 
-runAsyncMemoryTest("block-lifecycle", async (t) => {
+runPlainMemoryTest("block-lifecycle", async (t) => {
   const queue = NSOperationQueue.new();
   queue.maxConcurrentOperationCount = 8;
 

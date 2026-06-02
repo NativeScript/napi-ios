@@ -67,7 +67,7 @@ id objectFromEngineValue(Runtime& runtime,
                               .callWithThis(runtime, object, nullptr, 0);
       if (millisValue.isNumber()) {
         NSDate* date = [NSDate dateWithTimeIntervalSince1970:millisValue.getNumber() / 1000.0];
-        bridge->rememberRoundTripValue(runtime, date, value);
+        bridge->rememberScopedRoundTripValue(runtime, date, value, false, true);
         return date;
       }
     }
@@ -89,7 +89,7 @@ id objectFromEngineValue(Runtime& runtime,
     size_t byteLength = 0;
     if (readEngineBuffer(runtime, object, &bytes, &byteLength)) {
       NSData* data = [NSData dataWithBytes:bytes length:byteLength];
-      bridge->rememberRoundTripValue(runtime, data, value);
+      bridge->rememberScopedRoundTripValue(runtime, data, value, false, false);
       return data;
     }
 
@@ -103,7 +103,7 @@ id objectFromEngineValue(Runtime& runtime,
                                         frame, false);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
       }
-      bridge->rememberRoundTripValue(runtime, nativeArray, value);
+      bridge->rememberScopedRoundTripValue(runtime, nativeArray, value, false, false);
       return nativeArray;
     }
 
@@ -119,7 +119,7 @@ id objectFromEngineValue(Runtime& runtime,
             false);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
       }
-      bridge->rememberRoundTripValue(runtime, nativeArray, value);
+      bridge->rememberScopedRoundTripValue(runtime, nativeArray, value, false, false);
       return nativeArray;
     }
 
@@ -161,7 +161,7 @@ id objectFromEngineValue(Runtime& runtime,
                           forKey:key];
           }
         }
-        bridge->rememberRoundTripValue(runtime, nativeMap, value);
+        bridge->rememberScopedRoundTripValue(runtime, nativeMap, value, false, false);
         return nativeMap;
       }
     }
@@ -186,7 +186,7 @@ id objectFromEngineValue(Runtime& runtime,
                        forKey:nativeKey];
       }
     }
-    bridge->rememberRoundTripValue(runtime, dictionary, value);
+    bridge->rememberScopedRoundTripValue(runtime, dictionary, value, false, false);
     return dictionary;
   }
   throw JSError(runtime,
@@ -213,6 +213,23 @@ std::string utf8StringFromNSString(NSString* string) {
   }
   result.resize(usedLength);
   return result;
+}
+
+char* copyCStringForReference(const char* string, size_t* byteLength = nullptr) {
+  size_t length = string != nullptr ? std::strlen(string) + 1 : 1;
+  char* copy = static_cast<char*>(malloc(length));
+  if (copy == nullptr) {
+    throw std::bad_alloc();
+  }
+  if (string != nullptr) {
+    std::memcpy(copy, string, length);
+  } else {
+    copy[0] = '\0';
+  }
+  if (byteLength != nullptr) {
+    *byteLength = length;
+  }
+  return copy;
 }
 
 bool readNativePointerProperty(Runtime& runtime, const Object& object,
@@ -281,8 +298,9 @@ void* pointerFromSymbolLikeObject(Runtime& runtime, const Object& object) {
   return lookupProtocolByNativeName(runtimeName);
 }
 
-void* pointerFromEngineValue(Runtime& runtime, const Value& value,
-                          NativeApiArgumentFrame& frame) {
+void* pointerFromEngineValue(Runtime& runtime,
+                          const std::shared_ptr<NativeApiBridge>& bridge,
+                          const Value& value, NativeApiArgumentFrame& frame) {
   if (value.isNull() || value.isUndefined()) {
     return nullptr;
   }
@@ -331,6 +349,14 @@ void* pointerFromEngineValue(Runtime& runtime, const Value& value,
   if (value.isString()) {
     std::string utf8 = value.asString(runtime).utf8(runtime);
     char* string = strdup(utf8.c_str());
+    if (string == nullptr) {
+      throw std::bad_alloc();
+    }
+    if (bridge != nullptr) {
+      bridge->rememberScopedRawRoundTripValue(runtime, string, value, true,
+                                             false);
+    }
+    frame.addCString(string);
     return string;
   }
   throw JSError(runtime, "Value cannot be converted to pointer.");
@@ -418,6 +444,20 @@ bool valueIsNativeObjectHostObject(Runtime& runtime, const Value& value) {
     return false;
   }
   return value.asObject(runtime).isHostObject<NativeApiObjectHostObject>(runtime);
+}
+
+bool nativeTypeStoresObjectiveCObject(const NativeApiType& type) {
+  switch (type.kind) {
+    case metagen::mdTypeAnyObject:
+    case metagen::mdTypeProtocolObject:
+    case metagen::mdTypeClassObject:
+    case metagen::mdTypeInstanceObject:
+    case metagen::mdTypeNSStringObject:
+    case metagen::mdTypeNSMutableStringObject:
+      return true;
+    default:
+      return false;
+  }
 }
 
 std::optional<size_t> parseArrayIndexProperty(const std::string& property) {
@@ -657,12 +697,20 @@ void convertEngineArgument(Runtime& runtime,
         Object object = value.asObject(runtime);
         void* pointer = nullptr;
         if (readPointerLikeValue(runtime, value, &pointer)) {
+          if (bridge != nullptr) {
+            bridge->rememberScopedRawRoundTripValue(runtime, pointer, value,
+                                                   false, true);
+          }
           *static_cast<char**>(target) = static_cast<char*>(pointer);
           break;
         }
         const uint8_t* bytes = nullptr;
         size_t byteLength = 0;
         if (readEngineBuffer(runtime, object, &bytes, &byteLength)) {
+          if (bridge != nullptr) {
+            bridge->rememberScopedRawRoundTripValue(runtime, bytes, value,
+                                                   false, true);
+          }
           *static_cast<char**>(target) =
               reinterpret_cast<char*>(const_cast<uint8_t*>(bytes));
           break;
@@ -676,6 +724,14 @@ void convertEngineArgument(Runtime& runtime,
           if (primitive.isString()) {
             std::string utf8 = primitive.asString(runtime).utf8(runtime);
             char* string = strdup(utf8.c_str());
+            if (string == nullptr) {
+              throw std::bad_alloc();
+            }
+            if (bridge != nullptr) {
+              bridge->rememberScopedRawRoundTripValue(runtime, string, value,
+                                                     true, false);
+            }
+            frame.addCString(string);
             *static_cast<char**>(target) = string;
             break;
           }
@@ -686,6 +742,14 @@ void convertEngineArgument(Runtime& runtime,
       }
       std::string utf8 = value.asString(runtime).utf8(runtime);
       char* string = strdup(utf8.c_str());
+      if (string == nullptr) {
+        throw std::bad_alloc();
+      }
+      if (bridge != nullptr) {
+        bridge->rememberScopedRawRoundTripValue(runtime, string, value, true,
+                                               false);
+      }
+      frame.addCString(string);
       *static_cast<char**>(target) = string;
       break;
     }
@@ -752,10 +816,12 @@ void convertEngineArgument(Runtime& runtime,
           break;
         }
       }
-      *static_cast<void**>(target) = pointerFromEngineValue(runtime, value, frame);
+      *static_cast<void**>(target) =
+          pointerFromEngineValue(runtime, bridge, value, frame);
       break;
     case metagen::mdTypeOpaquePointer:
-      *static_cast<void**>(target) = pointerFromEngineValue(runtime, value, frame);
+      *static_cast<void**>(target) =
+          pointerFromEngineValue(runtime, bridge, value, frame);
       break;
     case metagen::mdTypeBlock:
     case metagen::mdTypeFunctionPointer: {
@@ -796,7 +862,8 @@ void convertEngineArgument(Runtime& runtime,
           break;
         }
       }
-      *static_cast<void**>(target) = pointerFromEngineValue(runtime, value, frame);
+      *static_cast<void**>(target) =
+          pointerFromEngineValue(runtime, bridge, value, frame);
       break;
     }
     case metagen::mdTypeStruct:
@@ -882,9 +949,26 @@ Value convertNativeReturnValue(Runtime& runtime,
       }
       NativeApiType cStringType =
           primitiveInteropType(metagen::mdTypeChar);
+      std::shared_ptr<Value> backingValue;
+      bool stringLikeNative = false;
+      if (bridge != nullptr) {
+        Value roundTrip =
+            bridge->findRoundTripValue(runtime, string, &stringLikeNative);
+        if (!roundTrip.isUndefined()) {
+          backingValue = std::make_shared<Value>(runtime, roundTrip);
+        }
+      }
+      if (stringLikeNative) {
+        size_t byteLength = 0;
+        char* copy = copyCStringForReference(string, &byteLength);
+        return Object::createFromHostObject(
+            runtime, std::make_shared<NativeApiReferenceHostObject>(
+                         bridge, cStringType, copy, true, byteLength));
+      }
       return Object::createFromHostObject(
           runtime, std::make_shared<NativeApiReferenceHostObject>(
-                       bridge, cStringType, const_cast<char*>(string), false));
+                       bridge, cStringType, const_cast<char*>(string), false, 0,
+                       nullptr, std::move(backingValue)));
     }
     case metagen::mdTypeClass: {
       Class cls = *static_cast<Class*>(value);
@@ -983,7 +1067,18 @@ Value convertNativeReturnValue(Runtime& runtime,
       }
       if (type.kind == metagen::mdTypePointer && type.elementType != nullptr) {
         std::shared_ptr<Value> backingValue;
-        Value roundTrip = bridge->findRoundTripValue(runtime, pointer);
+        bool stringLikeNative = false;
+        Value roundTrip =
+            bridge->findRoundTripValue(runtime, pointer, &stringLikeNative);
+        if (stringLikeNative) {
+          size_t byteLength = 0;
+          char* copy =
+              copyCStringForReference(static_cast<const char*>(pointer),
+                                      &byteLength);
+          return Object::createFromHostObject(
+              runtime, std::make_shared<NativeApiReferenceHostObject>(
+                           bridge, *type.elementType, copy, true, byteLength));
+        }
         if (!roundTrip.isUndefined()) {
           backingValue = std::make_shared<Value>(runtime, roundTrip);
         }
@@ -1086,6 +1181,9 @@ Value NativeApiReferenceHostObject::get(Runtime& runtime,
       }
       return Value::undefined();
     }
+    if (backingValue_ != nullptr && nativeTypeStoresObjectiveCObject(type_)) {
+      return Value(runtime, *backingValue_);
+    }
     return convertNativeReturnValue(runtime, bridge_, type_, data_);
   }
   if (auto index = parseArrayIndexProperty(property)) {
@@ -1128,6 +1226,7 @@ NativeApiHostSetResult NativeApiReferenceHostObject::set(Runtime& runtime,
     ensureStorage(runtime, type_, frame, slotIndex + 1);
   }
   pendingValue_.reset();
+  backingValue_.reset();
   void* slot = static_cast<uint8_t*>(data_) +
                (slotIndex * referenceElementStride(type_));
   convertEngineArgument(runtime, bridge_, type_, value, slot, frame);
@@ -1486,18 +1585,27 @@ size_t sizeofInteropType(Runtime& runtime,
 
 Object createPointer(Runtime& runtime,
                      const std::shared_ptr<NativeApiBridge>& bridge,
-                     void* pointer, bool adopted) {
+                     void* pointer, bool adopted,
+                     std::shared_ptr<Value> backingValue) {
   if (!adopted && bridge != nullptr) {
     Value cached = bridge->findPointerValue(runtime, pointer);
     if (cached.isObject()) {
-      return cached.asObject(runtime);
+      Object cachedObject = cached.asObject(runtime);
+      if (backingValue != nullptr &&
+          cachedObject.isHostObject<NativeApiPointerHostObject>(runtime)) {
+        cachedObject
+            .getHostObject<NativeApiPointerHostObject>(runtime)
+            ->setBackingValue(runtime, *backingValue);
+      }
+      return cachedObject;
     }
   }
 
   Object result = Object::createFromHostObject(
       runtime,
       std::make_shared<NativeApiPointerHostObject>(bridge, pointer, "pointer",
-                                                   adopted));
+                                                   adopted,
+                                                   std::move(backingValue)));
   if (!adopted && bridge != nullptr) {
     bridge->rememberPointerValue(runtime, pointer, Value(runtime, result));
   }
@@ -1827,6 +1935,7 @@ Object createInteropObject(Runtime& runtime,
             bool ownsData = false;
             size_t byteLength = 0;
             std::shared_ptr<Value> pendingValue;
+            std::shared_ptr<Value> backingValue;
             if (hasType) {
               bool usesExternalStorage = false;
               Value valueToStore = Value::undefined();
@@ -1884,6 +1993,11 @@ Object createInteropObject(Runtime& runtime,
                   NativeApiArgumentFrame frame(1);
                   convertEngineArgument(runtime, bridge, type, valueToStore, data,
                                      frame);
+                  if (nativeTypeStoresObjectiveCObject(type) &&
+                      valueToStore.isObject()) {
+                    backingValue =
+                        std::make_shared<Value>(runtime, valueToStore);
+                  }
                 }
               }
             } else if (count > 0) {
@@ -1896,7 +2010,8 @@ Object createInteropObject(Runtime& runtime,
             return Object::createFromHostObject(
                 runtime, std::make_shared<NativeApiReferenceHostObject>(
                              bridge, type, data, ownsData, byteLength,
-                             std::move(pendingValue)));
+                             std::move(pendingValue),
+                             std::move(backingValue)));
       });
   Object referencePrototype(runtime);
   referencePrototype.setProperty(runtime, "constructor", referenceConstructor);
@@ -1994,13 +2109,20 @@ Object createInteropObject(Runtime& runtime,
               return Value(runtime, object);
             }
             if (object.isHostObject<NativeApiReferenceHostObject>(runtime)) {
-              void* data =
-                  object.getHostObject<NativeApiReferenceHostObject>(runtime)->data();
+              auto reference =
+                  object.getHostObject<NativeApiReferenceHostObject>(runtime);
+              void* data = reference->data();
               if (data == nullptr) {
                 throw JSError(
                     runtime, "Cannot get handle of empty Reference.");
               }
-              return createPointer(runtime, bridge, data);
+              std::shared_ptr<Value> backingValue;
+              if (reference->backingValue() != nullptr &&
+                  nativeTypeStoresObjectiveCObject(reference->type())) {
+                backingValue = reference->backingValue();
+              }
+              return createPointer(runtime, bridge, data, false,
+                                   std::move(backingValue));
             }
             if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
               auto structObject =
@@ -2011,10 +2133,12 @@ Object createInteropObject(Runtime& runtime,
               return createPointer(runtime, bridge, structObject->data());
             }
             if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
-              return createPointer(
-                  runtime, bridge,
+              id nativeObject =
                   object.getHostObject<NativeApiObjectHostObject>(runtime)
-                      ->object());
+                      ->object();
+              return createPointer(
+                  runtime, bridge, nativeObject, false,
+                  std::make_shared<Value>(runtime, args[0]));
             }
             if (Class cls = nativeClassFromEngineObject(runtime, object)) {
               return createPointer(runtime, bridge, cls);
@@ -2053,14 +2177,15 @@ Object createInteropObject(Runtime& runtime,
       runtime, "stringFromCString",
       Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "stringFromCString"), 2,
-          [](Runtime& runtime, const Value&, const Value* args,
+          [bridge](Runtime& runtime, const Value&, const Value* args,
              size_t count) -> Value {
             if (count < 1 || args[0].isNull() || args[0].isUndefined()) {
               return Value::null();
             }
             NativeApiArgumentFrame frame(1);
             const char* data =
-                static_cast<const char*>(pointerFromEngineValue(runtime, args[0], frame));
+                static_cast<const char*>(
+                    pointerFromEngineValue(runtime, bridge, args[0], frame));
             if (data == nullptr) {
               return Value::null();
             }

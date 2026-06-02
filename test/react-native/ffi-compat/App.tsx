@@ -275,7 +275,7 @@ function waitFor<T>(
 
 function waitForAsync<T>(
   read: () => Promise<T | undefined | null | false>,
-  message: string,
+  message: string | (() => string),
   timeoutMs = 5000,
 ): Promise<T> {
   const startedAt = Date.now();
@@ -287,7 +287,7 @@ function waitForAsync<T>(
         return;
       }
       if (Date.now() - startedAt > timeoutMs) {
-        reject(new Error(message));
+        reject(new Error(typeof message === 'function' ? message() : message));
         return;
       }
       setTimeout(poll, 50);
@@ -1713,20 +1713,46 @@ function buildReactNativeIntegrationTests(): TestCase[] {
     {
       name: 'mounts React Native children inside a UIKit container',
       async run() {
+        let diagnostics = 'not sampled';
         await waitForAsync(
           async () => {
             let mounted = false;
             await NativeScript.runOnUI(() => {
               const container = rnPlanState().container;
+              const rootView = container?.rootView;
+              const childrenView = container?.childrenView;
+              const wrapperView = rootView?.superview;
+              const describe = (view: any) =>
+                view ? String(view.description ?? view) : null;
+              const countSubviews = (view: any) =>
+                Number(view?.subviews?.count ?? 0);
+              diagnostics = JSON.stringify({
+                rootHasSuperview: Boolean(rootView?.superview),
+                rootSubviewCount: countSubviews(rootView),
+                rootSuperviewSubviewCount: countSubviews(wrapperView),
+                childrenSuperviewIsRoot: Boolean(
+                childrenView?.superview === rootView,
+              ),
+              childrenSuperviewSameNativeHandle: Boolean(
+                childrenView?.superview &&
+                  rootView &&
+                  sameNativeHandle(childrenView.superview, rootView),
+              ),
+              childrenSubviewCount: countSubviews(childrenView),
+              rootSuperview: describe(wrapperView),
+              childrenSuperview: describe(childrenView?.superview),
+              });
               mounted = Boolean(
-                container?.rootView?.superview &&
-                  container?.childrenView?.superview === container.rootView &&
-                  container?.childrenView?.subviews?.count > 0,
+                rootView?.superview &&
+                  childrenView?.superview &&
+                  sameNativeHandle(childrenView.superview, rootView) &&
+                  childrenView?.subviews?.count > 0,
               );
             });
             return mounted;
           },
-          'UIKit container children did not mount',
+          () => `UIKit container children did not mount; ${diagnostics}`,
+          15000,
         );
       },
     },
@@ -1746,6 +1772,7 @@ function buildReactNativeIntegrationTests(): TestCase[] {
             return attached;
           },
           'UIViewController was not attached to a parent',
+          15000,
         );
       },
     },

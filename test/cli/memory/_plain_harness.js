@@ -109,6 +109,38 @@ async function forceCollectUntil(predicate, options) {
   return !!predicate();
 }
 
+async function drainRunLoopUntilIdle(predicate, options) {
+  const opts = options || {};
+  const timeoutMs = opts.timeoutMs ?? 10_000;
+  const tickMs = opts.tickMs ?? 8;
+  const settleTicks = opts.settleTicks ?? 3;
+  const mode = NSDefaultRunLoopMode;
+  const start = Date.now();
+  let idleTicks = 0;
+
+  while (Date.now() - start < timeoutMs) {
+    NSRunLoop.mainRunLoop.runModeBeforeDate(
+      mode,
+      NSDate.dateWithTimeIntervalSinceNow(tickMs / 1000),
+    );
+
+    drainPendingJobs();
+
+    if (predicate()) {
+      idleTicks += 1;
+      if (idleTicks >= settleTicks) {
+        return true;
+      }
+    } else {
+      idleTicks = 0;
+    }
+
+    await sleep(0);
+  }
+
+  return !!predicate();
+}
+
 function emitResult(result) {
   const payload = JSON.stringify(result);
   console.log(`MEMTEST_RESULT:${payload}`);
@@ -139,13 +171,17 @@ function runPlainMemoryTest(name, fn, options) {
         sleep,
         forceGC,
         forceCollectUntil,
+        drainRunLoopUntilIdle,
         assert,
         waitUntil,
         makePressure,
         countAliveWeakRefs,
         weakTableCount,
         now: () => Date.now(),
-        autoreleasepool: typeof objc === "object" ? objc.autoreleasepool : null,
+        autoreleasepool:
+          typeof objc === "object" && typeof objc.autoreleasepool === "function"
+            ? objc.autoreleasepool
+            : (fn) => fn(),
         engine:
           (typeof process === "object" &&
             process &&

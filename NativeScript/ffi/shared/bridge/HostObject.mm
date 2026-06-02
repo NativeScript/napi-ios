@@ -433,8 +433,9 @@ class NativeApiHostObject final : public HostObject {
                                            "CC_SHA256 is not available.");
             }
             NativeApiArgumentFrame frame(3);
-            void* data = pointerFromEngineValue(runtime, args[0], frame);
-            void* output = pointerFromEngineValue(runtime, args[2], frame);
+            void* data = pointerFromEngineValue(runtime, bridge, args[0], frame);
+            void* output =
+                pointerFromEngineValue(runtime, bridge, args[2], frame);
             using CC_SHA256_Fn = unsigned char* (*)(const void*, unsigned long,
                                                     unsigned char*);
             auto fn = reinterpret_cast<CC_SHA256_Fn>(symbol);

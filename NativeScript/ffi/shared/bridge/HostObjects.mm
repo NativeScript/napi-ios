@@ -49,11 +49,13 @@ class NativeApiPointerHostObject final
  public:
   NativeApiPointerHostObject(std::shared_ptr<NativeApiBridge> bridge,
                              void* pointer, std::string kind = "pointer",
-                             bool adopted = false)
+                             bool adopted = false,
+                             std::shared_ptr<Value> backingValue = nullptr)
       : bridge_(std::move(bridge)),
         pointer_(pointer),
         kind_(std::move(kind)),
-        adopted_(adopted) {}
+        adopted_(adopted),
+        backingValue_(std::move(backingValue)) {}
 
   ~NativeApiPointerHostObject() override {
     if (adopted_ && pointer_ != nullptr) {
@@ -66,6 +68,10 @@ class NativeApiPointerHostObject final
   }
 
   void* pointer() const { return pointer_; }
+  std::shared_ptr<Value> backingValue() const { return backingValue_; }
+  void setBackingValue(Runtime& runtime, const Value& value) {
+    backingValue_ = std::make_shared<Value>(runtime, value);
+  }
   bool adopted() const { return adopted_; }
   void adopt() { adopted_ = true; }
   void clearWithoutFree() {
@@ -74,6 +80,7 @@ class NativeApiPointerHostObject final
     }
     pointer_ = nullptr;
     adopted_ = false;
+    backingValue_.reset();
   }
 
   Value get(Runtime& runtime, const PropNameID& name) override {
@@ -102,6 +109,7 @@ class NativeApiPointerHostObject final
             self->consumed_ = true;
             self->pointer_ = nullptr;
             self->adopted_ = false;
+            self->backingValue_.reset();
             return makeNativeObjectValue(runtime, self->bridge_, object, retained);
           });
     }
@@ -204,6 +212,7 @@ class NativeApiPointerHostObject final
   std::string kind_;
   bool adopted_ = false;
   bool consumed_ = false;
+  std::shared_ptr<Value> backingValue_;
 };
 
 class NativeApiReferenceHostObject final : public HostObject {
@@ -230,6 +239,7 @@ class NativeApiReferenceHostObject final : public HostObject {
 
   void* data() const { return data_; }
   const NativeApiType& type() const { return type_; }
+  std::shared_ptr<Value> backingValue() const { return backingValue_; }
   void ensureStorage(Runtime& runtime, NativeApiType type,
                      NativeApiArgumentFrame& frame, size_t elements = 1);
 
@@ -640,6 +650,10 @@ class NativeApiObjectHostObject final
   }
 
   ~NativeApiObjectHostObject() override {
+    if (bridge_ != nullptr && object_ != nil) {
+      bridge_->forgetRoundTripValue(object_);
+      bridge_->forgetObjectExpandos(object_);
+    }
     if (lifetimeState_ != nullptr) {
       lifetimeState_->clear();
     }
@@ -666,6 +680,10 @@ class NativeApiObjectHostObject final
 
   void disownObject(id expected) {
     if (object_ == expected) {
+      if (bridge_ != nullptr && expected != nil) {
+        bridge_->forgetRoundTripValue(expected);
+        bridge_->forgetObjectExpandos(expected);
+      }
       ownsObject_ = false;
       object_ = nil;
       if (lifetimeState_ != nullptr) {
@@ -906,7 +924,8 @@ class NativeApiObjectHostObject final
         Value getterValue = descriptor.getProperty(runtime, "get");
         if (getterValue.isObject() &&
             getterValue.asObject(runtime).isFunction(runtime)) {
-          Value thisValue = bridge_->findRoundTripValue(runtime, object_);
+          Value thisValue = bridge_->findRoundTripValue(runtime, object_,
+                                                        nullptr, true);
           if (thisValue.isObject()) {
             *found = true;
             return getterValue.asObject(runtime).asFunction(runtime).callWithThis(
@@ -964,7 +983,8 @@ class NativeApiObjectHostObject final
             descriptorValue.asObject(runtime).getProperty(runtime, "set");
         if (setterValue.isObject() &&
             setterValue.asObject(runtime).isFunction(runtime)) {
-          Value thisValue = bridge_->findRoundTripValue(runtime, object_);
+          Value thisValue = bridge_->findRoundTripValue(runtime, object_,
+                                                        nullptr, true);
           if (thisValue.isObject()) {
             Value args[] = {Value(runtime, value)};
             setterValue.asObject(runtime).asFunction(runtime).callWithThis(
@@ -1145,7 +1165,7 @@ class NativeApiObjectHostObject final
               return self->callObjectSelector(runtime, selectorName, nullptr,
                                               args + 1, count - 1);
             }
-              return callObjCSelector(runtime, bridge, object, false, selectorName,
+            return callObjCSelector(runtime, bridge, object, false, selectorName,
                                     nullptr, args + 1, count - 1);
           });
     }
@@ -1162,11 +1182,10 @@ class NativeApiObjectHostObject final
             }
 
             id object = self->object_;
+            bool ownsObject = self->ownsObject_;
             if (self->bridge_ != nullptr) {
               self->bridge_->forgetRoundTripValue(runtime, object);
-            }
-            if (self->ownsObject_) {
-              [object release];
+              self->bridge_->forgetObjectExpandos(object);
             }
             self->object_ = nil;
             self->ownsObject_ = false;
@@ -1174,7 +1193,19 @@ class NativeApiObjectHostObject final
               self->lifetimeState_->clear();
             }
             self->consumed_ = true;
-            return makeNativeObjectValue(runtime, self->bridge_, object, retained);
+            try {
+              Value result =
+                  makeNativeObjectValue(runtime, self->bridge_, object, retained);
+              if (!retained && ownsObject) {
+                [object release];
+              }
+              return result;
+            } catch (...) {
+              if (!retained && ownsObject) {
+                [object release];
+              }
+              throw;
+            }
           });
     }
     if (property == "toString") {
@@ -1183,7 +1214,7 @@ class NativeApiObjectHostObject final
           runtime, PropNameID::forAscii(runtime, "toString"), 0,
           [object](Runtime& runtime, const Value&, const Value*, size_t) -> Value {
             return NativeApiObjectHostObject::descriptionString(runtime, object);
-              });
+          });
     }
     if (property == "description") {
       return descriptionString(runtime, object_);
@@ -1611,16 +1642,38 @@ class NativeApiClassHostObject final : public HostObject {
               } else if (args[0].isObject()) {
                 Object object = args[0].asObject(runtime);
                 if (object.isHostObject<NativeApiPointerHostObject>(runtime)) {
-                  pointer = object
-                                .getHostObject<NativeApiPointerHostObject>(
-                                    runtime)
-                                ->pointer();
+                  auto pointerHost =
+                      object.getHostObject<NativeApiPointerHostObject>(
+                          runtime);
+                  pointer = pointerHost->pointer();
+                  if (pointerHost->backingValue() != nullptr) {
+                    Value backingValue(runtime, *pointerHost->backingValue());
+                    id backingObject =
+                        NativeApiObjectHostObject::nativeObjectFromValue(
+                            runtime, backingValue);
+                    if (backingObject == static_cast<id>(pointer) &&
+                        backingObject != nil &&
+                        [backingObject isKindOfClass:cls]) {
+                      return backingValue;
+                    }
+                  }
                 } else if (object.isHostObject<NativeApiReferenceHostObject>(
                                runtime)) {
-                  pointer = object
-                                .getHostObject<NativeApiReferenceHostObject>(
-                                    runtime)
-                                ->data();
+                  auto referenceHost =
+                      object.getHostObject<NativeApiReferenceHostObject>(
+                          runtime);
+                  pointer = referenceHost->data();
+                  if (referenceHost->backingValue() != nullptr) {
+                    Value backingValue(runtime, *referenceHost->backingValue());
+                    id backingObject =
+                        NativeApiObjectHostObject::nativeObjectFromValue(
+                            runtime, backingValue);
+                    if (backingObject == static_cast<id>(pointer) &&
+                        backingObject != nil &&
+                        [backingObject isKindOfClass:cls]) {
+                      return backingValue;
+                    }
+                  }
                 } else if (object.isHostObject<NativeApiObjectHostObject>(
                                runtime)) {
                   pointer = object
@@ -1782,7 +1835,7 @@ Value makeNativeObjectValue(Runtime& runtime,
     return Value::null();
   }
 
-  Value cached = bridge->findRoundTripValue(runtime, object);
+  Value cached = bridge->findRoundTripValue(runtime, object, nullptr, true);
   if (!cached.isUndefined()) {
     // A consumed wrapper (e.g. an alloc'd placeholder singleton already passed
     // to an initializer) must not be reused: drop the stale entry and re-wrap.
@@ -1790,7 +1843,7 @@ Value makeNativeObjectValue(Runtime& runtime,
         cached.isObject()
             ? cached.asObject(runtime).getHostObject<NativeApiObjectHostObject>(runtime)
             : nullptr;
-    if (cachedHost == nullptr || cachedHost->object() != nil) {
+    if (cachedHost != nullptr && cachedHost->object() != nil) {
       if (ownsObject) {
         [object release];
       }
@@ -1816,7 +1869,7 @@ Value makeNativeObjectValue(Runtime& runtime,
     Object prototype = prototypeValue.asObject(runtime);
     SetNativeApiObjectPrototype(runtime, result, prototype);
   }
-  bridge->rememberRoundTripValue(
+  bridge->rememberScopedRoundTripValue(
       runtime, object, Value(runtime, result),
       nativeObjectIsStringLike(object));
   return result;
