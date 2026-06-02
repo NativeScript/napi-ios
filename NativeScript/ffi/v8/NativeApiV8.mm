@@ -1234,8 +1234,9 @@ void NativeApiSelectorGroupCallback(
         entry.hasMember ? &entry.member : nullptr;
     bool callTargetCanPrepare = true;
     if (prepared == nullptr || propertyGetterCall) {
-      NativeApiSelectorGroupCallTarget callTarget = selectorGroupMemberForCall(
-          receiver, selectorLookupClass, data->receiverIsClass, entry, count);
+      NativeApiSelectorGroupCallTarget callTarget =
+          selectorGroupCallTargetForEntry(receiver, selectorLookupClass,
+                                          data->receiverIsClass, entry, count);
       selectorNamePtr = callTarget.selectorName;
       selectedMember = callTarget.member;
       callTargetCanPrepare = callTarget.canPrepare;

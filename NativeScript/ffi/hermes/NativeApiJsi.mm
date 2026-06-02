@@ -341,13 +341,26 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
                         "Objective-C selector requires a native receiver.");
         }
 
-        NativeApiSelectorGroupCallTarget callTarget = selectorGroupMemberForCall(
-            receiver, selectorLookupClass, receiverIsClass, entry, count);
-        const std::string& selectorName = *callTarget.selectorName;
-        const NativeApiMember* selectedMember = callTarget.member;
-        if (prepared != nullptr && prepared->selectorName != selectorName) {
-          prepared = nullptr;
+        const bool propertyGetterCall =
+            entry.hasMember && entry.member.property && count == 0;
+        const std::string* selectorNamePtr = &entry.selectorName;
+        const NativeApiMember* selectedMember =
+            entry.hasMember ? &entry.member : nullptr;
+        bool callTargetCanPrepare = true;
+        if (prepared == nullptr || propertyGetterCall) {
+          NativeApiSelectorGroupCallTarget callTarget =
+              selectorGroupCallTargetForEntry(receiver, selectorLookupClass,
+                                              receiverIsClass, entry, count);
+          selectorNamePtr = callTarget.selectorName;
+          selectedMember = callTarget.member;
+          callTargetCanPrepare = callTarget.canPrepare;
+          if (prepared != nullptr && prepared->selectorName != *selectorNamePtr) {
+            prepared = nullptr;
+          }
         }
+        const std::string& selectorName =
+            prepared != nullptr && !propertyGetterCall ? prepared->selectorName
+                                                       : *selectorNamePtr;
 
         if (receiverIsClass) {
           Class methodClass = prepared != nullptr ? prepared->receiverClass : Nil;
@@ -365,8 +378,7 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
           selectorLookupClass = methodClass;
           receiver = static_cast<id>(methodClass);
         }
-        if (entry.hasMember && entry.member.property && count == 0 &&
-            !callTarget.canPrepare) {
+        if (propertyGetterCall && !callTargetCanPrepare) {
           return callObjCSelector(runtime, bridge, receiver, receiverIsClass,
                                   selectorName, selectedMember, nullptr, 0);
         }
