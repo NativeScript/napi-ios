@@ -109,6 +109,26 @@
       return i;
     });
 
+    if (globalThis.performance && typeof globalThis.performance.now === "function") {
+      var performanceNow = globalThis.performance.now;
+      function NativePrototypeCall() {}
+      NativePrototypeCall.prototype.nativeCall = performanceNow;
+      var nativePrototypeCall = new NativePrototypeCall();
+
+      addCase(cases, "js.nativeFunction.performance.now", 1, function () {
+        return performanceNow();
+      });
+
+      addCase(
+        cases,
+        "js.prototype.nativeFunction.performance.now",
+        1,
+        function () {
+          return nativePrototypeCall.nativeCall();
+        }
+      );
+    }
+
     addCase(cases, "NSObject.respondsToSelector", 1, function () {
       return object.respondsToSelector("description");
     });

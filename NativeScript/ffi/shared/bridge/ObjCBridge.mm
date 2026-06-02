@@ -506,6 +506,16 @@ NativeApiSelectorGroupCallTarget selectorGroupMemberForCall(
   return {&entry.selectorName, &entry.member, true};
 }
 
+inline NativeApiSelectorGroupCallTarget selectorGroupCallTargetForEntry(
+    id receiver, Class lookupClass, bool receiverIsClass,
+    NativeApiSelectorGroupEntry& entry, size_t count) {
+  if (entry.hasMember && (!entry.member.property || count != 0)) {
+    return {&entry.selectorName, &entry.member, true};
+  }
+  return selectorGroupMemberForCall(receiver, lookupClass, receiverIsClass,
+                                    entry, count);
+}
+
 const NativeApiMember* selectPropertyMember(
     const std::vector<NativeApiMember>& members, const std::string& property,
     bool staticMethod) {
