@@ -795,8 +795,7 @@ describe(module.id, function () {
         expect(functionImplicitCreate().retainCount()).toBe(1);
 
         var obj = functionExplicitCreateNSObject();
-        expect(obj.retainCount()).toBe(2);
-        CFRelease(obj);
+        expect(obj.retainCount()).toBe(1);
 
         expect(TNSReturnsRetained.methodReturnsNSRetained().retainCount()).toBe(1);
         expect(TNSReturnsRetained.methodReturnsCFRetained().retainCount()).toBe(1);

@@ -842,12 +842,16 @@ void convertEngineArgument(Runtime& runtime,
               createEngineCallback(runtime, bridge, type, object.asFunction(runtime),
                                 type.kind == metagen::mdTypeBlock, threadPolicy);
           void* pointer = callback->functionPointer();
+          uintptr_t roundTripValidationKey =
+              NativeApiBridge::callbackRoundTripValidationKey(type);
           if (type.kind == metagen::mdTypeBlock) {
             frame.addObject(static_cast<id>(pointer));
             frame.addLifetime(callback);
-            bridge->rememberRoundTripValue(runtime, pointer, value);
+            bridge->rememberRoundTripValue(runtime, pointer, value, false,
+                                           roundTripValidationKey);
           } else {
-            bridge->rememberRoundTripValue(runtime, pointer, value);
+            bridge->rememberRoundTripValue(runtime, pointer, value, false,
+                                           roundTripValidationKey);
           }
           try {
             object.setProperty(runtime, "__nativeApiPointerObject",
@@ -1077,7 +1081,9 @@ Value convertNativeReturnValue(Runtime& runtime,
       if (pointer == nullptr) {
         return Value::null();
       }
-      Value roundTrip = bridge->findRoundTripValue(runtime, pointer);
+      Value roundTrip = bridge->findRoundTripValue(
+          runtime, pointer, nullptr, false,
+          NativeApiBridge::callbackRoundTripValidationKey(type));
       if (!roundTrip.isUndefined()) {
         return roundTrip;
       }
