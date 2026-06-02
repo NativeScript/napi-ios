@@ -109,11 +109,20 @@ Runtime::Runtime() {
   currentRuntime_ = this;
   workerId_ = -1;
   runtimeLoop_ = nullptr;
+  microtaskObserver_ = nullptr;
   // workerCache_ = Caches::Workers;
 }
 
 Runtime::~Runtime() {
   currentRuntime_ = nullptr;
+  if (microtaskObserver_ != nullptr) {
+    if (runtimeLoop_ != nullptr) {
+      CFRunLoopRemoveObserver(runtimeLoop_, microtaskObserver_,
+                              kCFRunLoopCommonModes);
+    }
+    CFRelease(microtaskObserver_);
+    microtaskObserver_ = nullptr;
+  }
   if (runtimeLoop_ != nullptr) {
     unregisterRuntimePromiseRunLoop(runtimeLoop_);
     runtimeLoop_ = nullptr;
@@ -330,6 +339,24 @@ void Runtime::Init(bool isWorker) {
   js_create_napi_env(&env_, runtime_);
 
   runtimeLoop_ = CFRunLoopGetCurrent();
+  {
+    Runtime* runtime = this;
+    microtaskObserver_ = CFRunLoopObserverCreateWithHandler(
+        kCFAllocatorDefault, kCFRunLoopBeforeWaiting, true, 0,
+        ^(CFRunLoopObserverRef, CFRunLoopActivity) {
+          napi_env env = runtime->env_;
+          if (env == nullptr || !Runtime::IsAlive(env)) {
+            return;
+          }
+
+          NapiScope scope(env);
+          js_execute_pending_jobs(env);
+        });
+    if (microtaskObserver_ != nullptr) {
+      CFRunLoopAddObserver(runtimeLoop_, microtaskObserver_,
+                           kCFRunLoopCommonModes);
+    }
+  }
 
   {
     SpinLock lock(envsMutex_);
