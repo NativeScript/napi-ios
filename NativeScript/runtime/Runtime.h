@@ -56,6 +56,7 @@ class Runtime {
  private:
   int workerId_;
   CFRunLoopRef runtimeLoop_;
+  CFRunLoopObserverRef microtaskObserver_;
   double startTime_;
   double realtimeOrigin_;
 
