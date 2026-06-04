@@ -50,6 +50,9 @@
   "peerDependenciesMeta": {
     "expo": {
       "optional": true
+    },
+    "react-native-worklets": {
+      "optional": true
     }
   },
   "codegenConfig": {
