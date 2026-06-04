@@ -67,6 +67,8 @@ using namespace facebook::react;
   const std::string newControllerHandle = newViewProps->controllerHandle;
   const std::string oldDebugName = oldViewProps->debugName;
   const std::string newDebugName = newViewProps->debugName;
+  const std::string oldHostId = oldViewProps->hostId;
+  const std::string newHostId = newViewProps->hostId;
 
   [super updateProps:props oldProps:oldProps];
 
@@ -100,6 +102,12 @@ using namespace facebook::react;
             : [NSString stringWithUTF8String:newControllerHandle.c_str()];
     _containerView.controllerHandle = controllerHandle;
   }
+
+  if (oldHostId != newHostId) {
+    NSString* hostId =
+        newHostId.empty() ? nil : [NSString stringWithUTF8String:newHostId.c_str()];
+    _containerView.hostId = hostId;
+  }
 }
 
 - (void)prepareForRecycle {
@@ -110,6 +118,7 @@ using namespace facebook::react;
   _containerView.nativeViewHandle = nil;
   _containerView.childrenViewHandle = nil;
   _containerView.controllerHandle = nil;
+  _containerView.hostId = nil;
 }
 
 + (ComponentDescriptorProvider)componentDescriptorProvider {

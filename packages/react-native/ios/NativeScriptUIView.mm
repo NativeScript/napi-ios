@@ -1,4 +1,5 @@
 #import "NativeScriptUIView.h"
+#import "NativeScriptUIKitHost.h"
 
 static id NativeScriptNSObjectFromHandle(NSString* handle) {
   if (handle == nil || handle.length == 0) {
@@ -64,8 +65,19 @@ static UIViewController* NativeScriptNearestViewController(UIView* view) {
   [_nativeViewHandle release];
   [_childrenViewHandle release];
   [_controllerHandle release];
+  [_hostId release];
   [_debugName release];
   [super dealloc];
+}
+
+- (void)setHostId:(NSString*)hostId {
+  if ((_hostId == hostId) || [_hostId isEqualToString:hostId]) {
+    return;
+  }
+
+  [_hostId release];
+  _hostId = [hostId copy];
+  [self mountUIKitHostIfNeeded];
 }
 
 - (void)setNativeViewHandle:(NSString*)nativeViewHandle {
@@ -121,6 +133,31 @@ static UIViewController* NativeScriptNearestViewController(UIView* view) {
         stringByAppendingFormat:@"; debugName = %@>", _debugName];
   }
   return [description stringByAppendingFormat:@" debugName = %@", _debugName];
+}
+
+- (void)mountUIKitHostIfNeeded {
+  if (_hostId.length == 0) {
+    return;
+  }
+
+  NSDictionary<NSString*, NSString*>* handles = NativeScriptCreateUIKitHost(_hostId);
+  if (handles == nil) {
+    return;
+  }
+
+  NSString* nativeViewHandle = handles[@"nativeViewHandle"];
+  NSString* childrenViewHandle = handles[@"childrenViewHandle"];
+  NSString* controllerHandle = handles[@"controllerHandle"];
+
+  if (nativeViewHandle.length > 0) {
+    self.nativeViewHandle = nativeViewHandle;
+  }
+  if (childrenViewHandle.length > 0) {
+    self.childrenViewHandle = childrenViewHandle;
+  }
+  if (controllerHandle.length > 0) {
+    self.controllerHandle = controllerHandle;
+  }
 }
 
 - (void)setChildrenView:(UIView*)childrenView {
@@ -218,6 +255,7 @@ static UIViewController* NativeScriptNearestViewController(UIView* view) {
 
 - (void)didMoveToWindow {
   [super didMoveToWindow];
+  [self mountUIKitHostIfNeeded];
   [self attachViewControllerIfPossible];
 }
 
