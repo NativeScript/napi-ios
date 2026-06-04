@@ -184,6 +184,7 @@ export type UIViewControllerDefinition<
   'create'
 > & {
   createController: (ctx: UIKitCreateArgument<Props & ViewProps>) => Controller;
+  childrenView?: (controller: Controller) => unknown;
 };
 
 const nativeApiGlobalName = '__nativeScriptNativeApi';
@@ -2456,6 +2457,7 @@ export function defineUIViewController<
       return {
         hostView: controllerRecord.view,
         lifecycleValue: controller,
+        childrenView: definition.childrenView?.(controller),
         controller,
       };
     },

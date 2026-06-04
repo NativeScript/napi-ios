@@ -29,6 +29,7 @@ NativeScript.defineUIViewController({
   createController() {
     return UIViewController.new();
   },
+  childrenView: (controller) => controller.view,
   mounted(controller) {
     controller.view.setNeedsLayout();
   },
@@ -44,9 +45,10 @@ defineUIKitContainer({
 
 const output = transform(source);
 const workletDirectiveCount = (output.match(/"worklet";/g) || []).length;
-assert.strictEqual(workletDirectiveCount, 6);
+assert.strictEqual(workletDirectiveCount, 7);
 assert(output.includes('create() {\n    "worklet";'));
 assert(output.includes('update: view => {\n    "worklet";'));
 assert(output.includes('createController() {\n    "worklet";'));
+assert(output.includes('childrenView: controller => {\n    "worklet";'));
 
 console.log('babel plugin tests passed');

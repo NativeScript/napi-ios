@@ -217,6 +217,7 @@ export type UIViewControllerDefinition<
   createController: (
     ctx: UIKitViewContext<Props & ViewProps> & Readonly<Props & ViewProps>,
   ) => Controller;
+  childrenView?: (controller: Controller) => unknown;
 };
 
 export function init(metadataPath?: string, options?: InstallOptions): boolean;

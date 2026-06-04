@@ -7,6 +7,7 @@ const UIKIT_DEFINITION_CALLEES = new Set([
 const UIKIT_WORKLET_CALLBACKS = new Set([
   'create',
   'createController',
+  'childrenView',
   'dispose',
   'mounted',
   'update',
