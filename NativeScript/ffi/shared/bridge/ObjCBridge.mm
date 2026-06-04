@@ -1,5 +1,3 @@
-thread_local bool gDispatchNativeCallsToUI = false;
-thread_local bool gExecutingDispatchedUINativeCall = false;
 thread_local int gSynchronousNativeInvocationDepth = 0;
 thread_local int gNativeCallerThreadEngineCallbackDepth = 0;
 thread_local std::vector<std::string*> gNativeCallbackExceptionCaptureStack;
@@ -23,25 +21,6 @@ bool isNativeApiExtendedClass(Class cls) {
     current = class_getSuperclass(current);
   }
   return false;
-}
-
-class ScopedNativeApiUINativeCallDispatch final {
- public:
-  ScopedNativeApiUINativeCallDispatch()
-      : previous_(gDispatchNativeCallsToUI) {
-    gDispatchNativeCallsToUI = true;
-  }
-
-  ~ScopedNativeApiUINativeCallDispatch() {
-    gDispatchNativeCallsToUI = previous_;
-  }
-
- private:
-  bool previous_ = false;
-};
-
-bool shouldDispatchNativeCallToUI() {
-  return gDispatchNativeCallsToUI && ![NSThread isMainThread];
 }
 
 class ScopedNativeApiSynchronousInvocation final {
@@ -133,18 +112,7 @@ void performNativeInvocation(Runtime& runtime,
   };
 
   bool skipInvoker = gNativeCallerThreadEngineCallbackDepth > 0;
-  if (shouldDispatchNativeCallToUI()) {
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      bool previous = gExecutingDispatchedUINativeCall;
-      gExecutingDispatchedUINativeCall = true;
-      if (invoker && !skipInvoker) {
-        invoker(run);
-      } else {
-        run();
-      }
-      gExecutingDispatchedUINativeCall = previous;
-    });
-  } else if (invoker && !skipInvoker) {
+  if (invoker && !skipInvoker) {
     invoker(run);
   } else {
     run();
@@ -171,16 +139,7 @@ void performDirectObjCInvocation(Runtime& runtime, Invocation&& invocation) {
     }
   };
 
-  if (shouldDispatchNativeCallToUI()) {
-    dispatch_sync(dispatch_get_main_queue(), ^{
-      bool previous = gExecutingDispatchedUINativeCall;
-      gExecutingDispatchedUINativeCall = true;
-      run();
-      gExecutingDispatchedUINativeCall = previous;
-    });
-  } else {
-    run();
-  }
+  run();
 
   if (exceptionDescription != nil) {
     std::string message = exceptionDescription.UTF8String ?: "";
@@ -2225,8 +2184,6 @@ void performGeneratedObjCInvocation(
   const auto& invoker = bridge->nativeInvocationInvoker();
   if (invoker || bridge->invokeCallbacksOnNativeCallerThread()) {
     performNativeInvocation(runtime, invoker, [&]() { invocation(); });
-  } else if (shouldDispatchNativeCallToUI()) {
-    performDirectObjCInvocation(runtime, [&]() { invocation(); });
   } else {
     invocation();
   }

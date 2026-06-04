@@ -42,7 +42,8 @@ Pod::Spec.new do |s|
       "\"$(PODS_ROOT)/Headers/Public/React-Codegen\"",
       "\"$(PODS_ROOT)/Headers/Private/React-Codegen\"",
       "\"$(PODS_ROOT)/Headers/Public/ReactCommon\"",
-      "\"$(PODS_ROOT)/Headers/Private/ReactCommon\""
+      "\"$(PODS_ROOT)/Headers/Private/ReactCommon\"",
+      "\"$(PODS_ROOT)/Headers/Public/RNWorklets\""
     ].join(" ")
   }
 
@@ -53,4 +54,5 @@ Pod::Spec.new do |s|
     s.dependency "React-jsi"
     s.dependency "ReactCommon/turbomodule/core"
   end
+  s.dependency "RNWorklets"
 end

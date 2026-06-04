@@ -10,6 +10,7 @@
 #include <cstddef>
 #include <cstdlib>
 #include <iostream>
+#include <vector>
 #include "js_native_api_types.h"
 
 namespace nativescript {
@@ -82,8 +83,9 @@ namespace worker {
 class Message {
  public:
   Message(MallocedBuffer<char>&& payload = MallocedBuffer<char>());
-  Message(Message&& other) = default;
-  Message& operator=(Message&& other) = default;
+  Message(Message&& other) noexcept;
+  Message& operator=(Message&& other) noexcept;
+  ~Message();
   Message& operator=(const Message&) = delete;
   Message(const Message&) = delete;
   bool Serialize(napi_env env, napi_value input);
@@ -91,6 +93,11 @@ class Message {
 
  private:
   MallocedBuffer<char> main_message_buf_;
+#ifdef TARGET_ENGINE_QUICKJS
+  bool is_quickjs_native_message_ = false;
+  std::vector<uint8_t*> quickjs_shared_array_buffers_;
+  void ReleaseQuickJSSharedArrayBuffers();
+#endif
 };
 };  // namespace worker
 }  // namespace nativescript

@@ -38,12 +38,14 @@ const NativeBadge = defineUIKitView<BadgeProps, UIView>({
 
 async function readNativeSummary() {
   const api = (globalThis as any).__nativeScriptNativeApi;
-  let ranOnMainThread = false;
 
-  await NativeScript.runOnUI(() => {
-    ranOnMainThread = NSThread.isMainThread === true;
+  const uiSummary = await NativeScript.runOnUI(() => {
+    'worklet';
     UIApplication.sharedApplication.keyWindow.tintColor =
       UIColor.systemPinkColor;
+    return {
+      ranOnMainThread: NSThread.isMainThread === true,
+    };
   });
 
   return {
@@ -51,7 +53,7 @@ async function readNativeSummary() {
     classes: api?.metadata?.classes ?? 0,
     constants: api?.metadata?.constants ?? 0,
     enums: api?.metadata?.enums ?? 0,
-    ranOnMainThread,
+    ranOnMainThread: uiSummary.ranOnMainThread,
     timeoutConstant: NSURLErrorTimedOut,
     darkStyle: UIUserInterfaceStyle.Dark,
   };

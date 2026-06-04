@@ -4,6 +4,7 @@ export function topVisibleViewController(
   root: UIViewController | null | undefined =
     UIApplication.sharedApplication.keyWindow?.rootViewController,
 ): UIViewController | null {
+  'worklet';
   let current = root ?? null;
   while (current?.presentedViewController) {
     current = current.presentedViewController;
@@ -23,6 +24,7 @@ export async function presentDocumentCamera(
   delegate: VNDocumentCameraViewControllerDelegate,
 ) {
   await NativeScript.runOnUI(() => {
+    'worklet';
     if (
       !NativeScript.loadFramework('VisionKit') ||
       !NativeScript.isClassAvailable('VNDocumentCameraViewController')
@@ -47,6 +49,7 @@ export async function presentDocumentCamera(
 
 export async function presentPasses(pass: PKPass) {
   await NativeScript.runOnUI(() => {
+    'worklet';
     if (
       !NativeScript.loadFramework('PassKit') ||
       !NativeScript.isClassAvailable('PKAddPassesViewController')

@@ -15,6 +15,8 @@ import {StyleSheet} from 'react-native';
 import NativeScriptNativeApi from './NativeScriptNativeApi';
 import NativeScriptUIViewNativeComponent from './NativeScriptUIViewNativeComponent';
 
+declare const require: (id: string) => any;
+
 type NativeApiHost = {
   metadata?: {
     classNames?: () => string[];
@@ -31,12 +33,20 @@ type NativeApiHost = {
   getEnum?: (name: string) => unknown;
   getStruct?: (name: string) => unknown;
   getUnion?: (name: string) => unknown;
-  runOnUI?: (callback?: () => void) => Promise<void>;
   [name: string]: unknown;
 };
 
 export type InstallOptions = {
   globals?: boolean;
+};
+
+export type NativeScriptWorklets = {
+  getUIRuntimeHolder: () => object;
+  isWorkletFunction: (value: unknown) => boolean;
+  runOnUIAsync: <Args extends unknown[], ReturnValue>(
+    callback: (...args: Args) => ReturnValue | Promise<ReturnValue>,
+    ...args: Args
+  ) => Promise<ReturnValue>;
 };
 
 export type UIKitSizingMode = 'fill' | 'intrinsic' | 'sizeThatFits' | 'autoLayout';
@@ -180,7 +190,7 @@ const nativeApiCallbackThreadKey = '__nativeScriptCallbackThread';
 const nativeApiWrappedCallbackKey = '__nativeScriptWrappedCallback';
 const nativeClassWrappers = new WeakMap<object, unknown>();
 
-export type NativeScriptCallbackThread = 'ui' | 'js';
+export type NativeScriptCallbackThread = 'js';
 type AnyFunction = (...args: any[]) => any;
 export type NativeScriptInvokedCallback<T extends AnyFunction> = T & {
   readonly __nativeScriptCallbackThread?: NativeScriptCallbackThread;
@@ -871,6 +881,9 @@ export function init(
   if (installed && options.globals !== false) {
     installGlobals();
   }
+  if (installed) {
+    ensureWorkletsInstalled(metadataPath);
+  }
   return installed;
 }
 
@@ -888,14 +901,96 @@ export function getRuntimeBackend(): string {
   return NativeScriptNativeApi.getRuntimeBackend();
 }
 
-export function runOnUI(callback?: () => void): Promise<void> {
-  const run = requireNativeApiHost().runOnUI;
-  if (typeof run !== 'function') {
-    throw new Error(
-      'NativeScript Native API JSI host was installed without runOnUI',
+let workletsAdapter: NativeScriptWorklets | undefined;
+const workletsPackageName = 'react-native-worklets';
+
+function workletsSetupError(reason: string): Error {
+  return new Error(
+    `${reason}. Install ${workletsPackageName}, add ${workletsPackageName}/plugin to your Babel plugins, and run pod install so RNWorklets is linked.`,
+  );
+}
+
+function requireReactNativeWorklets(): NativeScriptWorklets {
+  try {
+    return require(workletsPackageName) as NativeScriptWorklets;
+  } catch (error) {
+    throw workletsSetupError(`NativeScript.runOnUI requires ${workletsPackageName}`);
+  }
+}
+
+function validateWorkletsModule(
+  worklets: NativeScriptWorklets,
+): NativeScriptWorklets {
+  if (
+    worklets == null ||
+    typeof worklets.getUIRuntimeHolder !== 'function' ||
+    typeof worklets.isWorkletFunction !== 'function' ||
+    typeof worklets.runOnUIAsync !== 'function'
+  ) {
+    throw workletsSetupError(
+      'NativeScript.runOnUI received an incompatible Worklets module',
     );
   }
-  return run(callback);
+  return worklets;
+}
+
+function ensureWorkletsInstalled(metadataPath = ''): NativeScriptWorklets {
+  if (workletsAdapter) {
+    return workletsAdapter;
+  }
+  installWorklets(requireReactNativeWorklets(), metadataPath);
+  return workletsAdapter as NativeScriptWorklets;
+}
+
+export function installWorklets(
+  worklets: NativeScriptWorklets = requireReactNativeWorklets(),
+  metadataPath = '',
+): boolean {
+  if (!NativeScriptNativeApi.isInstalled()) {
+    const installed = NativeScriptNativeApi.install(metadataPath);
+    if (!installed) {
+      throw new Error('NativeScript Native API JSI host object was not installed');
+    }
+    installInteropConstructors();
+    installInlineFunctions();
+    installGlobals();
+  }
+
+  const validWorklets = validateWorkletsModule(worklets);
+  const holder = validWorklets.getUIRuntimeHolder();
+  if (holder == null || typeof holder !== 'object') {
+    throw workletsSetupError('NativeScript.runOnUI could not resolve a Worklets UI runtime');
+  }
+  const installRuntime = NativeScriptNativeApi.installWorkletRuntime;
+  if (typeof installRuntime !== 'function') {
+    throw workletsSetupError(
+      'NativeScript Native API was built without RNWorklets runtime support',
+    );
+  }
+  const installed = installRuntime(holder, metadataPath);
+  if (!installed) {
+    throw workletsSetupError('NativeScript Native API could not install into the Worklets UI runtime');
+  }
+  workletsAdapter = validWorklets;
+  return true;
+}
+
+export function runOnUI<Args extends unknown[], ReturnValue>(
+  callback: (...args: Args) => ReturnValue | Promise<ReturnValue>,
+  ...args: Args
+): Promise<ReturnValue> {
+  if (typeof callback !== 'function') {
+    throw new TypeError('NativeScript.runOnUI expects a Worklets callback');
+  }
+
+  ensureNativeScriptInstalled();
+  const worklets = ensureWorkletsInstalled();
+  if (worklets.isWorkletFunction(callback) !== true) {
+    throw workletsSetupError(
+      'NativeScript.runOnUI requires a worklet callback',
+    );
+  }
+  return worklets.runOnUIAsync(callback, ...args);
 }
 
 function callbackInvoker<T extends AnyFunction>(
@@ -938,9 +1033,11 @@ function callbackInvoker<T extends AnyFunction>(
 }
 
 export function uiInvoker<T extends AnyFunction>(
-  callback: T,
-): NativeScriptInvokedCallback<T> {
-  return callbackInvoker('ui', callback);
+  _callback: T,
+): never {
+  throw new Error(
+    'NativeScript.uiInvoker is not supported in React Native. Use a Worklets "worklet" callback with NativeScript.runOnUI().',
+  );
 }
 
 export function jsInvoker<T extends AnyFunction>(
@@ -953,9 +1050,6 @@ export function eventBridge<T extends AnyFunction>(
   callback: T,
   thread: NativeScriptCallbackThread | 'caller' = 'js',
 ): T | NativeScriptInvokedCallback<T> {
-  if (thread === 'ui') {
-    return uiInvoker(callback);
-  }
   if (thread === 'js') {
     return jsInvoker(callback);
   }
@@ -1346,7 +1440,7 @@ function createUIKitContext<Props extends object>(
       }
       const target = getTargetActionClass().alloc().init();
       const targetKey = nativeCallbackKey(target);
-      targetActionCallbacks.set(targetKey, uiInvoker(() => {
+      targetActionCallbacks.set(targetKey, jsInvoker(() => {
         if (!disposed) {
           callback();
         }
@@ -1384,7 +1478,7 @@ function createUIKitContext<Props extends object>(
         name,
         object ?? null,
         null,
-        uiInvoker((notification: unknown) => {
+        jsInvoker((notification: unknown) => {
           if (!disposed) {
             callback(notification);
           }
@@ -1910,6 +2004,7 @@ const NativeScript = {
   defineUIKitView,
   defineUIViewController,
   getRuntimeBackend,
+  installWorklets,
   assertUIKitThread,
   createDelegate,
   createEventBridge,

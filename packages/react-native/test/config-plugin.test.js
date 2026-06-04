@@ -25,6 +25,10 @@ withTempProject((projectRoot) => {
     (source.match(/@nativescript\/react-native\/babel-plugin/g) || []).length,
     1,
   );
+  assert.strictEqual(
+    (source.match(/react-native-worklets\/plugin/g) || []).length,
+    1,
+  );
 });
 
 withTempProject((projectRoot) => {
@@ -45,6 +49,33 @@ withTempProject((projectRoot) => {
   const source = fs.readFileSync(path.join(projectRoot, 'babel.config.js'), 'utf8');
   assert.strictEqual(
     (source.match(/@nativescript\/react-native\/babel-plugin/g) || []).length,
+    1,
+  );
+  assert.strictEqual(
+    (source.match(/react-native-worklets\/plugin/g) || []).length,
+    1,
+  );
+});
+
+withTempProject((projectRoot) => {
+  fs.writeFileSync(
+    path.join(projectRoot, 'babel.config.js'),
+    [
+      'module.exports = {',
+      "  plugins: ['@nativescript/react-native/babel-plugin'],",
+      '};',
+      '',
+    ].join('\n'),
+  );
+  ensureBabelPlugin(projectRoot);
+  ensureBabelPlugin(projectRoot);
+  const source = fs.readFileSync(path.join(projectRoot, 'babel.config.js'), 'utf8');
+  assert.strictEqual(
+    (source.match(/@nativescript\/react-native\/babel-plugin/g) || []).length,
+    1,
+  );
+  assert.strictEqual(
+    (source.match(/react-native-worklets\/plugin/g) || []).length,
     1,
   );
 });

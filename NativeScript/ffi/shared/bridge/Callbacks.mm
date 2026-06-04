@@ -40,7 +40,6 @@ struct NativeApiSignature {
 
 enum class NativeApiCallbackThreadPolicy {
   Default,
-  UI,
   JS,
 };
 
@@ -56,9 +55,6 @@ NativeApiCallbackThreadPolicy readEngineCallbackThreadPolicy(
       return NativeApiCallbackThreadPolicy::Default;
     }
     std::string policy = policyValue.asString(runtime).utf8(runtime);
-    if (policy == "ui") {
-      return NativeApiCallbackThreadPolicy::UI;
-    }
     if (policy == "js") {
       return NativeApiCallbackThreadPolicy::JS;
     }
@@ -596,21 +592,6 @@ class NativeApiCallback final
         call();
       }
     };
-    auto callOnUIThread = [&]() {
-      auto runOnUIThread = [&]() {
-        bool previous = gExecutingDispatchedUINativeCall;
-        gExecutingDispatchedUINativeCall = true;
-        callOnNativeCallerThread();
-        gExecutingDispatchedUINativeCall = previous;
-      };
-      if ([NSThread isMainThread]) {
-        runOnUIThread();
-      } else {
-        dispatch_sync(dispatch_get_main_queue(), ^{
-          runOnUIThread();
-        });
-      }
-    };
     auto callOnJSThread = [&]() {
       if (currentThreadIsJs) {
         call();
@@ -632,15 +613,6 @@ class NativeApiCallback final
       error = "Native callback was invoked off the JS thread without a JS scheduler.";
     };
 
-    if (threadPolicy_ == NativeApiCallbackThreadPolicy::UI) {
-      callOnUIThread();
-      if (!error.empty()) {
-        if (!recordNativeCallbackException(error)) {
-          throwNativeApiCallbackException(error);
-        }
-      }
-      return;
-    }
     if (threadPolicy_ == NativeApiCallbackThreadPolicy::JS) {
       callOnJSThread();
       if (!error.empty()) {
@@ -662,7 +634,6 @@ class NativeApiCallback final
         activeSynchronousNativeInvocation &&
         (block_ || bindThis_ || !returnsVoid);
     bool direct = currentThreadIsJs ||
-                  gExecutingDispatchedUINativeCall ||
                   gSynchronousNativeInvocationDepth > 0 ||
                   nativeCallerThreadCallback;
     bool waitForNativeThreadCallback =

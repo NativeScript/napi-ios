@@ -1,5 +1,7 @@
 #include <assert.h>
 #include <limits.h>
+#include <stdatomic.h>
+#include <stddef.h>
 #include <quickjs.h>
 #include <sys/queue.h>
 
@@ -54,6 +56,57 @@ static const JSMallocFunctions mi_mf = {js_mi_calloc, js_mi_malloc, js_mi_free,
                                         js_mi_realloc, mi_malloc_usable_size};
 
 #endif
+
+typedef struct QJSSABHeader {
+  atomic_int ref_count;
+  uint8_t buf[];
+} QJSSABHeader;
+
+static void* qjs_shared_array_buffer_alloc(void* opaque, size_t size) {
+  QJSSABHeader* sab =
+      mi_malloc(sizeof(QJSSABHeader) + (size == 0 ? 1 : size));
+  if (sab == NULL) {
+    return NULL;
+  }
+
+  atomic_init(&sab->ref_count, 1);
+  return sab->buf;
+}
+
+static QJSSABHeader* qjs_shared_array_buffer_header(uint8_t* ptr) {
+  return (QJSSABHeader*)(ptr - offsetof(QJSSABHeader, buf));
+}
+
+void qjs_shared_array_buffer_data_retain(uint8_t* ptr) {
+  if (ptr == NULL) {
+    return;
+  }
+
+  QJSSABHeader* sab = qjs_shared_array_buffer_header(ptr);
+  atomic_fetch_add_explicit(&sab->ref_count, 1, memory_order_relaxed);
+}
+
+void qjs_shared_array_buffer_data_release(uint8_t* ptr) {
+  if (ptr == NULL) {
+    return;
+  }
+
+  QJSSABHeader* sab = qjs_shared_array_buffer_header(ptr);
+  int previous =
+      atomic_fetch_sub_explicit(&sab->ref_count, 1, memory_order_acq_rel);
+  assert(previous > 0);
+  if (previous == 1) {
+    mi_free(sab);
+  }
+}
+
+static void qjs_shared_array_buffer_free(void* opaque, void* ptr) {
+  qjs_shared_array_buffer_data_release((uint8_t*)ptr);
+}
+
+static void qjs_shared_array_buffer_dup(void* opaque, void* ptr) {
+  qjs_shared_array_buffer_data_retain((uint8_t*)ptr);
+}
 
 #define ToJS(value) *((JSValue*)value)
 
@@ -3786,6 +3839,121 @@ napi_status napi_run_script_source(napi_env env, napi_value script,
   return qjs_execute_script(env, script, source_url, result);
 }
 
+napi_status napi_run_script_as_module(napi_env env, napi_value script,
+                                      const char* source_url,
+                                      napi_value* result) {
+  CHECK_ARG(env)
+  CHECK_ARG(script)
+  CHECK_ARG(source_url)
+  CHECK_ARG(result)
+
+  size_t script_len = 0;
+  const char* cScript =
+      JS_ToCStringLen(env->context, &script_len, ToJS(script));
+  RETURN_STATUS_IF_FALSE(cScript != NULL, napi_pending_exception)
+
+  js_enter(env);
+  JSValue module =
+      JS_Eval(env->context, cScript, script_len, source_url,
+              JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+  JS_FreeCString(env->context, cScript);
+
+  if (JS_IsException(module)) {
+    js_exit(env);
+    JSValue exception = JS_GetException(env->context);
+    const char* exceptionMessage = JS_ToCString(env->context, exception);
+    napi_set_last_error(env, napi_cannot_run_js, exceptionMessage, 0, NULL);
+    JS_FreeCString(env->context, exceptionMessage);
+    JS_Throw(env->context, exception);
+    return napi_cannot_run_js;
+  }
+
+  JSModuleDef* moduleDef = (JSModuleDef*)JS_VALUE_GET_PTR(module);
+  JSValue meta = JS_GetImportMeta(env->context, moduleDef);
+  if (JS_IsException(meta)) {
+    JS_FreeValue(env->context, module);
+    js_exit(env);
+    JSValue exception = JS_GetException(env->context);
+    const char* exceptionMessage = JS_ToCString(env->context, exception);
+    napi_set_last_error(env, napi_cannot_run_js, exceptionMessage, 0, NULL);
+    JS_FreeCString(env->context, exceptionMessage);
+    JS_Throw(env->context, exception);
+    return napi_cannot_run_js;
+  }
+
+  if (JS_DefinePropertyValueStr(env->context, meta, "url",
+                                JS_NewString(env->context, source_url),
+                                JS_PROP_C_W_E) < 0 ||
+      JS_DefinePropertyValueStr(env->context, meta, "main", JS_TRUE,
+                                JS_PROP_C_W_E) < 0) {
+    JS_FreeValue(env->context, meta);
+    JS_FreeValue(env->context, module);
+    js_exit(env);
+    JSValue exception = JS_GetException(env->context);
+    const char* exceptionMessage = JS_ToCString(env->context, exception);
+    napi_set_last_error(env, napi_cannot_run_js, exceptionMessage, 0, NULL);
+    JS_FreeCString(env->context, exceptionMessage);
+    JS_Throw(env->context, exception);
+    return napi_cannot_run_js;
+  }
+  JS_FreeValue(env->context, meta);
+
+  JSValue eval_result =
+      JS_EvalFunction(env->context, JS_DupValue(env->context, module));
+  if (JS_IsException(eval_result)) {
+    JS_FreeValue(env->context, module);
+    js_exit(env);
+    JSValue exception = JS_GetException(env->context);
+    const char* exceptionMessage = JS_ToCString(env->context, exception);
+    napi_set_last_error(env, napi_cannot_run_js, exceptionMessage, 0, NULL);
+    JS_FreeCString(env->context, exceptionMessage);
+    JS_Throw(env->context, exception);
+    return napi_cannot_run_js;
+  }
+
+  if (JS_IsPromise(eval_result)) {
+    int attempts = 0;
+    while (JS_PromiseState(env->context, eval_result) == JS_PROMISE_PENDING &&
+           attempts < 100) {
+      qjs_execute_pending_jobs(env);
+      attempts++;
+    }
+
+    JSPromiseStateEnum state = JS_PromiseState(env->context, eval_result);
+    if (state == JS_PROMISE_REJECTED) {
+      JSValue rejection = JS_PromiseResult(env->context, eval_result);
+      JS_FreeValue(env->context, eval_result);
+      JS_FreeValue(env->context, module);
+      js_exit(env);
+      JS_Throw(env->context, rejection);
+      return napi_set_last_error(env, napi_cannot_run_js, NULL, 0, NULL);
+    }
+
+    if (state == JS_PROMISE_PENDING) {
+      JS_FreeValue(env->context, eval_result);
+      JS_FreeValue(env->context, module);
+      js_exit(env);
+      napi_throw_error(env, NULL, "Module evaluation did not settle");
+      return napi_cannot_run_js;
+    }
+  }
+  JS_FreeValue(env->context, eval_result);
+
+  JSValue namespace = JS_GetModuleNamespace(env->context, moduleDef);
+  JS_FreeValue(env->context, module);
+  js_exit(env);
+  if (JS_IsException(namespace)) {
+    JSValue exception = JS_GetException(env->context);
+    const char* exceptionMessage = JS_ToCString(env->context, exception);
+    napi_set_last_error(env, napi_cannot_run_js, exceptionMessage, 0, NULL);
+    JS_FreeCString(env->context, exceptionMessage);
+    JS_Throw(env->context, exception);
+    return napi_cannot_run_js;
+  }
+
+  return CreateScopedResult(env, namespace, result);
+}
+
 void host_object_finalizer(JSRuntime* rt, JSValue value) {
   napi_env env = (napi_env)JS_GetRuntimeOpaque(rt);
   NapiHostObjectInfo* info = (NapiHostObjectInfo*)JS_GetOpaque(
@@ -4010,6 +4178,13 @@ napi_status qjs_create_runtime(napi_runtime* runtime) {
 #else
   (*runtime)->runtime = JS_NewRuntime();
 #endif
+
+  JSSharedArrayBufferFunctions sharedArrayBufferFunctions = {0};
+  sharedArrayBufferFunctions.sab_alloc = qjs_shared_array_buffer_alloc;
+  sharedArrayBufferFunctions.sab_free = qjs_shared_array_buffer_free;
+  sharedArrayBufferFunctions.sab_dup = qjs_shared_array_buffer_dup;
+  JS_SetSharedArrayBufferFunctions((*runtime)->runtime,
+                                   &sharedArrayBufferFunctions);
 
 #ifndef NDEBUG
   JS_SetDumpFlags((*runtime)->runtime, JS_DUMP_LEAKS);

@@ -88,91 +88,6 @@ class NativeApiHostObject final : public HostObject {
                     bridge, static_cast<id<NSFastEnumeration>>(object)));
           });
     }
-    if (property == "runOnUI") {
-      auto bridge = bridge_;
-      return Function::createFromHostFunction(
-          runtime, PropNameID::forAscii(runtime, "runOnUI"), 1,
-          [bridge](Runtime& runtime, const Value&, const Value* args,
-                   size_t count) -> Value {
-            auto scheduler = bridge->scheduler();
-            if (scheduler == nullptr) {
-              throw JSError(
-                  runtime,
-                  "NativeApi was installed without a UI scheduler.");
-            }
-
-            std::shared_ptr<Function> callback;
-            if (count > 0 && !args[0].isNull() && !args[0].isUndefined()) {
-              if (!args[0].isObject()) {
-                throw JSError(
-                    runtime, "runOnUI expects a function callback.");
-              }
-
-              Object callbackObject = args[0].asObject(runtime);
-              if (!callbackObject.isFunction(runtime)) {
-                throw JSError(
-                    runtime, "runOnUI expects a function callback.");
-              }
-              callback = std::make_shared<Function>(
-                  callbackObject.asFunction(runtime));
-            }
-
-            Runtime* runtimePtr = &runtime;
-            std::thread::id jsThreadId = bridge->jsThreadId();
-            auto promiseCtor =
-                runtime.global().getPropertyAsFunction(runtime, "Promise");
-            return promiseCtor.callAsConstructor(
-                runtime,
-                Function::createFromHostFunction(
-                    runtime, PropNameID::forAscii(runtime, "runOnUIPromise"),
-                    2,
-                    [scheduler, runtimePtr, callback, jsThreadId](
-                        Runtime& promiseRuntime, const Value&,
-                        const Value* promiseArgs,
-                        size_t promiseArgc) -> Value {
-                      if (promiseArgc < 2 || !promiseArgs[0].isObject() ||
-                          !promiseArgs[1].isObject()) {
-                        return Value::undefined();
-                      }
-
-                      auto resolve = std::make_shared<Function>(
-                          promiseArgs[0].asObject(promiseRuntime)
-                              .asFunction(promiseRuntime));
-                      auto reject = std::make_shared<Function>(
-                          promiseArgs[1].asObject(promiseRuntime)
-                              .asFunction(promiseRuntime));
-                      if (callback == nullptr) {
-                        scheduler->invokeOnUI([scheduler, runtimePtr, resolve]() {
-                          scheduler->invokeOnJS([runtimePtr, resolve]() {
-                            resolve->call(*runtimePtr);
-                          });
-                        });
-                        return Value::undefined();
-                      }
-
-                      auto runCallback = [runtimePtr, callback, resolve, reject]() {
-                        try {
-                          {
-                            ScopedNativeApiUINativeCallDispatch uiDispatch;
-                            callback->call(*runtimePtr);
-                          }
-                          resolve->call(*runtimePtr);
-                        } catch (const std::exception& error) {
-                          reject->call(
-                              *runtimePtr,
-                              String::createFromUtf8(*runtimePtr, error.what()));
-                        }
-                      };
-                      if (std::this_thread::get_id() == jsThreadId) {
-                        runCallback();
-                      } else {
-                        scheduler->invokeOnJS(std::move(runCallback));
-                      }
-
-                      return Value::undefined();
-                    }));
-          });
-    }
     if (property == "import") {
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "import"), 1,
@@ -610,7 +525,6 @@ class NativeApiHostObject final : public HostObject {
 #ifdef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS
     addPropertyName(runtime, names, "__defineLazyGlobal");
 #endif
-    addPropertyName(runtime, names, "runOnUI");
     addPropertyName(runtime, names, "import");
     addPropertyName(runtime, names, "lookup");
     addPropertyName(runtime, names, "getClass");

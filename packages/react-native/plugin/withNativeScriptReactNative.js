@@ -9,6 +9,8 @@ const DEFAULTS = {
 };
 
 const BABEL_PLUGIN = '@nativescript/react-native/babel-plugin';
+const WORKLETS_BABEL_PLUGIN = 'react-native-worklets/plugin';
+const BABEL_PLUGINS = [BABEL_PLUGIN, WORKLETS_BABEL_PLUGIN];
 const METADATA_CONFIG_FILE = 'nativescript.react-native.json';
 
 function readBoolean(value, fallback) {
@@ -89,7 +91,7 @@ function ensureBabelPlugin(projectRoot) {
         '  api.cache(true);',
         '  return {',
         "    presets: ['babel-preset-expo'],",
-        `    plugins: ['${BABEL_PLUGIN}'],`,
+        `    plugins: [${BABEL_PLUGINS.map((plugin) => `'${plugin}'`).join(', ')}],`,
         '  };',
         '};',
         '',
@@ -99,30 +101,33 @@ function ensureBabelPlugin(projectRoot) {
   }
 
   let source = fs.readFileSync(babelConfigPath, 'utf8');
-  if (source.includes(BABEL_PLUGIN)) {
+  const missingPlugins = BABEL_PLUGINS.filter((plugin) => !source.includes(plugin));
+  if (missingPlugins.length === 0) {
     return;
   }
 
-  const pluginEntry = `'${BABEL_PLUGIN}', `;
+  const pluginEntry = missingPlugins
+    .map((plugin) => `'${plugin}'`)
+    .join(', ') + ', ';
   if (/plugins\s*:\s*\[/.test(source)) {
     source = source.replace(/plugins\s*:\s*\[/, (match) => `${match}${pluginEntry}`);
   } else if (/return\s*\{/.test(source)) {
     source = source.replace(
       /return\s*\{/,
-      (match) => `${match}\n    plugins: ['${BABEL_PLUGIN}'],`,
+      (match) => `${match}\n    plugins: [${pluginEntry}],`,
     );
   } else if (/module\.exports\s*=\s*\{/.test(source)) {
     source = source.replace(
       /module\.exports\s*=\s*\{/,
-      (match) => `${match}\n  plugins: ['${BABEL_PLUGIN}'],`,
+      (match) => `${match}\n  plugins: [${pluginEntry}],`,
     );
   } else if (/export\s+default\s+\{/.test(source)) {
     source = source.replace(
       /export\s+default\s+\{/,
-      (match) => `${match}\n  plugins: ['${BABEL_PLUGIN}'],`,
+      (match) => `${match}\n  plugins: [${pluginEntry}],`,
     );
   } else {
-    source += `\n// @nativescript/react-native: add '${BABEL_PLUGIN}' to your Babel plugins.\n`;
+    source += `\n// @nativescript/react-native: add ${missingPlugins.map((plugin) => `'${plugin}'`).join(' and ')} to your Babel plugins.\n`;
   }
 
   fs.writeFileSync(babelConfigPath, source);
@@ -190,6 +195,8 @@ module.exports = withNativeScriptReactNative;
 module.exports.default = withNativeScriptReactNative;
 module.exports.withNativeScriptReactNative = withNativeScriptReactNative;
 module.exports.ensureBabelPlugin = ensureBabelPlugin;
+module.exports.BABEL_PLUGIN = BABEL_PLUGIN;
+module.exports.WORKLETS_BABEL_PLUGIN = WORKLETS_BABEL_PLUGIN;
 module.exports.ensureMetadataConfig = ensureMetadataConfig;
 module.exports.normalizeMetadataOptions = normalizeMetadataOptions;
 module.exports.pkg = pkg;
