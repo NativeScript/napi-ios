@@ -50,6 +50,42 @@ static UIViewController* NativeScriptNearestViewController(UIView* view) {
   return nil;
 }
 
+static BOOL NativeScriptViewIsDescendantOfView(UIView* view, UIView* ancestor) {
+  UIView* current = view;
+  while (current != nil) {
+    if (current == ancestor) {
+      return YES;
+    }
+    current = current.superview;
+  }
+  return NO;
+}
+
+static UITabBar* NativeScriptVisibleTabBarAtPoint(
+    UIView* root,
+    UIWindow* window,
+    CGPoint windowPoint) {
+  if (root.hidden || root.alpha <= 0.01 || !root.userInteractionEnabled) {
+    return nil;
+  }
+
+  if ([root isKindOfClass:UITabBar.class]) {
+    CGPoint localPoint = [root convertPoint:windowPoint fromView:window];
+    if ([root pointInside:localPoint withEvent:nil]) {
+      return static_cast<UITabBar*>(root);
+    }
+  }
+
+  for (UIView* subview in [root.subviews reverseObjectEnumerator]) {
+    UITabBar* tabBar = NativeScriptVisibleTabBarAtPoint(subview, window, windowPoint);
+    if (tabBar != nil) {
+      return tabBar;
+    }
+  }
+
+  return nil;
+}
+
 @implementation NativeScriptUIView {
   UIView* _nativeView;
   UIView* _childrenView;
@@ -251,6 +287,31 @@ static UIViewController* NativeScriptNearestViewController(UIView* view) {
     return;
   }
   [super insertSubview:view atIndex:index];
+}
+
+- (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent*)event {
+  UIView* hitView = [super hitTest:point withEvent:event];
+  if (hitView == nil || self.window == nil) {
+    return hitView;
+  }
+
+  CGPoint windowPoint = [self convertPoint:point toView:self.window];
+  UITabBar* tabBar =
+      NativeScriptVisibleTabBarAtPoint(self.window, self.window, windowPoint);
+  if (tabBar != nil) {
+    if (NativeScriptViewIsDescendantOfView(tabBar, self)) {
+      CGPoint tabBarPoint = [tabBar convertPoint:windowPoint fromView:self.window];
+      UIView* tabBarHitView = [tabBar hitTest:tabBarPoint withEvent:event];
+      if (tabBarHitView != nil) {
+        return tabBarHitView;
+      }
+    }
+    if (!NativeScriptViewIsDescendantOfView(self, tabBar)) {
+      return nil;
+    }
+  }
+
+  return hitView;
 }
 
 - (void)didMoveToWindow {

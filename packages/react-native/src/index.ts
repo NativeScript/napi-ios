@@ -134,9 +134,14 @@ export type UIKitViewRef<NativeView = unknown> = {
   invalidateNativeLayout: () => void;
 };
 
+export type UIKitHostViewProps = ViewProps & {
+  attachController?: boolean;
+};
+
 export type UIKitViewComponent<Props extends object, NativeView = unknown> =
   ForwardRefExoticComponent<
-    PropsWithoutRef<Props & ViewProps> & RefAttributes<UIKitViewRef<NativeView>>
+    PropsWithoutRef<Props & UIKitHostViewProps> &
+      RefAttributes<UIKitViewRef<NativeView>>
   >;
 
 export type UIKitContainerResult<
@@ -356,11 +361,11 @@ const hostViewPropNames = new Set([
 ]);
 
 function splitUIKitViewProps<Props extends object>(
-  props: Props & ViewProps,
+  props: Props & UIKitHostViewProps,
   definition: UIKitViewDefinition<Props>,
 ): {
   nativeProps: ViewProps;
-  pluginProps: Props & ViewProps;
+  pluginProps: Props & UIKitHostViewProps;
 } {
   const nativeProps: Record<string, unknown> = {};
   const pluginProps: Record<string, unknown> = {};
@@ -381,7 +386,7 @@ function splitUIKitViewProps<Props extends object>(
 
   return {
     nativeProps: nativeProps as ViewProps,
-    pluginProps: pluginProps as Props & ViewProps,
+    pluginProps: pluginProps as Props & UIKitHostViewProps,
   };
 }
 
@@ -1711,7 +1716,7 @@ function getObserverClass(): any {
 
 function createUIKitContext<Props extends object>(
   name: string,
-  propsRef: React.MutableRefObject<Props>,
+  propsRef: {current: Props},
   invalidateLayout: () => void,
 ): UIKitRuntimeContext<Props> {
   'worklet';
@@ -2052,7 +2057,7 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
     || definition.displayName
     || 'NativeScriptUIKitView';
 
-  const Component = forwardRef<UIKitViewRef<NativeView>, Props & ViewProps>(
+  const Component = forwardRef<UIKitViewRef<NativeView>, Props & UIKitHostViewProps>(
     function NativeScriptUIKitView(props, ref) {
       const {nativeProps, pluginProps} = splitUIKitViewProps(props, definition);
       const createHost = definition.create;
@@ -2081,10 +2086,9 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
 
       if (!initialRegistrationRef.current && initialErrorRef.current == null) {
         try {
-          initialHostHandlesRef.current = runOnUISync(() => {
+          initialHostHandlesRef.current = runOnUISync((currentProps) => {
             installUIKitNativeMountBridge();
 
-            const currentProps = propsRef.current;
             const existingHost = uikitHostRegistry().get(hostId);
             if (existingHost) {
               existingHost.propsRef.current = currentProps;
@@ -2130,7 +2134,7 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
               propsRef: pendingPropsRef,
             });
             return null;
-          });
+          }, pluginProps);
           initialRegistrationRef.current = true;
           if (initialHostHandlesRef.current != null) {
             previousPropsRef.current = pluginProps;
@@ -2236,16 +2240,17 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
             cancelled = true;
             disposedRef.current = true;
             mountedRef.current = false;
-            runOnUI(() => {
-              disposeRegisteredUIKitHost(hostId, propsRef.current);
-            }).catch((reason) => {
+            const disposeProps = propsRef.current;
+            runOnUI((currentProps) => {
+              disposeRegisteredUIKitHost(hostId, currentProps);
+            }, disposeProps).catch((reason) => {
               setError(reason instanceof Error ? reason : new Error(String(reason)));
             });
           };
         }
 
-        runOnUI(() => {
-          const currentProps = propsRef.current;
+        const effectProps = propsRef.current;
+        runOnUI((currentProps) => {
           installUIKitNativeMountBridge();
 
           const existingHost = uikitHostRegistry().get(hostId);
@@ -2293,15 +2298,16 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
             propsRef: pendingPropsRef,
           });
           return createRegisteredUIKitHostFromNative(hostId);
-        })
+        }, effectProps)
           .then((handles) => {
             if (handles == null) {
               throw new Error(`UIKit host ${hostId} was not created`);
             }
             if (cancelled || disposedRef.current) {
-              runOnUI(() => {
-                disposeRegisteredUIKitHost(hostId, propsRef.current);
-              }).catch((reason) => {
+              const disposeProps = propsRef.current;
+              runOnUI((currentProps) => {
+                disposeRegisteredUIKitHost(hostId, currentProps);
+              }, disposeProps).catch((reason) => {
                 setError(reason instanceof Error ? reason : new Error(String(reason)));
               });
               return;
@@ -2320,9 +2326,10 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
           cancelled = true;
           disposedRef.current = true;
           mountedRef.current = false;
-          runOnUI(() => {
-            disposeRegisteredUIKitHost(hostId, propsRef.current);
-          }).catch((reason) => {
+          const disposeProps = propsRef.current;
+          runOnUI((currentProps) => {
+            disposeRegisteredUIKitHost(hostId, currentProps);
+          }, disposeProps).catch((reason) => {
             setError(reason instanceof Error ? reason : new Error(String(reason)));
           });
         };
@@ -2344,17 +2351,17 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
         const previousProps = previousPropsRef.current;
         previousPropsRef.current = currentProps;
 
-        runOnUI(() => {
+        runOnUI((nextProps, fallbackPreviousProps) => {
           const host = getRegisteredUIKitHost<NativeView>(hostId);
-          host.propsRef.current = currentProps;
+          host.propsRef.current = nextProps;
           updateHost?.(
             host.nativeView,
-            currentProps,
-            host.previousProps ?? previousProps,
+            nextProps,
+            host.previousProps ?? fallbackPreviousProps,
             host.context,
           );
-          host.previousProps = currentProps;
-        }).catch((reason) => {
+          host.previousProps = nextProps;
+        }, currentProps, previousProps).catch((reason) => {
           setError(reason instanceof Error ? reason : new Error(String(reason)));
         });
         updateMeasuredSize();
@@ -2366,13 +2373,15 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
         }
 
         mountedRef.current = true;
-        runOnUI(() => {
-          if (!disposedRef.current) {
+        const currentProps = propsRef.current;
+        const isDisposed = disposedRef.current;
+        runOnUI((nextProps, shouldSkipMounted) => {
+          if (!shouldSkipMounted) {
             const host = getRegisteredUIKitHost<NativeView>(hostId);
-            host.propsRef.current = propsRef.current;
-            mountedHost?.(host.nativeView, propsRef.current, host.context);
+            host.propsRef.current = nextProps;
+            mountedHost?.(host.nativeView, nextProps, host.context);
           }
-        }).catch((reason) => {
+        }, currentProps, isDisposed).catch((reason) => {
           setError(reason instanceof Error ? reason : new Error(String(reason)));
         });
       }, [hostId, mountedHost, nativeViewHandle]);
@@ -2390,15 +2399,16 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
           : undefined;
       const {children, ...nativePropsWithoutChildren} =
         nativeProps as ViewProps & {children?: React.ReactNode};
+      const attachController = props.attachController !== false;
 
       return React.createElement(NativeScriptUIViewNativeComponent, {
         ...nativePropsWithoutChildren,
         collapsable: false,
         children: childrenViewHandle ? children : undefined,
         childrenViewHandle,
-        controllerHandle,
+        controllerHandle: attachController ? controllerHandle : undefined,
         debugName,
-        hostId,
+        hostId: attachController ? hostId : undefined,
         nativeViewHandle,
         style: layoutStyle
           ? [nativeProps.style, layoutStyle]

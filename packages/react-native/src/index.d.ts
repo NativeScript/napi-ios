@@ -171,9 +171,14 @@ export type UIKitViewRef<NativeView = unknown> = {
   invalidateNativeLayout: () => void;
 };
 
+export type UIKitHostViewProps = ViewProps & {
+  attachController?: boolean;
+};
+
 export type UIKitViewComponent<Props extends object, NativeView = unknown> =
   ForwardRefExoticComponent<
-    PropsWithoutRef<Props & ViewProps> & RefAttributes<UIKitViewRef<NativeView>>
+    PropsWithoutRef<Props & UIKitHostViewProps> &
+      RefAttributes<UIKitViewRef<NativeView>>
   >;
 
 export type UIKitContainerResult<RootView = unknown, ChildrenView = unknown> = {

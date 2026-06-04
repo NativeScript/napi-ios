@@ -8,6 +8,42 @@
 
 using namespace facebook::react;
 
+static BOOL NativeScriptFabricViewIsDescendantOfView(UIView* view, UIView* ancestor) {
+  UIView* current = view;
+  while (current != nil) {
+    if (current == ancestor) {
+      return YES;
+    }
+    current = current.superview;
+  }
+  return NO;
+}
+
+static UITabBar* NativeScriptFabricVisibleTabBarAtPoint(
+    UIView* root,
+    UIWindow* window,
+    CGPoint windowPoint) {
+  if (root.hidden || root.alpha <= 0.01 || !root.userInteractionEnabled) {
+    return nil;
+  }
+
+  if ([root isKindOfClass:UITabBar.class]) {
+    CGPoint localPoint = [root convertPoint:windowPoint fromView:window];
+    if ([root pointInside:localPoint withEvent:nil]) {
+      return static_cast<UITabBar*>(root);
+    }
+  }
+
+  for (UIView* subview in [root.subviews reverseObjectEnumerator]) {
+    UITabBar* tabBar = NativeScriptFabricVisibleTabBarAtPoint(subview, window, windowPoint);
+    if (tabBar != nil) {
+      return tabBar;
+    }
+  }
+
+  return nil;
+}
+
 @implementation NativeScriptUIViewComponentView {
   NativeScriptUIView* _containerView;
   NSString* _debugName;
@@ -54,6 +90,31 @@ using namespace facebook::react;
 - (void)unmountChildComponentView:(UIView<RCTComponentViewProtocol>*)childComponentView
                             index:(NSInteger)index {
   [childComponentView removeFromSuperview];
+}
+
+- (UIView*)hitTest:(CGPoint)point withEvent:(UIEvent*)event {
+  UIView* hitView = [super hitTest:point withEvent:event];
+  if (hitView == nil || self.window == nil) {
+    return hitView;
+  }
+
+  CGPoint windowPoint = [self convertPoint:point toView:self.window];
+  UITabBar* tabBar =
+      NativeScriptFabricVisibleTabBarAtPoint(self.window, self.window, windowPoint);
+  if (tabBar != nil) {
+    if (NativeScriptFabricViewIsDescendantOfView(tabBar, self)) {
+      CGPoint tabBarPoint = [tabBar convertPoint:windowPoint fromView:self.window];
+      UIView* tabBarHitView = [tabBar hitTest:tabBarPoint withEvent:event];
+      if (tabBarHitView != nil) {
+        return tabBarHitView;
+      }
+    }
+    if (!NativeScriptFabricViewIsDescendantOfView(self, tabBar)) {
+      return nil;
+    }
+  }
+
+  return hitView;
 }
 
 - (void)updateProps:(Props::Shared const&)props oldProps:(Props::Shared const&)oldProps {
