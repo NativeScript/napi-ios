@@ -11,7 +11,6 @@ import type {
   RefAttributes,
 } from 'react';
 import type {ViewProps} from 'react-native';
-import {StyleSheet} from 'react-native';
 import NativeScriptNativeApi from './NativeScriptNativeApi';
 import NativeScriptUIViewNativeComponent from './NativeScriptUIViewNativeComponent';
 
@@ -43,6 +42,10 @@ export type InstallOptions = {
 export type NativeScriptWorklets = {
   getUIRuntimeHolder: () => object;
   isWorkletFunction: (value: unknown) => boolean;
+  runOnUISync: <Args extends unknown[], ReturnValue>(
+    callback: (...args: Args) => ReturnValue,
+    ...args: Args
+  ) => ReturnValue;
   runOnUIAsync: <Args extends unknown[], ReturnValue>(
     callback: (...args: Args) => ReturnValue | Promise<ReturnValue>,
     ...args: Args
@@ -382,6 +385,8 @@ function splitUIKitViewProps<Props extends object>(
 }
 
 function nativeHandleForUIKitView(view: unknown): string {
+  'worklet';
+
   const interop = (globalThis as Record<string, any>).interop;
   if (!interop || typeof interop.handleof !== 'function') {
     throw new Error('NativeScript interop globals are not installed');
@@ -412,6 +417,38 @@ function nativeHandleForUIKitView(view: unknown): string {
   }
 
   throw new Error('UIKit view native handle could not be read');
+}
+
+function nativeHandleOrUndefined(value: unknown): string | undefined {
+  'worklet';
+
+  return value == null ? undefined : nativeHandleForUIKitView(value);
+}
+
+function nativeHandleForNSObject(value: unknown): string | undefined {
+  'worklet';
+
+  if (value == null) {
+    return undefined;
+  }
+  const interop = (globalThis as Record<string, any>).interop;
+  const pointer = interop?.handleof?.(value);
+  if (!pointer) {
+    return undefined;
+  }
+  if (typeof pointer.toHexString === 'function') {
+    return pointer.toHexString();
+  }
+  if (typeof pointer.address === 'string') {
+    return pointer.address;
+  }
+  if (typeof pointer.address === 'number') {
+    return String(pointer.address);
+  }
+  if (typeof pointer.toNumber === 'function') {
+    return String(pointer.toNumber());
+  }
+  return undefined;
 }
 
 function ensureNativeScriptInstalled(): void {
@@ -925,6 +962,7 @@ function validateWorkletsModule(
     worklets == null ||
     typeof worklets.getUIRuntimeHolder !== 'function' ||
     typeof worklets.isWorkletFunction !== 'function' ||
+    typeof worklets.runOnUISync !== 'function' ||
     typeof worklets.runOnUIAsync !== 'function'
   ) {
     throw workletsSetupError(
@@ -993,10 +1031,30 @@ export function runOnUI<Args extends unknown[], ReturnValue>(
   return worklets.runOnUIAsync(callback, ...args);
 }
 
+export function runOnUISync<Args extends unknown[], ReturnValue>(
+  callback: (...args: Args) => ReturnValue,
+  ...args: Args
+): ReturnValue {
+  if (typeof callback !== 'function') {
+    throw new TypeError('NativeScript.runOnUISync expects a Worklets callback');
+  }
+
+  ensureNativeScriptInstalled();
+  const worklets = ensureWorkletsInstalled();
+  if (worklets.isWorkletFunction(callback) !== true) {
+    throw workletsSetupError(
+      'NativeScript.runOnUISync requires a worklet callback',
+    );
+  }
+  return worklets.runOnUISync(callback, ...args);
+}
+
 function callbackInvoker<T extends AnyFunction>(
   thread: NativeScriptCallbackThread,
   callback: T,
 ): NativeScriptInvokedCallback<T> {
+  'worklet';
+
   if (typeof callback !== 'function') {
     throw new TypeError('NativeScript callback invoker expects a function');
   }
@@ -1043,6 +1101,8 @@ export function uiInvoker<T extends AnyFunction>(
 export function jsInvoker<T extends AnyFunction>(
   callback: T,
 ): NativeScriptInvokedCallback<T> {
+  'worklet';
+
   return callbackInvoker('js', callback);
 }
 
@@ -1050,6 +1110,8 @@ export function eventBridge<T extends AnyFunction>(
   callback: T,
   thread: NativeScriptCallbackThread | 'caller' = 'js',
 ): T | NativeScriptInvokedCallback<T> {
+  'worklet';
+
   if (thread === 'js') {
     return jsInvoker(callback);
   }
@@ -1059,6 +1121,8 @@ export function eventBridge<T extends AnyFunction>(
 export const createEventBridge = eventBridge;
 
 export function isMainThread(): boolean {
+  'worklet';
+
   const NSThread = (globalThis as Record<string, any>).NSThread;
   return NSThread?.isMainThread === true;
 }
@@ -1066,6 +1130,8 @@ export function isMainThread(): boolean {
 export function assertUIKitThread(
   message = 'UIKit native APIs must be called through NativeScript.runOnUI',
 ): void {
+  'worklet';
+
   if (!isMainThread()) {
     throw new Error(message);
   }
@@ -1074,6 +1140,8 @@ export function assertUIKitThread(
 export function warnIfNotUIKitThread(
   message = 'UIKit native APIs should be mutated through NativeScript.runOnUI',
 ): boolean {
+  'worklet';
+
   if (isMainThread()) {
     return false;
   }
@@ -1116,6 +1184,16 @@ export function getProtocol<T = unknown>(name: string): T | null {
   const api = requireNativeApiHost();
   const protocol = api.getProtocol?.(name) ?? api[name];
   return protocol == null ? null : (protocol as T);
+}
+
+function requireNSObject(): any {
+  'worklet';
+
+  const nsObject = (globalThis as Record<string, any>).NSObject;
+  if (!nsObject || typeof nsObject.extend !== 'function') {
+    throw new Error('NSObject.extend is not available');
+  }
+  return nsObject;
 }
 
 export function isClassAvailable(name: string): boolean {
@@ -1203,6 +1281,8 @@ export function loadFramework(nameOrPath: string): boolean {
 }
 
 function resolveProtocolReference(protocolRef: NativeProtocolReference): unknown {
+  'worklet';
+
   if (typeof protocolRef !== 'string') {
     return protocolRef;
   }
@@ -1216,6 +1296,8 @@ function wrapDelegateMethods<T extends object>(
   methods: T,
   thread: CreateDelegateOptions['thread'],
 ): T {
+  'worklet';
+
   if (!thread || thread === 'caller') {
     return methods;
   }
@@ -1239,6 +1321,8 @@ export function createDelegate<T extends object>(
   methods: Partial<T>,
   options: CreateDelegateOptions = {},
 ): T {
+  'worklet';
+
   const protocolList = (Array.isArray(protocols) ? protocols : [protocols])
     .map(resolveProtocolReference)
     .filter(Boolean);
@@ -1297,32 +1381,233 @@ type UIKitHostInstance<NativeView> = {
   controller?: unknown;
 };
 
+type RegisteredUIKitHost<NativeView> = {
+  context: UIKitRuntimeContext<any>;
+  dispose?: (props: Readonly<any>) => void;
+  hostInstance: UIKitHostInstance<NativeView>;
+  nativeView: NativeView;
+  previousProps?: Readonly<any>;
+  propsRef: {current: Readonly<any>};
+};
+
+type PendingUIKitHost<Props extends object, NativeView> = {
+  debugName: string;
+  mountHost: () => RegisteredUIKitHost<NativeView>;
+  propsRef: {current: Readonly<Props & ViewProps>};
+};
+
+type UIKitHostHandles = {
+  nativeViewHandle?: string;
+  childrenViewHandle?: string;
+  controllerHandle?: string;
+};
+
 type UIKitAdapterDefinition<Props extends object, NativeView> =
   UIKitViewDefinition<Props, NativeView> & {
     resolveHostInstance?: (created: NativeView) => UIKitHostInstance<NativeView>;
   };
 
-let targetActionClass: any;
-let observerClass: any;
-const targetActionCallbacks = new Map<string, (sender: unknown) => void>();
-const observerCallbacks = new Map<
-  string,
-  (keyPath: string, object: unknown, change: unknown) => void
->();
+const uikitHostRegistryGlobalName = '__nativeScriptUIKitHostRegistry';
+const pendingUIKitHostRegistryGlobalName =
+  '__nativeScriptPendingUIKitHostRegistry';
+const createUIKitHostFromNativeGlobalName =
+  '__nativeScriptCreateUIKitHostFromNative';
+let nextUIKitHostId = 1;
+
+function createUIKitHostId(debugName: string): string {
+  return `${debugName}:${nextUIKitHostId++}`;
+}
+
+function uikitHostRegistry(): Map<string, RegisteredUIKitHost<unknown>> {
+  'worklet';
+
+  const globalObject = globalThis as Record<string, unknown>;
+  const existing = globalObject[uikitHostRegistryGlobalName];
+  if (existing instanceof Map) {
+    return existing as Map<string, RegisteredUIKitHost<unknown>>;
+  }
+
+  const registry = new Map<string, RegisteredUIKitHost<unknown>>();
+  Object.defineProperty(globalThis, uikitHostRegistryGlobalName, {
+    configurable: true,
+    enumerable: false,
+    writable: false,
+    value: registry,
+  });
+  return registry;
+}
+
+function pendingUIKitHostRegistry(): Map<string, PendingUIKitHost<any, unknown>> {
+  'worklet';
+
+  const globalObject = globalThis as Record<string, unknown>;
+  const existing = globalObject[pendingUIKitHostRegistryGlobalName];
+  if (existing instanceof Map) {
+    return existing as Map<string, PendingUIKitHost<any, unknown>>;
+  }
+
+  const registry = new Map<string, PendingUIKitHost<any, unknown>>();
+  Object.defineProperty(globalThis, pendingUIKitHostRegistryGlobalName, {
+    configurable: true,
+    enumerable: false,
+    writable: false,
+    value: registry,
+  });
+  return registry;
+}
+
+function uikitHostHandles(
+  host: RegisteredUIKitHost<unknown>,
+): UIKitHostHandles {
+  'worklet';
+
+  return {
+    nativeViewHandle: nativeHandleOrUndefined(host.hostInstance.hostView),
+    childrenViewHandle: nativeHandleOrUndefined(host.hostInstance.childrenView),
+    controllerHandle: nativeHandleForNSObject(host.hostInstance.controller),
+  };
+}
+
+function getRegisteredUIKitHost<NativeView>(
+  hostId: string,
+): RegisteredUIKitHost<NativeView> {
+  'worklet';
+
+  const host = uikitHostRegistry().get(hostId);
+  if (!host) {
+    throw new Error(`UIKit host ${hostId} has not been created`);
+  }
+  return host as RegisteredUIKitHost<NativeView>;
+}
+
+function registerUIKitHost<NativeView>(
+  hostId: string,
+  host: RegisteredUIKitHost<NativeView>,
+): void {
+  'worklet';
+
+  uikitHostRegistry().set(
+    hostId,
+    host as RegisteredUIKitHost<unknown>,
+  );
+}
+
+function createRegisteredUIKitHostFromNative(hostId: string): UIKitHostHandles | null {
+  'worklet';
+
+  const existingHost = uikitHostRegistry().get(hostId);
+  if (existingHost) {
+    return uikitHostHandles(existingHost);
+  }
+
+  const pending = pendingUIKitHostRegistry().get(hostId);
+  if (!pending) {
+    return null;
+  }
+
+  const host = pending.mountHost();
+  registerUIKitHost(hostId, host);
+  return uikitHostHandles(host);
+}
+
+function installUIKitNativeMountBridge(): void {
+  'worklet';
+
+  const globalObject = globalThis as Record<string, unknown>;
+  if (typeof globalObject[createUIKitHostFromNativeGlobalName] === 'function') {
+    return;
+  }
+  Object.defineProperty(globalThis, createUIKitHostFromNativeGlobalName, {
+    configurable: true,
+    enumerable: false,
+    writable: false,
+    value: createRegisteredUIKitHostFromNative,
+  });
+}
+
+function disposeRegisteredUIKitHost<NativeView>(
+  hostId: string,
+  props: Readonly<any>,
+): void {
+  'worklet';
+
+  pendingUIKitHostRegistry().delete(hostId);
+  const registry = uikitHostRegistry();
+  const host = registry.get(hostId) as
+    | RegisteredUIKitHost<NativeView>
+    | undefined;
+  if (!host) {
+    return;
+  }
+  registry.delete(hostId);
+  host.propsRef.current = props;
+  host.dispose?.(props);
+  host.context.disposeResources();
+  const maybeView = host.hostInstance.hostView as
+    | Record<string, unknown>
+    | undefined;
+  if (typeof maybeView?.removeFromSuperview === 'function') {
+    maybeView.removeFromSuperview();
+  }
+}
+
+function ignoreUIKitLayoutInvalidation(): void {
+  'worklet';
+}
+
+const targetActionClassGlobalName = '__nativeScriptUIKitTargetActionClass';
+const observerClassGlobalName = '__nativeScriptUIKitObserverClass';
+const targetActionCallbacksGlobalName =
+  '__nativeScriptUIKitTargetActionCallbacks';
+const observerCallbacksGlobalName = '__nativeScriptUIKitObserverCallbacks';
 
 function objcInteropTypes(): any {
+  'worklet';
+
   return (globalThis as Record<string, any>).interop?.types;
 }
 
-function requireNSObject(): any {
-  const nsObject = (globalThis as Record<string, any>).NSObject;
-  if (!nsObject || typeof nsObject.extend !== 'function') {
-    throw new Error('NSObject.extend is not available');
+function runtimeGlobalMap<T>(name: string): Map<string, T> {
+  'worklet';
+
+  const globalObject = globalThis as Record<string, unknown>;
+  const existing = globalObject[name];
+  if (existing instanceof Map) {
+    return existing as Map<string, T>;
   }
-  return nsObject;
+
+  const map = new Map<string, T>();
+  Object.defineProperty(globalThis, name, {
+    configurable: true,
+    enumerable: false,
+    writable: false,
+    value: map,
+  });
+  return map;
+}
+
+function targetActionCallbacksForRuntime(): Map<string, (sender: unknown) => void> {
+  'worklet';
+
+  return runtimeGlobalMap<(sender: unknown) => void>(
+    targetActionCallbacksGlobalName,
+  );
+}
+
+function observerCallbacksForRuntime(): Map<
+  string,
+  (keyPath: string, object: unknown, change: unknown) => void
+> {
+  'worklet';
+
+  return runtimeGlobalMap<
+    (keyPath: string, object: unknown, change: unknown) => void
+  >(observerCallbacksGlobalName);
 }
 
 function nativeCallbackKey(value: unknown): string {
+  'worklet';
+
   const handleof = (globalThis as Record<string, any>).interop?.handleof;
   if (value != null && typeof handleof === 'function') {
     const handle = handleof(value);
@@ -1337,15 +1622,21 @@ function nativeCallbackKey(value: unknown): string {
 }
 
 function getTargetActionClass(): any {
-  if (targetActionClass) {
-    return targetActionClass;
+  'worklet';
+
+  const globalObject = globalThis as Record<string, any>;
+  const cached = globalObject[targetActionClassGlobalName];
+  if (cached) {
+    return cached;
   }
   const types = objcInteropTypes();
   const NSObject = requireNSObject();
-  targetActionClass = NSObject.extend(
+  const targetActionClass = NSObject.extend(
     {
       nativeScriptHandleAction(sender: unknown) {
-        const callback = targetActionCallbacks.get(nativeCallbackKey(this));
+        const callback = targetActionCallbacksForRuntime().get(
+          nativeCallbackKey(this),
+        );
         if (typeof callback === 'function') {
           callback(sender);
         }
@@ -1360,12 +1651,22 @@ function getTargetActionClass(): any {
       },
     },
   );
+  Object.defineProperty(globalThis, targetActionClassGlobalName, {
+    configurable: true,
+    enumerable: false,
+    writable: false,
+    value: targetActionClass,
+  });
   return targetActionClass;
 }
 
 function getObserverClass(): any {
-  if (observerClass) {
-    return observerClass;
+  'worklet';
+
+  const globalObject = globalThis as Record<string, any>;
+  const cached = globalObject[observerClassGlobalName];
+  if (cached) {
+    return cached;
   }
   const types = objcInteropTypes();
   const NSObject = requireNSObject();
@@ -1374,14 +1675,16 @@ function getObserverClass(): any {
   const Pointer = (globalThis as Record<string, any>).interop?.Pointer
     ?? types?.id;
 
-  observerClass = NSObject.extend(
+  const observerClass = NSObject.extend(
     {
       'observeValueForKeyPath:ofObject:change:context:'(
         keyPath: string,
         object: unknown,
         change: unknown,
       ) {
-        const callback = observerCallbacks.get(nativeCallbackKey(this));
+        const callback = observerCallbacksForRuntime().get(
+          nativeCallbackKey(this),
+        );
         if (typeof callback === 'function') {
           callback(keyPath, object, change);
         }
@@ -1396,6 +1699,12 @@ function getObserverClass(): any {
       },
     },
   );
+  Object.defineProperty(globalThis, observerClassGlobalName, {
+    configurable: true,
+    enumerable: false,
+    writable: false,
+    value: observerClass,
+  });
   return observerClass;
 }
 
@@ -1404,6 +1713,8 @@ function createUIKitContext<Props extends object>(
   propsRef: React.MutableRefObject<Props>,
   invalidateLayout: () => void,
 ): UIKitRuntimeContext<Props> {
+  'worklet';
+
   const retained: unknown[] = [];
   const cleanupCallbacks: Array<() => void> = [];
   let disposed = false;
@@ -1428,11 +1739,22 @@ function createUIKitContext<Props extends object>(
       if (typeof handler !== 'function') {
         return;
       }
-      setTimeout(() => {
-        if (!disposed) {
-          (handler as Function)(payload);
-        }
-      }, 0);
+      const workletsProxy = (globalThis as Record<string, any>)
+        .__workletsModuleProxy;
+      const serializer = (globalThis as Record<string, any>).__serializer;
+      if (
+        workletsProxy &&
+        typeof workletsProxy.scheduleOnRN === 'function' &&
+        typeof serializer === 'function'
+      ) {
+        workletsProxy.scheduleOnRN(handler, serializer([payload]));
+      } else {
+        setTimeout(() => {
+          if (!disposed) {
+            (handler as Function)(payload);
+          }
+        }, 0);
+      }
     },
     targetAction(control, events, callback) {
       if (control == null || typeof callback !== 'function') {
@@ -1440,11 +1762,11 @@ function createUIKitContext<Props extends object>(
       }
       const target = getTargetActionClass().alloc().init();
       const targetKey = nativeCallbackKey(target);
-      targetActionCallbacks.set(targetKey, jsInvoker(() => {
+      targetActionCallbacksForRuntime().set(targetKey, () => {
         if (!disposed) {
           callback();
         }
-      }));
+      });
       const selector = 'nativeScriptHandleAction:';
       const nativeControl = control as Record<string, Function>;
       if (typeof nativeControl.addTargetActionForControlEvents !== 'function') {
@@ -1456,17 +1778,39 @@ function createUIKitContext<Props extends object>(
         if (typeof nativeControl.removeTargetActionForControlEvents === 'function') {
           nativeControl.removeTargetActionForControlEvents(target, selector, events);
         }
-        targetActionCallbacks.delete(targetKey);
+        targetActionCallbacksForRuntime().delete(targetKey);
       });
     },
     delegate(object, protocolRef, implementation) {
+      const protocolList = [protocolRef as NativeProtocolReference]
+        .map(resolveProtocolReference)
+        .filter(Boolean);
+      if (protocolList.length === 0) {
+        throw new Error('NativeScript UIKit delegate requires a protocol');
+      }
+
       const nativeObject = object as Record<string, unknown>;
-      return createDelegate<T>([protocolRef as NativeProtocolReference], implementation, {
-        owner: context,
-        assignTo: nativeObject && 'delegate' in nativeObject
-          ? {object: nativeObject, property: 'delegate'}
-          : undefined,
+      const assignedObject = nativeObject && 'delegate' in nativeObject
+        ? nativeObject
+        : undefined;
+      const DelegateClass = requireNSObject().extend(
+        wrapDelegateMethods(implementation, 'caller'),
+        {
+          protocols: protocolList,
+        },
+      );
+      const delegate = DelegateClass.alloc().init() as T;
+      context.retain(delegate);
+      if (assignedObject) {
+        assignedObject.delegate = delegate;
+      }
+      context.dispose(() => {
+        if (assignedObject && assignedObject.delegate === delegate) {
+          assignedObject.delegate = null;
+        }
+        context.release(delegate);
       });
+      return delegate;
     },
     notification(name, object, callback) {
       const center = (globalThis as Record<string, any>).NSNotificationCenter
@@ -1478,11 +1822,11 @@ function createUIKitContext<Props extends object>(
         name,
         object ?? null,
         null,
-        jsInvoker((notification: unknown) => {
+        (notification: unknown) => {
           if (!disposed) {
             callback(notification);
           }
-        }),
+        },
       );
       context.retain(observer);
       context.dispose(() => {
@@ -1499,7 +1843,7 @@ function createUIKitContext<Props extends object>(
       }
       const observer = getObserverClass().alloc().init();
       const observerKey = nativeCallbackKey(observer);
-      observerCallbacks.set(observerKey, (
+      observerCallbacksForRuntime().set(observerKey, (
         observedKeyPath: string,
         _observedObject: unknown,
         change: unknown,
@@ -1532,7 +1876,7 @@ function createUIKitContext<Props extends object>(
             nativeObject.removeObserverForKeyPath(observer, keyPath);
           }
         } finally {
-          observerCallbacks.delete(observerKey);
+          observerCallbacksForRuntime().delete(observerKey);
         }
       });
     },
@@ -1581,6 +1925,8 @@ function constrainedSize(
   size: {width: number; height: number},
   layout?: UIKitLayoutOptions,
 ): {width: number; height: number} {
+  'worklet';
+
   const defaultSize = layout?.defaultSize ?? {};
   let width = Number.isFinite(size.width) && size.width >= 0
     ? size.width
@@ -1605,7 +1951,28 @@ function constrainedSize(
 }
 
 function flattenedStyleSize(style: ViewProps['style']) {
-  const flat = StyleSheet.flatten(style) ?? {};
+  'worklet';
+
+  const flat: Record<string, unknown> = {};
+  const applyStyle = (value: unknown) => {
+    if (Array.isArray(value)) {
+      for (const item of value) {
+        applyStyle(item);
+      }
+      return;
+    }
+    if (!value || typeof value !== 'object') {
+      return;
+    }
+    const record = value as Record<string, unknown>;
+    if (typeof record.width === 'number') {
+      flat.width = record.width;
+    }
+    if (typeof record.height === 'number') {
+      flat.height = record.height;
+    }
+  };
+  applyStyle(style);
   return {
     width: typeof flat.width === 'number' ? flat.width : undefined,
     height: typeof flat.height === 'number' ? flat.height : undefined,
@@ -1613,6 +1980,8 @@ function flattenedStyleSize(style: ViewProps['style']) {
 }
 
 function makeCGSize(width: number, height: number) {
+  'worklet';
+
   const CGSizeMake = (globalThis as Record<string, any>).CGSizeMake;
   if (typeof CGSizeMake === 'function') {
     return CGSizeMake(width, height);
@@ -1621,6 +1990,8 @@ function makeCGSize(width: number, height: number) {
 }
 
 function readNativeSize(size: unknown): {width: number; height: number} {
+  'worklet';
+
   const nativeSize = size as {width?: unknown; height?: unknown};
   return {
     width: Number(nativeSize?.width ?? 0),
@@ -1633,6 +2004,8 @@ function measureUIKitView(
   layout: UIKitLayoutOptions | undefined,
   style: ViewProps['style'],
 ): {width: number; height: number} {
+  'worklet';
+
   const mode = layout?.sizing ?? 'fill';
   if (mode === 'fill') {
     return constrainedSize(layout?.defaultSize ?? {width: 0, height: 0}, layout);
@@ -1669,34 +2042,6 @@ function measureUIKitView(
   );
 }
 
-function nativeHandleOrUndefined(value: unknown): string | undefined {
-  return value == null ? undefined : nativeHandleForUIKitView(value);
-}
-
-function nativeHandleForNSObject(value: unknown): string | undefined {
-  if (value == null) {
-    return undefined;
-  }
-  const interop = (globalThis as Record<string, any>).interop;
-  const pointer = interop?.handleof?.(value);
-  if (!pointer) {
-    return undefined;
-  }
-  if (typeof pointer.toHexString === 'function') {
-    return pointer.toHexString();
-  }
-  if (typeof pointer.address === 'string') {
-    return pointer.address;
-  }
-  if (typeof pointer.address === 'number') {
-    return String(pointer.address);
-  }
-  if (typeof pointer.toNumber === 'function') {
-    return String(pointer.toNumber());
-  }
-  return undefined;
-}
-
 function defineUIKitHost<Props extends object, NativeView = unknown>(
   definition: UIKitAdapterDefinition<Props, NativeView>,
 ): UIKitViewComponent<Props, NativeView> {
@@ -1709,95 +2054,173 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
   const Component = forwardRef<UIKitViewRef<NativeView>, Props & ViewProps>(
     function NativeScriptUIKitView(props, ref) {
       const {nativeProps, pluginProps} = splitUIKitViewProps(props, definition);
-      const viewRef = useRef<NativeView | null>(null);
+      const createHost = definition.create;
+      const updateHost = definition.update;
+      const mountedHost = definition.mounted;
+      const disposeHost = definition.dispose;
+      const resolveHostInstance = definition.resolveHostInstance;
+      const layout = definition.layout;
+      const hostIdRef = useRef<string | null>(null);
+      if (hostIdRef.current == null) {
+        hostIdRef.current = createUIKitHostId(debugName);
+      }
+      const hostId = hostIdRef.current;
       const propsRef = useRef(pluginProps);
       const previousPropsRef = useRef<Readonly<Props & ViewProps> | undefined>();
-      const contextRef = useRef<UIKitRuntimeContext<Props & ViewProps> | null>(
-        null,
-      );
-      const hostInstanceRef = useRef<UIKitHostInstance<NativeView> | null>(null);
       const mountedRef = useRef(false);
       const disposedRef = useRef(false);
-      const [nativeViewHandle, setNativeViewHandle] = useState<string>();
-      const [childrenViewHandle, setChildrenViewHandle] = useState<string>();
-      const [controllerHandle, setControllerHandle] = useState<string>();
+      const updateMeasuredSizeRef = useRef<() => void>(() => {});
+      const initialHostHandlesRef = useRef<UIKitHostHandles | null>(null);
+      const initialRegistrationRef = useRef(false);
+      const initialErrorRef = useRef<Error | null>(null);
+
+      const invalidateLayout = () => {
+        updateMeasuredSizeRef.current();
+      };
+
+      if (!initialRegistrationRef.current && initialErrorRef.current == null) {
+        try {
+          initialHostHandlesRef.current = runOnUISync(() => {
+            installUIKitNativeMountBridge();
+
+            const currentProps = propsRef.current;
+            const existingHost = uikitHostRegistry().get(hostId);
+            if (existingHost) {
+              existingHost.propsRef.current = currentProps;
+              return uikitHostHandles(existingHost);
+            }
+
+            const registry = pendingUIKitHostRegistry();
+            const pending = registry.get(hostId) as
+              | PendingUIKitHost<Props, NativeView>
+              | undefined;
+            const pendingPropsRef =
+              pending?.propsRef ?? {current: currentProps};
+            pendingPropsRef.current = currentProps;
+
+            const mountHost = () => {
+              const nextProps = pendingPropsRef.current;
+              const context = createUIKitContext(
+                debugName,
+                pendingPropsRef,
+                ignoreUIKitLayoutInvalidation,
+              );
+              const created = createHost(context.createArgument());
+              const hostInstance = resolveHostInstance
+                ? resolveHostInstance(created)
+                : {hostView: created, lifecycleValue: created};
+              const nativeView = hostInstance.lifecycleValue;
+              updateHost?.(nativeView, nextProps, undefined, context);
+              return {
+                context,
+                dispose(disposeProps: Readonly<Props & ViewProps>) {
+                  disposeHost?.(nativeView, disposeProps, context);
+                },
+                hostInstance,
+                nativeView,
+                previousProps: nextProps,
+                propsRef: pendingPropsRef,
+              };
+            };
+
+            registry.set(hostId, {
+              debugName,
+              mountHost,
+              propsRef: pendingPropsRef,
+            });
+            return null;
+          });
+          initialRegistrationRef.current = true;
+          if (initialHostHandlesRef.current != null) {
+            previousPropsRef.current = pluginProps;
+          }
+        } catch (reason) {
+          initialErrorRef.current =
+            reason instanceof Error ? reason : new Error(String(reason));
+        }
+      }
+
+      const [nativeViewHandle, setNativeViewHandle] = useState<string | undefined>(
+        () => initialHostHandlesRef.current?.nativeViewHandle,
+      );
+      const [childrenViewHandle, setChildrenViewHandle] = useState<
+        string | undefined
+      >(() => initialHostHandlesRef.current?.childrenViewHandle);
+      const [controllerHandle, setControllerHandle] = useState<string | undefined>(
+        () => initialHostHandlesRef.current?.controllerHandle,
+      );
       const [measuredSize, setMeasuredSize] = useState<
         {width: number; height: number} | undefined
-      >(() => definition.layout?.sizing === 'fill'
-        ? undefined
-        : definition.layout?.defaultSize
-          ? {
-              width: definition.layout.defaultSize.width ?? 0,
-              height: definition.layout.defaultSize.height ?? 0,
-            }
-          : undefined);
-      const [error, setError] = useState<Error | null>(null);
+      >(() =>
+        layout?.sizing === 'fill'
+          ? undefined
+          : layout?.defaultSize
+            ? {
+                width: layout.defaultSize.width ?? 0,
+                height: layout.defaultSize.height ?? 0,
+              }
+            : undefined,
+      );
+      const [error, setError] = useState<Error | null>(
+        () => initialErrorRef.current,
+      );
 
       propsRef.current = pluginProps;
 
       const updateMeasuredSize = () => {
-        const hostInstance = hostInstanceRef.current;
-        if (!hostInstance || definition.layout?.sizing === 'fill') {
+        if (nativeViewHandle == null || layout?.sizing === 'fill') {
           return;
         }
         runOnUI(() => {
-          const nextSize = measureUIKitView(
-            hostInstance.hostView,
-            definition.layout,
+          const host = getRegisteredUIKitHost<NativeView>(hostId);
+          return measureUIKitView(
+            host.hostInstance.hostView,
+            layout,
             nativeProps.style,
           );
-          setMeasuredSize((previous) =>
-            previous &&
-            previous.width === nextSize.width &&
-            previous.height === nextSize.height
-              ? previous
-              : nextSize,
-          );
-        }).catch((reason) => {
-          setError(reason instanceof Error ? reason : new Error(String(reason)));
-        });
+        })
+          .then((nextSize) => {
+            setMeasuredSize((previous) =>
+              previous &&
+              previous.width === nextSize.width &&
+              previous.height === nextSize.height
+                ? previous
+                : nextSize,
+            );
+          })
+          .catch((reason) => {
+            setError(reason instanceof Error ? reason : new Error(String(reason)));
+          });
       };
+      updateMeasuredSizeRef.current = updateMeasuredSize;
 
       useImperativeHandle(
         ref,
         () => ({
           get nativeView() {
-            return viewRef.current;
+            return null;
           },
           runOnUI(callback) {
-            let result: unknown;
             return runOnUI(() => {
-              if (viewRef.current == null) {
-                throw new Error('UIKit view has not been created yet');
-              }
-              result = callback(viewRef.current);
-            }).then(() => result as never);
+              const host = getRegisteredUIKitHost<NativeView>(hostId);
+              return callback(host.nativeView);
+            });
           },
           measureNative() {
-            let measured:
-              | {width: number; height: number}
-              | undefined;
             return runOnUI(() => {
-              if (viewRef.current == null) {
-                throw new Error('UIKit view has not been created yet');
-              }
-              measured = measureUIKitView(
-                hostInstanceRef.current?.hostView ?? viewRef.current,
-                definition.layout,
+              const host = getRegisteredUIKitHost<NativeView>(hostId);
+              return measureUIKitView(
+                host.hostInstance.hostView,
+                layout,
                 nativeProps.style,
               );
-            }).then(() => {
-              if (measured == null) {
-                throw new Error('UIKit view measurement did not complete');
-              }
-              return measured;
             });
           },
           invalidateNativeLayout() {
             updateMeasuredSize();
           },
         }),
-        [definition.layout, nativeProps.style],
+        [hostId, layout, nativeProps.style],
       );
 
       useEffect(() => {
@@ -1806,42 +2229,86 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
 
         ensureNativeScriptInstalled();
 
+        if (initialHostHandlesRef.current != null) {
+          updateMeasuredSize();
+          return () => {
+            cancelled = true;
+            disposedRef.current = true;
+            mountedRef.current = false;
+            runOnUI(() => {
+              disposeRegisteredUIKitHost(hostId, propsRef.current);
+            }).catch((reason) => {
+              setError(reason instanceof Error ? reason : new Error(String(reason)));
+            });
+          };
+        }
+
         runOnUI(() => {
           const currentProps = propsRef.current;
-          const context = createUIKitContext(
-            debugName,
-            propsRef,
-            updateMeasuredSize,
-          );
-          contextRef.current = context;
-          const created = definition.create(context.createArgument());
-          const hostInstance = definition.resolveHostInstance
-            ? definition.resolveHostInstance(created)
-            : {hostView: created, lifecycleValue: created};
-          const nativeView = hostInstance.lifecycleValue;
-          if (cancelled || disposedRef.current) {
-            definition.dispose?.(nativeView, currentProps, context);
-            context.disposeResources();
-            const maybeView = hostInstance.hostView as Record<string, unknown>;
-            if (typeof maybeView.removeFromSuperview === 'function') {
-              maybeView.removeFromSuperview();
-            }
-            return undefined;
+          installUIKitNativeMountBridge();
+
+          const existingHost = uikitHostRegistry().get(hostId);
+          if (existingHost) {
+            existingHost.propsRef.current = currentProps;
+            return uikitHostHandles(existingHost);
           }
-          hostInstanceRef.current = hostInstance;
-          viewRef.current = nativeView;
-          definition.update?.(nativeView, currentProps, undefined, context);
-          previousPropsRef.current = currentProps;
-          return undefined;
+
+          const registry = pendingUIKitHostRegistry();
+          const pending = registry.get(hostId) as
+            | PendingUIKitHost<Props, NativeView>
+            | undefined;
+          const pendingPropsRef =
+            pending?.propsRef ?? {current: currentProps};
+          pendingPropsRef.current = currentProps;
+
+          const mountHost = () => {
+            const nextProps = pendingPropsRef.current;
+            const context = createUIKitContext(
+              debugName,
+              pendingPropsRef,
+              ignoreUIKitLayoutInvalidation,
+            );
+            const created = createHost(context.createArgument());
+            const hostInstance = resolveHostInstance
+              ? resolveHostInstance(created)
+              : {hostView: created, lifecycleValue: created};
+            const nativeView = hostInstance.lifecycleValue;
+            updateHost?.(nativeView, nextProps, undefined, context);
+            return {
+              context,
+              dispose(disposeProps: Readonly<Props & ViewProps>) {
+                disposeHost?.(nativeView, disposeProps, context);
+              },
+              hostInstance,
+              nativeView,
+              previousProps: nextProps,
+              propsRef: pendingPropsRef,
+            };
+          };
+
+          registry.set(hostId, {
+            debugName,
+            mountHost,
+            propsRef: pendingPropsRef,
+          });
+          return createRegisteredUIKitHostFromNative(hostId);
         })
-          .then(() => {
-            const hostInstance = hostInstanceRef.current;
-            if (cancelled || viewRef.current == null || hostInstance == null) {
+          .then((handles) => {
+            if (handles == null) {
+              throw new Error(`UIKit host ${hostId} was not created`);
+            }
+            if (cancelled || disposedRef.current) {
+              runOnUI(() => {
+                disposeRegisteredUIKitHost(hostId, propsRef.current);
+              }).catch((reason) => {
+                setError(reason instanceof Error ? reason : new Error(String(reason)));
+              });
               return;
             }
-            setNativeViewHandle(nativeHandleOrUndefined(hostInstance.hostView));
-            setChildrenViewHandle(nativeHandleOrUndefined(hostInstance.childrenView));
-            setControllerHandle(nativeHandleForNSObject(hostInstance.controller));
+            previousPropsRef.current = propsRef.current;
+            setNativeViewHandle(handles.nativeViewHandle);
+            setChildrenViewHandle(handles.childrenViewHandle);
+            setControllerHandle(handles.controllerHandle);
             updateMeasuredSize();
           })
           .catch((reason) => {
@@ -1851,74 +2318,70 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
         return () => {
           cancelled = true;
           disposedRef.current = true;
-          const nativeView = viewRef.current;
-          const context = contextRef.current;
-          const hostInstance = hostInstanceRef.current;
-          viewRef.current = null;
-          hostInstanceRef.current = null;
-          contextRef.current = null;
           mountedRef.current = false;
-          if (nativeView == null) {
-            context?.disposeResources();
-            return;
-          }
           runOnUI(() => {
-            definition.dispose?.(nativeView, propsRef.current, context ?? undefined);
-            context?.disposeResources();
-            const maybeView = hostInstance?.hostView as
-              | Record<string, unknown>
-              | undefined;
-            if (typeof maybeView.removeFromSuperview === 'function') {
-              maybeView.removeFromSuperview();
-            }
+            disposeRegisteredUIKitHost(hostId, propsRef.current);
           }).catch((reason) => {
             setError(reason instanceof Error ? reason : new Error(String(reason)));
           });
         };
-      }, [definition]);
+      }, [
+        createHost,
+        debugName,
+        disposeHost,
+        hostId,
+        resolveHostInstance,
+        updateHost,
+      ]);
 
       useEffect(() => {
-        const nativeView = viewRef.current;
-        if (nativeView == null) {
+        if (nativeViewHandle == null) {
           return;
         }
 
-        const previousProps = previousPropsRef.current;
         const currentProps = propsRef.current;
-        const context = contextRef.current;
+        const previousProps = previousPropsRef.current;
         previousPropsRef.current = currentProps;
 
         runOnUI(() => {
-          definition.update?.(nativeView, currentProps, previousProps, context ?? undefined);
+          const host = getRegisteredUIKitHost<NativeView>(hostId);
+          host.propsRef.current = currentProps;
+          updateHost?.(
+            host.nativeView,
+            currentProps,
+            host.previousProps ?? previousProps,
+            host.context,
+          );
+          host.previousProps = currentProps;
         }).catch((reason) => {
           setError(reason instanceof Error ? reason : new Error(String(reason)));
         });
         updateMeasuredSize();
-      }, [definition, pluginProps]);
+      }, [hostId, nativeViewHandle, pluginProps, updateHost]);
 
       useEffect(() => {
-        const nativeView = viewRef.current;
-        if (nativeViewHandle == null || nativeView == null || mountedRef.current) {
+        if (nativeViewHandle == null || mountedRef.current) {
           return;
         }
 
         mountedRef.current = true;
-        const context = contextRef.current;
         runOnUI(() => {
           if (!disposedRef.current) {
-            definition.mounted?.(nativeView, propsRef.current, context ?? undefined);
+            const host = getRegisteredUIKitHost<NativeView>(hostId);
+            host.propsRef.current = propsRef.current;
+            mountedHost?.(host.nativeView, propsRef.current, host.context);
           }
         }).catch((reason) => {
           setError(reason instanceof Error ? reason : new Error(String(reason)));
         });
-      }, [definition, nativeViewHandle]);
+      }, [hostId, mountedHost, nativeViewHandle]);
 
       if (error) {
         throw error;
       }
 
       const layoutStyle =
-        measuredSize && definition.layout?.sizing !== 'fill'
+        measuredSize && layout?.sizing !== 'fill'
           ? {
               width: measuredSize.width,
               height: measuredSize.height,
@@ -1934,6 +2397,7 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
         childrenViewHandle,
         controllerHandle,
         debugName,
+        hostId,
         nativeViewHandle,
         style: layoutStyle
           ? [nativeProps.style, layoutStyle]
@@ -1962,6 +2426,8 @@ export function defineUIKitContainer<
   return defineUIKitHost({
     ...definition,
     resolveHostInstance(created) {
+      'worklet';
+
       return {
         hostView: created.rootView,
         lifecycleValue: created,
@@ -1984,6 +2450,8 @@ export function defineUIViewController<
     ...definition,
     create: definition.createController,
     resolveHostInstance(controller) {
+      'worklet';
+
       const controllerRecord = controller as Record<string, unknown>;
       return {
         hostView: controllerRecord.view,
@@ -2020,6 +2488,7 @@ const NativeScript = {
   release,
   retain,
   runOnUI,
+  runOnUISync,
   uiInvoker,
   warnIfNotUIKitThread,
 };

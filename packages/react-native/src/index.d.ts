@@ -42,6 +42,10 @@ export type InstallOptions = {
 export type NativeScriptWorklets = {
   getUIRuntimeHolder: () => object;
   isWorkletFunction: (value: unknown) => boolean;
+  runOnUISync: <Args extends unknown[], ReturnValue>(
+    callback: (...args: Args) => ReturnValue,
+    ...args: Args
+  ) => ReturnValue;
   runOnUIAsync: <Args extends unknown[], ReturnValue>(
     callback: (...args: Args) => ReturnValue | Promise<ReturnValue>,
     ...args: Args
@@ -229,6 +233,10 @@ export function runOnUI<Args extends unknown[], ReturnValue>(
   callback: (...args: Args) => ReturnValue | Promise<ReturnValue>,
   ...args: Args
 ): Promise<ReturnValue>;
+export function runOnUISync<Args extends unknown[], ReturnValue>(
+  callback: (...args: Args) => ReturnValue,
+  ...args: Args
+): ReturnValue;
 export function uiInvoker<T extends (...args: any[]) => any>(
   callback: T,
 ): never;
@@ -299,6 +307,7 @@ declare const NativeScript: {
   release: typeof release;
   retain: typeof retain;
   runOnUI: typeof runOnUI;
+  runOnUISync: typeof runOnUISync;
   uiInvoker: typeof uiInvoker;
   warnIfNotUIKitThread: typeof warnIfNotUIKitThread;
 };

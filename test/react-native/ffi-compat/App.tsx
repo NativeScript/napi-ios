@@ -73,7 +73,9 @@ class PendingSpecError extends Error {
 }
 
 function g(name: string): any {
-  lastGlobalAccess = name;
+  'worklet';
+
+  (globalThis as Record<string, any>).__nativeScriptLastGlobalAccess = name;
   return (globalThis as Record<string, any>)[name];
 }
 
@@ -83,18 +85,24 @@ function step<T>(name: string, callback: () => T): T {
 }
 
 function assert(condition: unknown, message: string): asserts condition {
+  'worklet';
+
   if (!condition) {
     throw new Error(message);
   }
 }
 
 function assertEqual<T>(actual: T, expected: T, message: string) {
+  'worklet';
+
   if (!Object.is(actual, expected)) {
     throw new Error(`${message}: expected ${String(expected)}, got ${String(actual)}`);
   }
 }
 
 function assertClose(actual: number, expected: number, message: string) {
+  'worklet';
+
   if (Math.abs(actual - expected) > 0.0001) {
     throw new Error(`${message}: expected ${expected}, got ${actual}`);
   }
@@ -114,6 +122,8 @@ function assertThrows(callback: () => void, pattern: RegExp, message: string) {
 }
 
 function nowMs(): number {
+  'worklet';
+
   const performanceObject = (globalThis as Record<string, any>).performance;
   if (performanceObject && typeof performanceObject.now === 'function') {
     return performanceObject.now();
@@ -122,6 +132,8 @@ function nowMs(): number {
 }
 
 function consumeBenchmarkValue(value: unknown) {
+  'worklet';
+
   let n = 0;
   switch (typeof value) {
     case 'number':
@@ -150,6 +162,8 @@ function recordPerformance(
   elapsedMs: number,
   maxMs?: number,
 ) {
+  'worklet';
+
   const roundedMs = Math.round(elapsedMs * 1000) / 1000;
   const nsPerOp = Math.round((elapsedMs * 1000000 / iterations) * 10) / 10;
   const metric: PerformanceMetric = {
@@ -175,6 +189,8 @@ function benchmarkSync(
   callback: (index: number) => unknown,
   options: number | BenchmarkOptions = {},
 ) {
+  'worklet';
+
   const benchmarkOptions =
     typeof options === 'number' ? {maxMs: options} : options;
   const warmup = benchmarkOptions.warmupIterations ?? Math.min(1000, iterations);
@@ -198,6 +214,8 @@ function assertBridgeOverNative(
   maxRatio: number,
   allowanceMs: number,
 ) {
+  'worklet';
+
   const baselineMs = Math.round(nativeMs * 1000) / 1000;
   const ratio = nativeMs > 0 ? bridgeMs / nativeMs : Number.POSITIVE_INFINITY;
   const roundedRatio = Math.round(ratio * 1000) / 1000;
@@ -214,11 +232,15 @@ function assertBridgeOverNative(
 }
 
 function ptrNumber(value: any): number {
+  'worklet';
+
   assert(value && typeof value.toNumber === 'function', 'expected Pointer value');
   return value.toNumber();
 }
 
 function sameNativeHandle(a: any, b: any): boolean {
+  'worklet';
+
   const interop = g('interop');
   return ptrNumber(interop.handleof(a)) === ptrNumber(interop.handleof(b));
 }
@@ -743,14 +765,11 @@ async function runRuntimeSpecs(
 
 async function waitForUIKitPluginAttachment(): Promise<void> {
   await waitForAsync(
-    async () => {
-      let attached = false;
-      await NativeScript.runOnUI(() => {
+    () =>
+      NativeScript.runOnUI(() => {
         const view = (globalThis as any).__nativeScriptUIKitPlugin?.view;
-        attached = Boolean(view?.superview && view?.window);
-      });
-      return attached;
-    },
+        return Boolean(view?.superview && view?.window);
+      }),
     'JS-defined UIKit view was not attached to the RN tree',
   );
 }
@@ -814,6 +833,8 @@ const NativeScriptUIKitTestView = defineUIKitView<{
 });
 
 function rnPlanState(): any {
+  'worklet';
+
   const globalObject = globalThis as any;
   if (!globalObject.__nativeScriptRNPlan) {
     globalObject.__nativeScriptRNPlan = {
@@ -823,6 +844,7 @@ function rnPlanState(): any {
       delegateEvents: [],
       notificationEvents: [],
       kvoEvents: [],
+      tabFirstPaintSamples: [],
     };
   }
   return globalObject.__nativeScriptRNPlan;
@@ -1000,6 +1022,61 @@ const RNPlanViewControllerHost = defineUIViewController<{}>({
   },
 });
 
+const RNPlanTabControllerHost = defineUIViewController<{}>({
+  name: 'RNPlanTabControllerHost',
+  createController() {
+    const first = g('UIViewController').new();
+    first.view.backgroundColor = g('UIColor').systemBackgroundColor;
+    first.tabBarItem = g('UITabBarItem')
+      .alloc()
+      .initWithTitleImageTag('One', null, 0);
+
+    const second = g('UIViewController').new();
+    second.view.backgroundColor = g('UIColor').secondarySystemBackgroundColor;
+    second.tabBarItem = g('UITabBarItem')
+      .alloc()
+      .initWithTitleImageTag('Two', null, 1);
+
+    const controller = g('UITabBarController').new();
+    controller.viewControllers = g('NSArray').arrayWithArray([first, second]);
+    controller.selectedIndex = 0;
+
+    const state = rnPlanState();
+    state.tabController = controller;
+    state.tabControllerCreated = true;
+    state.tabControllerChildCount = Number(controller.viewControllers?.count ?? 0);
+    state.tabControllerHasView = Boolean(controller.view);
+    return controller;
+  },
+});
+
+function RNPlanTabFirstPaintProbe(): React.JSX.Element {
+  const sampledRef = useRef(false);
+
+  const sampleFirstLayout = () => {
+    if (sampledRef.current) {
+      return;
+    }
+    sampledRef.current = true;
+    const sample = NativeScript.runOnUISync(() => {
+      const state = rnPlanState();
+      return {
+        created: state.tabControllerCreated === true,
+        childCount: state.tabControllerChildCount ?? 0,
+        hasView: state.tabControllerHasView === true,
+      };
+    });
+    rnPlanState().tabFirstPaintSamples.push(sample);
+  };
+
+  return (
+    <RNPlanTabControllerHost
+      onLayout={sampleFirstLayout}
+      style={{height: 96, marginTop: 12}}
+    />
+  );
+}
+
 function buildReactNativeIntegrationTests(): TestCase[] {
   return [
     {
@@ -1175,13 +1252,12 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       },
     },
     {
-      name: 'runs UIKit native calls through runOnUI main-thread dispatch',
+      name: 'runs UIKit native calls through runOnUI on the main thread',
       async run() {
-        let mainThread = false;
-        await NativeScript.runOnUI(() => {
-          mainThread = g('NSThread').isMainThread === true;
+        const mainThread = await NativeScript.runOnUI(() => {
           const color = g('UIColor').colorWithRedGreenBlueAlpha(0.1, 0.2, 0.3, 1);
           assert(color, 'UIColor construction failed on UI thread');
+          return g('NSThread').isMainThread === true;
         });
         assert(mainThread, 'runOnUI did not execute native calls on main thread');
       },
@@ -1204,8 +1280,7 @@ function buildReactNativeIntegrationTests(): TestCase[] {
           'assertUIKitThread outside runOnUI',
         );
         await NativeScript.runOnUI(() => {
-          assert(NativeScript.isMainThread(), 'runOnUI should report main thread');
-          NativeScript.assertUIKitThread();
+          assert(g('NSThread').isMainThread, 'runOnUI should report main thread');
         });
       },
     },
@@ -1326,11 +1401,9 @@ function buildReactNativeIntegrationTests(): TestCase[] {
     {
       name: 'constructs heavy UIKit classes close to native cold cost',
       async run() {
-        let elapsed = 0;
-        let nativeElapsed = 0;
-        await NativeScript.runOnUI(() => {
+        const {elapsed, nativeElapsed} = await NativeScript.runOnUI(() => {
           const measureNative = g('TNSRNMeasureNativeUITabBarControllerNew');
-          nativeElapsed = measureNative(1, 1);
+          const nativeElapsed = measureNative(1, 1);
           recordPerformance(
             'native.uikit.UITabBarController.new.firstWithView',
             1,
@@ -1339,8 +1412,9 @@ function buildReactNativeIntegrationTests(): TestCase[] {
 
           const startedAt = nowMs();
           const controller = g('UITabBarController').new();
-          elapsed = nowMs() - startedAt;
+          const elapsed = nowMs() - startedAt;
           assert(controller?.view, 'UITabBarController view missing');
+          return {elapsed, nativeElapsed};
         });
         recordPerformance(
           'rn.uikit.UITabBarController.new.firstWithView',
@@ -1430,87 +1504,119 @@ function buildReactNativeIntegrationTests(): TestCase[] {
         );
         NativeScript.release(delegate);
 
-        await NativeScript.runOnUI(() => {
-          const UIColor = g('UIColor');
-          const measureNativeUIColor = g('TNSRNMeasureNativeUIColorFactory');
+        const colorBatch = await NativeScript.runOnUI(() => {
+          const UIColor = (globalThis as any).UIColor;
+          const measureNativeUIColor = (globalThis as any).TNSRNMeasureNativeUIColorFactory;
+          const performanceObject = (globalThis as any).performance;
+          const now = () =>
+            performanceObject && typeof performanceObject.now === 'function'
+              ? performanceObject.now()
+              : Date.now();
           const iterations = 100;
           const nativeElapsed = measureNativeUIColor(iterations);
-          recordPerformance(
-            'native.uikit.UIColor.factory.batch',
-            iterations,
-            nativeElapsed,
-          );
 
-          const startedAt = nowMs();
+          let sink = 0;
+          const startedAt = now();
           for (let i = 0; i < iterations; i++) {
-            consumeBenchmarkValue(
-              UIColor.colorWithRedGreenBlueAlpha(0.1, 0.2, 0.3, 1),
-            );
+            if (UIColor.colorWithRedGreenBlueAlpha(0.1, 0.2, 0.3, 1)) {
+              sink++;
+            }
           }
-          const bridgeElapsed = nowMs() - startedAt;
-          recordPerformance('rn.runOnUI.UIColor.factory.batch', iterations, bridgeElapsed, 1500);
-          assertBridgeOverNative(
-            'rn.runOnUI.UIColor.factory.batch',
-            bridgeElapsed,
-            nativeElapsed,
-            150,
-            50,
-          );
+          return {iterations, nativeElapsed, bridgeElapsed: now() - startedAt, sink};
         });
+        benchmarkSink += colorBatch.sink;
+        recordPerformance(
+          'native.uikit.UIColor.factory.batch',
+          colorBatch.iterations,
+          colorBatch.nativeElapsed,
+        );
+        recordPerformance(
+          'rn.runOnUI.UIColor.factory.batch',
+          colorBatch.iterations,
+          colorBatch.bridgeElapsed,
+          1500,
+        );
+        assertBridgeOverNative(
+          'rn.runOnUI.UIColor.factory.batch',
+          colorBatch.bridgeElapsed,
+          colorBatch.nativeElapsed,
+          150,
+          50,
+        );
 
-        await NativeScript.runOnUI(() => {
-          const UITabBarController = g('UITabBarController');
-          const UIView = g('UIView');
-          const UIViewController = g('UIViewController');
-          const measureNative = g('TNSRNMeasureNativeUITabBarControllerNew');
-          benchmarkSync(
-            'rn.uikit.UIView.new',
-            10,
-            () => UIView.new(),
-            {warmupIterations: 1},
-          );
-          benchmarkSync(
-            'rn.uikit.UIViewController.new',
-            10,
-            () => UIViewController.new(),
-            {warmupIterations: 1},
-          );
-          benchmarkSync(
-            'rn.uikit.UITabBarController.alloc',
-            5,
-            () => UITabBarController.alloc(),
-            {warmupIterations: 1},
-          );
-          benchmarkSync(
+        const uikitBatch = await NativeScript.runOnUI(() => {
+          const UITabBarController = (globalThis as any).UITabBarController;
+          const UIView = (globalThis as any).UIView;
+          const UIViewController = (globalThis as any).UIViewController;
+          const measureNative = (globalThis as any).TNSRNMeasureNativeUITabBarControllerNew;
+          const performanceObject = (globalThis as any).performance;
+          const now = () =>
+            performanceObject && typeof performanceObject.now === 'function'
+              ? performanceObject.now()
+              : Date.now();
+          const metrics: Array<{name: string; iterations: number; elapsed: number}> = [];
+          const measure = (
+            name: string,
+            iterations: number,
+            callback: (index: number) => unknown,
+          ) => {
+            callback(-1);
+            const startedAt = now();
+            for (let i = 0; i < iterations; i++) {
+              callback(i);
+            }
+            metrics.push({name, iterations, elapsed: now() - startedAt});
+          };
+
+          measure('rn.uikit.UIView.new', 10, () => UIView.new());
+          measure('rn.uikit.UIViewController.new', 10, () => UIViewController.new());
+          measure('rn.uikit.UITabBarController.alloc', 5, () => UITabBarController.alloc());
+          measure(
             'rn.uikit.UITabBarController.alloc.init',
             5,
             () => UITabBarController.alloc().init(),
-            {warmupIterations: 1},
           );
           const iterations = 5;
           const nativeElapsed = measureNative(iterations, 0);
-          recordPerformance(
-            'native.uikit.UITabBarController.new.warm',
-            iterations,
-            nativeElapsed,
-          );
 
-          const startedAt = nowMs();
+          let sink = 0;
+          const startedAt = now();
           for (let i = 0; i < iterations; i++) {
             const controller = UITabBarController.new();
-            assert(controller, 'UITabBarController benchmark instance missing');
-            consumeBenchmarkValue(controller);
+            if (!controller) {
+              throw new Error('UITabBarController benchmark instance missing');
+            }
+            sink++;
           }
-          const bridgeElapsed = nowMs() - startedAt;
-          recordPerformance('rn.uikit.UITabBarController.new.warm', iterations, bridgeElapsed);
-          assertBridgeOverNative(
-            'rn.uikit.UITabBarController.new.warm',
-            bridgeElapsed,
+          return {
+            metrics,
+            iterations,
             nativeElapsed,
-            1.75,
-            350,
-          );
+            bridgeElapsed: now() - startedAt,
+            sink,
+          };
         });
+        benchmarkSink += uikitBatch.sink;
+        for (const metric of uikitBatch.metrics) {
+          recordPerformance(metric.name, metric.iterations, metric.elapsed);
+        }
+        recordPerformance(
+          'native.uikit.UITabBarController.new.warm',
+          uikitBatch.iterations,
+          uikitBatch.nativeElapsed,
+        );
+        recordPerformance(
+          'rn.uikit.UITabBarController.new.warm',
+          uikitBatch.iterations,
+          uikitBatch.bridgeElapsed,
+        );
+        assertBridgeOverNative(
+          'rn.uikit.UITabBarController.new.warm',
+          uikitBatch.bridgeElapsed,
+          uikitBatch.nativeElapsed,
+          1.75,
+          350,
+        );
       },
     },
     {
@@ -1552,11 +1658,15 @@ function buildReactNativeIntegrationTests(): TestCase[] {
     {
       name: 'mounts JS-defined UIKit views through the React Native host component',
       async run() {
-        await waitFor(
+        await waitForAsync(
           () =>
-            (globalThis as any).__nativeScriptUIKitPlugin?.mounted === true &&
-            (globalThis as any).__nativeScriptUIKitPlugin?.title ===
-              'Initial UIKit title',
+            NativeScript.runOnUI(() => {
+              const state = (globalThis as any).__nativeScriptUIKitPlugin;
+              return (
+                state?.mounted === true &&
+                state?.title === 'Initial UIKit title'
+              );
+            }),
           'JS-defined UIKit view did not mount',
         );
 
@@ -1580,11 +1690,15 @@ function buildReactNativeIntegrationTests(): TestCase[] {
         setTitle('Updated UIKit title');
         setTint('green');
 
-        await waitFor(
+        await waitForAsync(
           () =>
-            (globalThis as any).__nativeScriptUIKitPlugin?.title ===
-              'Updated UIKit title' &&
-            (globalThis as any).__nativeScriptUIKitPlugin?.tint === 'green',
+            NativeScript.runOnUI(() => {
+              const state = (globalThis as any).__nativeScriptUIKitPlugin;
+              return (
+                state?.title === 'Updated UIKit title' &&
+                state?.tint === 'green'
+              );
+            }),
           'JS-defined UIKit view did not receive prop updates',
         );
 
@@ -1601,18 +1715,27 @@ function buildReactNativeIntegrationTests(): TestCase[] {
     {
       name: 'runs defineUIKitView lifecycle callbacks on the main thread',
       async run() {
-        await waitFor(
+        await waitForAsync(
           () =>
-            rnPlanState().lifecycle.includes('mounted') &&
-            rnPlanState().lifecycle.some((entry: string) => entry.startsWith('update:1')),
+            NativeScript.runOnUI(() => {
+              const lifecycle = rnPlanState().lifecycle;
+              return (
+                lifecycle.includes('mounted') &&
+                lifecycle.some((entry: string) => entry.startsWith('update:1'))
+              );
+            }),
           'RN plan lifecycle probe did not mount',
         );
         const setValue = (globalThis as any).__setRNPlanLifecycleValue;
         assert(typeof setValue === 'function', 'RN plan lifecycle setter missing');
         setValue(2);
-        await waitFor(
+        await waitForAsync(
           () =>
-            rnPlanState().lifecycle.some((entry: string) => entry.startsWith('update:2')),
+            NativeScript.runOnUI(() =>
+              rnPlanState().lifecycle.some((entry: string) =>
+                entry.startsWith('update:2'),
+              ),
+            ),
           'RN plan lifecycle probe did not update',
         );
       },
@@ -1620,7 +1743,10 @@ function buildReactNativeIntegrationTests(): TestCase[] {
     {
       name: 'delivers ctx.targetAction events to React Native JavaScript',
       async run() {
-        await waitFor(() => rnPlanState().switch?.window, 'switch probe was not mounted');
+        await waitForAsync(
+          () => NativeScript.runOnUI(() => Boolean(rnPlanState().switch?.window)),
+          'switch probe was not mounted',
+        );
         await NativeScript.runOnUI(() => {
           const view = rnPlanState().switch;
           view.setOnAnimated(true, false);
@@ -1635,8 +1761,8 @@ function buildReactNativeIntegrationTests(): TestCase[] {
     {
       name: 'delivers ctx.delegate callbacks and retains delegate lifetime',
       async run() {
-        await waitFor(
-          () => rnPlanState().delegateProbe,
+        await waitForAsync(
+          () => NativeScript.runOnUI(() => Boolean(rnPlanState().delegateProbe)),
           'delegate probe was not mounted',
         );
         await NativeScript.runOnUI(() => {
@@ -1651,8 +1777,8 @@ function buildReactNativeIntegrationTests(): TestCase[] {
     {
       name: 'delivers ctx.notification and ctx.observe events',
       async run() {
-        await waitFor(
-          () => rnPlanState().observedProbe,
+        await waitForAsync(
+          () => NativeScript.runOnUI(() => Boolean(rnPlanState().observedProbe)),
           'KVO probe was not mounted',
         );
         await NativeScript.runOnUI(() => {
@@ -1678,11 +1804,17 @@ function buildReactNativeIntegrationTests(): TestCase[] {
         const intrinsicRef = (globalThis as any).__rnPlanIntrinsicRef;
         const sizeThatFitsRef = (globalThis as any).__rnPlanSizeThatFitsRef;
         const autoLayoutRef = (globalThis as any).__rnPlanAutoLayoutRef;
-        await waitFor(
-          () =>
-            intrinsicRef?.current?.nativeView &&
-            sizeThatFitsRef?.current?.nativeView &&
-            autoLayoutRef?.current?.nativeView,
+        await waitForAsync(
+          async () => {
+            try {
+              await intrinsicRef?.current?.measureNative();
+              await sizeThatFitsRef?.current?.measureNative();
+              await autoLayoutRef?.current?.measureNative();
+              return true;
+            } catch {
+              return false;
+            }
+          },
           'measurement refs were not mounted',
         );
         const intrinsic = await intrinsicRef.current.measureNative();
@@ -1699,8 +1831,7 @@ function buildReactNativeIntegrationTests(): TestCase[] {
         let diagnostics = 'not sampled';
         await waitForAsync(
           async () => {
-            let mounted = false;
-            await NativeScript.runOnUI(() => {
+            const sample = await NativeScript.runOnUI(() => {
               const container = rnPlanState().container;
               const rootView = container?.rootView;
               const childrenView = container?.childrenView;
@@ -1709,7 +1840,7 @@ function buildReactNativeIntegrationTests(): TestCase[] {
                 view ? String(view.description ?? view) : null;
               const countSubviews = (view: any) =>
                 Number(view?.subviews?.count ?? 0);
-              diagnostics = JSON.stringify({
+              const diagnostics = JSON.stringify({
                 rootHasSuperview: Boolean(rootView?.superview),
                 rootSubviewCount: countSubviews(rootView),
                 rootSuperviewSubviewCount: countSubviews(wrapperView),
@@ -1725,14 +1856,18 @@ function buildReactNativeIntegrationTests(): TestCase[] {
               rootSuperview: describe(wrapperView),
               childrenSuperview: describe(childrenView?.superview),
               });
-              mounted = Boolean(
-                rootView?.superview &&
-                  childrenView?.superview &&
-                  sameNativeHandle(childrenView.superview, rootView) &&
-                  childrenView?.subviews?.count > 0,
-              );
+              return {
+                diagnostics,
+                mounted: Boolean(
+                  rootView?.superview &&
+                    childrenView?.superview &&
+                    sameNativeHandle(childrenView.superview, rootView) &&
+                    childrenView?.subviews?.count > 0,
+                ),
+              };
             });
-            return mounted;
+            diagnostics = sample.diagnostics;
+            return sample.mounted;
           },
           () => `UIKit container children did not mount; ${diagnostics}`,
           15000,
@@ -1743,18 +1878,39 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       name: 'hosts UIViewController instances with balanced containment',
       async run() {
         await waitForAsync(
-          async () => {
-            let attached = false;
-            await NativeScript.runOnUI(() => {
+          () =>
+            NativeScript.runOnUI(() => {
               const controller = rnPlanState().controller;
-              attached = Boolean(
+              return Boolean(
                 controller?.parentViewController &&
                   controller?.view?.superview,
               );
-            });
-            return attached;
-          },
+            }),
           'UIViewController was not attached to a parent',
+          15000,
+        );
+      },
+    },
+    {
+      name: 'mounts UITabBarController on first React paint with Worklets',
+      async run() {
+        const firstSample = rnPlanState().tabFirstPaintSamples[0];
+        assert(firstSample, 'UITabBarController first-paint probe did not render');
+        assert(firstSample.created === true, 'UITabBarController was not mounted for first layout');
+        assertEqual(firstSample.childCount, 2, 'initial tab controller child count');
+        assert(firstSample.hasView === true, 'initial tab controller view was missing');
+
+        await waitForAsync(
+          () =>
+            NativeScript.runOnUI(() => {
+              const controller = rnPlanState().tabController;
+              return Boolean(
+                controller?.parentViewController &&
+                  controller?.view?.superview &&
+                  Number(controller?.viewControllers?.count ?? 0) === 2,
+              );
+            }),
+          'UITabBarController was not attached to a parent',
           15000,
         );
       },
@@ -1772,19 +1928,26 @@ function buildReactNativeIntegrationTests(): TestCase[] {
         const setShow = (globalThis as any).__setRNPlanVisible;
         assert(typeof setShow === 'function', 'RN plan visibility setter missing');
         setShow(false);
-        await waitFor(
-          () => state.disposeCalls.join(',') === 'view,second,first',
-          `dispose order mismatch: ${state.disposeCalls.join(',')}`,
+        let disposeOrder = '';
+        await waitForAsync(
+          async () => {
+            disposeOrder = await NativeScript.runOnUI(() =>
+              rnPlanState().disposeCalls.join(','),
+            );
+            return disposeOrder === 'view,second,first';
+          },
+          () => `dispose order mismatch: ${disposeOrder}`,
         );
         await NativeScript.runOnUI(() => {
-          state.switch?.sendActionsForControlEvents(g('UIControlEvents').ValueChanged);
-          state.delegateProbe?.fire();
+          const uiState = rnPlanState();
+          uiState.switch?.sendActionsForControlEvents(g('UIControlEvents').ValueChanged);
+          uiState.delegateProbe?.fire();
           g('NSNotificationCenter').defaultCenter.postNotificationNameObject(
             'TNSRNProbeNotification',
             null,
           );
-          if (state.observedProbe) {
-            state.observedProbe.value = 'after-unmount';
+          if (uiState.observedProbe) {
+            uiState.observedProbe.value = 'after-unmount';
           }
         });
         await new Promise((resolve) => setTimeout(resolve, 200));
@@ -1998,6 +2161,7 @@ export default function App(): React.JSX.Element {
               <Text>RN child inside UIKit container</Text>
             </RNPlanContainer>
             <RNPlanViewControllerHost style={{height: 24, marginTop: 12}} />
+            <RNPlanTabFirstPaintProbe />
           </>
         ) : null}
       </ScrollView>
