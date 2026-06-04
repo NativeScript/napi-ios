@@ -7,9 +7,10 @@
 
 // Engine-neutral GSD (Generated Signature Dispatch). The GsdObjCContext struct,
 // the ObjCGsdInvoker/ObjCGsdDispatchEntry types, the generated dispatch table,
-// and lookupObjCGsdInvoker are all defined in NativeApiV8.mm (after the host
-// object helpers the context relies on), so nothing GSD-related is declared
-// here to avoid creating an ambiguous second GsdObjCContext.
+// and lookupObjCGsdInvoker are all defined in NativeApiV8SelectorGroups.mm,
+// which NativeApiV8.mm includes after the host object helpers the context
+// relies on. Nothing GSD-related is declared here to avoid creating an
+// ambiguous second GsdObjCContext.
 
 #ifndef NS_GSD_BACKEND_PREPARED
 #define NS_GSD_BACKEND_PREPARED 1
@@ -31,8 +32,9 @@
 #define NS_HAS_GENERATED_SIGNATURE_GSD_DISPATCH 0
 #endif
 
-// NOTE: GeneratedGsdSignatureDispatch.inc is included from NativeApiV8.mm after
-// GsdObjCContext is defined (avoids namespace ordering issues).
+// NOTE: GeneratedGsdSignatureDispatch.inc is included from
+// NativeApiV8SelectorGroups.mm after GsdObjCContext is defined (avoids
+// namespace ordering issues).
 
 // The main .inc (prepared invokers + tables) is included here.
 #if defined(__has_include)

@@ -459,8 +459,6 @@ Value callCFunction(Runtime& runtime,
 
   NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
-  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
-  bool retainedReturn = false;
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
     if (prepared->preparedInvoker != nullptr) {
       prepared->preparedInvoker(prepared->function, frame.values(),
@@ -469,21 +467,9 @@ Value callCFunction(Runtime& runtime,
       ffi_call(&signature.cif, FFI_FN(prepared->function), returnStorage.data(),
                frame.values());
     }
-    if (dispatchingNativeCallToUI &&
-        !signature.returnType.returnOwned &&
-        isObjectiveCObjectType(signature.returnType)) {
-      id object = *reinterpret_cast<id*>(returnStorage.data());
-      if (object != nil) {
-        [object retain];
-        retainedReturn = true;
-      }
-    }
   });
 
   NativeApiType returnType = signature.returnType;
-  if (retainedReturn) {
-    returnType.returnOwned = true;
-  }
   if (prepared->symbol.name == "CFBagContainsValue" &&
       (returnType.kind == metagen::mdTypeChar ||
        returnType.kind == metagen::mdTypeUChar ||
@@ -744,21 +730,8 @@ template <typename... Args>
 Value callFastEngineCFunctionWithReturn(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     void* function, NativeApiType returnType, Args... nativeArgs) {
-  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
-  bool retainedReturn = false;
-
   auto finalizeObjectReturn = [&](id object) -> Value {
-    NativeApiType effectiveReturnType = returnType;
-    if (dispatchingNativeCallToUI && !effectiveReturnType.returnOwned &&
-        object != nil) {
-      [object retain];
-      retainedReturn = true;
-    }
-    if (retainedReturn) {
-      effectiveReturnType.returnOwned = true;
-    }
-    return convertNativeReturnValue(runtime, bridge, effectiveReturnType,
-                                    &object);
+    return convertNativeReturnValue(runtime, bridge, returnType, &object);
   };
 
   switch (returnType.kind) {
@@ -1071,11 +1044,6 @@ Value callFastEngineObjCWithReturn(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     id receiver, SEL selector, NativeApiType returnType,
     const std::string& selectorName, Args... nativeArgs) {
-  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
-  bool retainedReturn = false;
-  NativeApiScopedObjCObjectRetain receiverLifetime(
-      dispatchingNativeCallToUI ? receiver : nil);
-
   auto finalizeObjectReturn = [&](id object) -> Value {
     NativeApiType effectiveReturnType = returnType;
     if ((selectorName == "valueForKey:" || selectorName == "valueForKeyPath:") &&
@@ -1085,14 +1053,6 @@ Value callFastEngineObjCWithReturn(
     if (startsWith(selectorName, "init") &&
         isObjectiveCObjectType(effectiveReturnType)) {
       effectiveReturnType.kind = metagen::mdTypeInstanceObject;
-    }
-    if (dispatchingNativeCallToUI && !effectiveReturnType.returnOwned &&
-        object != nil) {
-      [object retain];
-      retainedReturn = true;
-    }
-    if (retainedReturn) {
-      effectiveReturnType.returnOwned = true;
     }
     return convertNativeReturnValue(runtime, bridge, effectiveReturnType,
                                     &object);
@@ -1595,8 +1555,6 @@ Value callPreparedObjCSelector(
 
   NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature.returnType));
-  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
-  bool retainedReturn = false;
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
     if (prepared.preparedInvoker != nullptr && dispatchSuperClass == Nil) {
       prepared.preparedInvoker(reinterpret_cast<void*>(objc_msgSend),
@@ -1619,15 +1577,6 @@ Value callPreparedObjCSelector(
                returnStorage.data(), values.data());
 #endif
     }
-    if (dispatchingNativeCallToUI &&
-        !signature.returnType.returnOwned &&
-        isObjectiveCObjectType(signature.returnType)) {
-      id object = *reinterpret_cast<id*>(returnStorage.data());
-      if (object != nil) {
-        [object retain];
-        retainedReturn = true;
-      }
-    }
   });
 
   NativeApiType returnType = signature.returnType;
@@ -1639,9 +1588,6 @@ Value callPreparedObjCSelector(
   if (prepared.isInitMethod &&
       isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeInstanceObject;
-  }
-  if (retainedReturn) {
-    returnType.returnOwned = true;
   }
   if (hasImplicitNSErrorOutArg && implicitNSError != nil) {
     const char* errorMessage = [[implicitNSError description] UTF8String];
@@ -1772,8 +1718,6 @@ Value callObjCSelector(Runtime& runtime,
 
   NativeApiReturnStorage returnStorage(
       nativeSizeForType(signature->returnType));
-  bool dispatchingNativeCallToUI = shouldDispatchNativeCallToUI();
-  bool retainedReturn = false;
   auto preparedInvoker =
       dispatchSuperClass == Nil
           ? lookupObjCPreparedInvoker(dispatchIdForEngineSignature(
@@ -1800,15 +1744,6 @@ Value callObjCSelector(Runtime& runtime,
                returnStorage.data(), values.data());
 #endif
     }
-    if (dispatchingNativeCallToUI &&
-        !signature->returnType.returnOwned &&
-        isObjectiveCObjectType(signature->returnType)) {
-      id object = *reinterpret_cast<id*>(returnStorage.data());
-      if (object != nil) {
-        [object retain];
-        retainedReturn = true;
-      }
-    }
   });
 
   NativeApiType returnType = signature->returnType;
@@ -1818,9 +1753,6 @@ Value callObjCSelector(Runtime& runtime,
   }
   if (engineInvocation.isInitMethod && isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeInstanceObject;
-  }
-  if (retainedReturn) {
-    returnType.returnOwned = true;
   }
   if (hasImplicitNSErrorOutArg && implicitNSError != nil) {
     const char* errorMessage = [[implicitNSError description] UTF8String];

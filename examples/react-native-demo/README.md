@@ -9,11 +9,8 @@ Run it from the repository root:
 npm run demo-rn-turbomodule
 ```
 
-The generated app installs the local
-`@nativescript/react-native` tarball, enables Hermes and the New
-Architecture, then launches an iOS simulator app. The app installs the
-NativeScript Native API JSI host object with `NativeScript.init()`, installs
-NativeScript-style globals such as `UIApplication` and `UIColor`, and uses
-`runOnUI` to execute a small UIKit tweak from JavaScript while dispatching the
-native UIKit calls to the main thread. The script waits for a simulator marker
-after the tweak succeeds.
+The generated app installs the local `@nativescript/react-native` tarball and
+`react-native-worklets`, enables Hermes and the New Architecture, then launches
+an iOS simulator app. `NativeScript.init()` installs the Native API into the
+Worklets UI runtime, and `runOnUI` executes a small UIKit tweak from a Worklets
+callback. The script waits for a simulator marker after the tweak succeeds.

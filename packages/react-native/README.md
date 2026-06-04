@@ -16,28 +16,48 @@ NativeScript.init();
 const object = NSObject.new();
 ```
 
-For UIKit work that must happen on the main thread, pass a callback to the JSI
-host object's `runOnUI()` helper. The callback itself stays on React Native's JS
-thread; NativeScript native calls made inside the callback are synchronously
-performed on UIKit's main thread.
+`NativeScript.init()` also installs the Native API into the
+`react-native-worklets` UI runtime. `NativeScript.runOnUI()` only accepts
+Worklets callbacks; running React Native's JS-thread runtime as a UI-thread shim
+is not supported.
 
 ```ts
 await NativeScript.runOnUI(() => {
+  "worklet";
   UIApplication.sharedApplication.keyWindow.tintColor = UIColor.systemPinkColor;
 });
 ```
 
+Install `react-native-worklets`, add its Babel plugin, and run `pod install` so
+the `RNWorklets` pod is linked:
+
+```sh
+npm install react-native-worklets
+```
+
+```js
+module.exports = {
+  presets: ["module:@react-native/babel-preset"],
+  plugins: [
+    "@nativescript/react-native/babel-plugin",
+    "react-native-worklets/plugin",
+  ],
+};
+```
+
+`installWorklets()` is still exported for custom initialization, but it throws
+when Worklets is unavailable or incompatible. `runOnUI()` throws when the
+callback was not transformed into a Worklets function.
+
 Obj-C blocks and JS-backed Obj-C method callbacks, including `NSObject.extend`
-subclass overrides and delegates created with `createDelegate()`, default to the
-thread that invoked them. Wrap callbacks when you want an explicit thread
-policy:
+subclass overrides and delegates created with `createDelegate()`, should return
+to React Native's JS thread for JS work. Use `jsInvoker()` when a callback can be
+reached from a native caller thread:
 
 ```ts
 UIView.animateWithDurationAnimationsCompletion(
   0.25,
-  NativeScript.uiInvoker(() => {
-    view.alpha = 0.5;
-  }),
+  null,
   NativeScript.jsInvoker((finished) => {
     console.log("animation finished", finished);
   }),
@@ -47,24 +67,20 @@ UIView.animateWithDurationAnimationsCompletion(
 Delegate, data-source, target/action, and `UIAction` callbacks are JS-side
 callbacks. Treat their bodies as JS work. If a callback can be reached from a
 background native thread and needs to mutate UIKit, wrap the mutation in
-`NativeScript.runOnUI()` or create the callback with `NativeScript.uiInvoker()`.
+`NativeScript.runOnUI()` with a Worklets callback.
 
-The package also includes a Babel plugin for directive-style callbacks:
+The package also includes a Babel plugin for directive-style JS callbacks:
 
 ```ts
-someNativeApi(() => {
-  "use ui";
-  view.alpha = 1;
-});
-
 someNativeApi(() => {
   "use js";
   console.log("back on JS");
 });
 ```
 
-The transform rewrites those callbacks to `NativeScript.uiInvoker(fn)` and
-`NativeScript.jsInvoker(fn)`.
+The transform rewrites those callbacks to `NativeScript.jsInvoker(fn)`.
+`"use ui"` is rejected in React Native; use a Worklets `"worklet"` callback with
+`NativeScript.runOnUI()` instead.
 
 ## Defining native UIKit views in JS
 
@@ -119,6 +135,7 @@ Forward a ref when you need imperative access:
 const badgeRef = useRef<UIKitViewRef<UIView>>(null);
 
 await badgeRef.current?.runOnUI((view) => {
+  "worklet";
   view.alpha = 0.8;
 });
 
@@ -183,6 +200,7 @@ property setters still win first, and unsupported names fall back to JS state:
 
 ```ts
 NativeScript.runOnUI(() => {
+  "worklet";
   const view = UIView.new();
   view.ownerState = { selected: false };
   view.tag = 42; // still calls UIKit's native tag setter
@@ -204,6 +222,7 @@ const delegate = NativeScript.createDelegate<UIScrollViewDelegate>(
   {
     scrollViewDidScroll(scrollView) {
       NativeScript.runOnUI(() => {
+        "worklet";
         scrollView.indicatorStyle = UIScrollViewIndicatorStyle.White;
       });
     },
@@ -398,6 +417,7 @@ function topVisibleViewController(
 }
 
 await NativeScript.runOnUI(() => {
+  "worklet";
   const presenter = topVisibleViewController();
   if (!presenter || presenter.presentedViewController) {
     return;
@@ -466,7 +486,7 @@ npm run test-rn-turbomodule
 2. Install it in an RN app that has Hermes and the New Architecture enabled:
 
    ```sh
-   npm install /path/to/nativescript-react-native-0.0.1.tgz
+   npm install /path/to/nativescript-react-native-0.0.1.tgz react-native-worklets
    cd ios
    RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 pod install
    ```
@@ -479,18 +499,21 @@ npm run test-rn-turbomodule
    NativeScript.init();
 
    await NativeScript.runOnUI(() => {
+     "worklet";
      UIApplication.sharedApplication.keyWindow.tintColor =
        UIColor.systemPinkColor;
    });
    ```
 
-4. To use directive-style callbacks in a bare React Native app, add the bundled
-   Babel plugin:
+4. Add the bundled NativeScript Babel plugin and the Worklets Babel plugin:
 
    ```js
    module.exports = {
      presets: ["module:@react-native/babel-preset"],
-     plugins: ["@nativescript/react-native/babel-plugin"],
+     plugins: [
+       "@nativescript/react-native/babel-plugin",
+       "react-native-worklets/plugin",
+     ],
    };
    ```
 
@@ -502,7 +525,7 @@ Expo development build, EAS Build, or `npx expo run:ios`.
 1. Install the package:
 
    ```sh
-   npx expo install @nativescript/react-native
+   npx expo install @nativescript/react-native react-native-worklets
    ```
 
    When testing a local tarball:
@@ -523,8 +546,9 @@ Expo development build, EAS Build, or `npx expo run:ios`.
 
    The plugin configures iOS for Hermes and the React Native New Architecture,
    which are required by this JSI TurboModule. It also adds the
-   `@nativescript/react-native/babel-plugin` transform to `babel.config.js` so
-   `"use ui"` and `"use js"` callback directives work in Expo bundles.
+   `@nativescript/react-native/babel-plugin` and `react-native-worklets/plugin`
+   transforms to `babel.config.js` so `"use js"` and worklet callbacks work in
+   Expo bundles.
 
 3. Prebuild and run the iOS development build:
 
@@ -559,7 +583,7 @@ Expo development build, EAS Build, or `npx expo run:ios`.
    ```
 
 Set `{ "babelPlugin": false }` in the config plugin options if you prefer to add
-the Babel plugin manually.
+the NativeScript and Worklets Babel plugins manually.
 
 The plugin also writes `nativescript.react-native.json` so metadata options are
 visible to native builds. You can pass metadata inputs when the app uses
@@ -594,7 +618,8 @@ cd ios
 RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 pod install
 ```
 
-`configure` adds the bundled Babel plugin when missing, writes
+`configure` adds the bundled NativeScript and Worklets Babel plugins when
+missing, writes
 `nativescript.react-native.json`, and warns when the app is not configured for
 Hermes and the New Architecture. The command is intentionally conservative and
 does not make destructive native project edits.

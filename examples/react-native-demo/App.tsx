@@ -31,6 +31,7 @@ function installNativeScriptGlobals(): NativeApiHost {
 }
 
 function getActiveUIKitWindow() {
+  'worklet';
   const app = UIApplication.sharedApplication;
   const scenes = app.connectedScenes?.allObjects;
   if (scenes) {
@@ -63,13 +64,8 @@ async function applyUIKitTweaks() {
 
   const api = installNativeScriptGlobals();
 
-  let nativeCallsRanOnMainThread = false;
-  await NativeScript.runOnUI(() => {
-    nativeCallsRanOnMainThread = NSThread.isMainThread === true;
-    if (!nativeCallsRanOnMainThread) {
-      throw new Error('runOnUI did not dispatch native calls to the main thread');
-    }
-
+  const uiSummary = await NativeScript.runOnUI(() => {
+    'worklet';
     const window = getActiveUIKitWindow();
     if (!window) {
       throw new Error('No key UIWindow is available yet');
@@ -92,6 +88,10 @@ async function applyUIKitTweaks() {
       rootView.tintColor = nativeAccent;
       rootView.backgroundColor = nativeBackdrop;
     }
+
+    return {
+      nativeCallsRanOnMainThread: NSThread.isMainThread === true,
+    };
   });
 
   return {
@@ -103,7 +103,7 @@ async function applyUIKitTweaks() {
     enums: api.metadata?.enums ?? 0,
     timeoutConstant: NSURLErrorTimedOut,
     darkStyle: UIUserInterfaceStyle.Dark,
-    nativeCallsRanOnMainThread,
+    nativeCallsRanOnMainThread: uiSummary.nativeCallsRanOnMainThread,
   };
 }
 

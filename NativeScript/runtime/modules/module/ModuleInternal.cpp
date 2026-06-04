@@ -14,6 +14,7 @@
 #include <sstream>
 #include <unordered_map>
 #include <unordered_set>
+#include <vector>
 
 #include "runtime/NativeScriptException.h"
 #include "native_api_util.h"
@@ -63,6 +64,268 @@ std::string RewriteCommonJSDynamicImportsForFallbackEngines(
       std::regex::ECMAScript | std::regex::multiline);
   return std::regex_replace(source, kDynamicImportPattern,
                             "$1__dynamicImport(");
+}
+
+std::string TrimFallbackESMToken(const std::string& value) {
+  const auto begin = value.find_first_not_of(" \t\r\n");
+  if (begin == std::string::npos) {
+    return "";
+  }
+  const auto end = value.find_last_not_of(" \t\r\n");
+  return value.substr(begin, end - begin + 1);
+}
+
+std::vector<std::string> SplitFallbackESMList(const std::string& value) {
+  std::vector<std::string> parts;
+  std::stringstream stream(value);
+  std::string part;
+  while (std::getline(stream, part, ',')) {
+    part = TrimFallbackESMToken(part);
+    if (!part.empty()) {
+      parts.push_back(part);
+    }
+  }
+  return parts;
+}
+
+std::string EscapeFallbackESMSpecifier(const std::string& specifier) {
+  std::string escaped;
+  escaped.reserve(specifier.size());
+  for (char c : specifier) {
+    switch (c) {
+      case '\\':
+        escaped += "\\\\";
+        break;
+      case '\'':
+        escaped += "\\'";
+        break;
+      case '\n':
+        escaped += "\\n";
+        break;
+      case '\r':
+        escaped += "\\r";
+        break;
+      default:
+        escaped += c;
+        break;
+    }
+  }
+  return escaped;
+}
+
+std::string FallbackESMRequireExpression(const std::string& specifier) {
+  return "require('" + EscapeFallbackESMSpecifier(specifier) + "')";
+}
+
+std::string RewriteFallbackESMImportBindings(const std::string& bindings) {
+  std::string result;
+  for (const auto& part : SplitFallbackESMList(bindings)) {
+    static const std::regex kAliasPattern(
+        R"(^([A-Za-z_$][A-Za-z0-9_$]*)\s+as\s+([A-Za-z_$][A-Za-z0-9_$]*)$)");
+    std::smatch alias;
+    if (std::regex_match(part, alias, kAliasPattern)) {
+      result += (result.empty() ? "" : ", ");
+      result += alias[1].str() + ": " + alias[2].str();
+    } else {
+      result += (result.empty() ? "" : ", ");
+      result += part;
+    }
+  }
+  return result;
+}
+
+std::string FallbackESMExportAssignments(const std::string& exports,
+                                         const std::string& sourceObject = "") {
+  std::string result;
+  for (const auto& part : SplitFallbackESMList(exports)) {
+    static const std::regex kAliasPattern(
+        R"(^([A-Za-z_$][A-Za-z0-9_$]*)\s+as\s+([A-Za-z_$][A-Za-z0-9_$]*)$)");
+    std::smatch alias;
+    std::string local = part;
+    std::string exported = part;
+    if (std::regex_match(part, alias, kAliasPattern)) {
+      local = alias[1].str();
+      exported = alias[2].str();
+    }
+
+    if (!result.empty()) {
+      result += "\n";
+    }
+    result += "exports." + exported + " = ";
+    result += sourceObject.empty() ? local : sourceObject + "." + local;
+    result += ";";
+  }
+  return result;
+}
+
+template <typename Callback>
+std::string RegexReplaceWithFallbackESMCallback(const std::string& source,
+                                                const std::regex& pattern,
+                                                Callback callback) {
+  std::string result;
+  std::sregex_iterator it(source.begin(), source.end(), pattern);
+  std::sregex_iterator end;
+  size_t last = 0;
+  for (; it != end; ++it) {
+    const std::smatch& match = *it;
+    result.append(source, last, match.position() - last);
+    result += callback(match);
+    last = match.position() + match.length();
+  }
+  result.append(source, last, std::string::npos);
+  return result;
+}
+
+std::string TransformESModuleForFallbackEngines(const std::string& source) {
+  std::string result = source;
+  int tempIndex = 0;
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*import[ \t]+([A-Za-z_$][A-Za-z0-9_$]*)[ \t]*,[ \t]*\*[ \t]+as[ \t]+([A-Za-z_$][A-Za-z0-9_$]*)[ \t]+from[ \t]+['"]([^'"]+)['"][ \t]*;?)",
+          std::regex::ECMAScript | std::regex::multiline),
+      [&](const std::smatch& match) {
+        std::string module = "__esm_import_" + std::to_string(tempIndex++);
+        return "const " + module + " = " +
+               FallbackESMRequireExpression(match[3].str()) + ";\nconst " +
+               match[1].str() + " = " + module + ".default;\nconst " +
+               match[2].str() + " = " + module + ";";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*import[ \t]+([A-Za-z_$][A-Za-z0-9_$]*)[ \t]*,[ \t]*\{([^}]*)\}[ \t]+from[ \t]+['"]([^'"]+)['"][ \t]*;?)",
+          std::regex::ECMAScript | std::regex::multiline),
+      [&](const std::smatch& match) {
+        std::string module = "__esm_import_" + std::to_string(tempIndex++);
+        return "const " + module + " = " +
+               FallbackESMRequireExpression(match[3].str()) + ";\nconst " +
+               match[1].str() + " = " + module + ".default;\nconst {" +
+               RewriteFallbackESMImportBindings(match[2].str()) + "} = " +
+               module + ";";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*import[ \t]+\{([^}]*)\}[ \t]+from[ \t]+['"]([^'"]+)['"][ \t]*;?)",
+          std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return "const {" + RewriteFallbackESMImportBindings(match[1].str()) +
+               "} = " + FallbackESMRequireExpression(match[2].str()) + ";";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*import[ \t]+\*[ \t]+as[ \t]+([A-Za-z_$][A-Za-z0-9_$]*)[ \t]+from[ \t]+['"]([^'"]+)['"][ \t]*;?)",
+          std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return "const " + match[1].str() + " = " +
+               FallbackESMRequireExpression(match[2].str()) + ";";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*import[ \t]+([A-Za-z_$][A-Za-z0-9_$]*)[ \t]+from[ \t]+['"]([^'"]+)['"][ \t]*;?)",
+          std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return "const " + match[1].str() + " = " +
+               FallbackESMRequireExpression(match[2].str()) + ".default;";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(R"(^[ \t]*import[ \t]+['"]([^'"]+)['"][ \t]*;?)",
+                 std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return FallbackESMRequireExpression(match[1].str()) + ";";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*export[ \t]+\*[ \t]+from[ \t]+['"]([^'"]+)['"][ \t]*;?)",
+          std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return "Object.assign(exports, " +
+               FallbackESMRequireExpression(match[1].str()) + ");";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*export[ \t]+\{([^}]*)\}[ \t]+from[ \t]+['"]([^'"]+)['"][ \t]*;?)",
+          std::regex::ECMAScript | std::regex::multiline),
+      [&](const std::smatch& match) {
+        std::string module = "__esm_export_" + std::to_string(tempIndex++);
+        return "const " + module + " = " +
+               FallbackESMRequireExpression(match[2].str()) + ";\n" +
+               FallbackESMExportAssignments(match[1].str(), module);
+      });
+
+  result = std::regex_replace(
+      result,
+      std::regex(R"(^[ \t]*export[ \t]+default[ \t]+function[ \t]*)",
+                 std::regex::ECMAScript | std::regex::multiline),
+      "exports.default = function ");
+
+  result = std::regex_replace(
+      result,
+      std::regex(R"(^[ \t]*export[ \t]+default[ \t]+class[ \t]*)",
+                 std::regex::ECMAScript | std::regex::multiline),
+      "exports.default = class ");
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*export[ \t]+function[ \t]+([A-Za-z_$][A-Za-z0-9_$]*)[ \t]*\()",
+          std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return "exports." + match[1].str() + " = function " + match[1].str() +
+               "(";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*export[ \t]+class[ \t]+([A-Za-z_$][A-Za-z0-9_$]*))",
+          std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return "exports." + match[1].str() + " = class " + match[1].str();
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(
+          R"(^[ \t]*export[ \t]+(const|let|var)[ \t]+([A-Za-z_$][A-Za-z0-9_$]*)[ \t]*=[ \t]*([^;\r\n]*);?)",
+          std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return match[1].str() + " " + match[2].str() + " = " +
+               match[3].str() + ";\nexports." + match[2].str() + " = " +
+               match[2].str() + ";";
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(R"(^[ \t]*export[ \t]*\{([^}]*)\}[ \t]*;)",
+                 std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return FallbackESMExportAssignments(match[1].str());
+      });
+
+  result = RegexReplaceWithFallbackESMCallback(
+      result,
+      std::regex(R"(^[ \t]*export[ \t]+default[ \t]+([^;\r\n]*);?)",
+                 std::regex::ECMAScript | std::regex::multiline),
+      [](const std::smatch& match) {
+        return "exports.default = " + match[1].str() + ";";
+      });
+
+  return RewriteCommonJSDynamicImportsForFallbackEngines(result);
 }
 #endif
 
@@ -1296,19 +1559,15 @@ napi_value ModuleInternal::LoadModule(napi_env env,
 
   napi_value moduleFunc;
 
-  if (modulePath.ends_with(".mjs")) {
+  if (IsESModule(modulePath)) {
     // Handle ES modules
     napi_value esModuleResult = LoadESModule(env, modulePath);
 
-    // Mark the result as an ES module
-    napi_value isESModuleFlag;
-    napi_get_boolean(env, true, &isESModuleFlag);
-    napi_set_named_property(env, esModuleResult, "__esModule", isESModuleFlag);
-
-    // For ES modules, we return the namespace directly, not wrapped in a module
-    // object
+    // Store the namespace as module.exports so the public require() result is
+    // the namespace while the cache shape stays compatible with CommonJS.
+    napi_set_named_property(env, moduleObj, "exports", esModuleResult);
     tempModule.SaveToCache();
-    return esModuleResult;
+    return moduleObj;
   } else if (modulePath.ends_with(".js") || modulePath.ends_with(".cjs")) {
     napi_value script = LoadScript(env, modulePath, fullRequiredModulePath);
     // DEBUG_WRITE("%s", modulePath.c_str());
@@ -1465,7 +1724,7 @@ bool ModuleInternal::IsESModule(const std::string& path) {
 }
 
 napi_value ModuleInternal::LoadESModule(napi_env env, const std::string& path) {
-#ifdef TARGET_ENGINE_V8
+#if defined(TARGET_ENGINE_V8) || defined(TARGET_ENGINE_QUICKJS)
   try {
     // Use canonicalized module paths so the top-level ESM module identity
     // matches dependency resolution cache keys.
@@ -1506,6 +1765,111 @@ napi_value ModuleInternal::LoadESModule(napi_env env, const std::string& path) {
 
     return moduleNamespace;
 
+  } catch (const std::exception& e) {
+    throw NativeScriptException("Failed to load ES module " + path + ": " +
+                                e.what());
+  }
+#elif defined(TARGET_ENGINE_HERMES) || defined(TARGET_ENGINE_JSC)
+  try {
+    std::error_code pathError;
+    auto absPathFs = std::filesystem::absolute(path, pathError);
+    if (pathError) {
+      pathError.clear();
+      absPathFs = std::filesystem::path(path);
+    }
+    absPathFs = absPathFs.lexically_normal();
+    auto canonicalPath =
+        std::filesystem::weakly_canonical(absPathFs, pathError);
+    if (!pathError) {
+      absPathFs = canonicalPath;
+    }
+    std::string absPath = absPathFs.string();
+
+    std::ifstream file(absPath);
+    if (!file.is_open()) {
+      throw NativeScriptException("Unable to open file: " + absPath);
+    }
+    std::stringstream buffer;
+    buffer << file.rdbuf();
+    std::string transformed =
+        TransformESModuleForFallbackEngines(StripShebang(buffer.str()));
+    file.close();
+
+    std::string wrapped;
+    wrapped.reserve(transformed.length() + 1024);
+    wrapped += MODULE_PROLOGUE;
+    wrapped += transformed;
+    wrapped += MODULE_EPILOGUE;
+
+    napi_value scriptContent = nullptr;
+    napi_create_string_utf8(env, wrapped.c_str(), wrapped.size(),
+                            &scriptContent);
+
+    napi_value moduleFunc = nullptr;
+    napi_status status =
+        napi_run_script_source(env, scriptContent, absPath.c_str(), &moduleFunc);
+    if (status != napi_ok) {
+      bool pendingException = false;
+      napi_is_exception_pending(env, &pendingException);
+      if (pendingException) {
+        napi_value error = nullptr;
+        napi_get_and_clear_last_exception(env, &error);
+        throw NativeScriptException(env, error,
+                                    "Failed to transform ES module " + absPath);
+      }
+      throw NativeScriptException("Failed to transform ES module " + absPath);
+    }
+
+    napi_value moduleObj = nullptr;
+    napi_create_object(env, &moduleObj);
+
+    napi_value exportsObj = nullptr;
+    napi_create_object(env, &exportsObj);
+    napi_set_named_property(env, moduleObj, "exports", exportsObj);
+
+    napi_value esModuleMarker = nullptr;
+    napi_get_boolean(env, true, &esModuleMarker);
+    napi_util::define_property(env, exportsObj, "__esModule", esModuleMarker);
+
+    napi_value fileName = nullptr;
+    napi_create_string_utf8(env, absPath.c_str(), absPath.size(), &fileName);
+    napi_set_named_property(env, moduleObj, "filename", fileName);
+
+    std::string dirNameString =
+        std::filesystem::path(absPath).parent_path().string();
+    napi_value dirName = nullptr;
+    napi_create_string_utf8(env, dirNameString.c_str(), dirNameString.size(),
+                            &dirName);
+
+    napi_value require = GetRequireFunction(env, dirNameString);
+    napi_set_named_property(env, moduleObj, "require", require);
+    napi_util::define_property(env, moduleObj, "id", fileName);
+
+    napi_value thisArg = nullptr;
+    napi_create_object(env, &thisArg);
+
+    napi_value global = nullptr;
+    napi_get_global(env, &global);
+    napi_value globalExtends = nullptr;
+    napi_get_named_property(env, global, "__extends", &globalExtends);
+    napi_set_named_property(env, thisArg, "__extends", globalExtends);
+
+    napi_value args[5] = {moduleObj, exportsObj, require, fileName, dirName};
+    napi_value callResult = nullptr;
+    status = napi_call_function(env, thisArg, moduleFunc, 5, args, &callResult);
+    bool pendingException = false;
+    napi_is_exception_pending(env, &pendingException);
+    if (status != napi_ok || pendingException) {
+      napi_value exception = nullptr;
+      napi_get_and_clear_last_exception(env, &exception);
+      if (exception != nullptr) {
+        throw NativeScriptException(env, exception,
+                                    "Error evaluating ES module " + absPath);
+      }
+      throw NativeScriptException("Error evaluating ES module " + absPath);
+    }
+
+    return exportsObj;
   } catch (const std::exception& e) {
     throw NativeScriptException("Failed to load ES module " + path + ": " +
                                 e.what());
@@ -1711,7 +2075,7 @@ ModuleInternal::ModulePathKind ModuleInternal::GetModulePathKind(
   return kind;
 }
 
-#if defined(TARGET_ENGINE_HERMES)
+#if defined(TARGET_ENGINE_HERMES) || defined(TARGET_ENGINE_JSC)
 const char* ModuleInternal::MODULE_PROLOGUE =
     "(function(module, exports, require, __filename, __dirname){ "
     "const __dynamicImport = (specifier) => Promise.resolve().then(() => { "

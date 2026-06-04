@@ -144,6 +144,11 @@ function wrapDirectiveFunction(path, state, t) {
   if (!policy || isAlreadyWrapped(path, t)) {
     return;
   }
+  if (policy === 'ui') {
+    throw path.buildCodeFrameError(
+      'NativeScript "use ui" callbacks are not supported in React Native. Use a Worklets "worklet" callback with NativeScript.runOnUI().',
+    );
+  }
 
   const programPath = path.findParent((parentPath) => parentPath.isProgram());
   const nativeScriptIdentifier = ensureNativeScriptIdentifier(programPath, state, t);
@@ -152,7 +157,7 @@ function wrapDirectiveFunction(path, state, t) {
     t.callExpression(
       t.memberExpression(
         t.identifier(nativeScriptIdentifier),
-        t.identifier(policy === 'ui' ? 'uiInvoker' : 'jsInvoker'),
+        t.identifier('jsInvoker'),
       ),
       [original],
     ),

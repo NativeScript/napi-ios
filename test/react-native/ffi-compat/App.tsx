@@ -1110,29 +1110,12 @@ function buildReactNativeIntegrationTests(): TestCase[] {
       },
     },
     {
-      name: 'invokes uiInvoker Objective-C block callbacks on the UI thread',
+      name: 'rejects uiInvoker Objective-C block callbacks',
       run() {
-        let callbackRan = false;
-        let callbackThreadHash: string | null = null;
-        const nativeThreadHash = g('TNSObjCTypes')
-          .alloc()
-          .init()
-          .methodWithSimpleBlockOnBackground(
-            NativeScript.uiInvoker((callerThreadHash: string) => {
-              callbackRan = true;
-              callbackThreadHash = String(g('NSThread').currentThread.hash);
-              assert(g('NSThread').isMainThread, 'uiInvoker block did not run on main thread');
-              assert(
-                callbackThreadHash !== String(callerThreadHash),
-                'uiInvoker block stayed on the native caller thread',
-              );
-            }),
-          );
-
-        assert(callbackRan, 'uiInvoker background block callback did not run');
-        assert(
-          callbackThreadHash !== String(nativeThreadHash),
-          'uiInvoker background block return thread',
+        assertThrows(
+          () => NativeScript.uiInvoker(() => {}),
+          /NativeScript\.uiInvoker is not supported/,
+          'uiInvoker should be unavailable in React Native',
         );
       },
     },

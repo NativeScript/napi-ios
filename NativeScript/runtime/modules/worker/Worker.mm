@@ -25,18 +25,19 @@ void Worker::Init(napi_env env, napi_value global, bool isWorkerThread) {
     napi_define_properties(env, global, 2, globalProperties);
   }
 
+  napi_value Worker;
+#ifdef TARGET_ENGINE_HERMES
+  napi_create_function(env, "Worker", NAPI_AUTO_LENGTH, Constructor, nullptr,
+                       &Worker);
+#else
   napi_property_descriptor properties[] = {
       napi_util::desc("postMessage", PostMessage),
       napi_util::desc("terminate", Terminate),
   };
-
-  napi_value Worker;
   napi_define_class(env, "Worker", NAPI_AUTO_LENGTH, Constructor, nullptr, 2, properties, &Worker);
+#endif
 
-  napi_property_descriptor globalProperties[] = {
-      napi_util::desc("Worker", Worker),
-  };
-  napi_define_properties(env, global, 1, globalProperties);
+  napi_set_named_property(env, global, "Worker", Worker);
 }
 
 JS_METHOD(Worker::Constructor) {
@@ -45,6 +46,18 @@ JS_METHOD(Worker::Constructor) {
     napi_value argv[1];
     napi_value jsThis;
     napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, nullptr);
+
+#ifdef TARGET_ENGINE_HERMES
+    if (!napi_util::is_of_type(env, jsThis, napi_object)) {
+      napi_create_object(env, &jsThis);
+    }
+
+    napi_property_descriptor properties[] = {
+        napi_util::desc("postMessage", PostMessage),
+        napi_util::desc("terminate", Terminate),
+    };
+    napi_define_properties(env, jsThis, 2, properties);
+#endif
 
     std::string workerPath = napi_util::get_cxx_string(env, argv[0]);
 

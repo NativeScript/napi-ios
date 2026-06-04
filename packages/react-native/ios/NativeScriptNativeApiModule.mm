@@ -7,6 +7,8 @@
 
 #include "NativeApiJsiReactNative.h"
 
+#include <worklets/Compat/Holders.h>
+
 namespace {
 
 std::string pathForResource(NSBundle* bundle, NSString* name, NSString* type) {
@@ -88,6 +90,10 @@ bool writeSmokeMarkerContentIfRequested(const std::string& content) {
   return ok == YES;
 }
 
+bool nativeApiInstalled(facebook::jsi::Runtime& runtime) {
+  return runtime.global().hasProperty(runtime, "__nativeScriptNativeApi");
+}
+
 }  // namespace
 
 namespace facebook::react {
@@ -112,8 +118,45 @@ bool NativeScriptNativeApiModule::install(jsi::Runtime& runtime,
   return isInstalled(runtime);
 }
 
+bool NativeScriptNativeApiModule::installWorkletRuntime(
+    jsi::Runtime& runtime, jsi::Object runtimeHolder,
+    std::string metadataPath) {
+  writeSmokeMarkerIfRequested("installWorkletRuntime:headers");
+  if (!runtimeHolder.hasNativeState<worklets::WorkletRuntimeHolder>(runtime)) {
+    writeSmokeMarkerIfRequested("installWorkletRuntime:no-holder");
+    return false;
+  }
+
+  auto holder =
+      runtimeHolder.getNativeState<worklets::WorkletRuntimeHolder>(runtime);
+  if (holder == nullptr || holder->runtime_ == nullptr) {
+    writeSmokeMarkerIfRequested("installWorkletRuntime:null-runtime");
+    return false;
+  }
+
+  std::string resolvedMetadataPath =
+      metadataPath.empty() ? bundledMetadataPath() : metadataPath;
+  auto jsInvoker = jsInvoker_;
+  return holder->runtime_->runSync(
+      [jsInvoker = std::move(jsInvoker),
+       resolvedMetadataPath = std::move(resolvedMetadataPath)](
+          jsi::Runtime& workletRuntime) -> bool {
+        if (nativeApiInstalled(workletRuntime)) {
+          return true;
+        }
+
+        const char* metadataPathArg =
+            resolvedMetadataPath.empty() ? nullptr
+                                         : resolvedMetadataPath.c_str();
+        auto config = nativescript::MakeReactNativeNativeApiJsiConfig(
+            jsInvoker, nullptr, metadataPathArg);
+        nativescript::InstallNativeApiJSI(workletRuntime, config);
+        return nativeApiInstalled(workletRuntime);
+      });
+}
+
 bool NativeScriptNativeApiModule::isInstalled(jsi::Runtime& runtime) {
-  return runtime.global().hasProperty(runtime, "__nativeScriptNativeApi");
+  return nativeApiInstalled(runtime);
 }
 
 std::string NativeScriptNativeApiModule::defaultMetadataPath(jsi::Runtime&) {

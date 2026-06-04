@@ -32,12 +32,20 @@ export type NativeApiHost = {
   getEnum?: (name: string) => unknown;
   getStruct?: (name: string) => unknown;
   getUnion?: (name: string) => unknown;
-  runOnUI?: (callback?: () => void) => Promise<void>;
   [name: string]: unknown;
 };
 
 export type InstallOptions = {
   globals?: boolean;
+};
+
+export type NativeScriptWorklets = {
+  getUIRuntimeHolder: () => object;
+  isWorkletFunction: (value: unknown) => boolean;
+  runOnUIAsync: <Args extends unknown[], ReturnValue>(
+    callback: (...args: Args) => ReturnValue | Promise<ReturnValue>,
+    ...args: Args
+  ) => Promise<ReturnValue>;
 };
 
 export type UIKitSizingMode = 'fill' | 'intrinsic' | 'sizeThatFits' | 'autoLayout';
@@ -85,7 +93,7 @@ export type UIKitViewContext<Props extends object> = {
   invalidateLayout(): void;
 };
 
-export type NativeScriptCallbackThread = 'ui' | 'js';
+export type NativeScriptCallbackThread = 'js';
 export type NativeScriptInvokedCallback<T extends (...args: any[]) => any> = T & {
   readonly __nativeScriptCallbackThread?: NativeScriptCallbackThread;
 };
@@ -213,10 +221,17 @@ export function installGlobals(): boolean;
 export function isInstalled(): boolean;
 export function defaultMetadataPath(): string;
 export function getRuntimeBackend(): string;
-export function runOnUI(callback?: () => void): Promise<void>;
+export function installWorklets(
+  worklets?: NativeScriptWorklets,
+  metadataPath?: string,
+): boolean;
+export function runOnUI<Args extends unknown[], ReturnValue>(
+  callback: (...args: Args) => ReturnValue | Promise<ReturnValue>,
+  ...args: Args
+): Promise<ReturnValue>;
 export function uiInvoker<T extends (...args: any[]) => any>(
   callback: T,
-): NativeScriptInvokedCallback<T>;
+): never;
 export function jsInvoker<T extends (...args: any[]) => any>(
   callback: T,
 ): NativeScriptInvokedCallback<T>;
@@ -268,6 +283,7 @@ declare const NativeScript: {
   defineUIKitView: typeof defineUIKitView;
   defineUIViewController: typeof defineUIViewController;
   getRuntimeBackend: typeof getRuntimeBackend;
+  installWorklets: typeof installWorklets;
   assertUIKitThread: typeof assertUIKitThread;
   createDelegate: typeof createDelegate;
   createEventBridge: typeof createEventBridge;

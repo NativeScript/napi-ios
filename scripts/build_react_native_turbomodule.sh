@@ -70,8 +70,7 @@ mkdir -p \
   "$PACKAGE_DIR/types/objc-node-api" \
   "$PACK_DESTINATION"
 
-cp NativeScript/ffi/hermes/NativeApiJsi.h "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/NativeApiJsi.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
+cp NativeScript/ffi/hermes/NativeApiJsi*.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
 cp NativeScript/ffi/hermes/NativeApiJsi*.h "$PACKAGE_DIR/native-api/ffi/hermes/"
 cp NativeScript/ffi/hermes/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api/ffi/hermes/"
 cp NativeScript/ffi/shared/bridge/ObjCBridge.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"

@@ -15,6 +15,8 @@ class NativeScriptNativeApiModule
   explicit NativeScriptNativeApiModule(std::shared_ptr<CallInvoker> jsInvoker);
 
   bool install(jsi::Runtime& runtime, std::string metadataPath);
+  bool installWorkletRuntime(jsi::Runtime& runtime, jsi::Object runtimeHolder,
+                             std::string metadataPath);
   bool isInstalled(jsi::Runtime& runtime);
   std::string defaultMetadataPath(jsi::Runtime& runtime);
   std::string getRuntimeBackend(jsi::Runtime& runtime);

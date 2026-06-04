@@ -44,7 +44,8 @@
   "peerDependencies": {
     "expo": "*",
     "react": "*",
-    "react-native": ">=0.79"
+    "react-native": ">=0.79",
+    "react-native-worklets": ">=0.9.1"
   },
   "peerDependenciesMeta": {
     "expo": {
