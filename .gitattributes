@@ -1,0 +1,1 @@
+platforms/android/test-app/runtime/src/main/libs/**/libv8_monolith.a filter=lfs diff=lfs merge=lfs -text
