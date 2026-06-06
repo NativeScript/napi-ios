@@ -11,17 +11,17 @@
 #include "runtime/Util.h"
 #include "runtime/modules/RuntimeModules.h"
 #ifdef TARGET_ENGINE_V8
-#include "ffi/v8/NativeApiV8.h"
+#include "ffi/objc/v8/NativeApiV8.h"
 #include "v8-api.h"
 #endif  // TARGET_ENGINE_V8
 #ifdef TARGET_ENGINE_HERMES
-#include "ffi/hermes/NativeApiJsi.h"
+#include "ffi/objc/hermes/NativeApiJsi.h"
 #endif  // TARGET_ENGINE_HERMES
 #ifdef TARGET_ENGINE_JSC
-#include "ffi/jsc/NativeApiJSC.h"
+#include "ffi/objc/jsc/NativeApiJSC.h"
 #endif  // TARGET_ENGINE_JSC
 #ifdef TARGET_ENGINE_QUICKJS
-#include "ffi/quickjs/NativeApiQuickJS.h"
+#include "ffi/objc/quickjs/NativeApiQuickJS.h"
 #endif  // TARGET_ENGINE_QUICKJS
 #include <CoreFoundation/CFRunLoop.h>
 #include <cstdio>

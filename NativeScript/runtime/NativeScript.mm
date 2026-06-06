@@ -2,7 +2,7 @@
 #include "Runtime.h"
 #include "RuntimeConfig.h"
 #include "runtime/NativeScriptException.h"
-#include "ffi/shared/Tasks.h"
+#include "ffi/objc/shared/Tasks.h"
 #include "js_native_api.h"
 #include "jsr.h"
 

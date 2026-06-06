@@ -2,23 +2,26 @@
 set -euo pipefail
 
 ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
-NAPI_ENGINE_DIR="$ROOT_DIR/NativeScript/ffi/napi/engine"
+NAPI_ENGINE_DIR="$ROOT_DIR/NativeScript/ffi/objc/napi/engine"
 FFI_DIR="$ROOT_DIR/NativeScript/ffi"
-SHARED_DIR="$FFI_DIR/shared"
-NAPI_DIR="$FFI_DIR/napi"
-HERMES_DIR="$FFI_DIR/hermes"
-V8_DIR="$FFI_DIR/v8"
-JSC_DIR="$FFI_DIR/jsc"
-QUICKJS_DIR="$FFI_DIR/quickjs"
+OBJC_FFI_DIR="$FFI_DIR/objc"
+SHARED_DIR="$OBJC_FFI_DIR/shared"
+NAPI_DIR="$OBJC_FFI_DIR/napi"
+HERMES_DIR="$OBJC_FFI_DIR/hermes"
+V8_DIR="$OBJC_FFI_DIR/v8"
+JSC_DIR="$OBJC_FFI_DIR/jsc"
+QUICKJS_DIR="$OBJC_FFI_DIR/quickjs"
 
 if [ -d "$NAPI_ENGINE_DIR" ] && find "$NAPI_ENGINE_DIR" -type f | grep -q .; then
-  echo "ffi/napi must remain a pure Node-API backend; do not add ffi/napi/engine." >&2
+  echo "ffi/objc/napi must remain a pure Node-API backend; do not add ffi/objc/napi/engine." >&2
   exit 1
 fi
 
 FORBIDDEN_DIRS=(
   "$FFI_DIR/direct"
   "$FFI_DIR/engine"
+  "$OBJC_FFI_DIR/direct"
+  "$OBJC_FFI_DIR/engine"
   "$SHARED_DIR/jsi"
 )
 
@@ -88,7 +91,7 @@ done
 if [ "${#ENGINE_NEUTRAL_DIRS[@]}" -gt 0 ] &&
   search_sources '(^|[^[:alnum:]_])(napi_|napi_env|napi_value|js_native_api|node_api|facebook::jsi|v8::|JSContextRef|JSValueRef|JSContext|JSValue|JSRuntime|quickjs)($|[^[:alnum:]_])|(<jsi/|<v8|JavaScriptCore|quickjs\.h)' \
     "${ENGINE_NEUTRAL_DIRS[@]}"; then
-  echo "ffi/shared must remain engine-neutral; JS engine APIs are not allowed there." >&2
+  echo "ffi/objc/shared must remain engine-neutral; JS engine APIs are not allowed there." >&2
   exit 1
 fi
 
@@ -107,11 +110,11 @@ check_no_backend_dependency() {
     if [ -n "$pattern" ]; then
       pattern="$pattern|"
     fi
-    pattern="${pattern}(ffi/${backend}/|\"${backend}/)"
+    pattern="${pattern}(ffi/objc/${backend}/|\"${backend}/)"
   done
 
   if [ -n "$pattern" ] && search_sources "$pattern" "$owner_dir"; then
-    echo "ffi/$owner_name must not include another FFI backend's private files." >&2
+    echo "ffi/objc/$owner_name must not include another FFI backend's private files." >&2
     exit 1
   fi
 }
@@ -137,17 +140,17 @@ if [ "${#NON_HERMES_JSI_DIRS[@]}" -gt 0 ] &&
 fi
 
 if search_sources '(^|[^[:alnum:]_])(EngineDispatch|FastNative|HermesFast|V8Fast|JSCFast|QuickJSFast)($|[^[:alnum:]_])' \
-  "$ROOT_DIR/NativeScript/ffi/napi" | grep -v 'GeneratedSignatureDispatch.inc'; then
-  echo "Engine FFI code is not allowed in ffi/napi." >&2
+  "$ROOT_DIR/NativeScript/ffi/objc/napi" | grep -v 'GeneratedSignatureDispatch.inc'; then
+  echo "Engine FFI code is not allowed in ffi/objc/napi." >&2
   exit 1
 fi
 
 if command -v rg >/dev/null 2>&1; then
-  STALE_FFI_PATTERN='NS_FFI_BACKEND=''engine|--ffi-''engine|native-api-''jsi|ffi/(direct|engine|shared/jsi)'
+  STALE_FFI_PATTERN='NS_FFI_BACKEND=''engine|--ffi-''engine|native-api-''jsi|ffi/(direct|engine)|ffi/objc/(direct|engine|shared/jsi)'
   if rg -n "$STALE_FFI_PATTERN" \
     "$ROOT_DIR/NativeScript" "$ROOT_DIR/scripts" "$ROOT_DIR/packages" \
     "$ROOT_DIR/metadata-generator" "$ROOT_DIR/benchmarks" \
-    -g '!NativeScript/ffi/napi/GeneratedSignatureDispatch.inc'; then
+    -g '!NativeScript/ffi/objc/napi/GeneratedSignatureDispatch.inc'; then
     echo "Stale FFI layer names are not allowed." >&2
     exit 1
   fi

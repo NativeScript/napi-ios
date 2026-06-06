@@ -4,7 +4,7 @@
 #include <objc/runtime.h>
 
 #include "Cif.h"
-#include "ffi/shared/SignatureDispatchCore.h"
+#include "ffi/objc/shared/SignatureDispatchCore.h"
 #include "js_native_api.h"
 
 namespace nativescript {

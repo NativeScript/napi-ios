@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include "ffi/shared/SignatureDispatchCore.h"
+#include "ffi/objc/shared/SignatureDispatchCore.h"
 
 // Engine-neutral GSD (Generated Signature Dispatch). The GsdObjCContext struct,
 // the ObjCGsdInvoker/ObjCGsdDispatchEntry types, the generated dispatch table,
@@ -43,6 +43,6 @@
 #endif
 #endif
 
-#include "ffi/shared/PreparedSignatureDispatch.h"
+#include "ffi/objc/shared/PreparedSignatureDispatch.h"
 
 #endif  // NATIVESCRIPT_FFI_V8_SIGNATURE_DISPATCH_H

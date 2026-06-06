@@ -10,7 +10,7 @@
 #include "runtime/Runtime.h"
 #include "runtime/RuntimeConfig.h"
 #include "segappend.h"
-#include "ffi/shared/Tasks.h"
+#include "ffi/objc/shared/Tasks.h"
 #include "BundleLoader.h"
 
 using namespace nativescript;

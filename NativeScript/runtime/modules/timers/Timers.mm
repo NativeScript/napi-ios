@@ -9,7 +9,7 @@
 #include <atomic>
 #include <cmath>
 #include "Timers.h"
-#include "ffi/napi/CallbackThreading.h"
+#include "ffi/objc/napi/CallbackThreading.h"
 
 static std::atomic<int> gActiveTimers{0};
 struct TimerToken;

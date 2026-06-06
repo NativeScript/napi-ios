@@ -60,9 +60,9 @@ rm -rf \
   "$PACKAGE_DIR/ios/vendor" \
   "$PACKAGE_DIR/types"
 mkdir -p \
-  "$PACKAGE_DIR/native-api/ffi/hermes" \
-  "$PACKAGE_DIR/native-api/ffi/shared" \
-  "$PACKAGE_DIR/native-api/ffi/shared/bridge" \
+  "$PACKAGE_DIR/native-api/ffi/objc/hermes" \
+  "$PACKAGE_DIR/native-api/ffi/objc/shared" \
+  "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge" \
   "$PACKAGE_DIR/native-api/metadata/include" \
   "$PACKAGE_DIR/metadata" \
   "$PACKAGE_DIR/ios/vendor/libffi/include" \
@@ -70,24 +70,24 @@ mkdir -p \
   "$PACKAGE_DIR/types/objc-node-api" \
   "$PACK_DESTINATION"
 
-cp NativeScript/ffi/hermes/NativeApiJsi*.mm "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/NativeApiJsi*.h "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/hermes/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api/ffi/hermes/"
-cp NativeScript/ffi/shared/bridge/ObjCBridge.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
-cp NativeScript/ffi/shared/bridge/Callbacks.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
-cp NativeScript/ffi/shared/bridge/ClassBuilder.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
-cp NativeScript/ffi/shared/bridge/HostObject.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
-cp NativeScript/ffi/shared/bridge/HostObjects.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
-cp NativeScript/ffi/shared/bridge/Install.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
-cp NativeScript/ffi/shared/bridge/Invocation.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
-cp NativeScript/ffi/shared/bridge/TypeConv.mm "$PACKAGE_DIR/native-api/ffi/shared/bridge/"
-cp NativeScript/ffi/shared/NativeApiBackendConfig.h "$PACKAGE_DIR/native-api/ffi/shared/"
-cp NativeScript/ffi/shared/SignatureDispatchCore.h "$PACKAGE_DIR/native-api/ffi/shared/"
-cp NativeScript/ffi/shared/PreparedSignatureDispatch.h "$PACKAGE_DIR/native-api/ffi/shared/"
-cp "$GENERATED_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/hermes/GeneratedSignatureDispatch.inc"
+cp NativeScript/ffi/objc/hermes/NativeApiJsi*.mm "$PACKAGE_DIR/native-api/ffi/objc/hermes/"
+cp NativeScript/ffi/objc/hermes/NativeApiJsi*.h "$PACKAGE_DIR/native-api/ffi/objc/hermes/"
+cp NativeScript/ffi/objc/hermes/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api/ffi/objc/hermes/"
+cp NativeScript/ffi/objc/shared/bridge/ObjCBridge.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/Callbacks.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/ClassBuilder.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/HostObject.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/HostObjects.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/Install.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/Invocation.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/TypeConv.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/NativeApiBackendConfig.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
+cp NativeScript/ffi/objc/shared/SignatureDispatchCore.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
+cp NativeScript/ffi/objc/shared/PreparedSignatureDispatch.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
+cp "$GENERATED_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/objc/hermes/GeneratedSignatureDispatch.inc"
 GENERATED_GSD_SIGNATURE_DISPATCH="$(dirname "$GENERATED_SIGNATURE_DISPATCH")/GeneratedGsdSignatureDispatch.inc"
 if [ -f "$GENERATED_GSD_SIGNATURE_DISPATCH" ]; then
-  cp "$GENERATED_GSD_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/hermes/GeneratedGsdSignatureDispatch.inc"
+  cp "$GENERATED_GSD_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/objc/hermes/GeneratedGsdSignatureDispatch.inc"
 fi
 if [ -z "$GENERATED_SIGNATURE_DISPATCH_OVERRIDE" ]; then
   rm -f "$GENERATED_SIGNATURE_DISPATCH" "$GENERATED_SIGNATURE_DISPATCH.stamp" \

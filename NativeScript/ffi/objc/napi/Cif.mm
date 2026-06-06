@@ -9,7 +9,7 @@
 #include "Metadata.h"
 #include "MetadataReader.h"
 #include "ObjCBridge.h"
-#include "ffi/shared/SignatureDispatchCore.h"
+#include "ffi/objc/shared/SignatureDispatchCore.h"
 #include "TypeConv.h"
 #include "Util.h"
 

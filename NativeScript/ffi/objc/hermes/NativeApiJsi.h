@@ -3,7 +3,7 @@
 
 #include <jsi/jsi.h>
 
-#include "ffi/shared/NativeApiBackendConfig.h"
+#include "ffi/objc/shared/NativeApiBackendConfig.h"
 
 namespace nativescript {
 
