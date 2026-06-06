@@ -5,6 +5,8 @@ ROOT_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 NAPI_ENGINE_DIR="$ROOT_DIR/NativeScript/ffi/objc/napi/engine"
 FFI_DIR="$ROOT_DIR/NativeScript/ffi"
 OBJC_FFI_DIR="$FFI_DIR/objc"
+JNI_FFI_DIR="$FFI_DIR/jni"
+JNI_NAPI_DIR="$JNI_FFI_DIR/napi"
 SHARED_DIR="$OBJC_FFI_DIR/shared"
 NAPI_DIR="$OBJC_FFI_DIR/napi"
 HERMES_DIR="$OBJC_FFI_DIR/hermes"
@@ -22,6 +24,9 @@ FORBIDDEN_DIRS=(
   "$FFI_DIR/engine"
   "$OBJC_FFI_DIR/direct"
   "$OBJC_FFI_DIR/engine"
+  "$JNI_FFI_DIR/direct"
+  "$JNI_FFI_DIR/engine"
+  "$JNI_NAPI_DIR/engine"
   "$SHARED_DIR/jsi"
 )
 
@@ -142,6 +147,13 @@ fi
 if search_sources '(^|[^[:alnum:]_])(EngineDispatch|FastNative|HermesFast|V8Fast|JSCFast|QuickJSFast)($|[^[:alnum:]_])' \
   "$ROOT_DIR/NativeScript/ffi/objc/napi" | grep -v 'GeneratedSignatureDispatch.inc'; then
   echo "Engine FFI code is not allowed in ffi/objc/napi." >&2
+  exit 1
+fi
+
+if [ -d "$JNI_NAPI_DIR" ] &&
+  search_sources '(^|[^[:alnum:]_])(facebook::jsi|v8::|JSContextRef|JSValueRef|JSContext|JSValue|JSRuntime|quickjs)($|[^[:alnum:]_])|(<jsi/|#include[[:space:]]+"jsi/|<v8|JavaScriptCore|quickjs\.h|hermes/)' \
+    "$JNI_NAPI_DIR"; then
+  echo "ffi/jni/napi must remain a pure Node-API backend until a JNI engine backend is added." >&2
   exit 1
 fi
 
