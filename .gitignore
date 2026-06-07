@@ -67,10 +67,10 @@ packages/*/types
 SwiftBindgen
 
 # Generated Objective-C/C dispatch wrappers
-NativeScript/ffi/*/GeneratedSignatureDispatch.inc
-NativeScript/ffi/*/GeneratedSignatureDispatch.inc.stamp
-NativeScript/ffi/*/GeneratedGsdSignatureDispatch.inc
-NativeScript/ffi/*/GeneratedGsdSignatureDispatch.inc.stamp
+NativeScript/ffi/**/GeneratedSignatureDispatch.inc
+NativeScript/ffi/**/GeneratedSignatureDispatch.inc.stamp
+NativeScript/ffi/**/GeneratedGsdSignatureDispatch.inc
+NativeScript/ffi/**/GeneratedGsdSignatureDispatch.inc.stamp
 
 # Packaged native framework artifacts
 packages/*/NativeScript.xcframework/

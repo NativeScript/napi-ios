@@ -106,16 +106,16 @@ const junitEndTag = "</testsuites>";
 const consoleLogMarker = "CONSOLE LOG:";
 const crashReportsDir = path.join(os.homedir(), "Library", "Logs", "DiagnosticReports");
 const generatedRuntimeBuildOutputs = new Set([
-    path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "napi", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "hermes", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "hermes", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "v8", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "v8", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "jsc", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "jsc", "GeneratedSignatureDispatch.inc.stamp"),
-    path.join(nativeScriptSourceRoot, "ffi", "quickjs", "GeneratedSignatureDispatch.inc"),
-    path.join(nativeScriptSourceRoot, "ffi", "quickjs", "GeneratedSignatureDispatch.inc.stamp")
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "napi", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "napi", "GeneratedSignatureDispatch.inc.stamp"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "hermes", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "hermes", "GeneratedSignatureDispatch.inc.stamp"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "v8", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "v8", "GeneratedSignatureDispatch.inc.stamp"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "jsc", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "jsc", "GeneratedSignatureDispatch.inc.stamp"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "quickjs", "GeneratedSignatureDispatch.inc"),
+    path.join(nativeScriptSourceRoot, "ffi", "objc", "quickjs", "GeneratedSignatureDispatch.inc.stamp")
 ]);
 
 function parseArgs() {
