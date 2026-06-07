@@ -102,11 +102,7 @@ android {
         }
     }
 
-    if (hasNdkVersion) {
-        ndkVersion ndkVersion
-    } else {
-        ndkVersion defaultNdkVersion
-    }
+    ndkVersion = project.findProperty("ndkVersion") ?: defaultNdkVersion
 
     defaultConfig {
         minSdkVersion NS_DEFAULT_MIN_SDK_VERSION as int
