@@ -4370,10 +4370,11 @@ napi_status qjs_execute_script(napi_env env,
     JS_FreeCString(env->context, cScript);
     js_exit(env);
     if (JS_IsException(eval_result)) {
-        const char *exceptionMessage = JS_ToCString(env->context, eval_result);
+        JSValue exceptionValue = JS_GetException(env->context);
+        const char *exceptionMessage = JS_ToCString(env->context, exceptionValue);
         napi_set_last_error(env, napi_cannot_run_js, exceptionMessage, 0, NULL);
         JS_FreeCString(env->context, exceptionMessage);
-        JS_Throw(env->context, eval_result);
+        JS_Throw(env->context, exceptionValue);
         return napi_cannot_run_js;
     }
 

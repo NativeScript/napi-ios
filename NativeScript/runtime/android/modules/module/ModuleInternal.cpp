@@ -22,6 +22,31 @@
 using namespace tns;
 using namespace std;
 
+namespace {
+void ThrowFallbackRequireError(napi_env env, const char* message) {
+    bool pendingException = false;
+    napi_is_exception_pending(env, &pendingException);
+    if (pendingException) {
+        napi_value ignored;
+        napi_get_and_clear_last_exception(env, &ignored);
+    }
+
+    napi_throw_error(env, nullptr, message);
+}
+
+void ReThrowRequireError(napi_env env, NativeScriptException& exception) {
+    try {
+        exception.ReThrowToNapi(env);
+    } catch (NativeScriptException&) {
+        ThrowFallbackRequireError(env, "Error rethrowing NativeScript require exception.");
+    } catch (std::exception& nestedException) {
+        ThrowFallbackRequireError(env, nestedException.what());
+    } catch (...) {
+        ThrowFallbackRequireError(env, "Error rethrowing NativeScript require exception.");
+    }
+}
+}
+
 ModuleInternal::ModuleInternal()
     : m_env(nullptr), m_requireFunction(nullptr), m_requireFactoryFunction(nullptr) {
 }
@@ -131,15 +156,15 @@ napi_value ModuleInternal::RequireCallback(napi_env env, napi_callback_info info
         auto thiz = static_cast<ModuleInternal*>(data);
         return thiz->RequireCallbackImpl(env, info);
     } catch (NativeScriptException& e) {
-        e.ReThrowToNapi(env);
+        ReThrowRequireError(env, e);
     } catch (std::exception& e) {
         stringstream ss;
         ss << "Error: c++ exception: " << e.what() << endl;
         NativeScriptException nsEx(ss.str());
-        nsEx.ReThrowToNapi(env);
+        ReThrowRequireError(env, nsEx);
     } catch (...) {
         NativeScriptException nsEx(std::string("Error: c++ exception!"));
-        nsEx.ReThrowToNapi(env);
+        ReThrowRequireError(env, nsEx);
     }
 
     return nullptr;
@@ -164,6 +189,9 @@ napi_value ModuleInternal::RequireCallbackImpl(napi_env env, napi_callback_info 
     auto isData = false;
 
     auto moduleObj = LoadImpl(env, moduleName, callingModuleDirName, isData);
+    if (moduleObj == nullptr) {
+        return nullptr;
+    }
 
     if (isData) {
         assert(!napi_util::is_null_or_undefined(env, moduleObj));
@@ -410,15 +438,15 @@ napi_value ModuleInternal::LoadModule(napi_env env, const std::string& modulePat
     napi_status status = napi_call_function(env, thiz, moduleFunc, 5, requireArgs, &callResult);
     bool pendingException;
     napi_is_exception_pending(env, &pendingException);
-     if (status != napi_ok || pendingException) {
-         napi_value exception;
-         napi_get_and_clear_last_exception(env, &exception);
-         if (exception) {
-             throw NativeScriptException(env, exception, "Error calling module function: ");
-         } else {
-             throw NativeScriptException("Error calling module function: " + modulePath);
-         }
-     }
+    if (status != napi_ok || pendingException) {
+        napi_value exception = nullptr;
+        napi_get_and_clear_last_exception(env, &exception);
+        if (exception) {
+            throw NativeScriptException(env, exception, "Error calling module function: ");
+        } else {
+            throw NativeScriptException("Error calling module function: " + modulePath);
+        }
+    }
 
     tempModule.SaveToCache();
     result = moduleObj;
@@ -490,4 +518,3 @@ jmethodID ModuleInternal::RESOLVE_PATH_METHOD_ID = nullptr;
 const char* ModuleInternal::MODULE_PROLOGUE = "(function(module, exports, require, __filename, __dirname){ ";
 const char* ModuleInternal::MODULE_EPILOGUE = "\n})";
 int ModuleInternal::MODULE_PROLOGUE_LENGTH = std::string(ModuleInternal::MODULE_PROLOGUE).length();
-
