@@ -3,20 +3,11 @@
 #include "CallbackHandlers.h"
 #include <sstream>
 
-#ifdef __HERMES__
-#include <fbjni/fbjni.h>
-#endif
-
 using namespace std;
 using namespace tns;
 
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM* vm, void* reserved) {
     try {
-#ifdef __HERMES__
-        facebook::jni::initialize(vm, [] {
-            DEBUG_WRITE("fbjni::loaded");
-        });
-#endif
         Runtime::Init(vm);
     } catch (NativeScriptException& e) {
         e.ReThrowToJava(nullptr);

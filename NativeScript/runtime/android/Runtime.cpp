@@ -157,8 +157,14 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
     JniLocalRef profilerOutputDir(_env->GetObjectArrayElement(args, 2));
 
     js_set_runtime_flags(flags.c_str());
-    js_create_runtime(&rt);
-    js_create_napi_env(&env, rt);
+    auto runtimeStatus = js_create_runtime(&rt);
+    if (runtimeStatus != napi_ok || rt == nullptr) {
+        throw NativeScriptException("Failed to create JS runtime");
+    }
+    auto envStatus = js_create_napi_env(&env, rt);
+    if (envStatus != napi_ok || env == nullptr) {
+        throw NativeScriptException("Failed to create Node-API environment");
+    }
 #ifdef __V8__
     v8::Locker locker(env->isolate);
     v8::Isolate::Scope isolate_scope(env->isolate);
@@ -205,6 +211,29 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
     js_get_runtime_version(env, &engine);
     napi_set_named_property(env, global, "__engine", engine);
 
+    const char* engineVariant = "UNKNOWN";
+#if defined(__HERMES__)
+    engineVariant = "HERMES";
+#elif defined(__JSC__)
+    engineVariant = "JSC";
+#elif defined(__V8_13__)
+    engineVariant = "V8-13";
+#elif defined(__V8_11__)
+    engineVariant = "V8-11";
+#elif defined(__V8_10__)
+    engineVariant = "V8-10";
+#elif defined(__V8__)
+    engineVariant = "V8";
+#elif defined(__PRIMJS__)
+    engineVariant = "PRIMJS";
+#elif defined(__QJS_NG__)
+    engineVariant = "QUICKJS_NG";
+#elif defined(__QJS__)
+    engineVariant = "QUICKJS";
+#endif
+    napi_value engineVariantValue;
+    napi_create_string_utf8(env, engineVariant, NAPI_AUTO_LENGTH, &engineVariantValue);
+    napi_set_named_property(env, global, "__engineVariant", engineVariantValue);
 
     napi_util::napi_set_function(env, global, "__time", CallbackHandlers::TimeCallback);
     napi_util::napi_set_function(env, global, "__releaseNativeCounterpart",

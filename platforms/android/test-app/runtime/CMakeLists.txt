@@ -27,7 +27,7 @@ else ()
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -std=c++17")
 endif ()
 
-if (SHERMES)
+if (HERMES OR SHERMES)
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -frtti")
 else ()
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -fno-rtti")
@@ -165,25 +165,14 @@ if (PRIMJS)
 
 endif ()
 
-if (HERMES)
+if (HERMES OR SHERMES)
     include_directories(
-            src/main/cpp/napi/hermes
-            src/main/cpp/napi/hermes/include
+            ${NS_NAPI_DIR}/hermes
+            ${NS_NAPI_DIR}/hermes/include
             ${NS_NAPI_DIR}/common
     )
     set(SOURCES ${SOURCES}
-            src/main/cpp/napi/hermes/jsr.cpp
-    )
-endif ()
-
-if (SHERMES)
-    include_directories(
-            src/main/cpp/napi/hermes
-            src/main/cpp/napi/hermes/include_shermes
-            ${NS_NAPI_DIR}/common
-    )
-    set(SOURCES ${SOURCES}
-            src/main/cpp/napi/hermes/jsr.cpp
+            ${NS_NAPI_DIR}/hermes/jsr.cpp
     )
 endif ()
 
@@ -307,16 +296,9 @@ MESSAGE(STATUS "# CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
 target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/common/${ANDROID_ABI}/libzip.a)
 #target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/common/${ANDROID_ABI}/libclang_rt.asan-aarch64-android.so)
 
-if (SHERMES)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/shermes/${ANDROID_ABI}/libhermesvm.so)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/shermes/${ANDROID_ABI}/libjsi.so)
-    target_compile_definitions(NativeScript PRIVATE __HERMES__ __SHERMES__)
-endif ()
-
-if (HERMES)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/hermes/${ANDROID_ABI}/libhermes.so)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/hermes/${ANDROID_ABI}/libjsi.so)
-    target_compile_definitions(NativeScript PRIVATE __HERMES__)
+if (HERMES OR SHERMES)
+    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/hermes/${ANDROID_ABI}/libhermesvm.so)
+    target_compile_definitions(NativeScript PRIVATE __HERMES__ NS_HERMES_SKIP_ENV_CLEANUP_HOOKS)
 endif ()
 
 if (JSC)
@@ -393,8 +375,7 @@ if (QUICKJS)
         target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
     endif ()
 elseif (HERMES OR SHERMES)
-    find_package(fbjni REQUIRED CONFIG)
-    target_link_libraries(NativeScript ${system-log} ${system-z} fbjni::fbjni ${system-android})
+    target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
 elseif (JSC OR V8 OR PRIMJS)
     target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
 endif ()
