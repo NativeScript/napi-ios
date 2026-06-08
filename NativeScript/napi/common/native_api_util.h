@@ -359,23 +359,29 @@ inline napi_status define_property_get_set(
                                     setter, data, attributes);
 }
 
-inline void setPrototypeOf(napi_env env, napi_value object,
-                           napi_value prototype) {
+inline napi_status setPrototypeOf(napi_env env, napi_value object,
+                                  napi_value prototype) {
+  if (object == nullptr || prototype == nullptr) return napi_invalid_arg;
+
   napi_value global, global_object, set_proto;
 
   // Get the global object
-  napi_get_global(env, &global);
+  auto status = napi_get_global(env, &global);
+  if (status != napi_ok) return status;
 
   // Get the Object global object
-  napi_get_named_property(env, global, OBJECT, &global_object);
+  status = napi_get_named_property(env, global, OBJECT, &global_object);
+  if (status != napi_ok) return status;
 
   // Get the setPrototypeOf function from the Object global object
-  napi_get_named_property(env, global_object, SET_PROTOTYPE_OF, &set_proto);
+  status = napi_get_named_property(env, global_object, SET_PROTOTYPE_OF, &set_proto);
+  if (status != napi_ok) return status;
 
   // Prepare the arguments for the setPrototypeOf call
   napi_value argv[]{object, prototype};
   // Call setPrototypeOf(object, prototype)
-  napi_call_function(env, global, set_proto, 2, argv, nullptr);
+  napi_value result;
+  return napi_call_function(env, global, set_proto, 2, argv, &result);
 }
 
 inline bool is_object_explicit(napi_env env, napi_value value) {
@@ -467,13 +473,14 @@ inline bool is_date(napi_env env, napi_value value) {
 inline bool is_undefined(napi_env env, napi_value value) {
   if (value == nullptr) return true;
   napi_valuetype type;
-  napi_typeof(env, value, &type);
+  if (napi_typeof(env, value, &type) != napi_ok) return false;
   return type == napi_undefined;
 }
 
 inline bool is_null(napi_env env, napi_value value) {
+  if (value == nullptr) return true;
   napi_valuetype type;
-  napi_typeof(env, value, &type);
+  if (napi_typeof(env, value, &type) != napi_ok) return false;
   return type == napi_null;
 }
 

@@ -13,6 +13,25 @@
 using namespace std;
 using namespace tns;
 
+namespace {
+napi_value EnsurePlainConstructorThis(napi_env env, napi_value jsThis, napi_value prototype) {
+    if (!napi_util::is_null_or_undefined(env, jsThis)) {
+        return jsThis;
+    }
+
+    napi_value receiver = nullptr;
+    if (napi_create_object(env, &receiver) != napi_ok || receiver == nullptr) {
+        return nullptr;
+    }
+
+    if (!napi_util::is_null_or_undefined(env, prototype)) {
+        napi_util::setPrototypeOf(env, receiver, prototype);
+    }
+
+    return receiver;
+}
+}
+
 void ArgConverter::Init(napi_env env) {
     auto cache = GetTypeLongCache(env);
 
@@ -98,15 +117,24 @@ napi_value ArgConverter::NativeScriptLongToStringFunctionCallback(napi_env env, 
 napi_value ArgConverter::NativeScriptLongFunctionCallback(napi_env env, napi_callback_info info) {
     try {
         NAPI_CALLBACK_BEGIN(1);
+        napi_value newTarget;
+        napi_get_new_target(env, info, &newTarget);
+        napi_value receiverPrototype = !napi_util::is_null_or_undefined(env, newTarget)
+                                       ? napi_util::get_prototype(env, newTarget)
+                                       : nullptr;
+        napi_value receiver = EnsurePlainConstructorThis(env, jsThis, receiverPrototype);
+        if (receiver == nullptr) {
+            return nullptr;
+        }
         auto cache = GetTypeLongCache(env);
         napi_value javaLong;
         napi_get_boolean(env, true, &javaLong);
-        napi_set_named_property(env, jsThis, "javaLong", javaLong);
+        napi_set_named_property(env, receiver, "javaLong", javaLong);
 
-        NumericCasts::MarkAsLong(env, jsThis, argv[0]);
+        NumericCasts::MarkAsLong(env, receiver, argv[0]);
 
-        napi_set_named_property(env, jsThis, "prototype", napi_util::get_ref_value(env, cache->NanNumberObject));
-        return jsThis;
+        napi_set_named_property(env, receiver, "prototype", napi_util::get_ref_value(env, cache->NanNumberObject));
+        return receiver;
 
     } catch (NativeScriptException &e) {
       e.ReThrowToNapi(env);

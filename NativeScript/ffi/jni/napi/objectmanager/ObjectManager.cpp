@@ -290,8 +290,12 @@ ObjectManager::GetJSInstanceInfoFromRuntimeObject(napi_value object) {
 }
 
 bool ObjectManager::IsRuntimeJsObject(napi_value object) {
-    bool result;
-    napi_has_named_property(m_env, object, PRIVATE_IS_NAPI, &result);
+    if (object == nullptr) return false;
+
+    bool result = false;
+    if (napi_has_named_property(m_env, object, PRIVATE_IS_NAPI, &result) != napi_ok) {
+        return false;
+    }
     return result;
 }
 
@@ -513,8 +517,21 @@ napi_value ObjectManager::GetEmptyObject() {
     napi_get_and_clear_last_exception(m_env, &ex);
 
     napi_value jsWrapper = nullptr;
+    auto status = napi_new_instance(m_env, emptyObjCtorFunc, 0, nullptr, &jsWrapper);
+    if (status == napi_ok && !napi_util::is_null_or_undefined(m_env, jsWrapper)) {
+        return jsWrapper;
+    }
 
-    napi_new_instance(m_env, emptyObjCtorFunc, 0, nullptr, &jsWrapper);
+    napi_get_and_clear_last_exception(m_env, &ex);
+
+    status = napi_create_object(m_env, &jsWrapper);
+    if (status != napi_ok || jsWrapper == nullptr) return nullptr;
+
+    MarkObject(m_env, jsWrapper);
+    auto prototype = napi_util::get_prototype(m_env, emptyObjCtorFunc);
+    if (!napi_util::is_null_or_undefined(m_env, prototype)) {
+        napi_util::setPrototypeOf(m_env, jsWrapper, prototype);
+    }
 
     if (napi_util::is_null_or_undefined(m_env, jsWrapper)) {
         return nullptr;
