@@ -304,6 +304,7 @@ struct JSRuntime {
     void *host_promise_rejection_tracker_opaque;
 
     struct list_head job_list; /* list of JSJobEntry.link */
+    struct list_head weakref_keepalive_list; /* strong refs kept until the current host job completes */
 
     JSModuleNormalizeFunc *module_normalize_func;
     JSModuleLoaderFunc *module_loader_func;
@@ -351,6 +352,11 @@ typedef struct JSStackFrame {
        the function is running. */
     JSValue *cur_sp;
 } JSStackFrame;
+
+typedef struct JSWeakRefKeepAliveEntry {
+    struct list_head link;
+    JSValue value;
+} JSWeakRefKeepAliveEntry;
 
 typedef enum {
     JS_GC_OBJ_TYPE_JS_OBJECT,
@@ -1856,6 +1862,7 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     init_list_head(&rt->string_list);
 #endif
     init_list_head(&rt->job_list);
+    init_list_head(&rt->weakref_keepalive_list);
 
     if (JS_InitAtoms(rt))
         goto fail;
@@ -2151,6 +2158,7 @@ void JS_FreeRuntime(JSRuntime *rt)
         js_free_rt(rt, e);
     }
     init_list_head(&rt->job_list);
+    JS_ClearWeakRefKeepAlives(rt);
 
     JS_RunGC(rt);
 
@@ -57510,6 +57518,7 @@ static JSValue js_weakref_constructor(JSContext *ctx, JSValueConst new_target,
     wr->kind = JS_WEAK_REF_KIND_WEAK_REF;
     wr->u.weak_ref_data = wrd;
     insert_weakref_record(arg, wr);
+    JS_KeepWeakRefTargetAlive(ctx, arg);
 
     JS_SetOpaqueInternal(obj, wrd);
     return obj;
@@ -57838,6 +57847,35 @@ static void insert_weakref_record(JSValueConst target,
     /* Add the weak reference */
     wr->next_weak_ref = *pwr;
     *pwr = wr;
+}
+
+void JS_KeepWeakRefTargetAlive(JSContext *ctx, JSValueConst value)
+{
+    JSRuntime *rt;
+    JSWeakRefKeepAliveEntry *entry;
+
+    if (!JS_IsObject(value) && !JS_IsSymbol(value))
+        return;
+
+    rt = JS_GetRuntime(ctx);
+    entry = js_malloc(ctx, sizeof(*entry));
+    if (!entry)
+        return;
+
+    entry->value = JS_DupValue(ctx, value);
+    list_add_tail(&entry->link, &rt->weakref_keepalive_list);
+}
+
+void JS_ClearWeakRefKeepAlives(JSRuntime *rt)
+{
+    struct list_head *el, *el1;
+
+    list_for_each_safe(el, el1, &rt->weakref_keepalive_list) {
+        JSWeakRefKeepAliveEntry *entry = list_entry(el, JSWeakRefKeepAliveEntry, link);
+        list_del(&entry->link);
+        JS_FreeValueRT(rt, entry->value);
+        js_free_rt(rt, entry);
+    }
 }
 
 /* CallSite */

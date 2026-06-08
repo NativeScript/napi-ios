@@ -4249,7 +4249,9 @@ static int JS_BeforeGCCallback(JSRuntime* rt) {
 
 static JSValue JSRunGCCallback(JSContext* ctx, JSValue this_val, int argc,
                                JSValue* argv) {
-  JS_RunGC(JS_GetRuntime(ctx));
+  JSRuntime* rt = JS_GetRuntime(ctx);
+  JS_ClearWeakRefKeepAlives(rt);
+  JS_RunGC(rt);
   return JS_TRUE;
 }
 

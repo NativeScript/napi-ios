@@ -261,6 +261,7 @@ struct JSRuntime {
     JSGCPhaseEnum gc_phase : 8;
     size_t malloc_gc_threshold;
     struct list_head weakref_list; /* list of JSWeakRefHeader.link */
+    struct list_head weakref_keepalive_list; /* strong refs kept until the current host job completes */
 #ifdef DUMP_LEAKS
     struct list_head string_list; /* list of JSString.link */
 #endif
@@ -338,6 +339,11 @@ typedef struct JSStackFrame {
        the function is running. */
     JSValue *cur_sp;
 } JSStackFrame;
+
+typedef struct JSWeakRefKeepAliveEntry {
+    struct list_head link;
+    JSValue value;
+} JSWeakRefKeepAliveEntry;
 
 typedef enum {
     JS_GC_OBJ_TYPE_JS_OBJECT,
@@ -1669,6 +1675,7 @@ JSRuntime *JS_NewRuntime2(const JSMallocFunctions *mf, void *opaque)
     init_list_head(&rt->gc_zero_ref_count_list);
     rt->gc_phase = JS_GC_PHASE_NONE;
     init_list_head(&rt->weakref_list);
+    init_list_head(&rt->weakref_keepalive_list);
 
 #ifdef DUMP_LEAKS
     init_list_head(&rt->string_list);
@@ -1990,6 +1997,7 @@ void JS_FreeRuntime(JSRuntime *rt)
         js_free_rt(rt, e);
     }
     init_list_head(&rt->job_list);
+    JS_ClearWeakRefKeepAlives(rt);
 
     /* don't remove the weak objects to avoid create new jobs with
        FinalizationRegistry */
@@ -59255,6 +59263,7 @@ static JSValue js_weakref_constructor(JSContext *ctx, JSValueConst new_target,
     wrd->target = js_weakref_new(ctx, arg);
     wrd->weakref_header.weakref_type = JS_WEAKREF_TYPE_WEAKREF;
     list_add_tail(&wrd->weakref_header.link, &ctx->rt->weakref_list);
+    JS_KeepWeakRefTargetAlive(ctx, arg);
     JS_SetOpaque(obj, wrd);
     return obj;
 }
@@ -59524,6 +59533,35 @@ JSValue JS_WeakRef_Deref(JSContext *ctx, JSValueConst this_val) {
     return js_weakref_deref(ctx, this_val, 0, NULL);
 }
 
+void JS_KeepWeakRefTargetAlive(JSContext *ctx, JSValueConst value)
+{
+    JSRuntime *rt;
+    JSWeakRefKeepAliveEntry *entry;
+
+    if (!js_weakref_is_target(value))
+        return;
+
+    rt = JS_GetRuntime(ctx);
+    entry = js_malloc(ctx, sizeof(*entry));
+    if (!entry)
+        return;
+
+    entry->value = JS_DupValue(ctx, value);
+    list_add_tail(&entry->link, &rt->weakref_keepalive_list);
+}
+
+void JS_ClearWeakRefKeepAlives(JSRuntime *rt)
+{
+    struct list_head *el, *el1;
+
+    list_for_each_safe(el, el1, &rt->weakref_keepalive_list) {
+        JSWeakRefKeepAliveEntry *entry = list_entry(el, JSWeakRefKeepAliveEntry, link);
+        list_del(&entry->link);
+        JS_FreeValueRT(rt, entry->value);
+        js_free_rt(rt, entry);
+    }
+}
+
 int JS_GetLength(JSContext *ctx, JSValueConst obj, int64_t *pres) {
     return js_get_length64(ctx, pres, obj);
 }
@@ -59577,4 +59615,3 @@ int JS_FreezeObject(JSContext *ctx, JSValueConst obj)
 size_t JS_GetGCThreshold(JSRuntime *rt) {
     return rt->malloc_gc_threshold;
 }
-

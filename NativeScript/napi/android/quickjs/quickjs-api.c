@@ -308,6 +308,7 @@ static inline void js_enter(napi_env env) {
 
 static inline void js_exit(napi_env env) {
     if (--env->js_enter_state <= 0) {
+        JS_ClearWeakRefKeepAlives(JS_GetRuntime(env->context));
         qjs_execute_pending_jobs(env);
     }
 }
@@ -4112,7 +4113,9 @@ static JSValue JSRunGCCallback(JSContext *ctx, JSValue
 this_val,
                                int argc, JSValue
                                *argv) {
-    JS_RunGC(JS_GetRuntime(ctx));
+    JSRuntime *rt = JS_GetRuntime(ctx);
+    JS_ClearWeakRefKeepAlives(rt);
+    JS_RunGC(rt);
     return JS_TRUE;
 }
 
