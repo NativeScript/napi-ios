@@ -72,6 +72,7 @@ function hasProcessArg(expected) {
 
 var logjunit = hasProcessArg("-logjunit");
 var verboseSpecLogs = hasProcessArg("-verbose-specs");
+var skipApplicationMain = hasProcessArg("-skip-application-main");
 
 function getProcessArgValue(flag) {
     var args = getProcessArgs();
@@ -265,7 +266,7 @@ if (shouldRun("./shared/index")) {
 
 execute();
 
-if (typeof UIApplicationMain === "function") {
+if (typeof UIApplicationMain === "function" && !skipApplicationMain) {
     UIApplicationMain(0, null, null, null);
 } else if (typeof NSApplicationMain === "function" && !logjunit) {
     NSApplicationMain(0, null);

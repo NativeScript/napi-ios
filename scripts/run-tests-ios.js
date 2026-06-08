@@ -1248,6 +1248,7 @@ async function main() {
         }
 
         const launchArgs = emitJunitLogs ? ["-logjunit"] : [];
+        launchArgs.push("-skip-application-main");
         if (verboseSpecLogs) {
             launchArgs.push("-verbose-specs");
         }
