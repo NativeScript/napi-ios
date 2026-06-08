@@ -958,6 +958,34 @@ class NativeApiBridge {
     objectExpandosGeneration_.fetch_add(1, std::memory_order_release);
   }
 
+  void retainObjectExpandoOwner(const void* native) {
+    if (native == nullptr) {
+      return;
+    }
+    objectExpandoOwnerCounts_[
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native))] += 1;
+  }
+
+  void releaseObjectExpandoOwner(const void* native,
+                                 bool preserveExpandos = false) {
+    if (native == nullptr) {
+      return;
+    }
+    uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    auto ownerIt = objectExpandoOwnerCounts_.find(key);
+    if (ownerIt != objectExpandoOwnerCounts_.end()) {
+      if (ownerIt->second > 1) {
+        ownerIt->second -= 1;
+        return;
+      }
+      objectExpandoOwnerCounts_.erase(ownerIt);
+    }
+    if (!preserveExpandos) {
+      forgetObjectExpandos(native);
+    }
+  }
+
   Value findObjectExpando(Runtime& runtime, const void* native,
                           const std::string& property) const {
     if (native == nullptr || property.empty()) {
@@ -1013,8 +1041,9 @@ class NativeApiBridge {
     if (native == nullptr) {
       return;
     }
+    auto key = normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
     objectExpandos_.erase(
-        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native)));
+        key);
     objectExpandosGeneration_.fetch_add(1, std::memory_order_release);
   }
 
@@ -2117,6 +2146,7 @@ class NativeApiBridge {
   std::unordered_map<uintptr_t,
                      std::unordered_map<std::string, std::shared_ptr<Value>>>
       objectExpandos_;
+  std::unordered_map<uintptr_t, size_t> objectExpandoOwnerCounts_;
   std::atomic<uint64_t> objectExpandosGeneration_{1};
   std::unordered_map<Class, std::unordered_map<std::string, CachedPropertyGetter>>
       propertyGetterCache_;

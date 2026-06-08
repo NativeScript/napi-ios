@@ -460,6 +460,19 @@ bool nativeTypeStoresObjectiveCObject(const NativeApiType& type) {
   }
 }
 
+void NativeApiReferenceHostObject::retainObjectSlot(size_t index, id object) {
+  if (retainedObjects_.size() <= index) {
+    retainedObjects_.resize(index + 1, nil);
+  }
+  id previous = retainedObjects_[index];
+  if (previous == object) {
+    return;
+  }
+  [object retain];
+  retainedObjects_[index] = object;
+  [previous release];
+}
+
 std::optional<size_t> parseArrayIndexProperty(const std::string& property) {
   if (property.empty()) {
     return std::nullopt;
@@ -1149,6 +1162,9 @@ void NativeApiReferenceHostObject::ensureStorage(
   if (data_ != nullptr && pendingValue_ != nullptr) {
     Value pending(runtime, *pendingValue_);
     convertEngineArgument(runtime, bridge_, type_, pending, data_, frame);
+    if (nativeTypeStoresObjectiveCObject(type_)) {
+      retainObjectSlot(0, *static_cast<id*>(data_));
+    }
     pendingValue_.reset();
   }
 }
@@ -1218,6 +1234,9 @@ NativeApiHostSetResult NativeApiReferenceHostObject::set(Runtime& runtime,
   void* slot = static_cast<uint8_t*>(data_) +
                (slotIndex * referenceElementStride(type_));
   convertEngineArgument(runtime, bridge_, type_, value, slot, frame);
+  if (nativeTypeStoresObjectiveCObject(type_)) {
+    retainObjectSlot(slotIndex, *static_cast<id*>(slot));
+  }
   NATIVE_API_SET_RETURN(true);
 }
 

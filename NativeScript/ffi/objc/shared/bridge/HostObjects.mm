@@ -231,6 +231,9 @@ class NativeApiReferenceHostObject final : public HostObject {
         backingValue_(std::move(backingValue)) {}
 
   ~NativeApiReferenceHostObject() override {
+    for (id object : retainedObjects_) {
+      [object release];
+    }
     if (ownsData_ && data_ != nullptr) {
       free(data_);
       data_ = nullptr;
@@ -242,6 +245,7 @@ class NativeApiReferenceHostObject final : public HostObject {
   std::shared_ptr<Value> backingValue() const { return backingValue_; }
   void ensureStorage(Runtime& runtime, NativeApiType type,
                      NativeApiArgumentFrame& frame, size_t elements = 1);
+  void retainObjectSlot(size_t index, id object);
 
   Value get(Runtime& runtime, const PropNameID& name) override;
   NativeApiHostSetResult set(Runtime& runtime, const PropNameID& name, const Value& value) override;
@@ -262,6 +266,7 @@ class NativeApiReferenceHostObject final : public HostObject {
   size_t byteLength_ = 0;
   std::shared_ptr<Value> pendingValue_;
   std::shared_ptr<Value> backingValue_;
+  std::vector<id> retainedObjects_;
 };
 
 class NativeApiStructObjectHostObject final : public HostObject {
@@ -643,6 +648,9 @@ class NativeApiObjectHostObject final
         object_(object),
         ownsObject_(ownsObject),
         lifetimeState_(std::make_shared<NativeApiObjectLifetimeState>(object)) {
+    if (bridge_ != nullptr && object_ != nil) {
+      bridge_->retainObjectExpandoOwner(object_);
+    }
     if (object_ != nil && !ownsObject_) {
       [object_ retain];
       ownsObject_ = true;
@@ -653,7 +661,9 @@ class NativeApiObjectHostObject final
   ~NativeApiObjectHostObject() override {
     if (bridge_ != nullptr && object_ != nil) {
       bridge_->forgetRoundTripValue(object_);
-      bridge_->forgetObjectExpandos(object_);
+      bridge_->releaseObjectExpandoOwner(
+          object_, class_conformsToProtocol(object_getClass(object_),
+                                            @protocol(NativeApiClassBuilderProtocol)));
     }
     if (lifetimeState_ != nullptr) {
       lifetimeState_->clear();
@@ -679,11 +689,11 @@ class NativeApiObjectHostObject final
     }
   }
 
-  void disownObject(id expected) {
+  void disownObject(id expected, bool preserveExpandos = false) {
     if (object_ == expected) {
       if (bridge_ != nullptr && expected != nil) {
         bridge_->forgetRoundTripValue(expected);
-        bridge_->forgetObjectExpandos(expected);
+        bridge_->releaseObjectExpandoOwner(expected, preserveExpandos);
       }
       ownsObject_ = false;
       wrapperRetainedObject_ = false;
@@ -737,7 +747,6 @@ class NativeApiObjectHostObject final
         classWrapper.emplace(classWrapperValue.asObject(runtime));
       }
       bridge_->forgetRoundTripValue(runtime, receiver);
-      bridge_->forgetObjectExpandos(receiver);
     }
 
     Value result =
@@ -745,13 +754,16 @@ class NativeApiObjectHostObject final
                          args, count, dispatchSuperClass);
     if (initializer) {
       id resultObject = nativeObjectFromValue(runtime, result);
-      disownObject(receiver);
+      disownObject(receiver, resultObject == receiver);
       if (resultObject != nil) {
         // Re-adopt the init result on this host object so that JS overrides
         // returning `this` still have a valid native object.
         object_ = resultObject;
         ownsObject_ = true;
         wrapperRetainedObject_ = true;
+        if (bridge_ != nullptr) {
+          bridge_->retainObjectExpandoOwner(object_);
+        }
         if (lifetimeState_ != nullptr) {
           lifetimeState_->setObject(object_);
         }
@@ -792,7 +804,6 @@ class NativeApiObjectHostObject final
         classWrapper.emplace(classWrapperValue.asObject(runtime));
       }
       bridge_->forgetRoundTripValue(runtime, receiver);
-      bridge_->forgetObjectExpandos(receiver);
     }
 
     Value result = callPreparedObjCSelector(
@@ -800,13 +811,16 @@ class NativeApiObjectHostObject final
         dispatchSuperClass);
     if (initializer) {
       id resultObject = nativeObjectFromValue(runtime, result);
-      disownObject(receiver);
+      disownObject(receiver, resultObject == receiver);
       if (resultObject != nil) {
         // Re-adopt the init result on this host object so that JS overrides
         // returning `this` still have a valid native object.
         object_ = resultObject;
         ownsObject_ = true;
         wrapperRetainedObject_ = true;
+        if (bridge_ != nullptr) {
+          bridge_->retainObjectExpandoOwner(object_);
+        }
         if (lifetimeState_ != nullptr) {
           lifetimeState_->setObject(object_);
         }
@@ -829,9 +843,8 @@ class NativeApiObjectHostObject final
     return result;
   }
 
-  Value prototypeFunctionForProperty(Runtime& runtime,
-                                     const std::string& property) {
-    if (object_ == nil || property.empty()) {
+  Value classPrototypeForObject(Runtime& runtime) {
+    if (object_ == nil) {
       return Value::undefined();
     }
 
@@ -847,12 +860,32 @@ class NativeApiObjectHostObject final
             runtime, objc_lookUpClass(symbol->runtimeName.c_str()));
       }
     }
-    if (!classWrapperValue.isObject()) {
+    if (classWrapperValue.isObject()) {
+      Object classWrapper = classWrapperValue.asObject(runtime);
+      Value prototypeValue = classWrapper.getProperty(runtime, "prototype");
+      if (prototypeValue.isObject()) {
+        return prototypeValue;
+      }
+    }
+    return bridge_->findClassPrototype(runtime, object_getClass(object_));
+  }
+
+  Value engineThisValueForObject(Runtime& runtime) {
+    Value thisValue = bridge_->findRoundTripValue(runtime, object_,
+                                                  nullptr, true);
+    if (thisValue.isObject()) {
+      return thisValue;
+    }
+    return makeNativeObjectValue(runtime, bridge_, object_, false);
+  }
+
+  Value prototypeFunctionForProperty(Runtime& runtime,
+                                     const std::string& property) {
+    if (property.empty()) {
       return Value::undefined();
     }
 
-    Object classWrapper = classWrapperValue.asObject(runtime);
-    Value prototypeValue = classWrapper.getProperty(runtime, "prototype");
+    Value prototypeValue = classPrototypeForObject(runtime);
     if (!prototypeValue.isObject()) {
       return Value::undefined();
     }
@@ -897,17 +930,7 @@ class NativeApiObjectHostObject final
     if (object_ == nil || property.empty()) {
       return Value::undefined();
     }
-    Value classWrapperValue =
-        bridge_->findObjectExpando(runtime, object_, "__nativeApiClassWrapper");
-    if (!classWrapperValue.isObject()) {
-      classWrapperValue =
-          bridge_->findClassValue(runtime, object_getClass(object_));
-    }
-    if (!classWrapperValue.isObject()) {
-      return Value::undefined();
-    }
-    Value prototypeValue =
-        classWrapperValue.asObject(runtime).getProperty(runtime, "prototype");
+    Value prototypeValue = classPrototypeForObject(runtime);
     if (!prototypeValue.isObject()) {
       return Value::undefined();
     }
@@ -928,8 +951,7 @@ class NativeApiObjectHostObject final
         Value getterValue = descriptor.getProperty(runtime, "get");
         if (getterValue.isObject() &&
             getterValue.asObject(runtime).isFunction(runtime)) {
-          Value thisValue = bridge_->findRoundTripValue(runtime, object_,
-                                                        nullptr, true);
+          Value thisValue = engineThisValueForObject(runtime);
           if (thisValue.isObject()) {
             *found = true;
             return getterValue.asObject(runtime).asFunction(runtime).callWithThis(
@@ -956,17 +978,7 @@ class NativeApiObjectHostObject final
     if (object_ == nil || property.empty()) {
       return false;
     }
-    Value classWrapperValue =
-        bridge_->findObjectExpando(runtime, object_, "__nativeApiClassWrapper");
-    if (!classWrapperValue.isObject()) {
-      classWrapperValue =
-          bridge_->findClassValue(runtime, object_getClass(object_));
-    }
-    if (!classWrapperValue.isObject()) {
-      return false;
-    }
-    Value prototypeValue =
-        classWrapperValue.asObject(runtime).getProperty(runtime, "prototype");
+    Value prototypeValue = classPrototypeForObject(runtime);
     if (!prototypeValue.isObject()) {
       return false;
     }
@@ -987,8 +999,7 @@ class NativeApiObjectHostObject final
             descriptorValue.asObject(runtime).getProperty(runtime, "set");
         if (setterValue.isObject() &&
             setterValue.asObject(runtime).isFunction(runtime)) {
-          Value thisValue = bridge_->findRoundTripValue(runtime, object_,
-                                                        nullptr, true);
+          Value thisValue = engineThisValueForObject(runtime);
           if (thisValue.isObject()) {
             Value args[] = {Value(runtime, value)};
             setterValue.asObject(runtime).asFunction(runtime).callWithThis(
@@ -1190,7 +1201,7 @@ class NativeApiObjectHostObject final
             bool wrapperRetainedObject = self->wrapperRetainedObject_;
             if (self->bridge_ != nullptr) {
               self->bridge_->forgetRoundTripValue(runtime, object);
-              self->bridge_->forgetObjectExpandos(object);
+              self->bridge_->releaseObjectExpandoOwner(object);
             }
             self->object_ = nil;
             self->ownsObject_ = false;
@@ -1491,7 +1502,9 @@ class NativeApiObjectHostObject final
       // Engines whose exotic property storage doesn't fall back to own
       // properties need the JS-owned set resolved here: invoke a JS-prototype
       // setter if present, otherwise store the value as a bridge expando.
-      if (!invokeEnginePrototypeSetter(runtime, property, value)) {
+      bool invokedPrototypeSetter =
+          invokeEnginePrototypeSetter(runtime, property, value);
+      if (!invokedPrototypeSetter) {
         storeOwnExpando(runtime, property, value);
       }
       NATIVE_API_SET_RETURN(true);
