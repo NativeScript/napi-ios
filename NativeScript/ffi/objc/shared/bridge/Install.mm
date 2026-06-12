@@ -1613,6 +1613,7 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
     }
     interop.Pointer = wrapInteropFactory(interop.Pointer, { kind: 'pointer', sizeof: pointerSize });
     interop.Reference = wrapInteropFactory(interop.Reference, { kind: 'reference', sizeof: pointerSize });
+    interop.Block = wrapInteropFactory(interop.Block, { kind: 'block', sizeof: pointerSize });
     interop.FunctionReference = wrapInteropFactory(
       interop.FunctionReference,
       { kind: 'functionReference', sizeof: pointerSize }

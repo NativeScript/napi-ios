@@ -410,6 +410,73 @@ NativeApiSymbol nativeApiSymbolForRuntimeClass(
   };
 }
 
+std::optional<std::string> runtimeWritablePropertySetter(id object,
+                                                         const std::string& property) {
+  if (object == nil || property.empty()) {
+    return std::nullopt;
+  }
+
+  Class current = object_getClass(object);
+  while (current != Nil) {
+    objc_property_t prop = class_getProperty(current, property.c_str());
+    if (prop != nullptr) {
+      if (char* readonly = property_copyAttributeValue(prop, "R")) {
+        free(readonly);
+        return std::nullopt;
+      }
+
+      std::string setter = setterSelectorForProperty(property);
+      if (char* customSetter = property_copyAttributeValue(prop, "S")) {
+        setter = customSetter;
+        free(customSetter);
+      }
+
+      SEL selector = sel_getUid(setter.c_str());
+      if ([object respondsToSelector:selector]) {
+        return setter;
+      }
+    }
+
+    current = class_getSuperclass(current);
+  }
+
+  std::string setter = setterSelectorForProperty(property);
+  SEL selector = sel_getUid(setter.c_str());
+  if ([object respondsToSelector:selector]) {
+    return setter;
+  }
+
+  return std::nullopt;
+}
+
+std::optional<std::string> runtimeReadablePropertyGetter(id object,
+                                                         const std::string& property) {
+  if (object == nil || property.empty()) {
+    return std::nullopt;
+  }
+
+  Class current = object_getClass(object);
+  while (current != Nil) {
+    objc_property_t prop = class_getProperty(current, property.c_str());
+    if (prop != nullptr) {
+      std::string getter = property;
+      if (char* customGetter = property_copyAttributeValue(prop, "G")) {
+        getter = customGetter;
+        free(customGetter);
+      }
+
+      if (auto selector =
+              respondingPropertyGetterSelector(object, property, getter)) {
+        return selector;
+      }
+    }
+
+    current = class_getSuperclass(current);
+  }
+
+  return respondingPropertyGetterSelector(object, property, property);
+}
+
 class NativeApiSuperHostObject final : public HostObject {
  public:
   NativeApiSuperHostObject(std::shared_ptr<NativeApiBridge> bridge,
@@ -551,11 +618,57 @@ struct NativeApiRuntimeMember {
   size_t argumentCount = 0;
 };
 
-std::vector<NativeApiRuntimeMember> runtimeMembersForClass(Class cls,
-                                                                 bool staticMembers) {
-  std::vector<NativeApiRuntimeMember> members;
+using NativeApiRuntimeMembers = std::vector<NativeApiRuntimeMember>;
+
+struct NativeApiRuntimeMemberIndex {
+  NativeApiRuntimeMembers members;
+  std::unordered_set<std::string> memberNames;
+  std::unordered_map<std::string, std::unordered_map<size_t, std::string>>
+      selectorsByNameAndCount;
+};
+
+struct NativeApiRuntimeMembersCacheKey {
+  Class cls = Nil;
+  bool staticMembers = false;
+
+  bool operator==(const NativeApiRuntimeMembersCacheKey& other) const {
+    return cls == other.cls && staticMembers == other.staticMembers;
+  }
+};
+
+struct NativeApiRuntimeMembersCacheKeyHash {
+  size_t operator()(const NativeApiRuntimeMembersCacheKey& key) const {
+    size_t classHash = std::hash<uintptr_t>{}(reinterpret_cast<uintptr_t>(key.cls));
+    return classHash ^ (key.staticMembers ? 0x9e3779b97f4a7c15ULL : 0);
+  }
+};
+
+std::mutex& runtimeMembersCacheMutex() {
+  static std::mutex mutex;
+  return mutex;
+}
+
+std::unordered_map<NativeApiRuntimeMembersCacheKey,
+                   std::shared_ptr<const NativeApiRuntimeMemberIndex>,
+                   NativeApiRuntimeMembersCacheKeyHash>&
+runtimeMembersCache() {
+  static std::unordered_map<NativeApiRuntimeMembersCacheKey,
+                            std::shared_ptr<const NativeApiRuntimeMemberIndex>,
+                            NativeApiRuntimeMembersCacheKeyHash>
+      cache;
+  return cache;
+}
+
+std::shared_ptr<const NativeApiRuntimeMemberIndex> emptyRuntimeMembers() {
+  static auto empty = std::make_shared<const NativeApiRuntimeMemberIndex>();
+  return empty;
+}
+
+NativeApiRuntimeMemberIndex buildRuntimeMembersForClass(Class cls,
+                                                        bool staticMembers) {
+  NativeApiRuntimeMemberIndex index;
   if (cls == Nil) {
-    return members;
+    return index;
   }
 
   std::unordered_set<std::string> seen;
@@ -582,7 +695,9 @@ std::vector<NativeApiRuntimeMember> runtimeMembersForClass(Class cls,
         continue;
       }
 
-      members.push_back(NativeApiRuntimeMember{
+      index.memberNames.insert(name);
+      index.selectorsByNameAndCount[name].emplace(argumentCount, selectorString);
+      index.members.push_back(NativeApiRuntimeMember{
           .name = std::move(name),
           .selectorName = std::move(selectorString),
           .argumentCount = argumentCount,
@@ -594,36 +709,64 @@ std::vector<NativeApiRuntimeMember> runtimeMembersForClass(Class cls,
     current = class_getSuperclass(current);
   }
 
-  return members;
+  return index;
+}
+
+std::shared_ptr<const NativeApiRuntimeMemberIndex> runtimeMembersForClass(
+    Class cls, bool staticMembers) {
+  if (cls == Nil) {
+    return emptyRuntimeMembers();
+  }
+
+  NativeApiRuntimeMembersCacheKey key{.cls = cls,
+                                      .staticMembers = staticMembers};
+
+  {
+    std::lock_guard<std::mutex> lock(runtimeMembersCacheMutex());
+    auto& cache = runtimeMembersCache();
+    auto cached = cache.find(key);
+    if (cached != cache.end()) {
+      return cached->second;
+    }
+  }
+
+  auto members =
+      std::make_shared<const NativeApiRuntimeMemberIndex>(
+          buildRuntimeMembersForClass(cls, staticMembers));
+
+  {
+    std::lock_guard<std::mutex> lock(runtimeMembersCacheMutex());
+    auto& cache = runtimeMembersCache();
+    auto [cached, inserted] = cache.emplace(key, members);
+    return inserted ? members : cached->second;
+  }
 }
 
 bool hasRuntimeMemberForName(Class cls, bool staticMembers,
                              const std::string& name) {
-  auto members = runtimeMembersForClass(cls, staticMembers);
-  for (const auto& member : members) {
-    if (member.name == name) {
-      return true;
-    }
-  }
-  return false;
+  auto index = runtimeMembersForClass(cls, staticMembers);
+  return index->memberNames.find(name) != index->memberNames.end();
 }
 
 std::optional<std::string> selectRuntimeSelectorForName(
     Class cls, bool staticMembers, const std::string& name, size_t count) {
-  auto members = runtimeMembersForClass(cls, staticMembers);
-  for (const auto& member : members) {
-    if (member.name == name && member.argumentCount == count) {
-      return member.selectorName;
-    }
+  auto index = runtimeMembersForClass(cls, staticMembers);
+  auto selectorsForName = index->selectorsByNameAndCount.find(name);
+  if (selectorsForName == index->selectorsByNameAndCount.end()) {
+    return std::nullopt;
   }
-  return std::nullopt;
+  auto selector = selectorsForName->second.find(count);
+  if (selector == selectorsForName->second.end()) {
+    return std::nullopt;
+  }
+  return selector->second;
 }
 
 Array runtimeMembersArray(Runtime& runtime, Class cls, bool staticMembers) {
-  auto members = runtimeMembersForClass(cls, staticMembers);
-  Array result(runtime, members.size());
-  for (size_t i = 0; i < members.size(); i++) {
-    const auto& member = members[i];
+  auto index = runtimeMembersForClass(cls, staticMembers);
+  Array result(runtime, index->members.size());
+  for (size_t i = 0; i < index->members.size(); i++) {
+    const auto& member = index->members[i];
     Object descriptor(runtime);
     descriptor.setProperty(runtime, "name", makeString(runtime, member.name));
     descriptor.setProperty(runtime, "selectorName",
@@ -1420,6 +1563,10 @@ class NativeApiObjectHostObject final
         return resolved;
       }
 #endif
+      if (auto selector =
+              runtimeReadablePropertyGetter(object_, property)) {
+        return callObjectSelector(runtime, *selector, nullptr, nullptr, 0);
+      }
       return Value::undefined();
     }
 
@@ -1491,6 +1638,14 @@ class NativeApiObjectHostObject final
                          setterMember.selectorName, &setterMember, args, 1);
         NATIVE_API_SET_RETURN(true);
       }
+    }
+
+    if (auto setterSelectorName =
+            runtimeWritablePropertySetter(object_, property)) {
+      Value args[] = {Value(runtime, value)};
+      callObjCSelector(runtime, bridge_, object_, false,
+                       *setterSelectorName, nullptr, args, 1);
+      NATIVE_API_SET_RETURN(true);
     }
 
     // For JS-subclassed instances, an unknown property is owned by the JS

@@ -72,10 +72,26 @@ add_executable(
   ${EXEC_SOURCE_FILES}
 )
 
+set(LIBCLANG_DIR "/Library/Developer/CommandLineTools/usr/lib")
+execute_process(
+  COMMAND xcrun --find clang
+  OUTPUT_VARIABLE XCRUN_CLANG
+  OUTPUT_STRIP_TRAILING_WHITESPACE
+  ERROR_QUIET
+)
+if(XCRUN_CLANG)
+  get_filename_component(XCRUN_CLANG_BIN_DIR "${XCRUN_CLANG}" DIRECTORY)
+  get_filename_component(XCRUN_TOOLCHAIN_USR_DIR "${XCRUN_CLANG_BIN_DIR}" DIRECTORY)
+  if(EXISTS "${XCRUN_TOOLCHAIN_USR_DIR}/lib/libclang.dylib")
+    set(LIBCLANG_DIR "${XCRUN_TOOLCHAIN_USR_DIR}/lib")
+  endif()
+endif()
+message(STATUS "LIBCLANG_DIR = ${LIBCLANG_DIR}")
+
 target_link_directories(
   ${NAME}
   PRIVATE
-  /Library/Developer/CommandLineTools/usr/lib
+  "${LIBCLANG_DIR}"
 )
 
 target_link_libraries(
@@ -87,7 +103,7 @@ target_link_libraries(
 # Set runtime path for libclang
 set_target_properties(${NAME} PROPERTIES
   BUILD_WITH_INSTALL_RPATH TRUE
-  INSTALL_RPATH "/Library/Developer/CommandLineTools/usr/lib"
+  INSTALL_RPATH "${LIBCLANG_DIR}"
 )
 
 install(TARGETS ${NAME}

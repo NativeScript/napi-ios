@@ -41,6 +41,7 @@ struct NativeApiSignature {
 enum class NativeApiCallbackThreadPolicy {
   Default,
   JS,
+  Runtime,
 };
 
 NativeApiCallbackThreadPolicy readEngineCallbackThreadPolicy(
@@ -57,6 +58,9 @@ NativeApiCallbackThreadPolicy readEngineCallbackThreadPolicy(
     std::string policy = policyValue.asString(runtime).utf8(runtime);
     if (policy == "js") {
       return NativeApiCallbackThreadPolicy::JS;
+    }
+    if (policy == "runtime" || policy == "worklet") {
+      return NativeApiCallbackThreadPolicy::Runtime;
     }
   } catch (const std::exception&) {
   }
@@ -580,6 +584,7 @@ class NativeApiCallback final
     std::string error;
     auto call = [&]() { invokeOnCurrentThread(ret, args, &error); };
     const auto& nativeCallbackInvoker = bridge_->nativeCallbackInvoker();
+    const auto& runtimeCallbackInvoker = bridge_->runtimeCallbackInvoker();
     const auto& jsThreadCallbackInvoker = bridge_->jsThreadCallbackInvoker();
     bool currentThreadIsJs =
         std::this_thread::get_id() == bridge_->jsThreadId();
@@ -612,6 +617,17 @@ class NativeApiCallback final
       }
       error = "Native callback was invoked off the JS thread without a JS scheduler.";
     };
+    auto callOnRuntimeThread = [&]() {
+      if (currentThreadIsJs) {
+        call();
+        return;
+      }
+      if (runtimeCallbackInvoker) {
+        runtimeCallbackInvoker(call);
+        return;
+      }
+      error = "Native callback was invoked off its owning runtime thread without a runtime scheduler.";
+    };
 
     if (threadPolicy_ == NativeApiCallbackThreadPolicy::JS) {
       callOnJSThread();
@@ -622,20 +638,21 @@ class NativeApiCallback final
       }
       return;
     }
+    if (threadPolicy_ == NativeApiCallbackThreadPolicy::Runtime) {
+      callOnRuntimeThread();
+      if (!error.empty()) {
+        if (!recordNativeCallbackException(error)) {
+          throwNativeApiCallbackException(error);
+        }
+      }
+      return;
+    }
 
     bool returnsVoid = signature_->returnType.kind == metagen::mdTypeVoid;
-    bool activeSynchronousNativeInvocation =
-        gActiveSynchronousNativeInvocationDepth.load(
-            std::memory_order_acquire) > 0;
     bool nativeCallerThreadCallbacks =
         bridge_->invokeCallbacksOnNativeCallerThread();
-    bool nativeCallerThreadCallback =
-        nativeCallerThreadCallbacks && !currentThreadIsJs &&
-        activeSynchronousNativeInvocation &&
-        (block_ || bindThis_ || !returnsVoid);
     bool direct = currentThreadIsJs ||
-                  gSynchronousNativeInvocationDepth > 0 ||
-                  nativeCallerThreadCallback;
+                  gSynchronousNativeInvocationDepth > 0;
     bool waitForNativeThreadCallback =
         currentThreadIsJs && nativeCallbackInvoker &&
         gActiveNativeThreadEngineCallbacks.load(std::memory_order_acquire) > 0;
@@ -672,21 +689,14 @@ class NativeApiCallback final
       return false;
     };
 
-    if (dispatchZeroArgVoidBlockAsync()) {
+    if (nativeCallerThreadCallbacks && !currentThreadIsJs) {
+      callOnNativeCallerThread();
+    } else if (dispatchZeroArgVoidBlockAsync()) {
       return;
-    }
-
-    if (direct && !waitForNativeThreadCallback) {
-      if (nativeCallerThreadCallback) {
-        callOnNativeCallerThread();
-      } else {
-        call();
-      }
-    } else if (!currentThreadIsJs && !nativeCallerThreadCallbacks) {
+    } else if (direct && !waitForNativeThreadCallback) {
+      call();
+    } else if (!currentThreadIsJs) {
       callOnJSThread();
-    } else if (!currentThreadIsJs && returnsVoid && block_ &&
-               jsThreadCallbackInvoker) {
-      jsThreadCallbackInvoker(call);
     } else if (nativeCallbackInvoker) {
       bool nativeThreadCallback = !currentThreadIsJs;
       if (nativeThreadCallback) {
@@ -1474,9 +1484,41 @@ std::optional<NativeApiSignature> parseMetadataEngineSignature(
   return signature;
 }
 
+bool prepareEngineCallbackSignature(NativeApiSignature* signature) {
+  if (signature == nullptr) {
+    return false;
+  }
+
+  signature->ffiTypes.clear();
+  signature->ffiTypes.reserve(signature->argumentTypes.size() +
+                              signature->implicitArgumentCount);
+  for (unsigned int i = 0; i < signature->implicitArgumentCount; i++) {
+    signature->ffiTypes.push_back(&ffi_type_pointer);
+  }
+  for (const auto& argType : signature->argumentTypes) {
+    signature->ffiTypes.push_back(ffiTypeForEngineArgument(argType));
+  }
+
+  ffi_status status = ffi_prep_cif(
+      &signature->cif, FFI_DEFAULT_ABI,
+      static_cast<unsigned int>(signature->ffiTypes.size()),
+      signature->returnType.ffiType != nullptr ? signature->returnType.ffiType
+                                               : &ffi_type_void,
+      signature->ffiTypes.empty() ? nullptr : signature->ffiTypes.data());
+  signature->prepared = status == FFI_OK;
+  return signature->prepared;
+}
+
 const char* skipObjCTypeQualifiers(const char* encoding) {
   while (encoding != nullptr && *encoding != '\0' &&
          std::strchr("rnNoORV", *encoding) != nullptr) {
+    encoding++;
+  }
+  return encoding;
+}
+
+const char* skipObjCTypeFrameOffset(const char* encoding) {
+  while (encoding != nullptr && *encoding >= '0' && *encoding <= '9') {
     encoding++;
   }
   return encoding;
@@ -1932,6 +1974,48 @@ NativeApiType parseObjCEncodedEngineType(
   return finishPrimitive(encoding + 1);
 }
 
+std::optional<NativeApiSignature> parseObjCCallbackEngineSignature(
+    const std::string& encodingString, bool block, NativeApiBridge* bridge) {
+  const char* cursor = skipObjCTypeQualifiers(encodingString.c_str());
+  if (cursor == nullptr || *cursor == '\0') {
+    return std::nullopt;
+  }
+
+  NativeApiSignature signature;
+  signature.implicitArgumentCount = block ? 1 : 0;
+
+  const char* returnEnd = cursor;
+  signature.returnType = parseObjCEncodedEngineType(cursor, bridge, &returnEnd);
+  if (returnEnd == cursor) {
+    return std::nullopt;
+  }
+  cursor = skipObjCTypeFrameOffset(returnEnd);
+
+  if (block) {
+    const char* blockSelf = skipObjCTypeQualifiers(cursor);
+    if (blockSelf != nullptr && blockSelf[0] == '@' && blockSelf[1] == '?') {
+      cursor = skipObjCTypeFrameOffset(blockSelf + 2);
+    }
+  }
+
+  while (cursor != nullptr && *cursor != '\0') {
+    const char* argStart = skipObjCTypeQualifiers(cursor);
+    if (argStart == nullptr || *argStart == '\0') {
+      break;
+    }
+    const char* argEnd = argStart;
+    NativeApiType argType = parseObjCEncodedEngineType(argStart, bridge, &argEnd);
+    if (argEnd == argStart) {
+      return std::nullopt;
+    }
+    signature.argumentTypes.push_back(std::move(argType));
+    cursor = skipObjCTypeFrameOffset(argEnd);
+  }
+
+  prepareEngineCallbackSignature(&signature);
+  return signature;
+}
+
 std::optional<NativeApiSignature> parseObjCMethodEngineSignature(
     Method method, NativeApiBridge* bridge = nullptr) {
   if (method == nullptr) {
@@ -2101,6 +2185,36 @@ std::shared_ptr<NativeApiCallback> createEngineCallback(
       std::make_shared<NativeApiSignature>(std::move(*parsed));
   uintptr_t roundTripValidationKey =
       NativeApiBridge::callbackRoundTripValidationKey(type);
+  auto callback = std::make_shared<NativeApiCallback>(
+      runtime, bridge, std::move(signature), std::move(function), block,
+      threadPolicy, false, roundTripValidationKey);
+  if (block) {
+    callback->retainInitialBlockLifetime(callback);
+  } else {
+    bridge->retainEngineLifetime(callback);
+  }
+  return callback;
+}
+
+std::shared_ptr<NativeApiCallback> createEngineCallback(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const std::string& objcSignatureEncoding, Function function, bool block,
+    NativeApiCallbackThreadPolicy threadPolicy =
+        NativeApiCallbackThreadPolicy::Default,
+    uintptr_t roundTripValidationKey = 0) {
+  if (bridge == nullptr || objcSignatureEncoding.empty()) {
+    throw JSError(runtime, "Native callback encoding is unavailable.");
+  }
+
+  auto parsed = parseObjCCallbackEngineSignature(
+      objcSignatureEncoding, block, bridge.get());
+  if (!parsed || !signatureSupportedForEngineCallback(*parsed)) {
+    throw JSError(
+        runtime, "Native callback signature is not supported by backend.");
+  }
+
+  auto signature =
+      std::make_shared<NativeApiSignature>(std::move(*parsed));
   auto callback = std::make_shared<NativeApiCallback>(
       runtime, bridge, std::move(signature), std::move(function), block,
       threadPolicy, false, roundTripValidationKey);
