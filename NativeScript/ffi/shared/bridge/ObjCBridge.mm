@@ -550,6 +550,7 @@ class NativeApiBridge {
         scheduler_(config.scheduler),
         nativeInvocationInvoker_(config.nativeInvocationInvoker),
         nativeCallbackInvoker_(config.nativeCallbackInvoker),
+        runtimeCallbackInvoker_(config.runtimeCallbackInvoker),
         jsThreadCallbackInvoker_(config.jsThreadCallbackInvoker),
         jsThreadAsyncCallbackInvoker_(config.jsThreadAsyncCallbackInvoker),
         invokeCallbacksOnNativeCallerThread_(
@@ -1164,6 +1165,10 @@ class NativeApiBridge {
   const std::function<void(std::function<void()>)>& nativeCallbackInvoker()
       const {
     return nativeCallbackInvoker_;
+  }
+  const std::function<void(std::function<void()>)>& runtimeCallbackInvoker()
+      const {
+    return runtimeCallbackInvoker_;
   }
   const std::function<void(std::function<void()>)>& jsThreadCallbackInvoker()
       const {
@@ -2133,6 +2138,7 @@ class NativeApiBridge {
   std::shared_ptr<NativeApiScheduler> scheduler_;
   std::function<void(std::function<void()>)> nativeInvocationInvoker_;
   std::function<void(std::function<void()>)> nativeCallbackInvoker_;
+  std::function<void(std::function<void()>)> runtimeCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadAsyncCallbackInvoker_;
   bool invokeCallbacksOnNativeCallerThread_ = false;

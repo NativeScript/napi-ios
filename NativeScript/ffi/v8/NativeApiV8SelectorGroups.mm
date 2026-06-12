@@ -168,11 +168,11 @@ void setV8EnginePreparedObjCResult(
 #if defined(__x86_64__)
       bool isStret = signature.returnType.ffiType->size > 16 &&
                      signature.returnType.ffiType->type == FFI_TYPE_STRUCT;
-      void* target = dispatchSuperClass != Nil
-                         ? (isStret ? FFI_FN(objc_msgSendSuper_stret)
-                                    : FFI_FN(objc_msgSendSuper))
-                         : (isStret ? FFI_FN(objc_msgSend_stret)
-                                    : FFI_FN(objc_msgSend));
+      void (*target)(void) =
+          dispatchSuperClass != Nil
+              ? (isStret ? FFI_FN(objc_msgSendSuper_stret)
+                         : FFI_FN(objc_msgSendSuper))
+              : (isStret ? FFI_FN(objc_msgSend_stret) : FFI_FN(objc_msgSend));
       ffi_call(const_cast<ffi_cif*>(&signature.cif), target,
                returnStorage.data(), values.data());
 #else
@@ -449,4 +449,3 @@ Function CreateNativeApiBoundSelectorGroupFunction(
       receiverHostObject != nullptr ? receiverHostObject->lifetimeState()
                                     : nullptr);
 }
-
