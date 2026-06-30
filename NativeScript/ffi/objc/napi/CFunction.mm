@@ -12,7 +12,7 @@
 #include "Interop.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 #include "ffi/objc/shared/Tasks.h"
 #ifdef ENABLE_JS_RUNTIME
 #include "jsr.h"

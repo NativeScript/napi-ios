@@ -10,7 +10,7 @@
 
 #include "MessageV8.h"
 
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 #include "v8-api.h"
 
 using namespace v8;

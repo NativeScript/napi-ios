@@ -1,7 +1,7 @@
 
 #include <CoreFoundation/CFRunLoop.h>
 #include <memory>
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 #include "jsr_common.h"
 #include "native_api_util.h"
 #include "robin_hood.h"

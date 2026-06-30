@@ -5,12 +5,12 @@
 #include <functional>
 #include <memory>
 
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 #include "js_native_api_types.h"
 #include "native_api_util.h"
-#include "runtime/modules/worker/ConcurrentMap.h"
-#include "runtime/modules/worker/ConcurrentQueue.h"
-#include "runtime/modules/worker/Message.h"
+#include "runtime/apple/modules/worker/ConcurrentMap.h"
+#include "runtime/apple/modules/worker/ConcurrentQueue.h"
+#include "runtime/apple/modules/worker/Message.h"
 
 namespace nativescript {
 

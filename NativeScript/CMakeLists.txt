@@ -289,7 +289,7 @@ set(FFI_QUICKJS_ENGINE_SOURCE_FILES
 
 set(SOURCE_FILES
   ${FFI_SHARED_SOURCE_FILES}
-  runtime/NativeScriptException.mm
+  runtime/apple/NativeScriptException.mm
 )
 
 if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
@@ -302,28 +302,28 @@ endif()
 if(ENABLE_JS_RUNTIME)
   set(SOURCE_FILES
     ${SOURCE_FILES}
-    runtime/modules/console/Console.cpp
-    runtime/Runtime.cpp
-    runtime/modules/worker/Worker.mm
-    runtime/modules/worker/MessageJSON.cpp
-    runtime/modules/worker/MessageV8.cpp
-    runtime/modules/worker/ConcurrentQueue.cpp
-    runtime/modules/worker/WorkerImpl.mm
-    runtime/modules/worker/WorkerImpl.mm
-    runtime/modules/module/ModuleInternal.cpp
-    runtime/modules/node/Node.cpp
-    runtime/modules/node/FS.cpp
-    runtime/modules/node/Path.cpp
-    runtime/modules/node/Process.cpp
-    runtime/modules/node/VM.cpp
-    runtime/modules/performance/Performance.cpp
-    runtime/ThreadSafeFunction.mm
-    runtime/Bundle.mm
-    runtime/modules/timers/Timers.mm
-    runtime/modules/app/App.mm
-    runtime/modules/web/Web.mm
-    runtime/NativeScript.mm
-    runtime/RuntimeConfig.cpp
+    runtime/apple/modules/console/Console.cpp
+    runtime/apple/Runtime.cpp
+    runtime/apple/modules/worker/Worker.mm
+    runtime/apple/modules/worker/MessageJSON.cpp
+    runtime/apple/modules/worker/MessageV8.cpp
+    runtime/apple/modules/worker/ConcurrentQueue.cpp
+    runtime/apple/modules/worker/WorkerImpl.mm
+    runtime/apple/modules/worker/WorkerImpl.mm
+    runtime/apple/modules/module/ModuleInternal.cpp
+    runtime/apple/modules/node/Node.cpp
+    runtime/apple/modules/node/FS.cpp
+    runtime/apple/modules/node/Path.cpp
+    runtime/apple/modules/node/Process.cpp
+    runtime/apple/modules/node/VM.cpp
+    runtime/apple/modules/performance/Performance.cpp
+    runtime/apple/ThreadSafeFunction.mm
+    runtime/apple/Bundle.mm
+    runtime/apple/modules/timers/Timers.mm
+    runtime/apple/modules/app/App.mm
+    runtime/apple/modules/web/Web.mm
+    runtime/apple/NativeScript.mm
+    runtime/apple/RuntimeConfig.cpp
     runtime/modules/url/ada/ada.cpp
     runtime/modules/url/URL.cpp
     runtime/modules/url/URLSearchParams.cpp

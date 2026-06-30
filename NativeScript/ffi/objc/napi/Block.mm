@@ -9,7 +9,7 @@
 #include <unordered_map>
 #include <vector>
 #include "Interop.h"
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 #include "ObjCBridge.h"
 #include "SignatureDispatch.h"
 #include "TypeConv.h"

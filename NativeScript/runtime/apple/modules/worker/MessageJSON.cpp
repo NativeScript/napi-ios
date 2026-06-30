@@ -16,7 +16,7 @@
 #include <vector>
 
 #include "js_native_api.h"
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 
 #ifdef TARGET_ENGINE_QUICKJS
 #include "quickjs.h"

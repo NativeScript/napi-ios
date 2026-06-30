@@ -18,8 +18,8 @@
 #include "js_native_api.h"
 #include "jsr.h"
 #include "native_api_util.h"
-#include "runtime/Runtime.h"
-#include "runtime/Util.h"
+#include "runtime/apple/Runtime.h"
+#include "runtime/apple/Util.h"
 
 namespace nativescript {
 

@@ -1,5 +1,5 @@
 #include "native_api_util.h"
-#include "runtime/SpinLock.h"
+#include "runtime/apple/SpinLock.h"
 #ifdef ENABLE_JS_RUNTIME
 
 #include "Runtime.h"
@@ -8,8 +8,8 @@
 #include "js_native_api_types.h"
 #include "jsr.h"
 #include "jsr_common.h"
-#include "runtime/Util.h"
-#include "runtime/modules/RuntimeModules.h"
+#include "runtime/apple/Util.h"
+#include "runtime/apple/modules/RuntimeModules.h"
 #ifdef TARGET_ENGINE_V8
 #include "ffi/objc/v8/NativeApiV8.h"
 #include "v8-api.h"

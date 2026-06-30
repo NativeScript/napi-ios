@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 #include "js_native_api.h"
 #include "native_api_util.h"
-#include "runtime/RuntimeConfig.h"
-#include "runtime/Util.h"
+#include "runtime/apple/RuntimeConfig.h"
+#include "runtime/apple/Util.h"
 #ifdef TARGET_ENGINE_V8
 #include "v8-api.h"
 #endif

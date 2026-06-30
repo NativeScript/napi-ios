@@ -6,7 +6,7 @@
 #include <vector>
 
 #include "native_api_util.h"
-#include "runtime/modules/worker/Message.h"
+#include "runtime/apple/modules/worker/Message.h"
 
 namespace nativescript {
 

@@ -15,7 +15,7 @@
 #include "js_native_api.h"
 #include "js_native_tsfn.h"
 #include "jsr.h"
-#include "runtime/Runtime.h"
+#include "runtime/apple/Runtime.h"
 
 #ifdef TARGET_ENGINE_V8
 #include "v8-api.h"

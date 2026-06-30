@@ -7,7 +7,7 @@
 #include <queue>
 #include <vector>
 
-#include "runtime/modules/worker/Message.h"
+#include "runtime/apple/modules/worker/Message.h"
 
 namespace nativescript {
 

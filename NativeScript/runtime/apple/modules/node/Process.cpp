@@ -17,8 +17,8 @@
 #include "js_native_api.h"
 #include "jsr.h"
 #include "native_api_util.h"
-#include "runtime/Runtime.h"
-#include "runtime/RuntimeConfig.h"
+#include "runtime/apple/Runtime.h"
+#include "runtime/apple/RuntimeConfig.h"
 
 #if defined(__APPLE__)
 #include <dispatch/dispatch.h>

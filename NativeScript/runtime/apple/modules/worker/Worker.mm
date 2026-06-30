@@ -2,14 +2,14 @@
 #include <Foundation/NSObjCRuntime.h>
 #include <memory>
 #include <string>
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "jsr.h"
 #include "native_api_util.h"
-#include "runtime/Runtime.h"
-#include "runtime/Util.h"
-#include "runtime/modules/worker/WorkerImpl.h"
+#include "runtime/apple/Runtime.h"
+#include "runtime/apple/Util.h"
+#include "runtime/apple/modules/worker/WorkerImpl.h"
 
 namespace nativescript {
 

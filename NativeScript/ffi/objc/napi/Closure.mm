@@ -6,7 +6,7 @@
 #include "ObjCBridge.h"
 #include "TypeConv.h"
 #include "Util.h"
-#include "runtime/NativeScriptException.h"
+#include "runtime/apple/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #ifdef ENABLE_JS_RUNTIME
