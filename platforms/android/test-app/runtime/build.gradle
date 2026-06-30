@@ -3,7 +3,7 @@ apply plugin: 'com.android.library'
 // can be: "V8-11", "V8-10", "V8-13", "JSC", "HERMES", "QUICKJS", "QUICKJS_NG", "PRIMJS".
 // "SHERMES" is accepted as a compatibility alias for the Static Hermes build.
 
-def jsEngine = "QUICKJS_NG"
+def jsEngine = "V8-13"
 def hasEngine = project.hasProperty("engine")
 if (hasEngine) {
     jsEngine = engine
