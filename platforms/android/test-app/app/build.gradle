@@ -225,6 +225,7 @@ android {
 
     compileSdk computeCompileSdkVersion()
     buildToolsVersion = computeBuildToolsVersion()
+    ndkVersion = project.findProperty("ndkVersion") ?: "27.1.12297006"
 
     defaultConfig {
         def manifest = new XmlSlurper().parse(file(android.sourceSets.main.manifest.srcFile))
@@ -348,10 +349,6 @@ dependencies {
     if (project.hasProperty("androidXAppCompat")) {
         androidXAppCompatVersion = androidXAppCompat
         outLogger.withStyle(Style.SuccessHeader).println "\t + using android X library androidx.appcompat:appcompat:$androidXAppCompatVersion"
-    }
-
-    if (ns_engine == "HERMES") {
-        implementation 'com.facebook.fbjni:fbjni:0.7.0'
     }
 
     def androidXMaterialVersion = "${ns_default_androidx_material_version}"

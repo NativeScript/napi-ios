@@ -25,8 +25,10 @@ function closeProcessAfter(timeout) {
 }
 
 function tryToGetFile() {
-	var checkApp = checkIfAppIsRunning("adb " + runOnDeviceOrEmulator + " -e shell \"ps | grep com.tns.testapplication\"", checkIfProcessIsRunning);
-	pullfile = execFindFile("adb " + runOnDeviceOrEmulator + " -e pull /data/data/com.tns.testapplication/android_unit_test_results.xml", checkIfFileExists);
+	var adbTarget = "adb " + runOnDeviceOrEmulator;
+	pullfile = execFindFile(adbTarget + " pull /data/data/com.tns.testapplication/android_unit_test_results.xml", function (err, stout, stderr) {
+		checkIfFileExists(err, stout, stderr, adbTarget);
+	});
 	pullfile.stdout.pipe(process.stdout, { end: false });
 	pullfile.stderr.pipe(process.stderr, { end: false });
 }
@@ -42,7 +44,7 @@ function checkIfProcessIsRunning(err, stdout, stderr) {
 
 }
 
-function checkIfFileExists(err, stout, stderr) {
+function checkIfFileExists(err, stout, stderr, adbTarget) {
 
 	//if you find file in /data/data/com.tns.testapplication exit process
 	if (!err) {
@@ -56,5 +58,7 @@ function checkIfFileExists(err, stout, stderr) {
 			console.log('Tests results file not found!');
 			process.exit(1);
 		}
+
+		checkIfAppIsRunning(adbTarget + " shell \"pidof com.tns.testapplication || ps -A | grep com.tns.testapplication\"", checkIfProcessIsRunning);
 	}
 }

@@ -137,7 +137,7 @@ var TerminalReporter = require('../jasmine-reporters/terminal_reporter').Termina
     verbosity: 5
   }));
   
-  // env.addReporter(new JUnitXmlReporter());
+  env.addReporter(new JUnitXmlReporter());
 
   env.specFilter = function(spec) {
     return true;

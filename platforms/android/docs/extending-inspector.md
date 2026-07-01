@@ -49,13 +49,13 @@ This step involves fetching and building the V8 projectory, explanation for whic
 
 4. Run the ninja build. Upon completion, the inspector protocol files would be at `outgn/$ARCH-release/gen/src/inspector/protocol`.
 
-5. Copy-Paste all `.cpp` and `.h` files in the runtime project at `test-app/runtime/src/main/cpp/v8_inspector/src/inspector/protocol`
+5. Copy-paste all `.cpp` and `.h` files into `NativeScript/napi/android/v8/v8_inspector/src/inspector/protocol`.
 
-6. Create a new C++ class extending the desired Domain (e.g. DOM). Name it according to the convention already established by the V8 team - `v8-<domain>-agent-impl.h/cpp` - See [v8-dom-agent-impl.h](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/v8_inspector/src/inspector/v8-dom-agent-impl.h#L18). Implement the Backend::<Domain>'s methods in the `.cpp` file.
+6. Create a new C++ class extending the desired Domain (e.g. DOM). Name it according to the convention already established by the V8 team - `v8-<domain>-agent-impl.h/cpp` - under `NativeScript/napi/android/v8/v8_inspector/src/inspector`. Implement the Backend::<Domain>'s methods in the `.cpp` file.
 
-7. To implement event handlers of a certain domain, check out <Protocol>DomainCallbackHandlers ([DOMDomainCallbackHandlers](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/DOMDomainCallbackHandlers.h#L14)) which are registered in [JsV8InspectorClient.cpp](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/JsV8InspectorClient.cpp#L237)
+7. To implement event handlers for a domain, add the runtime-side callback handlers under `NativeScript/runtime/android/inspector` and register them in `NativeScript/runtime/android/inspector/JsV8InspectorClient.cpp`.
 
-8. Register the newly created agent implementations in [v8-inspector-session-impl.h/cc](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/v8_inspector/src/inspector/v8-inspector-session-impl.h#L19) - `V8InspectorSessionImpl` class:
+8. Register the newly created agent implementations in `NativeScript/napi/android/v8/v8_inspector/src/inspector/v8-inspector-session-impl.h/cc` - `V8InspectorSessionImpl` class:
 
 8.1. Changes in v8-inspector-session-impl.`h`
  - `#include "src/inspector/protocol/<Domain>.h`
@@ -65,13 +65,13 @@ This step involves fetching and building the V8 projectory, explanation for whic
 
 8.2. Changes in v8-inspector-session-impl.`cc`
  - `#include "src/inspector/protocol/v8-<domain>-agent-impl.h`
- - register protocol domain command prefix in [canDispatchMethod()](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/v8_inspector/src/inspector/v8-inspector-session-impl.cc#L31)
- - in the V8InspectorSessionImpl constructor initialize the new agent implementation with a [nullptr](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/v8_inspector/src/inspector/v8-inspector-session-impl.cc#L86)
- - [create a unique pointer wrapper for your new agent impl instance](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/v8_inspector/src/inspector/v8-inspector-session-impl.cc#L141), and call the static domain dispatcher's [wire](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/v8_inspector/src/inspector/v8-inspector-session-impl.cc#L143) method
- - make sure to call [agent.disable](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/v8_inspector/src/inspector/v8-inspector-session-impl.cc#L167) in V8InspectorSessionImpl's destructor.
- - register the newly implemented domain as a supported one inside [ V8InspectorSessionImpl::supportedDomainsImpl()](https://github.com/NativeScript/android-runtime/blob/5a04e09439e2bc6a201577895b9ac6538441e758/test-app/runtime/src/main/cpp/v8_inspector/src/inspector/v8-inspector-session-impl.cc#L389)
+ - register protocol domain command prefix in `canDispatchMethod()`
+ - in the `V8InspectorSessionImpl` constructor initialize the new agent implementation with `nullptr`
+ - create a unique pointer wrapper for your new agent impl instance, and call the static domain dispatcher's `wire` method
+ - make sure to call `agent.disable` in `V8InspectorSessionImpl`'s destructor
+ - register the newly implemented domain as a supported one inside `V8InspectorSessionImpl::supportedDomainsImpl()`
  - `#include "NSV8DebuggerAgentImpl.h"`
  - replace **V8DebuggerAgentImpl** with **NSV8DebuggerAgentImpl**
 
-9. Don't forget to add the new classes to the CMakeLists!
+9. Don't forget to add the new classes to `platforms/android/test-app/runtime/CMakeLists.txt`.
 11. Test whether the new domain agent is registered by opening Chrome DevTools. In order to debug the Chrome DevTools frontend, you could open the Chrome DevTools inside an Android Chrome DevTools session - Ctrl(Cmd) + Shift + I.

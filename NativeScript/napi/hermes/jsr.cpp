@@ -3,6 +3,8 @@
 #include "jsr_common.h"
 #include "js_runtime.h"
 
+#include <functional>
+
 using namespace facebook::jsi;
 std::unordered_map<napi_env, JSR*> JSR::env_to_jsr_cache;
 
@@ -15,7 +17,9 @@ class RuntimeLockGuard {
     runtime_->lock();
   }
 
-  ~RuntimeLockGuard() { runtime_->unlock(); }
+  ~RuntimeLockGuard() {
+    runtime_->unlock();
+  }
 
  private:
   JSR* runtime_;
@@ -97,6 +101,7 @@ napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
   if (env == nullptr) return napi_invalid_arg;
   RuntimeLockGuard lock(runtime->hermes);
   *env = (napi_env)runtime->hermes->rt->createNodeApiEnv(9);
+  if (*env == nullptr) return napi_generic_failure;
   JSR::env_to_jsr_cache.insert(std::make_pair(*env, runtime->hermes));
   return napi_ok;
 }
@@ -112,7 +117,9 @@ facebook::jsi::Runtime* js_get_jsi_runtime(napi_env env) {
 napi_status js_set_runtime_flags(const char* flags) { return napi_ok; }
 
 napi_status js_free_napi_env(napi_env env) {
+#ifndef NS_HERMES_SKIP_ENV_CLEANUP_HOOKS
   js_run_env_cleanup_hooks(env);
+#endif
   JSR::env_to_jsr_cache.erase(env);
   return napi_ok;
 }

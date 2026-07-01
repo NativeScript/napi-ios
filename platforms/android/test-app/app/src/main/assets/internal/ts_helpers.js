@@ -356,39 +356,45 @@
       return BLOB_STORE.get(url);
     };
     URL.InternalAccessor = InternalAccessor;
-    Object.defineProperty(URL.prototype, "searchParams", {
-      get() {
-        if (this._searchParams == null) {
-          this._searchParams = new URLSearchParams(this.search);
-          Object.defineProperty(this._searchParams, "_url", {
-            enumerable: false,
-            writable: false,
-            value: this,
-          });
-          this._searchParams._append = this._searchParams.append;
-          this._searchParams.append = function (name, value) {
-            this._append(name, value);
-            this._url.search = this.toString();
-          };
-          this._searchParams._delete = this._searchParams.delete;
-          this._searchParams.delete = function (name) {
-            this._delete(name);
-            this._url.search = this.toString();
-          };
-          this._searchParams._set = this._searchParams.set;
-          this._searchParams.set = function (name, value) {
-            this._set(name, value);
-            this._url.search = this.toString();
-          };
-          this._searchParams._sort = this._searchParams.sort;
-          this._searchParams.sort = function () {
-            this._sort();
-            this._url.search = this.toString();
-          };
-        }
-        return this._searchParams;
-      },
-    });
+    const searchParamsDescriptor = Object.getOwnPropertyDescriptor(
+      URL.prototype,
+      "searchParams"
+    );
+    if (!searchParamsDescriptor || searchParamsDescriptor.configurable) {
+      Object.defineProperty(URL.prototype, "searchParams", {
+        get() {
+          if (this._searchParams == null) {
+            this._searchParams = new URLSearchParams(this.search);
+            Object.defineProperty(this._searchParams, "_url", {
+              enumerable: false,
+              writable: false,
+              value: this,
+            });
+            this._searchParams._append = this._searchParams.append;
+            this._searchParams.append = function (name, value) {
+              this._append(name, value);
+              this._url.search = this.toString();
+            };
+            this._searchParams._delete = this._searchParams.delete;
+            this._searchParams.delete = function (name) {
+              this._delete(name);
+              this._url.search = this.toString();
+            };
+            this._searchParams._set = this._searchParams.set;
+            this._searchParams.set = function (name, value) {
+              this._set(name, value);
+              this._url.search = this.toString();
+            };
+            this._searchParams._sort = this._searchParams.sort;
+            this._searchParams.sort = function () {
+              this._sort();
+              this._url.search = this.toString();
+            };
+          }
+          return this._searchParams;
+        },
+      });
+    }
   }
 
   const pendingUnhandledRejections = [];
