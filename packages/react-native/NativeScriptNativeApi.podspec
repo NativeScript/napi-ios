@@ -18,9 +18,9 @@ Pod::Spec.new do |s|
 
   s.source_files = [
     "ios/**/*.{h,mm}",
-    "native-api/ffi/hermes/**/*.h",
-    "native-api/ffi/shared/**/*.h",
-    "native-api/ffi/hermes/NativeApiJsi.mm"
+    "native-api/ffi/objc/hermes/**/*.h",
+    "native-api/ffi/objc/shared/**/*.h",
+    "native-api/ffi/objc/hermes/NativeApiJsi.mm"
   ]
   s.exclude_files = "ios/Fabric/**/*" unless fabric_enabled
   s.public_header_files = "ios/**/*.h"

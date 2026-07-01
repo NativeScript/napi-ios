@@ -162,11 +162,11 @@ function signature_dispatch_path () {
   ffi_backend=$(effective_ffi_backend "$is_macos_napi")
 
   case "$backend" in
-    hermes) echo "./NativeScript/ffi/hermes/GeneratedSignatureDispatch.inc" ;;
-    v8) echo "./NativeScript/ffi/v8/GeneratedSignatureDispatch.inc" ;;
-    jsc) echo "./NativeScript/ffi/jsc/GeneratedSignatureDispatch.inc" ;;
-    quickjs) echo "./NativeScript/ffi/quickjs/GeneratedSignatureDispatch.inc" ;;
-    *) echo "./NativeScript/ffi/napi/GeneratedSignatureDispatch.inc" ;;
+    hermes) echo "./NativeScript/ffi/objc/hermes/GeneratedSignatureDispatch.inc" ;;
+    v8) echo "./NativeScript/ffi/objc/v8/GeneratedSignatureDispatch.inc" ;;
+    jsc) echo "./NativeScript/ffi/objc/jsc/GeneratedSignatureDispatch.inc" ;;
+    quickjs) echo "./NativeScript/ffi/objc/quickjs/GeneratedSignatureDispatch.inc" ;;
+    *) echo "./NativeScript/ffi/objc/napi/GeneratedSignatureDispatch.inc" ;;
   esac
 }
 

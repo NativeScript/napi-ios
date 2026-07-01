@@ -228,68 +228,68 @@ include_directories(
 )
 
 set(FFI_SHARED_SOURCE_FILES
-  ffi/shared/Tasks.cpp
+  ffi/objc/shared/Tasks.cpp
 )
 
 set(FFI_NAPI_SOURCE_FILES
-  ffi/napi/AutoreleasePool.mm
-  ffi/napi/Protocol.mm
-  ffi/napi/ObjCBridge.mm
-  ffi/napi/Block.mm
-  ffi/napi/Class.mm
-  ffi/napi/Closure.mm
-  ffi/napi/ClassMember.mm
-  ffi/napi/Cif.mm
-  ffi/napi/TypeConv.mm
-  ffi/napi/Util.mm
-  ffi/napi/Struct.mm
-  ffi/napi/ObjectRef.mm
-  ffi/napi/JSObject.mm
-  ffi/napi/Enum.mm
-  ffi/napi/Variable.mm
-  ffi/napi/Object.mm
-  ffi/napi/CFunction.mm
-  ffi/napi/Interop.mm
-  ffi/napi/InlineFunctions.mm
-  ffi/napi/ClassBuilder.mm
+  ffi/objc/napi/AutoreleasePool.mm
+  ffi/objc/napi/Protocol.mm
+  ffi/objc/napi/ObjCBridge.mm
+  ffi/objc/napi/Block.mm
+  ffi/objc/napi/Class.mm
+  ffi/objc/napi/Closure.mm
+  ffi/objc/napi/ClassMember.mm
+  ffi/objc/napi/Cif.mm
+  ffi/objc/napi/TypeConv.mm
+  ffi/objc/napi/Util.mm
+  ffi/objc/napi/Struct.mm
+  ffi/objc/napi/ObjectRef.mm
+  ffi/objc/napi/JSObject.mm
+  ffi/objc/napi/Enum.mm
+  ffi/objc/napi/Variable.mm
+  ffi/objc/napi/Object.mm
+  ffi/objc/napi/CFunction.mm
+  ffi/objc/napi/Interop.mm
+  ffi/objc/napi/InlineFunctions.mm
+  ffi/objc/napi/ClassBuilder.mm
 )
 
 set(FFI_ENGINE_SHARED_SOURCE_FILES
-  ffi/shared/MetadataState.mm
+  ffi/objc/shared/MetadataState.mm
 )
 
 set(FFI_HERMES_ENGINE_SOURCE_FILES
   ${FFI_ENGINE_SHARED_SOURCE_FILES}
-  ffi/hermes/NativeApiJsi.mm
+  ffi/objc/hermes/NativeApiJsi.mm
 )
 
 set(FFI_V8_ENGINE_SOURCE_FILES
   ${FFI_ENGINE_SHARED_SOURCE_FILES}
-  ffi/v8/NativeApiV8.mm
-  ffi/v8/NativeApiV8HostObjects.mm
-  ffi/v8/NativeApiV8Runtime.mm
-  ffi/v8/NativeApiV8Value.mm
+  ffi/objc/v8/NativeApiV8.mm
+  ffi/objc/v8/NativeApiV8HostObjects.mm
+  ffi/objc/v8/NativeApiV8Runtime.mm
+  ffi/objc/v8/NativeApiV8Value.mm
 )
 
 set(FFI_JSC_ENGINE_SOURCE_FILES
   ${FFI_ENGINE_SHARED_SOURCE_FILES}
-  ffi/jsc/NativeApiJSC.mm
-  ffi/jsc/NativeApiJSCHostObjects.mm
-  ffi/jsc/NativeApiJSCRuntime.mm
-  ffi/jsc/NativeApiJSCValue.mm
+  ffi/objc/jsc/NativeApiJSC.mm
+  ffi/objc/jsc/NativeApiJSCHostObjects.mm
+  ffi/objc/jsc/NativeApiJSCRuntime.mm
+  ffi/objc/jsc/NativeApiJSCValue.mm
 )
 
 set(FFI_QUICKJS_ENGINE_SOURCE_FILES
   ${FFI_ENGINE_SHARED_SOURCE_FILES}
-  ffi/quickjs/NativeApiQuickJSHostObjects.mm
-  ffi/quickjs/NativeApiQuickJS.mm
-  ffi/quickjs/NativeApiQuickJSRuntime.mm
-  ffi/quickjs/NativeApiQuickJSValue.mm
+  ffi/objc/quickjs/NativeApiQuickJSHostObjects.mm
+  ffi/objc/quickjs/NativeApiQuickJS.mm
+  ffi/objc/quickjs/NativeApiQuickJSRuntime.mm
+  ffi/objc/quickjs/NativeApiQuickJSValue.mm
 )
 
 set(SOURCE_FILES
   ${FFI_SHARED_SOURCE_FILES}
-  runtime/NativeScriptException.mm
+  runtime/apple/NativeScriptException.mm
 )
 
 if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "napi")
@@ -302,28 +302,28 @@ endif()
 if(ENABLE_JS_RUNTIME)
   set(SOURCE_FILES
     ${SOURCE_FILES}
-    runtime/modules/console/Console.cpp
-    runtime/Runtime.cpp
-    runtime/modules/worker/Worker.mm
-    runtime/modules/worker/MessageJSON.cpp
-    runtime/modules/worker/MessageV8.cpp
-    runtime/modules/worker/ConcurrentQueue.cpp
-    runtime/modules/worker/WorkerImpl.mm
-    runtime/modules/worker/WorkerImpl.mm
-    runtime/modules/module/ModuleInternal.cpp
-    runtime/modules/node/Node.cpp
-    runtime/modules/node/FS.cpp
-    runtime/modules/node/Path.cpp
-    runtime/modules/node/Process.cpp
-    runtime/modules/node/VM.cpp
-    runtime/modules/performance/Performance.cpp
-    runtime/ThreadSafeFunction.mm
-    runtime/Bundle.mm
-    runtime/modules/timers/Timers.mm
-    runtime/modules/app/App.mm
-    runtime/modules/web/Web.mm
-    runtime/NativeScript.mm
-    runtime/RuntimeConfig.cpp
+    runtime/apple/modules/console/Console.cpp
+    runtime/apple/Runtime.cpp
+    runtime/apple/modules/worker/Worker.mm
+    runtime/apple/modules/worker/MessageJSON.cpp
+    runtime/apple/modules/worker/MessageV8.cpp
+    runtime/apple/modules/worker/ConcurrentQueue.cpp
+    runtime/apple/modules/worker/WorkerImpl.mm
+    runtime/apple/modules/worker/WorkerImpl.mm
+    runtime/apple/modules/module/ModuleInternal.cpp
+    runtime/apple/modules/node/Node.cpp
+    runtime/apple/modules/node/FS.cpp
+    runtime/apple/modules/node/Path.cpp
+    runtime/apple/modules/node/Process.cpp
+    runtime/apple/modules/node/VM.cpp
+    runtime/apple/modules/performance/Performance.cpp
+    runtime/apple/ThreadSafeFunction.mm
+    runtime/apple/Bundle.mm
+    runtime/apple/modules/timers/Timers.mm
+    runtime/apple/modules/app/App.mm
+    runtime/apple/modules/web/Web.mm
+    runtime/apple/NativeScript.mm
+    runtime/apple/RuntimeConfig.cpp
     runtime/modules/url/ada/ada.cpp
     runtime/modules/url/URL.cpp
     runtime/modules/url/URLSearchParams.cpp

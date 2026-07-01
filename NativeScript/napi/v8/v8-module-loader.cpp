@@ -10,7 +10,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "runtime/RuntimeConfig.h"
+#include "runtime/apple/RuntimeConfig.h"
 
 typedef napi_value (*napi_module_init)(napi_env env, napi_value exports);
 
