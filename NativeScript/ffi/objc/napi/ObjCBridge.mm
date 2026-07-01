@@ -26,6 +26,7 @@
 #include <mach-o/getsect.h>
 #include <objc/runtime.h>
 #include <atomic>
+#include <cstdlib>
 #include <cstring>
 #include <initializer_list>
 #include <mutex>
@@ -45,6 +46,18 @@ std::mutex gLiveBridgeStatesMutex;
 std::unordered_map<const ObjCBridgeState*, uint64_t> gLiveBridgeStates;
 std::atomic<uint64_t> gNextBridgeStateToken{1};
 constexpr const char* kNativePointerProperty = "__ns_native_ptr";
+
+bool envFlagEnabled(const char* name) {
+  const char* value = std::getenv(name);
+  if (value == nullptr || value[0] == '\0') {
+    return false;
+  }
+
+  return std::strcmp(value, "0") != 0 && std::strcmp(value, "false") != 0 &&
+         std::strcmp(value, "FALSE") != 0 && std::strcmp(value, "False") != 0 &&
+         std::strcmp(value, "off") != 0 && std::strcmp(value, "OFF") != 0 &&
+         std::strcmp(value, "no") != 0 && std::strcmp(value, "NO") != 0;
+}
 
 inline void deleteReferenceNow(napi_env env, napi_ref ref, bool unrefFirst) {
   if (env == nullptr || ref == nullptr) {
@@ -958,7 +971,7 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
 
   napi_value result = object;
   const bool nativeIsArray = [nativeObject isKindOfClass:NSArray.class];
-  bool shouldProxyArray = nativeIsArray;
+  bool shouldProxyArray = nativeIsArray && !envFlagEnabled("NS_DISABLE_NAPI_ARRAY_PROXY");
   if (shouldProxyArray) {
     napi_value factory = get_ref_value(env, createNativeProxy);
     napi_value transferOwnershipFunc = get_ref_value(env, this->transferOwnershipToNative);

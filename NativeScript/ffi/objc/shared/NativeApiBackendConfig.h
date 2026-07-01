@@ -20,6 +20,7 @@ struct NativeApiBackendConfig {
   std::shared_ptr<NativeApiBackendScheduler> scheduler = nullptr;
   std::function<void(std::function<void()>)> nativeInvocationInvoker = nullptr;
   std::function<void(std::function<void()>)> nativeCallbackInvoker = nullptr;
+  std::function<void(std::function<void()>)> runtimeCallbackInvoker = nullptr;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker = nullptr;
   std::function<void(std::function<void()>)> jsThreadAsyncCallbackInvoker = nullptr;
   bool invokeCallbacksOnNativeCallerThread = false;

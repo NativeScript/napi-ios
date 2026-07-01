@@ -1,7 +1,7 @@
 Object CreateNativeApi(Runtime& runtime, const NativeApiConfig& config) {
   auto bridge = std::make_shared<NativeApiBridge>(config);
-  return Object::createFromHostObject(
-      runtime, std::make_shared<NativeApiHostObject>(std::move(bridge)));
+  return Object::createFromHostObject(runtime,
+                                      std::make_shared<NativeApiHostObject>(std::move(bridge)));
 }
 
 void NativeApiWriteSmokeStage(const char* stage) {
@@ -10,10 +10,9 @@ void NativeApiWriteSmokeStage(const char* stage) {
     return;
   }
 
-  NSString* path = [NSTemporaryDirectory()
-      stringByAppendingPathComponent:@"NativeScriptNativeApiSmoke.marker"];
-  NSString* content =
-      [NSString stringWithFormat:@"stage=%s\n", stage != nullptr ? stage : ""];
+  NSString* path =
+      [NSTemporaryDirectory() stringByAppendingPathComponent:@"NativeScriptNativeApiSmoke.marker"];
+  NSString* content = [NSString stringWithFormat:@"stage=%s\n", stage != nullptr ? stage : ""];
   [content writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
 
@@ -1563,6 +1562,7 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
     }
     interop.Pointer = wrapInteropFactory(interop.Pointer, { kind: 'pointer', sizeof: pointerSize });
     interop.Reference = wrapInteropFactory(interop.Reference, { kind: 'reference', sizeof: pointerSize });
+    interop.Block = wrapInteropFactory(interop.Block, { kind: 'block', sizeof: pointerSize });
     interop.FunctionReference = wrapInteropFactory(
       interop.FunctionReference,
       { kind: 'functionReference', sizeof: pointerSize }
