@@ -60,8 +60,8 @@
 		221E266E2EDCF1B40095699D /* libTestFixtures.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libTestFixtures.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		221E26C62EDCF22B0095699D /* TKLiveSync.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = TKLiveSync.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		228CA10D2EB9350000A4EC63 /* TestRunner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TestRunner.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NativeScript.xcframework; path = dist/NativeScript.xcframework; sourceTree = "<group>"; };
-		228CA3742EB9377D00A4EC63 /* TKLiveSync.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = TKLiveSync.xcframework; path = dist/TKLiveSync.xcframework; sourceTree = "<group>"; };
+		228CA3702EB9365C00A4EC63 /* NativeScript.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = NativeScript.xcframework; path = ../../dist/NativeScript.xcframework; sourceTree = "<group>"; };
+		228CA3742EB9377D00A4EC63 /* TKLiveSync.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; name = TKLiveSync.xcframework; path = ../../dist/TKLiveSync.xcframework; sourceTree = "<group>"; };
 		228CA7A42EB9387900A4EC63 /* app */ = {isa = PBXFileReference; lastKnownFileType = folder; name = app; path = test/runtime/runner/app; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -312,14 +312,14 @@
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 			);
-			path = "metadata-generator";
+			path = "../../metadata-generator";
 			sourceTree = "<group>";
 		};
 		22D453EB2E23F21F00E2B467 /* NativeScript */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
 			);
-			path = NativeScript;
+			path = ../../NativeScript;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -543,7 +543,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "cd ${PROJECT_DIR}/metadata-generator/dist/arm64/bin\ncp ../../../build-step-metadata-generator.py .\n./build-step-metadata-generator.py\n\nplatformTag=\"ios\"\nif [ \"$PLATFORM_NAME\" = \"macosx\" ]; then\n    platformTag=\"macos\"\nelif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n    platformTag=\"ios-sim\"\nfi\n\narchList=\"$VALID_ARCHS\"\nif [ -z \"$archList\" ]; then\n    archList=\"$ARCHS\"\nfi\n\nfor arch in $archList\ndo\n    outputPath=\"$CONFIGURATION_BUILD_DIR/metadata-$arch.bin\"\n    if [ -s \"$outputPath\" ]; then\n        echo \"keeping generated $outputPath\"\n        continue\n    fi\n\n    sourcePath=\"../../../metadata/metadata.$platformTag.$arch.nsmd\"\n    if [ -f \"$sourcePath\" ]; then\n        echo \"copying fallback $sourcePath -> $outputPath\"\n        cp \"$sourcePath\" \"$outputPath\"\n    else\n        echo \"creating empty $outputPath (missing $sourcePath)\"\n        : > \"$outputPath\"\n    fi\ndone\n";
+			shellScript = "cd ${PROJECT_DIR}/../../metadata-generator/dist/arm64/bin\ncp ../../../build-step-metadata-generator.py .\n./build-step-metadata-generator.py\n\nplatformTag=\"ios\"\nif [ \"$PLATFORM_NAME\" = \"macosx\" ]; then\n    platformTag=\"macos\"\nelif [ \"$PLATFORM_NAME\" = \"iphonesimulator\" ]; then\n    platformTag=\"ios-sim\"\nfi\n\narchList=\"$VALID_ARCHS\"\nif [ -z \"$archList\" ]; then\n    archList=\"$ARCHS\"\nfi\n\nfor arch in $archList\ndo\n    outputPath=\"$CONFIGURATION_BUILD_DIR/metadata-$arch.bin\"\n    if [ -s \"$outputPath\" ]; then\n        echo \"keeping generated $outputPath\"\n        continue\n    fi\n\n    sourcePath=\"../../../metadata/metadata.$platformTag.$arch.nsmd\"\n    if [ -f \"$sourcePath\" ]; then\n        echo \"copying fallback $sourcePath -> $outputPath\"\n        cp \"$sourcePath\" \"$outputPath\"\n    else\n        echo \"creating empty $outputPath (missing $sourcePath)\"\n        : > \"$outputPath\"\n    fi\ndone\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -1007,7 +1007,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/test/runtime/fixtures",
-					"$(SRCROOT)/NativeScript",
+					"$(SRCROOT)/../../NativeScript",
 				);
 				INFOPLIST_FILE = test/runtime/runner/Info.plist;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Listen Music";
@@ -1114,7 +1114,7 @@
 				GENERATE_INFOPLIST_FILE = YES;
 				HEADER_SEARCH_PATHS = (
 					"$(SRCROOT)/test/runtime/fixtures",
-					"$(SRCROOT)/NativeScript",
+					"$(SRCROOT)/../../NativeScript",
 				);
 				INFOPLIST_FILE = test/runtime/runner/Info.plist;
 				INFOPLIST_KEY_NSAppleMusicUsageDescription = "Listen Music";

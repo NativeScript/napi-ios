@@ -1,7 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
 MARKER_FILE="$(mktemp /tmp/ns-node-api-cleanup.XXXXXX)"
 
 cleanup() {
@@ -11,9 +12,9 @@ trap cleanup EXIT
 
 rm -f "$MARKER_FILE"
 
-"$ROOT_DIR/test/cli/node_api/build_addon.sh" >/dev/null
+"$SCRIPT_DIR/build_addon.sh" >/dev/null
 NS_NODE_API_CLEANUP_FILE="$MARKER_FILE" \
-  "$ROOT_DIR/dist/nsr" run "$ROOT_DIR/test/cli/node_api/cleanup_teardown.js" >/dev/null
+  "$ROOT_DIR/dist/nsr" run "$SCRIPT_DIR/cleanup_teardown.js" >/dev/null
 
 for _ in $(seq 1 50); do
   if [[ -f "$MARKER_FILE" ]]; then

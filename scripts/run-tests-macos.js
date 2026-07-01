@@ -27,11 +27,11 @@ const cp = require("child_process");
 const crypto = require("crypto");
 const os = require("os");
 
-const projectPath = path.join(__dirname, "../NativeScriptRuntime.xcodeproj");
+const projectPath = path.join(__dirname, "../platforms/apple/NativeScriptRuntime.xcodeproj");
 const scheme = "TestRunner";
 const configuration = "Debug";
 const derivedDataPath = path.join(__dirname, "../build", "derived-data", "macos-tests");
-const testRunnerAppSourcePath = path.join(__dirname, "../test/runtime/runner", "app");
+const testRunnerAppSourcePath = path.join(__dirname, "../platforms/apple/test/runtime/runner", "app");
 const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
 const tkLiveSyncXCFramework = path.join(__dirname, "../dist", "TKLiveSync.xcframework");
 const nativeScriptSourceRoot = path.join(__dirname, "../NativeScript");
@@ -52,11 +52,11 @@ const metadataGeneratorBuildStepScript = path.join(
 );
 const buildStatePath = path.join(derivedDataPath, ".macos-test-build-state.json");
 const macosBuildInputs = [
-    path.join(__dirname, "../NativeScriptRuntime.xcodeproj", "project.pbxproj"),
-    path.join(__dirname, "../test/runtime/runner", "Source Files"),
-    path.join(__dirname, "../test/runtime/runner", "Info.plist"),
-    path.join(__dirname, "../test/runtime/fixtures"),
-    path.join(__dirname, "../TKLiveSync"),
+    path.join(__dirname, "../platforms/apple/NativeScriptRuntime.xcodeproj", "project.pbxproj"),
+    path.join(__dirname, "../platforms/apple/test/runtime/runner", "Source Files"),
+    path.join(__dirname, "../platforms/apple/test/runtime/runner", "Info.plist"),
+    path.join(__dirname, "../platforms/apple/test/runtime/fixtures"),
+    path.join(__dirname, "../platforms/apple/TKLiveSync"),
     path.join(metadataGeneratorRoot, "src"),
     path.join(metadataGeneratorRoot, "include"),
     path.join(metadataGeneratorRoot, "CMakeLists.txt"),

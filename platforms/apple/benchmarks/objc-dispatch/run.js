@@ -7,7 +7,7 @@ const os = require("os");
 const path = require("path");
 const { pathToFileURL } = require("url");
 
-const repoRoot = path.resolve(__dirname, "../..");
+const repoRoot = path.resolve(__dirname, "../../../..");
 const benchmarkFile = path.join(__dirname, "objc-dispatch-benchmarks.js");
 const marker = "NS_BENCH_RESULT:";
 const defaultLegacyRepo = "/Users/dj/.codex/worktrees/0a0e/ios";
@@ -87,7 +87,7 @@ function parseArgs(argv) {
 }
 
 function printUsage() {
-  console.log(`Usage: node benchmarks/objc-dispatch/run.js [options]
+  console.log(`Usage: node platforms/apple/benchmarks/objc-dispatch/run.js [options]
 
 Options:
   --runtime all|napi-node|ios-package|legacy-ios

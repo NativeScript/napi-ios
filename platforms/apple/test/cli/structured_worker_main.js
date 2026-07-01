@@ -1,4 +1,4 @@
-const worker = new Worker("test/cli/structured_worker.js");
+const worker = new Worker("platforms/apple/test/cli/structured_worker.js");
 
 worker.onerror = (error) => {
   console.error("structured worker error", error);

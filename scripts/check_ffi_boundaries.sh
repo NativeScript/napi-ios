@@ -161,7 +161,7 @@ if command -v rg >/dev/null 2>&1; then
   STALE_FFI_PATTERN='NS_FFI_BACKEND=''engine|--ffi-''engine|native-api-''jsi|ffi/(direct|engine)|ffi/objc/(direct|engine|shared/jsi)'
   if rg -n "$STALE_FFI_PATTERN" \
     "$ROOT_DIR/NativeScript" "$ROOT_DIR/scripts" "$ROOT_DIR/packages" \
-    "$ROOT_DIR/metadata-generator" "$ROOT_DIR/benchmarks" \
+    "$ROOT_DIR/metadata-generator" "$ROOT_DIR/platforms/apple/benchmarks" \
     -g '!NativeScript/ffi/objc/napi/GeneratedSignatureDispatch.inc'; then
     echo "Stale FFI layer names are not allowed." >&2
     exit 1

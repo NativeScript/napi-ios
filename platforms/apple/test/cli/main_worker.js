@@ -1,4 +1,4 @@
-const worker = new Worker("test/cli/worker.js");
+const worker = new Worker("platforms/apple/test/cli/worker.js");
 
 worker.onerror = (e) => {
   console.error("Worker error:", e);

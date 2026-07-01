@@ -1,7 +1,9 @@
 #!/bin/bash
 set -euo pipefail
 
-ROOT_DIR="$(cd "$(dirname "$0")/../../.." && pwd)"
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/../../../../.." && pwd)"
+TEST_RUNNER="$SCRIPT_DIR/run_memory_semantics_tests.js"
 GREP_FILTER="${1:-}"
 ENGINES=(v8 quickjs jsc hermes)
 
@@ -12,8 +14,8 @@ for engine in "${ENGINES[@]}"; do
 
   echo "=== Running CLI memory suite for ${engine} ==="
   if [[ -n "$GREP_FILTER" ]]; then
-    node "$ROOT_DIR/test/cli/memory/run_memory_semantics_tests.js" --repeat 1 --grep "$GREP_FILTER"
+    node "$TEST_RUNNER" --repeat 1 --grep "$GREP_FILTER"
   else
-    node "$ROOT_DIR/test/cli/memory/run_memory_semantics_tests.js" --repeat 1
+    node "$TEST_RUNNER" --repeat 1
   fi
 done
