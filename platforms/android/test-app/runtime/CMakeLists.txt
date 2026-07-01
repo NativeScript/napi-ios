@@ -23,11 +23,11 @@ set(MI_OVERRIDE OFF)
 
 if (V8_13)
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -std=c++20")
-elseif ()
+else ()
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -std=c++17")
 endif ()
 
-if (SHERMES)
+if (HERMES OR SHERMES)
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -frtti")
 else ()
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -fno-rtti")
@@ -52,59 +52,77 @@ endif ()
 #add_library( v8_shared STATIC IMPORTED )
 #set_target_properties( v8_shared PROPERTIES IMPORTED_LOCATION ${CMAKE_SOURCE_DIR}/src/main/libs/${ANDROID_ABI}/libv8android.so )
 
+get_filename_component(REPO_ROOT "${PROJECT_SOURCE_DIR}/../../../.." ABSOLUTE)
+set(NS_ROOT "${REPO_ROOT}/NativeScript")
+set(NS_RUNTIME_DIR "${NS_ROOT}/runtime")
+set(NS_ANDROID_RUNTIME_DIR "${NS_RUNTIME_DIR}/android")
+set(NS_RUNTIME_MODULES_DIR "${NS_RUNTIME_DIR}/modules")
+set(NS_NAPI_DIR "${NS_ROOT}/napi")
+set(NS_ANDROID_NAPI_DIR "${NS_NAPI_DIR}/android")
+set(NS_JNI_NAPI_DIR "${NS_ROOT}/ffi/jni/napi")
+
 # Command info: https://cmake.org/cmake/help/v3.4/command/include_directories.html
 include_directories(
         # zip
         src/main/cpp/zip/include
         # runtime
-        src/main/cpp/runtime
-        src/main/cpp/runtime/assetextractor
-        src/main/cpp/runtime/callbackhandlers
-        src/main/cpp/runtime/console
-        src/main/cpp/runtime/constants
-        src/main/cpp/runtime/conversion
-        src/main/cpp/runtime/exceptions
-        src/main/cpp/runtime/global
-        src/main/cpp/runtime/instrumentation
-        src/main/cpp/runtime/inspector
-        src/main/cpp/runtime/jni
-        src/main/cpp/runtime/messageloop
-        src/main/cpp/runtime/metadata
-        src/main/cpp/runtime/module
-        src/main/cpp/runtime/objectmanager
-        src/main/cpp/runtime/performance
-        src/main/cpp/runtime/profiler
-        src/main/cpp/runtime/sighandler
-        src/main/cpp/runtime/timers
-        src/main/cpp/runtime/util
-        src/main/cpp/runtime/jsonhelper
-        src/main/cpp/runtime/version
-        src/main/cpp/runtime/weakref
-
-        src/main/cpp/modules
-        src/main/cpp/modules/url
+        ${NS_ANDROID_RUNTIME_DIR}
+        ${NS_ANDROID_RUNTIME_DIR}/assetextractor
+        ${NS_ANDROID_RUNTIME_DIR}/inspector
+        ${NS_ANDROID_RUNTIME_DIR}/instrumentation
+        ${NS_ANDROID_RUNTIME_DIR}/messageloop
+        ${NS_ANDROID_RUNTIME_DIR}/modules
+        ${NS_ANDROID_RUNTIME_DIR}/modules/console
+        ${NS_ANDROID_RUNTIME_DIR}/modules/module
+        ${NS_ANDROID_RUNTIME_DIR}/modules/performance
+        ${NS_ANDROID_RUNTIME_DIR}/modules/timers
+        ${NS_ANDROID_RUNTIME_DIR}/profiler
+        ${NS_ANDROID_RUNTIME_DIR}/sighandler
+        ${NS_ANDROID_RUNTIME_DIR}/util
+        ${NS_ANDROID_RUNTIME_DIR}/version
+        # JNI Node-API interop
+        ${NS_JNI_NAPI_DIR}
+        ${NS_JNI_NAPI_DIR}/callbackhandlers
+        ${NS_JNI_NAPI_DIR}/constants
+        ${NS_JNI_NAPI_DIR}/conversion
+        ${NS_JNI_NAPI_DIR}/exceptions
+        ${NS_JNI_NAPI_DIR}/global
+        ${NS_JNI_NAPI_DIR}/jni
+        ${NS_JNI_NAPI_DIR}/jsonhelper
+        ${NS_JNI_NAPI_DIR}/metadata
+        ${NS_JNI_NAPI_DIR}/objectmanager
+        ${NS_JNI_NAPI_DIR}/weakref
+        # shared runtime modules
+        ${NS_RUNTIME_MODULES_DIR}
+        ${NS_RUNTIME_MODULES_DIR}/url
+        # shared Node-API headers
+        ${NS_NAPI_DIR}/common
 )
 
-# Search for all CPP files in runtime/ directory and add them to our sources
-file(GLOB_RECURSE RUNTIME_FILES
-        "${PROJECT_SOURCE_DIR}/src/main/cpp/runtime/*.cpp"
-        "${PROJECT_SOURCE_DIR}/src/main/cpp/runtime/**/*.cpp"
+# Search for all runtime and JNI Node-API interop sources outside platforms/android.
+file(GLOB_RECURSE ANDROID_RUNTIME_FILES
+        "${NS_ANDROID_RUNTIME_DIR}/*.cpp"
 )
 
-file(GLOB_RECURSE MODULE_FILES
-        "${PROJECT_SOURCE_DIR}/src/main/cpp/modules/*.cpp"
-        "${PROJECT_SOURCE_DIR}/src/main/cpp/modules/**/*.cpp"
+file(GLOB_RECURSE JNI_NAPI_FILES
+        "${NS_JNI_NAPI_DIR}/*.cpp"
 )
 
-set(SOURCES ${RUNTIME_FILES} ${MODULE_FILES})
+set(MODULE_FILES
+        ${NS_RUNTIME_MODULES_DIR}/url/URL.cpp
+        ${NS_RUNTIME_MODULES_DIR}/url/URLSearchParams.cpp
+        ${NS_RUNTIME_MODULES_DIR}/url/ada/ada.cpp
+)
+
+set(SOURCES ${ANDROID_RUNTIME_FILES} ${JNI_NAPI_FILES} ${MODULE_FILES})
 
 if (QUICKJS OR QUICKJS_NG)
-    add_subdirectory(${PROJECT_SOURCE_DIR}/src/main/cpp/napi/quickjs/mimalloc-dev mimalloc)
+    add_subdirectory(${NS_ANDROID_NAPI_DIR}/quickjs/mimalloc-dev mimalloc)
 
     if (QUICKJS_NG)
-        set(QJS_SOURCE_DIR src/main/cpp/napi/quickjs/source_ng)
+        set(QJS_SOURCE_DIR ${NS_ANDROID_NAPI_DIR}/quickjs/source_ng)
     else()
-        set(QJS_SOURCE_DIR src/main/cpp/napi/quickjs/source)
+        set(QJS_SOURCE_DIR ${NS_ANDROID_NAPI_DIR}/quickjs/source)
     endif()
 
     set(SOURCES ${SOURCES}
@@ -115,18 +133,18 @@ if (QUICKJS OR QUICKJS_NG)
             ${QJS_SOURCE_DIR}/quickjs.c
             ${QJS_SOURCE_DIR}/dtoa.c
             # napi
-            src/main/cpp/napi/quickjs/quickjs-api.c
-            src/main/cpp/napi/quickjs/jsr.cpp
+            ${NS_ANDROID_NAPI_DIR}/quickjs/quickjs-api.c
+            ${NS_ANDROID_NAPI_DIR}/quickjs/jsr.cpp
 
 
     )
 
     include_directories(
-            src/main/cpp/napi/quickjs
+            ${NS_ANDROID_NAPI_DIR}/quickjs
             ${QJS_SOURCE_DIR}
-            src/main/cpp/napi/common
+            ${NS_NAPI_DIR}/common
             # mimalloc
-            src/main/cpp/napi/quickjs/mimalloc-dev/include
+            ${NS_ANDROID_NAPI_DIR}/quickjs/mimalloc-dev/include
     )
 
 endif ()
@@ -134,80 +152,69 @@ endif ()
 
 if (PRIMJS)
     set(SOURCES ${SOURCES}
-            src/main/cpp/napi/primjs/jsr.cpp
-            src/main/cpp/napi/primjs/code_cache.cc
-            src/main/cpp/napi/primjs/primjs-api.cc
-            src/main/cpp/napi/primjs/napi_env.cc
+            ${NS_ANDROID_NAPI_DIR}/primjs/jsr.cpp
+            ${NS_ANDROID_NAPI_DIR}/primjs/code_cache.cc
+            ${NS_ANDROID_NAPI_DIR}/primjs/primjs-api.cc
+            ${NS_ANDROID_NAPI_DIR}/primjs/napi_env.cc
     )
     include_directories(
-            src/main/cpp/napi/primjs
-            src/main/cpp/napi/primjs/include
-            src/main/cpp/napi/common
+            ${NS_ANDROID_NAPI_DIR}/primjs
+            ${NS_ANDROID_NAPI_DIR}/primjs/include
+            ${NS_NAPI_DIR}/common
     )
 
 endif ()
 
-if (HERMES)
+if (HERMES OR SHERMES)
     include_directories(
-            src/main/cpp/napi/hermes
-            src/main/cpp/napi/hermes/include
-            src/main/cpp/napi/common
+            ${NS_NAPI_DIR}/hermes
+            ${NS_NAPI_DIR}/hermes/include
+            ${NS_NAPI_DIR}/common
     )
     set(SOURCES ${SOURCES}
-            src/main/cpp/napi/hermes/jsr.cpp
-    )
-endif ()
-
-if (SHERMES)
-    include_directories(
-            src/main/cpp/napi/hermes
-            src/main/cpp/napi/hermes/include_shermes
-            src/main/cpp/napi/common
-    )
-    set(SOURCES ${SOURCES}
-            src/main/cpp/napi/hermes/jsr.cpp
+            ${NS_NAPI_DIR}/hermes/jsr.cpp
     )
 endif ()
 
 if (JSC)
     include_directories(
-            src/main/cpp/napi/jsc
-            src/main/cpp/napi/jsc/include
-            src/main/cpp/napi/common
+            ${NS_ANDROID_NAPI_DIR}/jsc
+            ${NS_ANDROID_NAPI_DIR}/jsc/include
+            ${NS_NAPI_DIR}/common
     )
     set(SOURCES ${SOURCES}
-            src/main/cpp/napi/jsc/jsc-api.cpp
-            src/main/cpp/napi/jsc/jsr.cpp
+            ${NS_ANDROID_NAPI_DIR}/jsc/jsc-api.cpp
+            ${NS_ANDROID_NAPI_DIR}/jsc/jsr.cpp
     )
 endif ()
 
 if (V8)
     if (V8_10)
         include_directories(
-                src/main/cpp/napi/v8
-                src/main/cpp/napi/v8-10
-                src/main/cpp/napi/v8-10/include
-                src/main/cpp/napi/common
-                src/main/cpp/napi/v8/v8_inspector
-                src/main/cpp/napi/v8-10/v8_inspector
+                ${NS_ANDROID_NAPI_DIR}/v8
+                ${NS_ANDROID_NAPI_DIR}/v8-10
+                ${NS_ANDROID_NAPI_DIR}/v8-10/include
+                ${NS_NAPI_DIR}/common
+                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
+                ${NS_ANDROID_NAPI_DIR}/v8-10/v8_inspector
         )
     elseif (V8_11)
         include_directories(
-                src/main/cpp/napi/v8
-                src/main/cpp/napi/v8-11
-                src/main/cpp/napi/v8-11/include
-                src/main/cpp/napi/common
-                src/main/cpp/napi/v8/v8_inspector
-                src/main/cpp/napi/v8-11/v8_inspector
+                ${NS_ANDROID_NAPI_DIR}/v8
+                ${NS_ANDROID_NAPI_DIR}/v8-11
+                ${NS_ANDROID_NAPI_DIR}/v8-11/include
+                ${NS_NAPI_DIR}/common
+                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
+                ${NS_ANDROID_NAPI_DIR}/v8-11/v8_inspector
         )
     else ()
         include_directories(
-                src/main/cpp/napi/v8
-                src/main/cpp/napi/v8-13
-                src/main/cpp/napi/v8-13/include
-                src/main/cpp/napi/common
-                src/main/cpp/napi/v8/v8_inspector
-                src/main/cpp/napi/v8-13/v8_inspector
+                ${NS_ANDROID_NAPI_DIR}/v8
+                ${NS_ANDROID_NAPI_DIR}/v8-13
+                ${NS_ANDROID_NAPI_DIR}/v8-13/include
+                ${NS_NAPI_DIR}/common
+                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
+                ${NS_ANDROID_NAPI_DIR}/v8-13/v8_inspector
         )
     endif ()
 
@@ -216,15 +223,15 @@ if (V8)
         set(
                 SOURCES
                 ${SOURCES}
-                src/main/cpp/napi/v8/v8_inspector/Utils.cpp
-                src/main/cpp/napi/v8/v8_inspector/ns-v8-tracing-agent-impl.cpp
+                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector/Utils.cpp
+                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector/ns-v8-tracing-agent-impl.cpp
         )
     endif ()
 
     set(SOURCES ${SOURCES}
-            src/main/cpp/napi/v8/v8-api.cpp
-            src/main/cpp/napi/v8/jsr.cpp
-            src/main/cpp/napi/v8/SimpleAllocator.cpp
+            ${NS_ANDROID_NAPI_DIR}/v8/v8-api.cpp
+            ${NS_ANDROID_NAPI_DIR}/v8/jsr.cpp
+            ${NS_ANDROID_NAPI_DIR}/v8/SimpleAllocator.cpp
     )
 
 
@@ -289,65 +296,57 @@ MESSAGE(STATUS "# CMAKE_CXX_FLAGS: " ${CMAKE_CXX_FLAGS})
 target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/common/${ANDROID_ABI}/libzip.a)
 #target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/common/${ANDROID_ABI}/libclang_rt.asan-aarch64-android.so)
 
-if (SHERMES)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/shermes/${ANDROID_ABI}/libhermesvm.so)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/shermes/${ANDROID_ABI}/libjsi.so)
-    add_compile_definitions(NativeScript, PRIVATE __HERMES__)
-    add_compile_definitions(NativeScript, PRIVATE __SHERMES__)
-endif ()
-
-if (HERMES)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/hermes/${ANDROID_ABI}/libhermes.so)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/hermes/${ANDROID_ABI}/libjsi.so)
-    add_compile_definitions(NativeScript, PRIVATE __HERMES__)
+if (HERMES OR SHERMES)
+    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/hermes/${ANDROID_ABI}/libhermesvm.so)
+    target_compile_definitions(NativeScript PRIVATE __HERMES__ NS_HERMES_SKIP_ENV_CLEANUP_HOOKS)
 endif ()
 
 if (JSC)
     target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/jsc/${ANDROID_ABI}/libjsc.so)
-    add_compile_definitions(NativeScript, PRIVATE __JSC__)
+    target_compile_definitions(NativeScript PRIVATE __JSC__)
 endif ()
 
 if (V8)
-    add_compile_definitions(NativeScript, PRIVATE __V8__)
+    target_compile_definitions(NativeScript PRIVATE __V8__)
 endif ()
 
 if (V8_10)
     target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/v8-10/${ANDROID_ABI}/libv8_monolith.a)
-    add_compile_definitions(NativeScript, PRIVATE __V8_10__)
+    target_compile_definitions(NativeScript PRIVATE __V8_10__)
 endif ()
 
 if (V8_11)
     target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/v8-11/${ANDROID_ABI}/libv8_monolith.a)
-    add_compile_definitions(NativeScript, PRIVATE __V8_11__)
+    target_compile_definitions(NativeScript PRIVATE __V8_11__)
 endif ()
 
 if (V8_13)
     target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/v8-13/${ANDROID_ABI}/libv8_monolith.a)
-    add_compile_definitions(NativeScript, PRIVATE __V8_13__)
+    target_compile_definitions(NativeScript PRIVATE __V8_13__)
 endif ()
 
 if (PRIMJS)
     # target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/primjs/${ANDROID_ABI}/libnapi.so)
     target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/primjs/${ANDROID_ABI}/libquick.so)
-    add_compile_definitions(NativeScript, PRIVATE __PRIMJS__)
+    target_compile_definitions(NativeScript PRIVATE __PRIMJS__)
 endif ()
 
 if (QUICKJS OR QUICKJS_NG)
-    add_compile_definitions(NativeScript, PRIVATE __QJS__)
+    target_compile_definitions(NativeScript PRIVATE __QJS__)
     if (QUICKJS_NG)
-        add_compile_definitions(NativeScript, PRIVATE __QJS_NG__)
+        target_compile_definitions(NativeScript PRIVATE __QJS_NG__)
     endif ()
     if (USE_MIMALLOC)
-        add_compile_definitions(NativeScript, PRIVATE USE_MIMALLOC)
+        target_compile_definitions(NativeScript PRIVATE USE_MIMALLOC)
     endif ()
 endif ()
 
 if (USE_HOST_OBJECTS)
-    add_compile_definitions(NativeScript, PRIVATE USE_HOST_OBJECT)
+    target_compile_definitions(NativeScript PRIVATE USE_HOST_OBJECT)
 endif ()
 
 if (IS_NAPI_MODULE)
-    add_compile_definitions(NativeScript, PRIVATE IS_NAPI_MODULE)
+    target_compile_definitions(NativeScript PRIVATE IS_NAPI_MODULE)
 endif ()
 
 # if("${ANDROID_ABI}" MATCHES "armeabi-v7a$" OR "${ANDROID_ABI}" MATCHES "x86$")
@@ -376,10 +375,7 @@ if (QUICKJS)
         target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
     endif ()
 elseif (HERMES OR SHERMES)
-    find_package(fbjni REQUIRED CONFIG)
-    target_link_libraries(NativeScript ${system-log} ${system-z} fbjni::fbjni ${system-android})
+    target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
 elseif (JSC OR V8 OR PRIMJS)
     target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
 endif ()
-
-

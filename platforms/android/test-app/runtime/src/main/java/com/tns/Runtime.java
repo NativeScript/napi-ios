@@ -481,24 +481,30 @@ public class Runtime {
                     }
 
                     /*
-                    	Send a message to the Main Thread to `shake hands`,
-                    	Main Thread will cache the Worker Handler for later use
+                        Send a message to the Main Thread to `shake hands`,
+                        Main Thread will verify the Worker runtime is still alive.
                      */
                     Message msg = Message.obtain();
                     msg.arg1 = MessageType.Handshake;
                     msg.arg2 = runtime.runtimeId;
 
                     runtime.mainThreadHandler.sendMessage(msg);
-                    runtime.runWorker(runtime.runtimeId, filePath);
 
+                    runtime.runWorker(runtime.runtimeId, filePath);
                     runtime.processPendingMessages();
+
+                    Message readyMsg = Message.obtain();
+                    readyMsg.arg1 = MessageType.WorkerReady;
+                    readyMsg.arg2 = runtime.runtimeId;
+
+                    runtime.mainThreadHandler.sendMessage(readyMsg);
                 }
             }));
         }
     }
 
     private void processPendingMessages() {
-        Queue<Message> messages = Runtime.pendingWorkerMessages.get(this.getWorkerId());
+        Queue<Message> messages = Runtime.pendingWorkerMessages.remove(this.getWorkerId());
         if (messages == null) {
             return;
         }
@@ -526,8 +532,8 @@ public class Runtime {
                 WorkerObjectOnMessageCallback(Runtime.getCurrentRuntime().runtimeId, msg.arg2, msg.obj.toString());
             }
             /*
-            	Handle a 'Handshake' message sent from a new Worker,
-            	so that the Main may cache it and send messages to it later
+                Handle a 'Handshake' message sent from a new Worker,
+                so that the Main may verify that the Worker has not already terminated
              */
             else if (msg.arg1 == MessageType.Handshake) {
                 int senderRuntimeId = msg.arg2;
@@ -542,12 +548,31 @@ public class Runtime {
 
                     return;
                 }
+            }
+            /*
+                Handle a 'WorkerReady' message sent after a Worker script has loaded,
+                so that the Main may cache it and send messages to it later
+             */
+            else if (msg.arg1 == MessageType.WorkerReady) {
+                int senderRuntimeId = msg.arg2;
+                Runtime workerRuntime = runtimeCache.get(senderRuntimeId);
+                Runtime mainRuntime = Runtime.getCurrentRuntime();
+
+                // If worker has had its close/terminate called before the threads could shake hands
+                if (workerRuntime == null) {
+                    if (mainRuntime.logger.isEnabled()) {
+                        mainRuntime.logger.write("Main thread couldn't mark worker (runtimeId: " + workerRuntime + ") as ready because it has been terminated!");
+                    }
+
+                    return;
+                }
 
                 /*
                 	Main thread now has a reference to the Worker's handler,
                 	so messaging between the two threads can begin
                  */
                 mainRuntime.workerIdToHandler.put(workerRuntime.getWorkerId(), workerRuntime.getHandler());
+                workerRuntime.processPendingMessages();
 
                 if (mainRuntime.logger.isEnabled()) {
                     mainRuntime.logger.write("Worker thread (workerId:" + workerRuntime.getWorkerId() + ") shook hands with the main thread!");
@@ -1469,6 +1494,7 @@ public class Runtime {
         Message msg = Message.obtain();
         msg.obj = message;
         msg.arg1 = MessageType.MainToWorker;
+        msg.arg2 = workerId;
 
         boolean hasKey = currentRuntime.workerIdToHandler.containsKey(workerId);
         Handler workerHandler = currentRuntime.workerIdToHandler.get(workerId);

@@ -15,9 +15,9 @@ LAUNCH_TIMEOUT_SECONDS=${RN_FFI_COMPAT_LAUNCH_TIMEOUT_SECONDS:-120}
 BUNDLE_ID="org.reactjs.native.example.$APP_NAME"
 MARKER="NATIVESCRIPT_RN_FFI_COMPAT"
 MARKER_FILE_NAME="NativeScriptNativeApiSmoke.marker"
-APP_TSX="$REPO_ROOT/test/react-native/ffi-compat/App.tsx"
-RUNTIME_TESTS_SOURCE="$REPO_ROOT/test/runtime/runner/app/tests"
-FIXTURES_SOURCE="$REPO_ROOT/test/runtime/fixtures"
+APP_TSX="$REPO_ROOT/platforms/apple/test/react-native/ffi-compat/App.tsx"
+RUNTIME_TESTS_SOURCE="$REPO_ROOT/platforms/apple/test/runtime/runner/app/tests"
+FIXTURES_SOURCE="$REPO_ROOT/platforms/apple/test/runtime/fixtures"
 GENERATED_METADATA_DIR="$APP_ROOT/metadata"
 
 function rn_generate_ffi_test_metadata() {

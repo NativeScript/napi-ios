@@ -31,6 +31,21 @@ def getBuildArguments = { ->
         arguments.add("./gradlew")
     }
     arguments.add(":app:installDebug")
+    if (project.hasProperty("engine")) {
+        arguments.add("-Pengine=${engine}")
+        if (!project.hasProperty("ns_engine")) {
+            arguments.add("-Pns_engine=${engine}")
+        }
+    }
+    if (project.hasProperty("ns_engine")) {
+        arguments.add("-Pns_engine=${ns_engine}")
+    }
+    if (project.hasProperty("ndkDirectory")) {
+        arguments.add("-PndkDirectory=${ndkDirectory}")
+    }
+    if (project.hasProperty("ndkVersion")) {
+        arguments.add("-PndkVersion=${ndkVersion}")
+    }
     if (onlyX86) {
         arguments.add("-PonlyX86")
     }
@@ -50,14 +65,26 @@ task installApk(type: Exec) {
     }
 }
 
+task clearInstalledAppData(type: Exec) {
+    doFirst {
+        println "Clearing test application data"
+
+        if (isWinOs) {
+            commandLine "cmd", "/c", "adb", runOnDeviceOrEmulator, "shell", "pm", "clear", "com.tns.testapplication"
+        } else {
+            commandLine "adb", runOnDeviceOrEmulator, "shell", "pm", "clear", "com.tns.testapplication"
+        }
+    }
+}
+
 task runAdbAsRoot(type: Exec) {
     doFirst {
         println "Running adb as root"
 
         if (isWinOs) {
-            commandLine "cmd", "/c", "adb", "-e", "root"
+            commandLine "cmd", "/c", "adb", runOnDeviceOrEmulator, "root"
         } else {
-            commandLine "adb", "-e", "root"
+            commandLine "adb", runOnDeviceOrEmulator, "root"
         }
         sleep(10 * 1000) // wait 10s to make sure adb properly restarts, otherwise error: closed might happen on next command
     }
@@ -68,9 +95,9 @@ task deletePreviousResultXml(type: Exec) {
         println "Removing previous android_unit_test_results.xml"
 
         if (isWinOs) {
-            commandLine "cmd", "/c", "adb", runOnDeviceOrEmulator, "-e", "shell", "rm", "-rf", "/data/data/com.tns.testapplication/android_unit_test_results.xml"
+            commandLine "cmd", "/c", "adb", runOnDeviceOrEmulator, "shell", "rm", "-rf", "/data/data/com.tns.testapplication/android_unit_test_results.xml"
         } else {
-            commandLine "adb", runOnDeviceOrEmulator, "-e", "shell", "rm", "-rf", "/data/data/com.tns.testapplication/android_unit_test_results.xml"
+            commandLine "adb", runOnDeviceOrEmulator, "shell", "rm", "-rf", "/data/data/com.tns.testapplication/android_unit_test_results.xml"
         }
     }
 }
@@ -80,9 +107,9 @@ task startInstalledApk(type: Exec) {
         println "Starting test application"
 
         if (isWinOs) {
-            commandLine "cmd", "/c", "adb", runOnDeviceOrEmulator, "-e", "shell", "am", "start", "-n", "com.tns.testapplication/com.tns.NativeScriptActivity", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER"
+            commandLine "cmd", "/c", "adb", runOnDeviceOrEmulator, "shell", "am", "start", "-n", "com.tns.testapplication/com.tns.NativeScriptActivity", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER"
         } else {
-            commandLine "adb", runOnDeviceOrEmulator, "-e", "shell", "am", "start", "-n", "com.tns.testapplication/com.tns.NativeScriptActivity", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER"
+            commandLine "adb", runOnDeviceOrEmulator, "shell", "am", "start", "-n", "com.tns.testapplication/com.tns.NativeScriptActivity", "-a", "android.intent.action.MAIN", "-c", "android.intent.category.LAUNCHER"
         }
     }
 }
@@ -133,7 +160,8 @@ task runtests {
 runAdbAsRoot.dependsOn(waitForEmulatorToStart)
 deletePreviousResultXml.dependsOn(runAdbAsRoot)
 installApk.dependsOn(deletePreviousResultXml)
-startInstalledApk.dependsOn(installApk)
+clearInstalledAppData.dependsOn(installApk)
+startInstalledApk.dependsOn(clearInstalledAppData)
 createDistFolder.dependsOn(startInstalledApk)
 waitForUnitTestResultFile.dependsOn(createDistFolder)
 copyResultToDist.dependsOn(waitForUnitTestResultFile)

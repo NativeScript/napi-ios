@@ -11,4 +11,5 @@ public class MessageType {
     public static int CloseWorker = 6;
     public static int BubbleUpException = 7;
     public static int TerminateAndCloseThread = 8;
+    public static int WorkerReady = 9;
 }

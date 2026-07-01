@@ -207,6 +207,12 @@
             // Attempt writing with each possible environment.
             // Track errors in case no write succeeds
             try {
+                if (typeof __JUnitSaveResults === "function") {
+                    __JUnitSaveResults(text);
+                    return;
+                }
+            } catch (f) { errors.push('  tns-android attempt: ' + f.message); }
+            try {
                 phantomWrite(path, filename, text);
                 return;
             } catch (e) { errors.push('  PhantomJs attempt: ' + e.message); }
@@ -214,10 +220,6 @@
                 nodeWrite(path, filename, text);
                 return;
             } catch (f) { errors.push('  NodeJS attempt: ' + f.message); }
-            try {
-                __JUnitSaveResults(text);
-                return;
-            } catch (f) { errors.push('  tns-android attempt: ' + f.message); }
 
             // If made it here, no write succeeded.  Let user know.
             log("Warning: writing junit report failed for '" + path + "', '" +

@@ -17,7 +17,7 @@ LAUNCH_TIMEOUT_SECONDS=${RN_DEMO_LAUNCH_TIMEOUT_SECONDS:-90}
 BUNDLE_ID="org.reactjs.native.example.$APP_NAME"
 MARKER="NATIVESCRIPT_RN_TURBO_DEMO_PASS"
 MARKER_FILE_NAME="NativeScriptNativeApiSmoke.marker"
-DEMO_APP_TSX="$REPO_ROOT/examples/react-native-demo/App.tsx"
+DEMO_APP_TSX="$REPO_ROOT/platforms/apple/examples/react-native-demo/App.tsx"
 
 rn_build_turbo_tarball
 TARBALL=$(rn_latest_turbo_tarball)
