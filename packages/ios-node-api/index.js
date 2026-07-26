@@ -15,8 +15,12 @@ if (typeof interop === "undefined") {
 
     const module = { exports: {} };
 
+    // `URL.pathname` is percent-encoded, but `process.dlopen` takes a filesystem path. Without
+    // decoding, a space in the path arrives as "%20" and the load fails with "no such file" —
+    // which happens for any app bundle whose path contains a space, e.g.
+    // /Applications/My App.app/… → /Applications/My%20App.app/…
     // deno-lint-ignore no-process-globals
-    process.dlopen(module, new URL(path, metaURL).pathname);
+    process.dlopen(module, decodeURIComponent(new URL(path, metaURL).pathname));
 
     module.exports.init(
       // deno-lint-ignore no-process-globals
