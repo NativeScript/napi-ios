@@ -968,7 +968,7 @@ napi_value ObjectManager::GetEmptyObject() {
     NAPI_GUARD(napi_get_and_clear_last_exception(m_env, &ex)) {}
 
     napi_value jsWrapper = nullptr;
-    auto status = napi_new_instance(m_env, emptyObjCtorFunc, 0, nullptr, &jsWrapper);
+    status = napi_new_instance(m_env, emptyObjCtorFunc, 0, nullptr, &jsWrapper);
     if (status == napi_ok && !napi_util::is_null_or_undefined(m_env, jsWrapper)) {
         return jsWrapper;
     }
