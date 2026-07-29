@@ -4,10 +4,10 @@
 JSR::JSR() = default;
 tns::ConcurrentMap<napi_env, JSR *> JSR::env_to_jsr_cache;
 
-napi_status js_create_runtime(napi_runtime *runtime) {
+napi_status js_create_runtime(jsr_ns_runtime *runtime) {
     return qjs_create_runtime(runtime);
 }
-napi_status js_create_napi_env(napi_env *env, napi_runtime runtime) {
+napi_status js_create_napi_env(napi_env *env, jsr_ns_runtime runtime) {
     napi_status status = qjs_create_napi_env(env, runtime);
     JSR::env_to_jsr_cache.Insert((*env), new JSR());
     return status;
@@ -38,7 +38,7 @@ napi_status js_free_napi_env(napi_env env) {
     return qjs_free_napi_env(env);
 }
 
-napi_status js_free_runtime(napi_runtime runtime) {
+napi_status js_free_runtime(jsr_ns_runtime runtime) {
     return qjs_free_runtime(runtime);
 }
 
