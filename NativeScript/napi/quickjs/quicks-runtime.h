@@ -9,14 +9,14 @@
 
 EXTERN_C_START
 
-NAPI_EXTERN napi_status NAPI_CDECL qjs_create_runtime(napi_runtime* runtime);
+NAPI_EXTERN napi_status NAPI_CDECL qjs_create_runtime(jsr_ns_runtime* runtime);
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_create_napi_env(napi_env* env,
-                                                       napi_runtime runtime);
+                                                       jsr_ns_runtime runtime);
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_free_napi_env(napi_env env);
 
-NAPI_EXTERN napi_status NAPI_CDECL qjs_free_runtime(napi_runtime runtime);
+NAPI_EXTERN napi_status NAPI_CDECL qjs_free_runtime(jsr_ns_runtime runtime);
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_execute_script(napi_env env,
                                                       napi_value script,

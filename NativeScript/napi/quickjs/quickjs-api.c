@@ -213,7 +213,7 @@ typedef struct JsAtoms {
 
 typedef struct napi_env__ {
   JSValue referenceSymbolValue;  // size_t * 2
-  napi_runtime runtime;          // size_t
+  jsr_ns_runtime runtime;          // size_t
   JSContext* context;            // size_t
   LIST_HEAD(, napi_handle_scope__)
   handleScopeList;  // size_t
@@ -230,7 +230,7 @@ typedef struct napi_env__ {
   int64_t usedMemory;
 } napi_env__;
 
-typedef struct napi_runtime__ {
+typedef struct jsr_ns_runtime__ {
   JSRuntime* runtime;               // size_t
   JSClassID constructorClassId;     // uint32_t
   JSClassID functionClassId;        // uint32_t
@@ -238,7 +238,7 @@ typedef struct napi_runtime__ {
   JSClassID napiHostObjectClassId;  // uint32_t
   JSClassID napiObjectClassId;      // uint32_t
 
-} napi_runtime__;
+} jsr_ns_runtime__;
 
 typedef struct napi_callback_info__ {
   JSValueConst newTarget;  // size_t * 2
@@ -4167,10 +4167,10 @@ napi_status napi_is_host_object(napi_env env, napi_value object, bool* result) {
  * --------------------------------
  */
 
-napi_status qjs_create_runtime(napi_runtime* runtime) {
+napi_status qjs_create_runtime(jsr_ns_runtime* runtime) {
   assert(runtime);
 
-  *runtime = mi_malloc(sizeof(napi_runtime__));
+  *runtime = mi_malloc(sizeof(jsr_ns_runtime__));
 
 #ifdef USE_MIMALLOC
   (*runtime)->runtime = JS_NewRuntime2(&mi_mf, NULL);
@@ -4294,7 +4294,7 @@ static JSValue JSEngineCallback(JSContext* ctx, JSValueConst this_val, int argc,
   return JS_UNDEFINED;
 }
 
-napi_status qjs_create_napi_env(napi_env* env, napi_runtime runtime) {
+napi_status qjs_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
   assert(env && runtime);
 
   *env = (napi_env__*)mi_zalloc(sizeof(struct napi_env__));
@@ -4438,7 +4438,7 @@ napi_status qjs_free_napi_env(napi_env env) {
   return napi_clear_last_error(env);
 }
 
-napi_status qjs_free_runtime(napi_runtime runtime) {
+napi_status qjs_free_runtime(jsr_ns_runtime runtime) {
   assert(runtime);
 
   napi_env env = (napi_env)JS_GetRuntimeOpaque(runtime->runtime);
