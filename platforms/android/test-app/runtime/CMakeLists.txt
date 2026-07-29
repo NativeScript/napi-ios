@@ -24,13 +24,14 @@ set(MI_BUILD_OBJECT OFF)
 set(MI_BUILD_SHARED OFF)
 set(MI_BUILD_TESTS OFF)
 
-if (V8_13)
-    set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -std=c++20")
-else ()
-    set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -std=c++17")
-endif ()
+# All engines build with C++20: the vendored ada 3.3.0 (used by the URL module,
+# compiled for every engine) requires C++20 (std::endian, concepts). Previously
+# only V8_13 got -std=c++20 (and the empty `elseif ()` set nothing for the rest),
+# so non-V8-13 engine builds failed on ada.h.
+set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -std=c++20")
 
 if (HERMES OR SHERMES)
+    # Hermes/JSI headers require RTTI.
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -frtti")
 else ()
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -fno-rtti")
@@ -83,12 +84,16 @@ include_directories(
         ${NS_ANDROID_RUNTIME_DIR}/sighandler
         ${NS_ANDROID_RUNTIME_DIR}/util
         ${NS_ANDROID_RUNTIME_DIR}/version
+        # workers: native worker threading & messaging
+        # (WorkerWrapper, ConcurrentQueue, LooperTasks)
+        ${NS_ANDROID_RUNTIME_DIR}/workers
         # JNI Node-API interop
         ${NS_JNI_NAPI_DIR}
         ${NS_JNI_NAPI_DIR}/callbackhandlers
         ${NS_JNI_NAPI_DIR}/constants
         ${NS_JNI_NAPI_DIR}/conversion
         ${NS_JNI_NAPI_DIR}/exceptions
+        ${NS_JNI_NAPI_DIR}/finalizer
         ${NS_JNI_NAPI_DIR}/global
         ${NS_JNI_NAPI_DIR}/jni
         ${NS_JNI_NAPI_DIR}/jsonhelper
@@ -103,6 +108,8 @@ include_directories(
 )
 
 # Search for all runtime and JNI Node-API interop sources outside platforms/android.
+# The recursive globs pick up the new workers/ and finalizer/ directories, plus
+# inspector/WorkerInspectorClient.cpp for the V8 worker inspector.
 file(GLOB_RECURSE ANDROID_RUNTIME_FILES
         "${NS_ANDROID_RUNTIME_DIR}/*.cpp"
 )
@@ -114,23 +121,48 @@ file(GLOB_RECURSE JNI_NAPI_FILES
 set(MODULE_FILES
         ${NS_RUNTIME_MODULES_DIR}/url/URL.cpp
         ${NS_RUNTIME_MODULES_DIR}/url/URLSearchParams.cpp
+        ${NS_RUNTIME_MODULES_DIR}/url/URLPattern.cpp
         ${NS_RUNTIME_MODULES_DIR}/url/ada/ada.cpp
 )
+# modules/url: URL, URLSearchParams, URLPattern (backed by vendored ada)
 
 set(SOURCES ${ANDROID_RUNTIME_FILES} ${JNI_NAPI_FILES} ${MODULE_FILES})
 
 if (QUICKJS OR QUICKJS_NG)
+    # Build mimalloc (v3) for speed regardless of the APK variant. Android
+    # Gradle passes -DCMAKE_BUILD_TYPE=Debug for debug variants, and mimalloc v3
+    # then *explicitly* defines MI_DEBUG=2 and auto-enables MI_GUARDED (guard
+    # pages) — assertion + invariant checking on the alloc/free hot path that can
+    # make it slower than the system allocator. MI_NO_DEBUG forces MI_DEBUG=0
+    # (and takes priority over the Debug branch, which also suppresses the
+    # auto-guard). arm64 already gets -march=armv8.1-a via v3's default
+    # MI_OPT_ARCH, so no arch flag is needed here.
+    set(MI_NO_DEBUG     ON  CACHE BOOL "" FORCE)  # define MI_DEBUG=0 in all builds
+    set(MI_GUARDED      OFF CACHE BOOL "" FORCE)  # no guard-page allocations
+    set(MI_NO_PADDING   ON  CACHE BOOL "" FORCE)  # define MI_PADDING=0 in all builds
+    set(MI_SECURE       OFF CACHE BOOL "" FORCE)
+    set(MI_BUILD_TESTS  OFF CACHE BOOL "" FORCE)
+    set(MI_BUILD_SHARED OFF CACHE BOOL "" FORCE)  # we only link mimalloc-static
+    set(MI_BUILD_OBJECT OFF CACHE BOOL "" FORCE)
+    set(MI_OVERRIDE     OFF CACHE BOOL "" FORCE)  # we call mi_* explicitly
+
     add_subdirectory(${NS_NAPI_DIR}/quickjs/mimalloc-dev mimalloc)
+
+    # Optimize the mimalloc sources even in a debug configuration, scoped to the
+    # mimalloc target only (not quickjs.c or the rest of the C runtime). -O2 is
+    # appended after the Debug -O0 so it wins; -DNDEBUG drops any remaining
+    # assert()s in mimalloc's own code.
+    target_compile_options(mimalloc-static PRIVATE -O2 -DNDEBUG)
 
     if (QUICKJS_NG)
         set(QJS_SOURCE_DIR ${NS_ANDROID_NAPI_DIR}/quickjs/source_ng)
+        add_compile_definitions(__QUICKJS_NG__)
     else()
         set(QJS_SOURCE_DIR ${NS_ANDROID_NAPI_DIR}/quickjs/source)
     endif()
 
     set(SOURCES ${SOURCES}
             # quickjs
-            ${QJS_SOURCE_DIR}/cutils.c
             ${QJS_SOURCE_DIR}/libregexp.c
             ${QJS_SOURCE_DIR}/libunicode.c
             ${QJS_SOURCE_DIR}/quickjs.c
@@ -141,6 +173,12 @@ if (QUICKJS OR QUICKJS_NG)
 
 
     )
+
+    if (NOT QUICKJS_NG)
+        set(SOURCES ${SOURCES}
+            ${QJS_SOURCE_DIR}/cutils.c
+        )
+    endif ()
 
     include_directories(
             ${NS_ANDROID_NAPI_DIR}/quickjs
@@ -157,9 +195,8 @@ endif ()
 if (PRIMJS)
     set(SOURCES ${SOURCES}
             ${NS_ANDROID_NAPI_DIR}/primjs/jsr.cpp
-            ${NS_ANDROID_NAPI_DIR}/primjs/code_cache.cc
-            ${NS_ANDROID_NAPI_DIR}/primjs/primjs-api.cc
-            ${NS_ANDROID_NAPI_DIR}/primjs/napi_env.cc
+            ${NS_ANDROID_NAPI_DIR}/primjs/js_native_api_adapter.cc
+            ${NS_ANDROID_NAPI_DIR}/primjs/js_native_api_extensions.cc
     )
     include_directories(
             ${NS_ANDROID_NAPI_DIR}/primjs
@@ -170,6 +207,8 @@ if (PRIMJS)
 endif ()
 
 if (HERMES OR SHERMES)
+    # Hermes is the static-hermes (hermesvm) engine. Headers are extracted from
+    # the hermes-engine AAR into napi/hermes/include.
     include_directories(
             ${NS_NAPI_DIR}/hermes
             ${NS_NAPI_DIR}/hermes/include
@@ -302,12 +341,30 @@ target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/common/${
 #target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/common/${ANDROID_ABI}/libclang_rt.asan-aarch64-android.so)
 
 if (HERMES OR SHERMES)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/hermes/${ANDROID_ABI}/libhermesvm.so)
+    # Select debug or release Hermes .so files based on build type.
+    # Optimized builds use the MinSizeRel release libraries; all other builds
+    # (including regular debug and debugOptimized-with-inspector) use the debug
+    # libraries, which include HERMES_ENABLE_DEBUGGER and full debug info.
+    if (OPTIMIZED_BUILD OR OPTIMIZED_WITH_INSPECTOR_BUILD)
+        set(HERMES_LIB_VARIANT release)
+    else ()
+        set(HERMES_LIB_VARIANT debug)
+    endif ()
+
+    set(HERMES_LIB_DIR ${PROJECT_SOURCE_DIR}/src/main/libs/hermes/${HERMES_LIB_VARIANT}/${ANDROID_ABI})
+    MESSAGE(STATUS "# Hermes lib variant: ${HERMES_LIB_VARIANT} (${HERMES_LIB_DIR})")
+
+    target_link_libraries(NativeScript ${HERMES_LIB_DIR}/libhermesvm.so)
+    target_link_libraries(NativeScript ${HERMES_LIB_DIR}/libjsi.so)
     target_compile_definitions(NativeScript PRIVATE __HERMES__ NS_HERMES_SKIP_ENV_CLEANUP_HOOKS)
+
+    # napi_create_host_object / napi_get_host_object_data / napi_is_host_object
+    # are compiled into libhermesvm.so (via hermesNapi) when USE_HOST_OBJECT is
+    # set at Hermes build time. No separate .so to link here.
 endif ()
 
 if (JSC)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/jsc/${ANDROID_ABI}/libjsc.so)
+    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/jsc/${ANDROID_ABI}/libJavaScriptCore.so)
     target_compile_definitions(NativeScript PRIVATE __JSC__)
 endif ()
 
@@ -331,8 +388,12 @@ if (V8_13)
 endif ()
 
 if (PRIMJS)
-    # target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/primjs/${ANDROID_ABI}/libnapi.so)
+    # libnapi.so provides the napi host/setup entry points (napi_new_env,
+    # napi_attach_quickjs, napi_setup_loader, the quickjs<->napi bridges, ...)
+    # and installs the value-op vtable consumed by js_native_api_adapter.cc.
+    # It depends on libquick.so (the quickjs engine); link both.
     target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/primjs/${ANDROID_ABI}/libquick.so)
+    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/primjs/${ANDROID_ABI}/libnapi.so)
     target_compile_definitions(NativeScript PRIVATE __PRIMJS__)
 endif ()
 
@@ -343,6 +404,12 @@ if (QUICKJS OR QUICKJS_NG)
     endif ()
     if (USE_MIMALLOC)
         target_compile_definitions(NativeScript PRIVATE USE_MIMALLOC)
+        # Opt-in mimalloc runtime tuning (see qjs_create_runtime): trades higher
+        # memory residency for fewer syscalls / faster allocation. Enable from
+        # runtime/build.gradle with -DMIMALLOC_PERF=1.
+        if (MIMALLOC_PERF)
+            target_compile_definitions(NativeScript PRIVATE MIMALLOC_PERF)
+        endif ()
     endif ()
 endif ()
 
@@ -354,12 +421,24 @@ if (IS_NAPI_MODULE)
     target_compile_definitions(NativeScript PRIVATE IS_NAPI_MODULE)
 endif ()
 
+# Bytecode builds embed app-relative source names (no "file://" scheme). This
+# lets the JS stack-trace parser (BuildStacktraceFrames) accept those frames and
+# rebuild the full runtime URL from the app root. Wired from runtime/build.gradle.
+if (NS_BYTECODE)
+    add_compile_definitions(NativeScript, PRIVATE NS_BYTECODE_ENABLED)
+endif ()
+
 # if("${ANDROID_ABI}" MATCHES "armeabi-v7a$" OR "${ANDROID_ABI}" MATCHES "x86$")
 #     # On API Level 19 and lower we need to link with android_support
 #     # because it contains some implementation of functions such as "strtoll" and "strtoul"
 #     MESSAGE(STATUS "# Linking with libandroid_support.a")
 #     target_link_libraries(NativeScript ${ANDROID_NDK_ROOT}/sources/cxx-stl/llvm-libc++/libs/${ANDROID_ABI}/libandroid_support.a)
 # endif()
+
+
+if("${ANDROID_ABI}" MATCHES "arm64-v8a$" OR "${ANDROID_ABI}" MATCHES "x86_64$")
+    target_link_options(NativeScript PRIVATE "-Wl,-z,max-page-size=16384")
+endif()
 
 # Command info: https://cmake.org/cmake/help/v3.4/command/find_library.html
 # Searches for a specified prebuilt library and stores the path as a
@@ -380,7 +459,8 @@ if (QUICKJS)
         target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
     endif ()
 elseif (HERMES OR SHERMES)
-    target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
+    find_package(fbjni REQUIRED CONFIG)
+    target_link_libraries(NativeScript ${system-log} ${system-z} fbjni::fbjni ${system-android})
 elseif (JSC OR V8 OR PRIMJS)
     target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
 endif ()
