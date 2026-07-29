@@ -187,9 +187,15 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
   // the IHermes interface, then create the Node-API env on top of it. This is
   // the same path Hermes' own tools (repl, test-runner, napi-runner) use and
   // relies only on symbols exported by libhermesvm.so.
-  void* vmRuntime =
-      facebook::jsi::castInterface<facebook::hermes::IHermes>(runtime->hermes->rt)
-          ->getVMRuntimeUnsafe();
+  auto hermesInterface =
+      facebook::jsi::castInterface<facebook::hermes::IHermes>(runtime->hermes->rt);
+  if (!hermesInterface) {
+    // The linked libhermesvm.so does not expose IHermes, so there is no way to
+    // reach the VM runtime. Fail here rather than dereferencing null.
+    return napi_generic_failure;
+  }
+  void* vmRuntime = hermesInterface->getVMRuntimeUnsafe();
+  if (vmRuntime == nullptr) return napi_generic_failure;
   *env = hermes_napi_create_env(vmRuntime);
 #else
   *env = (napi_env)runtime->hermes->rt->createNodeApiEnv(9);

@@ -252,6 +252,19 @@ android {
         jniLibs.srcDirs = ["$projectDir/libs/jni", "$projectDir/snapshot-build/build/ndk-build/libs", "$projectDir/src/main/jniLibs"]
     }
 
+    packagingOptions {
+        // The Hermes engine build pulls in fbjni, which ships its own
+        // libc++_shared.so alongside the one the runtime module already
+        // packages. The runtime module resolves this for its own merge, but the
+        // app merges the runtime's jniLibs with fbjni's, so it needs the same
+        // rule or :app:mergeDebugNativeLibs fails with "2 files found with path
+        // lib/<abi>/libc++_shared.so". Both copies are the NDK's, so either is
+        // fine. libfbjni.so collides the same way: the runtime module packages a
+        // copy from its jniLibs and the fbjni prefab supplies another.
+        pickFirst "**/libc++_shared.so"
+        pickFirst "**/libfbjni.so"
+    }
+
     signingConfigs {
         release {
             if (project.hasProperty("release")) {
