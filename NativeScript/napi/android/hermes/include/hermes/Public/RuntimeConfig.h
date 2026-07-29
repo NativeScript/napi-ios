@@ -75,7 +75,7 @@ class PinnedHermesValue;
   F(constexpr, bool, Intl, true)                                       \
                                                                        \
   /* Support for using microtasks. */                                  \
-  F(constexpr, bool, MicrotaskQueue, false)                            \
+  F(constexpr, bool, MicrotaskQueue, true)                             \
                                                                        \
   /* Runtime set up for synth trace. */                                \
   F(constexpr, SynthTraceMode, SynthTraceMode, SynthTraceMode::None)   \
