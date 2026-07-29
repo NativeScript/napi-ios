@@ -207,11 +207,20 @@ if (PRIMJS)
 endif ()
 
 if (HERMES OR SHERMES)
-    # Hermes is the static-hermes (hermesvm) engine. Headers are extracted from
-    # the hermes-engine AAR into napi/hermes/include.
+    # Hermes is the static-hermes (hermesvm) engine. Android and Apple link
+    # different Hermes builds, so they use different header sets and only the
+    # JSR implementation (napi/hermes/jsr.cpp) is shared, selected by #ifdef.
+    #
+    # Android uses the stock headers matching the prebuilt libhermesvm.so under
+    # napi/android/hermes/include. It must NOT see napi/hermes/include: that set
+    # belongs to the Apple hermes.xcframework and carries a NativeScript-local
+    # `virtual createNodeApiEnv` on jsi::Runtime. Compiling against it inserts a
+    # vtable slot the prebuilt libhermesvm.so does not have, so virtual dispatch
+    # through jsi::Runtime lands on the wrong function and segfaults while
+    # constructing the runtime.
     include_directories(
+            ${NS_ANDROID_NAPI_DIR}/hermes/include
             ${NS_NAPI_DIR}/hermes
-            ${NS_NAPI_DIR}/hermes/include
             ${NS_NAPI_DIR}/common
     )
     set(SOURCES ${SOURCES}
