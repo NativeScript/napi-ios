@@ -7,6 +7,12 @@
 #include "js_native_api.h"
 #include "quickjs.h"
 
+// The opaque runtime handle used to live in js_native_api_types.h; it now lives
+// in jsr_common.h, which this header cannot include (quickjs-api.c is C and only
+// needs the handle, not the JSR entry points). Redeclaring the typedef is legal
+// and matches how v8/jsr.h and jsc/jsr.h carry their own copies.
+typedef struct jsr_ns_runtime__* jsr_ns_runtime;
+
 EXTERN_C_START
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_create_runtime(jsr_ns_runtime* runtime);
