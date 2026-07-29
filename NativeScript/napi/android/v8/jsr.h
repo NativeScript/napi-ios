@@ -14,8 +14,6 @@
 #include <mutex>
 
 
-typedef struct napi_runtime__ *napi_runtime;
-
 class JSR {
 public:
     JSR();
