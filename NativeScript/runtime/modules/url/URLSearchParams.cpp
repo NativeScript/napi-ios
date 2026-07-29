@@ -58,6 +58,19 @@ napi_value js_str(napi_env env, std::string_view s) {
   return v;
 }
 
+// Brand-checked unwrap of an already-retrieved receiver. Throws "Illegal
+// invocation" (TypeError) when it is not a wrapped URLSearchParams.
+URLSearchParams* GetInstanceOf(napi_env env, napi_value jsThis) {
+  URLSearchParams* instance = nullptr;
+  if (napi_unwrap(env, jsThis, reinterpret_cast<void**>(&instance)) !=
+          napi_ok ||
+      instance == nullptr) {
+    ThrowTypeError(env, "Illegal invocation");
+    return nullptr;
+  }
+  return instance;
+}
+
 // Brand-checked instance retrieval: throws "Illegal invocation" (TypeError)
 // when the receiver is not a wrapped URLSearchParams, matching the spec.
 URLSearchParams* GetInstance(napi_env env, napi_callback_info info) {
@@ -156,29 +169,33 @@ void IteratorClose(napi_env env, napi_value iterObj) {
 
 // The `next` function of a live URLSearchParams iterator.
 napi_value IteratorNext(napi_env env, napi_callback_info info) {
-  void* data = nullptr;
   napi_value jsThis;
-  napi_get_cb_info(env, info, nullptr, nullptr, &jsThis, &data);
-  auto* st = static_cast<IterState*>(data);
-
-  // Brand check: `next` must be invoked on the very iterator it belongs to.
-  // The receiver carries a napi_external wrapping its IterState*; a matching
-  // pointer proves identity. A foreign receiver (e.g. next.call({})) has no
-  // such brand and throws, per spec.
-  if (st == nullptr) {
+  if (napi_get_cb_info(env, info, nullptr, nullptr, &jsThis, nullptr) !=
+      napi_ok) {
     ThrowTypeError(env, "Illegal invocation");
     return nullptr;
   }
+
+  // Brand check *and* state lookup in one step: the iterator state is read out
+  // of the receiver's own external property. A foreign receiver (next.call({}))
+  // carries no such property and is rejected, which is what the spec requires.
+  //
+  // The state is deliberately NOT taken from this callback's `data`, even
+  // though MakeIterator passes it there too: that would require the pointer to
+  // survive a round trip through two different Node-API mechanisms, and PrimJS
+  // does not hand back the same address, so every next() call failed the brand
+  // check and threw.
   napi_value brandVal = nullptr;
   void* brand = nullptr;
   if (napi_get_named_property(env, jsThis, ITER_BRAND_KEY, &brandVal) !=
           napi_ok ||
-      !napi_util::is_of_type(env, brandVal, napi_external) ||
+      napi_util::is_null_or_undefined(env, brandVal) ||
       napi_get_value_external(env, brandVal, &brand) != napi_ok ||
-      brand != st) {
+      brand == nullptr) {
     ThrowTypeError(env, "Illegal invocation");
     return nullptr;
   }
+  auto* st = static_cast<IterState*>(brand);
 
   napi_value result;
   napi_create_object(env, &result);
@@ -717,23 +734,44 @@ napi_value URLSearchParams::ToString(napi_env env, napi_callback_info info) {
 }
 
 napi_value URLSearchParams::Keys(napi_env env, napi_callback_info info) {
+  // Read the callback info once: PrimJS does not return the receiver from a
+  // second napi_get_cb_info call for the same napi_callback_info, so calling it
+  // again inside GetInstance made the unwrap fail and every iterator accessor
+  // throw "Illegal invocation".
   napi_value jsThis;
-  napi_get_cb_info(env, info, nullptr, nullptr, &jsThis, nullptr);
-  if (!GetInstance(env, info)) return nullptr;
+  if (napi_get_cb_info(env, info, nullptr, nullptr, &jsThis, nullptr) !=
+      napi_ok) {
+    return nullptr;
+  }
+  if (!GetInstanceOf(env, jsThis)) return nullptr;
   return MakeIterator(env, jsThis, ITER_KEYS);
 }
 
 napi_value URLSearchParams::Values(napi_env env, napi_callback_info info) {
+  // Read the callback info once: PrimJS does not return the receiver from a
+  // second napi_get_cb_info call for the same napi_callback_info, so calling it
+  // again inside GetInstance made the unwrap fail and every iterator accessor
+  // throw "Illegal invocation".
   napi_value jsThis;
-  napi_get_cb_info(env, info, nullptr, nullptr, &jsThis, nullptr);
-  if (!GetInstance(env, info)) return nullptr;
+  if (napi_get_cb_info(env, info, nullptr, nullptr, &jsThis, nullptr) !=
+      napi_ok) {
+    return nullptr;
+  }
+  if (!GetInstanceOf(env, jsThis)) return nullptr;
   return MakeIterator(env, jsThis, ITER_VALUES);
 }
 
 napi_value URLSearchParams::Entries(napi_env env, napi_callback_info info) {
+  // Read the callback info once: PrimJS does not return the receiver from a
+  // second napi_get_cb_info call for the same napi_callback_info, so calling it
+  // again inside GetInstance made the unwrap fail and every iterator accessor
+  // throw "Illegal invocation".
   napi_value jsThis;
-  napi_get_cb_info(env, info, nullptr, nullptr, &jsThis, nullptr);
-  if (!GetInstance(env, info)) return nullptr;
+  if (napi_get_cb_info(env, info, nullptr, nullptr, &jsThis, nullptr) !=
+      napi_ok) {
+    return nullptr;
+  }
+  if (!GetInstanceOf(env, jsThis)) return nullptr;
   return MakeIterator(env, jsThis, ITER_ENTRIES);
 }
 
