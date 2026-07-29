@@ -62,7 +62,17 @@ function setupEngines() {
   //    previously-applied patch so step 2 always starts from a clean checkout.
   run('git', ['submodule', 'update', '--init', '--force', ...ENGINES.map((e) => e.sub)]);
 
-  // 2. Apply the local patches onto the pristine submodules.
+  // 2. Hard-reset each submodule's working tree. `submodule update --force`
+  //    above only forces a checkout when the recorded SHA differs; if the
+  //    submodule is already at the pinned commit it leaves local modifications
+  //    alone, so a re-run would try to apply the patch onto an already-patched
+  //    tree and fail. Resetting here is what actually makes this idempotent.
+  for (const { sub } of ENGINES) {
+    run('git', ['-C', sub, 'reset', '--hard', '--quiet']);
+    run('git', ['-C', sub, 'clean', '-qfd']);
+  }
+
+  // 3. Apply the local patches onto the pristine submodules.
   for (const { sub, patch } of ENGINES) {
     if (!fs.existsSync(patch)) {
       console.warn(`   ! patch missing, skipping: ${patch}`);
