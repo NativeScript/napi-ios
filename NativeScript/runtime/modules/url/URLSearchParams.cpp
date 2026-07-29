@@ -233,10 +233,22 @@ napi_value MakeIterator(napi_env env, napi_value jsThis, int kind) {
   // Attach two non-enumerable internal properties (napi_default => not
   // enumerable, invisible to JS): the strong source reference kept alive for
   // `next`, and a napi_external wrapping the IterState* for the brand check.
-  // The external owns no data (nullptr finalize) — st is freed by the
-  // iterator's own finalizer below.
+  //
+  // The external is the SOLE owner of st and frees it when collected. Do not
+  // also register st with napi_add_finalizer on the iterator: that hands the
+  // same pointer to two independent finalization paths, and on QuickJS (where
+  // this runtime dispatches finalizers through a JS FinalizationRegistry) both
+  // fire, double-freeing IterState. The resulting heap corruption surfaced far
+  // away from here, as a SIGSEGV in an unrelated spec.
+  //
+  // The `next` function below also carries st as its callback data, but only as
+  // a non-owning alias: it is reachable only through the iterator, which holds
+  // the external, so st outlives every call made on it.
   napi_value brandVal;
-  napi_create_external(env, st, nullptr, nullptr, &brandVal);
+  napi_create_external(
+      env, st,
+      [](napi_env, void* d, void*) { delete static_cast<IterState*>(d); },
+      nullptr, &brandVal);
   napi_property_descriptor descs[2] = {};
   descs[0].utf8name = ITER_SOURCE_KEY;
   descs[0].value = jsThis;
@@ -245,16 +257,6 @@ napi_value MakeIterator(napi_env env, napi_value jsThis, int kind) {
   descs[1].value = brandVal;
   descs[1].attributes = napi_default;
   napi_define_properties(env, iterator, 2, descs);
-
-  // Free the IterState when the iterator is collected. napi_add_finalizer
-  // works on a plain object on every engine (unlike napi_wrap, which this
-  // runtime backs with a V8 internal-field slot a plain object lacks). The
-  // callback only frees C++ memory (no napi/JS-heap calls), so it is safe to
-  // run synchronously during the GC sweep everywhere — no deferral needed.
-  napi_add_finalizer(
-      env, iterator, st,
-      [](napi_env, void* d, void*) { delete static_cast<IterState*>(d); },
-      nullptr, nullptr);
 
   napi_value nextFn;
   napi_create_function(env, "next", NAPI_AUTO_LENGTH, IteratorNext, st,
