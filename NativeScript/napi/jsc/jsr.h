@@ -8,7 +8,7 @@
 #include "jsr_common.h"
 #include "jsc-api.h"
 
-typedef struct napi_runtime__ *napi_runtime;
+typedef struct jsr_ns_runtime__ *jsr_ns_runtime;
 
 class NapiScope {
 public:

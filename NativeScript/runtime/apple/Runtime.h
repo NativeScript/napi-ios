@@ -60,7 +60,7 @@ class Runtime {
   double startTime_;
   double realtimeOrigin_;
 
-  napi_runtime runtime_ = nullptr;
+  jsr_ns_runtime runtime_ = nullptr;
   napi_env env_ = nullptr;
   napi_handle_scope globalScope_ = nullptr;
   RuntimeModules modules_ = RuntimeModules();

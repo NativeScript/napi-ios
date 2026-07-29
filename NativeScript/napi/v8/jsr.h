@@ -13,7 +13,7 @@
 #include "v8-api.h"
 // #include "JEnv.h"
 
-typedef struct napi_runtime__* napi_runtime;
+typedef struct jsr_ns_runtime__* jsr_ns_runtime;
 
 class JSR {
  public:
