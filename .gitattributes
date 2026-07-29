@@ -1,1 +1,8 @@
-platforms/android/test-app/runtime/src/main/libs/**/libv8_monolith.a filter=lfs diff=lfs merge=lfs -text
+# Prebuilt Android engine binaries. These are large and opaque, so all of them
+# are stored via Git LFS. Note this only governs how git stores *new* writes:
+# blobs already committed as plain objects stay that way in history until the
+# file is next written (or the history is rewritten with `git lfs migrate`).
+#
+# CI must check out with LFS enabled (actions/checkout `lfs: true`), otherwise
+# the android build links against pointer files and fails at link time.
+platforms/android/test-app/**/libs/** filter=lfs diff=lfs merge=lfs -text
