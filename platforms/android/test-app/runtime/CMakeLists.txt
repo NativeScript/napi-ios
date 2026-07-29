@@ -425,7 +425,7 @@ endif ()
 # lets the JS stack-trace parser (BuildStacktraceFrames) accept those frames and
 # rebuild the full runtime URL from the app root. Wired from runtime/build.gradle.
 if (NS_BYTECODE)
-    add_compile_definitions(NativeScript, PRIVATE NS_BYTECODE_ENABLED)
+    target_compile_definitions(NativeScript PRIVATE NS_BYTECODE_ENABLED)
 endif ()
 
 # if("${ANDROID_ABI}" MATCHES "armeabi-v7a$" OR "${ANDROID_ABI}" MATCHES "x86$")
