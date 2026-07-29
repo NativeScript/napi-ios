@@ -338,20 +338,26 @@ bool ForEachOfIterable(napi_env env, napi_value iterable, F&& fn) {
 // sequence<sequence<USVString>> form: [[k, v], [k, v], ...].
 bool BuildFromSequence(napi_env env, napi_value iterable,
                        url_search_params& params) {
-  return ForEachOfIterable(env, iterable, [&](napi_value item) {
-    std::string pair[2];
-    uint32_t count = 0;
-    bool ok = ForEachOfIterable(env, item, [&](napi_value element) {
-      if (count >= 2) {
-        count = 3;
+  return ForEachOfIterable(env, iterable, [&](napi_value entry) -> bool {
+    if (!napi_util::is_object(env, entry)) {
+      ThrowTypeError(env, "URLSearchParams init sequence entry is not iterable");
+      return false;
+    }
+    // Collect the whole entry before validating its length: aborting early on
+    // the third element would skip the "exactly two elements" TypeError.
+    std::vector<std::string> pair;
+    bool ok = ForEachOfIterable(env, entry, [&](napi_value item) -> bool {
+      std::string s;
+      if (!ValueToString(env, item, s)) {
         return false;
       }
-      if (!ValueToString(env, element, pair[count])) return false;
-      count++;
+      pair.push_back(std::move(s));
       return true;
     });
-    if (!ok) return false;
-    if (count != 2) {
+    if (!ok) {
+      return false;
+    }
+    if (pair.size() != 2) {
       ThrowTypeError(env,
                      "URLSearchParams init sequence entry does not contain "
                      "exactly two elements");
@@ -453,13 +459,19 @@ napi_value URLSearchParams::New(napi_env env, napi_callback_info info) {
   url_search_params params;
 
   // Per spec the init argument is one of:
-  //   sequence<sequence<USVString>>  - [[k, v], ...]        (has Symbol.iterator)
-  //   record<USVString, USVString>   - plain object          (no Symbol.iterator)
-  //   USVString                      - query string, leading '?' stripped
-  // undefined/null mean "no init" and leave the params empty.
-  if (argc > 0 && !napi_util::is_null_or_undefined(env, argv[0])) {
-    if (napi_util::is_object(env, argv[0]) &&
-        !napi_util::is_of_type(env, argv[0], napi_string)) {
+  //   USVString                      - query string
+  //   sequence<sequence<USVString>>  - [[k, v], ...]   (has Symbol.iterator)
+  //   record<USVString, USVString>   - plain object     (no Symbol.iterator)
+  // Only undefined means "no init"; null and other primitives are coerced to a
+  // USVString, so new URLSearchParams(null) parses as the string "null".
+  if (argc > 0 && !napi_util::is_undefined(env, argv[0])) {
+    if (napi_util::is_of_type(env, argv[0], napi_string)) {
+      std::string init;
+      if (!ValueToString(env, argv[0], init)) {
+        return nullptr;
+      }
+      params = url_search_params(init);
+    } else if (napi_util::is_object(env, argv[0])) {
       napi_value iterMethod;
       NAPI_GUARD(
           napi_get_property(env, argv[0], SymbolIterator(env), &iterMethod)) {
@@ -479,16 +491,12 @@ napi_value URLSearchParams::New(napi_env env, napi_callback_info info) {
         return nullptr;
       }
     } else {
+      // number / boolean / bigint / null / symbol -> USVString
       std::string init;
       if (!ValueToString(env, argv[0], init)) {
         return nullptr;
       }
-      // A single leading '?' is stripped when parsing an init string.
-      std::string_view view(init);
-      if (!view.empty() && view.front() == '?') {
-        view.remove_prefix(1);
-      }
-      params = url_search_params(view);
+      params = url_search_params(init);
     }
   }
 
@@ -518,59 +526,50 @@ napi_value URLSearchParams::Append(napi_env env, napi_callback_info info) {
   URLSearchParams* instance = GetInstance(env, info);
   if (!instance) return nullptr;
 
-  if (argc < 2) return nullptr;
-
-  size_t key_size, value_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &key_size)) {
-    return nullptr;
-  }
-  NAPI_GUARD(
-      napi_get_value_string_utf8(env, argv[1], nullptr, 0, &value_size)) {
+  if (argc < 2) {
+    ThrowTypeError(env, "URLSearchParams.append requires 2 arguments");
     return nullptr;
   }
 
-  std::vector<char> key_buffer(key_size + 1);
-  std::vector<char> value_buffer(value_size + 1);
-
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], key_buffer.data(),
-                                        key_size + 1, nullptr)) {
-    return nullptr;
-  }
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[1], value_buffer.data(),
-                                        value_size + 1, nullptr)) {
+  std::string key, value;
+  if (!ValueToString(env, argv[0], key) ||
+      !ValueToString(env, argv[1], value)) {
     return nullptr;
   }
 
-  instance->GetURLSearchParams()->append(key_buffer.data(),
-                                         value_buffer.data());
+  instance->GetURLSearchParams()->append(key, value);
   instance->SyncParent();
   return nullptr;
 }
 
 napi_value URLSearchParams::Has(napi_env env, napi_callback_info info) {
-  NAPI_CALLBACK_BEGIN(1)
+  NAPI_CALLBACK_BEGIN(2)
 
   URLSearchParams* instance = GetInstance(env, info);
   if (!instance) return nullptr;
 
-  if (argc < 1) return nullptr;
+  if (argc < 1) return napi_util::get_false(env);
 
-  size_t str_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_size)) {
+  std::string key;
+  if (!ValueToString(env, argv[0], key)) {
     return nullptr;
   }
 
-  std::vector<char> buffer(str_size + 1);
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], buffer.data(),
-                                        str_size + 1, nullptr)) {
-    return nullptr;
+  // The 2-argument form matches on name *and* value; an explicit undefined
+  // second argument is treated as omitted.
+  bool has;
+  if (argc > 1 && !napi_util::is_undefined(env, argv[1])) {
+    std::string value;
+    if (!ValueToString(env, argv[1], value)) {
+      return nullptr;
+    }
+    has = instance->GetURLSearchParams()->has(key, value);
+  } else {
+    has = instance->GetURLSearchParams()->has(key);
   }
-
-  bool has = instance->GetURLSearchParams()->has(buffer.data());
 
   napi_value result;
-  NAPI_GUARD(napi_get_boolean(env, has, &result)) { return nullptr; }
-
+  napi_get_boolean(env, has, &result);
   return result;
 }
 
@@ -580,55 +579,48 @@ napi_value URLSearchParams::Get(napi_env env, napi_callback_info info) {
   URLSearchParams* instance = GetInstance(env, info);
   if (!instance) return nullptr;
 
-  if (argc < 1) return nullptr;
+  if (argc < 1) return napi_util::null(env);
 
-  size_t str_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_size)) {
+  std::string key;
+  if (!ValueToString(env, argv[0], key)) {
     return nullptr;
   }
 
-  std::vector<char> buffer(str_size + 1);
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], buffer.data(),
-                                        str_size + 1, nullptr)) {
-    return nullptr;
-  }
-
-  auto value = instance->GetURLSearchParams()->get(buffer.data());
+  auto value = instance->GetURLSearchParams()->get(key);
   if (!value.has_value()) {
-    napi_value undefined;
-    NAPI_GUARD(napi_get_undefined(env, &undefined)) { return nullptr; }
-    return undefined;
+    // Per spec, a missing name returns null (not undefined).
+    return napi_util::null(env);
   }
 
-  napi_value result;
-  NAPI_GUARD(napi_create_string_utf8(env, value.value().data(),
-                                     value.value().length(), &result)) {
-    return nullptr;
-  }
-
-  return result;
+  return js_str(env, value.value());
 }
 
 napi_value URLSearchParams::Delete(napi_env env, napi_callback_info info) {
-  NAPI_CALLBACK_BEGIN(1)
+  NAPI_CALLBACK_BEGIN(2)
 
   URLSearchParams* instance = GetInstance(env, info);
   if (!instance) return nullptr;
 
-  if (argc < 1) return nullptr;
-
-  size_t str_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_size)) {
+  if (argc < 1) {
+    ThrowTypeError(env, "URLSearchParams.delete requires 1 argument");
     return nullptr;
   }
 
-  std::vector<char> buffer(str_size + 1);
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], buffer.data(),
-                                        str_size + 1, nullptr)) {
+  std::string key;
+  if (!ValueToString(env, argv[0], key)) {
     return nullptr;
   }
 
-  instance->GetURLSearchParams()->remove(buffer.data());
+  // The 2-argument form removes only pairs matching name *and* value.
+  if (argc > 1 && !napi_util::is_undefined(env, argv[1])) {
+    std::string value;
+    if (!ValueToString(env, argv[1], value)) {
+      return nullptr;
+    }
+    instance->GetURLSearchParams()->remove(key, value);
+  } else {
+    instance->GetURLSearchParams()->remove(key);
+  }
   instance->SyncParent();
   return nullptr;
 }
@@ -639,35 +631,23 @@ napi_value URLSearchParams::GetAll(napi_env env, napi_callback_info info) {
   URLSearchParams* instance = GetInstance(env, info);
   if (!instance) return nullptr;
 
-  if (argc < 1) return nullptr;
-
-  size_t str_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &str_size)) {
+  if (argc < 1) {
+    ThrowTypeError(env, "URLSearchParams.getAll requires 1 argument");
     return nullptr;
   }
 
-  std::vector<char> buffer(str_size + 1);
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], buffer.data(),
-                                        str_size + 1, nullptr)) {
+  std::string key;
+  if (!ValueToString(env, argv[0], key)) {
     return nullptr;
   }
 
-  auto values = instance->GetURLSearchParams()->get_all(buffer.data());
+  auto values = instance->GetURLSearchParams()->get_all(key);
 
   napi_value result;
-  NAPI_GUARD(napi_create_array_with_length(env, values.size(), &result)) {
-    return nullptr;
-  }
-
+  napi_create_array_with_length(env, values.size(), &result);
   for (size_t i = 0; i < values.size(); i++) {
-    napi_value item;
-    NAPI_GUARD(napi_create_string_utf8(env, values[i].data(),
-                                       values[i].length(), &item)) {
-      return nullptr;
-    }
-    NAPI_GUARD(napi_set_element(env, result, i, item)) { return nullptr; }
+    napi_set_element(env, result, i, js_str(env, values[i]));
   }
-
   return result;
 }
 
@@ -677,30 +657,18 @@ napi_value URLSearchParams::Set(napi_env env, napi_callback_info info) {
   URLSearchParams* instance = GetInstance(env, info);
   if (!instance) return nullptr;
 
-  if (argc < 2) return nullptr;
-
-  size_t key_size, value_size;
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], nullptr, 0, &key_size)) {
-    return nullptr;
-  }
-  NAPI_GUARD(
-      napi_get_value_string_utf8(env, argv[1], nullptr, 0, &value_size)) {
+  if (argc < 2) {
+    ThrowTypeError(env, "URLSearchParams.set requires 2 arguments");
     return nullptr;
   }
 
-  std::vector<char> key_buffer(key_size + 1);
-  std::vector<char> value_buffer(value_size + 1);
-
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[0], key_buffer.data(),
-                                        key_size + 1, nullptr)) {
-    return nullptr;
-  }
-  NAPI_GUARD(napi_get_value_string_utf8(env, argv[1], value_buffer.data(),
-                                        value_size + 1, nullptr)) {
+  std::string key, value;
+  if (!ValueToString(env, argv[0], key) ||
+      !ValueToString(env, argv[1], value)) {
     return nullptr;
   }
 
-  instance->GetURLSearchParams()->set(key_buffer.data(), value_buffer.data());
+  instance->GetURLSearchParams()->set(key, value);
   instance->SyncParent();
   return nullptr;
 }
