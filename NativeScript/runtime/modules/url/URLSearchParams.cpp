@@ -664,7 +664,8 @@ napi_value URLSearchParams::GetAll(napi_env env, napi_callback_info info) {
 
   napi_value result;
   napi_create_array_with_length(env, values.size(), &result);
-  for (size_t i = 0; i < values.size(); i++) {
+  // napi_set_element takes a uint32_t index; iterate as one to avoid narrowing.
+  for (uint32_t i = 0; i < values.size(); i++) {
     napi_set_element(env, result, i, js_str(env, values[i]));
   }
   return result;
