@@ -1,6 +1,14 @@
 #ifndef SRC_JS_NATIVE_API_H_
 #define SRC_JS_NATIVE_API_H_
 
+// This runtime intentionally enables the experimental Node-API surface (see
+// NAPI_EXPERIMENTAL below). Opt out of the informational #warning that
+// js_native_api_types.h emits for it, rather than having every translation unit
+// print it. Must be set before that header is first included.
+#ifndef NODE_API_EXPERIMENTAL_NO_WARNING
+#define NODE_API_EXPERIMENTAL_NO_WARNING
+#endif
+
 #include "js_native_api_types.h"
 
 // If you need __declspec(dllimport), either include <node_api.h> instead, or
@@ -34,10 +42,20 @@ EXTERN_C_START
 #include <stdint.h>  // NOLINT(modernize-deprecated-headers)
 
 #define NAPI_AUTO_LENGTH SIZE_MAX
-#define NAPI_VERSION_EXPERIMENTAL 2147483647
-#define NAPI_VERSION 8
 
+// js_native_api_types.h (included above) now owns these, with the upstream
+// #ifndef NAPI_VERSION / NAPI_EXPERIMENTAL logic. Defining them unconditionally
+// here redefined them and warned in every translation unit.
+#ifndef NAPI_VERSION_EXPERIMENTAL
+#define NAPI_VERSION_EXPERIMENTAL 2147483647
+#endif
+#ifndef NAPI_VERSION
+#define NAPI_VERSION 8
+#endif
+
+#ifndef NAPI_EXPERIMENTAL
 #define NAPI_EXPERIMENTAL 1
+#endif
 
 NAPI_EXTERN napi_status napi_get_last_error_info(napi_env env, const napi_extended_error_info **result);
 
