@@ -284,10 +284,12 @@ set(FFI_V8_ENGINE_SOURCE_FILES
 
 set(FFI_JSC_ENGINE_SOURCE_FILES
   ${FFI_ENGINE_SHARED_SOURCE_FILES}
+  # Platform-neutral engine layer, shared with the Android runtime.
+  jsi/jsc/JSCHostObjects.cpp
+  jsi/jsc/JSCRuntime.cpp
+  jsi/jsc/JSCValue.cpp
+  # Apple-only ObjC bridge on top of it.
   ffi/objc/jsc/NativeApiJSC.mm
-  ffi/objc/jsc/NativeApiJSCHostObjects.mm
-  ffi/objc/jsc/NativeApiJSCRuntime.mm
-  ffi/objc/jsc/NativeApiJSCValue.mm
 )
 
 set(FFI_QUICKJS_ENGINE_SOURCE_FILES
