@@ -1,26 +1,13 @@
-#ifndef NATIVE_API_JSI_H
-#define NATIVE_API_JSI_H
+#ifndef NATIVE_API_JSI_H_FFI_FORWARD
+#define NATIVE_API_JSI_H_FFI_FORWARD
 
-#include <jsi/jsi.h>
+// Moved to jsi/hermes/NativeApiJsi.h. Hermes is the one backend that exposes
+// the real facebook::jsi API rather than reimplementing the nativescript
+// engine shape, and this declaration is already platform-neutral, so Android's
+// Hermes backend can share it verbatim.
+//
+// This forwarding header keeps the Apple include paths unchanged.
 
-#include "ffi/objc/shared/NativeApiBackendConfig.h"
+#include "jsi/hermes/NativeApiJsi.h"
 
-namespace nativescript {
-
-using NativeApiJsiScheduler = NativeApiBackendScheduler;
-using NativeApiJsiConfig = NativeApiBackendConfig;
-
-facebook::jsi::Object CreateNativeApiJSI(
-    facebook::jsi::Runtime& runtime,
-    const NativeApiJsiConfig& config = NativeApiJsiConfig{});
-
-void InstallNativeApiJSI(
-    facebook::jsi::Runtime& runtime,
-    const NativeApiJsiConfig& config = NativeApiJsiConfig{});
-
-}  // namespace nativescript
-
-extern "C" void NativeScriptInstallNativeApiJSI(
-    facebook::jsi::Runtime* runtime, const char* metadataPath);
-
-#endif  // NATIVE_API_JSI_H
+#endif  // NATIVE_API_JSI_H_FFI_FORWARD
