@@ -1,5 +1,5 @@
 #include "NativeApiV8Runtime.h"
-#include "../shared/NativeApiStackValueArray.h"
+#include "jsi/shared/NativeApiStackValueArray.h"
 
 #ifdef TARGET_ENGINE_V8
 
