@@ -397,7 +397,7 @@ static inline napi_status CreateJSValueHandle(napi_env env, JSValue value,
   CHECK_ARG(result)
 
   RETURN_STATUS_IF_FALSE(!LIST_EMPTY(&env->handleScopeList),
-                         napi_handle_scope_empty)
+                         napi_handle_scope_mismatch)
 
   napi_handle_scope handleScope = LIST_FIRST(&env->handleScopeList);
 
@@ -455,7 +455,7 @@ napi_status napi_open_handle_scope(napi_env env, napi_handle_scope* result) {
   napi_handle_scope__* handleScope =
       (napi_handle_scope__*)mi_malloc(sizeof(napi_handle_scope__));
 
-  RETURN_STATUS_IF_FALSE(handleScope, napi_memory_error)
+  RETURN_STATUS_IF_FALSE(handleScope, napi_generic_failure)
   handleScope->type = HANDLE_HEAP_ALLOCATED;
   handleScope->handleCount = 0;
   handleScope->escapeCalled = false;
@@ -500,14 +500,17 @@ napi_status napi_open_escapable_handle_scope(
 
   napi_handle_scope__* handleScope =
       (napi_handle_scope__*)mi_malloc(sizeof(napi_handle_scope__));
+  RETURN_STATUS_IF_FALSE(handleScope, napi_generic_failure)
   handleScope->type = HANDLE_HEAP_ALLOCATED;
   handleScope->handleCount = 0;
-  RETURN_STATUS_IF_FALSE(handleScope, napi_memory_error)
   SLIST_INIT(&handleScope->handleList);
   handleScope->escapeCalled = false;
   LIST_INSERT_HEAD(&env->handleScopeList, handleScope, node);
 
-  *result = handleScope;
+  // Node-API declares napi_escapable_handle_scope as its own opaque struct.
+  // This backend implements both scope flavours with one object, so cast at
+  // the API boundary rather than aliasing the two tags in the shared header.
+  *result = (napi_escapable_handle_scope)handleScope;
 
   return napi_clear_last_error(env);
 }
@@ -517,24 +520,26 @@ napi_status napi_close_escapable_handle_scope(
   CHECK_ARG(env)
   CHECK_ARG(escapableScope)
 
-  assert(LIST_FIRST(&env->handleScopeList) == escapableScope &&
+  napi_handle_scope__* scope = (napi_handle_scope__*)escapableScope;
+
+  assert(LIST_FIRST(&env->handleScopeList) == scope &&
          "napi_close_handle_scope() or napi_close_escapable_handle_scope() "
          "should follow FILO rule.");
 
   Handle *handle, *tempHandle;
-  SLIST_FOREACH_SAFE(handle, &escapableScope->handleList, node, tempHandle) {
+  SLIST_FOREACH_SAFE(handle, &scope->handleList, node, tempHandle) {
     JS_FreeValue(env->context, handle->value);
     handle->value = JSUndefined;
 
     // Instead of freeing, return the handle to the pool for reuse
-    SLIST_REMOVE(&escapableScope->handleList, handle, Handle, node);
+    SLIST_REMOVE(&scope->handleList, handle, Handle, node);
     if (handle->type == HANDLE_HEAP_ALLOCATED) {
       mi_free(handle);
     }
   }
 
-  LIST_REMOVE(escapableScope, node);
-  mi_free(escapableScope);
+  LIST_REMOVE(scope, node);
+  mi_free(scope);
 
   return napi_clear_last_error(env);
 }
@@ -545,16 +550,19 @@ napi_status napi_escape_handle(napi_env env, napi_escapable_handle_scope scope,
   CHECK_ARG(scope)
   CHECK_ARG(escapee)
 
-  RETURN_STATUS_IF_FALSE(!scope->escapeCalled, napi_escape_called_twice)
+  napi_handle_scope__* escapableScope = (napi_handle_scope__*)scope;
+
+  RETURN_STATUS_IF_FALSE(!escapableScope->escapeCalled,
+                         napi_escape_called_twice)
   // Get the outer handle scope
-  napi_handle_scope handleScope = LIST_NEXT(scope, node);
-  RETURN_STATUS_IF_FALSE(handleScope, napi_handle_scope_empty)
+  napi_handle_scope handleScope = LIST_NEXT(escapableScope, node);
+  RETURN_STATUS_IF_FALSE(handleScope, napi_handle_scope_mismatch)
 
   Handle* handle = (Handle*)mi_malloc(sizeof(Handle));
 
-  RETURN_STATUS_IF_FALSE(handle, napi_memory_error)
+  RETURN_STATUS_IF_FALSE(handle, napi_generic_failure)
 
-  scope->escapeCalled = true;
+  escapableScope->escapeCalled = true;
   handle->value = JS_DupValue(env->context, ToJS(escapee));
   SLIST_INSERT_HEAD(&handleScope->handleList, handle, node);
 
@@ -781,7 +789,7 @@ napi_status napi_create_reference(napi_env env, napi_value value,
   CHECK_ARG(result)
 
   *result = (napi_ref__*)mi_malloc(sizeof(napi_ref__));
-  RETURN_STATUS_IF_FALSE(*result, napi_memory_error)
+  RETURN_STATUS_IF_FALSE(*result, napi_generic_failure)
 
   JSValue jsValue = ToJS(value);
 
@@ -3142,7 +3150,7 @@ napi_status napi_create_function(napi_env env, const char* utf8name,
   CHECK_ARG(result)
 
   FunctionInfo* functionInfo = (FunctionInfo*)mi_malloc(sizeof(FunctionInfo));
-  RETURN_STATUS_IF_FALSE(functionInfo, napi_memory_error)
+  RETURN_STATUS_IF_FALSE(functionInfo, napi_generic_failure)
   functionInfo->data = data;
   functionInfo->callback = cb;
   functionInfo->prototype = JS_UNDEFINED;
@@ -3385,7 +3393,7 @@ napi_status napi_define_class(napi_env env, const char* utf8name, size_t length,
 
   FunctionInfo* constructorInfo =
       (FunctionInfo*)mi_malloc(sizeof(FunctionInfo));
-  RETURN_STATUS_IF_FALSE(constructorInfo, napi_memory_error)
+  RETURN_STATUS_IF_FALSE(constructorInfo, napi_generic_failure)
 
   constructorInfo->data = data;
   constructorInfo->callback = constructor;
