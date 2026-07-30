@@ -237,7 +237,7 @@ include_directories(
 )
 
 set(FFI_SHARED_SOURCE_FILES
-  ffi/objc/shared/Tasks.cpp
+  jsi/shared/Tasks.cpp
 )
 
 set(FFI_NAPI_SOURCE_FILES
