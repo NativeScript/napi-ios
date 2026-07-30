@@ -274,10 +274,12 @@ set(FFI_HERMES_ENGINE_SOURCE_FILES
 
 set(FFI_V8_ENGINE_SOURCE_FILES
   ${FFI_ENGINE_SHARED_SOURCE_FILES}
+  # Platform-neutral engine layer, shared with the Android runtime.
+  jsi/v8/V8HostObjects.cpp
+  jsi/v8/V8Runtime.cpp
+  jsi/v8/V8Value.cpp
+  # Apple-only ObjC bridge on top of it.
   ffi/objc/v8/NativeApiV8.mm
-  ffi/objc/v8/NativeApiV8HostObjects.mm
-  ffi/objc/v8/NativeApiV8Runtime.mm
-  ffi/objc/v8/NativeApiV8Value.mm
 )
 
 set(FFI_JSC_ENGINE_SOURCE_FILES
