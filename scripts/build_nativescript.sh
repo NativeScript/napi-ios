@@ -171,8 +171,11 @@ function signature_dispatch_path () {
 }
 
 function metadata_generator_source_hash () {
-  find ./metadata-generator/src ./metadata-generator/include ./metadata-generator/CMakeLists.txt \
-    -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}'
+  find ./metadata-generator/src ./metadata-generator/include ./metadata-generator/tests \
+    ./metadata-generator/symbol-analyzer ./metadata-generator/CMakeLists.txt \
+    ./metadata-generator/build-step-metadata-generator.py \
+    \( -name target -type d -prune \) -o -type f -print | \
+    LC_ALL=C sort | xargs shasum | awk '{print $1}' | shasum | awk '{print $1}'
 }
 
 function signature_dispatch_stamp () {

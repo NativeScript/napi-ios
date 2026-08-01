@@ -12,8 +12,11 @@ DEVICE_SIGNATURE_DISPATCH="$REPO_ROOT/dist/intermediates/react-native/GeneratedS
 SKIP_PACK=false
 
 function metadata_generator_source_hash {
-  find "$REPO_ROOT/metadata-generator/src" "$REPO_ROOT/metadata-generator/include" "$REPO_ROOT/metadata-generator/CMakeLists.txt" \
-    -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}'
+  find "$REPO_ROOT/metadata-generator/src" "$REPO_ROOT/metadata-generator/include" \
+    "$REPO_ROOT/metadata-generator/tests" "$REPO_ROOT/metadata-generator/symbol-analyzer" \
+    "$REPO_ROOT/metadata-generator/CMakeLists.txt" "$REPO_ROOT/metadata-generator/build-step-metadata-generator.py" \
+    \( -name target -type d -prune \) -o -type f -print | \
+    LC_ALL=C sort | xargs shasum | awk '{print $1}' | shasum | awk '{print $1}'
 }
 
 function ensure_metadata_generator {

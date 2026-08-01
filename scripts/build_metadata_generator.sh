@@ -3,7 +3,9 @@ set -e
 source "$(dirname "$0")/build_utils.sh"
 
 function metadata_generator_source_hash {
-    find src include CMakeLists.txt -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}'
+    find src include tests symbol-analyzer CMakeLists.txt build-step-metadata-generator.py \
+      \( -name target -type d -prune \) -o -type f -print | \
+      LC_ALL=C sort | xargs shasum | awk '{print $1}' | shasum | awk '{print $1}'
 }
 
 function build {
@@ -14,6 +16,14 @@ function build {
     cmake --build build -j$NUMJOBS
     mkdir "dist/$1"
     cp -r "build/bin" "dist/$1"
+
+    local rust_arch="$1"
+    if [ "$1" = "arm64" ]; then
+      rust_arch="aarch64"
+    fi
+    local rust_target="${rust_arch}-apple-darwin"
+    cargo build --locked --release --manifest-path symbol-analyzer/Cargo.toml --target "$rust_target"
+    cp "symbol-analyzer/target/$rust_target/release/ns-metadata-symbols" "dist/$1/bin/"
 }
 
 pushd "metadata-generator"

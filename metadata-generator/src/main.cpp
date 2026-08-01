@@ -118,9 +118,11 @@ int main(int argc, char** argv) {
       outputDtsFolder = argv[++i];
     } else if (arg == "-docset-path") {
       docSetFile = argv[++i];
-    } else if (arg == "-blacklist-modules") {
+    } else if (arg == "-blacklist-modules" ||
+               arg == "--blacklist-modules-file") {
       blacklistModulesFile = argv[++i];
-    } else if (arg == "-whitelist-modules") {
+    } else if (arg == "-whitelist-modules" ||
+               arg == "--whitelist-modules-file") {
       whitelistModulesFile = argv[++i];
     } else if (arg.find("framework=") == 0) {
       addFramework(arg.substr(10));
@@ -228,7 +230,8 @@ int main(int argc, char** argv) {
   CXIndex index = clang_createIndex(0, 0);
   CXTranslationUnit unit = clang_parseTranslationUnit(
       index, umbrellaHeaderName.c_str(), argsC.data(),
-      (MDSectionOffset)argsC.size(), nullptr, 0, CXTranslationUnit_None);
+      (MDSectionOffset)argsC.size(), nullptr, 0,
+      CXTranslationUnit_SkipFunctionBodies);
 
   // std::remove(umbrellaHeaderName.c_str());
 
@@ -259,6 +262,7 @@ int main(int argc, char** argv) {
 
   MetadataFactory factory;
   factory.includePaths = includePaths;
+  factory.metadataFilter.configure(whitelistModulesFile, blacklistModulesFile);
   factory.process(cursor);
   factory.postProcess();
 

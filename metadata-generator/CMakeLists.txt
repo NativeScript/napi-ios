@@ -9,6 +9,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -target ${METADATA_BINARY_
 
 set(CMAKE_CXX_STANDARD 20)
 
+option(METADATA_GENERATOR_BUILD_TESTS "Build metadata generator unit tests" OFF)
+
 if(NOT DEFINED METADATA_BINARY_ARCH)
   set(METADATA_BINARY_ARCH "${CMAKE_HOST_SYSTEM_PROCESSOR}")
 endif(NOT DEFINED METADATA_BINARY_ARCH)
@@ -109,3 +111,10 @@ install(TARGETS ${NAME}
   RUNTIME DESTINATION bin)
 
 configure_file(build-step-metadata-generator.py ${CMAKE_CURRENT_BINARY_DIR}/bin/build-step-metadata-generator.py COPYONLY)
+
+if(METADATA_GENERATOR_BUILD_TESTS)
+  enable_testing()
+  add_executable(metadata-filter-tests tests/MetadataFilterTests.cpp)
+  target_include_directories(metadata-filter-tests PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
+  add_test(NAME metadata-filter-tests COMMAND metadata-filter-tests)
+endif()
