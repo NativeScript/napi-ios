@@ -26,6 +26,14 @@ cmake -B build -DCMAKE_BUILD_TYPE=Release -DMETADATA_BINARY_ARCH=$METADATA_ARCH 
 cmake --build build
 ```
 
+The repository packaging script builds both Intel and Apple Silicon host tools
+by default. For local development on Xcode installations whose `libclang` only
+contains the current host architecture, build just that architecture:
+
+```bash
+METADATA_GENERATOR_ARCHS="$(uname -m)" npm run build-metagen
+```
+
 ## Debugging the metadata generator
 
 To debug the metadata generator you first need to generate the xcode project for it:
@@ -75,3 +83,15 @@ The packaged analyzer next to `objc-metadata-generator` is used by default.
 For repeatable full-SDK performance runs on macOS, use
 `benchmarks/run-macos.sh` with a fresh output directory. Each iteration records
 wall/CPU time, peak memory, and SHA-256 hashes for every generated artifact.
+
+To validate the analyzer against the repository's real NativeScript macOS
+examples as source, minified bundles, and split chunks, run:
+
+```bash
+metadata-generator/benchmarks/validate-bundles.sh \
+  metadata-generator/symbol-analyzer/target/release/ns-metadata-symbols
+```
+
+The script pins esbuild 0.25.8, requires identical analyzer output for all three
+forms, and verifies that the intentionally dynamic/malformed TestRunner corpus
+fails open.

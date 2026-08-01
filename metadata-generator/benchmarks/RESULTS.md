@@ -62,3 +62,29 @@ Foundation, Runtime, the referenced symbols, and dependency closure:
 This is an illustrative workload, not a size guarantee; the dependency closure
 and default Foundation/Runtime retention intentionally prefer false positives
 over missing native metadata.
+
+## Production bundle and build integration
+
+`validate-bundles.sh` bundles the three repository macOS NativeScript examples
+with pinned esbuild 0.25.8. The original source files, separately minified ESM
+bundles, and minified dynamic-import code-split output each produced the same 48
+rules, with no diagnostics or fail-open marker. All three whitelist files were
+byte-identical with SHA-256
+`ecf7218d52356b797bb723d0594ce8b0832308137551630977ff189ff1e8af4d`.
+
+The full TestRunner app corpus exercised 184 JavaScript files, including worker
+files, intentional invalid-syntax fixtures, `eval`, and dynamic global access.
+The analyzer used 18 workers, reported three diagnostics, and emitted `*:*` as
+designed, preserving all metadata.
+
+Across 100 warm-cache process invocations of that 184-file corpus, analysis
+averaged 9.9 ms with one Rayon worker and 6.5 ms with 18 workers (-34.3%). The
+whitelist output was identical at every worker count.
+
+The real Xcode TestRunner build completed with automatic filtering enabled and
+ran its focused Metadata test suite (2 specs, 0 failures). The generated
+fail-open metadata was 6,457,719 bytes and signature dispatch output was
+8,477,285 bytes. A separate end-to-end build-step run using the statically
+analyzable split example bundles generated 533,247 bytes of metadata, 1,403,490
+bytes of signature bindings, and 1,148 KiB of TypeScript declarations; every
+referenced native symbol was present in the declarations.
