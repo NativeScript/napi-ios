@@ -81,3 +81,6 @@ packages/react-native/dist/
 packages/react-native/ios/vendor/
 packages/react-native/metadata/
 packages/react-native/native-api/
+
+# Rust metadata bundle analyzer build output
+metadata-generator/symbol-analyzer/target/
