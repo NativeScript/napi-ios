@@ -3,7 +3,8 @@ use std::path::Path;
 
 use oxc_allocator::Allocator;
 use oxc_ast::ast::{
-    Argument, CallExpression, ComputedMemberExpression, Expression, StaticMemberExpression,
+    Argument, CallExpression, ComputedMemberExpression, Expression, IdentifierReference,
+    StaticMemberExpression,
 };
 use oxc_ast_visit::{Visit, walk};
 use oxc_parser::Parser;
@@ -21,6 +22,8 @@ pub struct Analysis {
 struct GlobalPropertyCollector {
     symbols: BTreeSet<String>,
     dynamic_access: bool,
+    global_object_references: usize,
+    handled_global_object_references: usize,
 }
 
 fn is_global_object(expression: &Expression<'_>) -> bool {
@@ -32,15 +35,27 @@ fn is_global_object(expression: &Expression<'_>) -> bool {
 }
 
 impl<'a> Visit<'a> for GlobalPropertyCollector {
+    fn visit_identifier_reference(&mut self, identifier: &IdentifierReference<'a>) {
+        if matches!(identifier.name.as_str(), "globalThis" | "global") {
+            self.global_object_references += 1;
+        }
+        walk::walk_identifier_reference(self, identifier);
+    }
+
     fn visit_static_member_expression(&mut self, expression: &StaticMemberExpression<'a>) {
         if is_global_object(&expression.object) {
+            self.handled_global_object_references += 1;
             self.symbols.insert(expression.property.name.to_string());
+            if matches!(expression.property.name.as_str(), "globalThis" | "global") {
+                self.dynamic_access = true;
+            }
         }
         walk::walk_static_member_expression(self, expression);
     }
 
     fn visit_computed_member_expression(&mut self, expression: &ComputedMemberExpression<'a>) {
         if is_global_object(&expression.object) {
+            self.handled_global_object_references += 1;
             if let Expression::StringLiteral(property) = &expression.expression {
                 self.symbols.insert(property.value.to_string());
             } else {
@@ -64,6 +79,18 @@ impl<'a> Visit<'a> for GlobalPropertyCollector {
                         | "objc_lookUpClass"
                         | "objc_getProtocol"
                 )
+        ) || matches!(
+            &expression.callee,
+            Expression::StaticMemberExpression(member)
+                if is_global_object(&member.object)
+                    && matches!(
+                        member.property.name.as_str(),
+                        "NSClassFromString"
+                            | "NSProtocolFromString"
+                            | "objc_getClass"
+                            | "objc_lookUpClass"
+                            | "objc_getProtocol"
+                    )
         );
         if is_dynamic_native_lookup {
             match expression.arguments.first() {
@@ -92,6 +119,13 @@ pub fn analyze_source(path: &Path, source: &str) -> Analysis {
 
     let mut global_properties = GlobalPropertyCollector::default();
     global_properties.visit_program(&parsed.program);
+    if global_properties.global_object_references
+        != global_properties.handled_global_object_references
+    {
+        // Aliasing, destructuring, or passing the global object to another
+        // function can hide native symbol access from this local AST pass.
+        global_properties.dynamic_access = true;
+    }
 
     let semantic = SemanticBuilder::new().build(&parsed.program);
     if !semantic.diagnostics.is_empty() {
@@ -155,6 +189,16 @@ mod tests {
 
         let dynamic_result = analyze_source(Path::new("bundle.js"), "globalThis[className]");
         assert!(dynamic_result.bailed_out);
+
+        let aliased_result = analyze_source(
+            Path::new("bundle.js"),
+            "const nativeGlobal = globalThis; new nativeGlobal.UIView();",
+        );
+        assert!(aliased_result.bailed_out);
+
+        let destructured_result =
+            analyze_source(Path::new("bundle.js"), "const { UIView } = globalThis;");
+        assert!(destructured_result.bailed_out);
     }
 
     #[test]
@@ -166,6 +210,13 @@ mod tests {
         assert!(!literal.bailed_out);
         assert!(literal.symbols.contains("NSView"));
         assert!(literal.symbols.contains("NSDraggingDestination"));
+
+        let global_literal = analyze_source(
+            Path::new("bundle.js"),
+            "globalThis.NSClassFromString('NSWindow')",
+        );
+        assert!(!global_literal.bailed_out);
+        assert!(global_literal.symbols.contains("NSWindow"));
 
         let dynamic = analyze_source(Path::new("bundle.js"), "NSClassFromString(className)");
         assert!(dynamic.bailed_out);

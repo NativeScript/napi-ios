@@ -27,18 +27,19 @@ function build {
 }
 
 pushd "metadata-generator"
-rm -rf dist
-mkdir dist
-checkpoint "Building metadata generator for x86_64 ..."
-build "x86_64"
-# make sure the binary is linked against the system libc++ instead of an @rpath one (which happens when compiling on arm64)
-# todo: perhaps there is a better way to do this with cmake?
-#install_name_tool -change @rpath/libc++.1.dylib /usr/lib/libc++.1.dylib dist/x86_64/bin/objc-metadata-generator
-otool -L  dist/x86_64/bin/objc-metadata-generator
+mkdir -p dist
+architectures=${METADATA_GENERATOR_ARCHS:-"x86_64 arm64"}
+for architecture in $architectures; do
+    case "$architecture" in
+        x86_64|arm64) ;;
+        *) echo "Unsupported metadata generator architecture: $architecture" >&2; exit 2 ;;
+    esac
 
-checkpoint "Building metadata generator for arm64 ..."
-build "arm64"
-otool -L  dist/arm64/bin/objc-metadata-generator
+    checkpoint "Building metadata generator for $architecture ..."
+    rm -rf "dist/$architecture"
+    build "$architecture"
+    otool -L "dist/$architecture/bin/objc-metadata-generator"
+done
 metadata_generator_source_hash > dist/.source_hash
 rm -rf build
 popd

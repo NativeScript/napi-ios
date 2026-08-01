@@ -33,7 +33,7 @@ jobs:
         run: npm run build-libffi
 
       - name: Build metadata generator
-        run: npm run build-metagen
+        run: METADATA_GENERATOR_ARCHS="$(uname -m)" npm run build-metagen
 
       - name: Generate macOS metadata
         run: npm run metagen macos

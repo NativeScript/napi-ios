@@ -195,11 +195,13 @@ function ensure_metadata_generator () {
   local expected_hash
   expected_hash=$(metadata_generator_source_hash)
   local hash_file="./metadata-generator/dist/.source_hash"
-  if [ ! -x "./metadata-generator/dist/arm64/bin/objc-metadata-generator" ] || \
-     [ ! -x "./metadata-generator/dist/x86_64/bin/objc-metadata-generator" ] || \
+  local host_arch
+  host_arch=$(uname -m)
+  if [ ! -x "./metadata-generator/dist/$host_arch/bin/objc-metadata-generator" ] || \
+     [ ! -x "./metadata-generator/dist/$host_arch/bin/ns-metadata-symbols" ] || \
      [ ! -f "$hash_file" ] || \
      [ "$(cat "$hash_file")" != "$expected_hash" ]; then
-    "$SCRIPT_DIR/build_metadata_generator.sh"
+    METADATA_GENERATOR_ARCHS="$host_arch" "$SCRIPT_DIR/build_metadata_generator.sh"
   fi
 }
 

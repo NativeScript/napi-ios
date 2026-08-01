@@ -202,6 +202,7 @@ def generate_metadata(arch):
     # optionally add typescript output folder
     if typescript_output_folder is not None:
         current_typescript_output_folder = os.path.join(typescript_output_folder, arch)
+        os.makedirs(current_typescript_output_folder, exist_ok=True)
         generator_call.extend(["-output-typescript", current_typescript_output_folder])
         print("Generating TypeScript declarations in: \"{}\"".format(current_typescript_output_folder))
 
