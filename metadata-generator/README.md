@@ -46,3 +46,32 @@ Example command line arguments:
 ```
 
 For a better way of generating these arguments, just run the TestRunner scheme on the v8ios-runtime project and get the arguments from the log.
+
+## Opt-in bundle-based metadata filtering
+
+`symbol-analyzer/` contains a Rust/Oxc analyzer that scans the emitted JavaScript
+or TypeScript bundle for unresolved global symbols and writes them as a normal
+NativeScript metadata whitelist. It processes multiple bundle/chunk files in
+parallel and emits deterministically sorted rules. Parse or semantic-analysis
+errors, dynamic global property access, and dynamic code execution fail open by
+writing `*:*`, so an unsupported bundle cannot accidentally remove metadata.
+Foundation and Runtime are retained by default as a conservative safety margin.
+
+The existing `whitelist.mdg` and `blacklist.mdg` behavior remains available.
+When automatic filtering is enabled, `whitelist.mdg` is merged into the generated
+whitelist and `blacklist.mdg` is still applied afterwards.
+
+Set these environment variables on the metadata-generator build phase:
+
+```bash
+NS_METADATA_AUTO_FILTER=1
+# A shell-quoted list of emitted bundle files or directories.
+NS_METADATA_BUNDLE_PATHS="$CONFIGURATION_BUILD_DIR/app/bundle.js"
+```
+
+The packaged analyzer next to `objc-metadata-generator` is used by default.
+`NS_METADATA_SYMBOL_ANALYZER` can override its path for local development.
+
+For repeatable full-SDK performance runs on macOS, use
+`benchmarks/run-macos.sh` with a fresh output directory. Each iteration records
+wall/CPU time, peak memory, and SHA-256 hashes for every generated artifact.

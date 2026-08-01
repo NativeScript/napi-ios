@@ -175,6 +175,11 @@ if signature_bindings_cpp_path is None:
     default_signature_bindings_path = os.path.join(src_root, "NativeScript", "ffi", "objc", "shared", "GeneratedSignatureDispatch.inc")
     if os.path.isdir(os.path.dirname(default_signature_bindings_path)):
         signature_bindings_cpp_path = default_signature_bindings_path
+auto_filter_enabled = env_bool("NS_METADATA_AUTO_FILTER") or env_bool("TNS_METADATA_AUTO_FILTER")
+auto_filter_bundle_paths = env_or_none("NS_METADATA_BUNDLE_PATHS") or env_or_none("TNS_METADATA_BUNDLE_PATHS")
+symbol_analyzer_path = env_or_none("NS_METADATA_SYMBOL_ANALYZER") or env_or_none("TNS_METADATA_SYMBOL_ANALYZER")
+if symbol_analyzer_path is None:
+    symbol_analyzer_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ns-metadata-symbols")
 
 
 def save_stream_to_file(filename, stream):
@@ -212,8 +217,25 @@ def generate_metadata(arch):
         print("Generating signature dispatch bindings in: \"{}\"".format(signature_bindings_cpp_path))
 
     whitelist_file_name = os.path.join(src_root, "whitelist.mdg")
-    if os.path.exists(whitelist_file_name):
-      generator_call.extend(["--whitelist-modules-file", whitelist_file_name])
+    effective_whitelist_file_name = whitelist_file_name if os.path.exists(whitelist_file_name) else None
+    if auto_filter_enabled:
+      if not auto_filter_bundle_paths:
+        raise RuntimeError("NS_METADATA_AUTO_FILTER requires NS_METADATA_BUNDLE_PATHS")
+      if not os.path.isfile(symbol_analyzer_path) or not os.access(symbol_analyzer_path, os.X_OK):
+        raise RuntimeError("Metadata symbol analyzer is not executable: {}".format(symbol_analyzer_path))
+
+      effective_whitelist_file_name = os.path.join(
+          conf_build_dir, "metadata-auto-whitelist-{}.mdg".format(arch))
+      analyzer_call = [symbol_analyzer_path, "--output", effective_whitelist_file_name]
+      if os.path.exists(whitelist_file_name):
+        analyzer_call.extend(["--include-whitelist", whitelist_file_name])
+      analyzer_call.extend(shlex.split(auto_filter_bundle_paths))
+      print("Generating metadata whitelist from app bundle(s):")
+      print(" ".join(analyzer_call))
+      subprocess.check_call(analyzer_call)
+
+    if effective_whitelist_file_name is not None:
+      generator_call.extend(["--whitelist-modules-file", effective_whitelist_file_name])
 
     blacklist_file_name = os.path.join(src_root, "blacklist.mdg")
     if os.path.exists(blacklist_file_name):
