@@ -55,6 +55,13 @@ const metadataGeneratorBuildStepScript = path.join(
     "bin",
     "build-step-metadata-generator.py"
 );
+const metadataGeneratorSymbolAnalyzer = path.join(
+    metadataGeneratorRoot,
+    "dist",
+    "arm64",
+    "bin",
+    "ns-metadata-symbols"
+);
 const nativeScriptSourceRoot = path.join(__dirname, "../NativeScript");
 
 const nativeScriptXCFramework = path.join(__dirname, "../dist", "NativeScript.xcframework");
@@ -67,10 +74,12 @@ const iosBuildInputs = [
     path.join(__dirname, "../platforms/apple/TKLiveSync"),
     path.join(metadataGeneratorRoot, "src"),
     path.join(metadataGeneratorRoot, "include"),
+    path.join(metadataGeneratorRoot, "symbol-analyzer"),
     path.join(metadataGeneratorRoot, "CMakeLists.txt"),
     path.join(__dirname, "build_metadata_generator.sh"),
     metadataGeneratorBinary,
     metadataGeneratorBuildStepScript,
+    metadataGeneratorSymbolAnalyzer,
     nativeScriptXCFramework,
     tkLiveSyncXCFramework
 ];
@@ -173,6 +182,8 @@ function ensureMetadataGeneratorBuilt() {
     const sourceInputs = [
         path.join(metadataGeneratorRoot, "src"),
         path.join(metadataGeneratorRoot, "include"),
+        path.join(metadataGeneratorRoot, "symbol-analyzer"),
+        path.join(metadataGeneratorRoot, "build-step-metadata-generator.py"),
         path.join(metadataGeneratorRoot, "CMakeLists.txt")
     ];
 
@@ -180,14 +191,23 @@ function ensureMetadataGeneratorBuilt() {
         (latest, inputPath) => Math.max(latest, getPathStats(inputPath).maxMtimeMs),
         0
     );
-    const binaryMtime = getPathStats(metadataGeneratorBinary).maxMtimeMs;
+    const artifactMtime = Math.min(
+        getPathStats(metadataGeneratorBinary).maxMtimeMs,
+        getPathStats(metadataGeneratorSymbolAnalyzer).maxMtimeMs,
+        getPathStats(metadataGeneratorBuildStepScript).maxMtimeMs
+    );
 
-    if (binaryMtime > 0 && binaryMtime >= sourceMtime) {
+    if (artifactMtime > 0 && artifactMtime >= sourceMtime) {
         return;
     }
 
     console.log("Metadata generator is missing or stale; running build-metagen...");
-    runAndRequireSuccess("npm", ["run", "build-metagen"], buildTimeoutMs);
+    const hostArch = process.arch === "x64" ? "x86_64" : process.arch;
+    runAndRequireSuccess(
+        "env",
+        [`METADATA_GENERATOR_ARCHS=${hostArch}`, "npm", "run", "build-metagen"],
+        buildTimeoutMs
+    );
 }
 
 function getPathStats(targetPath) {

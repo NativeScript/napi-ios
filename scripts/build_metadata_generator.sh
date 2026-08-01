@@ -27,8 +27,8 @@ function build {
 }
 
 pushd "metadata-generator"
-rm -rf dist
-mkdir dist
+mkdir -p dist
+architectures=${METADATA_GENERATOR_ARCHS:-"x86_64 arm64"}
 
 HOST_ARCH=$(uname -m)
 case "$HOST_ARCH" in
@@ -44,14 +44,20 @@ TOOLCHAIN_USR_DIR=$(cd "$(dirname "$XCRUN_CLANG")/.." && pwd)
 LIBCLANG_PATH="$TOOLCHAIN_USR_DIR/lib/libclang.dylib"
 LIBCLANG_ARCHS=$(lipo -archs "$LIBCLANG_PATH")
 
-for arch in arm64 x86_64; do
-    if [[ " $LIBCLANG_ARCHS " != *" $arch "* ]]; then
-        checkpoint "Skipping metadata generator for $arch (libclang has: $LIBCLANG_ARCHS)"
+for architecture in $architectures; do
+    case "$architecture" in
+        x86_64|arm64) ;;
+        *) echo "Unsupported metadata generator architecture: $architecture" >&2; exit 2 ;;
+    esac
+
+    if [[ " $LIBCLANG_ARCHS " != *" $architecture "* ]]; then
+        checkpoint "Skipping metadata generator for $architecture (libclang has: $LIBCLANG_ARCHS)"
         continue
     fi
-    checkpoint "Building metadata generator for $arch ..."
-    build "$arch"
-    otool -L "dist/$arch/bin/objc-metadata-generator"
+    checkpoint "Building metadata generator for $architecture ..."
+    rm -rf "dist/$architecture"
+    build "$architecture"
+    otool -L "dist/$architecture/bin/objc-metadata-generator"
 done
 
 if [ ! -x "dist/$HOST_ARCH/bin/objc-metadata-generator" ]; then
