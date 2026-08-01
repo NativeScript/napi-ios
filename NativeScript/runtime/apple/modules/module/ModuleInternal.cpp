@@ -44,12 +44,17 @@ namespace {
 
 // Cache for package.json \"type\" field lookups.
 //
-// Deliberately leaked rather than a plain global: DeInit() clears it from
-// Runtime's destructor, which for the process-wide runtime runs from a static
-// destructor at exit. Static destruction order across translation units is
-// unspecified, so a plain global can already be destroyed by then and the
-// clear() frees garbage.
-std::unordered_map<std::string, bool>& ModulePackageTypeCache() {
+// Deliberately leaked rather than held in a namespace-scope object. The only
+// caller of DeInit() is ~Runtime, which runs from the destructor of the global
+// `runtime_` unique_ptr in NativeScript.mm -- i.e. during static destruction at
+// exit(). Destruction order between two translation units in the same image is
+// unspecified, and here this map was being destroyed first: DeInit() then
+// called clear() on a dead unordered_map and freed its already-freed nodes,
+// aborting every run with
+// "___BUG_IN_CLIENT_OF_LIBMALLOC_POINTER_BEING_FREED_WAS_NOT_ALLOCATED" after
+// the suite had finished. A function-local pointer that is never deleted has no
+// destruction order to get wrong.
+std::unordered_map<std::string, bool>& modulePackageTypeCache() {
   static auto* cache = new std::unordered_map<std::string, bool>();
   return *cache;
 }
@@ -362,8 +367,9 @@ std::string FindNearestPackageJson(const std::filesystem::path& startDir) {
 
 // Check if package.json has "type": "module"
 bool IsPackageTypeModule(const std::string& packageJsonPath) {
-  auto cacheIt = ModulePackageTypeCache().find(packageJsonPath);
-  if (cacheIt != ModulePackageTypeCache().end()) {
+  auto& cache = modulePackageTypeCache();
+  auto cacheIt = cache.find(packageJsonPath);
+  if (cacheIt != cache.end()) {
     return cacheIt->second;
   }
 
@@ -393,7 +399,7 @@ bool IsPackageTypeModule(const std::string& packageJsonPath) {
     }
   }
 
-  ModulePackageTypeCache()[packageJsonPath] = isModule;
+  cache[packageJsonPath] = isModule;
   return isModule;
 }
 
@@ -827,7 +833,7 @@ void ModuleInternal::DeInit() {
 #endif
 
   // Clear the package.json type cache
-  ModulePackageTypeCache().clear();
+  modulePackageTypeCache().clear();
 
   if (m_env != nullptr) {
     napi_delete_reference(m_env, this->m_requireFunction);

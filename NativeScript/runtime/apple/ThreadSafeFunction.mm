@@ -99,10 +99,19 @@ struct EnvCleanupState {
   bool draining_async_hooks = false;
 };
 
-static std::mutex g_cleanup_hooks_mutex;
-static std::condition_variable g_cleanup_hooks_cv;
-static std::unordered_map<node_api_basic_env, EnvCleanupState>
-    g_cleanup_hooks;
+// Leaked and never destroyed, for the reason spelled out above
+// gRuntimePromiseRunLoopMutex() in Runtime.cpp: these are reached from
+// ~Runtime -> js_free_napi_env -> the env cleanup hooks, and ~Runtime runs
+// from the destructor of the global `runtime_` unique_ptr in NativeScript.mm,
+// i.e. during static destruction at exit(). Destruction order across
+// translation units is unspecified and this one lost: locking the
+// already-destroyed mutex threw std::system_error("mutex lock failed: Invalid
+// argument") out of a noexcept destructor and terminated the process on every
+// run, after the test suite had already reported its results.
+static std::mutex& g_cleanup_hooks_mutex = *new std::mutex();
+static std::condition_variable& g_cleanup_hooks_cv = *new std::condition_variable();
+static std::unordered_map<node_api_basic_env, EnvCleanupState>& g_cleanup_hooks =
+    *new std::unordered_map<node_api_basic_env, EnvCleanupState>();
 
 static bool IsCleanupStateEmpty(const EnvCleanupState& state) {
   return state.env_hooks.empty() && state.async_hooks.empty() &&
