@@ -1,4 +1,5 @@
 #include "NativeApiJSCRuntime.h"
+#include "../shared/NativeApiStackValueArray.h"
 
 #ifdef TARGET_ENGINE_JSC
 
@@ -14,44 +15,6 @@ namespace jscengine {
 JSClassRef hostClass(Runtime& runtime);
 JSClassRef functionClass(Runtime& runtime);
 void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function);
-
-template <size_t InlineCount>
-class StackValueArray {
- public:
-  explicit StackValueArray(size_t count) : count_(count) {
-    if (count_ > InlineCount) {
-      values_ = static_cast<Value*>(::operator new(sizeof(Value) * count_));
-    } else {
-      values_ = reinterpret_cast<Value*>(inlineStorage_);
-    }
-  }
-
-  ~StackValueArray() {
-    for (size_t i = 0; i < constructed_; i++) {
-      values_[i].~Value();
-    }
-    if (count_ > InlineCount) {
-      ::operator delete(values_);
-    }
-  }
-
-  StackValueArray(const StackValueArray&) = delete;
-  StackValueArray& operator=(const StackValueArray&) = delete;
-
-  void emplace(size_t index, Value&& value) {
-    new (&values_[index]) Value(std::move(value));
-    constructed_++;
-  }
-
-  Value* data() { return count_ == 0 ? nullptr : values_; }
-  size_t size() const { return count_; }
-
- private:
-  size_t count_ = 0;
-  size_t constructed_ = 0;
-  Value* values_ = nullptr;
-  alignas(Value) unsigned char inlineStorage_[sizeof(Value) * InlineCount];
-};
 
 bool isNativeInstancePrototypeBypassExcluded(JSStringRef propertyName) {
   return JSStringIsEqualToUTF8CString(propertyName, "kind") ||
@@ -159,7 +122,7 @@ JSValueRef functionCall(JSContextRef context, JSObjectRef function, JSObjectRef 
     return JSValueMakeUndefined(context);
   }
   Runtime runtime(holder->state);
-  StackValueArray<8> args(argumentCount);
+  StackValueArray<Value, 8> args(argumentCount);
   for (size_t i = 0; i < argumentCount; i++) {
     args.emplace(i, Value::borrowed(runtime, arguments[i]));
   }

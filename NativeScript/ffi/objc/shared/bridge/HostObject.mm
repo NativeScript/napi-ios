@@ -18,14 +18,6 @@ inline bool InstallNativeApiLazyGlobal(
 #error Engine backends must provide an engine selector group function.
 #endif
 
-Function CreateNativeApiSelectorGroupFunction(
-    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
-    Class lookupClass, bool receiverIsClass,
-    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
-    std::shared_ptr<
-        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
-        preparedInvocations);
-
 class NativeApiHostObject final : public HostObject {
  public:
   explicit NativeApiHostObject(std::shared_ptr<NativeApiBridge> bridge)

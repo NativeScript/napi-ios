@@ -556,7 +556,6 @@ Value extendNativeApiClass(
     throw JSError(runtime, "Failed to allocate Objective-C class.");
   }
 
-  markNativeApiExtendedClass(nativeClass);
   class_addProtocol(nativeClass, @protocol(NativeApiClassBuilderProtocol));
   rememberNativeApiClassBuilder(runtime, bridge, nativeClass);
 
