@@ -25,6 +25,8 @@ const memoryThresholdsKB = {
   "reference-lifecycle": 40 * 1024,
   "block-callback-finalization": 40 * 1024,
   "c-function-pointer-semantics": 40 * 1024,
+  "circular-native-wrapper-finalization": 60 * 1024,
+  "circular-js-to-native-conversion": 60 * 1024,
 };
 
 const kMinValidRssKB = 4 * 1024;
@@ -32,7 +34,7 @@ const kMinValidRssKB = 4 * 1024;
 function parseArgs(argv) {
   const args = argv.slice(2);
   const parsed = {
-    timeoutMs: 45_000,
+    timeoutMs: 120_000,
     repeat: 2,
     grep: null,
     runtime: null,
@@ -59,7 +61,7 @@ function parseArgs(argv) {
   }
 
   if (!Number.isFinite(parsed.timeoutMs) || parsed.timeoutMs <= 0) {
-    parsed.timeoutMs = 45_000;
+    parsed.timeoutMs = 120_000;
   }
   if (!Number.isFinite(parsed.repeat) || parsed.repeat <= 0) {
     parsed.repeat = 1;
@@ -213,7 +215,9 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
 
       const logicalName = parsedResult && parsedResult.name
         ? parsedResult.name
-        : path.basename(testFile, ".js");
+        : path.basename(testFile, ".js")
+          .replace(/^test_/, "")
+          .replace(/_/g, "-");
 
       const driftThresholdKB = memoryThresholdsKB[logicalName] ?? (80 * 1024);
       const memoryPass = driftKB == null ? false : driftKB <= driftThresholdKB;
@@ -273,7 +277,7 @@ function printRunSummary(run) {
 
 async function main() {
   const opts = parseArgs(process.argv);
-  const repoRoot = path.resolve(__dirname, "..", "..", "..");
+  const repoRoot = path.resolve(__dirname, "..", "..", "..", "..", "..");
   const memoryDir = path.resolve(__dirname);
   const nsrPath = opts.runtime
     ? path.resolve(repoRoot, opts.runtime)

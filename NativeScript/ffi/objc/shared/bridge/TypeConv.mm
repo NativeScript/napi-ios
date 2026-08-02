@@ -1,8 +1,50 @@
 std::string stringPropertyOrEmpty(Runtime& runtime, const Object& object, const char* name);
 void* pointerFromSymbolLikeObject(Runtime& runtime, const Object& object);
 
-id objectFromEngineValue(Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
-                         const Value& value, NativeApiArgumentFrame& frame, bool mutableString) {
+class NativeApiObjectConversionStack final {
+ public:
+  bool contains(Runtime& runtime, const Value& value) const {
+    for (const auto& active : activeValues_) {
+      if (Value::strictEquals(runtime, active, value)) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  void push(Runtime& runtime, const Value& value) {
+    activeValues_.emplace_back(runtime, value);
+  }
+
+  void pop() { activeValues_.pop_back(); }
+
+ private:
+  std::vector<Value> activeValues_;
+};
+
+class NativeApiObjectConversionGuard final {
+ public:
+  NativeApiObjectConversionGuard(Runtime& runtime, const Value& value,
+                                 NativeApiObjectConversionStack& stack)
+      : stack_(stack) {
+    if (stack_.contains(runtime, value)) {
+      throw JSError(
+          runtime,
+          "Circular JavaScript object graphs cannot be converted to Objective-C collections.");
+    }
+    stack_.push(runtime, value);
+  }
+
+  ~NativeApiObjectConversionGuard() { stack_.pop(); }
+
+ private:
+  NativeApiObjectConversionStack& stack_;
+};
+
+id objectFromEngineValueImpl(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const Value& value, NativeApiArgumentFrame& frame, bool mutableString,
+    NativeApiObjectConversionStack& conversionStack) {
   if (value.isNull() || value.isUndefined()) {
     return nil;
   }
@@ -67,7 +109,8 @@ id objectFromEngineValue(Runtime& runtime, const std::shared_ptr<NativeApiBridge
       Value primitiveValue = valueOfValue.asObject(runtime).asFunction(runtime).callWithThis(
           runtime, object, nullptr, 0);
       if (primitiveValue.isString() || primitiveValue.isBool() || primitiveValue.isNumber()) {
-        return objectFromEngineValue(runtime, bridge, primitiveValue, frame, mutableString);
+        return objectFromEngineValueImpl(runtime, bridge, primitiveValue, frame,
+                                         mutableString, conversionStack);
       }
     }
 
@@ -79,12 +122,17 @@ id objectFromEngineValue(Runtime& runtime, const std::shared_ptr<NativeApiBridge
       return data;
     }
 
+    NativeApiObjectConversionGuard conversionGuard(runtime, value,
+                                                    conversionStack);
+
     if (object.isArray(runtime)) {
       Array array = object.getArray(runtime);
       NSMutableArray* nativeArray = [NSMutableArray arrayWithCapacity:array.size(runtime)];
       for (size_t i = 0; i < array.size(runtime); i++) {
         id element =
-            objectFromEngineValue(runtime, bridge, array.getValueAtIndex(runtime, i), frame, false);
+            objectFromEngineValueImpl(runtime, bridge,
+                                      array.getValueAtIndex(runtime, i), frame,
+                                      false, conversionStack);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
       }
       bridge->rememberScopedRoundTripValue(runtime, nativeArray, value, false, false);
@@ -98,8 +146,9 @@ id objectFromEngineValue(Runtime& runtime, const std::shared_ptr<NativeApiBridge
       NSMutableArray* nativeArray = [NSMutableArray arrayWithCapacity:length];
       for (size_t i = 0; i < length; i++) {
         std::string key = std::to_string(i);
-        id element = objectFromEngineValue(runtime, bridge,
-                                           object.getProperty(runtime, key.c_str()), frame, false);
+        id element = objectFromEngineValueImpl(
+            runtime, bridge, object.getProperty(runtime, key.c_str()), frame,
+            false, conversionStack);
         [nativeArray addObject:element != nil ? element : [NSNull null]];
       }
       bridge->rememberScopedRoundTripValue(runtime, nativeArray, value, false, false);
@@ -130,10 +179,12 @@ id objectFromEngineValue(Runtime& runtime, const std::shared_ptr<NativeApiBridge
           if (pair.size(runtime) < 2) {
             continue;
           }
-          id key = objectFromEngineValue(runtime, bridge, pair.getValueAtIndex(runtime, 0), frame,
-                                         false);
-          id nativeValue = objectFromEngineValue(runtime, bridge, pair.getValueAtIndex(runtime, 1),
-                                                 frame, false);
+          id key = objectFromEngineValueImpl(
+              runtime, bridge, pair.getValueAtIndex(runtime, 0), frame, false,
+              conversionStack);
+          id nativeValue = objectFromEngineValueImpl(
+              runtime, bridge, pair.getValueAtIndex(runtime, 1), frame, false,
+              conversionStack);
           if (key != nil) {
             [nativeMap setObject:nativeValue != nil ? nativeValue : [NSNull null] forKey:key];
           }
@@ -155,7 +206,8 @@ id objectFromEngineValue(Runtime& runtime, const std::shared_ptr<NativeApiBridge
       if (propertyValue.isUndefined()) {
         continue;
       }
-      id nativeValue = objectFromEngineValue(runtime, bridge, propertyValue, frame, false);
+      id nativeValue = objectFromEngineValueImpl(
+          runtime, bridge, propertyValue, frame, false, conversionStack);
       NSString* nativeKey = [NSString stringWithUTF8String:key.c_str()];
       if (nativeKey != nil) {
         [dictionary setObject:nativeValue != nil ? nativeValue : [NSNull null] forKey:nativeKey];
@@ -165,6 +217,15 @@ id objectFromEngineValue(Runtime& runtime, const std::shared_ptr<NativeApiBridge
     return dictionary;
   }
   throw JSError(runtime, "Value cannot be converted to Objective-C object.");
+}
+
+id objectFromEngineValue(Runtime& runtime,
+                         const std::shared_ptr<NativeApiBridge>& bridge,
+                         const Value& value, NativeApiArgumentFrame& frame,
+                         bool mutableString) {
+  NativeApiObjectConversionStack conversionStack;
+  return objectFromEngineValueImpl(runtime, bridge, value, frame,
+                                   mutableString, conversionStack);
 }
 
 std::string utf8StringFromNSString(NSString* string) {

@@ -313,6 +313,15 @@ class Value {
     value.kind_ = quickjsengine::ValueStorage::Kind::Null;
     return value;
   }
+  static bool strictEquals(Runtime& runtime, const Value& lhs,
+                           const Value& rhs) {
+    JSValue lhsValue = lhs.local(runtime);
+    JSValue rhsValue = rhs.local(runtime);
+    bool equal = JS_IsStrictEqual(runtime.context(), lhsValue, rhsValue);
+    JS_FreeValue(runtime.context(), lhsValue);
+    JS_FreeValue(runtime.context(), rhsValue);
+    return equal;
+  }
   bool isUndefined() const {
     if (kind_ == quickjsengine::ValueStorage::Kind::Undefined) {
       return true;

@@ -168,16 +168,12 @@ function printComparison(labelA, dataA, labelB, dataB) {
 
 async function main() {
   const opts = parseArgs(process.argv);
-  const repoRoot = path.resolve(__dirname, "..", "..");
+  const repoRoot = path.resolve(__dirname, "..", "..", "..", "..", "..");
   const benchScriptPath = path.resolve(__dirname, "foundation_calls.js");
-  const gsdPath = path.join(repoRoot, "dist", "nsr-gsd");
-  const nonGsdPath = path.join(repoRoot, "dist", "nsr");
+  const runtimePath = path.join(repoRoot, "dist", "nsr");
 
-  if (!fs.existsSync(gsdPath)) {
-    throw new Error(`Missing runtime: ${gsdPath}`);
-  }
-  if (!fs.existsSync(nonGsdPath)) {
-    throw new Error(`Missing runtime: ${nonGsdPath}`);
+  if (!fs.existsSync(runtimePath)) {
+    throw new Error(`Missing runtime: ${runtimePath}`);
   }
 
   const gsdRuns = [];
@@ -188,18 +184,18 @@ async function main() {
     const runGsdFirst = (i & 1) === 0;
     if (runGsdFirst) {
       console.log(`Running iteration ${iteration}/${opts.repeat} with GSD runtime...`);
-      gsdRuns.push(await runOnce(gsdPath, benchScriptPath, repoRoot));
+      gsdRuns.push(await runOnce(runtimePath, benchScriptPath, repoRoot));
       console.log(`Running iteration ${iteration}/${opts.repeat} with non-GSD runtime...`);
       nonGsdRuns.push(
-        await runOnce(nonGsdPath, benchScriptPath, repoRoot, { NS_DISABLE_GSD: "1" }),
+        await runOnce(runtimePath, benchScriptPath, repoRoot, { NS_DISABLE_GSD: "1" }),
       );
     } else {
       console.log(`Running iteration ${iteration}/${opts.repeat} with non-GSD runtime...`);
       nonGsdRuns.push(
-        await runOnce(nonGsdPath, benchScriptPath, repoRoot, { NS_DISABLE_GSD: "1" }),
+        await runOnce(runtimePath, benchScriptPath, repoRoot, { NS_DISABLE_GSD: "1" }),
       );
       console.log(`Running iteration ${iteration}/${opts.repeat} with GSD runtime...`);
-      gsdRuns.push(await runOnce(gsdPath, benchScriptPath, repoRoot));
+      gsdRuns.push(await runOnce(runtimePath, benchScriptPath, repoRoot));
     }
   }
 

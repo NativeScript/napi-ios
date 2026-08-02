@@ -19,6 +19,8 @@ const semanticsTests = [
   "test_block_completion_safety.js",
   "test_block_callback_finalization.js",
   "test_c_function_pointer_semantics.js",
+  "test_circular_native_wrapper_finalization.js",
+  "test_circular_js_to_native_conversion.js",
 ];
 
 function resolveSemanticsTests(memoryDir, grep) {
@@ -118,7 +120,7 @@ function printSemanticsRunSummary(run) {
 
 async function main() {
   const opts = parseArgs(process.argv);
-  const repoRoot = path.resolve(__dirname, "..", "..", "..");
+  const repoRoot = path.resolve(__dirname, "..", "..", "..", "..", "..");
   const memoryDir = path.resolve(__dirname);
   const nsrPath = opts.runtime
     ? path.resolve(repoRoot, opts.runtime)

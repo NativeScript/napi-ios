@@ -131,6 +131,58 @@ static bool getJSBufferData(napi_env env, napi_value value, void** data, size_t*
   return false;
 }
 
+struct ActiveObjectConversion {
+  napi_env env;
+  napi_value value;
+};
+
+thread_local std::vector<ActiveObjectConversion> activeObjectConversions;
+
+class ScopedObjectConversion {
+ public:
+  ScopedObjectConversion(napi_env env, napi_value value) {
+    for (const auto& active : activeObjectConversions) {
+      if (active.env != env) {
+        continue;
+      }
+
+      bool isSameObject = false;
+      status_ = napi_strict_equals(env, active.value, value, &isSameObject);
+      if (status_ != napi_ok) {
+        return;
+      }
+
+      if (isSameObject) {
+        napi_throw_error(
+            env, nullptr,
+            "Circular JavaScript object graphs cannot be converted to Objective-C collections.");
+        return;
+      }
+    }
+
+    activeObjectConversions.push_back({env, value});
+    entered_ = true;
+  }
+
+  ~ScopedObjectConversion() {
+    if (entered_) {
+      activeObjectConversions.pop_back();
+    }
+  }
+
+  bool entered() const { return entered_; }
+  napi_status status() const { return status_; }
+
+ private:
+  bool entered_ = false;
+  napi_status status_ = napi_ok;
+};
+
+static bool hasPendingException(napi_env env) {
+  bool pending = false;
+  return napi_is_exception_pending(env, &pending) == napi_ok && pending;
+}
+
 static uint16_t encodeFloat16(double value) {
   if (std::isnan(value)) {
     return 0x7e00;
@@ -2438,6 +2490,16 @@ class ObjCObjectTypeConv : public TypeConv {
             }
           }
 
+          ScopedObjectConversion conversion(env, value);
+          if (!conversion.entered()) {
+            *res = nil;
+            if (conversion.status() != napi_ok) {
+              status = conversion.status();
+              NAPI_THROW_LAST_ERROR
+            }
+            return;
+          }
+
           bool isArray = false;
           napi_is_array(env, value, &isArray);
           if (isArray) {
@@ -2450,6 +2512,10 @@ class ObjCObjectTypeConv : public TypeConv {
               napi_get_element(env, value, i, &elem);
               id obj = nil;
               toNative(env, elem, (void*)&obj, shouldFree, shouldFreeAny);
+              if (hasPendingException(env)) {
+                *res = nil;
+                return;
+              }
               [(*res) addObject:obj != nil ? obj : [NSNull null]];
             }
 
@@ -2484,6 +2550,10 @@ class ObjCObjectTypeConv : public TypeConv {
               napi_get_named_property(env, value, "valueOf", &valueOfMethod);
               napi_value primitiveValue;
               napi_call_function(env, value, valueOfMethod, 0, nullptr, &primitiveValue);
+              if (hasPendingException(env)) {
+                *res = nil;
+                return;
+              }
               toNative(env, primitiveValue, result, shouldFree, shouldFreeAny);
               return;
             }
@@ -2538,7 +2608,15 @@ class ObjCObjectTypeConv : public TypeConv {
                 id keyObject = nil;
                 id valueObject = nil;
                 toNative(env, keyValue, (void*)&keyObject, shouldFree, shouldFreeAny);
+                if (hasPendingException(env)) {
+                  *res = nil;
+                  return;
+                }
                 toNative(env, elementValue, (void*)&valueObject, shouldFree, shouldFreeAny);
+                if (hasPendingException(env)) {
+                  *res = nil;
+                  return;
+                }
 
                 if (keyObject != nil && valueObject != nil) {
                   [(*res) setObject:valueObject forKey:keyObject];
@@ -2576,6 +2654,10 @@ class ObjCObjectTypeConv : public TypeConv {
                   napi_get_element(env, value, i, &elem);
                   id obj = nil;
                   toNative(env, elem, (void*)&obj, shouldFree, shouldFreeAny);
+                  if (hasPendingException(env)) {
+                    *res = nil;
+                    return;
+                  }
                   [(*res) addObject:obj != nil ? obj : [NSNull null]];
                 }
                 cacheRoundTrip(*res);
@@ -2638,6 +2720,10 @@ class ObjCObjectTypeConv : public TypeConv {
                 continue;
               }
               toNative(env, elem, (void*)&obj, shouldFree, shouldFreeAny);
+              if (hasPendingException(env)) {
+                *res = nil;
+                return;
+              }
               if (obj != nil) {
                 [(*res) setObject:obj forKey:nsKey];
               }
