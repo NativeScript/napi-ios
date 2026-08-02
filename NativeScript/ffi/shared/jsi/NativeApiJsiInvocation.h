@@ -477,7 +477,7 @@ Value callObjCSelector(Runtime& runtime,
 #if defined(__x86_64__)
     bool isStret = signature->returnType.ffiType->size > 16 &&
                    signature->returnType.ffiType->type == FFI_TYPE_STRUCT;
-    void* target = dispatchSuperClass != Nil
+    void (*target)(void) = dispatchSuperClass != Nil
                        ? (isStret ? FFI_FN(objc_msgSendSuper_stret)
                                   : FFI_FN(objc_msgSendSuper))
                        : (isStret ? FFI_FN(objc_msgSend_stret)
