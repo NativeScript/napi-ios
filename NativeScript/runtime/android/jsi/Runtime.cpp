@@ -227,10 +227,7 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
     // Newer JSC ships a native `WeakRef` global, so the old polyfill (which was
     // actually a strong reference and leaked) is no longer needed.
 
-    // The inspector is V8-specific (it drives the Chrome DevTools Protocol
-    // through v8_inspector) and is not part of this binding layer, so the
-    // console has no inspector sink to forward to.
-    Console::createConsole(rt, nullptr, maxLogcatObjectSize, forceLog);
+    Console::createConsole(rt, maxLogcatObjectSize, forceLog);
 
     Timers::InitStatic(rt, global);
 
