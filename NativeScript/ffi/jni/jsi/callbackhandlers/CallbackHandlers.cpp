@@ -1239,9 +1239,18 @@ void CallbackHandlers::RemoveEnvEntries(JsRuntime &rt) {
 JsValue CallbackHandlers::NewThreadCallback(JsRuntime &rt, const JsValue &thisVal,
                                             const JsValue *args, size_t argc) {
     try {
-        // The napi tree checked napi_get_new_target here to reject a plain call.
-        // This function is installed with Function::createFromHostConstructor, so
-        // the engine only routes construct calls to it.
+        // The napi tree rejected a plain `Worker(...)` call by checking
+        // napi_get_new_target. engine:: exposes no new.target, and
+        // createFromHostConstructor does NOT imply a construct call -- V8's
+        // ConstructorBehavior::kAllow permits both, and the other backends
+        // likewise route a plain call here. What distinguishes the two on every
+        // backend is the receiver: a construct call gets a fresh object built
+        // from the constructor's prototype, while a plain call gets undefined
+        // (strict) or the global object (sloppy).
+        if (js_util::is_null_or_undefined(thisVal) ||
+            js_util::strict_equal(rt, thisVal, JsValue(rt, rt.global()))) {
+            throw NativeScriptException("Worker should be called as a constructor!");
+        }
 
         if (argc != 1) {
             throw NativeScriptException(
