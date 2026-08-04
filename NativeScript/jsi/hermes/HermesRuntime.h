@@ -166,6 +166,14 @@ class Runtime {
 
   ::facebook::jsi::Runtime& jsi() const { return *runtime_; }
 
+  // A stable, per-runtime identity.
+  //
+  // engine::Runtime is a value wrapper around shared engine state, and the
+  // host-function trampolines construct a fresh one on the stack for every
+  // callback. So `&runtime` is NOT stable and must never be used as a map key;
+  // this is. The pointer is opaque and only ever compared or hashed.
+  const void* identity() const { return runtime_; }
+
   Object global();
 
   Value evaluateJavaScript(std::shared_ptr<StringBuffer> buffer,

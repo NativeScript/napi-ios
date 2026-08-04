@@ -252,8 +252,9 @@ private:
     static robin_hood::unordered_map<std::string, MetadataNode *> s_name2NodeCache;
     static robin_hood::unordered_map<std::string, MetadataTreeNode *> s_name2TreeNodeCache;
     static robin_hood::unordered_map<MetadataTreeNode *, MetadataNode *> s_treeNode2NodeCache;
-    static tns::ConcurrentMap<JsRuntime *, MetadataNodeCache *> s_metadata_node_cache;
-    static robin_hood::unordered_map<JsRuntime *, JsValue> s_arrayObjects;
+    // Both keyed by JsRuntime::identity(); &rt is not stable across callbacks.
+    static tns::ConcurrentMap<const void *, MetadataNodeCache *> s_metadata_node_cache;
+    static robin_hood::unordered_map<const void *, JsValue> s_arrayObjects;
 
     // An owned engine handle replaces every napi_ref below: it survives handle
     // scopes and is released by destroying/erasing the owner, so there are no

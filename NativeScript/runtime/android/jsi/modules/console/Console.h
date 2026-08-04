@@ -28,7 +28,8 @@ namespace tns {
         // HostFunctionType shape, not a napi_callback taking `this` as data.
         static void sendToADBLogcat(const std::string& log, android_LogPriority logPriority);
 
-        static std::map<engine::Runtime*, std::map<std::string, double>> s_rtToConsoleTimersMap;
+        // Keyed by engine::Runtime::identity(); &rt is not stable across callbacks.
+        static std::map<const void*, std::map<std::string, double>> s_rtToConsoleTimersMap;
 
     private:
 

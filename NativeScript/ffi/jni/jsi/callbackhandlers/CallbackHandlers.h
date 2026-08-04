@@ -277,12 +277,17 @@ namespace tns {
         // An owned engine::Function replaces the napi_ref: it survives handle
         // scopes and is released when the entry is erased, so there is no
         // destructor left to write.
+        //
+        // The owning tns::Runtime is stored rather than the engine::Runtime the
+        // callback was registered from: that one is a stack temporary built for
+        // the host call (see engine::Runtime::identity()), so its address would
+        // dangle by the time this entry runs.
         struct CacheEntry {
-            CacheEntry(JsRuntime &rt, const JsValue &callback)
-                    : rt_(&rt), callback_(rt, callback) {
+            CacheEntry(tns::Runtime *runtime, JsRuntime &rt, const JsValue &callback)
+                    : runtime_(runtime), callback_(rt, callback) {
             }
 
-            JsRuntime *rt_;
+            tns::Runtime *runtime_;
             JsValue callback_;
         };
 
@@ -293,11 +298,14 @@ namespace tns {
         static std::atomic_uint64_t frameCallbackCount_;
 
         struct FrameCallbackCacheEntry {
-            FrameCallbackCacheEntry(JsRuntime &_rt, const JsValue &callback_, uint64_t aId)
-                    : rt(&_rt), callback(_rt, callback_), id(aId) {
+            // See CacheEntry: the owning tns::Runtime, not the call-scoped
+            // engine::Runtime wrapper.
+            FrameCallbackCacheEntry(tns::Runtime *runtime, JsRuntime &_rt,
+                                    const JsValue &callback_, uint64_t aId)
+                    : runtime(runtime), callback(_rt, callback_), id(aId) {
             }
 
-            JsRuntime *rt;
+            tns::Runtime *runtime;
             JsValue callback;
             uint64_t id;
 

@@ -22,7 +22,7 @@ using namespace std;
 
 
 const char *Console::LOG_TAG = "JS";
-std::map<engine::Runtime *, std::map<std::string, double>> Console::s_rtToConsoleTimersMap;
+std::map<const void *, std::map<std::string, double>> Console::s_rtToConsoleTimersMap;
 int Console::m_maxLogcatObjectSize;
 
 namespace {
@@ -296,7 +296,7 @@ void Console::createConsole(engine::Runtime &rt, const int maxLogcatObjectSize,
                             const bool forceLog) {
     m_maxLogcatObjectSize = maxLogcatObjectSize;
 
-    s_rtToConsoleTimersMap.emplace(&rt, std::map<std::string, double>());
+    s_rtToConsoleTimersMap.emplace(rt.identity(), std::map<std::string, double>());
 
     engine::Object console(rt);
     engine::Object global = rt.global();
@@ -337,7 +337,7 @@ void Console::createConsole(engine::Runtime &rt, const int maxLogcatObjectSize,
                                      label = args[0].asString(runtime).utf8(runtime);
                                  }
 
-                                 auto it = Console::s_rtToConsoleTimersMap.find(&runtime);
+                                 auto it = Console::s_rtToConsoleTimersMap.find(runtime.identity());
                                  if (it == Console::s_rtToConsoleTimersMap.end()) {
                                      return engine::Value::undefined();
                                  }
@@ -358,7 +358,7 @@ void Console::createConsole(engine::Runtime &rt, const int maxLogcatObjectSize,
                                      label = args[0].asString(runtime).utf8(runtime);
                                  }
 
-                                 auto it = Console::s_rtToConsoleTimersMap.find(&runtime);
+                                 auto it = Console::s_rtToConsoleTimersMap.find(runtime.identity());
                                  if (it == Console::s_rtToConsoleTimersMap.end()) {
                                      return engine::Value::undefined();
                                  }
@@ -397,7 +397,7 @@ void Console::createConsole(engine::Runtime &rt, const int maxLogcatObjectSize,
 }
 
 void Console::onDisposeRuntime(engine::Runtime &rt) {
-    s_rtToConsoleTimersMap.erase(&rt);
+    s_rtToConsoleTimersMap.erase(rt.identity());
 }
 
 void Console::sendToADBLogcat(const std::string &message, android_LogPriority logPriority) {

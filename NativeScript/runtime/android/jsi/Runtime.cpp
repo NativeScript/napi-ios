@@ -220,7 +220,7 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
 
     engine::Runtime &rt = engineHost->GetRuntime();
 
-    engine::Runtime *rtKey = &rt;
+    const void *rtKey = rt.identity();
     rt_to_runtime_cache.Insert(rtKey, this);
 
     engine::Object global = rt.global();
@@ -490,7 +490,7 @@ void Runtime::DestroyRuntime() {
     m_gcFunc = engine::Value::undefined();
     Runtime::thread_id_to_rt_cache.Remove(this->my_thread_id);
     id_to_runtime_cache.Remove(m_id);
-    engine::Runtime *rtKey = &rt;
+    const void *rtKey = rt.identity();
     rt_to_runtime_cache.Remove(rtKey);
     // Deliberately NOT engineHost->ReleaseEngineState() here: this runs inside a
     // JSScope on the worker path, and dropping the engine::Runtime under it is
@@ -795,7 +795,7 @@ void Runtime::Unlock() {
 JavaVM *Runtime::java_vm = nullptr;
 jmethodID Runtime::GET_USED_MEMORY_METHOD_ID = nullptr;
 tns::ConcurrentMap<int, Runtime *> Runtime::id_to_runtime_cache;
-tns::ConcurrentMap<engine::Runtime *, Runtime *> Runtime::rt_to_runtime_cache;
+tns::ConcurrentMap<const void *, Runtime *> Runtime::rt_to_runtime_cache;
 bool Runtime::s_mainThreadInitialized = false;
 int Runtime::m_androidVersion = Runtime::GetAndroidVersion();
 ALooper *Runtime::m_mainLooper = nullptr;

@@ -12,11 +12,12 @@
 using namespace std;
 using namespace tns;
 
-static robin_hood::unordered_map<JsRuntime *, JsFunction> rtToPersistentSmartJSONStringify =
-        robin_hood::unordered_map<JsRuntime *, JsFunction>();
+// Keyed by JsRuntime::identity(); &rt is not stable across callbacks.
+static robin_hood::unordered_map<const void *, JsFunction> rtToPersistentSmartJSONStringify =
+        robin_hood::unordered_map<const void *, JsFunction>();
 
 static JsFunction *GetSmartJSONStringifyFunction(JsRuntime &rt) {
-    auto it = rtToPersistentSmartJSONStringify.find(&rt);
+    auto it = rtToPersistentSmartJSONStringify.find(rt.identity());
     if (it != rtToPersistentSmartJSONStringify.end()) {
         return &it->second;
     }
@@ -65,7 +66,7 @@ static JsFunction *GetSmartJSONStringifyFunction(JsRuntime &rt) {
         return nullptr;
     }
 
-    auto emplaced = rtToPersistentSmartJSONStringify.emplace(&rt, object.asFunction(rt));
+    auto emplaced = rtToPersistentSmartJSONStringify.emplace(rt.identity(), object.asFunction(rt));
     return &emplaced.first->second;
 }
 
@@ -192,5 +193,5 @@ JsObject tns::GlobalHelpers::CreateError(JsRuntime &rt, const std::string &messa
 }
 
 void tns::GlobalHelpers::onDisposeRuntime(JsRuntime &rt) {
-    rtToPersistentSmartJSONStringify.erase(&rt);
+    rtToPersistentSmartJSONStringify.erase(rt.identity());
 }
