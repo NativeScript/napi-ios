@@ -29,6 +29,11 @@ struct JsStacktraceFrame {
 std::vector<JsStacktraceFrame> BuildStacktraceFrames(JsRuntime& rt, const JsValue* error, int size);
 
 namespace GlobalHelpers {
+    // `new Error(message)`. The napi tree's Console reached for napi_create_error
+    // here; engine:: has no error factory (JSError is the C++ carrier, not a
+    // constructor), so the Error constructor is called through the runtime.
+    JsObject CreateError(JsRuntime& rt, const std::string& message);
+
     void onDisposeRuntime(JsRuntime& rt);
 }
 }

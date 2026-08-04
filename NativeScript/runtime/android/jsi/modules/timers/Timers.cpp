@@ -242,7 +242,13 @@ void Timers::FireTimer() {
     nesting = 0;
 
     if (thrown != nullptr) {
-        throw NativeScriptException(rt, *thrown, "Error in timer callback");
+        // JSError carries the thrown JS value only when the engine had one to
+        // give; a message-only JSError has none, and the string form is all the
+        // NativeScriptException can be built from.
+        if (thrown->value() != nullptr) {
+            throw NativeScriptException(rt, *thrown->value(), "Error in timer callback");
+        }
+        throw NativeScriptException(std::string("Error in timer callback: ") + thrown->what());
     }
 }
 
