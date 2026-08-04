@@ -32,7 +32,8 @@ namespace tns {
         static Runtime *GetRuntime(int runtimeId);
 
         inline static Runtime *GetRuntime(engine::Runtime &rt) {
-            auto runtime = rt_to_runtime_cache.Get(&rt);
+            engine::Runtime *key = &rt;
+            auto runtime = rt_to_runtime_cache.Get(key);
             if (runtime) return runtime;
 
             std::stringstream ss;
@@ -41,7 +42,8 @@ namespace tns {
         }
 
         inline static Runtime *GetRuntimeUnchecked(engine::Runtime &rt) {
-            return rt_to_runtime_cache.Get(&rt);
+            engine::Runtime *key = &rt;
+            return rt_to_runtime_cache.Get(key);
         }
 
         // Engine-agnostic replacement for node_api_post_finalizer: schedules
