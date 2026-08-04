@@ -589,7 +589,17 @@ Function Function::createFromHostConstructor(Runtime& runtime, const PropNameID&
 
   // WRITABLE is the whole point: napi_define_class reads this object back and
   // the runtime later reassigns it outright to chain class prototypes.
-  JS_DefinePropertyValueStr(ctx, function, "prototype", JS_NewObject(ctx),
+  //
+  // The prototype also needs its `constructor` back-pointer. Per spec a
+  // function's prototype carries a non-enumerable, writable, configurable
+  // `constructor` naming the function; V8 (Function::New) and JSC install it
+  // for us, but a bare JS_NewObject has none, so `instance.constructor` walked
+  // straight past it to Object.prototype.constructor and every native class
+  // reported its name as "Object".
+  JSValue prototype = JS_NewObject(ctx);
+  JS_DefinePropertyValueStr(ctx, prototype, "constructor", JS_DupValue(ctx, function),
+                            JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
+  JS_DefinePropertyValueStr(ctx, function, "prototype", prototype,
                             JS_PROP_WRITABLE | JS_PROP_CONFIGURABLE);
 
   Function result = Function(Object::fromValueStorage(Value(runtime, function).storage_));

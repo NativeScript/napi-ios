@@ -223,7 +223,19 @@ JniLocalRef ObjectManager::GetJavaObjectByJsObjectFast(const JsValue &object) {
 std::shared_ptr<ObjectManager::JSInstanceInfo>
 ObjectManager::GetJSInstanceInfoShared(const JsValue &object) {
     if (!object.isObject()) return nullptr;
-    return object.asObjectBorrowed(*m_rt).getNativeState<JSInstanceInfo>(*m_rt);
+    auto info = object.asObjectBorrowed(*m_rt).getNativeState<JSInstanceInfo>(*m_rt);
+    if (info != nullptr) return info;
+
+    // A host proxy carries no native state of its own; the instance it wraps
+    // does. Which of the two an accessor receives is engine-dependent -- reading
+    // `super` off an extended instance lands on the target under V8 and on the
+    // proxy under QuickJS -- so resolve through the proxy rather than making
+    // every caller know. One hop only: a target is never itself a proxy.
+    auto proxy = object.asObjectBorrowed(*m_rt).getHostObject<HostObjectProxy>(*m_rt);
+    if (proxy != nullptr && proxy->target != nullptr) {
+        return proxy->target->asObjectBorrowed(*m_rt).getNativeState<JSInstanceInfo>(*m_rt);
+    }
+    return nullptr;
 }
 
 ObjectManager::JSInstanceInfo *ObjectManager::GetJSInstanceInfo(const JsValue &object) {
