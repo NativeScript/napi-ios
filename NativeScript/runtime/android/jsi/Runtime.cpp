@@ -392,7 +392,7 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
 
     m_arrayBufferHelper.CreateConvertFunctions(rt, global, m_objectManager);
 
-    m_loopTimer->Init(rt);
+    m_loopTimer->Init(engineHost);
 
     // Per-runtime task queue bound to this thread's looper. Child workers post
     // their outbound messages/errors/cleanup onto their parent runtime's queue.
