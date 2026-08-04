@@ -488,6 +488,12 @@ void Runtime::DestroyRuntime() {
     }
     // Every engine handle this runtime still owns must go while the VM is up.
     m_gcFunc = engine::Value::undefined();
+    // Last, because everything above may still call a js_util helper on its way
+    // out: js_util::Builtins holds ~18 owned engine handles per runtime
+    // (Object.defineProperty, the Error constructor, ...). Nothing released them
+    // before, which QuickJS catches directly -- JS_FreeRuntime asserts
+    // list_empty(&rt->gc_obj_list) and aborts, where V8 and JSC only leak.
+    js_util::Builtins::dispose(rt);
     Runtime::thread_id_to_rt_cache.Remove(this->my_thread_id);
     id_to_runtime_cache.Remove(m_id);
     const void *rtKey = rt.identity();
