@@ -510,6 +510,18 @@ Function Function::createFromHostConstructor(Runtime& runtime, const PropNameID&
   {
     JSStringRef property = jscengine::makeJSString("prototype");
     JSObjectRef prototype = JSObjectMake(runtime.context(), nullptr, nullptr);
+    // The prototype's `constructor` back-pointer. Per spec a function's
+    // prototype carries one (non-enumerable, writable, configurable); V8's
+    // Function::New installs it, but a JSObjectMake'd object has none, so
+    // `instance.constructor` walked past the class prototype to
+    // Object.prototype.constructor and every native class reported its name as
+    // "Object".
+    {
+      JSStringRef ctorName = jscengine::makeJSString("constructor");
+      JSObjectSetProperty(runtime.context(), prototype, ctorName, function,
+                          kJSPropertyAttributeDontEnum, nullptr);
+      JSStringRelease(ctorName);
+    }
     JSObjectSetProperty(runtime.context(), function, property, prototype,
                         kJSPropertyAttributeDontEnum, nullptr);
     JSStringRelease(property);
