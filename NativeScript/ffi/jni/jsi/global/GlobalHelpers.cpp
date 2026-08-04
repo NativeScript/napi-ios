@@ -125,13 +125,19 @@ std::vector<tns::JsStacktraceFrame> tns::BuildStacktraceFrames(JsRuntime &rt, co
         stack = error->asObjectBorrowed(rt).getProperty(rt, "stack");
     } else {
         // The napi tree branched on __HERMES__ / __PRIMJS__ to build the carrier
-        // error, because napi_create_error was not usable on all of them. Here
-        // the error is constructed by evaluating `new Error()`, which every
-        // engine supports identically and needs no per-engine branch.
+        // error, because napi_create_error was not usable on all of them.
+        // Invoking the Error constructor works identically on every engine and
+        // needs no per-engine branch.
+        //
+        // It must be a *call* into the constructor, not an evaluated
+        // `new Error()` script: evaluating one pushes the script's own frame
+        // onto the stack, so every frame index shifts by one. That is not
+        // cosmetic -- MetadataNode::GetExtendLocation builds generated class
+        // names out of frames[0], and it produced names like
+        // "Button1_<stacktrace>_1_-59_" that no dex proxy exists for.
         JsValue err;
         try {
-            err = rt.evaluateJavaScript(std::make_shared<engine::StringBuffer>("new Error()"),
-                                        "<stacktrace>");
+            err = JsValue(rt, GlobalHelpers::CreateError(rt, ""));
         } catch (JsError &) {
             return frames;
         }
