@@ -55,12 +55,30 @@ endif ()
 get_filename_component(REPO_ROOT "${PROJECT_SOURCE_DIR}/../../../.." ABSOLUTE)
 set(NS_ROOT "${REPO_ROOT}/NativeScript")
 set(NS_RUNTIME_DIR "${NS_ROOT}/runtime")
-set(NS_ANDROID_RUNTIME_DIR "${NS_RUNTIME_DIR}/android")
 set(NS_RUNTIME_MODULES_DIR "${NS_RUNTIME_DIR}/modules")
 set(NS_NAPI_DIR "${NS_ROOT}/napi")
 # Third-party JS engine sources shared by the Apple and Android builds.
 set(VENDOR_DIR "${REPO_ROOT}/vendor")
-set(NS_JNI_NAPI_DIR "${NS_ROOT}/ffi/jni/napi")
+# Two complete, parallel runtimes. NS_BINDING selects which one is compiled;
+# they are never built together, and neither is aware of the other.
+#
+#   napi  runtime/android/napi + ffi/jni/napi -- the reference implementation,
+#         a Node-API program throughout.
+#   jsi   runtime/android/jsi  + ffi/jni/jsi  -- the same runtime written
+#         directly against nativescript::engine, with no Node-API anywhere.
+#
+# Both consume NativeScript/jsi/ (the engine:: backends). Selecting one swaps
+# the whole runtime and its JNI interop layer, not a shim under a fixed runtime.
+if(NOT DEFINED NS_BINDING)
+    set(NS_BINDING "napi")
+endif()
+if(NOT NS_BINDING STREQUAL "napi" AND NOT NS_BINDING STREQUAL "jsi")
+    message(FATAL_ERROR "NS_BINDING must be 'napi' or 'jsi', got '${NS_BINDING}'")
+endif()
+message(STATUS "# NativeScript binding layer: ${NS_BINDING}")
+
+set(NS_ANDROID_RUNTIME_DIR "${NS_RUNTIME_DIR}/android/${NS_BINDING}")
+set(NS_JNI_NAPI_DIR "${NS_ROOT}/ffi/jni/${NS_BINDING}")
 
 # Command info: https://cmake.org/cmake/help/v3.4/command/include_directories.html
 include_directories(
