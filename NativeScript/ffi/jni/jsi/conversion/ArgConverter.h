@@ -126,7 +126,8 @@ namespace tns {
          * "s_type_long_operations_cache" used to keep function
          * dealing with operations concerning java long -> javascript number.
          */
-        static robin_hood::unordered_map<JsRuntime *, TypeLongOperationsCache *> s_type_long_operations_cache;
+        // Keyed by JsRuntime::identity(); &rt is not stable across callbacks.
+        static robin_hood::unordered_map<const void *, TypeLongOperationsCache *> s_type_long_operations_cache;
     };
 }
 

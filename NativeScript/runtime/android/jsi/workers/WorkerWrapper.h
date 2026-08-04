@@ -139,6 +139,10 @@ private:
                                               const std::string& filename, int lineno,
                                               const std::string& threadName);
 
+    // The parent runtime's own engine::Runtime, taken from its EngineHost --
+    // NOT the engine::Runtime the constructor was handed. That one is the
+    // stack temporary the engine builds for a host call (see
+    // engine::Runtime::identity()) and would dangle on the first use here.
     engine::Runtime* parentRt_;
     // Held rather than looked up: every parent-side callback below has to enter
     // the parent engine, and the napi version's raw napi_env gave it no way to

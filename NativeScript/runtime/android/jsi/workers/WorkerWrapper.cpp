@@ -22,7 +22,7 @@ namespace tns {
 WorkerWrapper::WorkerWrapper(engine::Runtime& parentRt, int workerId, std::string workerPath,
                              std::string callingDir, int priority,
                              const engine::Value& workerObject)
-        : parentRt_(&parentRt),
+        : parentRt_(&Runtime::GetRuntime(parentRt)->GetJSRuntime()),
           // runs on the parent's thread, where the parent runtime is alive
           parentHost_(Runtime::GetRuntime(parentRt)->GetEngineHost()),
           parentTasks_(Runtime::GetRuntime(parentRt)->GetLooperTasks()),
@@ -494,7 +494,7 @@ void WorkerWrapper::TerminateChildren(engine::Runtime& parentRt) {
     {
         std::lock_guard<std::mutex> lock(registryMutex_);
         for (auto& entry : registry_) {
-            if (entry.second->parentRt_ == &parentRt) {
+            if (entry.second->parentRt_->identity() == parentRt.identity()) {
                 children.push_back(entry.second);
             }
         }

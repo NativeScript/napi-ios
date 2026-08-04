@@ -232,10 +232,10 @@ int64_t ArgConverter::ConvertToJavaLong(JsRuntime &rt, const JsValue &value) {
 
 ArgConverter::TypeLongOperationsCache *ArgConverter::GetTypeLongCache(JsRuntime &rt) {
     TypeLongOperationsCache *cache;
-    auto itFound = s_type_long_operations_cache.find(&rt);
+    auto itFound = s_type_long_operations_cache.find(rt.identity());
     if (itFound == s_type_long_operations_cache.end()) {
         cache = new TypeLongOperationsCache;
-        s_type_long_operations_cache.emplace(&rt, cache);
+        s_type_long_operations_cache.emplace(rt.identity(), cache);
     } else {
         cache = itFound->second;
     }
@@ -299,11 +299,11 @@ u16string ArgConverter::ConvertToUtf16String(JsRuntime &rt, const JsValue &s) {
 }
 
 void ArgConverter::onDisposeRuntime(JsRuntime &rt) {
-    auto itFound = s_type_long_operations_cache.find(&rt);
+    auto itFound = s_type_long_operations_cache.find(rt.identity());
     if (itFound != s_type_long_operations_cache.end()) {
         delete itFound->second;
         s_type_long_operations_cache.erase(itFound);
     }
 }
 
-robin_hood::unordered_map<JsRuntime *, ArgConverter::TypeLongOperationsCache *> ArgConverter::s_type_long_operations_cache;
+robin_hood::unordered_map<const void *, ArgConverter::TypeLongOperationsCache *> ArgConverter::s_type_long_operations_cache;
