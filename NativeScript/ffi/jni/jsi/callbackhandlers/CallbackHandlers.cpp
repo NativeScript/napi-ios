@@ -32,6 +32,31 @@
 using namespace std;
 using namespace tns;
 
+
+namespace {
+// Converts a NativeScriptException into a JS throw, the way every callback in
+// this tree has to. The napi tree needed no equivalent: there a native error
+// was reported with napi_throw and a plain return, so nothing could unwind out
+// of a callback. Here a C++ throw is the mechanism, and an escapee unwinds
+// through the engine's own frames.
+template <typename Fn>
+JsValue Guarded(JsRuntime &rt, Fn &&fn) {
+    try {
+        return fn();
+    } catch (NativeScriptException &e) {
+        e.ReThrowToJs(rt);
+    } catch (JsError &) {
+        throw;
+    } catch (std::exception &e) {
+        std::stringstream ss;
+        ss << "Error: c++ exception: " << e.what() << std::endl;
+        NativeScriptException(ss.str()).ReThrowToJs(rt);
+    } catch (...) {
+        NativeScriptException(std::string("Error: c++ exception!")).ReThrowToJs(rt);
+    }
+}
+}  // namespace
+
 void CallbackHandlers::Init(JsRuntime &rt) {
     JEnv jEnv;
 
@@ -690,23 +715,23 @@ CallbackHandlers::GetMethodOverrides(JsRuntime &rt, JEnv &jEnv,
 
 JsValue CallbackHandlers::RunOnMainThreadCallback(JsRuntime &rt, const JsValue &thisVal,
                                                   const JsValue *args, size_t argc) {
-    assert(argc == 1);
-    assert(args[0].isObject() && args[0].asObjectBorrowed(rt).isFunction(rt));
+    return Guarded(rt, [&]() -> JsValue {
+        assert(argc == 1);
+        assert(args[0].isObject() && args[0].asObjectBorrowed(rt).isFunction(rt));
 
-    uint64_t key = ++count_;
-    bool inserted;
+        uint64_t key = ++count_;
+        bool inserted;
 
-    std::tie(std::ignore, inserted) = cache_.try_emplace(key, Runtime::GetRuntime(rt), rt,
-                                                        args[0]);
-    assert(inserted && "Main thread callback ID should not be duplicated");
+        std::tie(std::ignore, inserted) = cache_.try_emplace(key, Runtime::GetRuntime(rt), rt,
+                                                            args[0]);
+        assert(inserted && "Main thread callback ID should not be duplicated");
 
-    auto value = Callback(key);
-    auto size = sizeof(Callback);
-    auto wrote = write(Runtime::GetWriter(), &value, size);
+        auto value = Callback(key);
+        auto size = sizeof(Callback);
+        auto wrote = write(Runtime::GetWriter(), &value, size);
 
-
-
-    return js_util::undefined();
+        return js_util::undefined();
+    });
 }
 
 int CallbackHandlers::RunOnMainThreadFdCallback(int fd, int events, void *data) {
@@ -787,16 +812,18 @@ JsValue CallbackHandlers::TimeCallback(JsRuntime &rt, const JsValue &thisVal,
 JsValue
 CallbackHandlers::ReleaseNativeCounterpartCallback(JsRuntime &rt, const JsValue &thisVal,
                                                    const JsValue *args, size_t argc) {
-    if (argc != 1) {
-        throw JsError(rt, "Unexpected arguments count!");
-    }
+    return Guarded(rt, [&]() -> JsValue {
+        if (argc != 1) {
+            throw JsError(rt, "Unexpected arguments count!");
+        }
 
-    if (!args[0].isObject()) {
-        throw JsError(rt, "Argument is not an object!");
-    }
+        if (!args[0].isObject()) {
+            throw JsError(rt, "Argument is not an object!");
+        }
 
-    Runtime::GetRuntime(rt)->GetObjectManager()->ReleaseNativeObject(rt, args[0]);
-    return js_util::undefined();
+        Runtime::GetRuntime(rt)->GetObjectManager()->ReleaseNativeObject(rt, args[0]);
+        return js_util::undefined();
+    });
 }
 
 JsValue
@@ -1088,6 +1115,7 @@ void CallbackHandlers::PostCallback(JsRuntime &rt, const JsValue *args, size_t a
 
 JsValue CallbackHandlers::PostFrameCallback(JsRuntime &rt, const JsValue &thisVal,
                                             const JsValue *args, size_t argc) {
+  return Guarded(rt, [&]() -> JsValue {
     if (android_get_device_api_level() >= 24) {
         InitChoreographer();
 
@@ -1124,10 +1152,12 @@ JsValue CallbackHandlers::PostFrameCallback(JsRuntime &rt, const JsValue &thisVa
 
     }
     return js_util::undefined();
+  });
 }
 
 JsValue CallbackHandlers::RemoveFrameCallback(JsRuntime &rt, const JsValue &thisVal,
                                               const JsValue *args, size_t argc) {
+  return Guarded(rt, [&]() -> JsValue {
     if (android_get_device_api_level() >= 24) {
         InitChoreographer();
 
@@ -1148,6 +1178,7 @@ JsValue CallbackHandlers::RemoveFrameCallback(JsRuntime &rt, const JsValue &this
         }
     }
     return js_util::undefined();
+  });
 }
 
 void CallbackHandlers::InitChoreographer() {

@@ -1,13 +1,21 @@
 #ifndef NATIVESCRIPTEXCEPTION_H_
 #define NATIVESCRIPTEXCEPTION_H_
 
+#include <exception>
+
 #include "Engine.h"
 #include "JEnv.h"
 #include "JniLocalRef.h"
 #include "ObjectManager.h"
 
 namespace tns {
-class NativeScriptException {
+// Derives from std::exception, which the napi tree's copy does not need to.
+// There, a native error was reported by calling napi_throw and returning; here
+// a C++ throw IS the mechanism, so a NativeScriptException that escapes a host
+// callback unwinds through the engine's C++ frames. The engine trampolines
+// catch JSError and std::exception; without this base an escapee matches
+// neither and terminates the process instead of surfacing as a JS error.
+class NativeScriptException : public std::exception {
     public:
         /*
          * Generates a NativeScriptException with java error from environment
@@ -47,7 +55,7 @@ class NativeScriptException {
         void ReThrowToJava(JsRuntime* rt);
 
         // The stored message, for logging uncaught native exceptions.
-        const char* what() const noexcept { return m_message.c_str(); }
+        const char* what() const noexcept override { return m_message.c_str(); }
 
         static void Init();
 
