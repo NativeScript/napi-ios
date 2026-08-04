@@ -409,6 +409,13 @@ struct HostObjectHolder {
   // the engine translation unit, so a type token taken anywhere else names a
   // different type and never compares equal.
   bool nativeInstance = false;
+
+  // Set only when this holder backs Object::setNativeState. See there: it
+  // records which object the state belongs to, so a read can tell an own
+  // payload from an inherited one. Never dereferenced -- compared only -- and
+  // the holder is reachable solely through that object's own property, so it
+  // cannot outlive it.
+  JSObjectRef stateOwner = nullptr;
 };
 
 struct FunctionHolder {
@@ -885,6 +892,13 @@ class Object {
   template <typename T>
   void setNativeState(Runtime& runtime, std::shared_ptr<T> state) {
     Object holder = Object::createFromHostObject<T>(runtime, std::move(state));
+    // Stamp the holder with the object it belongs to; getNativeState uses it to
+    // reject an inherited payload. See the read below for why that is needed
+    // here and on no other backend.
+    if (auto* record = static_cast<jscengine::HostObjectHolder*>(
+            JSObjectGetPrivate(holder.local(runtime)))) {
+      record->stateOwner = local(runtime);
+    }
     JSValueRef exception = nullptr;
     JSObjectSetProperty(runtime.context(), local(runtime), runtime.nativeStateKey(),
                         holder.local(runtime), kJSPropertyAttributeDontEnum, &exception);
@@ -904,6 +918,20 @@ class Object {
     }
     auto* record = static_cast<jscengine::HostObjectHolder*>(JSObjectGetPrivate(
         reinterpret_cast<JSObjectRef>(const_cast<OpaqueJSValue*>(holder))));
+    // Own-property semantics, which this backend has to enforce by hand.
+    //
+    // V8 keeps native state in a private symbol and QuickJS in a class-backed
+    // opaque slot, so on both a read can only ever see the object's own
+    // payload. The JSC C API has neither, so the state is a named property --
+    // and JSObjectGetProperty walks the prototype chain. Without this check an
+    // object that merely *inherits* from something carrying state reads that
+    // state back as its own: every Java wrapper chains to java.lang.Object's
+    // prototype, so MethodCache::GetType named every argument "java/lang/Object"
+    // and Java's overload resolution collapsed onto the Object overload.
+    if (record != nullptr && record->stateOwner != nullptr &&
+        record->stateOwner != local(runtime)) {
+      return nullptr;
+    }
     if (record == nullptr || record->typeToken != jscengine::hostObjectTypeToken<T>()) {
       return nullptr;
     }
