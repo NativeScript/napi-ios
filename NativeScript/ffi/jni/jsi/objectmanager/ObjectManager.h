@@ -142,6 +142,8 @@ namespace tns {
 
             std::vector<JsPropNameID> getPropertyNames(JsRuntime &rt) override;
 
+            // Cleared by ObjectManager::OnDisposeRuntime to mark this proxy
+            // neutralised; the destructor then does nothing. See there for why.
             ObjectManager *objectManager;
             JSInstanceInfo *instanceInfo;  // java object id holder
             bool isPrimary;                // owns instanceInfo + marks weak on GC
@@ -190,6 +192,12 @@ namespace tns {
         robin_hood::unordered_map<int, JsValue> m_idToObject;
         robin_hood::unordered_set<int> m_weakObjectIds;
         robin_hood::unordered_set<int> m_markedAsWeakIds;
+
+        // Every live host-object proxy. The engine owns the proxies, so without
+        // this the only thing that ever destroys them is the engine's own
+        // teardown -- far too late to release the handles they hold. See
+        // OnDisposeRuntime.
+        std::set<HostObjectProxy *> m_liveProxies;
 
         LRUCache<int, jweak> m_cache;
 
