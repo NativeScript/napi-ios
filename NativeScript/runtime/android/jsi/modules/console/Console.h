@@ -21,7 +21,7 @@ namespace tns {
         // the parameter is gone rather than accepted and ignored.
         static void createConsole(engine::Runtime& rt, int maxLogcatObjectSize, bool forceLog);
 
-        static void onDisposeEnv(engine::Runtime& rt);
+        static void onDisposeRuntime(engine::Runtime& rt);
 
         // Public because the console.* implementations are free functions here
         // rather than static members: each one is a lambda/free function of

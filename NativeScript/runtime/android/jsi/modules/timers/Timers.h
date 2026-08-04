@@ -95,8 +95,8 @@ namespace tns {
         // global object, which fires when the env is freed. There is no
         // equivalent for an arbitrary engine object, so the instance is kept in
         // a per-runtime registry and destroyed from Runtime::DestroyRuntime,
-        // like every other onDisposeEnv in this tree.
-        static void onDisposeEnv(engine::Runtime &rt);
+        // like every other onDisposeRuntime in this tree.
+        static void onDisposeRuntime(engine::Runtime &rt);
 
         ~Timers();
 
