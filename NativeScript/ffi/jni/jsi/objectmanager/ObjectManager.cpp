@@ -376,7 +376,7 @@ void ObjectManager::HostObjectProxyPostFinalizer(JsRuntime &rt, void *data, void
     auto *pending = reinterpret_cast<HostObjectProxy::PendingCleanup *>(data);
     if (pending == nullptr) return;
 
-    auto rtOwner = Runtime::GetRuntimeUnchecked(&rt);
+    auto rtOwner = Runtime::GetRuntimeUnchecked(rt);
     // Once the runtime is tearing down, the dispose path owns every outstanding
     // handle: OnDisposeRuntime clears the id maps. Releasing the target here in
     // that window would touch a runtime that is already going away.
@@ -626,7 +626,8 @@ bool ObjectManager::ValidateWeakGlobalRefCallback(const int &javaObjectID, const
 }
 
 JsValue ObjectManager::GetEmptyObject() {
-    JsValue jsWrapper = m_jsObjectCtor.callAsConstructor(*m_rt, nullptr, 0);
+    JsValue jsWrapper = m_jsObjectCtor.callAsConstructor(
+            *m_rt, static_cast<const JsValue *>(nullptr), (size_t) 0);
     if (jsWrapper.isObject()) {
         return jsWrapper;
     }
@@ -642,7 +643,7 @@ JsValue ObjectManager::GetEmptyObject() {
 }
 
 void ObjectManager::ReleaseObjectNow(JsRuntime &rt, int javaObjectId) {
-    auto rtOwner = Runtime::GetRuntimeUnchecked(&rt);
+    auto rtOwner = Runtime::GetRuntimeUnchecked(rt);
     if (!rtOwner || rtOwner->is_destroying) return;
     ObjectManager *objMgr = rtOwner->GetObjectManager();
 
@@ -681,7 +682,7 @@ void ObjectManager::OnGarbageCollected(JNIEnv *jEnv, jintArray object_ids) {
     jsize length = jenv.GetArrayLength(object_ids);
     int *cppArray = jenv.GetIntArrayElements(object_ids, nullptr);
     for (jsize i = 0; i < length; i++) {
-        auto rt = Runtime::GetRuntimeUnchecked(m_rt);
+        auto rt = Runtime::GetRuntimeUnchecked(*m_rt);
         if (rt && rt->is_destroying) return;
         int javaObjectId = cppArray[i];
         auto itFound = this->m_idToObject.find(javaObjectId);

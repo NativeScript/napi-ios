@@ -29,6 +29,15 @@ class NativeScriptException {
          */
         NativeScriptException(JsRuntime& rt, const JsValue& error, const std::string& message = "");
 
+        /*
+         * Generates a NativeScriptException from a caught engine::JSError. This is
+         * how a JS throw reaches native code here, where the napi tree read a
+         * pending exception with napi_get_and_clear_last_exception; the JSError
+         * carries the thrown value when the engine had one, and only its message
+         * when it did not.
+         */
+        NativeScriptException(JsRuntime& rt, const JsError& error, const std::string& message = "");
+
         // The napi counterpart (ReThrowToNapi) sets a pending exception and
         // returns, so callers followed it with `return nullptr`. engine:: signals
         // JS errors by throwing, and the engine's host-function wrapper converts a

@@ -54,6 +54,7 @@ struct Builtins {
   JsFunction objectCreate;
   JsFunction objectKeys;
   JsFunction deleteProperty;
+  JsFunction hasOwnProperty;
   JsFunction isInteger;
   JsFunction isArray;
   JsFunction isView;
@@ -123,6 +124,11 @@ inline bool has_property(JsRuntime& rt, const JsValue& object,
   if (!object.isObject()) return false;
   return object.asObjectBorrowed(rt).hasProperty(rt, propertyName);
 }
+
+// Object::hasProperty walks the prototype chain; napi_has_own_property does
+// not, and the callers that used it are distinguishing an own member from an
+// inherited one.
+bool has_own_property(JsRuntime& rt, const JsObject& object, const char* propertyName);
 
 inline JsValue get_prototype(JsRuntime& rt, const JsValue& object) {
   return get_property(rt, object, "prototype");

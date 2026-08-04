@@ -37,6 +37,22 @@ NativeScriptException::NativeScriptException(JsRuntime& rt, const JsValue& error
     m_fullMessage = GetFullMessage(rt, error, m_message);
 }
 
+NativeScriptException::NativeScriptException(JsRuntime& rt, const JsError& error,
+                                             const string& message)
+    : m_javaException(JniLocalRef()) {
+    if (error.value() != nullptr) {
+        const JsValue& value = *error.value();
+        m_javascriptException = std::make_shared<JsValue>(rt, value);
+        m_message = GetErrorMessage(rt, value, message);
+        m_stackTrace = GetErrorStackTrace(rt, value);
+        m_fullMessage = GetFullMessage(rt, value, m_message);
+        return;
+    }
+    m_message = message.empty() ? error.what() : message + "\n" + error.what();
+    m_stackTrace = error.stack();
+    m_fullMessage = m_message;
+}
+
 void NativeScriptException::ReThrowToJs(JsRuntime& rt) {
     // Fallback message used if the rich error object cannot be materialized —
     // ReThrowToJs must always throw, otherwise the failing Java call silently
