@@ -133,6 +133,10 @@ file(GLOB_RECURSE JNI_NAPI_FILES
         "${NS_JNI_NAPI_DIR}/*.cpp"
 )
 
+# Standalone unit tests live next to what they test and have their own main();
+# they are built by scripts/, never linked into the runtime.
+list(FILTER JNI_NAPI_FILES EXCLUDE REGEX "_test\\.cpp$")
+
 set(MODULE_FILES
         ${NS_RUNTIME_MODULES_DIR}/url/URL.cpp
         ${NS_RUNTIME_MODULES_DIR}/url/URLSearchParams.cpp
@@ -142,6 +146,51 @@ set(MODULE_FILES
 # modules/url: URL, URLSearchParams, URLPattern (backed by vendored ada)
 
 set(SOURCES ${ANDROID_RUNTIME_FILES} ${JNI_NAPI_FILES} ${MODULE_FILES})
+
+if (NS_BINDING STREQUAL "jsi")
+    # The engine:: layer. ${NS_ROOT} on the include path is what makes the
+    # rooted includes ("jsi/v8/V8Runtime.h") resolve. Note this shadows an
+    # angle-include of a jsi/ header from an engine that ships one -- Hermes
+    # ships <jsi/jsi.h> -- so the shared layer's own includes stay quoted and
+    # rooted.
+    set(NS_JSI_DIR "${NS_ROOT}/jsi")
+    include_directories(${NS_ROOT})
+
+    # The inspector implements the Chrome DevTools Protocol against v8_inspector
+    # and pumps V8's message loop directly, so it is V8-specific by construction.
+    # The jsi runtime has no debugger until that capability is expressed on the
+    # engine layer itself.
+    add_compile_definitions(NS_NO_INSPECTOR)
+
+    if (V8 OR V8_10 OR V8_11 OR V8_13)
+        set(SOURCES ${SOURCES}
+                ${NS_JSI_DIR}/v8/V8Runtime.cpp
+                ${NS_JSI_DIR}/v8/V8Value.cpp
+                ${NS_JSI_DIR}/v8/V8HostObjects.cpp)
+        add_compile_definitions(TARGET_ENGINE_V8)
+    elseif (JSC)
+        set(SOURCES ${SOURCES}
+                ${NS_JSI_DIR}/jsc/JSCRuntime.cpp
+                ${NS_JSI_DIR}/jsc/JSCValue.cpp
+                ${NS_JSI_DIR}/jsc/JSCHostObjects.cpp)
+        add_compile_definitions(TARGET_ENGINE_JSC)
+    elseif (QUICKJS OR QUICKJS_NG)
+        set(SOURCES ${SOURCES}
+                ${NS_JSI_DIR}/quickjs/QuickJSRuntime.cpp
+                ${NS_JSI_DIR}/quickjs/QuickJSValue.cpp
+                ${NS_JSI_DIR}/quickjs/QuickJSHostObjects.cpp)
+        add_compile_definitions(TARGET_ENGINE_QUICKJS)
+    elseif (HERMES OR SHERMES)
+        # Hermes contributes no engine-layer sources: jsi/hermes is a header-only
+        # adapter over the real facebook::jsi that nativescript::engine is shaped
+        # after.
+        add_compile_definitions(TARGET_ENGINE_HERMES)
+    else ()
+        message(FATAL_ERROR
+                "bindingLayer=jsi has no engine layer for this engine. PrimJS is "
+                "deliberately unsupported there; use -PbindingLayer=napi for it.")
+    endif ()
+endif ()
 
 if (QUICKJS OR QUICKJS_NG)
     # quickjs-ng, NativeScript-patched, vendored at the repo root and shared with
