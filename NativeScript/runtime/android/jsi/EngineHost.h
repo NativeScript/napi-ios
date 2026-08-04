@@ -1,5 +1,5 @@
-#ifndef NS_RUNTIME_ANDROID_JSI_ENGINE_H
-#define NS_RUNTIME_ANDROID_JSI_ENGINE_H
+#ifndef NS_RUNTIME_ANDROID_JSI_ENGINE_HOST_H
+#define NS_RUNTIME_ANDROID_JSI_ENGINE_HOST_H
 
 // The jsi tree's replacement for the per-engine napi/android/<engine>/jsr.h.
 //
@@ -124,6 +124,10 @@ private:
 // on the caller's stack.
 class JSScope {
 public:
+    // The napi tree enters JS as `NapiScope scope(env)`; the same call sites here
+    // only have the engine::Runtime, so this resolves its owning EngineHost.
+    explicit JSScope(engine::Runtime &rt) : JSScope(HostFor(rt)) {}
+
     explicit JSScope(std::shared_ptr<EngineHost> host)
             : m_host(std::move(host))
 #if defined(TARGET_ENGINE_V8)
@@ -155,6 +159,10 @@ public:
     JSScope &operator=(const JSScope &) = delete;
 
 private:
+    // Defined in EngineHost.cpp, which can include Runtime.h; the header cannot
+    // (Runtime.h includes this one).
+    static std::shared_ptr<EngineHost> HostFor(engine::Runtime &rt);
+
     // Declaration order is load-bearing: members are destroyed in reverse, which
     // is the order V8 requires -- the lock is taken before the isolate is
     // entered, and the context scope unwinds before the isolate does.
@@ -200,4 +208,4 @@ inline void SetFunction(engine::Runtime &rt, engine::Object &target, const char 
 
 }
 
-#endif //NS_RUNTIME_ANDROID_JSI_ENGINE_H
+#endif //NS_RUNTIME_ANDROID_JSI_ENGINE_HOST_H

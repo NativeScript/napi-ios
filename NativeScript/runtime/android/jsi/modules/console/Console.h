@@ -5,7 +5,7 @@
 #ifndef CONSOLE_H
 #define CONSOLE_H
 
-#include "Engine.h"
+#include "EngineHost.h"
 #include <map>
 #include <string>
 #include <vector>

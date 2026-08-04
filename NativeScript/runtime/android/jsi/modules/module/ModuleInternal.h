@@ -2,7 +2,7 @@
 #define JNI_MODULE_H_
 
 #include "JEnv.h"
-#include "Engine.h"
+#include "EngineHost.h"
 #include <string>
 #include <map>
 #include "robin_hood.h"

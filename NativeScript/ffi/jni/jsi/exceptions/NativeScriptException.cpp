@@ -74,7 +74,7 @@ void NativeScriptException::ReThrowToJs(JsRuntime& rt) {
 
 void NativeScriptException::ReThrowToJava(JsRuntime* rt) {
     if (rt) {
-        JsScope scope(*rt);
+        JSScope scope(*rt);
     }
     jthrowable ex = nullptr;
     JEnv jEnv;

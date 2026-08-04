@@ -137,13 +137,21 @@ file(GLOB_RECURSE JNI_NAPI_FILES
 # they are built by scripts/, never linked into the runtime.
 list(FILTER JNI_NAPI_FILES EXCLUDE REGEX "_test\\.cpp$")
 
-set(MODULE_FILES
-        ${NS_RUNTIME_MODULES_DIR}/url/URL.cpp
-        ${NS_RUNTIME_MODULES_DIR}/url/URLSearchParams.cpp
-        ${NS_RUNTIME_MODULES_DIR}/url/URLPattern.cpp
-        ${NS_RUNTIME_MODULES_DIR}/url/ada/ada.cpp
-)
-# modules/url: URL, URLSearchParams, URLPattern (backed by vendored ada)
+if (NS_BINDING STREQUAL "napi")
+    set(MODULE_FILES
+            ${NS_RUNTIME_MODULES_DIR}/url/URL.cpp
+            ${NS_RUNTIME_MODULES_DIR}/url/URLSearchParams.cpp
+            ${NS_RUNTIME_MODULES_DIR}/url/URLPattern.cpp
+            ${NS_RUNTIME_MODULES_DIR}/url/ada/ada.cpp
+    )
+    # modules/url: URL, URLSearchParams, URLPattern (backed by vendored ada)
+else ()
+    # runtime/modules/url is shared verbatim with the Apple build and is a
+    # Node-API program (URL::Init takes a napi_env). It must not be forked, so
+    # the jsi runtime ships no URL globals until they gain an engine:: front
+    # end. See runtime/android/jsi/modules/AndroidRuntimeModules.h.
+    set(MODULE_FILES)
+endif ()
 
 set(SOURCES ${ANDROID_RUNTIME_FILES} ${JNI_NAPI_FILES} ${MODULE_FILES})
 
@@ -308,12 +316,17 @@ if (V8)
 
     if (NOT OPTIMIZED_BUILD OR OPTIMIZED_WITH_INSPECTOR_BUILD)
         add_definitions(-DAPPLICATION_IN_DEBUG)
-        set(
-                SOURCES
-                ${SOURCES}
-                ${VENDOR_DIR}/v8/v8_inspector/Utils.cpp
-                ${VENDOR_DIR}/v8/v8_inspector/ns-v8-tracing-agent-impl.cpp
-        )
+        # The tracing agent is part of the inspector, which the jsi runtime does
+        # not have (NS_NO_INSPECTOR above): its sources include the runtime's
+        # JsV8InspectorClient.h, which only exists in the napi tree.
+        if (NOT NS_BINDING STREQUAL "jsi")
+            set(
+                    SOURCES
+                    ${SOURCES}
+                    ${VENDOR_DIR}/v8/v8_inspector/Utils.cpp
+                    ${VENDOR_DIR}/v8/v8_inspector/ns-v8-tracing-agent-impl.cpp
+            )
+        endif ()
     endif ()
 
     set(SOURCES ${SOURCES}

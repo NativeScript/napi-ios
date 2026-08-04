@@ -49,15 +49,15 @@ engine::Value SimpleProfiler::PrintProfilerDataCallback(engine::Runtime& rt, con
     try {
         PrintProfilerData();
     } catch (NativeScriptException& e) {
-        e.ReThrowToJS(rt);
+        e.ReThrowToJs(rt);
     } catch (std::exception e) {
         stringstream ss;
         ss << "Error: c++ exception: " << e.what() << endl;
         NativeScriptException nsEx(ss.str());
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     } catch (...) {
         NativeScriptException nsEx(std::string("Error: c++ exception!"));
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
     return engine::Value::undefined();
 }
