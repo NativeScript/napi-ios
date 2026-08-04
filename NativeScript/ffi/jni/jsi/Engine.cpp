@@ -54,6 +54,9 @@ std::unique_ptr<Builtins> createBuiltins(JsRuntime& rt) {
   JsObject arrayBufferCtor = global.getPropertyAsObject(rt, "ArrayBuffer");
   builtins->isView = arrayBufferCtor.getPropertyAsFunction(rt, "isView");
 
+  builtins->errorCtor = global.getPropertyAsFunction(rt, "Error");
+  builtins->stringCoerce = global.getPropertyAsFunction(rt, "String");
+
   builtins->strictEquals =
       evaluateFunction(rt, kStrictEqualsSource, "<ns-strict-equals>");
   builtins->instanceOf =
@@ -216,4 +219,30 @@ void js_util::inherits(JsRuntime& rt, const JsObject& ctor,
   setPrototypeOf(rt, ctor.getProperty(rt, "prototype"),
                  superCtor.getProperty(rt, "prototype"));
   setPrototypeOf(rt, JsValue(rt, ctor), JsValue(rt, superCtor));
+}
+
+bool js_util::is_error(JsRuntime& rt, const JsValue& value) {
+  return instance_of(rt, value, JsValue(rt, Builtins::of(rt).errorCtor));
+}
+
+// napi_coerce_to_string has no engine:: entry point; String(value) is the same
+// abstract operation and works for every value kind, including symbols.
+std::string js_util::coerce_to_string(JsRuntime& rt, const JsValue& value) {
+  if (value.isString()) return value.asString(rt).utf8(rt);
+  const JsValue args[] = {value};
+  JsValue result =
+      Builtins::of(rt).stringCoerce.call(rt, args, static_cast<size_t>(1));
+  return result.isString() ? result.asString(rt).utf8(rt) : std::string();
+}
+
+JsValue js_util::create_error(JsRuntime& rt, const std::string& message,
+                              const char* code) {
+  const JsValue args[] = {to_js_string(rt, message)};
+  JsValue error =
+      Builtins::of(rt).errorCtor.callAsConstructor(rt, args, static_cast<size_t>(1));
+  if (code != nullptr && error.isObject()) {
+    JsObject errorObject = error.asObject(rt);
+    errorObject.setProperty(rt, "code", to_js_string(rt, code));
+  }
+  return error;
 }
