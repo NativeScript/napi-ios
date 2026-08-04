@@ -57,6 +57,9 @@ Object Value::asObject(Runtime& runtime) const {
   }
   return Object::fromValueStorage(std::move(s));
 }
+Object Value::asObjectBorrowed(Runtime& runtime) const {
+  return asObject(runtime);
+}
 String Value::asString(Runtime& runtime) const {
   JSValue value = local(runtime);
   String result(runtime, value);
@@ -83,7 +86,7 @@ Array Object::getPropertyNames(Runtime& runtime) const {
                                       JS_GPN_STRING_MASK | JS_GPN_SYMBOL_MASK | JS_GPN_ENUM_ONLY);
   JS_FreeValue(runtime.context(), object);
   if (status < 0) {
-    throw JSError(runtime, "QuickJS property names failed.");
+    throw quickjsengine::caughtError(runtime, "QuickJS property names failed.");
   }
   Array result(runtime, count);
   for (uint32_t i = 0; i < count; i++) {

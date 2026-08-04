@@ -13,37 +13,41 @@ std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 
 String::String(Runtime& runtime, v8::Local<v8::String> value)
     : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
-  storage_->value.Reset(runtime.isolate(), value);
+  storage_->reset(runtime.isolate(), value);
 }
 
 String::operator Value() const {
   return Value::fromStorage(storage_);
 }
 
-Value::Value(Runtime&, const String& value) {
-  storage_ = value.storage_;
-  kind_ = storage_->kind;
+// Every one of these takes a Runtime, which is this layer's spelling of "give
+// me a value I own". Since asObject stopped globalizing a borrowed handle, the
+// storage they adopt may be borrowed -- so they route through
+// Value(Runtime&, const Value&), whose whole job is to promote exactly that
+// case. Copying the tag through unchanged would produce a Value that dangles
+// when the enclosing HandleScope unwinds, and whose inline borrowedValue_ was
+// never filled at all (that member lives on Value, not on the storage).
+namespace {
+Value adopt(Runtime& runtime, const std::shared_ptr<v8engine::ValueStorage>& storage) {
+  if (!storage) {
+    return Value::undefined();
+  }
+  return Value(runtime, Value::fromStorage(storage));
 }
-Value::Value(Runtime&, const Object& object) {
-  storage_ = object.storage_;
-  kind_ = storage_ ? storage_->kind : v8engine::ValueStorage::Kind::Undefined;
-}
-Value::Value(Runtime&, const Function& function) {
-  storage_ = function.storage_;
-  kind_ = storage_ ? storage_->kind : v8engine::ValueStorage::Kind::Undefined;
-}
-Value::Value(Runtime&, const Array& array) {
-  storage_ = array.storage_;
-  kind_ = storage_ ? storage_->kind : v8engine::ValueStorage::Kind::Undefined;
-}
-Value::Value(Runtime&, const ArrayBuffer& arrayBuffer) {
-  storage_ = arrayBuffer.storage_;
-  kind_ = storage_ ? storage_->kind : v8engine::ValueStorage::Kind::Undefined;
-}
-Value::Value(Runtime&, const BigInt& bigint) {
-  storage_ = bigint.storage_;
-  kind_ = storage_ ? storage_->kind : v8engine::ValueStorage::Kind::Undefined;
-}
+}  // namespace
+
+Value::Value(Runtime& runtime, const String& value)
+    : Value(adopt(runtime, value.storage_)) {}
+Value::Value(Runtime& runtime, const Object& object)
+    : Value(adopt(runtime, object.storage_)) {}
+Value::Value(Runtime& runtime, const Function& function)
+    : Value(adopt(runtime, function.storage_)) {}
+Value::Value(Runtime& runtime, const Array& array)
+    : Value(adopt(runtime, array.storage_)) {}
+Value::Value(Runtime& runtime, const ArrayBuffer& arrayBuffer)
+    : Value(adopt(runtime, arrayBuffer.storage_)) {}
+Value::Value(Runtime& runtime, const BigInt& bigint)
+    : Value(adopt(runtime, bigint.storage_)) {}
 
 bool Value::isObject() const {
   if (kind_ == v8engine::ValueStorage::Kind::V8Borrowed) {
@@ -52,7 +56,7 @@ bool Value::isObject() const {
   if (kind_ != v8engine::ValueStorage::Kind::V8 || !storage_ || storage_->value.IsEmpty()) {
     return false;
   }
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Isolate* isolate = storage_->isolateOrCurrent();
   return isolate != nullptr && storage_->value.Get(isolate)->IsObject();
 }
 
@@ -66,7 +70,7 @@ bool Value::isUndefined() const {
   if (kind_ != v8engine::ValueStorage::Kind::V8 || !storage_ || storage_->value.IsEmpty()) {
     return false;
   }
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Isolate* isolate = storage_->isolateOrCurrent();
   return isolate != nullptr && storage_->value.Get(isolate)->IsUndefined();
 }
 
@@ -80,7 +84,7 @@ bool Value::isNull() const {
   if (kind_ != v8engine::ValueStorage::Kind::V8 || !storage_ || storage_->value.IsEmpty()) {
     return false;
   }
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Isolate* isolate = storage_->isolateOrCurrent();
   return isolate != nullptr && storage_->value.Get(isolate)->IsNull();
 }
 
@@ -94,7 +98,7 @@ bool Value::isBool() const {
   if (kind_ != v8engine::ValueStorage::Kind::V8 || !storage_ || storage_->value.IsEmpty()) {
     return false;
   }
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Isolate* isolate = storage_->isolateOrCurrent();
   return isolate != nullptr && storage_->value.Get(isolate)->IsBoolean();
 }
 
@@ -103,13 +107,16 @@ bool Value::getBool() const {
     return boolValue_;
   }
   if (kind_ == v8engine::ValueStorage::Kind::V8Borrowed) {
-    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    // A borrowed Value has no storage_ -- it is a bare Local -- so the isolate
+    // comes from the one recorded when it was tagged, falling back to the
+    // thread only for the handful of callers that had none.
+    v8::Isolate* isolate = borrowedIsolate();
     return isolate != nullptr && !borrowedValue_.IsEmpty()
                ? borrowedValue_->BooleanValue(isolate)
                : false;
   }
   if (kind_ == v8engine::ValueStorage::Kind::V8 && storage_ && !storage_->value.IsEmpty()) {
-    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    v8::Isolate* isolate = storage_->isolateOrCurrent();
     if (isolate != nullptr) {
       return storage_->value.Get(isolate)->BooleanValue(isolate);
     }
@@ -127,7 +134,7 @@ bool Value::isNumber() const {
   if (kind_ != v8engine::ValueStorage::Kind::V8 || !storage_ || storage_->value.IsEmpty()) {
     return false;
   }
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Isolate* isolate = storage_->isolateOrCurrent();
   return isolate != nullptr && storage_->value.Get(isolate)->IsNumber();
 }
 
@@ -136,14 +143,15 @@ double Value::getNumber() const {
     return numberValue_;
   }
   if (kind_ == v8engine::ValueStorage::Kind::V8Borrowed) {
-    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    // No storage_ on a borrowed Value; see getBool.
+    v8::Isolate* isolate = borrowedIsolate();
     if (isolate != nullptr && !borrowedValue_.IsEmpty()) {
       return borrowedValue_->NumberValue(isolate->GetCurrentContext()).FromMaybe(0);
     }
     return 0;
   }
   if (kind_ == v8engine::ValueStorage::Kind::V8 && storage_ && !storage_->value.IsEmpty()) {
-    v8::Isolate* isolate = v8::Isolate::GetCurrent();
+    v8::Isolate* isolate = storage_->isolateOrCurrent();
     if (isolate != nullptr) {
       return storage_->value.Get(isolate)->NumberValue(isolate->GetCurrentContext()).FromMaybe(0);
     }
@@ -158,7 +166,7 @@ bool Value::isString() const {
   if (kind_ != v8engine::ValueStorage::Kind::V8 || !storage_ || storage_->value.IsEmpty()) {
     return false;
   }
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Isolate* isolate = storage_->isolateOrCurrent();
   return storage_->value.Get(isolate)->IsString();
 }
 
@@ -169,7 +177,7 @@ bool Value::isBigInt() const {
   if (kind_ != v8engine::ValueStorage::Kind::V8 || !storage_ || storage_->value.IsEmpty()) {
     return false;
   }
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Isolate* isolate = storage_->isolateOrCurrent();
   return storage_->value.Get(isolate)->IsBigInt();
 }
 
@@ -180,7 +188,7 @@ bool Value::isSymbol() const {
   if (kind_ != v8engine::ValueStorage::Kind::V8 || !storage_ || storage_->value.IsEmpty()) {
     return false;
   }
-  v8::Isolate* isolate = v8::Isolate::GetCurrent();
+  v8::Isolate* isolate = storage_->isolateOrCurrent();
   return storage_->value.Get(isolate)->IsSymbol();
 }
 
@@ -192,7 +200,35 @@ Object Value::asObject(Runtime& runtime) const {
   auto s = std::make_shared<v8engine::ValueStorage>(kind_);
   if (kind_ == v8engine::ValueStorage::Kind::V8Borrowed) {
     s->kind = v8engine::ValueStorage::Kind::V8;
-    s->value.Reset(runtime.isolate(), borrowedValue_);
+    s->reset(runtime.isolate(), borrowedValue_);
+  }
+  return Object::fromValueStorage(std::move(s));
+}
+
+Object Value::asObjectBorrowed(Runtime& runtime) const {
+  if (storage_) {
+    return Object::fromValueStorage(storage_);
+  }
+  // Unlike asObject, a borrowed Value stays borrowed.
+  //
+  // asObject globalizes the handle -- make_shared plus a
+  // GlobalHandles::Create, released again a few statements later -- to give
+  // Object a persistent handle. Object reads its handle through local(), which
+  // already understands the borrowed kind, so for a caller that does not
+  // outlive the enclosing HandleScope that Global is pure cost: an allocation
+  // plus a GC root that every scavenge scans, on every property access made
+  // through a borrowed value.
+  //
+  // Kept as a separate entry point rather than folded into asObject because
+  // asObject has ~140 call sites in the Apple bridge whose lifetimes have not
+  // been audited, and this weakens the guarantee. The Node-API shim is the one
+  // caller that provably qualifies: a napi_value is scope-bounded by
+  // definition, and every napi handle scope is nested inside the v8::HandleScope
+  // that NapiScope opens.
+  auto s = std::make_shared<v8engine::ValueStorage>(kind_);
+  if (kind_ == v8engine::ValueStorage::Kind::V8Borrowed) {
+    s->isolate = isolate_ != nullptr ? isolate_ : runtime.isolate();
+    s->borrowedValue = borrowedValue_;
   }
   return Object::fromValueStorage(std::move(s));
 }
@@ -219,7 +255,7 @@ Array Object::getPropertyNames(Runtime& runtime) const {
   v8::TryCatch tryCatch(runtime.isolate());
   v8::Local<v8::Array> result;
   if (!local(runtime)->GetPropertyNames(runtime.context()).ToLocal(&result)) {
-    throw JSError(runtime, v8engine::currentExceptionMessage(runtime.isolate(), tryCatch));
+    throw v8engine::caughtError(runtime, tryCatch);
   }
   return Array(Object::fromValueStorage(Value(runtime, result).storage_));
 }
