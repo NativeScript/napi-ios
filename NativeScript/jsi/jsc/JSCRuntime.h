@@ -51,10 +51,61 @@ class String;
 class BigInt;
 class ArrayBuffer;
 
+// Mirrors jsi::JSError. See the V8 engine layer for why the thrown value
+// matters: rebuilding an error from its message drops whatever the runtime
+// attached to it (NativeScriptException's `nativeException`) and its stack.
+//
+// Throw sites in this layer go through jscengine::toJSError, which populates
+// the payload. A JSError raised by any other constructor carries no value and
+// value() reports null; callers fall back to the message.
 class JSError : public std::runtime_error {
  public:
   JSError(Runtime&, const std::string& message) : std::runtime_error(message) {}
   explicit JSError(const std::string& message) : std::runtime_error(message) {}
+
+  JSError(Runtime& runtime, const std::string& message, const Value& value,
+          std::string stack);
+
+  const Value* value() const { return value_.get(); }
+  const std::string& stack() const { return stack_; }
+
+ private:
+  std::shared_ptr<Value> value_;
+  std::string stack_;
+};
+
+namespace jscengine {
+struct ValueStorage;
+}  // namespace jscengine
+
+// A handle that does not keep its referent alive.
+//
+// Mirrors the V8 and Hermes engine layers. The Node-API shim needs it for
+// napi_ref: a ref is strong above refcount 0 and weak at 0, and the Android
+// runtime's ObjectManager depends on the weak half -- it holds every
+// host-object proxy through a refcount-0 ref precisely so that collection runs
+// the finalizer that calls makeInstanceWeak.
+//
+// Backed by the JavaScript `WeakRef` built-in rather than JSWeakCreate. JSC's
+// native weak APIs (JSWeakPrivate.h, JSWeakObjectMapRefPrivate.h) live in
+// private headers that the Apple JavaScriptCore.framework does not ship, and
+// this header is shared with the Apple runtime; `WeakRef` is public API on
+// both. The cost is a JS call in lock(), against a cached
+// WeakRef.prototype.deref.
+class WeakObject {
+ public:
+  WeakObject() = default;
+  WeakObject(Runtime& runtime, const Value& value);
+
+  // The referent, or undefined if it has been collected (or was never an
+  // object).
+  Value lock(Runtime& runtime) const;
+
+  bool empty() const { return storage_ == nullptr; }
+  void reset() { storage_.reset(); }
+
+ private:
+  std::shared_ptr<jscengine::ValueStorage> storage_;
 };
 
 class StringBuffer {
@@ -97,6 +148,37 @@ class HostObject {
   virtual Value get(Runtime& runtime, const PropNameID& name);
   virtual bool set(Runtime& runtime, const PropNameID& name, const Value& value);
   virtual std::vector<PropNameID> getPropertyNames(Runtime& runtime);
+
+  // The JS object standing for this host object, valid ONLY for the duration of
+  // the call the engine is currently dispatching.
+  //
+  // Handed in per call rather than stored, and deliberately non-owning. A
+  // HostObject that holds an owned handle to its own wrapper is a strong
+  // self-cycle: JSC only finalizes a JSObjectRef once nothing references it, so
+  // the cycle would keep every host object permanently alive -- the class
+  // finalizer would never run, ObjectManager would never call makeInstanceWeak
+  // and every Java instance would stay strongly held.
+  //
+  // Mirrors the V8 and Hermes engine layers; the Apple bridge does not use it,
+  // so this is purely additive there.
+  const Value* receiver() const { return receiver_; }
+
+  // Sets the receiver for one dispatch and clears it on scope exit.
+  class ReceiverScope {
+   public:
+    ReceiverScope(HostObject& host, const Value& receiver) : host_(host) {
+      host_.receiver_ = &receiver;
+    }
+    ~ReceiverScope() { host_.receiver_ = nullptr; }
+    ReceiverScope(const ReceiverScope&) = delete;
+    ReceiverScope& operator=(const ReceiverScope&) = delete;
+
+   private:
+    HostObject& host_;
+  };
+
+ private:
+  const Value* receiver_ = nullptr;
 };
 
 using HostFunctionType = std::function<Value(Runtime&, const Value&, const Value*, size_t)>;
@@ -246,12 +328,39 @@ struct RuntimeState : RuntimeCleanupRegistry {
     if (selectorGroupFunctionClass != nullptr) {
       JSClassRelease(selectorGroupFunctionClass);
     }
+    if (constructorClass != nullptr) {
+      JSClassRelease(constructorClass);
+    }
+    if (nativeStateKey != nullptr) {
+      JSStringRelease(nativeStateKey);
+    }
+    if (context != nullptr) {
+      if (weakRefConstructor != nullptr) {
+        JSValueUnprotect(context, weakRefConstructor);
+      }
+      if (weakRefDeref != nullptr) {
+        JSValueUnprotect(context, weakRefDeref);
+      }
+    }
   }
 
   JSGlobalContextRef context = nullptr;
   JSClassRef hostClass = nullptr;
   JSClassRef functionClass = nullptr;
   JSClassRef selectorGroupFunctionClass = nullptr;
+  // Backs Function::createFromHostConstructor. Separate from functionClass
+  // because it additionally carries a callAsConstructor callback.
+  JSClassRef constructorClass = nullptr;
+  // `WeakRef` and `WeakRef.prototype.deref`, resolved once and protected.
+  // WeakObject would otherwise do two global lookups and a prototype walk per
+  // napi_get_reference_value on a weak ref, which ObjectManager runs often.
+  JSObjectRef weakRefConstructor = nullptr;
+  JSObjectRef weakRefDeref = nullptr;
+  // The key every native-state slot hangs off, created once per runtime.
+  // JSC's C API has no private-symbol or own-only property accessor, so this
+  // is still a named property -- but a non-enumerable one under a cached
+  // JSStringRef, and read with a single lookup instead of a has+get pair.
+  JSStringRef nativeStateKey = nullptr;
 };
 
 std::shared_ptr<RuntimeState> stateForContext(JSGlobalContextRef context);
@@ -323,6 +432,23 @@ struct ArrayBufferHolder {
 
 void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function);
 
+// Build a JSError that carries the thrown JS value, not just its text.
+//
+// Rebuilding an error from its message drops whatever was attached to it --
+// NativeScriptException hangs the originating Java throwable off
+// `nativeException` -- and drops its stack. Every throw site in this layer goes
+// through here so a JS exception crosses the engine boundary intact.
+//
+// Additive: JSError already had the carrying constructor and value() simply
+// reported null before. Callers that only read what() are unaffected.
+JSError toJSError(Runtime& runtime, JSValueRef exception);
+
+// Lazily resolved and cached on RuntimeState; null if the engine has no
+// `WeakRef` (in which case WeakObject degrades to always-empty, which the shim
+// reads as "already collected").
+JSObjectRef weakRefConstructor(Runtime& runtime);
+JSObjectRef weakRefDeref(Runtime& runtime);
+
 }  // namespace jscengine
 
 class Runtime {
@@ -336,6 +462,14 @@ class Runtime {
   std::shared_ptr<jscengine::RuntimeState> state() const { return state_; }
   const void* identity() const { return state_.get(); }
   void detachState() { state_.reset(); }
+
+  // See RuntimeState::nativeStateKey. Created on first use.
+  JSStringRef nativeStateKey() const {
+    if (state_->nativeStateKey == nullptr) {
+      state_->nativeStateKey = JSStringCreateWithUTF8CString("__nsNativeState");
+    }
+    return state_->nativeStateKey;
+  }
 
   Object global();
   Value evaluateJavaScript(std::shared_ptr<StringBuffer> buffer, const std::string& sourceURL);
@@ -492,6 +626,11 @@ class Value {
   bool isSymbol() const { return isJSC() && JSValueIsSymbol(jscContext(), jscValue()); }
 
   Object asObject(Runtime& runtime) const;
+  // Borrowing is a V8-only capability; see jsi/v8/V8Runtime.h. Everywhere else
+  // this is the owning conversion, and callers get the stronger guarantee.
+  // Declared, not defined: Object is still incomplete here, so a body calling
+  // asObject would not compile. Defined next to asObject in JSCValue.cpp.
+  Object asObjectBorrowed(Runtime& runtime) const;
   String asString(Runtime& runtime) const;
   BigInt getBigInt(Runtime& runtime) const;
 
@@ -553,6 +692,14 @@ class Value {
   std::shared_ptr<jscengine::ValueStorage> storage_;
 };
 
+// Defined here rather than with the class: constructing the shared_ptr needs
+// Value to be complete.
+inline JSError::JSError(Runtime& runtime, const std::string& message,
+                        const Value& value, std::string stack)
+    : std::runtime_error(message),
+      value_(std::make_shared<Value>(runtime, value)),
+      stack_(std::move(stack)) {}
+
 class Object {
  public:
   Object() = default;
@@ -595,7 +742,7 @@ class Object {
         JSObjectGetProperty(runtime.context(), local(runtime), property, &exception);
     JSStringRelease(property);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     return Value(runtime, result);
   }
@@ -609,9 +756,24 @@ class Object {
     JSValueRef result = JSObjectGetPropertyForKey(runtime.context(), local(runtime),
                                                   key.local(runtime), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     return Value(runtime, result);
+  }
+
+  // Borrowing is a V8-only capability; see jsi/v8/V8Runtime.h.
+  //
+  // The name exists on every engine so the Node-API shim's read paths stay
+  // engine-neutral, but this engine cannot honour it: a read here hands back a
+  // handle the caller must keep alive (QuickJS returns a +1 refcount, JSC needs
+  // JSValueProtect, Hermes owns its jsi::Value), and a bare handle rooted only
+  // by an ambient scope has no equivalent. So these are the owning reads, and
+  // callers get the stronger guarantee.
+  Value getPropertyBorrowed(Runtime& runtime, const char* name) const {
+    return getProperty(runtime, name);
+  }
+  Value getPropertyBorrowed(Runtime& runtime, const Value& key) const {
+    return getProperty(runtime, key);
   }
 
   Object getPropertyAsObject(Runtime& runtime, const char* name) const {
@@ -627,7 +789,7 @@ class Object {
                         kJSPropertyAttributeNone, &exception);
     JSStringRelease(property);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
   }
 
@@ -654,7 +816,7 @@ class Object {
     JSObjectSetPropertyForKey(runtime.context(), local(runtime), key.local(runtime),
                               value.local(runtime), kJSPropertyAttributeNone, &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
   }
 
@@ -711,6 +873,42 @@ class Object {
     return std::static_pointer_cast<T>(holder->hostObject);
   }
 
+  // ---- Native state -------------------------------------------------------
+  //
+  // See jsi/v8/V8Runtime.h for what this is for. JSC's C API exposes neither
+  // private symbols nor an own-property accessor, so the slot is a
+  // non-enumerable named property under a cached key -- one lookup where the
+  // old __nsWrap path did two, and invisible to Object.keys/for-in/JSON.
+  //
+  // The payload is still a HostObject, so finaliser timing is unchanged.
+  template <typename T>
+  void setNativeState(Runtime& runtime, std::shared_ptr<T> state) {
+    Object holder = Object::createFromHostObject<T>(runtime, std::move(state));
+    JSValueRef exception = nullptr;
+    JSObjectSetProperty(runtime.context(), local(runtime), runtime.nativeStateKey(),
+                        holder.local(runtime), kJSPropertyAttributeDontEnum, &exception);
+    if (exception != nullptr) {
+      throw jscengine::toJSError(runtime, exception);
+    }
+  }
+
+  template <typename T>
+  std::shared_ptr<T> getNativeState(Runtime& runtime) const {
+    JSValueRef exception = nullptr;
+    JSValueRef holder = JSObjectGetProperty(runtime.context(), local(runtime),
+                                            runtime.nativeStateKey(), &exception);
+    if (exception != nullptr || holder == nullptr ||
+        !JSValueIsObject(runtime.context(), holder)) {
+      return nullptr;
+    }
+    auto* record = static_cast<jscengine::HostObjectHolder*>(JSObjectGetPrivate(
+        reinterpret_cast<JSObjectRef>(const_cast<OpaqueJSValue*>(holder))));
+    if (record == nullptr || record->typeToken != jscengine::hostObjectTypeToken<T>()) {
+      return nullptr;
+    }
+    return std::static_pointer_cast<T>(record->hostObject);
+  }
+
   JSObjectRef local(Runtime& runtime) const {
     return reinterpret_cast<JSObjectRef>(const_cast<OpaqueJSValue*>(storage_->value));
   }
@@ -746,6 +944,24 @@ class Function : public Object {
   static Function createFromHostFunction(Runtime& runtime, const PropNameID& name, unsigned int,
                                          HostFunctionType callback);
 
+  // Like createFromHostFunction, but the result is usable with `new` and has a
+  // *writable* own `prototype`.
+  //
+  // A JSObjectMake'd object of a JSClass with only a callAsFunction callback is
+  // callable but not constructible, and has no `prototype` property at all --
+  // so `new Ctor()` throws and MetadataNode's plain `ctor.prototype = ...`
+  // assignment (napi_util::set_prototype) has nothing to overwrite. Both are
+  // what napi_define_class needs.
+  //
+  // JSC's JSObjectCallAsConstructorCallback is handed no `this` and must return
+  // an object, so the trampoline synthesises the receiver the way
+  // OrdinaryCreateFromConstructor does. Like Hermes, and unlike V8, that means
+  // new.target cannot be observed. No JS wrapper function is involved, so stack
+  // frames are unchanged -- the Worker constructor reads frames[2] to resolve
+  // its module directory.
+  static Function createFromHostConstructor(Runtime& runtime, const PropNameID& name,
+                                            unsigned int paramCount, HostFunctionType callback);
+
   Value call(Runtime& runtime, const Value* args, size_t count) const {
     std::vector<JSValueRef> argv;
     argv.reserve(count);
@@ -757,7 +973,7 @@ class Function : public Object {
         runtime.context(), local(runtime), JSContextGetGlobalObject(runtime.context()), argv.size(),
         argv.empty() ? nullptr : argv.data(), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     return Value(runtime, result);
   }
@@ -790,7 +1006,7 @@ class Function : public Object {
         JSObjectCallAsFunction(runtime.context(), local(runtime), thisObject.local(runtime),
                                argv.size(), argv.empty() ? nullptr : argv.data(), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     return Value(runtime, result);
   }
@@ -805,7 +1021,7 @@ class Function : public Object {
     JSValueRef result = JSObjectCallAsConstructor(runtime.context(), local(runtime), argv.size(),
                                                   argv.empty() ? nullptr : argv.data(), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     return Value(runtime, result);
   }
@@ -833,7 +1049,7 @@ class Array : public Object {
     storage_->value =
         JSObjectMakeArray(runtime.context(), initial.size(), initial.data(), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     JSValueProtect(runtime.context(), storage_->value);
   }
@@ -845,12 +1061,17 @@ class Array : public Object {
     return length.isNumber() ? static_cast<size_t>(std::max<double>(0, length.getNumber())) : 0;
   }
 
+  // See Object::getPropertyBorrowed.
+  Value getValueAtIndexBorrowed(Runtime& runtime, size_t index) const {
+    return getValueAtIndex(runtime, index);
+  }
+
   Value getValueAtIndex(Runtime& runtime, size_t index) const {
     JSValueRef exception = nullptr;
     JSValueRef result = JSObjectGetPropertyAtIndex(runtime.context(), local(runtime),
                                                    static_cast<unsigned>(index), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     return Value(runtime, result);
   }
@@ -860,7 +1081,7 @@ class Array : public Object {
     JSObjectSetPropertyAtIndex(runtime.context(), local(runtime), static_cast<unsigned>(index),
                                value.local(runtime), &exception);
     if (exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
   }
   void setValueAtIndex(Runtime& runtime, size_t index, const String& value) {
@@ -906,7 +1127,7 @@ class BigInt {
     JSValueRef exception = nullptr;
     JSStringRef string = JSValueToStringCopy(runtime.context(), local(runtime), &exception);
     if (string == nullptr || exception != nullptr) {
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     String result(runtime, string);
     JSStringRelease(string);
@@ -937,7 +1158,7 @@ class ArrayBuffer : public Object {
         holder, &exception);
     if (exception != nullptr) {
       delete holder;
-      throw JSError(runtime, jscengine::valueToUtf8(runtime.context(), exception));
+      throw jscengine::toJSError(runtime, exception);
     }
     JSValueProtect(runtime.context(), storage_->value);
   }
