@@ -65,6 +65,8 @@ struct Builtins {
   JsObject dateCtor;
   JsObject dataViewCtor;
   JsObject objectCtor;
+  JsFunction errorCtor;
+  JsFunction stringCoerce;
 
   static Builtins& of(JsRuntime& rt);
   static void dispose(JsRuntime& rt);
@@ -167,6 +169,12 @@ bool is_dataview(JsRuntime& rt, const JsValue& value);
 bool is_typedarray(JsRuntime& rt, const JsValue& value);
 bool is_array(JsRuntime& rt, const JsValue& value);
 bool is_float(JsRuntime& rt, const JsValue& value);
+bool is_error(JsRuntime& rt, const JsValue& value);
+
+std::string coerce_to_string(JsRuntime& rt, const JsValue& value);
+
+JsValue create_error(JsRuntime& rt, const std::string& message,
+                     const char* code = nullptr);
 
 JsValue object_create_from(JsRuntime& rt, const JsValue& prototype);
 
