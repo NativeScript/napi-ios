@@ -464,6 +464,14 @@ class Runtime {
   v8::Local<v8::Context> context() const { return state_->localContext(); }
   v8engine::RuntimeState* rawState() const { return state_.get(); }
 
+  // A stable, per-runtime identity.
+  //
+  // engine::Runtime is a value wrapper around shared engine state, and the
+  // host-function trampolines construct a fresh one on the stack for every
+  // callback. So `&runtime` is NOT stable and must never be used as a map key;
+  // this is. The pointer is opaque and only ever compared or hashed.
+  const void* identity() const { return state_.get(); }
+
   // See RuntimeState::nativeStateKey. Created on first use so a runtime that
   // never wraps anything never allocates it.
   v8::Local<v8::Private> nativeStateKey() const {

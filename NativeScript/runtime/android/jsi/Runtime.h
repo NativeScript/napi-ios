@@ -32,7 +32,7 @@ namespace tns {
         static Runtime *GetRuntime(int runtimeId);
 
         inline static Runtime *GetRuntime(engine::Runtime &rt) {
-            engine::Runtime *key = &rt;
+            const void *key = rt.identity();
             auto runtime = rt_to_runtime_cache.Get(key);
             if (runtime) return runtime;
 
@@ -42,7 +42,7 @@ namespace tns {
         }
 
         inline static Runtime *GetRuntimeUnchecked(engine::Runtime &rt) {
-            engine::Runtime *key = &rt;
+            const void *key = rt.identity();
             return rt_to_runtime_cache.Get(key);
         }
 
@@ -207,7 +207,10 @@ namespace tns {
 
         static tns::ConcurrentMap<int, Runtime *> id_to_runtime_cache;
 
-        static tns::ConcurrentMap<engine::Runtime *, Runtime *> rt_to_runtime_cache;
+        // Keyed by engine::Runtime::identity(), not by &rt: the engine hands a
+        // freshly constructed Runtime wrapper to every host callback, so its
+        // address is not stable. See engine::Runtime::identity().
+        static tns::ConcurrentMap<const void *, Runtime *> rt_to_runtime_cache;
 
         static tns::ConcurrentMap<std::thread::id, Runtime *> thread_id_to_rt_cache;
 

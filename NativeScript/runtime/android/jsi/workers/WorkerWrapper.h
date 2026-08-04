@@ -174,7 +174,9 @@ private:
 
     static std::mutex registryMutex_;
     static std::map<int, std::shared_ptr<WorkerWrapper>> registry_;
-    static std::map<engine::Runtime*, WorkerWrapper*> rtRegistry_;
+    // Keyed by engine::Runtime::identity(); &rt is not stable across callbacks,
+    // and every lookup here comes from one (postMessage/close/onerror).
+    static std::map<const void*, WorkerWrapper*> rtRegistry_;
     static std::atomic_int nextWorkerId_;
 
     static jclass RUNTIME_CLASS;

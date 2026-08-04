@@ -336,7 +336,7 @@ void WorkerWrapper::BackgroundLooper(std::shared_ptr<WorkerWrapper> self) {
             workerRt_.store(workerRt);
             {
                 std::lock_guard<std::mutex> lock(registryMutex_);
-                rtRegistry_[workerRt] = this;
+                rtRegistry_[workerRt->identity()] = this;
             }
 
             if (!isTerminating_) {
@@ -415,7 +415,7 @@ void WorkerWrapper::BackgroundLooper(std::shared_ptr<WorkerWrapper> self) {
         {
             std::lock_guard<std::mutex> lock(registryMutex_);
             if (workerRt != nullptr) {
-                rtRegistry_.erase(workerRt);
+                rtRegistry_.erase(workerRt->identity());
             }
         }
 
@@ -510,7 +510,7 @@ void WorkerWrapper::TerminateChildren(engine::Runtime& parentRt) {
 
 WorkerWrapper* WorkerWrapper::FromRuntime(engine::Runtime& rt) {
     std::lock_guard<std::mutex> lock(registryMutex_);
-    auto it = rtRegistry_.find(&rt);
+    auto it = rtRegistry_.find(rt.identity());
     return it != rtRegistry_.end() ? it->second : nullptr;
 }
 
@@ -542,7 +542,7 @@ void WorkerWrapper::EnsureJniCached() {
 
 std::mutex WorkerWrapper::registryMutex_;
 std::map<int, std::shared_ptr<WorkerWrapper>> WorkerWrapper::registry_;
-std::map<engine::Runtime*, WorkerWrapper*> WorkerWrapper::rtRegistry_;
+std::map<const void*, WorkerWrapper*> WorkerWrapper::rtRegistry_;
 std::atomic_int WorkerWrapper::nextWorkerId_(0);
 
 jclass WorkerWrapper::RUNTIME_CLASS = nullptr;

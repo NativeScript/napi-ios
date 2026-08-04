@@ -78,7 +78,7 @@ void MetadataNode::Init(JsRuntime &rt) {
 }
 
 JsValue MetadataNode::CreateArrayObjectConstructor(JsRuntime &rt) {
-    auto it = s_arrayObjects.find(&rt);
+    auto it = s_arrayObjects.find(rt.identity());
     if (it != s_arrayObjects.end()) {
         if (!js_util::is_null_or_undefined(it->second)) return JsValue(rt, it->second);
     }
@@ -120,7 +120,7 @@ JsValue MetadataNode::CreateArrayObjectConstructor(JsRuntime &rt) {
     js_util::inherits(rt, arrayConstructor, objectConstructor.asObject(rt));
 
     JsValue result(rt, arrayConstructor);
-    s_arrayObjects.emplace(&rt, JsValue(rt, result));
+    s_arrayObjects.emplace(rt.identity(), JsValue(rt, result));
 
     return result;
 }
@@ -717,7 +717,7 @@ MetadataNode::GetCachedExtendedClassData(JsRuntime &rt, const string &proxyClass
 }
 
 MetadataNode::MetadataNodeCache *MetadataNode::GetMetadataNodeCache(JsRuntime &rt) {
-    JsRuntime *key = &rt;
+    const void *key = rt.identity();
     auto cache = s_metadata_node_cache.Get(key);
     if (cache) return cache;
     cache = new MetadataNodeCache;
@@ -2132,7 +2132,7 @@ void MetadataNode::BuildMetadata(const std::string &filesPath) {
 }
 
 void MetadataNode::onDisposeRuntime(JsRuntime &rt) {
-    JsRuntime *key = &rt;
+    const void *key = rt.identity();
     {
         auto it = s_metadata_node_cache.Get(key);
         if (it != nullptr) {
@@ -2177,7 +2177,7 @@ MetadataReader MetadataNode::s_metadataReader;
 robin_hood::unordered_map<std::string, MetadataNode *> MetadataNode::s_name2NodeCache;
 robin_hood::unordered_map<std::string, MetadataTreeNode *> MetadataNode::s_name2TreeNodeCache;
 robin_hood::unordered_map<MetadataTreeNode *, MetadataNode *> MetadataNode::s_treeNode2NodeCache;
-tns::ConcurrentMap<JsRuntime *, MetadataNode::MetadataNodeCache *> MetadataNode::s_metadata_node_cache;
-robin_hood::unordered_map<JsRuntime *, JsValue> MetadataNode::s_arrayObjects;
+tns::ConcurrentMap<const void *, MetadataNode::MetadataNodeCache *> MetadataNode::s_metadata_node_cache;
+robin_hood::unordered_map<const void *, JsValue> MetadataNode::s_arrayObjects;
 
 bool MetadataNode::s_profilerEnabled = false;

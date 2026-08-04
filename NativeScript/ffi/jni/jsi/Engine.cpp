@@ -9,7 +9,10 @@ using namespace tns::js_util;
 namespace {
 
 std::mutex g_builtinsMutex;
-std::unordered_map<JsRuntime*, std::unique_ptr<Builtins>> g_builtins;
+// Keyed by JsRuntime::identity(): a host callback receives a freshly
+// constructed Runtime wrapper, so &rt is not stable and keying on it would
+// build (and leak) a whole Builtins set per callback.
+std::unordered_map<const void*, std::unique_ptr<Builtins>> g_builtins;
 
 // `a === b` and `a instanceof b` have no engine:: entry point and no builtin to
 // borrow, so they come from two one-line scripts evaluated once per runtime.
@@ -78,15 +81,15 @@ bool callPredicate(JsRuntime& rt, const JsFunction& fn, const JsValue& lhs,
 
 Builtins& Builtins::of(JsRuntime& rt) {
   std::lock_guard<std::mutex> lock(g_builtinsMutex);
-  auto it = g_builtins.find(&rt);
+  auto it = g_builtins.find(rt.identity());
   if (it != g_builtins.end()) return *it->second;
-  auto inserted = g_builtins.emplace(&rt, createBuiltins(rt));
+  auto inserted = g_builtins.emplace(rt.identity(), createBuiltins(rt));
   return *inserted.first->second;
 }
 
 void Builtins::dispose(JsRuntime& rt) {
   std::lock_guard<std::mutex> lock(g_builtinsMutex);
-  g_builtins.erase(&rt);
+  g_builtins.erase(rt.identity());
 }
 
 JsValue js_util::getPrototypeOf(JsRuntime& rt, const JsValue& object) {

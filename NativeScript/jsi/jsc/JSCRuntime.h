@@ -456,6 +456,14 @@ class Runtime {
   JSGlobalContextRef context() const { return state_->context; }
   std::shared_ptr<jscengine::RuntimeState> state() const { return state_; }
 
+  // A stable, per-runtime identity.
+  //
+  // engine::Runtime is a value wrapper around shared engine state, and the
+  // host-function trampolines construct a fresh one on the stack for every
+  // callback. So `&runtime` is NOT stable and must never be used as a map key;
+  // this is. The pointer is opaque and only ever compared or hashed.
+  const void* identity() const { return state_.get(); }
+
   // See RuntimeState::nativeStateKey. Created on first use.
   JSStringRef nativeStateKey() const {
     if (state_->nativeStateKey == nullptr) {

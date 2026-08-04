@@ -696,7 +696,8 @@ JsValue CallbackHandlers::RunOnMainThreadCallback(JsRuntime &rt, const JsValue &
     uint64_t key = ++count_;
     bool inserted;
 
-    std::tie(std::ignore, inserted) = cache_.try_emplace(key, rt, args[0]);
+    std::tie(std::ignore, inserted) = cache_.try_emplace(key, Runtime::GetRuntime(rt), rt,
+                                                        args[0]);
     assert(inserted && "Main thread callback ID should not be duplicated");
 
     auto value = Callback(key);
@@ -720,9 +721,10 @@ int CallbackHandlers::RunOnMainThreadFdCallback(int fd, int events, void *data) 
         return 1;
     }
 
-    JsRuntime &rt = *it->second.rt_;
+    tns::Runtime *runtime = it->second.runtime_;
+    JsRuntime &rt = runtime->GetJSRuntime();
 
-    JSScope scope(rt);
+    JSScope scope(runtime->GetEngineHost());
 
     // Copy the callback out before erasing: the entry owns the handle, and
     // erasing it releases it.
@@ -1037,8 +1039,9 @@ void CallbackHandlers::FrameCallbackCacheEntry::execute(double ts, void *data) {
         return;
     }
 
-    JsRuntime &rt = *entry->rt;
-    JSScope scope(rt);
+    tns::Runtime *runtime = entry->runtime;
+    JsRuntime &rt = runtime->GetJSRuntime();
+    JSScope scope(runtime->GetEngineHost());
 
     JsValue cb(rt, entry->callback);
     auto global = rt.global();
@@ -1112,7 +1115,8 @@ JsValue CallbackHandlers::PostFrameCallback(JsRuntime &rt, const JsValue &thisVa
 
         func.setProperty(rt, "_postFrameCallbackId", JsValue((double) key));
 
-        auto [val, inserted] = frameCallbackCache_.try_emplace(key, rt, args[0], key);
+        auto [val, inserted] = frameCallbackCache_.try_emplace(key, Runtime::GetRuntime(rt), rt,
+                                                               args[0], key);
         assert(inserted && "Frame callback ID should not be duplicated");
 
         val->second.markScheduled();
@@ -1177,9 +1181,10 @@ void CallbackHandlers::InitChoreographer() {
 void CallbackHandlers::RemoveEnvEntries(JsRuntime &rt) {
     // Erasing while iterating (as the napi tree does) invalidates the iterator
     // on the very entry the loop then advances; collect first, erase after.
+    tns::Runtime *runtime = Runtime::GetRuntimeUnchecked(rt);
     std::vector<uint64_t> staleCallbacks;
     for (auto &item: cache_) {
-        if (item.second.rt_ == &rt) {
+        if (item.second.runtime_ == runtime) {
             staleCallbacks.push_back(item.first);
         }
     }
@@ -1189,7 +1194,7 @@ void CallbackHandlers::RemoveEnvEntries(JsRuntime &rt) {
 
     std::vector<uint64_t> staleFrameCallbacks;
     for (auto &item: frameCallbackCache_) {
-        if (item.second.rt == &rt) {
+        if (item.second.runtime == runtime) {
             staleFrameCallbacks.push_back(item.first);
         }
     }

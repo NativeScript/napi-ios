@@ -70,7 +70,8 @@ jmethodID Timers::TIMER_HANDLER_RELEASE = nullptr;
 
 namespace {
     std::mutex s_timersMutex;
-    std::map<engine::Runtime *, Timers *> s_timers;
+    // Keyed by engine::Runtime::identity(); &rt is not stable across callbacks.
+    std::map<const void *, Timers *> s_timers;
 }
 
 void Timers::Init(engine::Runtime &rt, engine::Object &global) {
@@ -104,7 +105,7 @@ void Timers::Init(engine::Runtime &rt, engine::Object &global) {
 
     {
         std::lock_guard<std::mutex> lock(s_timersMutex);
-        s_timers[&rt] = this;
+        s_timers[rt.identity()] = this;
     }
 
     JEnv jEnv;
@@ -277,7 +278,7 @@ void Timers::onDisposeRuntime(engine::Runtime &rt) {
     Timers *timers = nullptr;
     {
         std::lock_guard<std::mutex> lock(s_timersMutex);
-        auto it = s_timers.find(&rt);
+        auto it = s_timers.find(rt.identity());
         if (it == s_timers.end()) {
             return;
         }
