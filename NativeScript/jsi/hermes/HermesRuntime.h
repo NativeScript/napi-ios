@@ -1189,7 +1189,16 @@ inline jsi::Function makeHostConstructor(Runtime& runtime,
   // A writable own `prototype`: MetadataNode chains class prototypes with a
   // plain `ctor.prototype = ...` assignment, and a Hermes host function has no
   // prototype at all until one is installed.
-  fn.setProperty(rt, "prototype", jsi::Object(rt));
+  //
+  // It carries a `constructor` back-pointer, as the spec requires of any
+  // function's prototype. V8's Function::New installs one for us; a bare object
+  // has none, so `instance.constructor` walked past the class prototype to
+  // Object.prototype.constructor and every native class reported its name as
+  // "Object". The QuickJS and JSC backends needed the same property for the
+  // same reason.
+  jsi::Object prototype(rt);
+  prototype.setProperty(rt, "constructor", jsi::Value(rt, fn));
+  fn.setProperty(rt, "prototype", prototype);
   return fn;
 }
 
