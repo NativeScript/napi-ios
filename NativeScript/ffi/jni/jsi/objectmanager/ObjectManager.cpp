@@ -22,7 +22,8 @@ ObjectManager::ObjectManager(jobject javaRuntimeObject) :
         m_javaRuntimeObject(javaRuntimeObject),
         m_cache(NewWeakGlobalRefCallback, DeleteWeakGlobalRefCallback, ValidateWeakGlobalRefCallback, 1000, this),
         m_currentObjectId(0),
-        m_rt(nullptr) {
+        m_rt(nullptr),
+        m_proxyRegistry(std::make_shared<ProxyRegistry>()) {
 
     JEnv env;
     auto runtimeClass = env.FindClass("com/tns/Runtime");
@@ -94,11 +95,14 @@ void ObjectManager::OnDisposeRuntime() {
     //
     // So release those handles here, while the runtime is still healthy, and
     // clear objectManager to tell the destructor there is nothing left to do.
-    for (auto *proxy: m_liveProxies) {
-        proxy->target.reset();
-        proxy->objectManager = nullptr;
+    {
+        std::lock_guard<std::mutex> lock(m_proxyRegistry->mutex);
+        for (auto *proxy: m_proxyRegistry->proxies) {
+            proxy->target.reset();
+            proxy->objectManager = nullptr;
+        }
+        m_proxyRegistry->proxies.clear();
     }
-    m_liveProxies.clear();
 }
 
 JsValue ObjectManager::GetOrCreateProxyWeak(jint javaObjectID, const JsValue &instance) {
@@ -301,16 +305,25 @@ ObjectManager::HostObjectProxy::HostObjectProxy(ObjectManager *objectManager,
           rt(&rt),
           target(std::make_unique<JsValue>(rt, target)),
           isArray(false) {
-    objectManager->m_liveProxies.insert(this);
+    registry = objectManager->m_proxyRegistry;
+    std::lock_guard<std::mutex> lock(registry->mutex);
+    registry->proxies.insert(this);
 }
 
 ObjectManager::HostObjectProxy::~HostObjectProxy() {
+    // Deregister first, and through the registry rather than the ObjectManager:
+    // this destructor runs whenever the engine collects the proxy, which for a
+    // worker is after its Runtime (and so its ObjectManager) has been deleted.
+    {
+        std::lock_guard<std::mutex> lock(registry->mutex);
+        registry->proxies.erase(this);
+    }
+
     // Neutralised by OnDisposeRuntime: the handle is already gone and the
     // runtime is on its way out, so there is nothing to defer.
     if (objectManager == nullptr) {
         return;
     }
-    objectManager->m_liveProxies.erase(this);
 
     // Runs inside the engine's GC sweep. Releasing the owned target handle here
     // is illegal on every engine (V8's InvokeFinalizerFromGC; a reentrant
