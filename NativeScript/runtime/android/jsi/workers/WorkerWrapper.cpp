@@ -481,10 +481,12 @@ void WorkerWrapper::ClearWorkerOnParent(int workerId) {
         registry_.erase(it);
     }
 
+    // The scope has to cover the *test* as well as the assignment. Asking an
+    // owned engine::Value what it holds reads its handle back, which needs a
+    // HandleScope just as much as releasing it does -- and this runs from
+    // LooperTasks::Drain on the parent's looper, where no scope is open.
+    JSScope scope(wrapper->parentHost_);
     if (!wrapper->poWorker_.isUndefined()) {
-        // Dropping an owned handle touches the engine, so it happens under the
-        // parent's scope exactly as napi_delete_reference did.
-        JSScope scope(wrapper->parentHost_);
         wrapper->poWorker_ = engine::Value::undefined();
     }
 }
