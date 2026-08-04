@@ -1,6 +1,8 @@
-#include "Engine.h"
+#include "EngineHost.h"
 
 #include <mutex>
+
+#include "Runtime.h"
 
 #if defined(TARGET_ENGINE_V8)
 #include <libplatform/libplatform.h>
@@ -324,4 +326,8 @@ EngineHost::~EngineHost() {
         m_isolate = nullptr;
     }
 #endif
+}
+
+std::shared_ptr<EngineHost> tns::JSScope::HostFor(engine::Runtime &rt) {
+    return tns::Runtime::GetRuntime(rt)->GetEngineHost();
 }

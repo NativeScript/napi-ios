@@ -11,7 +11,7 @@
 
 #include "ConcurrentQueue.h"
 #include "WorkerMessage.h"
-#include "Engine.h"
+#include "EngineHost.h"
 
 namespace tns {
 

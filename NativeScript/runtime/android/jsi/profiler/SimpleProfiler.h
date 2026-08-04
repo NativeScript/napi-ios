@@ -1,7 +1,7 @@
 #ifndef SIMPLEPROFILER_H_
 #define SIMPLEPROFILER_H_
 
-#include "Engine.h"
+#include "EngineHost.h"
 #include <cstdint>
 #include <vector>
 

@@ -5,7 +5,7 @@
 #ifndef TEST_APP_ANDROID_RUNTIME_MODULES_H
 #define TEST_APP_ANDROID_RUNTIME_MODULES_H
 
-#include "Engine.h"
+#include "EngineHost.h"
 
 namespace tns {
     class AndroidRuntimeModules {

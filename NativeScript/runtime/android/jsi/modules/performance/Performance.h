@@ -5,7 +5,7 @@
 #ifndef TESTAPPNAPI_PERFORMANCE_H
 #define TESTAPPNAPI_PERFORMANCE_H
 #include <chrono>
-#include "Engine.h"
+#include "EngineHost.h"
 
 inline engine::Value Now(engine::Runtime& rt, const engine::Value&, const engine::Value*, size_t) {
     auto now = std::chrono::high_resolution_clock::now();

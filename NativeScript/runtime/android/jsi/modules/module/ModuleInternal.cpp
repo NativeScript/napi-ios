@@ -76,15 +76,15 @@ void ModuleInternal::Init(engine::Runtime& rt, const std::string& baseDir) {
                 try {
                     return RequireCallbackImpl(runtime, args, count);
                 } catch (NativeScriptException& e) {
-                    e.ReThrowToJS(runtime);
+                    e.ReThrowToJs(runtime);
                 } catch (std::exception& e) {
                     stringstream ss;
                     ss << "Error: c++ exception: " << e.what() << endl;
                     NativeScriptException nsEx(ss.str());
-                    nsEx.ReThrowToJS(runtime);
+                    nsEx.ReThrowToJs(runtime);
                 } catch (...) {
                     NativeScriptException nsEx(std::string("Error: c++ exception!"));
-                    nsEx.ReThrowToJS(runtime);
+                    nsEx.ReThrowToJs(runtime);
                 }
                 return engine::Value::undefined();
             });

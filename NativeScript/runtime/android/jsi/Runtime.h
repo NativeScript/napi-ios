@@ -14,7 +14,7 @@
 #include "ObjectManager.h"
 #include "ArrayBufferHelper.h"
 #include <thread>
-#include "Engine.h"
+#include "EngineHost.h"
 #include "NativeScriptException.h"
 #include <sstream>
 #include "ConcurrentMap.h"
@@ -45,19 +45,19 @@ namespace tns {
         }
 
         // Engine-agnostic replacement for node_api_post_finalizer: schedules
-        // `cb(data, hint)` to run at the next runtime message-loop tick instead of
+        // `cb(rt, data, hint)` to run at the next runtime message-loop tick instead of
         // immediately. Call this from a GC finalizer that needs to delete
         // references / touch the JS heap (illegal during the GC sweep on every
         // engine). Falls back to running inline if the runtime is already tearing
         // down (no loop left to drain it).
-        static void PostFinalizer(engine::Runtime &rt, FinalizerCallback cb, void *data,
+        static void PostFinalizer(engine::Runtime &rt, FinalizerQueue::Finalize cb, void *data,
                                   void *hint) {
             Runtime *runtime = GetRuntimeUnchecked(rt);
             if (runtime != nullptr && runtime->m_finalizerQueue != nullptr &&
                 !runtime->is_destroying) {
                 runtime->m_finalizerQueue->Post(cb, data, hint);
             } else if (cb != nullptr) {
-                cb(data, hint);
+                cb(rt, data, hint);
             }
         }
 

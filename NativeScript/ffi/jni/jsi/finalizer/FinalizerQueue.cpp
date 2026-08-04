@@ -81,7 +81,7 @@ void FinalizerQueue::Drain() {
 
     // No per-callback handle scope here. An engine::Value owns its handle, so a
     // value a callback materialises is rooted by the Value itself rather than by
-    // an enclosing scope; the engine entry (JsScope, opened in
+    // an enclosing scope; the engine entry (JSScope, opened in
     // nativeDrainFinalizers) supplies the isolate/context the engine calls need.
     for (auto &entry: batch) {
         if (entry.cb != nullptr) {
@@ -137,7 +137,7 @@ Java_com_tns_FinalizerHandler_nativeDrainFinalizers(JNIEnv *jniEnv, jclass clazz
     try {
         // Enter the JS scope (lock + isolate/context) before running any callback,
         // since they call into the engine.
-        JsScope scope(*queue->Rt());
+        JSScope scope(*queue->Rt());
         queue->Drain();
     } catch (NativeScriptException &e) {
         e.ReThrowToJava(nullptr);

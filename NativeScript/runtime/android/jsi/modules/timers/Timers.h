@@ -4,7 +4,7 @@
 #include <jni.h>
 #include <memory>
 #include <vector>
-#include "Engine.h"
+#include "EngineHost.h"
 #include "robin_hood.h"
 
 namespace tns {

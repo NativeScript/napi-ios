@@ -2,7 +2,7 @@
 #define MESSAGELOOPTIMER_H
 
 #include <memory>
-#include "Engine.h"
+#include "EngineHost.h"
 
 namespace tns {
 

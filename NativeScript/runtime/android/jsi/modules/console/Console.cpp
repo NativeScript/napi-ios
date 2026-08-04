@@ -135,17 +135,17 @@ engine::Value assertCallback(engine::Runtime &rt, const engine::Value &,
         }
     }
     catch (NativeScriptException &e) {
-        e.ReThrowToJS(rt);
+        e.ReThrowToJs(rt);
     }
     catch (std::exception e) {
         std::stringstream ss;
         ss << "Error: c++ exception: " << e.what() << std::endl;
         NativeScriptException nsEx(ss.str());
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
     catch (...) {
         NativeScriptException nsEx(std::string("Error: c++ exception!"));
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
     return engine::Value::undefined();
 }
@@ -162,17 +162,17 @@ engine::Value logWithPrefix(engine::Runtime &rt, const engine::Value *args, size
         Console::sendToADBLogcat(log, priority);
     }
     catch (NativeScriptException &e) {
-        e.ReThrowToJS(rt);
+        e.ReThrowToJs(rt);
     }
     catch (std::exception &e) {
         std::stringstream ss;
         ss << "Error: c++ exception: " << e.what() << std::endl;
         NativeScriptException nsEx(ss.str());
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
     catch (...) {
         NativeScriptException nsEx(std::string("Error: c++ exception!"));
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
     return engine::Value::undefined();
 }
@@ -233,17 +233,17 @@ engine::Value dirCallback(engine::Runtime &rt, const engine::Value &, const engi
         Console::sendToADBLogcat(log, ANDROID_LOG_INFO);
     }
     catch (NativeScriptException &e) {
-        e.ReThrowToJS(rt);
+        e.ReThrowToJs(rt);
     }
     catch (std::exception &e) {
         std::stringstream ss;
         ss << "Error: c++ exception: " << e.what() << std::endl;
         NativeScriptException nsEx(ss.str());
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
     catch (...) {
         NativeScriptException nsEx(std::string("Error: c++ exception!"));
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
 
     return engine::Value::undefined();
@@ -274,17 +274,17 @@ engine::Value traceCallback(engine::Runtime &rt, const engine::Value &, const en
         __android_log_write(ANDROID_LOG_ERROR, "JS", log.c_str());
     }
     catch (NativeScriptException &e) {
-        e.ReThrowToJS(rt);
+        e.ReThrowToJs(rt);
     }
     catch (std::exception e) {
         std::stringstream ss;
         ss << "Error: c++ exception: " << e.what() << std::endl;
         NativeScriptException nsEx(ss.str());
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
     catch (...) {
         NativeScriptException nsEx(std::string("Error: c++ exception!"));
-        nsEx.ReThrowToJS(rt);
+        nsEx.ReThrowToJs(rt);
     }
 
     return engine::Value::undefined();
