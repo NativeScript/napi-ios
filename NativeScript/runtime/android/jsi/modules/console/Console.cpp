@@ -396,7 +396,7 @@ void Console::createConsole(engine::Runtime &rt, const int maxLogcatObjectSize,
     global.setProperty(rt, "console", console);
 }
 
-void Console::onDisposeEnv(engine::Runtime &rt) {
+void Console::onDisposeRuntime(engine::Runtime &rt) {
     s_rtToConsoleTimersMap.erase(&rt);
 }
 

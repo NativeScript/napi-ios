@@ -273,7 +273,7 @@ Timers::~Timers() {
     Destroy();
 }
 
-void Timers::onDisposeEnv(engine::Runtime &rt) {
+void Timers::onDisposeRuntime(engine::Runtime &rt) {
     Timers *timers = nullptr;
     {
         std::lock_guard<std::mutex> lock(s_timersMutex);
