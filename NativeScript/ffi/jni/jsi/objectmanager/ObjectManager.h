@@ -8,6 +8,7 @@
 #include "DirectBuffer.h"
 #include "LRUCache.h"
 #include <map>
+#include <mutex>
 #include <set>
 #include <stack>
 #include <vector>
@@ -111,6 +112,8 @@ namespace tns {
         };
 
     private:
+        struct ProxyRegistry;
+
         // Backing host object for a wrapper. The napi tree gates this against its
         // JS-Proxy alternative with USE_HOST_OBJECT; there is no conditional here
         // because a host object is the only path, and the engine owning the
@@ -145,6 +148,8 @@ namespace tns {
             // Cleared by ObjectManager::OnDisposeRuntime to mark this proxy
             // neutralised; the destructor then does nothing. See there for why.
             ObjectManager *objectManager;
+            // Outlives the ObjectManager; see m_proxyRegistry.
+            std::shared_ptr<ProxyRegistry> registry;
             JSInstanceInfo *instanceInfo;  // java object id holder
             bool isPrimary;                // owns instanceInfo + marks weak on GC
             JsRuntime *rt;
@@ -155,6 +160,11 @@ namespace tns {
             std::string arraySignature;    // jni array signature (arrays only)
             int8_t isSuper = -1;           // cached super-call flag (-1=unresolved)
             int64_t arrayLength = -1;      // cached fixed length (arrays only; -1=unresolved)
+        };
+
+        struct ProxyRegistry {
+            std::mutex mutex;
+            std::set<HostObjectProxy *> proxies;
         };
 
         JsValue CreateHostObjectProxy(const JsValue &instance, JSInstanceInfo *instanceInfo,
@@ -197,7 +207,14 @@ namespace tns {
         // this the only thing that ever destroys them is the engine's own
         // teardown -- far too late to release the handles they hold. See
         // OnDisposeRuntime.
-        std::set<HostObjectProxy *> m_liveProxies;
+        //
+        // Held by shared_ptr, and every proxy holds one too, because a proxy can
+        // outlive this ObjectManager: a worker's runtime is deleted before its
+        // VM is, so the engine destroys the remaining proxies afterwards and
+        // ~HostObjectProxy would otherwise erase itself through a dangling
+        // pointer. The mutex is needed for the same reason -- those destructors
+        // run on the engine's own thread.
+        std::shared_ptr<ProxyRegistry> m_proxyRegistry;
 
         LRUCache<int, jweak> m_cache;
 
