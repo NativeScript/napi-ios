@@ -185,6 +185,12 @@ std::vector<tns::JsStacktraceFrame> tns::BuildStacktraceFrames(JsRuntime &rt, co
     return frames;
 }
 
+JsObject tns::GlobalHelpers::CreateError(JsRuntime &rt, const std::string &message) {
+    auto errorCtor = rt.global().getPropertyAsFunction(rt, "Error");
+    const JsValue args[] = {js_util::to_js_string(rt, message)};
+    return errorCtor.callAsConstructor(rt, args, (size_t) 1).asObject(rt);
+}
+
 void tns::GlobalHelpers::onDisposeRuntime(JsRuntime &rt) {
     rtToPersistentSmartJSONStringify.erase(&rt);
 }
