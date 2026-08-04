@@ -36,6 +36,8 @@ std::unique_ptr<Builtins> createBuiltins(JsRuntime& rt) {
       builtins->objectCtor.getPropertyAsFunction(rt, "setPrototypeOf");
   builtins->objectCreate = builtins->objectCtor.getPropertyAsFunction(rt, "create");
   builtins->objectKeys = builtins->objectCtor.getPropertyAsFunction(rt, "keys");
+  builtins->hasOwnProperty = builtins->objectCtor.getPropertyAsObject(rt, "prototype")
+                                 .getPropertyAsFunction(rt, "hasOwnProperty");
 
   JsObject reflect = global.getPropertyAsObject(rt, "Reflect");
   builtins->deleteProperty = reflect.getPropertyAsFunction(rt, "deleteProperty");
@@ -144,6 +146,14 @@ void js_util::define_property_get_set(JsRuntime& rt, const JsObject& object,
   const JsValue args[] = {JsValue(rt, object), to_js_string(rt, propertyName),
                           JsValue(rt, descriptor)};
   Builtins::of(rt).defineProperty.call(rt, args, static_cast<size_t>(3));
+}
+
+bool js_util::has_own_property(JsRuntime& rt, const JsObject& object,
+                               const char* propertyName) {
+  const JsValue args[] = {to_js_string(rt, propertyName)};
+  JsValue result = Builtins::of(rt).hasOwnProperty.callWithThis(
+      rt, object, args, static_cast<size_t>(1));
+  return result.isBool() && result.getBool();
 }
 
 JsValue js_util::valueOf(JsRuntime& rt, const JsValue& value) {

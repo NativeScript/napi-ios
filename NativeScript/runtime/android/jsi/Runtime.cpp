@@ -220,7 +220,8 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
 
     engine::Runtime &rt = engineHost->GetRuntime();
 
-    rt_to_runtime_cache.Insert(&rt, this);
+    engine::Runtime *rtKey = &rt;
+    rt_to_runtime_cache.Insert(rtKey, this);
 
     engine::Object global = rt.global();
 
@@ -233,7 +234,7 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
 
     // Bound to this (runtime) thread's Looper; drains deferred finalizers posted
     // via Runtime::PostFinalizer at a safe point off the GC sweep.
-    m_finalizerQueue = new FinalizerQueue(rt);
+    m_finalizerQueue = new FinalizerQueue(&rt);
 
     engine_util::SetFunction(rt, global, "__log", CallbackHandlers::LogMethodCallback);
     engine_util::SetFunction(rt, global, "__dumpReferenceTables",
@@ -476,7 +477,7 @@ void Runtime::DestroyRuntime() {
     // as every other per-runtime teardown.
     Timers::onDisposeRuntime(rt);
     CallbackHandlers::RemoveEnvEntries(rt);
-    this->m_objectManager->OnDisposeEnv();
+    this->m_objectManager->OnDisposeRuntime();
     // Release the finalizer handler and flush any still-queued cleanup while the
     // runtime is still valid; finalizers firing during teardown below then run
     // inline (Runtime::PostFinalizer's fallback).
@@ -489,7 +490,8 @@ void Runtime::DestroyRuntime() {
     m_gcFunc = engine::Value::undefined();
     Runtime::thread_id_to_rt_cache.Remove(this->my_thread_id);
     id_to_runtime_cache.Remove(m_id);
-    rt_to_runtime_cache.Remove(&rt);
+    engine::Runtime *rtKey = &rt;
+    rt_to_runtime_cache.Remove(rtKey);
     // Deliberately NOT engineHost->ReleaseEngineState() here: this runs inside a
     // JSScope on the worker path, and dropping the engine::Runtime under it is
     // exactly what made the napi path SIGSEGV on Hermes and hang on JSC. The
