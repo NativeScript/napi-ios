@@ -83,6 +83,22 @@ void ObjectManager::OnDisposeRuntime() {
     m_idToProxy.clear();
     m_idToObject.clear();
     m_jsObjectCtor = JsFunction();
+
+    // The host-object proxies are owned by the *engine*, and each holds an owned
+    // handle to the instance it wraps. Nothing above reaches them: they are only
+    // destroyed when the engine tears its heap down, at which point
+    // ~HostObjectProxy cannot legally release anything (a JS_FreeValue inside
+    // QuickJS' sweep corrupts the collector), so it leaks the handle instead --
+    // and a leaked handle is exactly what JS_FreeRuntime's
+    // list_empty(&rt->gc_obj_list) assertion catches. V8 and JSC only leak.
+    //
+    // So release those handles here, while the runtime is still healthy, and
+    // clear objectManager to tell the destructor there is nothing left to do.
+    for (auto *proxy: m_liveProxies) {
+        proxy->target.reset();
+        proxy->objectManager = nullptr;
+    }
+    m_liveProxies.clear();
 }
 
 JsValue ObjectManager::GetOrCreateProxyWeak(jint javaObjectID, const JsValue &instance) {
@@ -273,9 +289,17 @@ ObjectManager::HostObjectProxy::HostObjectProxy(ObjectManager *objectManager,
           rt(&rt),
           target(std::make_unique<JsValue>(rt, target)),
           isArray(false) {
+    objectManager->m_liveProxies.insert(this);
 }
 
 ObjectManager::HostObjectProxy::~HostObjectProxy() {
+    // Neutralised by OnDisposeRuntime: the handle is already gone and the
+    // runtime is on its way out, so there is nothing to defer.
+    if (objectManager == nullptr) {
+        return;
+    }
+    objectManager->m_liveProxies.erase(this);
+
     // Runs inside the engine's GC sweep. Releasing the owned target handle here
     // is illegal on every engine (V8's InvokeFinalizerFromGC; a reentrant
     // JS_FreeValue during a QuickJS sweep corrupts the collector), so the handle
