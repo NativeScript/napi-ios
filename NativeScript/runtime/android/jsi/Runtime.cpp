@@ -474,6 +474,10 @@ void Runtime::DestroyRuntime() {
     this->js_method_cache = nullptr;
     this->m_module.DeInit();
     Console::onDisposeEnv(rt);
+    // The napi version tears the timers down from a finalizer on the global
+    // object; there is no equivalent here, so it is driven from the same place
+    // as every other per-runtime teardown.
+    Timers::onDisposeEnv(rt);
     CallbackHandlers::RemoveEnvEntries(rt);
     this->m_objectManager->OnDisposeEnv();
     // Release the finalizer handler and flush any still-queued cleanup while the
