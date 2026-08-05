@@ -478,7 +478,14 @@ JsValue ObjectManager::CreateHostObjectProxy(const JsValue &instance,
         }
     }
 
-    JsObject proxyObject = JsObject::createFromHostObject<HostObjectProxy>(*m_rt, proxy);
+    // A native instance, not an opaque host object: the proxy is given the Java
+    // class prototype just below, and that is where the field accessors and
+    // methods live. On V8 this selects the non-masking named interceptor, so a
+    // field read resolves on the prototype (and can form a load IC) instead of
+    // entering the trap, crossing into C++ and re-reading the same property off
+    // the wrapped target. Other backends do not distinguish the two.
+    JsObject proxyObject =
+            JsObject::createNativeInstanceHostObject<HostObjectProxy>(*m_rt, proxy);
 
     // The engine layer does not touch the prototype chain for host objects, so
     // do it here to preserve behaviour (instanceof checks, super dispatch).
