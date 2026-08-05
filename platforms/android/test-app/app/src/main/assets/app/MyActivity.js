@@ -53,10 +53,6 @@ var MyActivity = (function (_super) {
     button.setText("Hit me");
     layout.addView(button);
 
-    var button2 = new android.widget.Button(this);
-    button2.setText("Run Benchmark");
-    layout.addView(button2);
-
     var button3 = new android.widget.Button(this);
     button3.setText("Run Marshalling Benchmark");
     layout.addView(button3);
@@ -80,35 +76,6 @@ var MyActivity = (function (_super) {
           taps++;
         },
       })
-    );
-    var benchmarkWorker = null;
-    button2.setOnClickListener(
-          new android.view.View.OnClickListener("AppClickListener", {
-            onClick: function () {
-              // Run the benchmark on a worker thread so the UI thread stays
-              // responsive and Android does not raise an ANR.
-              if (benchmarkWorker) {
-                return;
-              }
-              button2.setText("Running Benchmark...");
-              textView.setText("Running benchmark, please wait...");
-
-              benchmarkWorker = new Worker("./benchmark-worker.js");
-              benchmarkWorker.onmessage = function (msg) {
-                textView.setText(msg.data);
-                button2.setText("Run Benchmark");
-                benchmarkWorker.terminate();
-                benchmarkWorker = null;
-              };
-              benchmarkWorker.onerror = function (err) {
-                textView.setText("Benchmark error: " + (err && err.message ? err.message : err));
-                button2.setText("Run Benchmark");
-                benchmarkWorker.terminate();
-                benchmarkWorker = null;
-              };
-              benchmarkWorker.postMessage("start");
-            },
-          })
     );
     var marshallingWorker = null;
     button3.setOnClickListener(
