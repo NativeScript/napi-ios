@@ -75,12 +75,16 @@ namespace tns {
         static JsValue convertToJsString(JsRuntime &rt, const jchar *data, int length);
 
         inline static JsValue convertToJsString(JsRuntime &rt, const std::string &s) {
-            return JsValue(rt, JsString::createFromUtf8(rt, s));
+            return JsValue::createStringFromUtf8(rt, s.data(), s.size());
         }
 
+        // Every Java string that reaches JS goes through here, and the value is
+        // handed straight back to the engine by the callback that produced it.
+        // Value::createStringFromUtf8 is the non-owning creation: on V8 it costs
+        // neither the make_shared nor the global handle that
+        // String::createFromUtf8 does. See jsi/v8/V8Runtime.h for the contract.
         inline static JsValue convertToJsString(JsRuntime &rt, const char *data, int length) {
-            return JsValue(rt, JsString::createFromUtf8(
-                    rt, reinterpret_cast<const uint8_t *>(data), (size_t) length));
+            return JsValue::createStringFromUtf8(rt, data, (size_t) length);
         }
 
         inline static JsValue

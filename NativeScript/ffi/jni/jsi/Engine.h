@@ -101,16 +101,21 @@ inline int32_t get_int32(const JsValue& value) {
   return static_cast<int32_t>(get_number(value));
 }
 
+// asString(rt).utf8(rt) built an owning engine::String -- a heap allocation and
+// a persistent engine handle -- for a value that was read and dropped in the
+// same expression. Value::utf8 reads the handle in place. See the declaration
+// in jsi/v8/V8Runtime.h.
 inline std::string get_string_value(JsRuntime& rt, const JsValue& value) {
-  return value.asString(rt).utf8(rt);
+  return value.utf8(rt);
 }
 
 inline JsValue to_js_string(JsRuntime& rt, const std::string& value) {
-  return JsValue(rt, JsString::createFromUtf8(rt, value));
+  return JsValue::createStringFromUtf8(rt, value.data(), value.size());
 }
 
 inline JsValue to_js_string(JsRuntime& rt, const char* value) {
-  return JsValue(rt, JsString::createFromUtf8(rt, value));
+  const char* text = value != nullptr ? value : "";
+  return JsValue::createStringFromUtf8(rt, text, std::strlen(text));
 }
 
 inline JsValue get_property(JsRuntime& rt, const JsValue& object,
