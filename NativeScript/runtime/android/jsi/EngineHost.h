@@ -72,6 +72,19 @@ public:
 
     engine::Value ExecuteScript(const std::string &source, const std::string &sourceURL);
 
+    // Runs `path` as ahead-of-time compiled bytecode when the file carries this
+    // engine's bytecode header, and returns true. Returns false when the file is
+    // not bytecode for this engine -- including on V8 and JSC, which have no
+    // compile-time bytecode format at all -- and the caller then compiles the
+    // source as usual.
+    //
+    // This is the jsi tree's counterpart to js_run_bytecode_file. It lives here
+    // rather than in NativeScript/jsi/ because the container format is a build
+    // artefact of the Android toolchain (tools/bytecode-compiler), not part of
+    // the engine abstraction Apple shares.
+    bool ExecuteBytecodeFile(const std::string &path, const std::string &sourceURL,
+                             engine::Value &result);
+
     int64_t AdjustExternalMemory(int64_t changeInBytes);
 
     int64_t EnginePtr() const;

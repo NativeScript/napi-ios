@@ -588,13 +588,13 @@ jobject Runtime::RunScript(JNIEnv *_env, jobject obj, jstring scriptFile) {
 
     DEBUG_WRITE("%s", filename.c_str());
 
-    // The napi path tries the build's precompiled bytecode first
-    // (js_run_bytecode_file) and falls back to source. nativescript::engine has
-    // no bytecode entry point, so this always compiles the source.
-    auto src = ReadFileText(filename);
-
+    // Precompiled bytecode first, source otherwise -- same order as the napi
+    // path's js_run_bytecode_file.
     try {
-        engineHost->ExecuteScript(src, sourceUrl);
+        engine::Value result;
+        if (!engineHost->ExecuteBytecodeFile(filename, sourceUrl, result)) {
+            engineHost->ExecuteScript(ReadFileText(filename), sourceUrl);
+        }
     } catch (engine::JSError &error) {
         throw NativeScriptException(engineHost->GetRuntime(), error,
                                     "Error running script " + filename);
