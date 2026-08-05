@@ -187,6 +187,23 @@ class HostObject {
   virtual bool set(Runtime& runtime, const PropNameID& name, const Value& value);
   virtual std::vector<PropNameID> getPropertyNames(Runtime& runtime);
 
+  // Indexed access, for a host object that is really an indexable collection.
+  //
+  // Reached through the named form, an index arrives as a decimal string that
+  // the host object has to parse back into an integer -- a heap allocation and
+  // a parse on every `obj[i]`. These take the integer. The defaults reproduce
+  // the named form exactly, so overriding them is optional.
+  //
+  // An engine with a dedicated indexed hook (V8) always routes an index here.
+  // An engine that delivers an index as a property name consults
+  // hasIndexedAccess() first, because for it the named path also carries the
+  // prototype handling that a non-indexable host object still needs.
+  virtual Value getValueAtIndex(Runtime& runtime, uint32_t index);
+  virtual bool setValueAtIndex(Runtime& runtime, uint32_t index, const Value& value);
+
+  bool hasIndexedAccess() const { return indexedAccess_; }
+  void setIndexedAccess(bool value) { indexedAccess_ = value; }
+
   // The JS object standing for this host object, valid ONLY for the duration of
   // the call the engine is currently dispatching.
   //
@@ -215,6 +232,7 @@ class HostObject {
 
  private:
   const Value* receiver_ = nullptr;
+  bool indexedAccess_ = false;
 };
 
 using HostFunctionType = std::function<Value(Runtime&, const Value&, const Value*, size_t)>;

@@ -158,7 +158,7 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
           try {
             Value __receiver = Value::borrowed(runtime, info.Holder());
             HostObject::ReceiverScope __rs(*holder->hostObject, __receiver);
-            Value result = holder->hostObject->get(runtime, PropNameID(std::to_string(index)));
+            Value result = holder->hostObject->getValueAtIndex(runtime, index);
             if (!result.isUndefined()) {
               info.GetReturnValue().Set(result.local(runtime));
               return v8::Intercepted::kYes;
@@ -186,8 +186,13 @@ v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
           try {
             Value __receiver = Value::borrowed(runtime, info.Holder());
             HostObject::ReceiverScope __rs(*holder->hostObject, __receiver);
-            holder->hostObject->set(runtime, PropNameID(std::to_string(index)),
-                                    Value(runtime, value));
+            // Borrowed, not owned: an owned Value allocates a shared ValueStorage
+            // and a v8::Global, which on `a[0] = x` is a heap allocation and a
+            // global-handle create/destroy per element write. The value does not
+            // outlive this call, and HostObject::setValueAtIndex's default
+            // promotes it before handing it to the named setter, so a host object
+            // that does not override the indexed form is unaffected.
+            holder->hostObject->setValueAtIndex(runtime, index, Value::borrowed(runtime, value));
             return v8::Intercepted::kYes;
           } catch (const JSError& error) {
             throwV8Exception(info.GetIsolate(), error);
@@ -313,7 +318,7 @@ v8::Local<v8::ObjectTemplate> nativeObjectTemplate(Runtime& runtime) {
           try {
             Value __receiver = Value::borrowed(runtime, info.Holder());
             HostObject::ReceiverScope __rs(*holder->hostObject, __receiver);
-            Value result = holder->hostObject->get(runtime, PropNameID(std::to_string(index)));
+            Value result = holder->hostObject->getValueAtIndex(runtime, index);
             if (!result.isUndefined()) {
               info.GetReturnValue().Set(result.local(runtime));
               return v8::Intercepted::kYes;
@@ -341,8 +346,8 @@ v8::Local<v8::ObjectTemplate> nativeObjectTemplate(Runtime& runtime) {
           try {
             Value __receiver = Value::borrowed(runtime, info.Holder());
             HostObject::ReceiverScope __rs(*holder->hostObject, __receiver);
-            holder->hostObject->set(runtime, PropNameID(std::to_string(index)),
-                                    Value(runtime, value));
+            // Borrowed; see the host-object template above.
+            holder->hostObject->setValueAtIndex(runtime, index, Value::borrowed(runtime, value));
             return v8::Intercepted::kYes;
           } catch (const JSError& error) {
             throwV8Exception(info.GetIsolate(), error);

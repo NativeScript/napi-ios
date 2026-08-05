@@ -148,6 +148,17 @@ class HostObject {
   virtual bool set(Runtime& runtime, const PropNameID& name, const Value& value);
   virtual std::vector<PropNameID> getPropertyNames(Runtime& runtime);
 
+  // Indexed access, taking the index as an integer rather than as the decimal
+  // string the named form would hand over. See V8Runtime.h for the full note.
+  // JSC has no indexed hook, so this layer recognises an index-shaped property
+  // name and routes it here -- but only for a host object that opted in, since
+  // the named path also does the prototype handling.
+  virtual Value getValueAtIndex(Runtime& runtime, uint32_t index);
+  virtual bool setValueAtIndex(Runtime& runtime, uint32_t index, const Value& value);
+
+  bool hasIndexedAccess() const { return indexedAccess_; }
+  void setIndexedAccess(bool value) { indexedAccess_ = value; }
+
   // The JS object standing for this host object, valid ONLY for the duration of
   // the call the engine is currently dispatching.
   //
@@ -178,6 +189,7 @@ class HostObject {
 
  private:
   const Value* receiver_ = nullptr;
+  bool indexedAccess_ = false;
 };
 
 using HostFunctionType = std::function<Value(Runtime&, const Value&, const Value*, size_t)>;

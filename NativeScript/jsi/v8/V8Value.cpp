@@ -11,6 +11,20 @@ bool HostObject::set(Runtime&, const PropNameID&, const Value&) { return true; }
 
 std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 
+// The defaults reproduce what the engine used to do for an index: stringify it
+// and take the named path. A host object that does not override these is
+// therefore unaffected by the indexed routing.
+Value HostObject::getValueAtIndex(Runtime& runtime, uint32_t index) {
+  return get(runtime, PropNameID(std::to_string(index)));
+}
+
+bool HostObject::setValueAtIndex(Runtime& runtime, uint32_t index, const Value& value) {
+  // Value(runtime, value) promotes: the indexed setter hands over a borrowed
+  // value, and a host object reached through the named setter has always been
+  // given an owned one.
+  return set(runtime, PropNameID(std::to_string(index)), Value(runtime, value));
+}
+
 String::String(Runtime& runtime, v8::Local<v8::String> value)
     : storage_(std::make_shared<v8engine::ValueStorage>(v8engine::ValueStorage::Kind::V8)) {
   storage_->reset(runtime.isolate(), value);

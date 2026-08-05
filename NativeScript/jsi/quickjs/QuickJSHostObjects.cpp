@@ -61,6 +61,38 @@ void releaseStateForContext(JSContext* context) {
   }
 }
 
+// QuickJS interns a canonical array index as a *tagged integer* atom rather
+// than as a string: JS_ValueToAtom turns an int JSValue straight into
+// `index | JS_ATOM_TAG_INT`, and that is the atom the exotic get/set handlers
+// receive for `a[0]`. So the index can be recovered with a mask, where
+// JS_AtomToCString would allocate a C string that the host object then has to
+// parse back into an integer on every element access.
+//
+// JS_ATOM_TAG_INT is engine-internal -- it appears in quickjs.c, not quickjs.h
+// -- and is the same value in bellard QuickJS and quickjs-ng. Rather than trust
+// that, each runtime verifies it once (verifyIndexAtomTagging) by asking the
+// engine for the atom of a known integer through the same public API the
+// property paths use. If the check fails, indexAtomsAreTagged stays false and
+// every access takes the string path it took before, which is still correct.
+static constexpr JSAtom kAtomTagInt = 1U << 31;
+
+static inline bool atomAsArrayIndex(const RuntimeState& state, JSAtom atom, uint32_t* index) {
+  if (!state.indexAtomsAreTagged || (atom & kAtomTagInt) == 0) {
+    return false;
+  }
+  // A tagged-int atom holds at most JS_ATOM_MAX_INT (2^31 - 1), which is inside
+  // the valid array-index range, so no bound check is needed here.
+  *index = atom & ~kAtomTagInt;
+  return true;
+}
+
+static void verifyIndexAtomTagging(JSContext* ctx, RuntimeState* state) {
+  const uint32_t probe = 1234;
+  JSAtom atom = JS_ValueToAtom(ctx, JS_NewInt32(ctx, static_cast<int32_t>(probe)));
+  state->indexAtomsAreTagged = (atom & kAtomTagInt) != 0 && (atom & ~kAtomTagInt) == probe;
+  JS_FreeAtom(ctx, atom);
+}
+
 static bool isNativeInstancePrototypeBypassExcluded(JSContext* ctx,
                                                     JSAtom atom) {
   const char* name = JS_AtomToCString(ctx, atom);
@@ -165,6 +197,16 @@ static JSValue nativeHostGet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSVa
   // lookup was 600 ms of self time plus 360 ms inside pthread_mutex.
   Runtime runtime(holder->state);
   try {
+    // Ahead of the prototype walk: an index is never a named property of a
+    // native instance, so that walk can only fail for one.
+    uint32_t index = 0;
+    if (holder->hostObject->hasIndexedAccess() &&
+        atomAsArrayIndex(*holder->state, atom, &index)) {
+      Value self = Value::borrowed(runtime, obj);
+      HostObject::ReceiverScope receiverScope(*holder->hostObject, self);
+      return holder->hostObject->getValueAtIndex(runtime, index).local(runtime);
+    }
+
     bool handledByPrototype = false;
     JSValue prototypeResult =
         nativePrototypeProperty(ctx, obj, atom, receiver, holder,
@@ -208,6 +250,14 @@ static int nativeHostSet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSValueC
   try {
     Value self = Value::borrowed(runtime, obj);
     HostObject::ReceiverScope receiverScope(*holder->hostObject, self);
+    uint32_t index = 0;
+    if (holder->hostObject->hasIndexedAccess() &&
+        atomAsArrayIndex(*holder->state, atom, &index)) {
+      return holder->hostObject->setValueAtIndex(runtime, index,
+                                                 Value::borrowed(runtime, value))
+                 ? 1
+                 : 0;
+    }
     bool handled = holder->hostObject->set(
         runtime, PropNameID(atomToUtf8(ctx, atom)),
         Value::borrowed(runtime, value));
@@ -395,6 +445,10 @@ static JSClassExoticMethods NapiHostObjectExoticMethods = {
 void ensureClasses(Runtime& runtime) {
   auto state = runtime.state();
   JSRuntime* rt = JS_GetRuntime(runtime.context());
+  if (!state->indexAtomTaggingChecked) {
+    verifyIndexAtomTagging(runtime.context(), state.get());
+    state->indexAtomTaggingChecked = true;
+  }
   if (gHostClassId == 0) {
     newClassId(rt, &gHostClassId);
   }

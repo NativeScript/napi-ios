@@ -254,6 +254,18 @@ class HostObject {
   virtual bool set(Runtime& runtime, const PropNameID& name, const Value& value);
   virtual std::vector<PropNameID> getPropertyNames(Runtime& runtime);
 
+  // Indexed access, taking the index as an integer rather than as the decimal
+  // string the named form would hand over. See V8Runtime.h for the full note.
+  // jsi has no indexed hook and no way to read a PropNameID without building a
+  // std::string, so nothing here calls these -- an index keeps arriving through
+  // get/set as a name. They exist so a HostObject that overrides them still
+  // compiles and behaves identically against Hermes.
+  virtual Value getValueAtIndex(Runtime& runtime, uint32_t index);
+  virtual bool setValueAtIndex(Runtime& runtime, uint32_t index, const Value& value);
+
+  bool hasIndexedAccess() const { return indexedAccess_; }
+  void setIndexedAccess(bool value) { indexedAccess_ = value; }
+
   // The JS object standing for this host object, valid ONLY for the duration of
   // the call currently being dispatched. Non-owning on purpose: an owned handle
   // to its own wrapper is a strong self-cycle that stops the finalizer running.
@@ -274,6 +286,7 @@ class HostObject {
 
  private:
   const Value* receiver_ = nullptr;
+  bool indexedAccess_ = false;
 };
 
 using HostFunctionType =
@@ -808,6 +821,16 @@ inline bool HostObject::set(Runtime&, const PropNameID&, const Value&) {
 }
 inline std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) {
   return {};
+}
+
+// The defaults reproduce what an index does today on every engine: stringify
+// it and take the named path. Nothing in the Hermes layer calls them.
+inline Value HostObject::getValueAtIndex(Runtime& runtime, uint32_t index) {
+  return get(runtime, PropNameID(std::to_string(index)));
+}
+inline bool HostObject::setValueAtIndex(Runtime& runtime, uint32_t index,
+                                        const Value& value) {
+  return set(runtime, PropNameID(std::to_string(index)), value);
 }
 
 // --- Value -----------------------------------------------------------------
