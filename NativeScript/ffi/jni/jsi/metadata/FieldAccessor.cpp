@@ -255,10 +255,7 @@ void FieldAccessor::SetJavaField(JsRuntime &rt, const JsValue &target, const JsV
             }
             case 'B': { // byte
                 // TODO: validate value is a byte before calling
-                // Note the inverted test in the napi tree (`!is_of_type(number)`),
-                // which reads a non-number as an int32 and zeroes an actual
-                // number; kept as-is so the two runtimes agree.
-                jbyte intValue = !value.isNumber() ? js_util::get_int32(value) : 0;
+                jbyte intValue = value.isNumber() ? js_util::get_int32(value) : 0;
                 if (isStatic) {
                     jEnv.SetStaticByteField(clazz, fieldId, intValue);
                 } else {
@@ -281,7 +278,7 @@ void FieldAccessor::SetJavaField(JsRuntime &rt, const JsValue &target, const JsV
             }
             case 'S': { // short
                 // TODO: validate value is a short before calling
-                short shortValue = !value.isNumber() ? js_util::get_int32(value) : 0;
+                short shortValue = value.isNumber() ? js_util::get_int32(value) : 0;
                 if (isStatic) {
                     jEnv.SetStaticShortField(clazz, fieldId, shortValue);
                 } else {
