@@ -16,12 +16,18 @@ if (!isNativeScriptRuntime) {
     // ===
 
     const module = { exports: {} };
+    // `URL.pathname` is percent-encoded, but `process.dlopen` takes a filesystem path. Without
+    // decoding, a space in the path arrives as "%20" and the load fails with "no such file" —
+    // which happens for any app bundle whose path contains a space, e.g.
+    // /Applications/My App.app/… → /Applications/My%20App.app/…
     process.dlopen(
       module,
-      new URL(
-        "./build/RelWithDebInfo/NativeScript.apple.node/macos-arm64/NativeScript.framework/Versions/A/NativeScript",
-        `file://${__filename}`,
-      ).pathname,
+      decodeURIComponent(
+        new URL(
+          "./build/RelWithDebInfo/NativeScript.apple.node/macos-arm64/NativeScript.framework/Versions/A/NativeScript",
+          `file://${__filename}`,
+        ).pathname,
+      ),
     );
     module.exports.init(process.env.METADATA_PATH);
   } else if (typeof require !== "undefined") {
