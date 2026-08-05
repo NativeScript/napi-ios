@@ -294,12 +294,18 @@ engine::Value ModuleInternal::LoadModule(engine::Runtime& rt, const std::string&
     if (Util::EndsWith(modulePath, ".js")) {
         DEBUG_WRITE("%s", modulePath.c_str());
 
-        // The napi version tries the build's precompiled bytecode first
-        // (js_run_bytecode_file). nativescript::engine has no bytecode entry
-        // point, so the wrapped source is always compiled.
+        // Fast path: if the build compiled this module to engine bytecode, run
+        // it directly. This peeks the file header only -- the source is never
+        // read or wrapped for a bytecode module. Bytecode is the compiled form
+        // of the *wrapped* module content, so it yields the same wrapper
+        // function. Mirrors the napi tree's js_run_bytecode_file call.
+        auto engineHost = Runtime::GetRuntime(rt)->GetEngineHost();
         try {
-            moduleFunc = Runtime::GetRuntime(rt)->GetEngineHost()->ExecuteScript(
-                    WrapModuleContent(modulePath), EnsureFileProtocol(modulePath));
+            if (!engineHost->ExecuteBytecodeFile(modulePath, EnsureFileProtocol(modulePath),
+                                                 moduleFunc)) {
+                moduleFunc = engineHost->ExecuteScript(WrapModuleContent(modulePath),
+                                                       EnsureFileProtocol(modulePath));
+            }
         } catch (engine::JSError& error) {
             throw NativeScriptException(rt, error, "Error running script " + modulePath);
         }

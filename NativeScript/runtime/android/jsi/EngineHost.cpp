@@ -1,7 +1,10 @@
 #include "EngineHost.h"
 
+#include <cstdio>
+#include <cstring>
 #include <mutex>
 
+#include "File.h"
 #include "Runtime.h"
 
 #if defined(TARGET_ENGINE_V8)
@@ -253,6 +256,100 @@ void EngineHost::ExecutePendingJobs() {
 engine::Value EngineHost::ExecuteScript(const std::string &source, const std::string &sourceURL) {
     auto buffer = std::make_shared<engine::StringBuffer>(source);
     return m_runtime->evaluateJavaScript(buffer, sourceURL);
+}
+
+namespace {
+
+// The bytecode container written by tools/bytecode-compiler:
+//   [8-byte magic][4-byte format version, little endian][engine payload]
+// Hermes is the exception -- it stores raw HBC with its own magic and no
+// container, so the whole file is the payload.
+constexpr size_t kContainerHeaderLen = 12;
+
+// Peeks the first 8 bytes of `path` and compares them with `magic8`. Cheap
+// enough to run for every module: a bytecode build hits it on the fast path and
+// a source build pays one fopen/fread of 8 bytes.
+bool HasBytecodeMagic(const std::string &path, const void *magic8) {
+    uint8_t head[8];
+    FILE *fp = fopen(path.c_str(), "rb");
+    if (fp == nullptr) return false;
+    size_t read = fread(head, 1, sizeof(head), fp);
+    fclose(fp);
+    return read == sizeof(head) && memcmp(head, magic8, sizeof(head)) == 0;
+}
+
+}  // namespace
+
+bool EngineHost::ExecuteBytecodeFile(const std::string &path, const std::string &sourceURL,
+                                     engine::Value &result) {
+    if (m_runtime == nullptr) return false;
+
+#if defined(TARGET_ENGINE_QUICKJS)
+#ifdef __QJS_NG__
+    static const char *kMagic = "NSBCNGS";  // 7 chars + NUL = 8-byte magic
+#else
+    static const char *kMagic = "NSBCQJS";
+#endif
+    if (!HasBytecodeMagic(path, kMagic)) return false;
+
+    int length = 0;
+    auto data = static_cast<uint8_t *>(File::ReadBinary(path, length));
+    if (data == nullptr) return false;
+    if (static_cast<size_t>(length) <= kContainerHeaderLen) {
+        delete[] data;
+        return false;
+    }
+
+    JSContext *ctx = m_runtime->context();
+    // JS_ReadObject copies what it needs, so the buffer can be freed right after.
+    JSValue funObj = JS_ReadObject(ctx, data + kContainerHeaderLen,
+                                   static_cast<size_t>(length) - kContainerHeaderLen,
+                                   JS_READ_OBJ_BYTECODE);
+    delete[] data;
+
+    // Past the magic check the file IS bytecode, so a failure here must be
+    // surfaced rather than silently retried as source -- retrying would compile
+    // the binary blob and produce a nonsense error much further away.
+    if (JS_IsException(funObj)) {
+        throw engine::quickjsengine::caughtError(*m_runtime, "QuickJS bytecode could not be read.");
+    }
+
+    // JS_EvalFunction consumes funObj.
+    JSValue evalResult = JS_EvalFunction(ctx, funObj);
+    if (JS_IsException(evalResult)) {
+        throw engine::quickjsengine::caughtError(*m_runtime, "QuickJS bytecode evaluation failed.");
+    }
+
+    result = engine::Value(*m_runtime, evalResult);
+    JS_FreeValue(ctx, evalResult);
+    return true;
+#elif defined(TARGET_ENGINE_HERMES)
+    // Hermes bytecode (HBC) magic, first 8 bytes little endian
+    // (0x1F1903C103BC1FC6).
+    static const uint8_t kMagic[8] = {0xc6, 0x1f, 0xbc, 0x03, 0xc1, 0x03, 0x19, 0x1f};
+    if (!HasBytecodeMagic(path, kMagic)) return false;
+
+    int length = 0;
+    auto data = static_cast<uint8_t *>(File::ReadBinary(path, length));
+    if (data == nullptr) return false;
+
+    // HermesRuntime::evaluateJavaScript detects an HBC buffer and skips the
+    // parser, so the same entry point serves source and bytecode. The buffer is
+    // binary and contains NULs, hence the (ptr, len) string constructor.
+    auto buffer = std::make_shared<engine::StringBuffer>(
+            std::string(reinterpret_cast<const char *>(data), static_cast<size_t>(length)));
+    delete[] data;
+
+    result = m_runtime->evaluateJavaScript(buffer, sourceURL);
+    return true;
+#else
+    // V8 and JSC have no compile-time bytecode format; both cache compiled code
+    // at runtime instead, so their release builds ship plain source.
+    (void) path;
+    (void) sourceURL;
+    (void) result;
+    return false;
+#endif
 }
 
 int64_t EngineHost::AdjustExternalMemory(int64_t changeInBytes) {
