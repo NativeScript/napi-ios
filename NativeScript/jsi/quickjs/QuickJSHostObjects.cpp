@@ -158,11 +158,15 @@ static JSValue nativePrototypeProperty(JSContext* ctx, JSValueConst obj,
 }
 
 static JSValue nativeHostGet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSValueConst receiver) {
-  Runtime runtime(stateForContext(ctx));
   auto* holder = static_cast<HostObjectHolder*>(JS_GetOpaque(obj, gHostClassId));
   if (holder == nullptr || holder->hostObject == nullptr) {
     return JS_UNDEFINED;
   }
+  // The holder already owns the RuntimeState, so take it from there rather than
+  // from stateForContext(), which takes a process-wide mutex and hashes the
+  // JSContext* on every property access. On an 8-entry marshalling profile that
+  // lookup was 600 ms of self time plus 360 ms inside pthread_mutex.
+  Runtime runtime(holder->state);
   try {
     bool handledByPrototype = false;
     JSValue prototypeResult =
@@ -195,11 +199,15 @@ static JSValue nativeHostGet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSVa
 
 static int nativeHostSet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSValueConst value,
                          JSValueConst, int) {
-  Runtime runtime(stateForContext(ctx));
   auto* holder = static_cast<HostObjectHolder*>(JS_GetOpaque(obj, gHostClassId));
   if (holder == nullptr || holder->hostObject == nullptr) {
     return 0;
   }
+  // The holder already owns the RuntimeState, so take it from there rather than
+  // from stateForContext(), which takes a process-wide mutex and hashes the
+  // JSContext* on every property access. On an 8-entry marshalling profile that
+  // lookup was 600 ms of self time plus 360 ms inside pthread_mutex.
+  Runtime runtime(holder->state);
   try {
     Value self = Value::borrowed(runtime, obj);
     HostObject::ReceiverScope receiverScope(*holder->hostObject, self);
@@ -217,11 +225,15 @@ static int nativeHostSet(JSContext* ctx, JSValueConst obj, JSAtom atom, JSValueC
 }
 
 static int nativeHostHas(JSContext* ctx, JSValueConst obj, JSAtom atom) {
-  Runtime runtime(stateForContext(ctx));
   auto* holder = static_cast<HostObjectHolder*>(JS_GetOpaque(obj, gHostClassId));
   if (holder == nullptr || holder->hostObject == nullptr) {
     return 0;
   }
+  // The holder already owns the RuntimeState, so take it from there rather than
+  // from stateForContext(), which takes a process-wide mutex and hashes the
+  // JSContext* on every property access. On an 8-entry marshalling profile that
+  // lookup was 600 ms of self time plus 360 ms inside pthread_mutex.
+  Runtime runtime(holder->state);
   try {
     Value self = Value::borrowed(runtime, obj);
     HostObject::ReceiverScope receiverScope(*holder->hostObject, self);
@@ -239,13 +251,15 @@ static int nativeHostHas(JSContext* ctx, JSValueConst obj, JSAtom atom) {
 
 static int nativeHostOwnNames(JSContext* ctx, JSPropertyEnum** ptab, uint32_t* plen,
                               JSValueConst obj) {
-  Runtime runtime(stateForContext(ctx));
   auto* holder = static_cast<HostObjectHolder*>(JS_GetOpaque(obj, gHostClassId));
   if (holder == nullptr || holder->hostObject == nullptr) {
     *ptab = nullptr;
     *plen = 0;
     return 0;
   }
+  // See nativeHostGet: the RuntimeState comes off the holder, not out of the
+  // mutex-guarded context map.
+  Runtime runtime(holder->state);
   Value self = Value::borrowed(runtime, obj);
   HostObject::ReceiverScope receiverScope(*holder->hostObject, self);
   auto names = holder->hostObject->getPropertyNames(runtime);
@@ -277,10 +291,12 @@ static void nativeHostFinalize(JSRuntime*, JSValue value) {
 
 static JSValue invokeFunctionHolder(JSContext* ctx, FunctionHolder* holder, JSValueConst thisValue,
                                     int argc, JSValueConst* argv) {
-  Runtime runtime(stateForContext(ctx));
   if (holder == nullptr || !holder->callback) {
     return JS_UNDEFINED;
   }
+  // See nativeHostGet: the RuntimeState comes off the holder, not out of the
+  // mutex-guarded context map.
+  Runtime runtime(holder->state);
   StackValueArray<Value, 8> args(static_cast<size_t>(argc));
   for (int i = 0; i < argc; i++) {
     args.emplace(static_cast<size_t>(i), Value::borrowed(runtime, argv[i]));
