@@ -201,6 +201,13 @@ String Value::asString(Runtime& runtime) const {
   return result;
 }
 
+std::string Value::utf8(Runtime& runtime) const { return asString(runtime).utf8(runtime); }
+
+Value Value::createStringFromUtf8(Runtime& runtime, const char* data, size_t length) {
+  return Value(runtime, String::createFromUtf8(runtime,
+                                               reinterpret_cast<const uint8_t*>(data), length));
+}
+
 BigInt Value::getBigInt(Runtime& runtime) const { return BigInt(runtime, local(runtime)); }
 
 Function Object::getPropertyAsFunction(Runtime& runtime, const char* name) const {

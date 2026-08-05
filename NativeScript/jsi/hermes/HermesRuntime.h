@@ -385,6 +385,14 @@ class Value {
   Object asObjectBorrowed(Runtime& runtime) const;
   String asString(Runtime& runtime) const;
 
+  // Portable spellings of "give me the UTF-8" and "make me a string value".
+  // V8 and QuickJS implement these without materialising an owning String;
+  // Hermes values are jsi handles all the way down and String is a view onto
+  // the same storage, so here they are the old two-step. Declared on every
+  // engine so the shared bridge can call one name.
+  std::string utf8(Runtime& runtime) const;
+  static Value createStringFromUtf8(Runtime& runtime, const char* data, size_t length);
+
   // The jsi handle behind this value, materialising one for the inline scalar
   // kinds. Returned by value because the scalar kinds have no handle to refer
   // to.
@@ -905,6 +913,15 @@ inline String String::createFromUtf8(Runtime& runtime, const uint8_t* value,
             value != nullptr ? value : reinterpret_cast<const uint8_t*>(""),
             length))));
   });
+}
+
+inline std::string Value::utf8(Runtime& runtime) const {
+  return asString(runtime).utf8(runtime);
+}
+
+inline Value Value::createStringFromUtf8(Runtime& runtime, const char* data, size_t length) {
+  return Value(runtime,
+               String::createFromUtf8(runtime, reinterpret_cast<const uint8_t*>(data), length));
 }
 
 inline std::string String::utf8(Runtime& runtime) const {

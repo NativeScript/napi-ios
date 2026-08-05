@@ -237,6 +237,18 @@ String Value::asString(Runtime& runtime) const {
   return String(runtime, local(runtime).As<v8::String>());
 }
 
+std::string Value::utf8(Runtime& runtime) const {
+  return v8engine::toUtf8(runtime.isolate(), local(runtime));
+}
+
+Value Value::createStringFromUtf8(Runtime& runtime, const char* data, size_t length) {
+  v8::Isolate* isolate = runtime.isolate();
+  return Value::borrowed(
+      isolate, v8::String::NewFromUtf8(isolate, data != nullptr ? data : "",
+                                       v8::NewStringType::kNormal, static_cast<int>(length))
+                   .ToLocalChecked());
+}
+
 BigInt Value::getBigInt(Runtime& runtime) const {
   return BigInt(runtime, local(runtime).As<v8::BigInt>());
 }

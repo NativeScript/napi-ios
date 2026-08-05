@@ -385,15 +385,30 @@ class String {
  public:
   String() = default;
   String(Runtime& runtime, JSValue value);
+
+  // The three factories below adopt the reference JS_New*String returns instead
+  // of going through String(Runtime&, JSValue), which *duplicates* it. That
+  // constructor's contract is "the caller keeps its own reference and frees it"
+  // -- correct for Value::asString, which does free -- but a freshly created
+  // string has no other owner, so duplicating it left the refcount permanently
+  // one too high. Every JS string built through this layer on QuickJS leaked.
+  static String adopt(Runtime& runtime, JSValue value) {
+    String result;
+    result.storage_ = std::make_shared<quickjsengine::ValueStorage>(
+        quickjsengine::ValueStorage::Kind::QuickJS);
+    result.storage_->context = runtime.context();
+    result.storage_->value = value;
+    return result;
+  }
   static String createFromUtf8(Runtime& runtime, const char* value) {
-    return String(runtime, JS_NewString(runtime.context(), value != nullptr ? value : ""));
+    return adopt(runtime, JS_NewString(runtime.context(), value != nullptr ? value : ""));
   }
   static String createFromUtf8(Runtime& runtime, const std::string& value) {
-    return String(runtime, JS_NewStringLen(runtime.context(), value.data(), value.size()));
+    return adopt(runtime, JS_NewStringLen(runtime.context(), value.data(), value.size()));
   }
   static String createFromUtf8(Runtime& runtime, const uint8_t* value, size_t length) {
-    return String(runtime,
-                  JS_NewStringLen(runtime.context(), reinterpret_cast<const char*>(value), length));
+    return adopt(runtime,
+                 JS_NewStringLen(runtime.context(), reinterpret_cast<const char*>(value), length));
   }
   std::string utf8(Runtime& runtime) const;
   JSValue local(Runtime& runtime) const;
@@ -537,6 +552,18 @@ class Value {
   Object asObjectBorrowed(Runtime& runtime) const;
   String asString(Runtime& runtime) const;
   BigInt getBigInt(Runtime& runtime) const;
+
+  // Read the UTF-8 of a string value without materialising a String. See the
+  // comment on the V8 declaration: String is an owning type, and building one
+  // costs a make_shared plus a JS_DupValue/JS_FreeValue pair for a handle that
+  // dies two statements later.
+  std::string utf8(Runtime& runtime) const;
+
+  // Create a string value, adopting the reference JS_NewStringLen returns
+  // instead of duplicating it. QuickJS strings are refcounted rather than
+  // scope-rooted, so unlike V8 this still needs owning storage -- but it does
+  // not need a second reference.
+  static Value createStringFromUtf8(Runtime& runtime, const char* data, size_t length);
 
   JSValue local(Runtime& runtime) const {
     switch (kind_) {

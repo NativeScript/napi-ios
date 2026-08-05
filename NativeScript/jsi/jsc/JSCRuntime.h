@@ -643,6 +643,14 @@ class Value {
   String asString(Runtime& runtime) const;
   BigInt getBigInt(Runtime& runtime) const;
 
+  // Portable spellings of "give me the UTF-8" and "make me a string value".
+  // V8 and QuickJS implement these without materialising an owning String; JSC
+  // values are protected rather than scope-rooted and its String is where the
+  // protect lives, so here they are exactly the old two-step. Declared on every
+  // engine so the shared bridge can call one name.
+  std::string utf8(Runtime& runtime) const;
+  static Value createStringFromUtf8(Runtime& runtime, const char* data, size_t length);
+
   JSValueRef local(Runtime& runtime) const {
     switch (kind_) {
       case jscengine::ValueStorage::Kind::Undefined:

@@ -627,6 +627,30 @@ class Value {
   String asString(Runtime& runtime) const;
   BigInt getBigInt(Runtime& runtime) const;
 
+  // Read the UTF-8 of a string value without materialising a String.
+  //
+  // asString(rt).utf8(rt) is the obvious spelling and it is what every caller
+  // used, but String is an *owning* type: constructing one costs a
+  // make_shared<ValueStorage> plus a GlobalHandles::Create, and destroying it
+  // costs a NodeSpace::Release plus the free -- for a handle that is dead two
+  // statements later. Reading straight off the Local skips all four. The Local
+  // is already rooted in the enclosing HandleScope, which is what makes this
+  // safe rather than merely cheaper.
+  std::string utf8(Runtime& runtime) const;
+
+  // Create a string value without materialising an owning handle.
+  //
+  // The mirror image of utf8(): String::createFromUtf8 globalizes the fresh
+  // v8::Local so the String can outlive the scope, but a value that is handed
+  // straight back to the engine (a marshalled Java string, a property name)
+  // never leaves the HandleScope it was made in. Borrowing the Local instead
+  // removes the make_shared and the global handle entirely. On V8-13 that pair
+  // was 81% of all operator new traffic on the marshalling thread.
+  //
+  // Contract: the result must not outlive the current HandleScope. Callers that
+  // need an owning value keep using String::createFromUtf8.
+  static Value createStringFromUtf8(Runtime& runtime, const char* data, size_t length);
+
   v8::Local<v8::Value> local(Runtime& runtime) const;
 
   // Only the isolate is ever needed, and some callers (rethrowing a caught
