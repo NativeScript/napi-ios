@@ -145,6 +145,14 @@ namespace tns {
 
             std::vector<JsPropNameID> getPropertyNames(JsRuntime &rt) override;
 
+            // Java array element access. An engine that can hand over an index
+            // without stringifying it reaches these directly; the get/set traps
+            // above route to the same element accessors for an engine that
+            // cannot (see the note there).
+            JsValue getValueAtIndex(JsRuntime &rt, uint32_t index) override;
+
+            bool setValueAtIndex(JsRuntime &rt, uint32_t index, const JsValue &value) override;
+
             // Cleared by ObjectManager::OnDisposeRuntime to mark this proxy
             // neutralised; the destructor then does nothing. See there for why.
             ObjectManager *objectManager;
@@ -160,6 +168,13 @@ namespace tns {
             std::string arraySignature;    // jni array signature (arrays only)
             int8_t isSuper = -1;           // cached super-call flag (-1=unresolved)
             int64_t arrayLength = -1;      // cached fixed length (arrays only; -1=unresolved)
+
+        private:
+            // The element accessors without exception translation, so the
+            // get/set traps can reach them from inside their own try blocks.
+            JsValue ArrayElementAt(JsRuntime &rt, uint32_t index);
+
+            void SetArrayElementAt(JsRuntime &rt, uint32_t index, const JsValue &value);
         };
 
         struct ProxyRegistry {

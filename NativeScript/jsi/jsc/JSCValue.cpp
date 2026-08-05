@@ -136,6 +136,17 @@ Value HostObject::get(Runtime&, const PropNameID&) { return Value::undefined(); 
 bool HostObject::set(Runtime&, const PropNameID&, const Value&) { return true; }
 std::vector<PropNameID> HostObject::getPropertyNames(Runtime&) { return {}; }
 
+// The defaults reproduce what the engine used to do for an index: stringify it
+// and take the named path. A host object that does not override these is
+// therefore unaffected by the indexed routing.
+Value HostObject::getValueAtIndex(Runtime& runtime, uint32_t index) {
+  return get(runtime, PropNameID(std::to_string(index)));
+}
+
+bool HostObject::setValueAtIndex(Runtime& runtime, uint32_t index, const Value& value) {
+  return set(runtime, PropNameID(std::to_string(index)), value);
+}
+
 String::String(Runtime& runtime, JSStringRef string)
     : storage_(std::make_shared<jscengine::ValueStorage>(jscengine::ValueStorage::Kind::JSC)) {
   storage_->context = runtime.context();

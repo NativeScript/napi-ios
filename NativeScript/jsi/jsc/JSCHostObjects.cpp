@@ -114,6 +114,45 @@ class StackValueArray {
   alignas(Value) unsigned char inlineStorage_[sizeof(Value) * InlineCount];
 };
 
+// JSC has no indexed callback: `a[0]` reaches getProperty/setProperty as the
+// property name "0". Reading the index straight off the UTF-16 buffer the
+// JSStringRef already holds costs a handful of instructions and allocates
+// nothing, where stringToUtf8 builds a std::string (sized by
+// JSStringGetMaximumUTF8CStringSize, so it over-allocates) that the host object
+// then has to parse back into an integer.
+//
+// Canonicalisation matches what a host object doing this in terms of the name
+// would apply: no leading zeros, at most 2^32 - 2.
+bool stringAsArrayIndex(JSStringRef name, uint32_t* index) {
+  size_t length = JSStringGetLength(name);
+  if (length == 0 || length > 10) {  // a uint32 has at most 10 digits
+    return false;
+  }
+  const JSChar* chars = JSStringGetCharactersPtr(name);
+  if (chars == nullptr) {
+    return false;
+  }
+  if (chars[0] == '0') {  // canonical form has no leading zeros; only "0" itself
+    if (length != 1) {
+      return false;
+    }
+    *index = 0;
+    return true;
+  }
+  uint64_t value = 0;
+  for (size_t i = 0; i < length; i++) {
+    if (chars[i] < '0' || chars[i] > '9') {
+      return false;
+    }
+    value = value * 10 + static_cast<uint64_t>(chars[i] - '0');
+  }
+  if (value > 4294967294ULL) {  // the largest array index is 2^32 - 2
+    return false;
+  }
+  *index = static_cast<uint32_t>(value);
+  return true;
+}
+
 bool isNativeInstancePrototypeBypassExcluded(JSStringRef propertyName) {
   return JSStringIsEqualToUTF8CString(propertyName, "kind") ||
          JSStringIsEqualToUTF8CString(propertyName, "className") ||
@@ -162,11 +201,29 @@ JSValueRef hostGetProperty(JSContextRef context, JSObjectRef object, JSStringRef
   if (holder == nullptr || holder->hostObject == nullptr) {
     return nullptr;
   }
+  Runtime runtime(holder->state);
+  // Ahead of the prototype deferral: an index is never a named property of a
+  // native instance, so that lookup can only fail for one.
+  uint32_t index = 0;
+  if (holder->hostObject->hasIndexedAccess() &&
+      stringAsArrayIndex(propertyName, &index)) {
+    try {
+      const Value receiver = Value::borrowed(runtime, object);
+      HostObject::ReceiverScope receiverScope(*holder->hostObject, receiver);
+      Value result = holder->hostObject->getValueAtIndex(runtime, index);
+      return result.isUndefined() ? nullptr : result.local(runtime);
+    } catch (const JSError& error) {
+      setEngineException(runtime, context, exception, error);
+      return JSValueMakeUndefined(context);
+    } catch (const std::exception& error) {
+      setException(context, exception, error);
+      return JSValueMakeUndefined(context);
+    }
+  }
   if (shouldDeferToNativeInstancePrototype(context, object, propertyName,
                                            holder)) {
     return nullptr;
   }
-  Runtime runtime(holder->state);
   try {
     // Non-owning, for this dispatch only; see HostObject::receiver().
     const Value receiver = Value::borrowed(runtime, object);
@@ -192,6 +249,12 @@ bool hostSetProperty(JSContextRef context, JSObjectRef object, JSStringRef prope
   try {
     const Value receiver = Value::borrowed(runtime, object);
     HostObject::ReceiverScope receiverScope(*holder->hostObject, receiver);
+    uint32_t index = 0;
+    if (holder->hostObject->hasIndexedAccess() &&
+        stringAsArrayIndex(propertyName, &index)) {
+      return holder->hostObject->setValueAtIndex(runtime, index,
+                                                 Value::borrowed(runtime, value));
+    }
     return holder->hostObject->set(runtime, PropNameID(stringToUtf8(propertyName)),
                             Value::borrowed(runtime, value));
   } catch (const JSError& error) {

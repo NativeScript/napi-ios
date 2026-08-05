@@ -334,19 +334,65 @@ ObjectManager::HostObjectProxy::~HostObjectProxy() {
     Runtime::PostFinalizer(*rt, ObjectManager::HostObjectProxyPostFinalizer, pending, nullptr);
 }
 
+JsValue ObjectManager::HostObjectProxy::ArrayElementAt(JsRuntime &rt, uint32_t index) {
+    jobject arr = instanceInfo
+                  ? (jobject) objectManager->GetJavaObjectByID(instanceInfo->JavaObjectID)
+                  : nullptr;
+    const JsValue &host = receiver() != nullptr ? *receiver() : *target;
+    return CallbackHandlers::GetArrayElement(rt, host, index, arraySignature, objectManager, arr);
+}
+
+void ObjectManager::HostObjectProxy::SetArrayElementAt(JsRuntime &rt, uint32_t index,
+                                                       const JsValue &value) {
+    jobject arr = instanceInfo
+                  ? (jobject) objectManager->GetJavaObjectByID(instanceInfo->JavaObjectID)
+                  : nullptr;
+    const JsValue &host = receiver() != nullptr ? *receiver() : *target;
+    CallbackHandlers::SetArrayElement(rt, host, index, arraySignature, value, objectManager, arr);
+}
+
+// Reached from an engine that delivers an index as an integer. The engine layer
+// has already established that this proxy opted in, so no isArray re-check.
+JsValue ObjectManager::HostObjectProxy::getValueAtIndex(JsRuntime &rt, uint32_t index) {
+    try {
+        return ArrayElementAt(rt, index);
+    } catch (NativeScriptException &e) {
+        e.ReThrowToJs(rt);
+    } catch (std::exception &e) {
+        std::stringstream ss;
+        ss << "Error: c++ exception: " << e.what();
+        NativeScriptException(ss.str()).ReThrowToJs(rt);
+    } catch (...) {
+        NativeScriptException("Error: unknown c++ exception in HostObjectGet").ReThrowToJs(rt);
+    }
+}
+
+bool ObjectManager::HostObjectProxy::setValueAtIndex(JsRuntime &rt, uint32_t index,
+                                                     const JsValue &value) {
+    try {
+        SetArrayElementAt(rt, index, value);
+        return true;
+    } catch (NativeScriptException &e) {
+        e.ReThrowToJs(rt);
+    } catch (std::exception &e) {
+        std::stringstream ss;
+        ss << "Error: c++ exception: " << e.what();
+        NativeScriptException(ss.str()).ReThrowToJs(rt);
+    } catch (...) {
+        NativeScriptException("Error: unknown c++ exception in HostObjectSet").ReThrowToJs(rt);
+    }
+}
+
 JsValue ObjectManager::HostObjectProxy::get(JsRuntime &rt, const JsPropNameID &name) {
     try {
         std::string key = name.utf8(rt);
 
         // Numeric keys on arrays: straight into the native element accessor.
+        // Only an engine with no way to hand over an index as an integer gets
+        // here (Hermes); the rest arrive at getValueAtIndex instead.
         uint32_t index = 0;
         if (isArray && !arraySignature.empty() && TryGetArrayIndex(key, index)) {
-            jobject arr = instanceInfo
-                          ? (jobject) objectManager->GetJavaObjectByID(instanceInfo->JavaObjectID)
-                          : nullptr;
-            const JsValue &host = receiver() != nullptr ? *receiver() : *target;
-            return CallbackHandlers::GetArrayElement(rt, host, index, arraySignature,
-                                                     objectManager, arr);
+            return ArrayElementAt(rt, index);
         }
 
         // Mirrors the old "super" accessor: `proxy.super` resolves to
@@ -375,12 +421,7 @@ bool ObjectManager::HostObjectProxy::set(JsRuntime &rt, const JsPropNameID &name
 
         uint32_t index = 0;
         if (isArray && !arraySignature.empty() && TryGetArrayIndex(key, index)) {
-            jobject arr = instanceInfo
-                          ? (jobject) objectManager->GetJavaObjectByID(instanceInfo->JavaObjectID)
-                          : nullptr;
-            const JsValue &host = receiver() != nullptr ? *receiver() : *target;
-            CallbackHandlers::SetArrayElement(rt, host, index, arraySignature, value,
-                                              objectManager, arr);
+            SetArrayElementAt(rt, index, value);
             return true;
         }
 
@@ -476,6 +517,11 @@ JsValue ObjectManager::CreateHostObjectProxy(const JsValue &instance,
         if (node != nullptr) {
             proxy->arraySignature = node->GetName();
         }
+        // Opt this proxy into the engine's indexed path, which is what lets
+        // `a[0]` skip being spelled out as the property name "0" and parsed
+        // back. Only meaningful with a signature: without one there is nothing
+        // to marshal through and the named path would have declined too.
+        proxy->setIndexedAccess(!proxy->arraySignature.empty());
     }
 
     // A native instance, not an opaque host object: the proxy is given the Java
