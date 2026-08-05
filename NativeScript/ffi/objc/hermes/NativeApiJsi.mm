@@ -91,6 +91,8 @@ void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
 
 #include "NativeApiJsiGsd.mm"
 
+#include "../shared/bridge/SelectorGroupCall.h"
+
 
 void* lookupGeneratedEngineObjCGsdInvoker(uint64_t dispatchId) {
   return reinterpret_cast<void*>(lookupObjCGsdInvoker(dispatchId));
@@ -123,40 +125,25 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
     std::shared_ptr<
         std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
         preparedInvocations,
-    std::weak_ptr<NativeApiObjectHostObject> boundReceiver = {},
-    std::shared_ptr<NativeApiObjectLifetimeState> boundReceiverState =
-        nullptr) {
+    std::weak_ptr<NativeApiObjectHostObject> boundReceiver,
+    std::shared_ptr<NativeApiObjectLifetimeState> boundReceiverState) {
+  NativeApiSelectorGroupState state(
+      std::move(bridge), lookupClass, receiverIsClass, std::move(selectors),
+      std::move(preparedInvocations), std::move(boundReceiver),
+      std::move(boundReceiverState));
   return Function::createFromHostFunction(
       runtime, PropNameID::forAscii(runtime, "__nativeSelectorGroup"), 0,
-      [bridge = std::move(bridge), lookupClass, receiverIsClass,
-       selectors = std::move(selectors),
-       preparedInvocations = std::move(preparedInvocations),
-       boundReceiver = std::move(boundReceiver),
-       boundReceiverState = std::move(boundReceiverState),
-       cachedReceiverClass = Class(Nil),
-       cachedDispatchClass = Class(Nil)](
+      [state = std::move(state)](
           Runtime& runtime, const Value& thisValue, const Value* args,
           size_t count) mutable -> Value {
-        NativeApiRoundTripCacheFrameGuard roundTripFrame(bridge);
-        if (count >= selectors->size() ||
-            (*selectors)[count].selectorName.empty()) {
-          throw JSError(runtime,
-                        "Objective-C selector is not available for the provided "
-                        "arguments count.");
-        }
-
-        NativeApiSelectorGroupEntry& entry = (*selectors)[count];
-        auto& prepared = (*preparedInvocations)[count];
-        Class selectorLookupClass = lookupClass;
-        id receiver = receiverIsClass ? static_cast<id>(lookupClass) : nil;
+        NativeApiRoundTripCacheFrameGuard roundTripFrame(state.bridge);
         std::shared_ptr<NativeApiObjectHostObject> receiverHostObject;
-        if (!receiverIsClass) {
-          if (boundReceiverState != nullptr) {
-            receiver = boundReceiverState->object();
-            if (receiver == nil) {
-              throw JSError(runtime,
-                            "Objective-C selector requires a native receiver.");
-            }
+        auto resolveReceiverHost = [&]() {
+          if (receiverHostObject) {
+            return receiverHostObject;
+          }
+          if (state.boundReceiverState != nullptr) {
+            receiverHostObject = state.boundReceiver.lock();
           } else if (thisValue.isObject()) {
             Object receiverObject = thisValue.asObject(runtime);
             if (receiverObject.isHostObject<NativeApiObjectHostObject>(
@@ -164,164 +151,56 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
               receiverHostObject =
                   receiverObject.getHostObject<NativeApiObjectHostObject>(
                       runtime);
-              receiver = receiverHostObject->object();
             }
           }
-        }
-        if (receiver == nil) {
-          throw JSError(runtime,
-                        "Objective-C selector requires a native receiver.");
-        }
-
-        const bool propertyGetterCall =
-            entry.hasMember && entry.member.property && count == 0;
-        const std::string* selectorNamePtr = &entry.selectorName;
-        const NativeApiMember* selectedMember =
-            entry.hasMember ? &entry.member : nullptr;
-        bool callTargetCanPrepare = true;
-        if (prepared == nullptr || propertyGetterCall) {
-          NativeApiSelectorGroupCallTarget callTarget =
-              selectorGroupCallTargetForEntry(receiver, selectorLookupClass,
-                                              receiverIsClass, entry, count);
-          selectorNamePtr = callTarget.selectorName;
-          selectedMember = callTarget.member;
-          callTargetCanPrepare = callTarget.canPrepare;
-          if (prepared != nullptr && prepared->selectorName != *selectorNamePtr) {
-            prepared = nullptr;
-          }
-        }
-        const std::string& selectorName =
-            prepared != nullptr && !propertyGetterCall ? prepared->selectorName
-                                                       : *selectorNamePtr;
-
-        if (receiverIsClass) {
-          Class methodClass = prepared != nullptr ? prepared->receiverClass : Nil;
-          if (methodClass == Nil) {
-            SEL selector = sel_registerName(selectorName.c_str());
-            methodClass =
-                NativeApiClassHostObject::classRespondingToClassSelector(
-                    lookupClass, selector);
-          }
-          if (methodClass == Nil) {
-            throw JSError(runtime,
-                          "Objective-C selector is not available: " +
-                              entry.selectorName);
-          }
-          selectorLookupClass = methodClass;
-          receiver = static_cast<id>(methodClass);
-        }
-        if (propertyGetterCall && !callTargetCanPrepare) {
-          return callObjCSelector(runtime, bridge, receiver, receiverIsClass,
-                                  selectorName, selectedMember, nullptr, 0);
+          return receiverHostObject;
+        };
+        auto call = resolveNativeApiSelectorGroupCall<false>(
+            runtime, state, count,
+            [&]() -> id {
+              auto host = resolveReceiverHost();
+              return host != nullptr ? host->object() : nil;
+            },
+            resolveReceiverHost,
+            [](uint64_t dispatchId) {
+              return lookupObjCGsdInvoker(dispatchId);
+            });
+        if (call.hasImmediateResult) {
+          return std::move(call.immediateResult);
         }
 
-        if (prepared == nullptr) {
-          if (!receiverIsClass) {
-            SEL selector = sel_registerName(selectorName.c_str());
-            if (class_getInstanceMethod(selectorLookupClass, selector) == nullptr) {
-              Class receiverClass = object_getClass(receiver);
-              if (class_getInstanceMethod(receiverClass, selector) != nullptr) {
-                selectorLookupClass = receiverClass;
-              }
-            }
-          }
-          prepared = prepareNativeApiObjCInvocation(
-              runtime, bridge, selectorLookupClass, receiverIsClass, selectorName,
-              selectedMember);
-          // Look up the engine-neutral GSD invoker for this signature.
-          if (prepared->engineInvoker == nullptr) {
-            uint64_t dispatchId = dispatchIdForEngineSignature(
-                prepared->signature, SignatureCallKind::ObjCMethod);
-            if (auto gsdInvoker = lookupObjCGsdInvoker(dispatchId)) {
-              prepared->engineInvoker = reinterpret_cast<void*>(gsdInvoker);
-              configureGeneratedEngineObjCInvocation(*prepared);
-            }
-          }
-        }
-
-        // Memoized dispatch-superclass resolution (pure function of the
-        // receiver's class + lookupClass) — avoids a per-call
-        // class_conformsToProtocol probe.
-        Class gsdDispatchClass = Nil;
-        if (!receiverIsClass) {
-          Class receiverClass = object_getClass(receiver);
-          if (receiverClass == cachedReceiverClass) {
-            gsdDispatchClass = cachedDispatchClass;
-          } else {
-            gsdDispatchClass =
-                dispatchSuperclassForEngineDerivedReceiver(receiver, lookupClass);
-            cachedReceiverClass = receiverClass;
-            cachedDispatchClass = gsdDispatchClass;
-          }
-        }
         // GSD fast path: read jsi args directly, call objc_msgSend with a
         // typed cast, produce the jsi return value — bypassing all generic
         // marshalling. Only engages for plain calls (no super dispatch, init
         // disown handling, or implicit NSError-out argument).
-        if (prepared->gsdEngineCallable && gsdDispatchClass == Nil &&
-            count == prepared->gsdEngineArgumentCount &&
-            !(!receiverIsClass && prepared->isInitMethod)) {
+        if (call.prepared->gsdEngineCallable && call.dispatchClass == Nil &&
+            count == call.prepared->gsdEngineArgumentCount &&
+            !(!state.receiverIsClass && call.prepared->isInitMethod)) {
           auto invoker =
-              reinterpret_cast<ObjCGsdInvoker>(prepared->engineInvoker);
-          GsdObjCContext ctx{runtime, bridge, receiver, prepared->selector,
-                             args, prepared->signature.returnType};
+              reinterpret_cast<ObjCGsdInvoker>(call.prepared->engineInvoker);
+          GsdObjCContext ctx{runtime, state.bridge, call.receiver,
+                             call.prepared->selector, args,
+                             call.prepared->signature.returnType};
           if (invoker(ctx)) {
             return std::move(ctx.result);
           }
         }
 
-        if (receiverIsClass) {
-          return callPreparedObjCSelector(runtime, bridge, receiver, true,
-                                          *prepared, args, count, Nil);
+        if (state.receiverIsClass) {
+          return callPreparedObjCSelector(runtime, state.bridge, call.receiver,
+                                          true, *call.prepared, args, count,
+                                          Nil);
         }
         if (!receiverHostObject) {
-          if (boundReceiverState != nullptr) {
-            if (auto bound = boundReceiver.lock()) {
-              receiverHostObject = std::move(bound);
-            }
-          } else if (thisValue.isObject()) {
-            Object receiverObject = thisValue.asObject(runtime);
-            if (receiverObject.isHostObject<NativeApiObjectHostObject>(
-                    runtime)) {
-              receiverHostObject =
-                  receiverObject.getHostObject<NativeApiObjectHostObject>(
-                      runtime);
-            }
-          }
+          receiverHostObject = resolveReceiverHost();
         }
         if (!receiverHostObject) {
           throw JSError(runtime,
                         "Objective-C selector requires a native receiver.");
         }
         return receiverHostObject->callPreparedObjectSelector(
-            runtime, *prepared, args, count, gsdDispatchClass);
+            runtime, *call.prepared, args, count, call.dispatchClass);
       });
-}
-
-Function CreateNativeApiSelectorGroupFunction(
-    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge,
-    Class lookupClass, bool receiverIsClass,
-    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
-    std::shared_ptr<
-        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
-        preparedInvocations) {
-  return CreateNativeApiSelectorGroupFunctionImpl(
-      runtime, std::move(bridge), lookupClass, receiverIsClass,
-      std::move(selectors), std::move(preparedInvocations), {}, nullptr);
-}
-
-Function CreateNativeApiBoundSelectorGroupFunction(
-    Runtime& runtime, std::shared_ptr<NativeApiBridge> bridge, Class lookupClass,
-    std::shared_ptr<NativeApiObjectHostObject> receiverHostObject,
-    std::shared_ptr<std::vector<NativeApiSelectorGroupEntry>> selectors,
-    std::shared_ptr<
-        std::vector<std::shared_ptr<NativeApiPreparedObjCInvocation>>>
-        preparedInvocations) {
-  return CreateNativeApiSelectorGroupFunctionImpl(
-      runtime, std::move(bridge), lookupClass, false, std::move(selectors),
-      std::move(preparedInvocations), receiverHostObject,
-      receiverHostObject != nullptr ? receiverHostObject->lifetimeState()
-                                    : nullptr);
 }
 
 }  // namespace

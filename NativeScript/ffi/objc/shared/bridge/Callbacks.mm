@@ -2084,19 +2084,6 @@ bool prepareEngineMethodSignature(NativeApiSignature* signature) {
   return signature->prepared;
 }
 
-bool isRuntimeAggregateType(const NativeApiType& type) {
-  switch (type.kind) {
-    case metagen::mdTypeStruct:
-    case metagen::mdTypeArray:
-    case metagen::mdTypeVector:
-    case metagen::mdTypeExtVector:
-    case metagen::mdTypeComplex:
-      return true;
-    default:
-      return false;
-  }
-}
-
 bool reconcileObjCMethodRuntimeType(NativeApiType* metadataType,
                                     const NativeApiType& runtimeType,
                                     bool* abiChanged) {

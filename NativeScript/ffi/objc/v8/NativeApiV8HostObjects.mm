@@ -1,4 +1,5 @@
 #include "NativeApiV8Runtime.h"
+#include "../shared/NativeApiStackValueArray.h"
 
 #ifdef TARGET_ENGINE_V8
 
@@ -8,44 +9,6 @@ namespace engine {
 namespace v8engine {
 
 Value valueFromLocal(Runtime& runtime, v8::Local<v8::Value> value) { return Value(runtime, value); }
-
-template <size_t InlineCount>
-class StackValueArray {
- public:
-  explicit StackValueArray(size_t count) : count_(count) {
-    if (count_ > InlineCount) {
-      values_ = static_cast<Value*>(::operator new(sizeof(Value) * count_));
-    } else {
-      values_ = reinterpret_cast<Value*>(inlineStorage_);
-    }
-  }
-
-  ~StackValueArray() {
-    for (size_t i = 0; i < constructed_; i++) {
-      values_[i].~Value();
-    }
-    if (count_ > InlineCount) {
-      ::operator delete(values_);
-    }
-  }
-
-  StackValueArray(const StackValueArray&) = delete;
-  StackValueArray& operator=(const StackValueArray&) = delete;
-
-  void emplace(size_t index, Value&& value) {
-    new (&values_[index]) Value(std::move(value));
-    constructed_++;
-  }
-
-  Value* data() { return count_ == 0 ? nullptr : values_; }
-  size_t size() const { return count_; }
-
- private:
-  size_t count_ = 0;
-  size_t constructed_ = 0;
-  Value* values_ = nullptr;
-  alignas(Value) unsigned char inlineStorage_[sizeof(Value) * InlineCount];
-};
 
 v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
   auto state = runtime.state();
@@ -379,7 +342,7 @@ Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& na
         auto* holder =
             static_cast<v8engine::FunctionHolder*>(info.Data().As<v8::External>()->Value());
         Runtime runtime(holder->state);
-        v8engine::StackValueArray<8> args(static_cast<size_t>(info.Length()));
+        StackValueArray<Value, 8> args(static_cast<size_t>(info.Length()));
         for (int i = 0; i < info.Length(); i++) {
           args.emplace(static_cast<size_t>(i), Value::borrowed(runtime, info[i]));
         }

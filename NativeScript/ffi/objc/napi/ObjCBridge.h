@@ -50,7 +50,7 @@ struct HandleObjectRef {
 struct RecentObjectWrapperRef {
   uintptr_t objectKey = 0;
   uintptr_t objectClassKey = 0;
-  napi_ref ref = nullptr;
+  napi_ref borrowedRef = nullptr;
 };
 
 void finalize_objc_object(napi_env /*env*/, void* data, void* hint);
@@ -330,16 +330,9 @@ class ObjCBridgeState {
     handleObjectRefs.erase(it);
     bumpHandleObjectRefsGeneration();
   }
-  inline void deleteRecentObjectWrapperRef(napi_env env,
-                                           RecentObjectWrapperRef& entry) {
-    if (env != nullptr && entry.ref != nullptr) {
-      napi_delete_reference(env, entry.ref);
-    }
-    entry = {};
-  }
   inline void cacheRecentObjectWrapper(napi_env env, id object,
-                                       napi_value value) {
-    if (env == nullptr || object == nil || value == nullptr) {
+                                       napi_value value, napi_ref ref) {
+    if (env == nullptr || object == nil || value == nullptr || ref == nullptr) {
       return;
     }
 
@@ -350,7 +343,7 @@ class ObjCBridgeState {
         continue;
       }
 
-      napi_value existing = get_ref_value(env, entry.ref);
+      napi_value existing = get_ref_value(env, entry.borrowedRef);
       if (existing != nullptr) {
         bool isSameValue = false;
         if (napi_strict_equals(env, existing, value, &isSameValue) == napi_ok &&
@@ -359,8 +352,7 @@ class ObjCBridgeState {
         }
       }
 
-      deleteRecentObjectWrapperRef(env, entry);
-      napi_create_reference(env, value, 1, &entry.ref);
+      entry.borrowedRef = ref;
       entry.objectKey = objectKey;
       entry.objectClassKey = objectClassKey;
       return;
@@ -369,9 +361,8 @@ class ObjCBridgeState {
     RecentObjectWrapperRef entry{
         .objectKey = objectKey,
         .objectClassKey = objectClassKey,
-        .ref = nullptr,
+        .borrowedRef = ref,
     };
-    napi_create_reference(env, value, 1, &entry.ref);
 
     static constexpr size_t kRecentObjectWrapperLimit = 16;
     if (recentObjectWrappers.size() < kRecentObjectWrapperLimit) {
@@ -381,7 +372,6 @@ class ObjCBridgeState {
 
     RecentObjectWrapperRef& replaced =
         recentObjectWrappers[nextRecentObjectWrapperSlot++ % kRecentObjectWrapperLimit];
-    deleteRecentObjectWrapperRef(env, replaced);
     replaced = entry;
   }
   inline napi_value getRecentObjectWrapper(napi_env env, id object) {
@@ -397,12 +387,11 @@ class ObjCBridgeState {
         continue;
       }
 
-      napi_value value = get_ref_value(env, it->ref);
+      napi_value value = get_ref_value(env, it->borrowedRef);
       if (value != nullptr) {
         return value;
       }
 
-      deleteRecentObjectWrapperRef(env, *it);
       it = recentObjectWrappers.erase(it);
     }
 
@@ -417,7 +406,6 @@ class ObjCBridgeState {
     const uintptr_t objectClassKey = NormalizeHandleKey((void*)object_getClass(object));
     for (auto it = recentObjectWrappers.begin(); it != recentObjectWrappers.end();) {
       if (it->objectKey == objectKey && it->objectClassKey == objectClassKey) {
-        deleteRecentObjectWrapperRef(env, *it);
         it = recentObjectWrappers.erase(it);
       } else {
         ++it;

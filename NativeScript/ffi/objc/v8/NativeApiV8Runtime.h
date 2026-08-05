@@ -354,6 +354,11 @@ class Value {
     return value;
   }
 
+  static bool strictEquals(Runtime& runtime, const Value& lhs,
+                           const Value& rhs) {
+    return lhs.local(runtime)->StrictEquals(rhs.local(runtime));
+  }
+
   bool isUndefined() const;
   bool isNull() const;
   bool isBool() const;

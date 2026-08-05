@@ -374,6 +374,12 @@ class Value {
     return value;
   }
 
+  static bool strictEquals(Runtime& runtime, const Value& lhs,
+                           const Value& rhs) {
+    return JSValueIsStrictEqual(runtime.context(), lhs.local(runtime),
+                                rhs.local(runtime));
+  }
+
   bool isUndefined() const {
     return kind_ == jscengine::ValueStorage::Kind::Undefined ||
            (isJSC() && JSValueIsUndefined(jscContext(), jscValue()));
