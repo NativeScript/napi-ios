@@ -726,6 +726,20 @@ class Object {
                                          quickjsengine::hostObjectTypeToken<T>());
   }
 
+  // A native (Java/ObjC-backed) instance, as opposed to an opaque host object.
+  //
+  // Only V8 distinguishes a masking from a non-masking named interceptor, and
+  // there the difference is large: a native instance carries the class
+  // prototype where the field accessors live, so a masking interceptor would
+  // divert every named read into the trap instead of letting V8 resolve it (and
+  // form a load IC) on the prototype. This backend has no such distinction, so
+  // a native instance is built exactly like any other host object; the separate
+  // name exists so callers can express the intent once, for every engine.
+  template <typename T>
+  static Object createNativeInstanceHostObject(Runtime& runtime, std::shared_ptr<T> host) {
+    return createFromHostObject<T>(runtime, std::move(host));
+  }
+
   Value getProperty(Runtime& runtime, const char* name) const {
     JSValue object = local(runtime);
     JSValue result = JS_GetPropertyStr(runtime.context(), object, name != nullptr ? name : "");

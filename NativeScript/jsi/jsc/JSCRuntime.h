@@ -739,10 +739,17 @@ class Object {
                                          jscengine::hostObjectTypeToken<T>());
   }
 
-  // The wrapper for an ObjC instance. Same object as createFromHostObject
-  // builds, but marked so property reads defer to the JS prototype chain when
-  // it carries the name -- V8 gets that from its kNonMasking template; JSC's
-  // class callback runs before the prototype is consulted, so it has to ask.
+  // A native (Java/ObjC-backed) instance, as opposed to an opaque host object.
+  //
+  // On V8 the distinction is about speed: a masking named interceptor would
+  // divert every named read into the trap instead of letting V8 resolve it on
+  // the class prototype and form a load IC.
+  //
+  // On JSC it is about correctness. The class's getProperty callback runs
+  // before the prototype chain is consulted, so unless the holder is marked, a
+  // JS property on the prototype can never shadow a native one of the same
+  // name -- the native value always wins. The mark is what lets hostGetProperty
+  // defer; see shouldDeferToNativeInstancePrototype.
   template <typename T>
   static Object createNativeInstanceHostObject(Runtime& runtime, std::shared_ptr<T> host) {
     auto baseHost = std::static_pointer_cast<HostObject>(std::move(host));
