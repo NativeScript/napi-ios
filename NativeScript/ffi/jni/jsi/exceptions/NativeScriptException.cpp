@@ -48,7 +48,24 @@ NativeScriptException::NativeScriptException(JsRuntime& rt, const JsError& error
         m_fullMessage = GetFullMessage(rt, value, m_message);
         return;
     }
-    m_message = message.empty() ? error.what() : message + "\n" + error.what();
+    // Keep any "<Name>Error: " tag at the FRONT of the composed message, so
+    // js_util::create_error can rebuild that constructor when this is rethrown.
+    // Hermes reports a compile failure as a native exception rather than a JS
+    // throw, and jsi/hermes tags it "SyntaxError: ..." for exactly this reason;
+    // burying the tag mid-message would turn it back into a plain Error, and
+    // the Require specs read e.name.
+    std::string what = error.what();
+    std::string tag;
+    for (const char* name : {"SyntaxError", "TypeError", "RangeError",
+                             "ReferenceError", "EvalError", "URIError"}) {
+        const std::string prefix = std::string(name) + ": ";
+        if (what.rfind(prefix, 0) == 0) {
+            tag = prefix;
+            what = what.substr(prefix.size());
+            break;
+        }
+    }
+    m_message = tag + (message.empty() ? what : message + "\n" + what);
     m_stackTrace = error.stack();
     m_fullMessage = m_message;
 }

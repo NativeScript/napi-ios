@@ -250,9 +250,32 @@ std::string js_util::coerce_to_string(JsRuntime& rt, const JsValue& value) {
 
 JsValue js_util::create_error(JsRuntime& rt, const std::string& message,
                               const char* code) {
-  const JsValue args[] = {to_js_string(rt, message)};
-  JsValue error =
-      Builtins::of(rt).errorCtor.callAsConstructor(rt, args, static_cast<size_t>(1));
+  // Rebuild the original error type from a "<Name>Error: " prefix.
+  //
+  // A JSError that carries its thrown value keeps its constructor for free, but
+  // one built from a message alone would otherwise always come back as a plain
+  // Error. Hermes is where this shows: it reports a *compile* failure as a
+  // JSINativeException rather than a JS throw, so jsi/hermes tags the message
+  // "SyntaxError: ..." precisely so the type can be restored here. Every other
+  // engine raises a real SyntaxError with a value and never reaches this path.
+  // The Require specs assert the type ("main started SyntaxError main ended").
+  JsFunction ctor = Builtins::of(rt).errorCtor;
+  std::string text = message;
+  static const char* kErrorNames[] = {"SyntaxError", "TypeError",  "RangeError",
+                                      "ReferenceError", "EvalError", "URIError"};
+  for (const char* name : kErrorNames) {
+    const std::string prefix = std::string(name) + ": ";
+    if (text.rfind(prefix, 0) != 0) continue;
+    JsValue candidate = rt.global().getProperty(rt, name);
+    if (candidate.isObject() && candidate.asObjectBorrowed(rt).isFunction(rt)) {
+      ctor = candidate.asObject(rt).asFunction(rt);
+      text = text.substr(prefix.size());
+    }
+    break;
+  }
+
+  const JsValue args[] = {to_js_string(rt, text)};
+  JsValue error = ctor.callAsConstructor(rt, args, static_cast<size_t>(1));
   if (code != nullptr && error.isObject()) {
     JsObject errorObject = error.asObject(rt);
     errorObject.setProperty(rt, "code", to_js_string(rt, code));
