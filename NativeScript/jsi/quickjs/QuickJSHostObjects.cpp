@@ -247,6 +247,15 @@ static int nativeHostOwnNames(JSContext* ctx, JSPropertyEnum** ptab, uint32_t* p
   HostObject::ReceiverScope receiverScope(*holder->hostObject, self);
   auto names = holder->hostObject->getPropertyNames(runtime);
   *plen = static_cast<uint32_t>(names.size());
+  // A host object that reports no names must not reach the allocator:
+  // quickjs-ng asserts count != 0 && size != 0 in js_calloc_rt, where bellard
+  // QuickJS returns a valid empty block. JSON.stringify on such an object goes
+  // Object.keys -> JS_GetOwnPropertyNamesInternal -> here, and aborted the
+  // whole runtime on QUICKJS_NG.
+  if (names.empty()) {
+    *ptab = nullptr;
+    return 0;
+  }
   *ptab = static_cast<JSPropertyEnum*>(js_mallocz(ctx, sizeof(JSPropertyEnum) * names.size()));
   for (uint32_t i = 0; i < *plen; i++) {
     (*ptab)[i].is_enumerable = true;
