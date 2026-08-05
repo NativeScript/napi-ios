@@ -33,9 +33,17 @@ namespace {
 // separately for Symbols, which throw under implicit coercion but stringify
 // fine through String().
 std::string coerceToString(engine::Runtime &rt, const engine::Value &value) {
-    engine::Value args[1] = {engine::Value(rt, value)};
-    engine::Value result = rt.global().getPropertyAsFunction(rt, "String").call(rt, args, 1);
-    return result.isString() ? result.asString(rt).utf8(rt) : std::string();
+    // Delegates to the one implementation in js_util rather than repeating it.
+    //
+    // The local copy this replaces built a NON-const `engine::Value args[1]` and
+    // called `.call(rt, args, 1)`. Binding a non-const array to the
+    // `const Value (&)[N]` overload needs a qualification conversion, while the
+    // variadic `Args&&...` overload matches exactly -- so the variadic won and
+    // made a two-argument JS call passing the decayed array (converted to
+    // `bool`) and the count. Every console line came out as "true".
+    // js_util's version uses a const array and an explicit size_t, which is why
+    // it was never affected.
+    return js_util::coerce_to_string(rt, value);
 }
 
 // The napi version used napi_is_error. There is no such predicate here, so an

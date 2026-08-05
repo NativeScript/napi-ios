@@ -29,6 +29,7 @@
 #include <optional>
 #include <stdexcept>
 #include <string>
+#include <type_traits>
 #include <thread>
 #include <unordered_map>
 #include <unordered_set>
@@ -978,9 +979,20 @@ class Function : public Object {
   Value call(Runtime& runtime, std::nullptr_t, size_t) const {
     return call(runtime, static_cast<const Value*>(nullptr), 0);
   }
-  template <size_t N>
-  Value call(Runtime& runtime, const Value (&args)[N], size_t count) const {
-    return call(runtime, static_cast<const Value*>(args), count);
+  // `count` is deduced rather than fixed to size_t on purpose.
+  //
+  // With a `size_t` parameter, `fn.call(rt, args, 2)` needed an int -> size_t
+  // conversion here while the variadic overload below matched exactly -- so the
+  // variadic won, and silently reinterpreted (array, count) as a two-argument
+  // JS call passing the array and the number. The array then decayed to a
+  // pointer and converted to `bool`, so console.log(str) came out as "true".
+  // Deducing the count makes this overload exact too, and partial ordering then
+  // prefers it over the pack. V8's backend has carried this fix since the
+  // Node-API shim work; it was never propagated here.
+  template <size_t N, typename Count,
+            typename = std::enable_if_t<std::is_integral_v<std::decay_t<Count>>>>
+  Value call(Runtime& runtime, const Value (&args)[N], Count count) const {
+    return call(runtime, static_cast<const Value*>(args), static_cast<size_t>(count));
   }
   template <typename... Args>
   Value call(Runtime& runtime, Args&&... args) const {
@@ -1033,9 +1045,20 @@ class Function : public Object {
   Value callAsConstructor(Runtime& runtime, std::nullptr_t, size_t) const {
     return callAsConstructor(runtime, static_cast<const Value*>(nullptr), 0);
   }
-  template <size_t N>
-  Value callAsConstructor(Runtime& runtime, const Value (&args)[N], size_t count) const {
-    return callAsConstructor(runtime, static_cast<const Value*>(args), count);
+  // `count` is deduced rather than fixed to size_t on purpose.
+  //
+  // With a `size_t` parameter, `fn.call(rt, args, 2)` needed an int -> size_t
+  // conversion here while the variadic overload below matched exactly -- so the
+  // variadic won, and silently reinterpreted (array, count) as a two-argument
+  // JS call passing the array and the number. The array then decayed to a
+  // pointer and converted to `bool`, so console.log(str) came out as "true".
+  // Deducing the count makes this overload exact too, and partial ordering then
+  // prefers it over the pack. V8's backend has carried this fix since the
+  // Node-API shim work; it was never propagated here.
+  template <size_t N, typename Count,
+            typename = std::enable_if_t<std::is_integral_v<std::decay_t<Count>>>>
+  Value callAsConstructor(Runtime& runtime, const Value (&args)[N], Count count) const {
+    return callAsConstructor(runtime, static_cast<const Value*>(args), static_cast<size_t>(count));
   }
   template <typename... Args>
   Value callAsConstructor(Runtime& runtime, Args&&... args) const {
