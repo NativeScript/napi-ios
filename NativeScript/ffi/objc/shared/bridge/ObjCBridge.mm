@@ -509,6 +509,21 @@ inline uintptr_t normalizeRuntimePointer(uintptr_t pointer) {
 #endif
 }
 
+// One bridge is shared by every Runtime that touches the same process (a
+// worklet spins up an additional Runtime on its own thread). Expandos are
+// per-runtime: a Value created in one Runtime must never be handed back out
+// of a different one, so every expando read/write is keyed on the owning
+// runtime's identity, not just the native pointer.
+uintptr_t runtimeObjectExpandoKey(Runtime& runtime) {
+#if defined(TARGET_ENGINE_V8) || defined(TARGET_ENGINE_JSC) || \
+    defined(TARGET_ENGINE_QUICKJS)
+  return normalizeRuntimePointer(
+      reinterpret_cast<uintptr_t>(runtime.state().get()));
+#else
+  return normalizeRuntimePointer(reinterpret_cast<uintptr_t>(&runtime));
+#endif
+}
+
 class NativeApiBridge {
   struct NativeApiRoundTripValue {
     std::shared_ptr<Value> value;
@@ -929,24 +944,38 @@ class NativeApiBridge {
     return Value(runtime, *it->second);
   }
 
+  // Expandos are keyed native-pointer -> property -> owning-runtime, all
+  // guarded by objectExpandosMutex_: worklet runtimes run on their own
+  // thread but share this bridge, and a host-object dtor releasing its
+  // expando owner count can run on either thread relative to a get/set.
   void setObjectExpando(Runtime& runtime, const void* native,
                         const std::string& property, const Value& value) {
     if (native == nullptr || property.empty()) {
       return;
     }
-    objectExpandos_[normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native))]
-                  [property] = std::make_shared<Value>(runtime, value);
-    objectExpandosGeneration_.fetch_add(1, std::memory_order_release);
+    const uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    const uintptr_t runtimeKey = runtimeObjectExpandoKey(runtime);
+    {
+      std::lock_guard<std::mutex> lock(objectExpandosMutex_);
+      objectExpandos_[key][property][runtimeKey] =
+          std::make_shared<Value>(runtime, value);
+      objectExpandosGeneration_.fetch_add(1, std::memory_order_release);
+    }
   }
 
   void retainObjectExpandoOwner(const void* native) {
     if (native == nullptr) {
       return;
     }
+    std::lock_guard<std::mutex> lock(objectExpandosMutex_);
     objectExpandoOwnerCounts_[
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native))] += 1;
   }
 
+  // preserveExpandos keeps the stored values around after the last owner
+  // releases (used when a wrapper is being replaced/detached but the
+  // underlying native receiver's expando state must survive the swap).
   void releaseObjectExpandoOwner(const void* native,
                                  bool preserveExpandos = false) {
     if (native == nullptr) {
@@ -954,15 +983,20 @@ class NativeApiBridge {
     }
     uintptr_t key =
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
-    auto ownerIt = objectExpandoOwnerCounts_.find(key);
-    if (ownerIt != objectExpandoOwnerCounts_.end()) {
-      if (ownerIt->second > 1) {
-        ownerIt->second -= 1;
-        return;
+    bool shouldForget = false;
+    {
+      std::lock_guard<std::mutex> lock(objectExpandosMutex_);
+      auto ownerIt = objectExpandoOwnerCounts_.find(key);
+      if (ownerIt != objectExpandoOwnerCounts_.end()) {
+        if (ownerIt->second > 1) {
+          ownerIt->second -= 1;
+          return;
+        }
+        objectExpandoOwnerCounts_.erase(ownerIt);
       }
-      objectExpandoOwnerCounts_.erase(ownerIt);
+      shouldForget = !preserveExpandos;
     }
-    if (!preserveExpandos) {
+    if (shouldForget) {
       forgetObjectExpandos(native);
     }
   }
@@ -975,6 +1009,7 @@ class NativeApiBridge {
     struct ObjectExpandoCacheEntry {
       const NativeApiBridge* bridge = nullptr;
       uintptr_t key = 0;
+      uintptr_t runtimeKey = 0;
       uint64_t generation = 0;
       std::string property;
       std::weak_ptr<Value> value;
@@ -985,11 +1020,13 @@ class NativeApiBridge {
 
     const uintptr_t key =
         normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
+    const uintptr_t runtimeKey = runtimeObjectExpandoKey(runtime);
     const uint64_t generation =
         objectExpandosGeneration_.load(std::memory_order_acquire);
     for (auto& entry : cache) {
       if (entry.bridge == this && entry.key == key &&
-          entry.generation == generation && entry.property == property) {
+          entry.runtimeKey == runtimeKey && entry.generation == generation &&
+          entry.property == property) {
         if (entry.miss) {
           return Value::undefined();
         }
@@ -1000,32 +1037,44 @@ class NativeApiBridge {
       }
     }
 
-    auto objectIt = objectExpandos_.find(key);
+    std::shared_ptr<Value> storedValue;
     const size_t slot = nextSlot++ & 7;
-    if (objectIt == objectExpandos_.end()) {
-      cache[slot] =
-          ObjectExpandoCacheEntry{this, key, generation, property, {}, true};
-      return Value::undefined();
+    {
+      std::lock_guard<std::mutex> lock(objectExpandosMutex_);
+      auto objectIt = objectExpandos_.find(key);
+      if (objectIt != objectExpandos_.end()) {
+        auto propertyIt = objectIt->second.find(property);
+        if (propertyIt != objectIt->second.end()) {
+          auto runtimeIt = propertyIt->second.find(runtimeKey);
+          if (runtimeIt != propertyIt->second.end() &&
+              runtimeIt->second != nullptr) {
+            storedValue = runtimeIt->second;
+          }
+        }
+      }
+      if (storedValue == nullptr) {
+        cache[slot] = ObjectExpandoCacheEntry{
+            this, key, runtimeKey, generation, property, {}, true};
+        return Value::undefined();
+      }
+      cache[slot] = ObjectExpandoCacheEntry{
+          this, key, runtimeKey, generation, property, storedValue, false};
     }
-    auto propertyIt = objectIt->second.find(property);
-    if (propertyIt == objectIt->second.end() || propertyIt->second == nullptr) {
-      cache[slot] =
-          ObjectExpandoCacheEntry{this, key, generation, property, {}, true};
-      return Value::undefined();
-    }
-    cache[slot] = ObjectExpandoCacheEntry{
-        this, key, generation, property, propertyIt->second, false};
-    return Value(runtime, *propertyIt->second);
+    return Value(runtime, *storedValue);
   }
 
+  // Erases every runtime's stored values for this native (codex semantics):
+  // the native object itself is gone, so no runtime should keep seeing it.
   void forgetObjectExpandos(const void* native) {
     if (native == nullptr) {
       return;
     }
     auto key = normalizeRuntimePointer(reinterpret_cast<uintptr_t>(native));
-    objectExpandos_.erase(
-        key);
-    objectExpandosGeneration_.fetch_add(1, std::memory_order_release);
+    {
+      std::lock_guard<std::mutex> lock(objectExpandosMutex_);
+      objectExpandos_.erase(key);
+      objectExpandosGeneration_.fetch_add(1, std::memory_order_release);
+    }
   }
 
   // Per-class cache of resolved metadata property-getter members. Lets the
@@ -2128,8 +2177,12 @@ class NativeApiBridge {
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classValues_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> classPrototypes_;
   std::unordered_map<uintptr_t, std::shared_ptr<Value>> pointerValues_;
-  std::unordered_map<uintptr_t,
-                     std::unordered_map<std::string, std::shared_ptr<Value>>>
+  mutable std::mutex objectExpandosMutex_;
+  std::unordered_map<
+      uintptr_t,
+      std::unordered_map<
+          std::string,
+          std::unordered_map<uintptr_t, std::shared_ptr<Value>>>>
       objectExpandos_;
   std::unordered_map<uintptr_t, size_t> objectExpandoOwnerCounts_;
   std::atomic<uint64_t> objectExpandosGeneration_{1};
