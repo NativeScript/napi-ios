@@ -244,9 +244,11 @@ assert(
     "method policy should check the receiver's associated-object skip key and the construction-state re-entry guard",
   );
   assert(
-    callbackSource.includes("class_getSuperclass(methodBaseClass_)") &&
+    callbackSource.includes("Class superDispatchClass = methodBaseClass_;") &&
       callbackSource.includes("makeNativeObjectValue(\n                *runtime_, bridge_, self, false, superDispatchClass)"),
-    "callback-bound this.super should dispatch from the lexical override superclass",
+    "callback-bound this.super should dispatch from the lexical override superclass " +
+      "(methodBaseClass_ IS the override's base class already -- must be used directly, " +
+      "not further superclassed, or a member declared exactly on it becomes unreachable via this.super)",
   );
   assert(
     classBuilderSource.includes("returnOwned, baseClass"),
