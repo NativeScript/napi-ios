@@ -41,7 +41,21 @@ inline NativeApiResolvedSelectorGroupCall resolveNativeApiSelectorGroupCall(
   if (!data.receiverIsClass) {
     result.receiver = data.boundReceiverState != nullptr
                           ? data.boundReceiverState->object()
-                          : resolveReceiver();
+                          : nil;
+    if (result.receiver == nil) {
+      // Either this call is unbound (the common case -- `resolveReceiver()`
+      // resolves the live `thisValue`), OR it IS bound but the bound
+      // receiver's `NativeApiObjectHostObject` wrapper has already been torn
+      // down: the cached selector-group function itself survives as a
+      // native-object expando (keyed by the native pointer, see Object.mm's
+      // `bridge_->setObjectExpando(..., methodFunction)`), which outlives the
+      // specific wrapper instance it was bound to when this runtime later
+      // mints a FRESH wrapper for the same native pointer on another
+      // crossing. Re-resolve from the actual call-site receiver in both
+      // cases -- for a bound call this is exactly the live object the method
+      // is being invoked on right now, so it is always correct.
+      result.receiver = resolveReceiver();
+    }
   }
   if (result.receiver == nil) {
     throw JSError(runtime,
