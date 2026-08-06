@@ -581,6 +581,23 @@ class NativeApiCallback final
       throwNativeApiCallbackException("Invalid callback.");
     }
 
+    // Teardown-safety gate: once the host has signaled that callbacks are no
+    // longer allowed (runtime shutting down/reloading), bail with a
+    // zeroed return instead of running JS against a dying runtime.
+    bool callbackAllowed = false;
+    if (bridge_ != nullptr) {
+      @try {
+        callbackAllowed = bridge_->callbackInvocationAllowed();
+      } @catch (...) {
+        callbackAllowed = false;
+      }
+    }
+
+    if (!callbackAllowed) {
+      zeroReturnValue(ret);
+      return;
+    }
+
     std::string error;
     auto call = [&]() { invokeOnCurrentThread(ret, args, &error); };
     const auto& nativeCallbackInvoker = bridge_->nativeCallbackInvoker();

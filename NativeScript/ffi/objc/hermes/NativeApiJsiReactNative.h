@@ -62,7 +62,10 @@ inline NativeApiJsiConfig MakeReactNativeNativeApiJsiConfig(
   config.metadataPath = metadataPath;
   config.metadataPtr = metadataPtr;
   config.globalName = globalName;
-  config.installGlobalSymbols = true;
+  // RN launch cost: don't eagerly install the aggregate global surface or
+  // realize every class/protocol runtime pointer at symbol-index time.
+  config.installGlobalSymbols = false;
+  config.indexRuntimePointers = false;
   config.invokeCallbacksOnNativeCallerThread = true;
   config.scheduler = std::make_shared<ReactNativeCallInvokerScheduler>(
       std::move(jsInvoker), std::move(uiInvoker));

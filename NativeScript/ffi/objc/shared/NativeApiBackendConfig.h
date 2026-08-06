@@ -23,8 +23,10 @@ struct NativeApiBackendConfig {
   std::function<void(std::function<void()>)> runtimeCallbackInvoker = nullptr;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker = nullptr;
   std::function<void(std::function<void()>)> jsThreadAsyncCallbackInvoker = nullptr;
+  std::function<bool()> callbackInvocationAllowed = nullptr;
   bool invokeCallbacksOnNativeCallerThread = false;
   bool installGlobalSymbols = false;
+  bool indexRuntimePointers = true;
 };
 
 }  // namespace nativescript

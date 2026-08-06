@@ -1854,8 +1854,9 @@ void InstallNativeApi(Runtime& runtime, const NativeApiConfig& config) {
     NativeApiWriteSmokeStage("engine:install-globals");
     InstallNativeApiGlobalSymbols(runtime, globalName);
   } else {
-    NativeApiWriteSmokeStage("engine:install-aggregate-globals");
-    InstallAggregateGlobals(runtime, api, "protocolNames");
+    // RN doesn't install the aggregate global surface: unused, and building
+    // it eagerly costs launch time.
+    NativeApiWriteSmokeStage("engine:skip-globals");
   }
   NativeApiWriteSmokeStage("engine:installed");
 }
