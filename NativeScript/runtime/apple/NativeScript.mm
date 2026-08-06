@@ -1,10 +1,12 @@
 #include "NativeScript.h"
 #include "Runtime.h"
 #include "RuntimeConfig.h"
+#include "cli/BundleLoader.h"
 #include "runtime/apple/NativeScriptException.h"
 #include "ffi/objc/shared/Tasks.h"
 #include "js_native_api.h"
 #include "jsr.h"
+#include <memory>
 
 using namespace nativescript;
 
@@ -21,7 +23,18 @@ using namespace nativescript;
 
 extern char defaultStartOfMetadataSection __asm("section$start$__DATA$__TNSMetadata");
 
-std::unique_ptr<Runtime> runtime_;
+// Raw pointer, not unique_ptr: at process exit, static-destruction order is
+// unspecified relative to the ObjC runtime/other statics, so an implicit
+// unique_ptr destructor can run after dependencies it needs are already torn
+// down. resetRuntime() gives us an explicit, ordered teardown point, and
+// restartWithConfig: needs the old runtime to stay alive until the new one
+// has finished Init() (see below).
+Runtime* runtime_ = nullptr;
+
+static void resetRuntime() {
+  delete runtime_;
+  runtime_ = nullptr;
+}
 
 - (void)runScriptString:(NSString*)script runLoop:(BOOL)runLoop {
   std::string cppScript = [script UTF8String];
@@ -33,10 +46,16 @@ std::unique_ptr<Runtime> runtime_;
 }
 
 - (void)runMainApplication {
-  // Boot from the application directory so the entry resolves through its
-  // package.json "main" (falling back to index.*) — a literal index.js is not
-  // guaranteed to exist (CLI-built apps ship bundle.js).
-  std::string spec = RuntimeConfig.ApplicationPath;
+  // Try CLI/test-runner bundle resolution first (bundle resourcePath,
+  // executable-relative Contents/Resources, argv[0], _NSGetExecutablePath,
+  // cwd); fall back to the configured application directory so the entry
+  // resolves through its package.json "main" (falling back to index.*) — a
+  // literal index.js is not guaranteed to exist (CLI-built apps ship
+  // bundle.js).
+  std::string spec = resolveMainPath();
+  if (spec.empty()) {
+    spec = RuntimeConfig.ApplicationPath;
+  }
   try {
     runtime_->RunModule(spec);
   } catch (const NativeScriptException& e) {
@@ -121,7 +140,7 @@ std::unique_ptr<Runtime> runtime_;
 }
 
 - (void)shutdownRuntime {
-  runtime_ = nullptr;
+  resetRuntime();
 }
 
 - (instancetype)initWithConfig:(Config*)config {
@@ -157,10 +176,15 @@ std::unique_ptr<Runtime> runtime_;
     RuntimeConfig.LogToSystemConsole = [config LogToSystemConsole];
     RuntimeConfig.CustomLogCallback = [config CustomLogCallback];
 
-    runtime_ = std::make_unique<Runtime>();
+    // Build and Init the new runtime before tearing down the old one — the
+    // old runtime (and anything it holds live, e.g. in-flight callbacks)
+    // must outlive the new runtime's Init() on restartWithConfig:.
+    std::unique_ptr<Runtime> runtime(new Runtime());
 
     // TODO: separate runtime init and measure the time
-    runtime_->Init();
+    runtime->Init();
+    resetRuntime();
+    runtime_ = runtime.release();
 
     if (RuntimeConfig.IsDebug) {
       // TODO: Inspector for debugging
