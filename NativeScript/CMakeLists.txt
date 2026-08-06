@@ -324,6 +324,13 @@ if(ENABLE_JS_RUNTIME)
     runtime/apple/modules/web/Web.mm
     runtime/apple/NativeScript.mm
     runtime/apple/RuntimeConfig.cpp
+    # resolveMainPath() (cli/BundleLoader.h) is called directly from
+    # NativeScript.mm's runMainApplication, so it must be compiled into every
+    # framework/app target that includes NativeScript.mm -- not only the
+    # BUILD_CLI_BINARY executable. cli/main.cpp and cli/segappend.cpp stay
+    # CLI-binary-only below (main.cpp defines main(), which cannot also be
+    # linked into the NativeScript shared library).
+    cli/BundleLoader.mm
     runtime/modules/url/ada/ada.cpp
     runtime/modules/url/URL.cpp
     runtime/modules/url/URLSearchParams.cpp
@@ -450,7 +457,6 @@ if(BUILD_CLI_BINARY)
   set(SOURCE_FILES ${SOURCE_FILES}
     cli/main.cpp
     cli/segappend.cpp
-    cli/BundleLoader.mm
   )
 endif()
 
