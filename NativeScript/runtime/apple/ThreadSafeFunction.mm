@@ -98,10 +98,20 @@ struct EnvCleanupState {
   bool draining_async_hooks = false;
 };
 
-static std::mutex g_cleanup_hooks_mutex;
-static std::condition_variable g_cleanup_hooks_cv;
-static std::unordered_map<node_api_basic_env, EnvCleanupState>
-    g_cleanup_hooks;
+static std::mutex& CleanupHooksMutex() {
+  static auto* mutex = new std::mutex();
+  return *mutex;
+}
+
+static std::condition_variable& CleanupHooksCV() {
+  static auto* cv = new std::condition_variable();
+  return *cv;
+}
+
+static std::unordered_map<node_api_basic_env, EnvCleanupState>& CleanupHooks() {
+  static auto* hooks = new std::unordered_map<node_api_basic_env, EnvCleanupState>();
+  return *hooks;
+}
 
 static bool IsCleanupStateEmpty(const EnvCleanupState& state) {
   return state.env_hooks.empty() && state.async_hooks.empty() &&
@@ -109,9 +119,10 @@ static bool IsCleanupStateEmpty(const EnvCleanupState& state) {
 }
 
 static void EraseCleanupStateIfUnused(node_api_basic_env env) {
-  auto it = g_cleanup_hooks.find(env);
-  if (it != g_cleanup_hooks.end() && IsCleanupStateEmpty(it->second)) {
-    g_cleanup_hooks.erase(it);
+  auto& cleanupHooks = CleanupHooks();
+  auto it = cleanupHooks.find(env);
+  if (it != cleanupHooks.end() && IsCleanupStateEmpty(it->second)) {
+    cleanupHooks.erase(it);
   }
 }
 
@@ -472,8 +483,8 @@ napi_add_env_cleanup_hook(node_api_basic_env env, napi_cleanup_hook fun,
     return napi_invalid_arg;
   }
 
-  std::lock_guard<std::mutex> lock(g_cleanup_hooks_mutex);
-  auto& state = g_cleanup_hooks[env];
+  std::lock_guard<std::mutex> lock(CleanupHooksMutex());
+  auto& state = CleanupHooks()[env];
   state.env_hooks.emplace_back(fun, arg);
   return napi_ok;
 }
@@ -490,9 +501,10 @@ napi_remove_env_cleanup_hook(node_api_basic_env env, napi_cleanup_hook fun,
     return napi_invalid_arg;
   }
 
-  std::lock_guard<std::mutex> lock(g_cleanup_hooks_mutex);
-  auto it = g_cleanup_hooks.find(env);
-  if (it == g_cleanup_hooks.end()) {
+  std::lock_guard<std::mutex> lock(CleanupHooksMutex());
+  auto& cleanupHooks = CleanupHooks();
+  auto it = cleanupHooks.find(env);
+  if (it == cleanupHooks.end()) {
     return napi_invalid_arg;
   }
 
@@ -526,8 +538,8 @@ napi_add_async_cleanup_hook(node_api_basic_env env, napi_async_cleanup_hook hook
   handle->hook = hook;
   handle->data = arg;
 
-  std::lock_guard<std::mutex> lock(g_cleanup_hooks_mutex);
-  auto& state = g_cleanup_hooks[env];
+  std::lock_guard<std::mutex> lock(CleanupHooksMutex());
+  auto& state = CleanupHooks()[env];
   state.async_hooks.push_back(handle);
   if (remove_handle != nullptr) {
     *remove_handle = handle;
@@ -544,9 +556,10 @@ napi_remove_async_cleanup_hook(napi_async_cleanup_hook_handle remove_handle) {
   auto* handle = static_cast<napi_async_cleanup_hook_handle__*>(remove_handle);
   node_api_basic_env env = handle->env;
 
-  std::lock_guard<std::mutex> lock(g_cleanup_hooks_mutex);
-  auto it = g_cleanup_hooks.find(env);
-  if (it == g_cleanup_hooks.end() || handle->removed) {
+  std::lock_guard<std::mutex> lock(CleanupHooksMutex());
+  auto& cleanupHooks = CleanupHooks();
+  auto it = cleanupHooks.find(env);
+  if (it == cleanupHooks.end() || handle->removed) {
     return napi_invalid_arg;
   }
 
@@ -563,7 +576,7 @@ napi_remove_async_cleanup_hook(napi_async_cleanup_hook_handle remove_handle) {
   if (state.draining_async_hooks) {
     state.deferred_delete_async_hooks.push_back(handle);
     if (state.async_hooks.empty()) {
-      g_cleanup_hooks_cv.notify_all();
+      CleanupHooksCV().notify_all();
     }
   } else {
     delete handle;
@@ -581,9 +594,10 @@ void js_run_env_cleanup_hooks(napi_env env) {
   std::vector<std::pair<napi_cleanup_hook, void*>> env_hooks_to_run;
   std::vector<napi_async_cleanup_hook_handle__*> async_hooks_to_run;
   {
-    std::lock_guard<std::mutex> lock(g_cleanup_hooks_mutex);
-    auto state_it = g_cleanup_hooks.find(env);
-    if (state_it == g_cleanup_hooks.end()) {
+    std::lock_guard<std::mutex> lock(CleanupHooksMutex());
+    auto& cleanupHooks = CleanupHooks();
+    auto state_it = cleanupHooks.find(env);
+    if (state_it == cleanupHooks.end()) {
       return;
     }
 
@@ -606,9 +620,10 @@ void js_run_env_cleanup_hooks(napi_env env) {
     void* data = nullptr;
     bool should_invoke = false;
     {
-      std::lock_guard<std::mutex> lock(g_cleanup_hooks_mutex);
-      auto state_it = g_cleanup_hooks.find(env);
-      if (state_it == g_cleanup_hooks.end()) {
+      std::lock_guard<std::mutex> lock(CleanupHooksMutex());
+      auto& cleanupHooks = CleanupHooks();
+      auto state_it = cleanupHooks.find(env);
+      if (state_it == cleanupHooks.end()) {
         break;
       }
 
@@ -629,15 +644,17 @@ void js_run_env_cleanup_hooks(napi_env env) {
 
   std::vector<napi_async_cleanup_hook_handle__*> handles_to_delete;
   {
-    std::unique_lock<std::mutex> lock(g_cleanup_hooks_mutex);
-    g_cleanup_hooks_cv.wait(lock, [&]() {
-      auto state_it = g_cleanup_hooks.find(env);
-      return state_it == g_cleanup_hooks.end() ||
+    std::unique_lock<std::mutex> lock(CleanupHooksMutex());
+    CleanupHooksCV().wait(lock, [&]() {
+      auto& cleanupHooks = CleanupHooks();
+      auto state_it = cleanupHooks.find(env);
+      return state_it == cleanupHooks.end() ||
              state_it->second.async_hooks.empty();
     });
 
-    auto state_it = g_cleanup_hooks.find(env);
-    if (state_it == g_cleanup_hooks.end()) {
+    auto& cleanupHooks = CleanupHooks();
+    auto state_it = cleanupHooks.find(env);
+    if (state_it == cleanupHooks.end()) {
       return;
     }
 
@@ -646,7 +663,7 @@ void js_run_env_cleanup_hooks(napi_env env) {
     handles_to_delete.swap(state.deferred_delete_async_hooks);
 
     if (IsCleanupStateEmpty(state)) {
-      g_cleanup_hooks.erase(state_it);
+      cleanupHooks.erase(state_it);
     }
   }
 
