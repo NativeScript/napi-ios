@@ -130,12 +130,8 @@ std::optional<std::string> runtimeWritablePropertySetter(id object,
   return std::nullopt;
 }
 
-std::optional<std::string> runtimeReadablePropertyGetter(id object,
-                                                         const std::string& property) {
-  if (object == nil || property.empty()) {
-    return std::nullopt;
-  }
-
+std::optional<std::string> resolveRuntimeReadablePropertyGetter(
+    id object, const std::string& property) {
   Class current = object_getClass(object);
   while (current != Nil) {
     objc_property_t prop = class_getProperty(current, property.c_str());
@@ -156,6 +152,71 @@ std::optional<std::string> runtimeReadablePropertyGetter(id object,
   }
 
   return respondingPropertyGetterSelector(object, property, property);
+}
+
+// Caches the resolved getter selector per (class, property): this path only
+// serves JS-subclass instances (the hot metadata-getter path already has
+// findCachedPropertyGetter in front, see below), but the objc-runtime class
+// walk above is still worth amortizing across repeated accesses.
+std::optional<std::string> runtimeReadablePropertyGetter(id object,
+                                                         const std::string& property) {
+  if (object == nil || property.empty()) {
+    return std::nullopt;
+  }
+
+  Class cls = object_getClass(object);
+  static std::mutex cacheMutex;
+  static std::unordered_map<Class,
+                            std::unordered_map<std::string,
+                                                std::optional<std::string>>>
+      cache;
+
+  {
+    std::lock_guard<std::mutex> lock(cacheMutex);
+    auto classIt = cache.find(cls);
+    if (classIt != cache.end()) {
+      auto propertyIt = classIt->second.find(property);
+      if (propertyIt != classIt->second.end()) {
+        return propertyIt->second;
+      }
+    }
+  }
+
+  std::optional<std::string> resolved =
+      resolveRuntimeReadablePropertyGetter(object, property);
+
+  std::lock_guard<std::mutex> lock(cacheMutex);
+  cache[cls][property] = resolved;
+  return resolved;
+}
+
+// True if `property` resolves to a real runtime getter (metadata property or
+// a JS-subclass instance's own class-builder-registered getter) — used to
+// decide whether a successful runtime SET also needs an expando write so a
+// subsequent GET (which may not consult the same runtime path) sees it.
+bool objectGetPathCanReadRuntimeProperty(id object,
+                                         const std::string& property) {
+  if (object == nil || property.empty()) {
+    return false;
+  }
+
+  if (class_conformsToProtocol(object_getClass(object),
+                               @protocol(NativeApiClassBuilderProtocol))) {
+    return runtimeReadablePropertyGetter(object, property).has_value();
+  }
+
+  if (objc_property_t prop =
+          class_getProperty(object_getClass(object), property.c_str())) {
+    std::string getter = property;
+    if (char* customGetter = property_copyAttributeValue(prop, "G")) {
+      getter = customGetter;
+      free(customGetter);
+    }
+    return respondingPropertyGetterSelector(object, property, getter)
+        .has_value();
+  }
+
+  return false;
 }
 
 class NativeApiSuperHostObject final : public HostObject {
@@ -885,6 +946,13 @@ class NativeApiObjectHostObject final
     if (!expando.isUndefined()) {
       return expando;
     }
+    // If this receiver is a UIAppearance proxy, its properties live in the
+    // class-keyed appearance cache, not on the object itself.
+    Value appearanceExpando =
+        cachedAppearanceProxyPropertyValue(runtime, bridge_, object_, property);
+    if (!appearanceExpando.isUndefined()) {
+      return appearanceExpando;
+    }
 
     // Fast path: cached metadata property-getter resolution. Skips the
     // special-name chain + per-access metadata discovery for hot getters
@@ -1388,6 +1456,43 @@ class NativeApiObjectHostObject final
       }
     }
 
+    // If this receiver is a UIAppearance proxy, its properties are recorded
+    // in the class-keyed appearance cache, not set through the metadata/
+    // runtime setter paths below (an appearance proxy setter doesn't
+    // reliably support read-your-write, so we cache it ourselves too).
+    if (Class appearanceClass =
+            taggedAppearanceProxyClass(runtime, bridge_, object_)) {
+      if (const NativeApiSymbol* symbol =
+              bridge_->findClassForRuntimeClass(appearanceClass)) {
+        const auto& members = bridge_->membersForClass(*symbol);
+        if (const NativeApiMember* propertyMember =
+                selectAppearanceProxyPropertyMember(members, property)) {
+          if (propertyMember->readonly) {
+            throw JSError(
+                runtime, "Attempted to assign to readonly property.");
+          }
+          Value args[] = {Value(runtime, value)};
+          if (!propertyMember->setterSelectorName.empty()) {
+            NativeApiMember setterMember = *propertyMember;
+            setterMember.selectorName = propertyMember->setterSelectorName;
+            setterMember.signatureOffset = propertyMember->setterSignatureOffset;
+            callObjCSelector(runtime, bridge_, object_, false,
+                             setterMember.selectorName, &setterMember, args, 1);
+          } else if (auto setterSelectorName =
+                         runtimeWritablePropertySetter(object_, property)) {
+            callObjCSelector(runtime, bridge_, object_, false,
+                             *setterSelectorName, nullptr, args, 1);
+          } else {
+            throw JSError(
+                runtime, "UIAppearance property setter is unavailable.");
+          }
+          cacheAppearanceProxyPropertyValue(runtime, bridge_, object_,
+                                            property, value);
+          NATIVE_API_SET_RETURN(true);
+        }
+      }
+    }
+
     if (const NativeApiSymbol* symbol =
             bridge_->findClassForRuntimeClass(object_getClass(object_))) {
       const auto& members = bridge_->membersForClass(*symbol);
@@ -1403,6 +1508,8 @@ class NativeApiObjectHostObject final
         Value args[] = {Value(runtime, value)};
         callObjCSelector(runtime, bridge_, object_, false,
                          setterMember.selectorName, &setterMember, args, 1);
+        cacheAppearanceProxyPropertyValue(runtime, bridge_, object_, property,
+                                          value);
         NATIVE_API_SET_RETURN(true);
       }
     }
@@ -1412,6 +1519,15 @@ class NativeApiObjectHostObject final
       Value args[] = {Value(runtime, value)};
       callObjCSelector(runtime, bridge_, object_, false,
                        *setterSelectorName, nullptr, args, 1);
+      cacheAppearanceProxyPropertyValue(runtime, bridge_, object_, property,
+                                        value);
+      // The property was set through a runtime-discovered setter, but the
+      // GET path may not find a matching readable getter (e.g. a
+      // write-only or asymmetrically-named property) — write an expando
+      // too so a subsequent get() still sees this value.
+      if (!objectGetPathCanReadRuntimeProperty(object_, property)) {
+        bridge_->setObjectExpando(runtime, object_, property, value);
+      }
       NATIVE_API_SET_RETURN(true);
     }
 
@@ -1472,3 +1588,32 @@ class NativeApiObjectHostObject final
   Class superDispatchClass_ = Nil;
   std::shared_ptr<NativeApiObjectLifetimeState> lifetimeState_;
 };
+
+// Tags a `[SomeClass appearance]`-family call's result (a wrapped
+// UIAppearance proxy) with the class it proxies for, and installs the
+// property accessors that make it behave like a real object rather than
+// requiring `.invoke(...)`. Lives here (not host_objects/Appearance.mm)
+// because it needs the complete NativeApiObjectHostObject type; Class.mm,
+// Protocol.mm, Invocation.mm, and the per-engine selector-group code all
+// consume it and are included later in the bridge.
+Value tagStaticAppearanceSelectorResult(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, bool receiverIsClass, const std::string& selectorName,
+    Value result) {
+  if (!isStaticAppearanceSelector(receiverIsClass, selectorName) ||
+      !result.isObject()) {
+    return result;
+  }
+  Object resultObject = result.asObject(runtime);
+  if (!resultObject.isHostObject<NativeApiObjectHostObject>(runtime)) {
+    return result;
+  }
+  Class customizableClass = tagStaticAppearanceNativeResult(
+      runtime, bridge, static_cast<Class>(receiver),
+      resultObject.getHostObject<NativeApiObjectHostObject>(runtime)->object());
+  installAppearanceProxyPropertyAccessors(
+      runtime, bridge, customizableClass,
+      resultObject.getHostObject<NativeApiObjectHostObject>(runtime)->object(),
+      resultObject);
+  return result;
+}

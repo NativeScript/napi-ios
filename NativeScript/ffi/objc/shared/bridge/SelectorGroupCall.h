@@ -10,6 +10,11 @@ struct NativeApiResolvedSelectorGroupCall {
   Class dispatchClass = Nil;
   bool hasImmediateResult = false;
   Value immediateResult;
+  // False when the prepared invocation is a `[SomeClass appearance...]`
+  // static selector: the GSD fast path bypasses tagStaticAppearance*, so it
+  // must be excluded from GSD eligibility to keep proxy tagging/caching
+  // working.
+  bool gsdAllowed = true;
 };
 
 template <bool PrepareInitializer, typename ResolveReceiver,
@@ -45,6 +50,15 @@ inline NativeApiResolvedSelectorGroupCall resolveNativeApiSelectorGroupCall(
 
   const bool propertyGetterCall =
       entry.hasMember && entry.member.property && argumentCount == 0;
+  if (propertyGetterCall) {
+    Value appearanceExpando = cachedAppearanceProxyPropertyValue(
+        runtime, data.bridge, result.receiver, entry.member.name);
+    if (!appearanceExpando.isUndefined()) {
+      result.immediateResult = std::move(appearanceExpando);
+      result.hasImmediateResult = true;
+      return result;
+    }
+  }
   const std::string* selectorNamePtr = &entry.selectorName;
   const NativeApiMember* selectedMember =
       entry.hasMember ? &entry.member : nullptr;
@@ -112,6 +126,7 @@ inline NativeApiResolvedSelectorGroupCall resolveNativeApiSelectorGroupCall(
     }
   }
   result.prepared = prepared.get();
+  result.gsdAllowed = !isPreparedStaticAppearanceSelector(*prepared);
 
   if constexpr (PrepareInitializer) {
     if (!data.receiverIsClass && prepared->isInitMethod) {
