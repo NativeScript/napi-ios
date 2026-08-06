@@ -47,6 +47,8 @@ class NativeApiObjectLifetimeState final {
 
 #include "host_objects/Struct.mm"
 
+#include "host_objects/Appearance.mm"
+
 #include "host_objects/Object.mm"
 
 #include "host_objects/Class.mm"

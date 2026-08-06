@@ -223,9 +223,12 @@ void NativeApiSelectorGroupCallback(
     // Inline GSD fast path: skip the setV8EnginePreparedObjCResult call and its
     // argument-count/NSError preamble entirely for the common case. The
     // generated invoker reads args, calls objc_msgSend, and sets the return.
+    // Excludes appearance static selectors (gsdAllowed) — those need the
+    // generic path's proxy tagging.
     if (call.prepared->gsdEngineCallable && call.dispatchClass == Nil &&
         !call.prepared->isInitMethod &&
-        count == call.prepared->gsdEngineArgumentCount) {
+        count == call.prepared->gsdEngineArgumentCount &&
+        call.gsdAllowed) {
       auto invoker =
           reinterpret_cast<ObjCGsdInvoker>(call.prepared->engineInvoker);
       GsdObjCContext ctx{runtime,
@@ -237,6 +240,12 @@ void NativeApiSelectorGroupCallback(
                          runtime.context(),
                          call.prepared->signature.returnType};
       if (invoker(ctx)) {
+        if (count > 0) {
+          Value setterValue = Value::borrowed(runtime, info[0]);
+          cachePreparedAppearanceProxySetterValue(runtime, data->bridge,
+                                                  call.receiver, *call.prepared,
+                                                  &setterValue, 1);
+        }
         return;
       }
     }
