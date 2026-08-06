@@ -22,7 +22,7 @@ assert(
   "host adapters should propagate dispose return values",
 );
 
-const declarations = read("src/index.d.ts");
+const declarations = read("src/index.ts");
 assert(
   declarations.includes("export type UIKitDisposeResult"),
   "public declarations should expose UIKitDisposeResult",

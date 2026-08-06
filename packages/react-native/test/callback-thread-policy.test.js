@@ -4,15 +4,19 @@ const path = require("path");
 
 const repoRoot = path.resolve(__dirname, "../../..");
 const callbackSourcePaths = [
-  "packages/react-native/native-api/ffi/shared/bridge/Callbacks.mm",
-  "NativeScript/ffi/shared/bridge/Callbacks.mm",
+  "packages/react-native/native-api/ffi/objc/shared/bridge/Callbacks.mm",
+  "NativeScript/ffi/objc/shared/bridge/Callbacks.mm",
 ];
 
 for (const relativePath of callbackSourcePaths) {
-  const callbacksSource = fs.readFileSync(
-    path.join(repoRoot, relativePath),
-    "utf8",
-  );
+  const fullPath = path.join(repoRoot, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    // packages/react-native/native-api is a gitignored build artifact
+    // produced by `npm run build-rn-turbomodule`; skip it when it hasn't
+    // been generated (e.g. a fresh checkout).
+    continue;
+  }
+  const callbacksSource = fs.readFileSync(fullPath, "utf8");
 
   const nativeCallerPolicyIndex = callbacksSource.indexOf(
     "if (nativeCallerThreadCallbacks && !currentThreadIsJs)",

@@ -30,6 +30,13 @@ assert(
   "UI runtime timers should use native NSTimer instead of RAF polling",
 );
 assert(
+  index.includes('nativeApiClass("NSTimer")') &&
+    index.includes('nativeApiClass("NSRunLoop")') &&
+    !index.includes("globalObject.NSTimer") &&
+    !index.includes("globalObject.NSRunLoop"),
+  "UI runtime timers should resolve Foundation classes lazily through the Native API host",
+);
+assert(
   index.includes("NSRunLoopClass.mainRunLoop.addTimerForMode"),
   "native UI timers should run in common run-loop modes",
 );

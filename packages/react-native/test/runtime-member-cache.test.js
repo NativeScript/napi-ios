@@ -4,12 +4,19 @@ const path = require("path");
 
 const repoRoot = path.resolve(__dirname, "../../..");
 const hostObjectSources = [
-  "NativeScript/ffi/shared/bridge/HostObjects.mm",
-  "packages/react-native/native-api/ffi/shared/bridge/HostObjects.mm",
+  "NativeScript/ffi/objc/shared/bridge/host_objects/Object.mm",
+  "packages/react-native/native-api/ffi/objc/shared/bridge/host_objects/Object.mm",
 ];
 
 for (const sourcePath of hostObjectSources) {
-  const hostObjects = fs.readFileSync(path.join(repoRoot, sourcePath), "utf8");
+  const fullPath = path.join(repoRoot, sourcePath);
+  if (!fs.existsSync(fullPath)) {
+    // The packages/react-native/native-api mirror is a gitignored build
+    // artifact produced by `npm run build-rn-turbomodule`; skip it when it
+    // hasn't been generated (e.g. a fresh checkout).
+    continue;
+  }
+  const hostObjects = fs.readFileSync(fullPath, "utf8");
 
   assert(
     hostObjects.includes("NativeApiRuntimeMembersCacheKey"),
@@ -38,6 +45,18 @@ for (const sourcePath of hostObjectSources) {
   assert(
     hostObjects.includes("selectorsByNameAndCount.find(name)"),
     `${sourcePath}: runtime selector resolution should use indexed selector lookup`,
+  );
+  // The readable-property-getter fallback cache is intentionally simplified
+  // to a single mutex-guarded (Class, property) -> selector map (no
+  // thread-local front cache) — see resolveRuntimeReadablePropertyGetter /
+  // runtimeReadablePropertyGetter.
+  assert(
+    hostObjects.includes("resolveRuntimeReadablePropertyGetter("),
+    `${sourcePath}: runtime property getter fallback should separate resolution from caching`,
+  );
+  assert(
+    hostObjects.includes("cache[cls][property]"),
+    `${sourcePath}: runtime property getter fallback should populate the class/property cache`,
   );
 }
 

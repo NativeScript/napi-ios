@@ -7,6 +7,7 @@ const {
   ensureMetadataConfig,
   normalizeMetadataOptions,
 } = require('../plugin/withNativeScriptReactNative');
+const packageJson = require('../package.json');
 
 function withTempProject(callback) {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'ns-rn-plugin-'));
@@ -97,5 +98,11 @@ withTempProject((projectRoot) => {
     includeSystemFrameworks: ['UIKit', 'MapKit'],
   });
 });
+
+assert.strictEqual(
+  packageJson.codegenConfig.ios.modulesProvider.WorkletsModule,
+  'WorkletsModule',
+  'NativeScript RN must publish the Worklets TurboModule provider so runOnUI can initialize after app codegen',
+);
 
 console.log('config plugin tests passed');

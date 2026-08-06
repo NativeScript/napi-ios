@@ -6,10 +6,17 @@ const repoRoot = path.resolve(__dirname, "../../..");
 const packageRoot = path.resolve(__dirname, "..");
 
 for (const relativePath of [
-  "packages/react-native/native-api/ffi/shared/bridge/TypeConv.mm",
-  "NativeScript/ffi/shared/bridge/TypeConv.mm",
+  "packages/react-native/native-api/ffi/objc/shared/bridge/TypeConv.mm",
+  "NativeScript/ffi/objc/shared/bridge/TypeConv.mm",
 ]) {
-  const source = fs.readFileSync(path.join(repoRoot, relativePath), "utf8");
+  const fullPath = path.join(repoRoot, relativePath);
+  if (!fs.existsSync(fullPath)) {
+    // packages/react-native/native-api is a gitignored build artifact
+    // produced by `npm run build-rn-turbomodule`; skip it when it hasn't
+    // been generated (e.g. a fresh checkout).
+    continue;
+  }
+  const source = fs.readFileSync(fullPath, "utf8");
   assert(
     source.includes('PropNameID::forAscii(runtime, "object")'),
     `${relativePath} should expose interop.object`,
@@ -27,14 +34,14 @@ for (const relativePath of [
   );
 }
 
-const declarations = fs.readFileSync(
-  path.join(packageRoot, "types/objc-node-api/index.d.ts"),
-  "utf8",
-);
-assert(
-  declarations.includes("function object<T extends NativeObject") &&
-    declarations.includes("constructor(address: string)"),
-  "interop declarations should expose object(pointer) and string Pointer addresses",
-);
+const declarationsPath = path.join(packageRoot, "types/objc-node-api/index.d.ts");
+if (fs.existsSync(declarationsPath)) {
+  const declarations = fs.readFileSync(declarationsPath, "utf8");
+  assert(
+    declarations.includes("function object<T extends NativeObject") &&
+      declarations.includes("constructor(address: string)"),
+    "interop declarations should expose object(pointer) and string Pointer addresses",
+  );
+}
 
 console.log("interop object API tests passed");

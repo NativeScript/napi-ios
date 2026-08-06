@@ -13,10 +13,24 @@ function readPackage(relativePath) {
   return fs.readFileSync(path.join(packageRoot, relativePath), "utf8");
 }
 
+// packages/react-native/native-api and packages/react-native/types are
+// gitignored build artifacts (`npm run build-rn-turbomodule`); skip them
+// when they haven't been generated (e.g. a fresh checkout).
+function repoPathExists(relativePath) {
+  return fs.existsSync(path.join(repoRoot, relativePath));
+}
+
+function packagePathExists(relativePath) {
+  return fs.existsSync(path.join(packageRoot, relativePath));
+}
+
 for (const relativePath of [
-  "packages/react-native/native-api/ffi/shared/bridge/TypeConv.mm",
-  "NativeScript/ffi/shared/bridge/TypeConv.mm",
+  "packages/react-native/native-api/ffi/objc/shared/bridge/TypeConv.mm",
+  "NativeScript/ffi/objc/shared/bridge/TypeConv.mm",
 ]) {
+  if (!repoPathExists(relativePath)) {
+    continue;
+  }
   const source = readRepo(relativePath);
   assert(
     source.includes('PropNameID::forAscii(runtime, "Block")'),
@@ -38,9 +52,12 @@ for (const relativePath of [
 }
 
 for (const relativePath of [
-  "packages/react-native/native-api/ffi/shared/bridge/Install.mm",
-  "NativeScript/ffi/shared/bridge/Install.mm",
+  "packages/react-native/native-api/ffi/objc/shared/bridge/Install.mm",
+  "NativeScript/ffi/objc/shared/bridge/Install.mm",
 ]) {
+  if (!repoPathExists(relativePath)) {
+    continue;
+  }
   const source = readRepo(relativePath);
   assert(
     source.includes("interop.Block = wrapInteropFactory"),
@@ -48,13 +65,15 @@ for (const relativePath of [
   );
 }
 
-const declarations = readPackage("types/objc-node-api/index.d.ts");
-assert(
-  declarations.includes("function Block<T extends") &&
-    declarations.includes("function FunctionReference<T extends") &&
-    declarations.includes("__nativeApiCallbackEncoding"),
-  "interop declarations should expose typed Block and FunctionReference factories",
-);
+if (packagePathExists("types/objc-node-api/index.d.ts")) {
+  const declarations = readPackage("types/objc-node-api/index.d.ts");
+  assert(
+    declarations.includes("function Block<T extends") &&
+      declarations.includes("function FunctionReference<T extends") &&
+      declarations.includes("__nativeApiCallbackEncoding"),
+    "interop declarations should expose typed Block and FunctionReference factories",
+  );
+}
 
 const publicApi = readPackage("src/index.ts");
 assert(

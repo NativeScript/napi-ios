@@ -34,7 +34,7 @@ assert(
 );
 
 const declarations = fs.readFileSync(
-  path.join(packageRoot, "src/index.d.ts"),
+  path.join(packageRoot, "src/index.ts"),
   "utf8",
 );
 assert(
