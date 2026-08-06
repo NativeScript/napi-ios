@@ -659,6 +659,16 @@ class NativeApiBridge {
 #endif
   }
 
+  // Convenience for preservedNativeApiInitializerSelfReturn: remembers an id
+  // (rather than an arbitrary native pointer) with the class-derived
+  // validation key, the same key an ordinary object wrapping would use.
+  void rememberNativeObjectRoundTripValue(Runtime& runtime, id object,
+                                          const Value& value,
+                                          bool stringLikeNative = false) {
+    rememberRoundTripValue(runtime, object, value, stringLikeNative,
+                           nativeObjectClassKey(object));
+  }
+
   void rememberScopedRoundTripValue(Runtime& runtime, const void* native,
                                     const Value& value,
                                     bool stringLikeNative = false,
@@ -2461,7 +2471,8 @@ Function CreateNativeApiBoundSelectorGroupFunction(
 
 Value makeNativeObjectValue(Runtime& runtime,
                             const std::shared_ptr<NativeApiBridge>& bridge,
-                            id object, bool ownsObject);
+                            id object, bool ownsObject,
+                            Class superDispatchClass = Nil);
 
 Value makeNativeClassValue(Runtime& runtime,
                            const std::shared_ptr<NativeApiBridge>& bridge,
