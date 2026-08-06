@@ -151,7 +151,26 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
           }
           if (state.boundReceiverState != nullptr) {
             receiverHostObject = state.boundReceiver.lock();
-          } else if (thisValue.isObject()) {
+            if (receiverHostObject) {
+              return receiverHostObject;
+            }
+            // The bound receiver's wrapper has already been torn down (its
+            // owning JS proxy was collected) since this selector-group
+            // function was minted and cached as a native-object expando
+            // (Object.mm's `bridge_->setObjectExpando(..., methodFunction)`).
+            // The expando itself is keyed by the native pointer and survives
+            // wrapper churn, so a LATER crossing that re-wraps the SAME
+            // native object in a fresh `NativeApiObjectHostObject` (this
+            // runtime mints a new wrapper per crossing) finds the stale
+            // cached function still bound to the dead original -- every call
+            // through it then resolves a nil receiver and throws "Objective-C
+            // selector requires a native receiver" even though the method is
+            // being invoked on a perfectly live object right now. Fall
+            // through to `thisValue` exactly like the unbound path below:
+            // this IS a method call (`receiver.method(...)`), so `thisValue`
+            // is always the correct, live receiver for this invocation.
+          }
+          if (thisValue.isObject()) {
             Object receiverObject = thisValue.asObject(runtime);
             if (receiverObject.isHostObject<NativeApiObjectHostObject>(
                     runtime)) {
