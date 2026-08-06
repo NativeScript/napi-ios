@@ -476,6 +476,68 @@ bool readPointerLikeValue(Runtime& runtime, const Value& value, void** pointer) 
   return readNativePointerProperty(runtime, object, pointer);
 }
 
+// interop.set/getAssociatedObject's target parameter accepts either a live
+// wrapped native object/pointer, or (for cases the engine can't hold a
+// reference to, e.g. round-tripping a raw address from logs/debugging) the
+// decimal text of a pointer value.
+id nativeAssociatedObjectTargetFromValue(Runtime& runtime, const Value& value) {
+  if (value.isNull() || value.isUndefined()) {
+    return nil;
+  }
+
+  if (value.isString()) {
+    uintptr_t address = 0;
+    if (!parseIntegerTextToUintptr(value.asString(runtime).utf8(runtime), &address)) {
+      throw JSError(runtime, "Associated object target expects a native object or object pointer.");
+    }
+    return static_cast<id>(reinterpret_cast<void*>(address));
+  }
+
+  if (!value.isObject()) {
+    throw JSError(runtime, "Associated object target expects a native object or object pointer.");
+  }
+
+  void* pointer = nullptr;
+  if (readPointerLikeValue(runtime, value, &pointer)) {
+    return static_cast<id>(pointer);
+  }
+
+  throw JSError(runtime, "Associated object target expects a native object or object pointer.");
+}
+
+objc_AssociationPolicy associatedObjectPolicyFromValue(Runtime& runtime, const Value& value) {
+  if (value.isUndefined() || value.isNull()) {
+    return OBJC_ASSOCIATION_RETAIN_NONATOMIC;
+  }
+
+  if (value.isNumber()) {
+    return static_cast<objc_AssociationPolicy>(static_cast<uintptr_t>(value.getNumber()));
+  }
+
+  if (!value.isString()) {
+    throw JSError(runtime, "Associated object policy expects a string or numeric objc_AssociationPolicy.");
+  }
+
+  std::string policy = value.asString(runtime).utf8(runtime);
+  if (policy == "assign") {
+    return OBJC_ASSOCIATION_ASSIGN;
+  }
+  if (policy == "retain") {
+    return OBJC_ASSOCIATION_RETAIN;
+  }
+  if (policy == "retainNonatomic" || policy == "strong" || policy == "strongNonatomic") {
+    return OBJC_ASSOCIATION_RETAIN_NONATOMIC;
+  }
+  if (policy == "copy") {
+    return OBJC_ASSOCIATION_COPY;
+  }
+  if (policy == "copyNonatomic") {
+    return OBJC_ASSOCIATION_COPY_NONATOMIC;
+  }
+
+  throw JSError(runtime, "Unknown associated object policy.");
+}
+
 template <typename T>
 void writeNumericArgument(Runtime& runtime, const Value& value, void* target,
                           const char* typeName) {
@@ -1060,6 +1122,9 @@ Value convertNativeReturnValue(Runtime& runtime, const std::shared_ptr<NativeApi
       if (object == nil) {
         return Value::null();
       }
+      if (!nativeObjectPointerMayBeObject(object)) {
+        return Value::undefined();
+      }
       Value roundTrip = findCachedNativeObjectReturn(runtime, bridge, type, object);
       if (!roundTrip.isUndefined()) {
         if (type.returnOwned) {
@@ -1092,6 +1157,37 @@ Value convertNativeReturnValue(Runtime& runtime, const std::shared_ptr<NativeApi
           [object release];
         }
         return result;
+      }
+      if (object_isClass(object)) {
+        Class cls = static_cast<Class>(object);
+        Value cachedClass = bridge->findClassValue(runtime, cls);
+        if (!cachedClass.isUndefined()) {
+          if (type.returnOwned) {
+            [object release];
+          }
+          return cachedClass;
+        }
+
+        const char* className = class_getName(cls);
+        NativeApiSymbol symbol{
+            .kind = NativeApiSymbolKind::Class,
+            .offset = MD_SECTION_OFFSET_NULL,
+            .name = className != nullptr ? className : "",
+            .runtimeName = className != nullptr ? className : "",
+        };
+        if (const NativeApiSymbol* found =
+                bridge->findClassForRuntimePointer(cls)) {
+          symbol = *found;
+        } else if (const NativeApiSymbol* found =
+                       bridge->findClassForRuntimeClass(cls)) {
+          symbol = *found;
+        }
+        Value classValue =
+            makeNativeClassValue(runtime, bridge, std::move(symbol));
+        if (type.returnOwned) {
+          [object release];
+        }
+        return classValue;
       }
       if (const NativeApiSymbol* classSymbol = bridge->findClassForRuntimePointer((void*)object)) {
         return makeNativeClassValue(runtime, bridge, *classSymbol);
@@ -1764,8 +1860,20 @@ Object createInteropObject(Runtime& runtime, const std::shared_ptr<NativeApiBrid
   setType("uint32", metagen::mdTypeUInt);
   setType("int64", metagen::mdTypeSInt64);
   setType("uint64", metagen::mdTypeUInt64);
+  setType("long", metagen::mdTypeSLong);
+  setType("ulong", metagen::mdTypeULong);
+  setType("NSInteger", metagen::mdTypeSLong);
+  setType("NSUInteger", metagen::mdTypeULong);
   setType("float", metagen::mdTypeFloat);
   setType("double", metagen::mdTypeDouble);
+  setType("BOOL", metagen::mdTypeBool);
+#if defined(CGFLOAT_IS_DOUBLE) && CGFLOAT_IS_DOUBLE
+  setType("CGFloat", metagen::mdTypeDouble);
+#else
+  setType("CGFloat", metagen::mdTypeFloat);
+#endif
+  setType("NSTimeInterval", metagen::mdTypeDouble);
+  setType("CFTimeInterval", metagen::mdTypeDouble);
   setType("UTF8CString", metagen::mdTypeString);
   setType("unichar", metagen::mdTypeUnichar);
   setType("id", metagen::mdTypeAnyObject);
@@ -2161,6 +2269,63 @@ Object createInteropObject(Runtime& runtime, const std::shared_ptr<NativeApiBrid
 	            id object = static_cast<id>(pointer);
 	            NativeApiType type = nativeObjectReturnTypeForClass(object_getClass(object));
 	            return convertNativeReturnValue(runtime, bridge, type, &object);
+	          }));
+
+	  // interop.set/getAssociatedObject: the sanctioned way to persist state on
+	  // a native UIKit-backed object across engine calls. JS expandos set on a
+	  // host-object wrapper do NOT round-trip (each call can hand back a fresh
+	  // wrapper for the same native receiver); a real objc_setAssociatedObject
+	  // does, because it lives on the native object itself.
+	  interop.setProperty(
+	      runtime, "setAssociatedObject",
+	      Function::createFromHostFunction(
+	          runtime, PropNameID::forAscii(runtime, "setAssociatedObject"), 4,
+	          [bridge](Runtime& runtime, const Value&, const Value* args, size_t count) -> Value {
+	            if (count < 3) {
+	              throw JSError(runtime,
+	                            "interop.setAssociatedObject expects target, key, and value.");
+	            }
+	            id target = nativeAssociatedObjectTargetFromValue(runtime, args[0]);
+	            if (target == nil || !args[1].isString()) {
+	              throw JSError(runtime,
+	                            "interop.setAssociatedObject expects target, key, and value.");
+	            }
+
+	            std::string key = args[1].asString(runtime).utf8(runtime);
+	            NativeApiArgumentFrame frame(1);
+	            id value = nil;
+	            if (!args[2].isNull() && !args[2].isUndefined()) {
+	              value = objectFromEngineValue(runtime, bridge, args[2], frame, false);
+	            }
+	            objc_AssociationPolicy policy =
+	                count > 3 ? associatedObjectPolicyFromValue(runtime, args[3])
+	                          : OBJC_ASSOCIATION_RETAIN_NONATOMIC;
+	            objc_setAssociatedObject(target, sel_registerName(key.c_str()), value, policy);
+	            return Value::undefined();
+	          }));
+
+	  interop.setProperty(
+	      runtime, "getAssociatedObject",
+	      Function::createFromHostFunction(
+	          runtime, PropNameID::forAscii(runtime, "getAssociatedObject"), 2,
+	          [bridge](Runtime& runtime, const Value&, const Value* args, size_t count) -> Value {
+	            if (count < 2 || !args[1].isString()) {
+	              throw JSError(runtime,
+	                            "interop.getAssociatedObject expects target and key.");
+	            }
+	            id target = nativeAssociatedObjectTargetFromValue(runtime, args[0]);
+	            if (target == nil) {
+	              return Value::null();
+	            }
+
+	            std::string key = args[1].asString(runtime).utf8(runtime);
+	            id associated = objc_getAssociatedObject(target, sel_registerName(key.c_str()));
+	            if (associated == nil) {
+	              return Value::null();
+	            }
+
+	            NativeApiType type = nativeObjectReturnTypeForClass(object_getClass(associated));
+	            return convertNativeReturnValue(runtime, bridge, type, &associated);
 	          }));
 
 	  interop.setProperty(

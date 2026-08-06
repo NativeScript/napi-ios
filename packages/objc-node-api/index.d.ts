@@ -94,6 +94,16 @@ declare global {
 
     export type Enum<_T extends Record<string, number>> = number;
 
+    export type AssociationPolicy =
+      | "assign"
+      | "retain"
+      | "retainNonatomic"
+      | "strong"
+      | "strongNonatomic"
+      | "copy"
+      | "copyNonatomic"
+      | number;
+
     export function addMethod<
       T extends abstract new (...args: unknown[]) => unknown,
     >(
@@ -109,6 +119,16 @@ declare global {
     export function sizeof(obj: unknown): number;
     export function alloc(size: number): Pointer;
     export function handleof(obj: unknown): Pointer;
+    export function setAssociatedObject(
+      target: NativeObject | Pointer | string | number,
+      key: string,
+      value: unknown,
+      policy?: AssociationPolicy,
+    ): void;
+    export function getAssociatedObject<T = unknown>(
+      target: NativeObject | Pointer | string | number | null | undefined,
+      key: string,
+    ): T | null;
     export function bufferFromData(data: NativeObject): ArrayBuffer;
   }
 }

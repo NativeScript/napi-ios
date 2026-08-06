@@ -2293,8 +2293,24 @@ bool nativeObjectReturnMayCoerceToString(const NativeApiType& type) {
          type.kind == metagen::mdTypeNSStringObject;
 }
 
-bool nativeObjectIsStringLike(id object) {
+// Guards against treating a misread register value as an object pointer:
+// low addresses can't be valid ObjC objects, but a register holding e.g. an
+// unboxed integer or a non-object primitive read as `id` can land there.
+// Without this guard, dereferencing it (object_getClass, isKindOfClass:,
+// etc. below) can crash on garbage. Do not remove — this is what stops
+// crashes on AnyObject-typed returns from selectors whose actual return
+// isn't an object.
+bool nativeObjectPointerMayBeObject(id object) {
   if (object == nil) {
+    return false;
+  }
+
+  const uintptr_t raw = reinterpret_cast<uintptr_t>(object);
+  return raw > 0x1000;
+}
+
+bool nativeObjectIsStringLike(id object) {
+  if (!nativeObjectPointerMayBeObject(object)) {
     return false;
   }
   Class cls = object_getClass(object);
@@ -2318,6 +2334,10 @@ bool nativeObjectIsStringLike(id object) {
 Value findCachedNativeObjectReturn(Runtime& runtime,
                                    const std::shared_ptr<NativeApiBridge>& bridge,
                                    const NativeApiType& type, id object) {
+  if (!nativeObjectPointerMayBeObject(object)) {
+    return Value::undefined();
+  }
+
   bool roundTripStringLike = false;
   const bool stringReturnCandidate = nativeObjectReturnMayCoerceToString(type);
   // AnyObject/NSString returns intentionally coerce string-like native objects
