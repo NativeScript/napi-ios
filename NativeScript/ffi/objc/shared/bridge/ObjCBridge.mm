@@ -548,8 +548,10 @@ class NativeApiBridge {
         runtimeCallbackInvoker_(config.runtimeCallbackInvoker),
         jsThreadCallbackInvoker_(config.jsThreadCallbackInvoker),
         jsThreadAsyncCallbackInvoker_(config.jsThreadAsyncCallbackInvoker),
+        callbackInvocationAllowed_(config.callbackInvocationAllowed),
         invokeCallbacksOnNativeCallerThread_(
-            config.invokeCallbacksOnNativeCallerThread) {
+            config.invokeCallbacksOnNativeCallerThread),
+        indexRuntimePointers_(config.indexRuntimePointers) {
     selfDl_ = dlopen(nullptr, RTLD_NOW);
     buildSymbolIndexes();
   }
@@ -1236,6 +1238,26 @@ class NativeApiBridge {
   jsThreadAsyncCallbackInvoker() const {
     return jsThreadAsyncCallbackInvoker_;
   }
+  // Teardown-safety gate: RN sets this so callbacks can be refused once the
+  // host is tearing down/reloading, without every call site needing to know
+  // why. Both a C++ try and an @try wrap the call — they catch different
+  // exception families (std::exception-derived vs. NSException), and either
+  // one escaping here would otherwise cross into caller frames that aren't
+  // set up to catch it.
+  bool callbackInvocationAllowed() const noexcept {
+    if (!callbackInvocationAllowed_) {
+      return true;
+    }
+    @try {
+    try {
+      return callbackInvocationAllowed_();
+    } catch (...) {
+      return false;
+    }
+    } @catch (...) {
+      return false;
+    }
+  }
   bool invokeCallbacksOnNativeCallerThread() const {
     return invokeCallbacksOnNativeCallerThread_;
   }
@@ -1514,10 +1536,12 @@ class NativeApiBridge {
     if (kind == NativeApiSymbolKind::Class) {
       classSymbolsByOffset_[symbol.offset] = symbol;
       classSymbolsByRuntimeName_[symbol.runtimeName] = symbol;
-      Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
-      if (cls != Nil) {
-        classSymbolsByRuntimePointer_[normalizeRuntimePointer(
-            reinterpret_cast<uintptr_t>(cls))] = symbol;
+      if (indexRuntimePointers_) {
+        Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
+        if (cls != Nil) {
+          classSymbolsByRuntimePointer_[normalizeRuntimePointer(
+              reinterpret_cast<uintptr_t>(cls))] = symbol;
+        }
       }
     } else if (kind == NativeApiSymbolKind::Protocol) {
       protocolSymbolsByOffset_[symbol.offset] = symbol;
@@ -1527,10 +1551,12 @@ class NativeApiBridge {
           return;
         }
         protocolSymbolsByRuntimeName_[runtimeName] = symbol;
-        Protocol* runtimeProtocol = lookupProtocolByNativeName(runtimeName);
-        if (runtimeProtocol != nullptr) {
-          protocolSymbolsByRuntimePointer_[normalizeRuntimePointer(
-              reinterpret_cast<uintptr_t>(runtimeProtocol))] = symbol;
+        if (indexRuntimePointers_) {
+          Protocol* runtimeProtocol = lookupProtocolByNativeName(runtimeName);
+          if (runtimeProtocol != nullptr) {
+            protocolSymbolsByRuntimePointer_[normalizeRuntimePointer(
+                reinterpret_cast<uintptr_t>(runtimeProtocol))] = symbol;
+          }
         }
       };
       if (symbol.name.size() > 9 &&
@@ -1549,13 +1575,15 @@ class NativeApiBridge {
               symbol.name.substr(0, digitsStart - protocolSuffixLength));
         }
       }
-      Protocol* protocol = lookupProtocolByNativeName(symbol.runtimeName);
-      if (protocol == nullptr && symbol.runtimeName != symbol.name) {
-        protocol = lookupProtocolByNativeName(symbol.name);
-      }
-      if (protocol != nullptr) {
-        protocolSymbolsByRuntimePointer_[normalizeRuntimePointer(
-            reinterpret_cast<uintptr_t>(protocol))] = symbol;
+      if (indexRuntimePointers_) {
+        Protocol* protocol = lookupProtocolByNativeName(symbol.runtimeName);
+        if (protocol == nullptr && symbol.runtimeName != symbol.name) {
+          protocol = lookupProtocolByNativeName(symbol.name);
+        }
+        if (protocol != nullptr) {
+          protocolSymbolsByRuntimePointer_[normalizeRuntimePointer(
+              reinterpret_cast<uintptr_t>(protocol))] = symbol;
+        }
       }
     } else if (kind == NativeApiSymbolKind::Struct) {
       structSymbolsByOffset_[symbol.offset] = symbol;
@@ -2204,7 +2232,9 @@ class NativeApiBridge {
   std::function<void(std::function<void()>)> runtimeCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadCallbackInvoker_;
   std::function<void(std::function<void()>)> jsThreadAsyncCallbackInvoker_;
+  std::function<bool()> callbackInvocationAllowed_;
   bool invokeCallbacksOnNativeCallerThread_ = false;
+  bool indexRuntimePointers_ = true;
   mutable std::unordered_map<MDSectionOffset, std::vector<NativeApiMember>>
       membersByClassOffset_;
   mutable std::unordered_map<MDSectionOffset, std::vector<NativeApiMember>>
