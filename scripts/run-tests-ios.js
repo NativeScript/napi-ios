@@ -967,22 +967,28 @@ function collectRecentSimulatorLogs(udid, pid) {
         ? `processID == ${pid}`
         : 'process == "TestRunner"';
 
-    const result = run("xcrun", [
-        "simctl",
-        "spawn",
-        udid,
-        "log",
-        "show",
-        "--style",
-        "compact",
-        "--last",
-        simulatorLogLookback,
-        "--predicate",
-        predicate
-    ]);
+    let result;
+    try {
+        result = run("xcrun", [
+            "simctl",
+            "spawn",
+            udid,
+            "log",
+            "show",
+            "--style",
+            "compact",
+            "--last",
+            simulatorLogLookback,
+            "--predicate",
+            predicate
+        ]);
+    } catch (error) {
+        return `WARNING: unable to collect recent simulator logs: ${error.message}`;
+    }
 
     if (result.status !== 0) {
-        return "";
+        const detail = (result.stderr || result.stdout || "").trim();
+        return `WARNING: unable to collect recent simulator logs (simctl exited ${result.status}${detail ? `: ${detail}` : ""}).`;
     }
 
     const text = result.stdout || "";
@@ -1065,11 +1071,26 @@ function readJunitFileState(udid) {
     };
 }
 
-function collectSimulatorProcessSnapshot(udid) {
-    const result = run("xcrun", ["simctl", "spawn", udid, "ps", "-axo", "pid,ppid,stat,etime,command"], {
-        timeout: simctlQueryTimeoutMs
-    });
+function collectSimulatorProcessSnapshot(udid, options = {}) {
+    let result;
+    try {
+        result = run("xcrun", ["simctl", "spawn", udid, "ps", "-axo", "pid,ppid,stat,etime,command"], {
+            timeout: simctlQueryTimeoutMs
+        });
+    } catch (error) {
+        if (options.includeErrors) {
+            return `WARNING: unable to collect simulator process snapshot: ${error.message}`;
+        }
+
+        return null;
+    }
+
     if (result.status !== 0) {
+        if (options.includeErrors) {
+            const detail = (result.stderr || result.stdout || "").trim();
+            return `WARNING: unable to collect simulator process snapshot (simctl exited ${result.status}${detail ? `: ${detail}` : ""}).`;
+        }
+
         return null;
     }
 
@@ -1125,7 +1146,7 @@ function formatInactivityDiagnostics(udid, state, pid) {
     }
     sections.push(`--- App container state ---\n${junitSummaryLines.join("\n")}`);
 
-    const processSnapshot = collectSimulatorProcessSnapshot(udid);
+    const processSnapshot = collectSimulatorProcessSnapshot(udid, { includeErrors: true });
     if (processSnapshot) {
         sections.push(`--- Simulator process snapshot ---\n${processSnapshot}`);
     }

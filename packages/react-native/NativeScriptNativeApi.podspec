@@ -27,6 +27,54 @@ Pod::Spec.new do |s|
   s.resource_bundles = {
     "NativeScriptNativeApi" => ["metadata/*.nsmd"]
   }
+  s.script_phase = {
+    :name => "Prune NativeScript metadata resources",
+    :execution_position => :after_compile,
+    :script => <<-'SCRIPT'
+set -e
+
+bundle="${BUILT_PRODUCTS_DIR}/NativeScriptNativeApi.bundle"
+if [ ! -d "$bundle" ]; then
+  bundle="${TARGET_BUILD_DIR}/NativeScriptNativeApi.bundle"
+fi
+if [ ! -d "$bundle" ]; then
+  exit 0
+fi
+
+keep=" "
+case "$PLATFORM_NAME" in
+  iphoneos)
+    keep="${keep}metadata.ios.arm64.nsmd "
+    ;;
+  iphonesimulator)
+    archs="${ARCHS:-$CURRENT_ARCH}"
+    for arch in $archs; do
+      case "$arch" in
+        arm64|x86_64)
+          keep="${keep}metadata.ios-sim.$arch.nsmd "
+          ;;
+      esac
+    done
+    ;;
+esac
+
+if [ "$keep" = " " ]; then
+  exit 0
+fi
+
+for file in "$bundle"/metadata*.nsmd; do
+  [ -e "$file" ] || continue
+  name="$(basename "$file")"
+  case "$keep" in
+    *" $name "*)
+      ;;
+    *)
+      rm -f "$file"
+      ;;
+  esac
+done
+SCRIPT
+  }
   s.vendored_frameworks = "ios/vendor/Libffi.xcframework"
 
   s.compiler_flags = folly_compiler_flags

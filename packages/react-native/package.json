@@ -21,7 +21,7 @@
   "license": "Apache-2.0",
   "main": "src/index.ts",
   "react-native": "src/index.ts",
-  "types": "src/index.d.ts",
+  "types": "src/index.ts",
   "bin": {
     "nativescript-rn": "cli/configure.js",
     "nativescript-rn-generate-metadata": "cli/generate-metadata.js"
@@ -67,7 +67,8 @@
         "NativeScriptUIView": "NativeScriptUIViewComponentView"
       },
       "modulesProvider": {
-        "NativeScriptNativeApi": "NativeScriptNativeApiModuleProvider"
+        "NativeScriptNativeApi": "NativeScriptNativeApiModuleProvider",
+        "WorkletsModule": "WorkletsModule"
       }
     }
   }

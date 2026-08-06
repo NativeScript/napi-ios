@@ -1,41 +1,59 @@
 # @nativescript/react-native
 
-React Native TurboModule wrapper for the NativeScript Native API JSI bridge on
-Hermes.
-
-The module exposes one small TurboModule whose `init()` method attaches the
-NativeScript Native API host object to `globalThis.__nativeScriptNativeApi` and
-installs lazy NativeScript-style globals for classes and C functions. The host
-object itself is pure JSI and is shared with the NativeScript Hermes runtime.
+A TurboModule + Fabric host that lets you drive real UIKit from TypeScript. It
+installs the NativeScript Native API (the JSI Objective‑C interop used by the
+NativeScript Hermes runtime) into a React Native app, and gives you a small set
+of host factories for wrapping native `UIView`s and `UIViewController`s as React
+components. The native work runs in worklets on the UI runtime, so UIKit is
+touched on the right thread with the same globals and generated iOS SDK types
+NativeScript uses.
 
 ```ts
 import NativeScript from "@nativescript/react-native";
 
 NativeScript.init();
 
-const object = NSObject.new();
-```
-
-`NativeScript.init()` also installs the Native API into the
-`react-native-worklets` UI runtime. `NativeScript.runOnUI()` only accepts
-Worklets callbacks; running React Native's JS-thread runtime as a UI-thread shim
-is not supported.
-
-```ts
 await NativeScript.runOnUI(() => {
   "worklet";
   UIApplication.sharedApplication.keyWindow.tintColor = UIColor.systemPinkColor;
 });
 ```
 
-Install `react-native-worklets`, add its Babel plugin, and run `pod install` so
-the `RNWorklets` pod is linked:
+This package is intentionally low‑level. It installs the interop and gives you
+lifecycle helpers; it ships no opinionated wrappers for tabs, maps, cameras, or
+navigation. Build those as components in your app, or on top of
+[`@nativescript/react-native-screens`](../react-native-screens) (the thin
+`react-native-screens` adapter that this engine powers).
+
+Requires Hermes and the New Architecture (Fabric + TurboModules).
+
+---
+
+## `init()` and the Babel plugin
+
+`NativeScript.init()` attaches the Native API host object to
+`globalThis.__nativeScriptNativeApi`, installs the lazy NativeScript‑style class
+and C‑function globals, and installs the Native API into the
+`react-native-worklets` UI runtime. Call it once, early, before touching native
+APIs.
+
+```ts
+NativeScript.init(); // installs interop + worklet UI runtime
+```
+
+By default `init()` does **not** publish Objective‑C classes as globals on the
+React Native JS thread — UIKit must be reached through worklets. Pass
+`{ globals: true }` only if you deliberately want the JS‑thread globals.
+
+Install `react-native-worklets`, add both Babel plugins, and re‑run
+`pod install` so `RNWorklets` is linked:
 
 ```sh
 npm install react-native-worklets
 ```
 
 ```js
+// babel.config.js
 module.exports = {
   presets: ["module:@react-native/babel-preset"],
   plugins: [
@@ -45,122 +63,71 @@ module.exports = {
 };
 ```
 
-`installWorklets()` is still exported for custom initialization, but it throws
-when Worklets is unavailable or incompatible. `runOnUI()` throws when the
-callback was not transformed into a Worklets function.
-
-Obj-C blocks and JS-backed Obj-C method callbacks, including `NSObject.extend`
-subclass overrides and delegates created with `createDelegate()`, should return
-to React Native's JS thread for JS work. Use `jsInvoker()` when a callback can be
-reached from a native caller thread:
-
-```ts
-UIView.animateWithDurationAnimationsCompletion(
-  0.25,
-  null,
-  NativeScript.jsInvoker((finished) => {
-    console.log("animation finished", finished);
-  }),
-);
-```
-
-Delegate, data-source, target/action, and `UIAction` callbacks are JS-side
-callbacks. Treat their bodies as JS work. If a callback can be reached from a
-background native thread and needs to mutate UIKit, wrap the mutation in
-`NativeScript.runOnUI()` with a Worklets callback.
-
-The package also includes a Babel plugin for directive-style JS callbacks:
+The NativeScript Babel plugin rewrites directive‑style callbacks: a `"use js"`
+callback becomes an interop callback that runs back on the React Native JS
+thread. `"use ui"` is rejected in React Native — use a `"worklet"` callback with
+`NativeScript.runOnUI()` instead.
 
 ```ts
 someNativeApi(() => {
   "use js";
-  console.log("back on JS");
+  console.log("back on the RN JS thread");
 });
 ```
 
-The transform rewrites those callbacks to `NativeScript.jsInvoker(fn)`.
-`"use ui"` is rejected in React Native; use a Worklets `"worklet"` callback with
-`NativeScript.runOnUI()` instead.
+---
 
-## Defining native UIKit views in JS
+## The threading model
 
-Use `defineUIKitView()` to turn a NativeScript-created `UIView` tree into a
-normal React Native component. The package owns the RN host view; your
-definition owns the UIKit subtree. `create`, `update`, `mounted`, and `dispose`
-run through the NativeScript UI dispatcher, so UIKit calls are safe and use the
-same globals and iOS SDK types as NativeScript.
+There are three execution contexts, and getting UIKit onto the right one is the
+whole point of this package:
+
+| Context | What runs there | How you reach it |
+| --- | --- | --- |
+| **RN JS thread** | Your React render/effects, prop plumbing, `init()`. | Default. Never touch UIKit from here. |
+| **Worklet UI runtime** | UIKit reads/writes, host `create`/`update`/… lifecycle, delegate/target‑action bodies. | `runOnUI()`, host lifecycle callbacks (already on the UI runtime). |
+| **Main dispatch queue** | Work that must land on the platform main queue specifically. | `dispatchAsyncOnMainQueue()` (call from the UI runtime). |
+
+- **`runOnUI(callback, ...args)`** — schedules a `"worklet"` callback on the UI
+  runtime and resolves with its result. It only accepts a Worklets‑transformed
+  function; running the RN JS runtime as a UI‑thread shim is not supported, so a
+  non‑worklet callback throws. This is how you touch UIKit from React code.
+
+  ```ts
+  const width = await NativeScript.runOnUI(() => {
+    "worklet";
+    return UIScreen.mainScreen.bounds.size.width;
+  });
+  ```
+
+- **`dispatchAsyncOnMainQueue(callback)`** — from inside a worklet, defers a
+  `() => void` onto the main dispatch queue (e.g. to let a presentation settle
+  before the next UIKit mutation). Returns `false` if the native scheduler is
+  not installed.
+
+- **`registerUIRuntimeGlobal(name, value)`** — installs a shared value as a
+  global on the UI runtime so multiple worklets can reach it without
+  re‑capturing it. Resolves to `true` once installed. Use it for cross‑worklet
+  singletons; prefer plain closure capture for one‑off values.
+
+Host lifecycle callbacks (`create`, `update`, `mounted`, `dispose`, …) already
+run on the UI runtime, so you do **not** wrap their bodies in `runOnUI()`.
+
+---
+
+## Defining native hosts
+
+Three factories turn native objects into React components. Each takes a
+definition whose lifecycle callbacks run on the UI runtime and receive a
+context object (`ctx`).
+
+### `defineUIKitView` — one native `UIView`
 
 ```tsx
 import NativeScript, { defineUIKitView } from "@nativescript/react-native";
 import type { UIKitViewRef } from "@nativescript/react-native";
 
-NativeScript.init();
-
-type BadgeProps = {
-  title: string;
-  tone?: "blue" | "green";
-};
-
-export const NativeBadge = defineUIKitView<BadgeProps, UIView>({
-  name: "NativeBadge",
-  create() {
-    const view = UIView.alloc().initWithFrame(CGRectZero);
-    const label = UILabel.alloc().initWithFrame(CGRectZero);
-    label.tag = 1;
-    label.textAlignment = NSTextAlignment.Center;
-    label.textColor = UIColor.whiteColor;
-    label.autoresizingMask =
-      UIViewAutoresizing.FlexibleWidth | UIViewAutoresizing.FlexibleHeight;
-    view.addSubview(label);
-    return view;
-  },
-  update(view, props) {
-    view.backgroundColor =
-      props.tone === "green"
-        ? UIColor.systemGreenColor
-        : UIColor.systemBlueColor;
-    view.layer.cornerRadius = 12;
-    view.clipsToBounds = true;
-    const label = view.viewWithTag(1) as UILabel;
-    label.text = props.title;
-  },
-});
-
-<NativeBadge title="UIKit from JS" tone="blue" style={{ height: 48 }} />;
-```
-
-Forward a ref when you need imperative access:
-
-```tsx
-const badgeRef = useRef<UIKitViewRef<UIView>>(null);
-
-await badgeRef.current?.runOnUI((view) => {
-  "worklet";
-  view.alpha = 0.8;
-});
-
-const measured = await badgeRef.current?.measureNative();
-badgeRef.current?.invalidateNativeLayout();
-```
-
-React Native view props such as `style`, `testID`, accessibility props, responder
-props, and `pointerEvents` go to the host component. Your own props go to the
-UIKit definition; use `nativeProps(props)` when a plugin prop should also affect
-the RN host. The `name` option is forwarded to the shared native host view as a
-debug name, so native view descriptions can show `NativeScriptUIView` with your
-definition name. It does not dynamically change the registered RN host component
-tag.
-
-### Lifecycle and context
-
-`create`, `update`, `mounted`, and `dispose` run through the UIKit path. You do
-not need to wrap UIKit work in `runOnUI()` inside those callbacks.
-
-The first argument to `create` is also the current props object, so existing
-`create(props)` definitions keep working. New code can use the context helpers:
-
-```tsx
-export const NativeSwitch = NativeScript.defineUIKitView<
+export const NativeSwitch = defineUIKitView<
   { value: boolean; onValueChange?: (value: boolean) => void },
   UISwitch
 >({
@@ -174,128 +141,17 @@ export const NativeSwitch = NativeScript.defineUIKitView<
     return view;
   },
   update(view, props) {
-    if (view.on !== props.value) {
-      view.setOnAnimated(props.value, false);
-    }
+    if (view.on !== props.value) view.setOnAnimated(props.value, false);
   },
 });
+
+<NativeSwitch value={on} onValueChange={setOn} style={{ height: 32 }} />;
 ```
 
-Context helpers cover common native view-manager patterns:
+### `defineUIKitContainer` — a native `UIView` that hosts RN children
 
-- `ctx.emit(name, payload)` asynchronously calls the matching React prop.
-- `ctx.targetAction(control, events, callback)` retains and removes a target/action helper.
-- `ctx.delegate(object, protocol, implementation)` creates, assigns, and retains a delegate.
-- `ctx.notification(name, object, callback)` observes and removes notifications.
-- `ctx.observe(object, keyPath, callback)` observes and removes KVO.
-- `ctx.retain(value)` keeps native helper objects alive for the component lifetime.
-- `ctx.release(value)` releases a retained helper before component disposal.
-- `ctx.dispose(callback)` runs cleanup once, in reverse registration order.
-- `ctx.invalidateLayout()` schedules a fresh native measurement.
-
-### State, delegates, and retention
-
-Native proxies support JavaScript expando properties for local state. Native
-property setters still win first, and unsupported names fall back to JS state:
-
-```ts
-NativeScript.runOnUI(() => {
-  "worklet";
-  const view = UIView.new();
-  view.ownerState = { selected: false };
-  view.tag = 42; // still calls UIKit's native tag setter
-});
-```
-
-Use `WeakMap`, React state, or another external object when you want state that
-is not tied to the lifetime of a specific native proxy.
-
-UIKit often retains delegates and actions weakly or outlives the JavaScript
-closure that created them. Retain those helper objects explicitly. Use
-`ctx.retain()` inside `defineUIKitView()`, or a standalone retainer elsewhere:
-
-```ts
-const retainer = NativeScript.createRetainer();
-
-const delegate = NativeScript.createDelegate<UIScrollViewDelegate>(
-  UIScrollViewDelegate,
-  {
-    scrollViewDidScroll(scrollView) {
-      NativeScript.runOnUI(() => {
-        "worklet";
-        scrollView.indicatorStyle = UIScrollViewIndicatorStyle.White;
-      });
-    },
-  },
-  { retainer },
-);
-
-scrollView.delegate = delegate;
-
-// Later, when the owner is done:
-scrollView.delegate = null;
-retainer.dispose();
-```
-
-`createDelegate(protocols, methods, options)` accepts protocol objects or names.
-If metadata was generated before a framework was loaded, use strings with
-`NativeScript.loadFramework()` and `NativeScript.getProtocol()`:
-
-```ts
-NativeScript.loadFramework("QuickLook");
-
-const dataSource = NativeScript.createDelegate(
-  "QLPreviewControllerDataSource",
-  {
-    numberOfPreviewItemsInPreviewController() {
-      return 1;
-    },
-    previewControllerPreviewItemAtIndex() {
-      return NSURL.fileURLWithPath(path);
-    },
-  },
-  { owner: ctx },
-);
-```
-
-Use `NativeScript.retain(value)` and `NativeScript.release(value)` only for
-process-lifetime helpers. Prefer `createRetainer()` or `ctx.retain()` for
-component-scoped objects.
-
-### Layout
-
-React Native owns placement through Yoga. UIKit owns native behavior inside the
-placed rectangle. Use `layout.sizing` to opt into native measurement:
-
-- `fill`: fill the RN host bounds.
-- `intrinsic`: use `intrinsicContentSize`.
-- `sizeThatFits`: use `sizeThatFits` with style constraints.
-- `autoLayout`: use `systemLayoutSizeFittingSize`.
-
-Use `defaultSize`, `minSize`, and `maxSize` when a native view can report zero
-or needs bounds during the first layout pass.
-
-```tsx
-const NativeTitle = NativeScript.defineUIKitView<{ text: string }, UILabel>({
-  name: "NativeTitle",
-  layout: {
-    sizing: "intrinsic",
-    defaultSize: { width: 1, height: 1 },
-  },
-  create() {
-    return UILabel.new();
-  },
-  update(label, props, _previous, ctx) {
-    label.text = props.text;
-    ctx?.invalidateLayout();
-  },
-});
-```
-
-### Containers and view controllers
-
-Use `defineUIKitContainer()` when React Native children should mount inside a
-UIKit-owned content view:
+`create` returns `{ rootView, childrenView }`; React Native children mount into
+`childrenView`.
 
 ```tsx
 export const BlurCard = NativeScript.defineUIKitContainer({
@@ -304,20 +160,15 @@ export const BlurCard = NativeScript.defineUIKitContainer({
     const rootView = UIVisualEffectView.alloc().initWithEffect(
       UIBlurEffect.effectWithStyle(UIBlurEffectStyle.SystemMaterial),
     );
-    return {
-      rootView,
-      childrenView: rootView.contentView,
-    };
+    return { rootView, childrenView: rootView.contentView };
   },
 });
-
-<BlurCard style={{ padding: 16 }}>
-  <Text>React Native child content</Text>
-</BlurCard>;
 ```
 
-Use `defineUIViewController()` for APIs that require real child view-controller
-containment:
+### `defineUIViewController` — real child‑controller containment
+
+Use this when UIKit expects a `UIViewController` (tabs, navigation, split views,
+document browsers, presentations). `createController` returns the controller.
 
 ```tsx
 export const NativePageHost = NativeScript.defineUIViewController({
@@ -331,295 +182,207 @@ export const NativePageHost = NativeScript.defineUIViewController({
 });
 ```
 
-### Building app-specific native UI
+### Lifecycle hooks
 
-This package is intentionally low-level. It installs NativeScript's Native API
-inside React Native and gives you lifecycle helpers; it does not ship opinionated
-wrappers for tabs, maps, cameras, pickers, or other app components. Build those
-as local components in your app or library:
+Definitions may implement `create`/`createController`, `update`, `refresh`,
+`mounted`, `dispose`, `hostReady`, `transactionCommitted`,
+`mountingTransactionWillMount`/`DidMount`, `mountChild`/`unmountChild`, and
+`nativeProps`. Each hook receives `(view, props, previousProps?, ctx?)` (details
+vary per hook) and runs on the UI runtime. `dispose` may return
+`{ removeHostView: true }` to also tear down the RN host view.
 
-- Use `defineUIKitView()` for one native `UIView`.
-- Use `defineUIKitContainer()` when React Native children should mount inside a
-  native `UIView`.
-- Use `defineUIViewController()` when UIKit expects view-controller containment,
-  such as tabs, navigation controllers, split views, document browsers, preview
-  controllers, and presentation flows.
-- Use `ctx.delegate()`, `ctx.targetAction()`, `ctx.retain()`, and
-  `ctx.dispose()` for native callbacks and weakly-held helper objects.
-- Use `NativeScript.isClassAvailable()` before touching SDK-new APIs.
+### The context (`ctx`)
 
-For example, build native tabs with `UITabBarController` instead of measuring a
-standalone `UITabBar` as a leaf RN view:
+`ctx` is a [`UIKitViewContext`](src/index.ts) with the current `name`, `tag`,
+`props`, Fabric handles, and helpers:
+
+- `ctx.emit(name, payload)` — asynchronously invoke the matching React prop.
+- `ctx.targetAction(control, events, callback)` — retained target/action, auto‑removed on dispose.
+- `ctx.gestureAction(gesture, callback)` — retained gesture target/action.
+- `ctx.actionTarget(callback)` — a standalone retained target/action pair.
+- `ctx.delegate(object, protocol, implementation)` — create + assign + retain a delegate.
+- `ctx.notification(name, object, callback)` — observe + auto‑remove an `NSNotification`.
+- `ctx.observe(object, keyPath, callback)` — add + auto‑remove a KVO observation.
+- `ctx.retain(value)` / `ctx.release(value)` — keep native helpers alive for (or free them before) the component lifetime.
+- `ctx.dispose(callback)` — register cleanup, run once in reverse order.
+- `ctx.invalidateLayout()` — schedule a fresh native measurement.
+- `ctx.loadImage(source, options, callback)` — resolve an RN image source to a native `UIImage`.
+
+Delegate, data‑source, target/action and `UIAction` callback bodies are JS work.
+If one can be reached from a background native thread and needs to mutate UIKit,
+wrap the mutation in `runOnUI()`.
+
+### `layout.sizing`
+
+React Native owns placement through Yoga; UIKit owns native behavior inside the
+placed rectangle. `layout.sizing` opts into native measurement:
+
+- `fill` — fill the RN host bounds (default).
+- `intrinsic` — use `intrinsicContentSize`.
+- `sizeThatFits` — use `sizeThatFits` with the style constraints.
+- `autoLayout` — use `systemLayoutSizeFittingSize`.
+
+Add `defaultSize`, `minSize`, `maxSize` when a native view can report zero or
+needs bounds on the first pass. Call `ctx.invalidateLayout()` after content
+changes.
+
+### Imperative refs
 
 ```tsx
-type NativeTabsProps = {
-  selectedIndex: number;
-  onSelectedIndexChange?: (index: number) => void;
-};
-
-export const NativeTabs = NativeScript.defineUIViewController<
-  NativeTabsProps,
-  UITabBarController
->({
-  name: "NativeTabs",
-  createController(ctx) {
-    const controller = UITabBarController.new();
-    const viewControllers = TAB_ITEMS.map((item, index) => {
-      const child = UIViewController.new();
-      child.view.backgroundColor = UIColor.systemBackgroundColor;
-      child.tabBarItem = UITabBarItem.alloc().initWithTitleImageSelectedImage(
-        item.title,
-        UIImage.systemImageNamed(item.symbol),
-        UIImage.systemImageNamed(item.selectedSymbol),
-      );
-      child.tabBarItem.tag = index;
-      return child;
-    });
-
-    controller.viewControllers = NSArray.arrayWithArray(viewControllers);
-    ctx.delegate(controller, UITabBarControllerDelegate, {
-      tabBarControllerDidSelectViewController(tabBarController) {
-        ctx.emit("onSelectedIndexChange", tabBarController.selectedIndex);
-      },
-    });
-    return controller;
-  },
-  update(controller, props) {
-    controller.selectedIndex = props.selectedIndex;
-  },
-});
-
-<NativeTabs
-  selectedIndex={selectedIndex}
-  onSelectedIndexChange={setSelectedIndex}
-  style={{ flex: 1 }}
-/>;
-```
-
-For modal UIKit controllers, find the top visible presenter and guard against
-double presentation:
-
-```ts
-function topVisibleViewController(
-  root = UIApplication.sharedApplication.keyWindow?.rootViewController,
-) {
-  let current = root;
-  while (current?.presentedViewController) {
-    current = current.presentedViewController;
-  }
-  if (current?.selectedViewController) {
-    return topVisibleViewController(current.selectedViewController);
-  }
-  if (current?.visibleViewController) {
-    return topVisibleViewController(current.visibleViewController);
-  }
-  return current;
-}
-
-await NativeScript.runOnUI(() => {
+const ref = useRef<UIKitViewRef<UISwitch>>(null);
+await ref.current?.runOnUI((view) => {
   "worklet";
-  const presenter = topVisibleViewController();
-  if (!presenter || presenter.presentedViewController) {
-    return;
-  }
-  presenter.presentViewControllerAnimatedCompletion(controller, true, null);
+  view.alpha = 0.8;
 });
+const size = await ref.current?.measureNative();
+ref.current?.invalidateNativeLayout();
 ```
 
-### Availability and heavy UIKit classes
+---
 
-Use availability helpers before touching optional frameworks. Simulator and
-device availability can differ for frameworks such as VisionKit, QuickLook, and
-PassKit.
+## Host view props
 
-```ts
-if (
-  NativeScript.loadFramework("VisionKit") &&
-  NativeScript.isClassAvailable("VNDocumentCameraViewController")
-) {
-  const CameraController = NativeScript.getClass<
-    typeof VNDocumentCameraViewController
-  >("VNDocumentCameraViewController");
-  const controller = CameraController?.new();
-}
-```
+RN view props (`style`, `testID`, accessibility, responder props,
+`pointerEvents`) go to the shared host component; your own props go to the
+definition. Use `nativeProps(props)` in a definition when a plugin prop should
+also affect the RN host. Beyond the RN props, [`UIKitHostViewProps`](src/index.ts)
+exposes hosting‑strategy flags — most apps need none of them; adapters use them
+to pick a containment model. One line each:
 
-`NativeScript.isFrameworkLoaded(nameOrPath)` checks an `NSBundle`;
-`NativeScript.loadFramework(nameOrPath)` loads a system framework by name or a
-specific `.framework` path; `NativeScript.getClass(name)` and
-`NativeScript.getProtocol(name)` return dynamically available native references.
+- `adoptHostViewAsControllerView` — make the Fabric host view the controller's `view` (upstream RNS hosting; moves mounted children wholesale).
+- `attachController` / `attachControllerToParent` / `detachControllerFromParent` — control whether/where the hosted controller is added as a child controller.
+- `attachControllerView` / `attachNativeView` / `pinNativeViewToHost` — control how the native view is inserted and pinned into the host.
+- `collectChildren` — expose mounted Fabric children for collection instead of mounting them (see `collectedUIKitHostChildren`).
+- `mountChildrenDirectlyToChildrenView` / `layoutDirectChildrenToChildrenViewBounds` — mount/layout RN children straight into the children view.
+- `disableDetachedChildrenTouchHandler` / `externalDetachedChildrenOwner` / `preserveDetachedChildrenLayout` — opt out of the detached‑children touch/layout plumbing when an upstream surface already owns it.
+- `detachedChildrenContentOffsetX` / `detachedChildrenContentOffsetY` — offset detached hosted content.
+- `disableUIKitHostWindowAttachRefresh` — skip the generic window‑attach refresh when native containment owns the hot path.
+- `fabricLifecycleCallbacks` — enable the Fabric mount/commit lifecycle hooks.
+- `immediateTransactionCommit` / `deferTransactionCommitOnRemovals` — tune when Fabric transactions are committed to the host.
+- `emitOffWindowHostReady` / `ignoreHostReadyWindowAttachment` / `onHostReady` — control the `hostReady` lifecycle event and its window gating.
 
-Class globals are lazy. Large UIKit classes such as `UITabBarController` can
-have a wide inherited surface, so avoid forcing member enumeration with broad
-reflection in hot paths. Constructing and direct property/method access stay
-lazy; `Object.keys`, prototype introspection, and generated member lists are the
-expensive path.
+---
 
-Objective-C exceptions thrown while dispatching through the bridge are converted
-to JS errors where Objective-C can catch them. Process-level failures such as
-`abort()`, fatal assertions, memory corruption, and some framework precondition
-violations are not catchable; use availability checks and presentation guards
-instead of relying on exceptions as control flow.
+## Interop utilities
 
-The package ships example definitions under `@nativescript/react-native/examples`.
+Each entry: signature — contract — the one hazard.
 
-The published package includes generated NativeScript metadata, the libffi
-xcframework, and generated iOS SDK TypeScript declarations. Build it from the
-repository root with:
+- **`getClass<T>(name): T | null`** — dynamic native class lookup. Returns `null` if unavailable. Hazard: globals are lazy; don't force member enumeration in hot paths.
+- **`isClassAvailable(name): boolean`** — availability probe. Hazard: simulator vs device availability can differ for optional frameworks.
+- **`loadFramework(nameOrPath): boolean`** — load a system framework by name or `.framework` path before using its classes/protocols.
+- **`createDelegate<T>(protocols, methods, options?): T`** — build + retain a protocol delegate from protocol objects or names. Hazard: UIKit holds delegates weakly — retain via `options.retainer`/`options.owner`, or it dies with the closure.
+- **`nativeMethodPolicy(callback, policy)`** — tag a callback with a per‑method thread/return policy the bridge honors. Hazard: the marker is non‑enumerable; keep the tagged reference.
+- **`nativeHandleForObject(value): string | undefined`** — stable string handle for a native object, safe to carry across worklets.
+- **`nativeObjectFromHandle<T>(handle): T | null`** — resolve a handle back to a native object on the UI runtime. Hazard: string handles round‑trip; numeric coercion is a lossy fallback.
+- **`invokeObjCSelector<R>(target, selector, args?): R`** — send an arbitrary Objective‑C selector; native object results are re‑wrapped.
+- **`nativeArrayLength(value)` / `nativeArrayItem<T>(value, index)`** — read a bridged `NSArray`/`NSOrderedSet` without assuming JS array shape.
+- **`nativeSubviews<T>(view): T[]`** — snapshot a `UIView`'s subviews on the UI runtime.
+- **`loadImage(source, options, callback)`** — resolve an RN image source to a native `UIImage` (also available as `ctx.loadImage`).
+- **`collectedUIKitHostChildren<T>(view)` / `uikitHostHandlesForView(view)`** — read the Fabric children/handles a `collectChildren` host exposed.
+- **`refreshUIKitHostView(view)` / `flushUIKitHostView(view)`** — re‑run a host's opt‑in `refresh`, or force its display to flush, when UIKit moved it without a React prop change. Both return `false` for non‑hosted views.
+- **`notifyUIKitAccessibilityLayoutChanged(view)`** — post a UIKit accessibility layout‑changed notification for a reattached host.
+- **`reactNativeFabricViewLayoutTraits(view)` / `…ForHandle(handle)`** — read a Fabric view's layout metrics/traits from an object or a handle.
+
+Objective‑C exceptions raised while dispatching through the bridge become JS
+errors where they can be caught. Process‑level failures (`abort()`, fatal
+assertions, memory corruption, some framework preconditions) are not catchable —
+use availability checks and presentation guards instead of exceptions as control
+flow.
+
+---
+
+## The `__extendClass` contract
+
+`NSObject.extend(...)` (used under the hood by `createDelegate` and by direct
+subclassing) builds a native subclass whose JS proxy forwards to the native
+class. Two hazards ship with it:
+
+1. **Overriding an inherited property needs an accessor descriptor.** A plain
+   `value:` override on the extension object does not replace an inherited
+   Objective‑C property getter/setter — define the override with an accessor
+   (`get`/`set`) descriptor so the native property dispatch is actually
+   overridden.
+
+2. **`typeof proxy.sel === "function"` is not an availability check.** The proxy
+   answers `function` for selectors the class may respond to, so a truthy
+   `typeof` does not prove the selector is implemented/available. Use
+   `isClassAvailable()` / `respondsToSelector:` (or a real feature probe) before
+   relying on an optional selector.
+
+---
+
+## Examples
+
+Runnable definitions ship under
+[`@nativescript/react-native/examples`](examples): a switch, an intrinsic label,
+a container, a view controller, a tab‑bar controller, a QuickLook preview
+controller, and a presentation helper.
+
+---
+
+## Install (bare React Native)
 
 ```sh
-npm run build-rn-turbomodule
+npm install /path/to/nativescript-react-native-*.tgz react-native-worklets
+cd ios
+RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 pod install
 ```
 
-The tarball is written to `packages/react-native/dist/` and copied to
-`build/npm-tarballs/`.
-
-To verify it inside a generated React Native iOS app:
+Add both Babel plugins (see above), then `init()` before using native APIs. A
+small CLI is bundled for bare projects:
 
 ```sh
-npm run test-rn-turbomodule
+npx nativescript-rn configure               # adds the Babel plugins + config, non-destructively
+npx nativescript-rn generate-metadata --check
 ```
 
-## Using the package in a React Native app
+## Install (Expo)
 
-1. Build or download the package tarball.
-2. Install it in an RN app that has Hermes and the New Architecture enabled:
+Expo Go can't load custom native code — use a development build, EAS Build, or
+`npx expo run:ios`.
 
-   ```sh
-   npm install /path/to/nativescript-react-native-0.0.1.tgz react-native-worklets
-   cd ios
-   RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 pod install
-   ```
+```sh
+npx expo install @nativescript/react-native react-native-worklets
+```
 
-3. Initialize it before using native APIs:
+```json
+{ "expo": { "plugins": ["@nativescript/react-native"] } }
+```
 
-   ```ts
-   import NativeScript from "@nativescript/react-native";
-
-   NativeScript.init();
-
-   await NativeScript.runOnUI(() => {
-     "worklet";
-     UIApplication.sharedApplication.keyWindow.tintColor =
-       UIColor.systemPinkColor;
-   });
-   ```
-
-4. Add the bundled NativeScript Babel plugin and the Worklets Babel plugin:
-
-   ```js
-   module.exports = {
-     presets: ["module:@react-native/babel-preset"],
-     plugins: [
-       "@nativescript/react-native/babel-plugin",
-       "react-native-worklets/plugin",
-     ],
-   };
-   ```
-
-## Using the package in an Expo app
-
-Expo Go cannot load this package because it contains custom native code. Use an
-Expo development build, EAS Build, or `npx expo run:ios`.
-
-1. Install the package:
-
-   ```sh
-   npx expo install @nativescript/react-native react-native-worklets
-   ```
-
-   When testing a local tarball:
-
-   ```sh
-   npm install /path/to/nativescript-react-native-0.0.1.tgz
-   ```
-
-2. Add the config plugin to `app.json` or `app.config.js`:
-
-   ```json
-   {
-     "expo": {
-       "plugins": ["@nativescript/react-native"]
-     }
-   }
-   ```
-
-   The plugin configures iOS for Hermes and the React Native New Architecture,
-   which are required by this JSI TurboModule. It also adds the
-   `@nativescript/react-native/babel-plugin` and `react-native-worklets/plugin`
-   transforms to `babel.config.js` so `"use js"` and worklet callbacks work in
-   Expo bundles.
-
-3. Prebuild and run the iOS development build:
-
-   ```sh
-   npx expo prebuild --platform ios
-   npx expo run:ios
-   ```
-
-4. Initialize NativeScript in app code before using native APIs:
-
-   ```tsx
-   import NativeScript, { defineUIKitView } from "@nativescript/react-native";
-
-   NativeScript.init();
-
-   const NativeBadge = defineUIKitView<{ title: string }, UIView>({
-     name: "NativeBadge",
-     create() {
-       const view = UIView.alloc().initWithFrame(CGRectZero);
-       const label = UILabel.alloc().initWithFrame(CGRectZero);
-       label.tag = 1;
-       label.textAlignment = NSTextAlignment.Center;
-       view.addSubview(label);
-       return view;
-     },
-     update(view, props) {
-       view.backgroundColor = UIColor.systemBlueColor;
-       const label = view.viewWithTag(1) as UILabel;
-       label.text = props.title;
-     },
-   });
-   ```
-
-Set `{ "babelPlugin": false }` in the config plugin options if you prefer to add
-the NativeScript and Worklets Babel plugins manually.
-
-The plugin also writes `nativescript.react-native.json` so metadata options are
-visible to native builds. You can pass metadata inputs when the app uses
-Objective-C-visible pods or extra system frameworks:
+The config plugin enables Hermes + the New Architecture and adds both Babel
+transforms. Pass metadata inputs when the app uses Objective‑C‑visible pods or
+extra system frameworks:
 
 ```json
 {
   "expo": {
     "plugins": [
-      [
-        "@nativescript/react-native",
-        {
-          "metadata": {
-            "includePods": ["SomeObjCSDK"],
-            "includeSystemFrameworks": ["UIKit", "MapKit", "WebKit"]
-          }
+      ["@nativescript/react-native", {
+        "metadata": {
+          "includePods": ["SomeObjCSDK"],
+          "includeSystemFrameworks": ["UIKit", "MapKit", "WebKit"]
         }
-      ]
+      }]
     ]
   }
 }
 ```
 
-## Bare React Native setup helper
+Set `{ "babelPlugin": false }` in the plugin options to add the Babel plugins
+yourself.
 
-The tarball includes a small CLI for bare RN projects:
+---
+
+## Building and testing the package
 
 ```sh
-npx nativescript-rn configure
-npx nativescript-rn generate-metadata --check
-cd ios
-RCT_NEW_ARCH_ENABLED=1 USE_HERMES=1 pod install
+npm run build-rn-turbomodule   # tarball -> packages/react-native/dist/ and build/npm-tarballs/
+npm run test-rn-turbomodule    # verify inside a generated RN iOS app
 ```
 
-`configure` adds the bundled NativeScript and Worklets Babel plugins when
-missing, writes
-`nativescript.react-native.json`, and warns when the app is not configured for
-Hermes and the New Architecture. The command is intentionally conservative and
-does not make destructive native project edits.
+The published tarball includes the generated NativeScript metadata, the libffi
+xcframework, and the generated iOS SDK TypeScript declarations. `src/index.ts`
+is the package's type surface (`package.json` "types"); it is authored for
+babel/metro and carries `// @ts-nocheck`, so its exported declarations are the
+checkable contract while its worklet‑host body stays out of consumers' strict
+type checks.
