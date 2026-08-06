@@ -66,6 +66,82 @@ std::optional<NativeApiKnownExposedMethod> knownNativeApiExposedMethod(
   return method;
 }
 
+// An ObjC init convention lets an initializer return an object other than
+// `self` (most commonly `self` itself, but a class cluster/singleton
+// initializer can return a completely different receiver). When it returns
+// the SAME receiver we already wrapped for this call, the JS side should keep
+// resolving to that one preserved wrapper rather than creating (and briefly
+// GC'ing) a second, divergent one for the identical native object — so the
+// stale/duplicate wrapper here is detached (its bridge state, e.g. expandos,
+// handed to the preserved wrapper) rather than left to tear down the shared
+// native receiver's bridge state on its own destruction.
+std::optional<Value> preservedNativeApiInitializerSelfReturn(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const Value& result, const Value& receiverValue) {
+  if (bridge == nullptr || receiver == nil || !receiverValue.isObject()) {
+    return std::nullopt;
+  }
+
+  id resultObject =
+      NativeApiObjectHostObject::nativeObjectFromValue(runtime, result);
+  if (resultObject != receiver) {
+    return std::nullopt;
+  }
+
+  Object receiverObject = receiverValue.asObject(runtime);
+  if (!receiverObject.isHostObject<NativeApiObjectHostObject>(runtime)) {
+    return std::nullopt;
+  }
+
+  auto receiverHostObject =
+      receiverObject.getHostObject<NativeApiObjectHostObject>(runtime);
+  if (receiverHostObject == nullptr ||
+      receiverHostObject->object() != receiver) {
+    return std::nullopt;
+  }
+
+  std::shared_ptr<NativeApiObjectHostObject> resultHostObject;
+  if (result.isObject()) {
+    Object resultObjectValue = result.asObject(runtime);
+    if (resultObjectValue.isHostObject<NativeApiObjectHostObject>(runtime)) {
+      resultHostObject =
+          resultObjectValue.getHostObject<NativeApiObjectHostObject>(runtime);
+    }
+  }
+
+  if (resultHostObject != nullptr && resultHostObject != receiverHostObject) {
+    resultHostObject->detachObjectPreservingBridgeState(receiver);
+  }
+
+  Value preserved(runtime, receiverValue);
+  bridge->rememberNativeObjectRoundTripValue(runtime, receiver, preserved);
+  return preserved;
+}
+
+// $base/super dispatch wrapper for ClassBuilder subclasses: calls the ObjC
+// super implementation, then — for initializers only — applies the
+// preserved-self-return handling above.
+Value callNativeApiBaseObjectSelector(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const Object& receiverObject,
+    const std::shared_ptr<NativeApiObjectHostObject>& receiverHostObject,
+    id receiver, const std::string& selectorName,
+    const NativeApiMember* member, const Value* args, size_t count,
+    Class dispatchClass) {
+  Value result = receiverHostObject->callObjectSelector(
+      runtime, selectorName, member, args, count, dispatchClass);
+
+  if (selectorName.rfind("init", 0) != 0) {
+    return result;
+  }
+
+  if (auto preserved = preservedNativeApiInitializerSelfReturn(
+          runtime, bridge, receiver, result, Value(runtime, receiverObject))) {
+    return std::move(*preserved);
+  }
+  return result;
+}
+
 std::optional<NativeApiClassBuilderRegistration>
 findNativeApiClassBuilder(id object) {
   Class cls = object != nil ? object_getClass(object) : Nil;
@@ -261,14 +337,16 @@ void addEngineOverrideMethod(Runtime& runtime,
                           Class nativeClass, Class baseClass,
                           const std::string& selectorName,
                           MDSectionOffset signatureOffset,
-                          bool returnOwned, Function function) {
+                          bool returnOwned, Function function,
+                          NativeApiMethodCallbackPolicy methodPolicy = {}) {
   if (selectorName.empty() || signatureOffset == MD_SECTION_OFFSET_NULL) {
     return;
   }
 
   auto callback = createEngineMethodCallback(runtime, bridge, selectorName,
                                           signatureOffset, std::move(function),
-                                          returnOwned);
+                                          returnOwned, baseClass,
+                                          std::move(methodPolicy));
   SEL selector = sel_registerName(selectorName.c_str());
   std::string metadataEncoding =
       objcMethodSignatureForEngineSignature(callback->signature());
@@ -282,6 +360,16 @@ Value getObjectPropertyOrUndefined(Runtime& runtime, const Object& object,
   return object.hasProperty(runtime, name.c_str())
              ? object.getProperty(runtime, name.c_str())
              : Value::undefined();
+}
+
+// Auto-applied to native accessor (getter/setter) overrides: suppresses
+// re-entrancy while the accessor machinery is already dispatching through
+// this same receiver (set/cleared around JS-subclass accessor invocation).
+NativeApiMethodCallbackPolicy nativeAccessorCallbackPolicy(
+    NativeApiMethodCallbackPolicy policy = {}) {
+  policy.skipCallbackIfAssociatedObjectTruthy.push_back(
+      "__nativeApiAccessorCallbackState");
+  return policy;
 }
 
 Class dispatchSuperclassForEngineDerivedReceiver(id receiver,
@@ -444,12 +532,16 @@ std::optional<NativeApiSymbol> protocolSymbolFromEngineValue(
 void addEngineExposedMethod(Runtime& runtime,
                          const std::shared_ptr<NativeApiBridge>& bridge,
                          Class nativeClass, const std::string& selectorName,
-                         NativeApiSignature signature, Function function) {
+                         NativeApiSignature signature, Function function,
+                         Class methodBaseClass = Nil,
+                         NativeApiMethodCallbackPolicy methodPolicy = {}) {
   if (selectorName.empty()) {
     return;
   }
   auto callback = createEngineMethodCallback(runtime, bridge, selectorName,
-                                          std::move(signature), std::move(function));
+                                          std::move(signature), std::move(function),
+                                          methodBaseClass,
+                                          std::move(methodPolicy));
   std::string encoding = objcMethodSignatureForEngineSignature(callback->signature());
   class_replaceMethod(nativeClass, sel_registerName(selectorName.c_str()),
                       reinterpret_cast<IMP>(callback->functionPointer()),
@@ -633,7 +725,8 @@ Value extendNativeApiClass(
 	            addEngineExposedMethod(runtime, bridge, nativeClass,
 	                                known->selectorName,
 	                                std::move(known->signature),
-	                                value.asObject(runtime).asFunction(runtime));
+	                                value.asObject(runtime).asFunction(runtime),
+	                                baseClass);
 	          }
 	        }
 	      }
@@ -649,7 +742,8 @@ Value extendNativeApiClass(
           runtime, bridge, nativeClass, baseClass,
           propertyMember->selectorName, propertyMember->signatureOffset,
           (propertyMember->flags & metagen::mdMemberReturnOwned) != 0,
-          getter.asObject(runtime).asFunction(runtime));
+          getter.asObject(runtime).asFunction(runtime),
+          nativeAccessorCallbackPolicy());
     } else if (propertyMember == nullptr && getter.isObject() &&
                getter.asObject(runtime).isFunction(runtime)) {
       auto overrides = methodOverridesForName(members, propertyName);
@@ -661,7 +755,8 @@ Value extendNativeApiClass(
             runtime, bridge, nativeClass, baseClass, member.selectorName,
             member.signatureOffset,
             (member.flags & metagen::mdMemberReturnOwned) != 0,
-            getter.asObject(runtime).asFunction(runtime));
+            getter.asObject(runtime).asFunction(runtime),
+            nativeAccessorCallbackPolicy());
       }
     }
 
@@ -672,7 +767,8 @@ Value extendNativeApiClass(
       addEngineOverrideMethod(runtime, bridge, nativeClass, baseClass,
                            propertyMember->setterSelectorName,
                            propertyMember->setterSignatureOffset, false,
-                           setter.asObject(runtime).asFunction(runtime));
+                           setter.asObject(runtime).asFunction(runtime),
+                           nativeAccessorCallbackPolicy());
     }
   }
 
@@ -705,7 +801,8 @@ Value extendNativeApiClass(
 	      if (signature) {
 	        rememberNativeApiKnownExposedMethod(selectorName, *signature);
 	        addEngineExposedMethod(runtime, bridge, nativeClass, selectorName,
-	                            std::move(*signature), std::move(*function));
+	                            std::move(*signature), std::move(*function),
+	                            baseClass);
 	      }
     }
   }
@@ -767,8 +864,9 @@ Value invokeNativeApiBaseMethod(
       if (actualArgc == 0) {
         Class dispatchClass =
             dispatchSuperclassForEngineDerivedReceiver(receiver, baseClass);
-        return receiverHostObject->callObjectSelector(
-            runtime, propertyMember->selectorName, propertyMember, nullptr, 0,
+        return callNativeApiBaseObjectSelector(
+            runtime, bridge, receiverObject, receiverHostObject, receiver,
+            propertyMember->selectorName, propertyMember, nullptr, 0,
             dispatchClass);
       }
       if (actualArgc == 1 && !propertyMember->setterSelectorName.empty() &&
@@ -778,9 +876,10 @@ Value invokeNativeApiBaseMethod(
         NativeApiMember setterMember = *propertyMember;
         setterMember.selectorName = propertyMember->setterSelectorName;
         setterMember.signatureOffset = propertyMember->setterSignatureOffset;
-        return receiverHostObject->callObjectSelector(
-            runtime, setterMember.selectorName, &setterMember, args + 3,
-            actualArgc, dispatchClass);
+        return callNativeApiBaseObjectSelector(
+            runtime, bridge, receiverObject, receiverHostObject, receiver,
+            setterMember.selectorName, &setterMember, args + 3, actualArgc,
+            dispatchClass);
       }
     }
   }
@@ -791,7 +890,7 @@ Value invokeNativeApiBaseMethod(
 
   Class dispatchClass =
       dispatchSuperclassForEngineDerivedReceiver(receiver, baseClass);
-  return receiverHostObject->callObjectSelector(runtime, member->selectorName,
-                                                member, args + 3, actualArgc,
-                                                dispatchClass);
+  return callNativeApiBaseObjectSelector(
+      runtime, bridge, receiverObject, receiverHostObject, receiver,
+      member->selectorName, member, args + 3, actualArgc, dispatchClass);
 }

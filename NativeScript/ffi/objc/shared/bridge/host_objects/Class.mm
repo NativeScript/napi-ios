@@ -307,7 +307,8 @@ class NativeApiClassHostObject final : public HostObject {
 
 Value makeNativeObjectValue(Runtime& runtime,
                             const std::shared_ptr<NativeApiBridge>& bridge,
-                            id object, bool ownsObject) {
+                            id object, bool ownsObject,
+                            Class superDispatchClass) {
   if (object == nil) {
     return Value::null();
   }
@@ -321,6 +322,9 @@ Value makeNativeObjectValue(Runtime& runtime,
             ? cached.asObject(runtime).getHostObject<NativeApiObjectHostObject>(runtime)
             : nullptr;
     if (cachedHost != nullptr && cachedHost->object() != nil) {
+      if (superDispatchClass != Nil) {
+        cachedHost->setSuperDispatchClass(superDispatchClass);
+      }
       if (ownsObject) {
         [object release];
       }
@@ -331,7 +335,8 @@ Value makeNativeObjectValue(Runtime& runtime,
 
   Object result = createNativeInstanceHostObject(
       runtime,
-      std::make_shared<NativeApiObjectHostObject>(bridge, object, ownsObject));
+      std::make_shared<NativeApiObjectHostObject>(
+          bridge, object, ownsObject, superDispatchClass));
   Value prototypeValue = Value::undefined();
   Value classWrapperValue =
       bridge->findObjectExpando(runtime, object, "__nativeApiClassWrapper");

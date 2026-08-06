@@ -239,10 +239,19 @@ JSValue NativeApiSelectorGroupCall(JSContext* context, JSValue thisValue,
     if (call.hasImmediateResult) {
       return call.immediateResult.local(runtime);
     }
-    return setQuickJSEnginePreparedObjCResult(
+    JSValue result = setQuickJSEnginePreparedObjCResult(
         runtime, data->bridge, call.receiver, *call.prepared,
         call.receiverHostObject, call.initializerClassWrapper, count, argv,
         call.dispatchClass);
+    if (!data->receiverIsClass && call.prepared->isInitMethod) {
+      if (auto preserved = preservedNativeApiInitializerSelfReturn(
+              runtime, data->bridge, call.receiver, Value::borrowed(runtime, result),
+              Value::borrowed(runtime, thisValue))) {
+        JS_FreeValue(context, result);
+        return preserved->local(runtime);
+      }
+    }
+    return result;
   } catch (const std::exception& error) {
     return engine::quickjsengine::throwError(context, error);
   }

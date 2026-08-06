@@ -244,6 +244,14 @@ void NativeApiSelectorGroupCallback(
         runtime, data->bridge, call.receiver, *call.prepared,
         call.receiverHostObject, call.initializerClassWrapper, info,
         call.dispatchClass);
+    if (!data->receiverIsClass && call.prepared->isInitMethod) {
+      if (auto preserved = preservedNativeApiInitializerSelfReturn(
+              runtime, data->bridge, call.receiver,
+              Value(runtime, info.GetReturnValue().Get()),
+              Value(runtime, info.This()))) {
+        info.GetReturnValue().Set(preserved->local(runtime));
+      }
+    }
   } catch (const std::exception& exception) {
     engine::v8engine::throwV8Exception(info.GetIsolate(), exception);
   }
