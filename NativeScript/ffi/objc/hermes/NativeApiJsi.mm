@@ -172,16 +172,21 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
         // GSD fast path: read jsi args directly, call objc_msgSend with a
         // typed cast, produce the jsi return value — bypassing all generic
         // marshalling. Only engages for plain calls (no super dispatch, init
-        // disown handling, or implicit NSError-out argument).
+        // disown handling, implicit NSError-out argument, or appearance
+        // static selector — those need the generic path's proxy tagging).
         if (call.prepared->gsdEngineCallable && call.dispatchClass == Nil &&
             count == call.prepared->gsdEngineArgumentCount &&
-            !(!state.receiverIsClass && call.prepared->isInitMethod)) {
+            !(!state.receiverIsClass && call.prepared->isInitMethod) &&
+            call.gsdAllowed) {
           auto invoker =
               reinterpret_cast<ObjCGsdInvoker>(call.prepared->engineInvoker);
           GsdObjCContext ctx{runtime, state.bridge, call.receiver,
                              call.prepared->selector, args,
                              call.prepared->signature.returnType};
           if (invoker(ctx)) {
+            cachePreparedAppearanceProxySetterValue(
+                runtime, state.bridge, call.receiver, *call.prepared, args,
+                count);
             return std::move(ctx.result);
           }
         }

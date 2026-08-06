@@ -210,6 +210,11 @@ class NativeApiProtocolHostObject final : public HostObject {
             throw JSError(
                 runtime, "Protocol property requires a native receiver.");
           }
+          Value appearanceExpando = cachedAppearanceProxyPropertyValue(
+              runtime, bridge, receiver, member.name);
+          if (!appearanceExpando.isUndefined()) {
+            return appearanceExpando;
+          }
           NativeApiMember getterMember = member;
           if (auto selector = respondingPropertyGetterSelector(
                   receiver, member.name, member.selectorName)) {
@@ -255,9 +260,12 @@ class NativeApiProtocolHostObject final : public HostObject {
           NativeApiMember setterMember = member;
           setterMember.selectorName = member.setterSelectorName;
           setterMember.signatureOffset = member.setterSignatureOffset;
-          return callObjCSelector(runtime, bridge, receiver, receiverIsClass,
-                                  setterMember.selectorName, &setterMember,
-                                  args, 1);
+          Value result = callObjCSelector(
+              runtime, bridge, receiver, receiverIsClass,
+              setterMember.selectorName, &setterMember, args, 1);
+          cacheAppearanceProxyPropertyValue(runtime, bridge, receiver,
+                                            member.name, args[0]);
+          return result;
         });
   }
 

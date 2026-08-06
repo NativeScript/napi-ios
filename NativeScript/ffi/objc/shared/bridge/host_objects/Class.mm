@@ -213,6 +213,57 @@ class NativeApiClassHostObject final : public HostObject {
     }
 
     const auto& members = bridge_->membersForClass(symbol_);
+    // `[SomeClass appearance]` (and the whenContainedIn:/
+    // appearanceWhenContainedIn: overloads) intercepted here so the returned
+    // opaque UIAppearance proxy gets tagged with the class it represents and
+    // has its property accessors installed — otherwise it would just be a
+    // callable selector-group function, not the property-settable object
+    // callers expect (see host_objects/Appearance.mm).
+    if (property == "appearance" &&
+        selectorGroupEntriesForMethod(members, property, true) != nullptr) {
+      auto bridge = bridge_;
+      auto symbol = symbol_;
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, property.c_str()), 0,
+          [bridge, symbol](Runtime& runtime, const Value&,
+                           const Value* args, size_t count) -> Value {
+            Class cls = objc_lookUpClass(symbol.runtimeName.c_str());
+            if (cls == Nil) {
+              throw JSError(
+                  runtime, "Objective-C class is not available: " +
+                               symbol.name);
+            }
+
+            const auto& members = bridge->membersForClass(symbol);
+            const NativeApiMember* selected =
+                selectMethodMember(members, "appearance", true, count);
+            if (selected == nullptr) {
+              throw JSError(runtime,
+                            "Objective-C selector is not available: appearance");
+            }
+
+            Value result = callObjCSelector(
+                runtime, bridge, static_cast<id>(cls), true,
+                selected->selectorName, selected, args, count);
+            if (result.isObject()) {
+              Object resultObject = result.asObject(runtime);
+              if (resultObject.isHostObject<NativeApiObjectHostObject>(
+                      runtime)) {
+                id native = resultObject
+                                .getHostObject<NativeApiObjectHostObject>(
+                                    runtime)
+                                ->object();
+                Class customizableClass =
+                    tagStaticAppearanceNativeResult(runtime, bridge, cls,
+                                                    native);
+                installAppearanceProxyPropertyAccessors(
+                    runtime, bridge, customizableClass, native, resultObject);
+              }
+            }
+            return result;
+          });
+    }
+
     if (const NativeApiMember* propertyMember =
             selectWritablePropertyMember(members, property, true)) {
       auto bridge = bridge_;

@@ -521,6 +521,11 @@ struct NativeApiPreparedObjCInvocation {
   SEL selector = nullptr;
   Class receiverClass = Nil;
   std::string selectorName;
+  // Set when this prepared invocation IS a metadata property's setter
+  // selector (one arg, matches member->setterSelectorName): lets a
+  // successful call cache the value into the UIAppearance proxy cache
+  // without re-deriving the property name from the selector.
+  std::string propertySetterName;
   NativeApiSignature signature;
   ObjCPreparedInvoker preparedInvoker = nullptr;
   void* engineInvoker = nullptr;  // Engine-neutral GSD invoker (ObjCGsdInvoker)
@@ -537,6 +542,17 @@ struct NativeApiPreparedObjCInvocation {
 bool preparedObjCInvocationIsInit(
     const NativeApiPreparedObjCInvocation& prepared) {
   return prepared.isInitMethod;
+}
+
+void cachePreparedAppearanceProxySetterValue(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
+    const Value* args, size_t count) {
+  if (prepared.propertySetterName.empty() || args == nullptr || count == 0) {
+    return;
+  }
+  cacheAppearanceProxyPropertyValue(runtime, bridge, receiver,
+                                    prepared.propertySetterName, args[0]);
 }
 
 bool isFastEngineObjectType(const NativeApiType& type) {
@@ -1472,6 +1488,12 @@ prepareNativeApiObjCInvocation(
   prepared->selector = selector;
   prepared->receiverClass = receiverIsClass ? lookupClass : Nil;
   prepared->selectorName = selectorName;
+  if (member != nullptr && member->property && !member->name.empty() &&
+      !member->setterSelectorName.empty() &&
+      selectorName == member->setterSelectorName &&
+      selectorArgumentCount(selectorName) == 1) {
+    prepared->propertySetterName = member->name;
+  }
   prepared->signature = std::move(*signature);
   prepared->preparedInvoker = lookupObjCPreparedInvoker(
       dispatchIdForEngineSignature(prepared->signature,
@@ -1485,6 +1507,34 @@ prepareNativeApiObjCInvocation(
   configureGeneratedEngineObjCInvocation(*prepared);
   configureFastEngineObjCInvocation(*prepared);
   return prepared;
+}
+
+bool isPreparedStaticAppearanceSelector(
+    const NativeApiPreparedObjCInvocation& prepared) {
+  return prepared.receiverClass != Nil &&
+         prepared.selectorName.rfind("appearance", 0) == 0;
+}
+
+Value tagPreparedStaticAppearanceSelectorResult(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
+    Value result) {
+  return tagStaticAppearanceSelectorResult(
+      runtime, bridge, receiver, isPreparedStaticAppearanceSelector(prepared),
+      prepared.selectorName, std::move(result));
+}
+
+void tagPreparedStaticAppearanceNativeReturn(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id receiver, const NativeApiPreparedObjCInvocation& prepared,
+    const NativeApiType& returnType, void* returnData) {
+  if (!isPreparedStaticAppearanceSelector(prepared) ||
+      !isObjectiveCObjectType(returnType) || returnData == nullptr) {
+    return;
+  }
+  tagStaticAppearanceNativeResult(
+      runtime, bridge, static_cast<Class>(receiver),
+      *static_cast<id*>(returnData));
 }
 
 Value callPreparedObjCSelector(
@@ -1503,11 +1553,17 @@ Value callPreparedObjCSelector(
   if (tryCallGeneratedEngineObjCSelector(runtime, bridge, receiver, prepared,
                                          args, count, dispatchSuperClass,
                                          &fastResult)) {
-    return fastResult;
+    cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver,
+                                            prepared, args, count);
+    return tagPreparedStaticAppearanceSelectorResult(
+        runtime, bridge, receiver, prepared, std::move(fastResult));
   }
   if (tryCallFastEngineObjCSelector(runtime, bridge, receiver, prepared, args,
                                     count, dispatchSuperClass, &fastResult)) {
-    return fastResult;
+    cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver,
+                                            prepared, args, count);
+    return tagPreparedStaticAppearanceSelectorResult(
+        runtime, bridge, receiver, prepared, std::move(fastResult));
   }
 
   NativeApiArgumentFrame frame(signature.argumentTypes.size());
@@ -1594,8 +1650,12 @@ Value callPreparedObjCSelector(
     throw JSError(
         runtime, errorMessage != nullptr ? errorMessage : "Unknown NSError");
   }
-  return convertNativeReturnValue(runtime, bridge, returnType,
-                                  returnStorage.data());
+  cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver, prepared,
+                                          args, count);
+  Value result = convertNativeReturnValue(runtime, bridge, returnType,
+                                          returnStorage.data());
+  return tagPreparedStaticAppearanceSelectorResult(
+      runtime, bridge, receiver, prepared, std::move(result));
 }
 
 Value callObjCSelector(Runtime& runtime,
@@ -1617,7 +1677,22 @@ Value callObjCSelector(Runtime& runtime,
   Class lookupClass = dispatchSuperClass != Nil ? dispatchSuperClass : receiverClass;
   Method method = receiverIsClass ? class_getClassMethod(lookupClass, selector)
                                   : class_getInstanceMethod(lookupClass, selector);
+  // A UIAppearance proxy is opaque to class_getInstanceMethod (it forwards
+  // selectors dynamically, so no Method exists for them) — allow through the
+  // exact property getter/setter selectors respondsToSelector: already
+  // vetted elsewhere, since -respondsToSelector: on the proxy itself can
+  // still return NO for a selector it will happily forward.
+  bool allowForwardedAppearancePropertySelector = false;
+  if (method == nullptr && !receiverIsClass && member != nullptr &&
+      member->property && bridge != nullptr &&
+      taggedAppearanceProxyClass(runtime, bridge, receiver) != Nil) {
+    allowForwardedAppearancePropertySelector =
+        (count == 0 && selectorName == member->selectorName) ||
+        (count == 1 && !member->setterSelectorName.empty() &&
+         selectorName == member->setterSelectorName);
+  }
   if (method == nullptr &&
+      !allowForwardedAppearancePropertySelector &&
       (dispatchSuperClass != Nil || ![receiver respondsToSelector:selector])) {
     throw JSError(runtime,
                                  "Objective-C selector is not available: " +
@@ -1666,12 +1741,16 @@ Value callObjCSelector(Runtime& runtime,
   if (tryCallGeneratedEngineObjCSelector(runtime, bridge, receiver,
                                          engineInvocation, args, count,
                                          dispatchSuperClass, &fastResult)) {
-    return fastResult;
+    return tagStaticAppearanceSelectorResult(
+        runtime, bridge, receiver, receiverIsClass, selectorName,
+        std::move(fastResult));
   }
   if (tryCallFastEngineObjCSelector(runtime, bridge, receiver,
                                     engineInvocation, args, count,
                                     dispatchSuperClass, &fastResult)) {
-    return fastResult;
+    return tagStaticAppearanceSelectorResult(
+        runtime, bridge, receiver, receiverIsClass, selectorName,
+        std::move(fastResult));
   }
 
   NativeApiArgumentFrame frame(signature->argumentTypes.size());
@@ -1759,6 +1838,9 @@ Value callObjCSelector(Runtime& runtime,
     throw JSError(
         runtime, errorMessage != nullptr ? errorMessage : "Unknown NSError");
   }
-  return convertNativeReturnValue(runtime, bridge, returnType,
-                                  returnStorage.data());
+  Value result = convertNativeReturnValue(runtime, bridge, returnType,
+                                          returnStorage.data());
+  return tagStaticAppearanceSelectorResult(
+      runtime, bridge, receiver, receiverIsClass, selectorName,
+      std::move(result));
 }

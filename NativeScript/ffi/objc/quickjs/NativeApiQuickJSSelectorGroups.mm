@@ -68,14 +68,21 @@ JSValue setQuickJSEnginePreparedObjCResult(
 
   // GSD fast path: the generated invoker reads args directly from the QuickJS
   // arguments, calls objc_msgSend with a typed cast, and produces the JS
-  // return value — bypassing all generic marshalling.
+  // return value — bypassing all generic marshalling. Excludes appearance
+  // static selectors — those need the generic path's proxy tagging.
   if (prepared.gsdEngineCallable && dispatchSuperClass == Nil &&
       providedCount == prepared.gsdEngineArgumentCount &&
-      !initializerClassWrapper && !isNSErrorOutMethod) {
+      !initializerClassWrapper && !isNSErrorOutMethod &&
+      !isPreparedStaticAppearanceSelector(prepared)) {
     auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared.engineInvoker);
     GsdObjCContext ctx{runtime,           bridge,    receiver, prepared.selector,
                        runtime.context(), arguments, signature.returnType};
     if (invoker(ctx)) {
+      if (providedCount > 0) {
+        Value setterValue = Value::borrowed(runtime, arguments[0]);
+        cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver,
+                                                prepared, &setterValue, 1);
+      }
       return ctx.result;
     }
   }
@@ -90,6 +97,11 @@ JSValue setQuickJSEnginePreparedObjCResult(
     if (tryCallFastEngineObjCSelector(runtime, bridge, receiver, prepared,
                                       fastArgs, providedCount, Nil,
                                       &fastResult)) {
+      cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver,
+                                              prepared, fastArgs,
+                                              providedCount);
+      fastResult = tagPreparedStaticAppearanceSelectorResult(
+          runtime, bridge, receiver, prepared, std::move(fastResult));
       return fastResult.local(runtime);
     }
   }
@@ -161,6 +173,11 @@ JSValue setQuickJSEnginePreparedObjCResult(
     throw JSError(
         runtime, errorMessage != nullptr ? errorMessage : "Unknown NSError");
   }
+  if (providedCount > 0) {
+    Value setterValue = Value::borrowed(runtime, arguments[0]);
+    cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver,
+                                            prepared, &setterValue, 1);
+  }
   if (initializerClassWrapper) {
     id resultObject = nil;
     if (isObjectiveCObjectType(returnType)) {
@@ -175,6 +192,8 @@ JSValue setQuickJSEnginePreparedObjCResult(
                                Value(runtime, *initializerClassWrapper));
     }
   }
+  tagPreparedStaticAppearanceNativeReturn(
+      runtime, bridge, receiver, prepared, returnType, returnStorage.data());
   return setQuickJSEngineReturnValue(runtime, bridge, returnType,
                                      returnStorage.data(),
                                      prepared.selectorName);
