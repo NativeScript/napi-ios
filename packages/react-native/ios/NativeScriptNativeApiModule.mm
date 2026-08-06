@@ -12,7 +12,7 @@
 #import <objc/runtime.h>
 
 #include "NativeApiJsiReactNative.h"
-#include "../native-api/ffi/shared/bridge/InteropProfiler.h"
+#include "../native-api/ffi/objc/shared/bridge/InteropProfiler.h"
 #include "NativeScriptUIKitHost.h"
 #import "Fabric/NativeScriptUIViewComponentView.h"
 

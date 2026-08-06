@@ -63,6 +63,7 @@ mkdir -p \
   "$PACKAGE_DIR/native-api/ffi/objc/hermes" \
   "$PACKAGE_DIR/native-api/ffi/objc/shared" \
   "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge" \
+  "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/host_objects" \
   "$PACKAGE_DIR/native-api/metadata/include" \
   "$PACKAGE_DIR/metadata" \
   "$PACKAGE_DIR/ios/vendor/libffi/include" \
@@ -81,6 +82,10 @@ cp NativeScript/ffi/objc/shared/bridge/HostObjects.mm "$PACKAGE_DIR/native-api/f
 cp NativeScript/ffi/objc/shared/bridge/Install.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
 cp NativeScript/ffi/objc/shared/bridge/Invocation.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
 cp NativeScript/ffi/objc/shared/bridge/TypeConv.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/InteropProfiler.h "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/SelectorGroupState.h "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/SelectorGroupCall.h "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/host_objects/*.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/host_objects/"
 cp NativeScript/ffi/objc/shared/NativeApiBackendConfig.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
 cp NativeScript/ffi/objc/shared/SignatureDispatchCore.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
 cp NativeScript/ffi/objc/shared/PreparedSignatureDispatch.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
