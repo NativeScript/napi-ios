@@ -5,6 +5,8 @@
 #include "NativeApiV8Runtime.h"
 #include "SignatureDispatch.h"
 
+#include "../shared/bridge/InteropProfiler.h"
+
 namespace nativescript {
 
 namespace {

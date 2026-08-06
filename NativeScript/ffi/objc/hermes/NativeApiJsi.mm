@@ -41,6 +41,8 @@
 extern const unsigned char embedded_metadata[EMBED_METADATA_SIZE];
 #endif
 
+#include "../shared/bridge/InteropProfiler.h"
+
 namespace nativescript {
 namespace {
 
@@ -111,7 +113,12 @@ bool tryCallGeneratedEngineObjCSelector(
   auto invoker = reinterpret_cast<ObjCGsdInvoker>(prepared.engineInvoker);
   GsdObjCContext ctx{runtime, bridge, receiver, prepared.selector, args,
                      prepared.signature.returnType};
-  if (!invoker(ctx)) {
+  bool invoked;
+  {
+    NativeScriptInteropCallTimer nsInteropTimer;
+    invoked = invoker(ctx);
+  }
+  if (!invoked) {
     return false;
   }
   *result = std::move(ctx.result);
@@ -183,7 +190,12 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
           GsdObjCContext ctx{runtime, state.bridge, call.receiver,
                              call.prepared->selector, args,
                              call.prepared->signature.returnType};
-          if (invoker(ctx)) {
+          bool gsdInvoked;
+          {
+            NativeScriptInteropCallTimer nsInteropTimer;
+            gsdInvoked = invoker(ctx);
+          }
+          if (gsdInvoked) {
             cachePreparedAppearanceProxySetterValue(
                 runtime, state.bridge, call.receiver, *call.prepared, args,
                 count);

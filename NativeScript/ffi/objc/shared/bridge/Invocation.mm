@@ -1,3 +1,30 @@
+// Interop call profiling (NS_NS_HOST_PROFILE) — counters live in
+// InteropProfiler.h (included at file scope by the engine TUs).
+struct NativeScriptInteropCallTimer {
+  bool enabled;
+  CFAbsoluteTime start;
+  NativeScriptInteropCallTimer() {
+    // Always-on, unconditional count: a single relaxed atomic increment,
+    // no getenv branch, no clock read, no NSLog -- negligible cost, and
+    // deliberately NOT gated on NS_NS_HOST_PROFILE so this stays a clean,
+    // always-available signal for pop-perf gating. See InteropProfiler.h.
+    ::nsInteropProfiler::gCallsAlways.fetch_add(1, std::memory_order_relaxed);
+    static const bool profile = getenv("NS_NS_HOST_PROFILE") != nullptr;
+    enabled = profile;
+    if (enabled) {
+      start = CFAbsoluteTimeGetCurrent();
+    }
+  }
+  ~NativeScriptInteropCallTimer() {
+    if (enabled) {
+      ::nsInteropProfiler::gCalls.fetch_add(1, std::memory_order_relaxed);
+      ::nsInteropProfiler::gNs.fetch_add(
+          (uint64_t)((CFAbsoluteTimeGetCurrent() - start) * 1e9),
+          std::memory_order_relaxed);
+    }
+  }
+};
+
 bool isValidMetadataStringOffset(MDMetadataReader* metadata,
                                  MDSectionOffset offset) {
   if (metadata == nullptr || metadata->constantsOffset < metadata->stringsOffset) {
@@ -347,6 +374,7 @@ Value callNativeFunctionPointer(
         return;
       }
     }
+    NativeScriptInteropCallTimer nsInteropTimer;
     ffi_call(&signature->cif, FFI_FN(callable), returnStorage.data(),
              block ? values.data() : frame.values());
   });
@@ -464,6 +492,7 @@ Value callCFunction(Runtime& runtime,
       prepared->preparedInvoker(prepared->function, frame.values(),
                                 returnStorage.data());
     } else {
+      NativeScriptInteropCallTimer nsInteropTimer;
       ffi_call(&signature.cif, FFI_FN(prepared->function), returnStorage.data(),
                frame.values());
     }
@@ -1616,6 +1645,7 @@ Value callPreparedObjCSelector(
       prepared.preparedInvoker(reinterpret_cast<void*>(objc_msgSend),
                                values.data(), returnStorage.data());
     } else {
+      NativeScriptInteropCallTimer nsInteropTimer;
 #if defined(__x86_64__)
       bool isStret = signature.returnType.ffiType->size > 16 &&
                      signature.returnType.ffiType->type == FFI_TYPE_STRUCT;
@@ -1807,6 +1837,7 @@ Value callObjCSelector(Runtime& runtime,
       preparedInvoker(reinterpret_cast<void*>(objc_msgSend), values.data(),
                       returnStorage.data());
     } else {
+      NativeScriptInteropCallTimer nsInteropTimer;
 #if defined(__x86_64__)
       bool isStret = signature->returnType.ffiType->size > 16 &&
                      signature->returnType.ffiType->type == FFI_TYPE_STRUCT;
