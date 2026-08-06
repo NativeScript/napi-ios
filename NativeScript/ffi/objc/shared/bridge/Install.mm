@@ -249,6 +249,177 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
     return undefined;
   }
 
+  function setObjectAccessorCallbackState(instance, active) {
+    try {
+      if (typeof api.__setObjectAccessorCallbackState === 'function') {
+        api.__setObjectAccessorCallbackState(instance, !!active);
+      }
+    } catch (_) {
+    }
+  }
+
+  function nativeExtensionAccessorWithCallbackState(fn) {
+    if (typeof fn !== 'function') {
+      return fn;
+    }
+    return function() {
+      setObjectAccessorCallbackState(this, true);
+      try {
+        var args = Array.prototype.slice.call(arguments);
+        return fn.apply(this, args);
+      } finally {
+        setObjectAccessorCallbackState(this, false);
+      }
+    };
+  }
+
+  // Wraps extend()'s methods object with: (a) the re-entry guard above around
+  // any accessor (get/set) so a native accessor invocation calling back into
+  // itself through the ObjC runtime is suppressed rather than recursing, and
+  // (b) NSFastEnumeration-flavored indexed-collection aliases
+  // (objectAtIndexedSubscript / setObjectAtIndexedSubscript / Symbol.iterator)
+  // when the methods object looks like an Obj-C indexed collection
+  // (objectAtIndex + count), matching what a hand-written ObjC subclass gets
+  // for free from the runtime.
+  function nativeExtensionMethodsWithIndexedCollectionAliases(methods) {
+    if (methods == null || typeof methods !== 'object') {
+      return methods;
+    }
+
+    var descriptors = Object.getOwnPropertyDescriptors(methods);
+    var descriptorKeys =
+      typeof Reflect === 'object' && typeof Reflect.ownKeys === 'function'
+        ? Reflect.ownKeys(descriptors)
+        : Object.keys(descriptors);
+    var needsAccessorCallbackState = false;
+    for (var descriptorIndex = 0; descriptorIndex < descriptorKeys.length; descriptorIndex++) {
+      var descriptor = descriptors[descriptorKeys[descriptorIndex]];
+      if (descriptor &&
+          (typeof descriptor.get === 'function' ||
+           typeof descriptor.set === 'function')) {
+        needsAccessorCallbackState = true;
+        break;
+      }
+    }
+
+    var hasObjectAtIndex =
+      Object.prototype.hasOwnProperty.call(methods, 'objectAtIndex');
+    var hasCount =
+      Object.prototype.hasOwnProperty.call(methods, 'count');
+    var hasSymbolIterator =
+      typeof Symbol === 'function' && Symbol.iterator &&
+      Object.prototype.hasOwnProperty.call(methods, Symbol.iterator);
+    var needsObjectAtIndexedSubscript =
+      hasObjectAtIndex &&
+      !Object.prototype.hasOwnProperty.call(methods, 'objectAtIndexedSubscript');
+    var needsSetObjectAtIndexedSubscript =
+      Object.prototype.hasOwnProperty.call(methods, 'replaceObjectAtIndexWithObject') &&
+      !Object.prototype.hasOwnProperty.call(methods, 'setObjectAtIndexedSubscript');
+    var needsIndexedCollectionIterator =
+      typeof Symbol === 'function' && Symbol.iterator &&
+      hasObjectAtIndex && hasCount && !hasSymbolIterator;
+
+    if (!needsObjectAtIndexedSubscript &&
+        !needsSetObjectAtIndexedSubscript &&
+        !needsIndexedCollectionIterator &&
+        !needsAccessorCallbackState) {
+      return methods;
+    }
+
+    if (needsAccessorCallbackState) {
+      for (var accessorIndex = 0; accessorIndex < descriptorKeys.length; accessorIndex++) {
+        var accessorKey = descriptorKeys[accessorIndex];
+        var accessorDescriptor = descriptors[accessorKey];
+        if (!accessorDescriptor) {
+          continue;
+        }
+        if (typeof accessorDescriptor.get === 'function') {
+          accessorDescriptor.get =
+            nativeExtensionAccessorWithCallbackState(accessorDescriptor.get);
+        }
+        if (typeof accessorDescriptor.set === 'function') {
+          accessorDescriptor.set =
+            nativeExtensionAccessorWithCallbackState(accessorDescriptor.set);
+        }
+      }
+    }
+
+    var prepared = Object.create(Object.getPrototypeOf(methods));
+    Object.defineProperties(prepared, descriptors);
+
+    if (needsObjectAtIndexedSubscript) {
+      Object.defineProperty(prepared, 'objectAtIndexedSubscript', {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: function(index) {
+          return this.objectAtIndex(index);
+        }
+      });
+    }
+
+    if (needsSetObjectAtIndexedSubscript) {
+      Object.defineProperty(prepared, 'setObjectAtIndexedSubscript', {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: function(anObject, index) {
+          return this.replaceObjectAtIndexWithObject(index, anObject);
+        }
+      });
+    }
+
+    if (needsIndexedCollectionIterator) {
+      Object.defineProperty(prepared, Symbol.iterator, {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: function() {
+          var receiver = this;
+          var index = 0;
+          return {
+            next: function() {
+              var countValue = receiver.count;
+              var count = typeof countValue === 'function'
+                ? countValue.call(receiver)
+                : countValue;
+              if (!(index < count)) {
+                return { done: true };
+              }
+              return {
+                value: receiver.objectAtIndex(index++),
+                done: false
+              };
+            }
+          };
+        }
+      });
+    }
+
+    return prepared;
+  }
+
+  function nativeExtensionMethodsHaveIterator(methods) {
+    return typeof Symbol === 'function' && Symbol.iterator &&
+      methods != null && typeof methods === 'object' &&
+      Object.prototype.hasOwnProperty.call(methods, Symbol.iterator);
+  }
+
+  function nativeExtensionOptionsWithIterator(options, methods) {
+    var extendOptions = options || {};
+    if (!nativeExtensionMethodsHaveIterator(methods)) {
+      return extendOptions;
+    }
+    try {
+      return Object.assign({}, extendOptions, {
+        __hasIterator: true
+      });
+    } catch (_) {
+      extendOptions.__hasIterator = true;
+      return extendOptions;
+    }
+  }
+
   Object.defineProperty(globalThis, '__nativeScriptCreateNativeApiIterator', {
     configurable: false,
     enumerable: false,
@@ -534,7 +705,31 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
       /Objective-C selector is not available/.test(String(error.message || error));
   }
 
-  function constructNativeInstance(nativeClass, args, rememberInstance) {
+  // markConstructing is true for JS-subclass (ClassBuilder) instances: their
+  // alloc/init sequence marks the receiver as "under construction" so a
+  // non-init method callback landing on a partially-constructed self (e.g.
+  // from within an ObjC framework's own init machinery) is suppressed
+  // instead of re-entering JS with an object that isn't fully set up yet
+  // (see shouldSkipConstructingMethodCallback).
+  function shouldUseAllocInitConstructor(constructable, wrapper) {
+    var target = wrapper || constructable;
+    try {
+      return !!(target && target.__nativeApiUseAllocInitConstructor);
+    } catch (_) {
+      return false;
+    }
+  }
+
+  function setObjectConstructionState(instance, constructing) {
+    try {
+      if (api && typeof api.__setObjectConstructionState === 'function') {
+        api.__setObjectConstructionState(instance, !!constructing);
+      }
+    } catch (_) {
+    }
+  }
+
+  function constructNativeInstance(nativeClass, args, rememberInstance, markConstructing) {
     if (args.length === 1 &&
         args[0] &&
         typeof args[0] === 'object' &&
@@ -573,13 +768,16 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
     if (typeof rememberInstance === 'function') {
       instance = rememberInstance(instance);
     }
-    if (initializer.selectorName === 'init') {
-      if (typeof instance.init !== 'function') {
-        throw new Error('No initializer found that matches constructor invocation.');
-      }
-      return instance.init();
+    if (markConstructing) {
+      setObjectConstructionState(instance, true);
     }
     try {
+      if (initializer.selectorName === 'init') {
+        if (typeof instance.init !== 'function') {
+          throw new Error('No initializer found that matches constructor invocation.');
+        }
+        return instance.init();
+      }
       if (initializer.name && typeof instance[initializer.name] === 'function') {
         return instance[initializer.name](...actualArgs);
       }
@@ -593,6 +791,73 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
         throw new Error('No initializer found that matches constructor invocation.');
       }
       throw error;
+    } finally {
+      if (markConstructing) {
+        setObjectConstructionState(instance, false);
+      }
+    }
+  }
+
+  function nativeClassForInstance(instance, classFallback, baseConstructor) {
+    var constructor = instance && instance.constructor;
+    if (constructor && constructor !== baseConstructor &&
+        constructor !== classFallback) {
+      return constructor;
+    }
+    return classFallback || baseConstructor;
+  }
+
+  // Gives extend()ed/TypeScript-native-subclass instances a `class`/
+  // `superclass` identity that resolves to the ACTUAL (possibly further
+  // JS-subclassed) constructor rather than always reporting the class the
+  // extension was originally built against.
+  function installInstanceClassIdentity(target, classFallback, baseConstructor) {
+    if (!target || typeof Object.create !== 'function' ||
+        typeof Object.setPrototypeOf !== 'function') {
+      return;
+    }
+    var parent = null;
+    try {
+      parent = Object.getPrototypeOf(target);
+    } catch (_) {
+    }
+    var identityPrototype = Object.create(parent || null);
+    try {
+      Object.defineProperty(identityPrototype, 'class', {
+        configurable: true,
+        enumerable: false,
+        writable: true,
+        value: function() {
+          return nativeClassForInstance(this, classFallback, baseConstructor);
+        }
+      });
+    } catch (_) {
+    }
+    try {
+      Object.defineProperty(identityPrototype, 'superclass', {
+        configurable: true,
+        enumerable: false,
+        get: function() {
+          var constructor = nativeClassForInstance(
+            this,
+            classFallback,
+            baseConstructor
+          );
+          if (!constructor) {
+            return undefined;
+          }
+          var superclass = constructor.superclass;
+          if (typeof superclass === 'function' && superclass.kind !== 'class') {
+            return superclass.call(constructor);
+          }
+          return superclass;
+        }
+      });
+    } catch (_) {
+    }
+    try {
+      Object.setPrototypeOf(target, identityPrototype);
+    } catch (_) {
     }
   }
 
@@ -634,8 +899,14 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
           );
         }
       }
-      if (args.length > 0) {
-        return rememberInstanceClass(constructNativeInstance(nativeClass, args, rememberInstanceClass));
+      if (args.length > 0 ||
+          shouldUseAllocInitConstructor(constructable, wrapper)) {
+        return rememberInstanceClass(constructNativeInstance(
+          nativeClass,
+          args,
+          rememberInstanceClass,
+          shouldUseAllocInitConstructor(constructable, wrapper)
+        ));
       }
       if (typeof nativeClass.new !== 'function') {
         throw new Error('Native class cannot be initialized');
@@ -675,29 +946,30 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
           if (methods == null || typeof methods !== 'object') {
             throw new Error('extend() first parameter must be an object');
           }
-          var extendOptions = options || {};
-          if (typeof Symbol === 'function' &&
-              Object.prototype.hasOwnProperty.call(methods, Symbol.iterator)) {
-            try {
-              extendOptions = Object.assign({}, extendOptions, {
-                __hasIterator: true
-              });
-            } catch (_) {
-              extendOptions.__hasIterator = true;
-            }
-          }
-          var extendedNativeClass = api.__extendClass(nativeClass, methods, extendOptions);
+          var extensionMethods = nativeExtensionMethodsWithIndexedCollectionAliases(methods);
+          var extendOptions =
+            nativeExtensionOptionsWithIterator(options, extensionMethods);
+          var extendedNativeClass = api.__extendClass(nativeClass, extensionMethods, extendOptions);
           var extended = wrapNativeClass(extendedNativeClass);
+          try {
+            Object.defineProperty(extended, '__nativeApiUseAllocInitConstructor', {
+              configurable: false,
+              enumerable: false,
+              writable: false,
+              value: true
+            });
+          } catch (_) {
+          }
           try {
             Object.setPrototypeOf(extended, wrapper || constructable);
           } catch (_) {
           }
           var extendedPrototype = Object.create(constructable.prototype || null);
           try {
-            Object.defineProperties(extendedPrototype, Object.getOwnPropertyDescriptors(methods));
+            Object.defineProperties(extendedPrototype, Object.getOwnPropertyDescriptors(extensionMethods));
           } catch (_) {
-            Object.keys(methods).forEach(function(key) {
-              extendedPrototype[key] = methods[key];
+            Object.keys(extensionMethods).forEach(function(key) {
+              extendedPrototype[key] = extensionMethods[key];
             });
           }
           try {
@@ -709,6 +981,7 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
             });
           } catch (_) {
           }
+          installInstanceClassIdentity(extendedPrototype, extended, constructable);
           extended.prototype = extendedPrototype;
           try {
             api.__rememberClassWrapper(extendedNativeClass, extended, extendedPrototype);
@@ -1356,16 +1629,28 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
 	      }
 
 	      var nativeBase = nativeClassLikeHandle(baseWrapper);
-	      var nativeClass = api.__extendClass(nativeBase, constructor.prototype || {}, options);
+	      var extensionMethods =
+	        nativeExtensionMethodsWithIndexedCollectionAliases(constructor.prototype || {});
+	      options = nativeExtensionOptionsWithIterator(options, extensionMethods);
+	      var nativeClass = api.__extendClass(nativeBase, extensionMethods, options);
 	      var wrapper = wrapNativeClass(nativeClass);
 	      state.wrapper = wrapper;
+	      try {
+	        Object.defineProperty(wrapper, '__nativeApiUseAllocInitConstructor', {
+	          configurable: false,
+	          enumerable: false,
+	          writable: false,
+	          value: true
+	        });
+	      } catch (_) {
+	      }
 
 	      try {
 	        Object.setPrototypeOf(constructor, wrapper);
 	      } catch (_) {
 	      }
 	      try {
-	        api.__rememberClassWrapper(nativeClass, constructor, constructor.prototype || {});
+	        api.__rememberClassWrapper(nativeClass, constructor, extensionMethods);
 	      } catch (_) {
 	      }
 	      return wrapper;
@@ -1482,6 +1767,8 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
 	      });
 	    } catch (_) {
 	    }
+
+	    installInstanceClassIdentity(constructor.prototype || {}, constructor, null);
 
 	    ['alloc', 'new', 'class', 'superclass', 'extend'].forEach(function(name) {
 	      defineTypeScriptStaticForwarder(constructor, name, false, false);

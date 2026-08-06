@@ -316,6 +316,66 @@ class NativeApiHostObject final : public HostObject {
             return Value::undefined();
           });
     }
+    // Re-entry guards for JS-subclass instance construction/accessors,
+    // backed by an associated object (not a JS expando — see the
+    // memo/expando-proxy notes: expandos never round-trip on these
+    // proxies). ClassBuilder wires these around alloc/init and native
+    // accessor dispatch.
+    if (property == "__setObjectConstructionState") {
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "__setObjectConstructionState"),
+          2,
+          [](Runtime& runtime, const Value&, const Value* args,
+             size_t count) -> Value {
+            if (count < 1) {
+              return Value::undefined();
+            }
+            id object = NativeApiObjectHostObject::nativeObjectFromValue(
+                runtime, args[0]);
+            if (object == nil) {
+              return Value::undefined();
+            }
+            bool constructing =
+                count >= 2 && args[1].isBool() && args[1].getBool();
+            objc_setAssociatedObject(
+                object, sel_registerName("__nativeApiConstructionState"),
+                constructing ? @YES : nil, OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            return Value::undefined();
+          });
+    }
+    if (property == "__setObjectAccessorCallbackState") {
+      // Depth-counted (not a bool) so nested/re-entrant accessor calls on the
+      // same object (e.g. a getter that reads another property) still clear
+      // correctly on unwind.
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(
+                       runtime, "__setObjectAccessorCallbackState"),
+          2,
+          [](Runtime& runtime, const Value&, const Value* args,
+             size_t count) -> Value {
+            if (count < 1) {
+              return Value::undefined();
+            }
+            id object = NativeApiObjectHostObject::nativeObjectFromValue(
+                runtime, args[0]);
+            if (object == nil) {
+              return Value::undefined();
+            }
+            bool active = count >= 2 && args[1].isBool() && args[1].getBool();
+            SEL key = sel_registerName("__nativeApiAccessorCallbackState");
+            NSNumber* current = (NSNumber*)objc_getAssociatedObject(object, key);
+            NSInteger depth = current != nil ? current.integerValue : 0;
+            if (active) {
+              depth += 1;
+            } else if (depth > 0) {
+              depth -= 1;
+            }
+            objc_setAssociatedObject(
+                object, key, depth > 0 ? @(depth) : nil,
+                OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+            return Value::undefined();
+          });
+    }
     if (property == "CC_SHA256") {
       auto bridge = bridge_;
       return Function::createFromHostFunction(
@@ -525,6 +585,7 @@ class NativeApiHostObject final : public HostObject {
     addPropertyName(runtime, names, "__makeSelectorGroupFunction");
     addPropertyName(runtime, names, "__rememberClassWrapper");
     addPropertyName(runtime, names, "__rememberObjectClassWrapper");
+    addPropertyName(runtime, names, "__setObjectConstructionState");
     addPropertyName(runtime, names, "getFunction");
     addPropertyName(runtime, names, "getConstant");
     addPropertyName(runtime, names, "getEnum");

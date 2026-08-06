@@ -198,8 +198,15 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
           throw JSError(runtime,
                         "Objective-C selector requires a native receiver.");
         }
-        return receiverHostObject->callPreparedObjectSelector(
+        Value result = receiverHostObject->callPreparedObjectSelector(
             runtime, *call.prepared, args, count, call.dispatchClass);
+        if (!state.receiverIsClass && call.prepared->isInitMethod) {
+          if (auto preserved = preservedNativeApiInitializerSelfReturn(
+                  runtime, state.bridge, call.receiver, result, thisValue)) {
+            return std::move(*preserved);
+          }
+        }
+        return result;
       });
 }
 

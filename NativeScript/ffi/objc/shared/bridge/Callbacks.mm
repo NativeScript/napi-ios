@@ -44,6 +44,21 @@ enum class NativeApiCallbackThreadPolicy {
   Runtime,
 };
 
+// Per-method callback policy, attached to a JS function via
+// NativeScriptRuntime.nativeMethodPolicy(fn, policy) (a `__nativeScriptMethodPolicy`
+// expando read back in readEngineMethodCallbackPolicy below). Deliberately
+// small: the only live consumers are (a) calling the ObjC super
+// implementation before the JS override runs, and (b) suppressing a
+// re-entrant callback while a native accessor/construction call is already
+// in flight (see nativeAccessorCallbackPolicy and
+// shouldSkipConstructingMethodCallback).
+struct NativeApiMethodCallbackPolicy {
+  bool callSuperBeforeCallback = false;
+  // Associated-object keys checked on the callback's receiver; if any is
+  // truthy, the callback is skipped entirely (zero-returned).
+  std::vector<std::string> skipCallbackIfAssociatedObjectTruthy;
+};
+
 NativeApiCallbackThreadPolicy readEngineCallbackThreadPolicy(
     Runtime& runtime, Object& functionObject) {
   constexpr const char* propertyName = "__nativeScriptCallbackThread";
@@ -65,6 +80,91 @@ NativeApiCallbackThreadPolicy readEngineCallbackThreadPolicy(
   } catch (const std::exception&) {
   }
   return NativeApiCallbackThreadPolicy::Default;
+}
+
+Value optionalObjectProperty(Runtime& runtime, Object& object,
+                             const char* name) {
+  if (name == nullptr || !object.hasProperty(runtime, name)) {
+    return Value::undefined();
+  }
+  return object.getProperty(runtime, name);
+}
+
+void appendEngineMethodPolicyAssociatedObjectKeys(
+    Runtime& runtime, const Value& value, std::vector<std::string>& keys) {
+  if (value.isString()) {
+    keys.push_back(value.asString(runtime).utf8(runtime));
+    return;
+  }
+  if (!value.isObject()) {
+    return;
+  }
+  Object object = value.asObject(runtime);
+  if (!object.isArray(runtime)) {
+    return;
+  }
+  Array array = object.getArray(runtime);
+  size_t size = array.size(runtime);
+  for (size_t i = 0; i < size; i++) {
+    Value item = array.getValueAtIndex(runtime, i);
+    if (item.isString()) {
+      keys.push_back(item.asString(runtime).utf8(runtime));
+    }
+  }
+}
+
+NativeApiMethodCallbackPolicy readEngineMethodCallbackPolicyValue(
+    Runtime& runtime, const Value& policyValue) {
+  NativeApiMethodCallbackPolicy policy;
+  try {
+    if (!policyValue.isObject()) {
+      return policy;
+    }
+
+    Object policyObject = policyValue.asObject(runtime);
+    Value callSuperBeforeValue = optionalObjectProperty(
+        runtime, policyObject, "callSuperBeforeCallback");
+    if (callSuperBeforeValue.isBool() && callSuperBeforeValue.getBool()) {
+      policy.callSuperBeforeCallback = true;
+    } else {
+      Value callSuperValue =
+          optionalObjectProperty(runtime, policyObject, "callSuper");
+      if (callSuperValue.isString()) {
+        policy.callSuperBeforeCallback =
+            callSuperValue.asString(runtime).utf8(runtime) == "before";
+      }
+    }
+
+    appendEngineMethodPolicyAssociatedObjectKeys(
+        runtime,
+        optionalObjectProperty(
+            runtime, policyObject, "skipCallbackIfAssociatedObjectTruthy"),
+        policy.skipCallbackIfAssociatedObjectTruthy);
+  } catch (const std::exception&) {
+    return NativeApiMethodCallbackPolicy{};
+  }
+  return policy;
+}
+
+// Reads the policy a JS function was tagged with via
+// NativeScriptRuntime.nativeMethodPolicy(fn, policy).
+NativeApiMethodCallbackPolicy readEngineMethodCallbackPolicy(
+    Runtime& runtime, Object& functionObject) {
+  constexpr const char* propertyName = "__nativeScriptMethodPolicy";
+  try {
+    if (!functionObject.hasProperty(runtime, propertyName)) {
+      return NativeApiMethodCallbackPolicy{};
+    }
+    return readEngineMethodCallbackPolicyValue(
+        runtime, functionObject.getProperty(runtime, propertyName));
+  } catch (const std::exception&) {
+    return NativeApiMethodCallbackPolicy{};
+  }
+}
+
+bool isEmptyMethodCallbackPolicy(const NativeApiMethodCallbackPolicy& policy) {
+  return !policy.callSuperBeforeCallback &&
+         policy.skipCallbackIfAssociatedObjectTruthy.empty();
 }
 
 bool selectorEndsWithNSErrorParam(const std::string& selectorName) {
@@ -392,7 +492,9 @@ class NativeApiCallback final
                        NativeApiCallbackThreadPolicy threadPolicy =
                            NativeApiCallbackThreadPolicy::Default,
                        bool bindThis = false,
-                       uintptr_t roundTripValidationKey = 0)
+                       uintptr_t roundTripValidationKey = 0,
+                       NativeApiMethodCallbackPolicy methodPolicy = {},
+                       Class methodBaseClass = Nil)
       : runtimeOwner_(retainNativeApiRuntime(runtime)),
         runtime_(runtimeOwner_.get()),
         bridge_(std::move(bridge)),
@@ -402,7 +504,9 @@ class NativeApiCallback final
         block_(block),
         threadPolicy_(threadPolicy),
         bindThis_(bindThis),
-        roundTripValidationKey_(roundTripValidationKey) {
+        roundTripValidationKey_(roundTripValidationKey),
+        methodPolicy_(std::move(methodPolicy)),
+        methodBaseClass_(methodBaseClass) {
     closure_ = static_cast<ffi_closure*>(
         ffi_closure_alloc(sizeof(ffi_closure), &executable_));
     if (closure_ == nullptr || executable_ == nullptr ||
@@ -598,6 +702,13 @@ class NativeApiCallback final
       return;
     }
 
+    if (methodPolicy_.callSuperBeforeCallback) {
+      invokeMethodSuper(ret, args);
+    }
+    if (shouldSkipMethodCallback(args, ret)) {
+      return;
+    }
+
     std::string error;
     auto call = [&]() { invokeOnCurrentThread(ret, args, &error); };
     const auto& nativeCallbackInvoker = bridge_->nativeCallbackInvoker();
@@ -752,6 +863,158 @@ class NativeApiCallback final
   }
 
  private:
+  // The ObjC class whose implementation `callSuperBeforeCallback`/
+  // invokeMethodSuper() should dispatch against. A JS-subclass receiver
+  // (ClassBuilder instance) dispatches to its own runtime superclass;
+  // anything else falls back to methodBaseClass_ (the class the override was
+  // registered against).
+  Class dispatchSuperclassForMethodReceiver(id receiver) const {
+    if (receiver == nil) {
+      return Nil;
+    }
+
+    Class receiverClass = object_getClass(receiver);
+    if (receiverClass != Nil &&
+        class_conformsToProtocol(receiverClass,
+                                  @protocol(NativeApiClassBuilderProtocol))) {
+      Class superclass = class_getSuperclass(receiverClass);
+      if (superclass != Nil) {
+        return superclass;
+      }
+    }
+
+    return methodBaseClass_;
+  }
+
+  // Method callback policies only ever target the callback's receiver (no
+  // argument-index targeting), so this is just the bound `self`.
+  id methodCallbackReceiver(void* args[]) const {
+    if (!bindThis_ || args == nullptr) {
+      return nil;
+    }
+    return *static_cast<id*>(args[0]);
+  }
+
+  id associatedObjectValue(id receiver, const std::string& key) const {
+    if (receiver == nil || key.empty()) {
+      return nil;
+    }
+    return objc_getAssociatedObject(receiver, sel_registerName(key.c_str()));
+  }
+
+  bool associatedObjectIsTruthy(id receiver, const std::string& key) const {
+    id value = associatedObjectValue(receiver, key);
+    if (value == nil) {
+      return false;
+    }
+
+    if ([value respondsToSelector:@selector(boolValue)]) {
+      return [value boolValue] == YES;
+    }
+    if ([value isKindOfClass:[NSString class]]) {
+      NSString* stringValue = (NSString*)value;
+      if (stringValue.length == 0) {
+        return false;
+      }
+      NSString* lowercase = [stringValue lowercaseString];
+      return ![lowercase isEqualToString:@"0"] &&
+             ![lowercase isEqualToString:@"false"] &&
+             ![lowercase isEqualToString:@"no"];
+    }
+
+    return true;
+  }
+
+  // Skips a re-entrant callback: an alloc/init construction already in
+  // flight (marked via __nativeApiConstructionState) must not have its
+  // non-init methods re-entered by a partially-constructed self.
+  bool shouldSkipConstructingMethodCallback(void* args[], void* ret) {
+    if (!bindThis_ || args == nullptr || signature_ == nullptr ||
+        signature_->selectorName.rfind("init", 0) == 0) {
+      return false;
+    }
+
+    id receiver = *static_cast<id*>(args[0]);
+    if (receiver == nil ||
+        objc_getAssociatedObject(
+            receiver, sel_registerName("__nativeApiConstructionState")) == nil) {
+      return false;
+    }
+
+    zeroReturnValue(ret);
+    return true;
+  }
+
+  bool shouldSkipMethodCallback(void* args[], void* ret) {
+    if (args == nullptr) {
+      return false;
+    }
+
+    if (shouldSkipConstructingMethodCallback(args, ret)) {
+      return true;
+    }
+
+    id receiver = methodCallbackReceiver(args);
+    for (const auto& key :
+         methodPolicy_.skipCallbackIfAssociatedObjectTruthy) {
+      if (associatedObjectIsTruthy(receiver, key)) {
+        zeroReturnValue(ret);
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // callSuperBeforeCallback: run the ObjC super implementation before the JS
+  // override does, via objc_msgSendSuper with the same arguments the JS
+  // callback is about to receive.
+  void invokeMethodSuper(void* ret, void* args[]) const {
+    if (!bindThis_ || args == nullptr || signature_ == nullptr ||
+        methodBaseClass_ == Nil) {
+      return;
+    }
+
+    id receiver = *static_cast<id*>(args[0]);
+    Class dispatchClass = dispatchSuperclassForMethodReceiver(receiver);
+    if (receiver == nil || dispatchClass == Nil) {
+      return;
+    }
+
+    struct objc_super superReceiver = {receiver, dispatchClass};
+    struct objc_super* superReceiverPtr = &superReceiver;
+    size_t nativeArgc =
+        signature_->implicitArgumentCount + signature_->argumentTypes.size();
+    std::vector<void*> values(nativeArgc);
+    values[0] = &superReceiverPtr;
+    values[1] = args[1];
+    for (size_t i = 2; i < nativeArgc; i++) {
+      values[i] = args[i];
+    }
+
+    std::vector<unsigned char> returnStorage;
+    void* returnTarget = ret;
+    if (returnTarget == nullptr) {
+      returnStorage.resize(
+          std::max<size_t>(nativeSizeForType(signature_->returnType), 1));
+      returnTarget = returnStorage.data();
+    }
+
+    performNativeInvocation(*runtime_, bridge_->nativeInvocationInvoker(), [&]() {
+#if defined(__x86_64__)
+      bool isStret = signature_->returnType.ffiType->size > 16 &&
+                     signature_->returnType.ffiType->type == FFI_TYPE_STRUCT;
+      void (*target)(void) = isStret ? FFI_FN(objc_msgSendSuper_stret)
+                                     : FFI_FN(objc_msgSendSuper);
+      ffi_call(const_cast<ffi_cif*>(&signature_->cif), target, returnTarget,
+               values.data());
+#else
+      ffi_call(const_cast<ffi_cif*>(&signature_->cif),
+               FFI_FN(objc_msgSendSuper), returnTarget, values.data());
+#endif
+    });
+  }
+
   void invokeOnCurrentThread(void* ret, void* args[], std::string* error) {
     try {
       NativeApiRuntimeScope runtimeScope(*runtime_);
@@ -767,8 +1030,21 @@ class NativeApiCallback final
       Value result = Value::undefined();
       if (bindThis_ && nativeArgOffset >= 1) {
         id self = *static_cast<id*>(args[0]);
+        // `this.super`/`$base` from inside this override should dispatch
+        // against the class ABOVE the one the override was registered on,
+        // not the receiver's own (possibly further-subclassed) runtime class.
+        // `methodBaseClass_` (threaded from ClassBuilder's addEngineOverrideMethod
+        // as `baseClass`, i.e. `class_getSuperclass(nativeClass)`) IS already
+        // that class -- it must be used directly, not further superclassed
+        // (which would skip straight past it to ITS superclass and make any
+        // member declared exactly on methodBaseClass_, e.g. a method the
+        // override shadows that isn't itself inherited, unreachable via
+        // `this.super`). dispatchSuperclassForMethodReceiver() above already
+        // relies on this same "use methodBaseClass_ as-is" convention.
+        Class superDispatchClass = methodBaseClass_;
         Value thisValue =
-            makeNativeObjectValue(*runtime_, bridge_, self, false);
+            makeNativeObjectValue(
+                *runtime_, bridge_, self, false, superDispatchClass);
         Object thisObject = thisValue.isObject()
                                 ? thisValue.asObject(*runtime_)
                                 : Object(*runtime_);
@@ -898,6 +1174,8 @@ class NativeApiCallback final
       NativeApiCallbackThreadPolicy::Default;
   bool bindThis_ = false;
   uintptr_t roundTripValidationKey_ = 0;
+  NativeApiMethodCallbackPolicy methodPolicy_;
+  Class methodBaseClass_ = Nil;
   ffi_closure* closure_ = nullptr;
   void* executable_ = nullptr;
   std::string blockSignature_;
@@ -2233,7 +2511,8 @@ std::shared_ptr<NativeApiCallback> createEngineCallback(
 std::shared_ptr<NativeApiCallback> createEngineMethodCallback(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     const std::string& selectorName, MDSectionOffset signatureOffset,
-    Function function, bool returnOwned) {
+    Function function, bool returnOwned, Class methodBaseClass = Nil,
+    NativeApiMethodCallbackPolicy methodPolicy = {}) {
   if (bridge == nullptr || bridge->metadata() == nullptr ||
       signatureOffset == MD_SECTION_OFFSET_NULL) {
     throw JSError(
@@ -2251,9 +2530,15 @@ std::shared_ptr<NativeApiCallback> createEngineMethodCallback(
   auto signature =
       std::make_shared<NativeApiSignature>(std::move(*parsed));
   auto threadPolicy = readEngineCallbackThreadPolicy(runtime, function);
+  // A policy passed explicitly by the caller (e.g. the auto-installed
+  // accessor/construction re-entry guards) wins; otherwise fall back to
+  // whatever the JS function itself was tagged with via nativeMethodPolicy().
+  if (isEmptyMethodCallbackPolicy(methodPolicy)) {
+    methodPolicy = readEngineMethodCallbackPolicy(runtime, function);
+  }
   auto callback = std::make_shared<NativeApiCallback>(
       runtime, bridge, std::move(signature), std::move(function), false,
-      threadPolicy, true);
+      threadPolicy, true, 0, std::move(methodPolicy), methodBaseClass);
   bridge->retainEngineLifetime(callback);
   return callback;
 }
@@ -2261,7 +2546,8 @@ std::shared_ptr<NativeApiCallback> createEngineMethodCallback(
 std::shared_ptr<NativeApiCallback> createEngineMethodCallback(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     const std::string& selectorName, NativeApiSignature signature,
-    Function function) {
+    Function function, Class methodBaseClass = Nil,
+    NativeApiMethodCallbackPolicy methodPolicy = {}) {
   signature.selectorName = selectorName;
   prepareEngineMethodSignature(&signature);
   if (!signatureSupportedForEngineCallback(signature)) {
@@ -2272,9 +2558,12 @@ std::shared_ptr<NativeApiCallback> createEngineMethodCallback(
   auto sharedSignature =
       std::make_shared<NativeApiSignature>(std::move(signature));
   auto threadPolicy = readEngineCallbackThreadPolicy(runtime, function);
+  if (isEmptyMethodCallbackPolicy(methodPolicy)) {
+    methodPolicy = readEngineMethodCallbackPolicy(runtime, function);
+  }
   auto callback = std::make_shared<NativeApiCallback>(
       runtime, bridge, std::move(sharedSignature), std::move(function), false,
-      threadPolicy, true);
+      threadPolicy, true, 0, std::move(methodPolicy), methodBaseClass);
   bridge->retainEngineLifetime(callback);
   return callback;
 }

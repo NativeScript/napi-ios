@@ -227,10 +227,19 @@ JSValueRef NativeApiSelectorGroupCall(
     if (call.hasImmediateResult) {
       return call.immediateResult.local(runtime);
     }
-    return setJSCEnginePreparedObjCResult(
+    JSValueRef result = setJSCEnginePreparedObjCResult(
         runtime, data->bridge, call.receiver, *call.prepared,
         call.receiverHostObject, call.initializerClassWrapper, argumentCount,
         arguments, call.dispatchClass);
+    if (!data->receiverIsClass && call.prepared->isInitMethod &&
+        thisObject != nullptr) {
+      if (auto preserved = preservedNativeApiInitializerSelfReturn(
+              runtime, data->bridge, call.receiver, Value::borrowed(runtime, result),
+              Value::borrowed(runtime, thisObject))) {
+        return preserved->local(runtime);
+      }
+    }
+    return result;
   } catch (const std::exception& error) {
     engine::jscengine::setException(context, exception, error);
     return JSValueMakeUndefined(context);

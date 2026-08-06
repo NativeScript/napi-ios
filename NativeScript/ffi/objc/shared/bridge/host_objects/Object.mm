@@ -467,10 +467,12 @@ class NativeApiObjectHostObject final
       public std::enable_shared_from_this<NativeApiObjectHostObject> {
  public:
   NativeApiObjectHostObject(std::shared_ptr<NativeApiBridge> bridge,
-                            id object, bool ownsObject)
+                            id object, bool ownsObject,
+                            Class superDispatchClass = Nil)
       : bridge_(std::move(bridge)),
         object_(object),
         ownsObject_(ownsObject),
+        superDispatchClass_(superDispatchClass),
         lifetimeState_(std::make_shared<NativeApiObjectLifetimeState>(object)) {
     if (bridge_ != nullptr && object_ != nil) {
       bridge_->retainObjectExpandoOwner(object_);
@@ -499,6 +501,9 @@ class NativeApiObjectHostObject final
   }
 
   id object() const { return object_; }
+  void setSuperDispatchClass(Class superDispatchClass) {
+    superDispatchClass_ = superDispatchClass;
+  }
   std::shared_ptr<NativeApiObjectLifetimeState> lifetimeState() const {
     return lifetimeState_;
   }
@@ -525,6 +530,36 @@ class NativeApiObjectHostObject final
       if (lifetimeState_ != nullptr) {
         lifetimeState_->clear();
       }
+    }
+  }
+
+  // Disown without forgetting the round-trip value: used when a wrapper is
+  // being replaced (e.g. an initializer returned a different/self receiver)
+  // but the native receiver itself is staying alive and must keep resolving
+  // to the SAME preserved engine value on the next lookup. Unlike
+  // disownObject(), this does not call forgetRoundTripValue — losing that
+  // would let a second, divergent wrapper get created for the same native
+  // receiver. releaseObjectExpandoOwner still runs (to keep the refcount
+  // balanced against the matching retain in the constructor), but with
+  // preserveExpandos=true so the receiver's expando state also survives.
+  void detachObjectPreservingBridgeState(id expected) {
+    if (object_ != expected) {
+      return;
+    }
+
+    id object = object_;
+    bool releaseObject = ownsObject_;
+    if (bridge_ != nullptr && expected != nil) {
+      bridge_->releaseObjectExpandoOwner(expected, /*preserveExpandos=*/true);
+    }
+    ownsObject_ = false;
+    wrapperRetainedObject_ = false;
+    object_ = nil;
+    if (lifetimeState_ != nullptr) {
+      lifetimeState_->clear();
+    }
+    if (releaseObject && object != nil) {
+      [object release];
     }
   }
 
@@ -691,7 +726,22 @@ class NativeApiObjectHostObject final
         return prototypeValue;
       }
     }
-    return bridge_->findClassPrototype(runtime, object_getClass(object_));
+    Value prototypeValue =
+        bridge_->findClassPrototype(runtime, object_getClass(object_));
+    if (prototypeValue.isObject()) {
+      return prototypeValue;
+    }
+    // Fallback for classes only known by symbol name (not yet indexed by
+    // runtime pointer — RN disables eager runtime-pointer indexing).
+    if (const NativeApiSymbol* symbol =
+            bridge_->findClassForRuntimeClass(object_getClass(object_))) {
+      prototypeValue = bridge_->findClassPrototype(
+          runtime, objc_lookUpClass(symbol->runtimeName.c_str()));
+      if (prototypeValue.isObject()) {
+        return prototypeValue;
+      }
+    }
+    return Value::undefined();
   }
 
   Value engineThisValueForObject(Runtime& runtime) {
@@ -982,8 +1032,15 @@ class NativeApiObjectHostObject final
       return makeNativeClassValue(runtime, bridge_, std::move(symbol));
     }
     if (property == "super") {
+      // A JS-subclass instance dispatches `$base`/super against the ObjC
+      // class it was constructed to extend, not necessarily the receiver's
+      // immediate runtime superclass (which can differ, e.g. after a
+      // preserved initializer self-return re-seated the wrapper).
       Class dispatchClass =
-          object_ != nil ? class_getSuperclass(object_getClass(object_)) : Nil;
+          superDispatchClass_ != Nil
+              ? superDispatchClass_
+              : (object_ != nil ? class_getSuperclass(object_getClass(object_))
+                                : Nil);
       return Object::createFromHostObject(
           runtime,
           std::make_shared<NativeApiSuperHostObject>(bridge_, object_,
@@ -1234,19 +1291,49 @@ class NativeApiObjectHostObject final
     // methods); defer so the engine resolves them instead of the bridge
     // returning a registered getter IMP as a raw callable.
     if (isEngineExtendedInstance) {
-#ifdef NATIVESCRIPT_NATIVE_API_HOST_EXPLICIT_OVERRIDE
-      // Engines whose exotic property handler invokes prototype accessors with
-      // the wrong receiver need the JS-prototype getter resolved here with this
-      // instance as the receiver.
+      // Prefer JS prototype accessors before falling back to runtime ObjC
+      // getters; otherwise an ObjC getter implemented by the JS subclass can
+      // re-enter the same JS accessor recursively.
       bool found = false;
       Value resolved = resolveEnginePrototypeGetter(runtime, property, &found);
       if (found) {
         return resolved;
       }
-#endif
       if (auto selector =
               runtimeReadablePropertyGetter(object_, property)) {
         return callObjectSelector(runtime, *selector, nullptr, nullptr, 0);
+      }
+      // Inherited ObjC selectors on a ClassBuilder subclass have no JS
+      // prototype entry (the engine may register an empty prototype for the
+      // subclass) and no runtime ObjC property, so the getter probes above
+      // miss. Fall through to metadata METHOD resolution using the nearest
+      // metadata ancestor (findClassForRuntimeClass walks up from the concrete
+      // subclass, which itself carries no metadata) so first-access inherited
+      // selectors resolve as bound selector-group functions instead of hard-
+      // returning undefined. This mirrors the non-extended method path above.
+      // Property accessors stay deferred here on purpose (accessor shadowing /
+      // reentry suppression), so resolve METHODS ONLY — JS-overridden methods
+      // are already handled earlier via the JS prototype chain.
+      if (const NativeApiSymbol* symbol =
+              bridge_->findClassForRuntimeClass(object_getClass(object_))) {
+        const auto& members = bridge_->membersForClass(*symbol);
+        if (hasMethodMember(members, property, false)) {
+          auto selectors =
+              selectorGroupEntriesForMethod(members, property, false);
+          if (selectors != nullptr) {
+            auto preparedInvocations = std::make_shared<std::vector<
+                std::shared_ptr<NativeApiPreparedObjCInvocation>>>(
+                selectors->size());
+            Value methodFunction = CreateNativeApiBoundSelectorGroupFunction(
+                runtime, bridge_, object_getClass(object_), shared_from_this(),
+                selectors, preparedInvocations);
+            // Cache the resolved host function so repeated method access does
+            // not reallocate it on every call (hot path).
+            bridge_->setObjectExpando(runtime, object_, property,
+                                      methodFunction);
+            return methodFunction;
+          }
+        }
       }
       return Value::undefined();
     }
@@ -1302,6 +1389,17 @@ class NativeApiObjectHostObject final
       throw JSError(runtime, "Cannot set property on nil object.");
     }
 
+    bool isEngineExtendedInstance =
+        class_conformsToProtocol(object_getClass(object_),
+                                 @protocol(NativeApiClassBuilderProtocol));
+    // A JS accessor override must win over a native ObjC setter: try it
+    // first, before any of the metadata/runtime setter paths below.
+    if (isEngineExtendedInstance) {
+      if (invokeEnginePrototypeSetter(runtime, property, value)) {
+        NATIVE_API_SET_RETURN(true);
+      }
+    }
+
     if (const NativeApiSymbol* symbol =
             bridge_->findClassForRuntimeClass(object_getClass(object_))) {
       const auto& members = bridge_->membersForClass(*symbol);
@@ -1332,8 +1430,7 @@ class NativeApiObjectHostObject final
     // For JS-subclassed instances, an unknown property is owned by the JS
     // prototype (e.g. a JS-defined accessor); defer so the engine runs it instead of
     // shadowing it with a bridge expando.
-    if (class_conformsToProtocol(object_getClass(object_),
-                                 @protocol(NativeApiClassBuilderProtocol))) {
+    if (isEngineExtendedInstance) {
 #ifdef NATIVESCRIPT_NATIVE_API_HOST_EXPLICIT_OVERRIDE
       // Engines whose exotic property storage doesn't fall back to own
       // properties need the JS-owned set resolved here: invoke a JS-prototype
@@ -1345,6 +1442,10 @@ class NativeApiObjectHostObject final
       }
       NATIVE_API_SET_RETURN(true);
 #else
+      // The prototype-setter attempt at the top of set() already ran and
+      // didn't return — reaching here means no JS setter fired, so store the
+      // expando unconditionally instead of re-probing for one.
+      storeOwnExpando(runtime, property, value);
       NATIVE_API_SET_RETURN(false);
 #endif
     }
@@ -1376,5 +1477,10 @@ class NativeApiObjectHostObject final
   bool ownsObject_ = false;
   bool wrapperRetainedObject_ = false;
   bool consumed_ = false;
+  // Set when this wrapper represents a JS-subclass instance whose `$base`/
+  // super dispatch must resolve against a specific ObjC superclass (rather
+  // than the receiver's own class) — see the "super" property handling in
+  // get() below.
+  Class superDispatchClass_ = Nil;
   std::shared_ptr<NativeApiObjectLifetimeState> lifetimeState_;
 };
