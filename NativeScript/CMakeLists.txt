@@ -430,7 +430,6 @@ if(ENABLE_JS_RUNTIME)
   elseif(TARGET_ENGINE_JSC)
     include_directories(
       napi/jsc
-      napi/jsc/include
       napi/common
     )
 
