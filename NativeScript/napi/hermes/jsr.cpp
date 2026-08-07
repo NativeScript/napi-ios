@@ -1,8 +1,8 @@
 #include "jsr.h"
 
-#include "jsr_common.h"
-
 #include <functional>
+
+#include "jsr_common.h"
 
 #ifdef __ANDROID__
 #include <cstdio>
@@ -27,9 +27,7 @@ class RuntimeLockGuard {
     runtime_->lock();
   }
 
-  ~RuntimeLockGuard() {
-    runtime_->unlock();
-  }
+  ~RuntimeLockGuard() { runtime_->unlock(); }
 
  private:
   JSR* runtime_;
@@ -79,7 +77,8 @@ JSR::JSR() {
                                          .withAsyncBreakCheckInEval(true)
                                          .build();
   runtime = facebook::hermes::makeThreadSafeHermesRuntime(config);
-  rt = static_cast<facebook::hermes::HermesRuntime*>(&runtime->getUnsafeRuntime());
+  rt = static_cast<facebook::hermes::HermesRuntime*>(
+      &runtime->getUnsafeRuntime());
 #else
   hermes::vm::RuntimeConfig config = hermes::vm::RuntimeConfig::Builder()
                                          .withMicrotaskQueue(true)
@@ -127,7 +126,8 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
   // the same path Hermes' own tools (repl, test-runner, napi-runner) use and
   // relies only on symbols exported by libhermesvm.so.
   auto hermesInterface =
-      facebook::jsi::castInterface<facebook::hermes::IHermes>(runtime->hermes->rt);
+      facebook::jsi::castInterface<facebook::hermes::IHermes>(
+          runtime->hermes->rt);
   if (!hermesInterface) {
     // The linked libhermesvm.so does not expose IHermes, so there is no way to
     // reach the VM runtime. Fail here rather than dereferencing null.
@@ -179,14 +179,15 @@ napi_status js_execute_script(napi_env env, napi_value script, const char* file,
   // the Hermes NAPI entry point so we can attach the source URL for stack
   // traces.
   size_t len = 0;
-  napi_status status = napi_get_value_string_utf8(env, script, nullptr, 0, &len);
+  napi_status status =
+      napi_get_value_string_utf8(env, script, nullptr, 0, &len);
   if (status != napi_ok) return status;
 
   DEBUG_WRITE("[script] loading script: %s", file);
 
   uint8_t* source = new uint8_t[len + 1];
-  status = napi_get_value_string_utf8(env, script, reinterpret_cast<char*>(source),
-                                      len + 1, &len);
+  status = napi_get_value_string_utf8(
+      env, script, reinterpret_cast<char*>(source), len + 1, &len);
   if (status != napi_ok) {
     delete[] source;
     return status;
@@ -199,7 +200,9 @@ napi_status js_execute_script(napi_env env, napi_value script, const char* file,
   // finalizer below.
   return hermes_run_script(
       env, source, len + 1,
-      [](const uint8_t* data, size_t, void*) { delete[] const_cast<uint8_t*>(data); },
+      [](const uint8_t* data, size_t, void*) {
+        delete[] const_cast<uint8_t*>(data);
+      },
       nullptr, file, &flags, result);
 #else
   return napi_run_script_source(env, script, file, result);
@@ -207,9 +210,9 @@ napi_status js_execute_script(napi_env env, napi_value script, const char* file,
 }
 
 #ifdef __ANDROID__
-// Hermes bytecode (HBC) magic, first 8 bytes little-endian (0x1F1903C103BC1FC6).
-// Hermes stores raw HBC (no NativeScript container), so the whole file is the
-// bytecode buffer.
+// Hermes bytecode (HBC) magic, first 8 bytes little-endian
+// (0x1F1903C103BC1FC6). Hermes stores raw HBC (no NativeScript container), so
+// the whole file is the bytecode buffer.
 static const uint8_t kHermesMagic[8] = {0xc6, 0x1f, 0xbc, 0x03,
                                         0xc1, 0x03, 0x19, 0x1f};
 
@@ -229,7 +232,8 @@ napi_status js_run_bytecode_file(napi_env env, const char* file,
   auto data = tns::File::ReadBinary(path, length);
   if (!data) return napi_cannot_run_js;
 
-  DEBUG_WRITE("[bytecode] loading Hermes HBC bytecode: %s (%d bytes)", file, length);
+  DEBUG_WRITE("[bytecode] loading Hermes HBC bytecode: %s (%d bytes)", file,
+              length);
 
   hermes_bytecode_flags flags{};
   flags.struct_size = sizeof(flags);

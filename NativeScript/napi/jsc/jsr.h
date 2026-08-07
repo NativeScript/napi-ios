@@ -5,28 +5,26 @@
 #ifndef TEST_APP_JSR_H
 #define TEST_APP_JSR_H
 
-#include "jsr_common.h"
 #include "jsc-api.h"
+#include "jsr_common.h"
 
-typedef struct jsr_ns_runtime__ *jsr_ns_runtime;
+typedef struct jsr_ns_runtime__* jsr_ns_runtime;
 
 class NapiScope {
-public:
-    explicit NapiScope(napi_env env, bool openHandle = true)
-            : env_(env)
-    {
-//        napi_open_handle_scope(env_, &napiHandleScope_);
-    }
+ public:
+  explicit NapiScope(napi_env env, bool openHandle = true) : env_(env) {
+    //        napi_open_handle_scope(env_, &napiHandleScope_);
+  }
 
-    ~NapiScope() {
-//        napi_close_handle_scope(env_, napiHandleScope_);
-    }
+  ~NapiScope() {
+    //        napi_close_handle_scope(env_, napiHandleScope_);
+  }
 
-private:
-    napi_env env_;
-    napi_handle_scope napiHandleScope_;
+ private:
+  napi_env env_;
+  napi_handle_scope napiHandleScope_;
 };
 
 #define JSEnterScope
 
-#endif //TEST_APP_JSR_H
+#endif  // TEST_APP_JSR_H

@@ -11,18 +11,19 @@
 //   Apple   - hermes.xcframework, a NativeScript-patched Hermes exposing the
 //             C++ jsi::Runtime::createNodeApiEnv() hook (see jsi/jsi.h).
 //   Android - libhermesvm.so, which exports the upstream C ABI
-//             (hermes_napi_create_env / hermes_run_script / hermes_run_bytecode)
-//             and reaches the VM runtime through facebook::hermes::IHermes.
+//             (hermes_napi_create_env / hermes_run_script /
+//             hermes_run_bytecode) and reaches the VM runtime through
+//             facebook::hermes::IHermes.
 //
 // Everything below that is not ABI-specific is shared.
-
-#include "hermes/hermes.h"
-#include "jsi/threadsafe.h"
-#include "jsr_common.h"
 
 #include <memory>
 #include <mutex>
 #include <unordered_map>
+
+#include "hermes/hermes.h"
+#include "jsi/threadsafe.h"
+#include "jsr_common.h"
 
 #ifdef __ANDROID__
 // Node-API surface exported by libhermesvm.so.
