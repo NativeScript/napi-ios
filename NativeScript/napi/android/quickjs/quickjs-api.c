@@ -21,16 +21,27 @@
 
 #else
 
+// mimalloc was dropped; these map the mi_* call sites onto the platform
+// allocator. There is no portable spelling of malloc_usable_size, hence the
+// per-platform split.
 #include <stdlib.h>
 
-#define mi_malloc(size) \
-    malloc(size)
+#if defined(__APPLE__)
+#include <malloc/malloc.h>
+#define mi_malloc_usable_size(ptr) malloc_size(ptr)
+#else
+#include <malloc.h>
+#define mi_malloc_usable_size(ptr) malloc_usable_size(ptr)
+#endif
+
+#define mi_malloc(size) malloc(size)
 
 #define mi_calloc(count, size)  \
     calloc(count,size)
 
-#define mi_free(ptr) \
-    free(ptr)
+#define mi_zalloc(size) calloc(1, size)
+
+#define mi_free(ptr) free(ptr)
 
 #define mi_realloc(ptr, size) \
     realloc(ptr, size)

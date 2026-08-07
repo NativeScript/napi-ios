@@ -2,11 +2,3 @@
 	path = libffi
 	url = https://github.com/NativeScript/libffi.git
 	branch = darind/v8-ios
-[submodule "quickjs"]
-	path = NativeScript/napi/android/quickjs/source
-	url = https://github.com/bellard/quickjs
-	ignore = dirty
-[submodule "quickjs_ng"]
-	path = NativeScript/napi/android/quickjs/source_ng
-	url = https://github.com/quickjs-ng/quickjs
-	ignore = dirty
