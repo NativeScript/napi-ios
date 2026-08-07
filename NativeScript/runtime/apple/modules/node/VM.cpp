@@ -1791,7 +1791,7 @@ JSValue CloneQuickJSValue(JSContext* sourceContext,
     return result;
   }
 
-  if (JS_IsBigInt(sourceContext, value)) {
+  if (JS_IsBigInt(value)) {
     int64_t bigintValue = 0;
     if (JS_ToBigInt64(sourceContext, &bigintValue, value) < 0) {
       JS_ThrowTypeError(destinationContext,
