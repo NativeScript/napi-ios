@@ -1,6 +1,6 @@
 apply plugin: 'com.android.library'
 
-// can be: "V8-11", "V8-10", "V8-13", "JSC", "HERMES", "QUICKJS", "QUICKJS_NG", "PRIMJS".
+// can be: "V8-13", "JSC", "HERMES", "QUICKJS", "QUICKJS_NG", "PRIMJS".
 // QUICKJS is an alias for QUICKJS_NG; the bellard tree was dropped.
 // "SHERMES" is accepted as a compatibility alias for the Static Hermes build.
 
@@ -163,13 +163,8 @@ android {
                     arguments.add("-DJSC=1")
                 } else if (jsEngine.contains("V8")) {
                     arguments.add("-DV8=1")
-                   if (jsEngine == "V8-10") {
-                       arguments.add("-DV8_10=1")
-                   } else if (jsEngine == "V8-11") {
-                       arguments.add("-DV8_11=1")
-                   } else {
-                       arguments.add("-DV8_13=1")
-                   }
+                   // V8 13 is the only supported V8; v8-10 and v8-11 were dropped.
+                   arguments.add("-DV8_13=1")
                 }
 
 //              arguments "-DANDROID_TOOLCHAIN=clang", "-DANDROID_STL=c++_static", "-DANDROID_NDK_ROOT=${NDK_PATH}"
