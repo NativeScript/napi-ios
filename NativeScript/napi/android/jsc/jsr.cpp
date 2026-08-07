@@ -59,6 +59,19 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
   napi_create_function(
       *env, "gc", strlen("gc"),
       [](napi_env env, napi_callback_info info) -> napi_value {
+        // NOTE: JSGarbageCollect is advisory — JSC may defer or skip the
+        // collection, so `gc()` does not guarantee unreachable objects are
+        // reclaimed by the time it returns. This is why the timers spec
+        // "frees up resources after complete" fails on JSC.
+        //
+        // Switching to JSSynchronousGarbageCollectForDebugging (exported by the
+        // prebuilt libJavaScriptCore) does force a full collection, but a real
+        // collection then reclaims something the JSC binding holds without
+        // protecting, and the suite dies later with SIGSEGV:
+        //   JSObjectMakeError <- napi_create_error <- ReThrowToNapi
+        //   <- MetadataNode::InterfaceConstructorCallback
+        // That missing protect is a separate latent bug; fix it before making
+        // gc() synchronous here.
         JSGarbageCollect(env->context);
         napi_value undefined;
         napi_get_undefined(env, &undefined);
