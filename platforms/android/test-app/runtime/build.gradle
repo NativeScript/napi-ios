@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 // can be: "V8-11", "V8-10", "V8-13", "JSC", "HERMES", "QUICKJS", "QUICKJS_NG", "PRIMJS".
+// QUICKJS is an alias for QUICKJS_NG; the bellard tree was dropped.
 // "SHERMES" is accepted as a compatibility alias for the Static Hermes build.
 
 def jsEngine = "V8-13"
@@ -146,13 +147,12 @@ android {
 
                if (jsEngine == "QUICKJS" || jsEngine == "QUICKJS_NG") {
                     arguments.add("-DQUICKJS=1")
-                    arguments.add("-DUSE_MIMALLOC=1")
-                    // Trade memory for allocator speed (disables page purging,
-                    // eager-commits arenas, enables THP). See qjs_create_runtime.
-                    arguments.add("-DMIMALLOC_PERF=1")
-                   if (jsEngine == "QUICKJS_NG") {
-                       arguments.add("-DQUICKJS_NG=1")
-                   }
+                    // There is only one quickjs engine now: the NativeScript-patched
+                    // quickjs-ng vendored at vendor/quickjs/source_ng, which is the
+                    // same tree the Apple build uses. The bellard tree was dropped
+                    // (it never carried the NativeScript patches), so QUICKJS is
+                    // kept purely as an alias for QUICKJS_NG.
+                    arguments.add("-DQUICKJS_NG=1")
                     // SHERMES is kept as an alias for the static-hermes (hermesvm)
                     // engine, which is now the canonical HERMES engine.
                 } else if (jsEngine == "HERMES" || jsEngine == "SHERMES") {
