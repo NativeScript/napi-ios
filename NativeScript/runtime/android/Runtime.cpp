@@ -296,10 +296,6 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
     engineVariant = "JSC";
 #elif defined(__V8_13__)
     engineVariant = "V8-13";
-#elif defined(__V8_11__)
-    engineVariant = "V8-11";
-#elif defined(__V8_10__)
-    engineVariant = "V8-10";
 #elif defined(__V8__)
     engineVariant = "V8";
 #elif defined(__PRIMJS__)
