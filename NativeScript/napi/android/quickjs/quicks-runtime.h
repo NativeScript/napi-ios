@@ -12,11 +12,12 @@ EXTERN_C_START
 // quickjs-api.c as napi_runtime__ holding the JSRuntime and class IDs) and is
 // distinct from the engine-agnostic jsr_ns_runtime used by the jsr layer. The
 // jsr adapter (jsr.cpp) wraps this in a jsr_ns_runtime__.
-typedef struct napi_runtime__ *napi_runtime;
+typedef struct napi_runtime__* napi_runtime;
 
-NAPI_EXTERN napi_status NAPI_CDECL qjs_create_runtime(napi_runtime *runtime);
+NAPI_EXTERN napi_status NAPI_CDECL qjs_create_runtime(napi_runtime* runtime);
 
-NAPI_EXTERN napi_status NAPI_CDECL qjs_create_napi_env(napi_env *env, napi_runtime runtime);
+NAPI_EXTERN napi_status NAPI_CDECL qjs_create_napi_env(napi_env* env,
+                                                       napi_runtime runtime);
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_free_napi_env(napi_env env);
 
@@ -24,19 +25,20 @@ NAPI_EXTERN napi_status NAPI_CDECL qjs_free_runtime(napi_runtime runtime);
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_execute_script(napi_env env,
                                                       napi_value script,
-                                                      const char *file,
-                                                      napi_value *result);
+                                                      const char* file,
+                                                      napi_value* result);
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_run_bytecode(napi_env env,
-                                                    const uint8_t *buf,
+                                                    const uint8_t* buf,
                                                     size_t buf_len,
-                                                    const char *file,
-                                                    napi_value *result);
+                                                    const char* file,
+                                                    napi_value* result);
 
-NAPI_EXTERN napi_status NAPI_CDECL qjs_runtime_before_gc_callback(napi_env env, napi_finalize cb, void *data);
+NAPI_EXTERN napi_status NAPI_CDECL
+qjs_runtime_before_gc_callback(napi_env env, napi_finalize cb, void* data);
 
-NAPI_EXTERN napi_status NAPI_CDECL qjs_runtime_after_gc_callback(napi_env env, napi_finalize cb, void *data);
-
+NAPI_EXTERN napi_status NAPI_CDECL
+qjs_runtime_after_gc_callback(napi_env env, napi_finalize cb, void* data);
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_execute_pending_jobs(napi_env env);
 
@@ -44,4 +46,4 @@ NAPI_EXTERN napi_status NAPI_CDECL qjs_update_stack_top(napi_env env);
 
 EXTERN_C_END
 
-#endif //TEST_APP_QUICKS_RUNTIME_H
+#endif  // TEST_APP_QUICKS_RUNTIME_H

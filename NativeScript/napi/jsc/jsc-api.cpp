@@ -601,8 +601,8 @@ class FunctionInfo : public NativeInfo {
     JSString name(utf8name != nullptr ? utf8name : "",
                   utf8name != nullptr ? length : 0);
     JSObjectRef function = JSObjectMakeFunctionWithCallback(
-        env->context, utf8name != nullptr ? static_cast<JSStringRef>(name)
-                                          : nullptr,
+        env->context,
+        utf8name != nullptr ? static_cast<JSStringRef>(name) : nullptr,
         FunctionInfo::CallAsFunction);
     if (function == nullptr) {
       delete info;
@@ -904,7 +904,8 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
 
     auto info = NativeInfo::GetNativeInfoKey<WrapperInfo>(
         env->context, ToJSObject(env, object), env->wrapper_info_symbol);
-    if (info == nullptr || info != static_cast<WrapperInfo*>(cachedInfo->second)) {
+    if (info == nullptr ||
+        info != static_cast<WrapperInfo*>(cachedInfo->second)) {
       env->wrapper_info_cache.erase(cachedInfo);
       return nullptr;
     }
@@ -1710,20 +1711,20 @@ napi_status napi_typeof(napi_env env, napi_value value,
     case kJSTypeString:
       *result = napi_string;
       break;
-	    case kJSTypeSymbol:
-	      *result = napi_symbol;
-	      break;
-	    default:
-	      JSObjectRef object{ToJSObject(env, value)};
-	      NativeInfo* info = NativeInfo::Get<NativeInfo>(object);
-	      if (JSObjectIsFunction(env->context, object) ||
-	          (info != nullptr && (info->Type() == NativeType::Function ||
-	                               info->Type() == NativeType::Constructor))) {
-	        *result = napi_function;
-	      } else {
-	        if (info != nullptr && info->Type() == NativeType::External) {
-	          *result = napi_external;
-	        } else {
+    case kJSTypeSymbol:
+      *result = napi_symbol;
+      break;
+    default:
+      JSObjectRef object{ToJSObject(env, value)};
+      NativeInfo* info = NativeInfo::Get<NativeInfo>(object);
+      if (JSObjectIsFunction(env->context, object) ||
+          (info != nullptr && (info->Type() == NativeType::Function ||
+                               info->Type() == NativeType::Constructor))) {
+        *result = napi_function;
+      } else {
+        if (info != nullptr && info->Type() == NativeType::External) {
+          *result = napi_external;
+        } else {
           *result = napi_object;
         }
       }
@@ -2220,8 +2221,8 @@ extern "C" bool nativescript_jsc_try_unwrap_native(napi_env env,
   }
 
   WrapperInfo* info{};
-  if (WrapperInfo::Unwrap(env, value, &info) != napi_ok ||
-      info == nullptr || info->Data() == nullptr) {
+  if (WrapperInfo::Unwrap(env, value, &info) != napi_ok || info == nullptr ||
+      info->Data() == nullptr) {
     return false;
   }
 
