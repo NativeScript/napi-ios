@@ -7694,9 +7694,9 @@ static JSValue JS_GetPropertyInternal(JSContext *ctx, JSValueConst obj,
     if (unlikely(tag != JS_TAG_OBJECT)) {
         switch(tag) {
         case JS_TAG_NULL:
-            return JS_ThrowTypeErrorAtom(ctx, "cannot read property '%s' of null", prop);
+            return JS_ThrowTypeErrorAtom(ctx, "Cannot read properties of null (reading '%s')", prop);
         case JS_TAG_UNDEFINED:
-            return JS_ThrowTypeErrorAtom(ctx, "cannot read property '%s' of undefined", prop);
+            return JS_ThrowTypeErrorAtom(ctx, "Cannot read properties of undefined (reading '%s')", prop);
         case JS_TAG_EXCEPTION:
             return JS_EXCEPTION;
         case JS_TAG_STRING:
@@ -8554,9 +8554,9 @@ static JSValue JS_GetPropertyValue(JSContext *ctx, JSValueConst this_obj,
         if (unlikely(atom == JS_ATOM_NULL))
             return JS_EXCEPTION;
         if (tag == JS_TAG_NULL) {
-            JS_ThrowTypeErrorAtom(ctx, "cannot read property '%s' of null", atom);
+            JS_ThrowTypeErrorAtom(ctx, "Cannot read properties of null (reading '%s')", atom);
         } else {
-            JS_ThrowTypeErrorAtom(ctx, "cannot read property '%s' of undefined", atom);
+            JS_ThrowTypeErrorAtom(ctx, "Cannot read properties of undefined (reading '%s')", atom);
         }
         JS_FreeAtom(ctx, atom);
         return JS_EXCEPTION;
@@ -34905,7 +34905,8 @@ static JSValue __JS_EvalInternal(JSContext *ctx, JSValueConst this_obj,
     /* Could add a flag to avoid resolution if necessary */
     if (m) {
         m->func_obj = fun_obj;
-        if (js_resolve_module(ctx, m) < 0)
+        if (!(flags & JS_EVAL_FLAG_COMPILE_ONLY_NO_RESOLVE) &&
+            js_resolve_module(ctx, m) < 0)
             goto fail1;
         fun_obj = JS_NewModuleValue(ctx, m);
     }
