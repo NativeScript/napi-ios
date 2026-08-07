@@ -1,7 +1,11 @@
 cmake_minimum_required(VERSION 3.15)
 
 # Metadata
-project(NativeScript CXX OBJCXX)
+# C is required for the quickjs engine sources (quickjs.c, libregexp.c, …) and
+# quickjs-api.c. It used to be enabled as a side effect of add_subdirectory()ing
+# mimalloc; without it CMake silently drops every .c file from the target and the
+# build fails at link with undefined JS_* symbols.
+project(NativeScript C CXX OBJCXX)
 
 set(NAME NativeScript)
 set(VERSION 0.1.0)
@@ -388,21 +392,12 @@ if(ENABLE_JS_RUNTIME)
     endif()
 
   elseif(TARGET_ENGINE_QUICKJS)
-    set(MI_BUILD_OBJECT OFF)
-    set(MI_OVERRIDE OFF)
-    set(MI_BUILD_SHARED OFF)
-    set(MI_BUILD_TESTS OFF)
-
     set(CMAKE_XCODE_ATTRIBUTE_CODE_SIGNING_REQUIRED "NO")
-
-    add_subdirectory(napi/quickjs/mimalloc-dev mimalloc)
 
     include_directories(
       napi/quickjs
       napi/quickjs/source
       napi/common
-      mimalloc
-      napi/quickjs/mimalloc-dev/include
     )
 
     set(SOURCE_FILES ${SOURCE_FILES}
@@ -739,14 +734,6 @@ elseif(TARGET_PLATFORM_IOS)
     ${NAME}
     PRIVATE
     "-framework UIKit"
-  )
-endif()
-
-if(TARGET_ENGINE_QUICKJS)
-  target_link_libraries(
-    ${NAME}
-    PRIVATE
-    mimalloc-static
   )
 endif()
 

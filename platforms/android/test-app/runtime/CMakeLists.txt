@@ -19,10 +19,6 @@ if (CCACHE_FOUND AND (USE_CCACHE))
 endif ()
 
 set(COMMON_CMAKE_ARGUMENTS "-Wno-error -Wno-deprecated-declarations -Wno-unused-result -mstackrealign -fexceptions -fno-builtin-stpcpy")
-set(MI_OVERRIDE OFF)
-set(MI_BUILD_OBJECT OFF)
-set(MI_BUILD_SHARED OFF)
-set(MI_BUILD_TESTS OFF)
 
 # All engines build with C++20: the vendored ada 3.3.0 (used by the URL module,
 # compiled for every engine) requires C++20 (std::endian, concepts). Previously
@@ -63,6 +59,8 @@ set(NS_ANDROID_RUNTIME_DIR "${NS_RUNTIME_DIR}/android")
 set(NS_RUNTIME_MODULES_DIR "${NS_RUNTIME_DIR}/modules")
 set(NS_NAPI_DIR "${NS_ROOT}/napi")
 set(NS_ANDROID_NAPI_DIR "${NS_NAPI_DIR}/android")
+# Third-party JS engine sources shared by the Apple and Android builds.
+set(VENDOR_DIR "${REPO_ROOT}/vendor")
 set(NS_JNI_NAPI_DIR "${NS_ROOT}/ffi/jni/napi")
 
 # Command info: https://cmake.org/cmake/help/v3.4/command/include_directories.html
@@ -129,40 +127,17 @@ set(MODULE_FILES
 set(SOURCES ${ANDROID_RUNTIME_FILES} ${JNI_NAPI_FILES} ${MODULE_FILES})
 
 if (QUICKJS OR QUICKJS_NG)
-    # Build mimalloc (v3) for speed regardless of the APK variant. Android
-    # Gradle passes -DCMAKE_BUILD_TYPE=Debug for debug variants, and mimalloc v3
-    # then *explicitly* defines MI_DEBUG=2 and auto-enables MI_GUARDED (guard
-    # pages) — assertion + invariant checking on the alloc/free hot path that can
-    # make it slower than the system allocator. MI_NO_DEBUG forces MI_DEBUG=0
-    # (and takes priority over the Debug branch, which also suppresses the
-    # auto-guard). arm64 already gets -march=armv8.1-a via v3's default
-    # MI_OPT_ARCH, so no arch flag is needed here.
-    set(MI_NO_DEBUG     ON  CACHE BOOL "" FORCE)  # define MI_DEBUG=0 in all builds
-    set(MI_GUARDED      OFF CACHE BOOL "" FORCE)  # no guard-page allocations
-    set(MI_NO_PADDING   ON  CACHE BOOL "" FORCE)  # define MI_PADDING=0 in all builds
-    set(MI_SECURE       OFF CACHE BOOL "" FORCE)
-    set(MI_BUILD_TESTS  OFF CACHE BOOL "" FORCE)
-    set(MI_BUILD_SHARED OFF CACHE BOOL "" FORCE)  # we only link mimalloc-static
-    set(MI_BUILD_OBJECT OFF CACHE BOOL "" FORCE)
-    set(MI_OVERRIDE     OFF CACHE BOOL "" FORCE)  # we call mi_* explicitly
-
-    add_subdirectory(${NS_NAPI_DIR}/quickjs/mimalloc-dev mimalloc)
-
-    # Optimize the mimalloc sources even in a debug configuration, scoped to the
-    # mimalloc target only (not quickjs.c or the rest of the C runtime). -O2 is
-    # appended after the Debug -O0 so it wins; -DNDEBUG drops any remaining
-    # assert()s in mimalloc's own code.
-    target_compile_options(mimalloc-static PRIVATE -O2 -DNDEBUG)
-
-    if (QUICKJS_NG)
-        set(QJS_SOURCE_DIR ${NS_ANDROID_NAPI_DIR}/quickjs/source_ng)
-        add_compile_definitions(__QUICKJS_NG__)
-    else()
-        set(QJS_SOURCE_DIR ${NS_ANDROID_NAPI_DIR}/quickjs/source)
-    endif()
+    # quickjs-ng, NativeScript-patched, vendored at the repo root and shared with
+    # the Apple build. The patches (JS_WeakRef_Deref, JS_NewString16,
+    # JS_ClearWeakRefKeepAlives) are required by quickjs-api.c and exist in no
+    # upstream release, which is why this is a vendored tree rather than a
+    # submodule.
+    set(QJS_SOURCE_DIR ${VENDOR_DIR}/quickjs/source_ng)
+    add_compile_definitions(__QUICKJS_NG__)
 
     set(SOURCES ${SOURCES}
             # quickjs
+            ${QJS_SOURCE_DIR}/cutils.c
             ${QJS_SOURCE_DIR}/libregexp.c
             ${QJS_SOURCE_DIR}/libunicode.c
             ${QJS_SOURCE_DIR}/quickjs.c
@@ -170,24 +145,21 @@ if (QUICKJS OR QUICKJS_NG)
             # napi
             ${NS_ANDROID_NAPI_DIR}/quickjs/quickjs-api.c
             ${NS_ANDROID_NAPI_DIR}/quickjs/jsr.cpp
-
-
     )
-
-    if (NOT QUICKJS_NG)
-        set(SOURCES ${SOURCES}
-            ${QJS_SOURCE_DIR}/cutils.c
-        )
-    endif ()
 
     include_directories(
             ${NS_ANDROID_NAPI_DIR}/quickjs
-            ${NS_NAPI_DIR}/quickjs
-            ${QJS_SOURCE_DIR}
             ${NS_NAPI_DIR}/common
-            # mimalloc
-            ${NS_NAPI_DIR}/quickjs/mimalloc-dev/include
     )
+
+    # The engine source dir is added with -idirafter (searched *after* the system
+    # headers) rather than -I. quickjs trees ship files whose names collide with
+    # C++ standard headers on a case-insensitive filesystem (macOS): bellard's
+    # VERSION shadows <version>, which fails as `error: expected unqualified-id`
+    # and cascades through <iterator> and <memory>. Only quickjs-api.c needs an
+    # angle include (<quickjs.h>) and no system directory provides that, so
+    # -idirafter still resolves it; quickjs's own sources use quoted includes.
+    add_compile_options(-idirafter ${QJS_SOURCE_DIR})
 
 endif ()
 
@@ -411,15 +383,6 @@ if (QUICKJS OR QUICKJS_NG)
     if (QUICKJS_NG)
         target_compile_definitions(NativeScript PRIVATE __QJS_NG__)
     endif ()
-    if (USE_MIMALLOC)
-        target_compile_definitions(NativeScript PRIVATE USE_MIMALLOC)
-        # Opt-in mimalloc runtime tuning (see qjs_create_runtime): trades higher
-        # memory residency for fewer syscalls / faster allocation. Enable from
-        # runtime/build.gradle with -DMIMALLOC_PERF=1.
-        if (MIMALLOC_PERF)
-            target_compile_definitions(NativeScript PRIVATE MIMALLOC_PERF)
-        endif ()
-    endif ()
 endif ()
 
 if (USE_HOST_OBJECTS)
@@ -462,11 +425,7 @@ find_library(system-android android)
 # Command info: https://cmake.org/cmake/help/v3.4/command/target_link_libraries.html
 # Specifies libraries CMake should link to your target library.
 if (QUICKJS)
-    if (USE_MIMALLOC)
-        target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android} mimalloc-static)
-    else ()
-        target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
-    endif ()
+    target_link_libraries(NativeScript ${system-log} ${system-z} ${system-android})
 elseif (HERMES OR SHERMES)
     find_package(fbjni REQUIRED CONFIG)
     target_link_libraries(NativeScript ${system-log} ${system-z} fbjni::fbjni ${system-android})
