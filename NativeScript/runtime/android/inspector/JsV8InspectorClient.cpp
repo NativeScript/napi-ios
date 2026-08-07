@@ -254,11 +254,7 @@ void JsV8InspectorClient::scheduleBreak() {
 }
 
 void JsV8InspectorClient::createInspectorSession() {
-#ifdef __V8_10__
-    session_ = inspector_->connect(JsV8InspectorClient::contextGroupId, this, {});
-#else
     session_ = inspector_->connect(JsV8InspectorClient::contextGroupId, this, {}, V8Inspector::ClientTrustLevel::kFullyTrusted);
-#endif
 }
 
 void JsV8InspectorClient::disconnect() {

@@ -73,12 +73,8 @@ WorkerInspectorClient::WorkerInspectorClient(int workerId, napi_env env, ALooper
     contextInfo.origin = Make8BitStringView(url_);
     inspector_->contextCreated(contextInfo);
     context_.Reset(isolate_, context);
-#ifdef __V8_10__
-    session_ = inspector_->connect(contextGroupId, this, {});
-#else
     session_ = inspector_->connect(contextGroupId, this, {},
                                    V8Inspector::ClientTrustLevel::kFullyTrusted);
-#endif
 }
 
 WorkerInspectorClient::~WorkerInspectorClient() {
@@ -201,12 +197,8 @@ void WorkerInspectorClient::DoResetSession() {
         session_->resume();
         session_.reset();
     }
-#ifdef __V8_10__
-    session_ = inspector_->connect(contextGroupId, this, {});
-#else
     session_ = inspector_->connect(contextGroupId, this, {},
                                    V8Inspector::ClientTrustLevel::kFullyTrusted);
-#endif
 }
 
 void WorkerInspectorClient::MaybeResetSession() {
