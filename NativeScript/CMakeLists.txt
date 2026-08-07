@@ -115,7 +115,12 @@ elseif(TARGET_ENGINE STREQUAL "v8")
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-rtti -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_V8")
 elseif(TARGET_ENGINE STREQUAL "quickjs")
   set(TARGET_ENGINE_QUICKJS TRUE)
-  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_QUICKJS")
+  # The shared quickjs backend selects between the quickjs-ng and bellard APIs
+  # with __QJS_NG__ / __QUICKJS_NG__. Only quickjs-ng is vendored now, so both
+  # platforms must define them or the bellard branches get compiled against an
+  # ng header (JS_IsArray, JS_FreeValue, … then mismatch on arity).
+  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__QJS_NG__ -D__QUICKJS_NG__")
+  set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_QUICKJS -D__QJS_NG__ -D__QUICKJS_NG__")
 elseif(TARGET_ENGINE STREQUAL "jsc")
   set(TARGET_ENGINE_JSC TRUE)
   set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++ -std=c++20 -DTARGET_ENGINE_JSC")
@@ -390,18 +395,19 @@ if(ENABLE_JS_RUNTIME)
 
     include_directories(
       napi/quickjs
-      napi/quickjs/source
+      ${CMAKE_CURRENT_SOURCE_DIR}/../vendor/quickjs/source_ng
       napi/common
     )
 
     set(SOURCE_FILES ${SOURCE_FILES}
 
-      # quickjs
-      napi/quickjs/source/cutils.c
-      napi/quickjs/source/libregexp.c
-      napi/quickjs/source/libbf.c
-      napi/quickjs/source/libunicode.c
-      napi/quickjs/source/quickjs.c
+      # quickjs-ng, NativeScript-patched, vendored at the repo root and shared
+      # with the Android build. 0.11.0 replaced libbf with dtoa.
+      ../vendor/quickjs/source_ng/cutils.c
+      ../vendor/quickjs/source_ng/libregexp.c
+      ../vendor/quickjs/source_ng/libunicode.c
+      ../vendor/quickjs/source_ng/quickjs.c
+      ../vendor/quickjs/source_ng/dtoa.c
 
       # napi
       napi/quickjs/quickjs-api.c

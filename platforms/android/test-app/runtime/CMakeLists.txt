@@ -143,12 +143,12 @@ if (QUICKJS OR QUICKJS_NG)
             ${QJS_SOURCE_DIR}/quickjs.c
             ${QJS_SOURCE_DIR}/dtoa.c
             # napi
-            ${NS_ANDROID_NAPI_DIR}/quickjs/quickjs-api.c
-            ${NS_ANDROID_NAPI_DIR}/quickjs/jsr.cpp
+            ${NS_NAPI_DIR}/quickjs/quickjs-api.c
+            ${NS_NAPI_DIR}/quickjs/jsr.cpp
     )
 
     include_directories(
-            ${NS_ANDROID_NAPI_DIR}/quickjs
+            ${NS_NAPI_DIR}/quickjs
             ${NS_NAPI_DIR}/common
     )
 
