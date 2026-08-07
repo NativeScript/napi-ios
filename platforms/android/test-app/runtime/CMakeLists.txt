@@ -214,34 +214,16 @@ if (JSC)
 endif ()
 
 if (V8)
-    if (V8_10)
-        include_directories(
-                ${NS_ANDROID_NAPI_DIR}/v8
-                ${NS_ANDROID_NAPI_DIR}/v8-10
-                ${NS_ANDROID_NAPI_DIR}/v8-10/include
-                ${NS_NAPI_DIR}/common
-                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
-                ${NS_ANDROID_NAPI_DIR}/v8-10/v8_inspector
-        )
-    elseif (V8_11)
-        include_directories(
-                ${NS_ANDROID_NAPI_DIR}/v8
-                ${NS_ANDROID_NAPI_DIR}/v8-11
-                ${NS_ANDROID_NAPI_DIR}/v8-11/include
-                ${NS_NAPI_DIR}/common
-                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
-                ${NS_ANDROID_NAPI_DIR}/v8-11/v8_inspector
-        )
-    else ()
-        include_directories(
-                ${NS_ANDROID_NAPI_DIR}/v8
-                ${NS_ANDROID_NAPI_DIR}/v8-13
-                ${NS_ANDROID_NAPI_DIR}/v8-13/include
-                ${NS_NAPI_DIR}/common
-                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
-                ${NS_ANDROID_NAPI_DIR}/v8-13/v8_inspector
-        )
-    endif ()
+    # V8 13 is the only supported V8. The v8-10 and v8-11 trees (and their
+    # ~393MB of prebuilt archives) were dropped.
+    include_directories(
+            ${NS_ANDROID_NAPI_DIR}/v8
+            ${NS_ANDROID_NAPI_DIR}/v8-13
+            ${NS_ANDROID_NAPI_DIR}/v8-13/include
+            ${NS_NAPI_DIR}/common
+            ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
+            ${NS_ANDROID_NAPI_DIR}/v8-13/v8_inspector
+    )
 
     if (NOT OPTIMIZED_BUILD OR OPTIMIZED_WITH_INSPECTOR_BUILD)
         add_definitions(-DAPPLICATION_IN_DEBUG)
@@ -260,15 +242,7 @@ if (V8)
     )
 
 
-    if (V8_10)
-        set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -DV8_31BIT_SMIS_ON_64BIT_ARCH -DV8_31BIT_SMIS_ON_64BIT_ARCH -DV8_ENABLE_REGEXP_INTERPRETER_THREADED_DISPATCH -DV8_EMBEDDED_BUILTINS")
-        # Enable pointer compression on 64 bit platforms
-        if ("${ANDROID_ABI}" MATCHES "arm64-v8a$" OR "${ANDROID_ABI}" MATCHES "x86_64$")
-            set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -DV8_COMPRESS_POINTERS")
-        endif ()
-    else ()
-        set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -DV8_ENABLE_REGEXP_INTERPRETER_THREADED_DISPATCH -DV8_EMBEDDED_BUILTINS")
-    endif ()
+    set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -DV8_ENABLE_REGEXP_INTERPRETER_THREADED_DISPATCH -DV8_EMBEDDED_BUILTINS")
 
 
 endif ()
@@ -351,16 +325,6 @@ endif ()
 
 if (V8)
     target_compile_definitions(NativeScript PRIVATE __V8__)
-endif ()
-
-if (V8_10)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/v8-10/${ANDROID_ABI}/libv8_monolith.a)
-    target_compile_definitions(NativeScript PRIVATE __V8_10__)
-endif ()
-
-if (V8_11)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/v8-11/${ANDROID_ABI}/libv8_monolith.a)
-    target_compile_definitions(NativeScript PRIVATE __V8_11__)
 endif ()
 
 if (V8_13)
