@@ -8,9 +8,9 @@
 #include "quickjs.h"
 
 // The opaque runtime handle used to live in js_native_api_types.h; it now lives
-// in jsr_common.h, which this header cannot include (quickjs-api.c is C and only
-// needs the handle, not the JSR entry points). Redeclaring the typedef is legal
-// and matches how v8/jsr.h and jsc/jsr.h carry their own copies.
+// in jsr_common.h, which this header cannot include (quickjs-api.c is C and
+// only needs the handle, not the JSR entry points). Redeclaring the typedef is
+// legal and matches how v8/jsr.h and jsc/jsr.h carry their own copies.
 typedef struct jsr_ns_runtime__* jsr_ns_runtime;
 
 EXTERN_C_START
@@ -43,11 +43,9 @@ NAPI_EXTERN JSContext* NAPI_CDECL qjs_get_context(napi_env env);
 
 NAPI_EXTERN JSRuntime* NAPI_CDECL qjs_get_runtime(napi_env env);
 
-NAPI_EXTERN void NAPI_CDECL
-qjs_shared_array_buffer_data_retain(uint8_t* data);
+NAPI_EXTERN void NAPI_CDECL qjs_shared_array_buffer_data_retain(uint8_t* data);
 
-NAPI_EXTERN void NAPI_CDECL
-qjs_shared_array_buffer_data_release(uint8_t* data);
+NAPI_EXTERN void NAPI_CDECL qjs_shared_array_buffer_data_release(uint8_t* data);
 
 NAPI_EXTERN napi_status NAPI_CDECL qjs_create_scoped_value(napi_env env,
                                                            JSValue value,

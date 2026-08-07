@@ -1,8 +1,8 @@
 #include <assert.h>
 #include <limits.h>
+#include <quickjs.h>
 #include <stdatomic.h>
 #include <stddef.h>
-#include <quickjs.h>
 #include <sys/queue.h>
 
 #include "js_native_api.h"
@@ -63,8 +63,7 @@ typedef struct QJSSABHeader {
 } QJSSABHeader;
 
 static void* qjs_shared_array_buffer_alloc(void* opaque, size_t size) {
-  QJSSABHeader* sab =
-      mi_malloc(sizeof(QJSSABHeader) + (size == 0 ? 1 : size));
+  QJSSABHeader* sab = mi_malloc(sizeof(QJSSABHeader) + (size == 0 ? 1 : size));
   if (sab == NULL) {
     return NULL;
   }
@@ -213,7 +212,7 @@ typedef struct JsAtoms {
 
 typedef struct napi_env__ {
   JSValue referenceSymbolValue;  // size_t * 2
-  jsr_ns_runtime runtime;          // size_t
+  jsr_ns_runtime runtime;        // size_t
   JSContext* context;            // size_t
   LIST_HEAD(, napi_handle_scope__)
   handleScopeList;  // size_t
@@ -3861,9 +3860,8 @@ napi_status napi_run_script_as_module(napi_env env, napi_value script,
   RETURN_STATUS_IF_FALSE(cScript != NULL, napi_pending_exception)
 
   js_enter(env);
-  JSValue module =
-      JS_Eval(env->context, cScript, script_len, source_url,
-              JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
+  JSValue module = JS_Eval(env->context, cScript, script_len, source_url,
+                           JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY);
   JS_FreeCString(env->context, cScript);
 
   if (JS_IsException(module)) {
