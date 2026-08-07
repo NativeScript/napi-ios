@@ -202,13 +202,16 @@ endif ()
 
 if (JSC)
     include_directories(
-            ${NS_ANDROID_NAPI_DIR}/jsc
-            ${NS_ANDROID_NAPI_DIR}/jsc/include
+            ${NS_NAPI_DIR}/jsc
             ${NS_NAPI_DIR}/common
+            # jsc-android's own JavaScriptCore headers. Apple deliberately does
+            # not get these -- it resolves <JavaScriptCore/...> to the SDK
+            # framework, whose JSC is a different build with a different ABI.
+            ${VENDOR_DIR}/jsc-android/include
     )
     set(SOURCES ${SOURCES}
-            ${NS_ANDROID_NAPI_DIR}/jsc/jsc-api.cpp
-            ${NS_ANDROID_NAPI_DIR}/jsc/jsr.cpp
+            ${NS_NAPI_DIR}/jsc/jsc-api.cpp
+            ${NS_NAPI_DIR}/jsc/jsr.cpp
     )
 endif ()
 
