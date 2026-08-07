@@ -1,7 +1,5 @@
 #include "jsc-api.h"
 
-#include <objc/runtime.h>
-
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -14,6 +12,28 @@
 #include <string>
 #include <thread>
 #include <vector>
+
+#ifdef __ANDROID__
+// Native weak references (JSWeakCreate / JSWeakGetObject) live in this private
+// JSC header; used by napi_ref__ to back weak references. Apple's SDK does not
+// ship it, so that build uses the finalizer-set scheme instead.
+#include <JavaScriptCore/JSWeakPrivate.h>
+#endif
+
+// JSC's BigInt C API -- JSBigIntCreateWith*, JSValueToInt64/UInt64,
+// JSValueIsBigInt, JSValueCompare*Int64 -- is API_AVAILABLE(macos(15.0),
+// ios(18.0)), well above the deployment target, so on Apple every use has to be
+// version-checked. jsc-android always has it.
+#ifdef __APPLE__
+#define CHECK_BIGINT_API(env)                                \
+  do {                                                       \
+    if (!__builtin_available(macOS 15.0, iOS 18.0, *)) {     \
+      return napi_set_last_error(env, napi_generic_failure); \
+    }                                                        \
+  } while (0)
+#else
+#define CHECK_BIGINT_API(env) ((void)0)
+#endif
 
 struct napi_callback_info__ {
   napi_value newTarget;
@@ -102,6 +122,24 @@ class JSString {
       return JSStringCreateWithUTF8CString(string);
     }
 
+    // Fast path: pure-ASCII input maps 1:1 onto UTF-16 code units, so we can
+    // widen it directly and skip the costly std::wstring_convert/codecvt
+    // transcode (which dominates JSC string creation for the common case).
+    bool isAscii = true;
+    for (size_t i = 0; i < length; ++i) {
+      if (static_cast<unsigned char>(string[i]) >= 0x80) {
+        isAscii = false;
+        break;
+      }
+    }
+    if (isAscii) {
+      std::vector<JSChar> chars(length);
+      for (size_t i = 0; i < length; ++i) {
+        chars[i] = static_cast<JSChar>(static_cast<unsigned char>(string[i]));
+      }
+      return JSStringCreateWithCharacters(chars.data(), length);
+    }
+
     std::u16string u16str{
         std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t>{}
             .from_bytes(string, string + length)};
@@ -122,14 +160,10 @@ inline const JSValueRef* ToJSValues(const napi_value* values) {
   return reinterpret_cast<const JSValueRef*>(values);
 }
 
-inline bool IsJSObjectValue(napi_env env, const napi_value value) {
-  return value != nullptr &&
-         JSValueIsObject(env->context, reinterpret_cast<JSValueRef>(value));
-}
-
 inline JSObjectRef ToJSObject(napi_env env, const napi_value value) {
-  return IsJSObjectValue(env, value) ? reinterpret_cast<JSObjectRef>(value)
-                                     : nullptr;
+  assert(value == nullptr ||
+         JSValueIsObject(env->context, reinterpret_cast<JSValueRef>(value)));
+  return reinterpret_cast<JSObjectRef>(value);
 }
 
 inline JSString ToJSString(napi_env env, napi_value value,
@@ -197,9 +231,6 @@ class NativeInfo {
 
   template <typename T>
   static T* Get(JSObjectRef obj) {
-    if (obj == nullptr) {
-      return nullptr;
-    }
     return reinterpret_cast<T*>(JSObjectGetPrivate(obj));
   }
 
@@ -225,10 +256,15 @@ class NativeInfo {
   template <typename T>
   static T* GetNativeInfo(JSContextRef ctx, JSObjectRef obj,
                           const char* propertyKey) {
+    // Guard against a receiver that isn't a wrapped object (e.g. a plain {}
+    // passed to napi_unwrap via method.call({})). Reading the info property
+    // yields undefined; JSValueToObject(undefined) then returns NULL and
+    // JSObjectGetPrivate(NULL) would dereference a null JSObjectRef -> SIGSEGV.
+    // V8/QuickJS return safely here, so mirror that and just report "no native
+    // info".
     if (obj == nullptr) {
       return nullptr;
     }
-
     JSValueRef exception{};
     JSValueRef native_info =
         JSObjectGetProperty(ctx, obj, JSString(propertyKey), &exception);
@@ -237,45 +273,15 @@ class NativeInfo {
       return nullptr;
     }
 
-    JSObjectRef native_info_object =
-        JSValueToObject(ctx, native_info, &exception);
-    if (exception != nullptr || native_info_object == nullptr) {
+    JSObjectRef info_obj = JSValueToObject(ctx, native_info, &exception);
+    if (exception != nullptr || info_obj == nullptr) {
       return nullptr;
     }
 
-    NativeInfo* info = Get<NativeInfo>(native_info_object);
+    NativeInfo* info = Get<NativeInfo>(info_obj);
     if (info != nullptr && info->Type() == T::StaticType) {
       return reinterpret_cast<T*>(info);
     }
-    return nullptr;
-  }
-
-  template <typename T>
-  static T* GetNativeInfoKey(JSContextRef ctx, JSObjectRef obj,
-                             JSValueRef propertyKey) {
-    if (obj == nullptr || propertyKey == nullptr) {
-      return nullptr;
-    }
-
-    JSValueRef exception{};
-    JSValueRef native_info =
-        JSObjectGetPropertyForKey(ctx, obj, propertyKey, &exception);
-    if (exception != nullptr || native_info == nullptr ||
-        !JSValueIsObject(ctx, native_info)) {
-      return nullptr;
-    }
-
-    JSObjectRef native_info_object =
-        JSValueToObject(ctx, native_info, &exception);
-    if (exception != nullptr || native_info_object == nullptr) {
-      return nullptr;
-    }
-
-    NativeInfo* info = Get<NativeInfo>(native_info_object);
-    if (info != nullptr && info->Type() == T::StaticType) {
-      return reinterpret_cast<T*>(info);
-    }
-
     return nullptr;
   }
 
@@ -320,7 +326,62 @@ class ConstructorInfo : public NativeInfo {
     }
 
     JSObjectRef constructor{
-        JSObjectMake(env->context, info->_constructorClass, info)};
+        JSObjectMakeConstructor(env->context, info->_class, CallAsConstructor)};
+
+    // Give the constructor a non-writable own `Symbol.hasInstance` equal to
+    // the built-in default (Function.prototype[@@hasInstance], i.e. the
+    // OrdinaryHasInstance handler). JSObjectMakeConstructor produces an
+    // object whose prototype chain does not include Function.prototype, so
+    // `Class[Symbol.hasInstance]` would otherwise be `undefined` — unlike
+    // V8/QuickJS where these constructors are ordinary functions that
+    // inherit the (non-writable) default. That gap lets the TypeScript
+    // `__extends` helper's defensive `child[Symbol.hasInstance] = fn`
+    // assignment SUCCEED on JSC (it is a silent no-op elsewhere because the
+    // inherited default is non-writable), installing a broken own
+    // @@hasInstance that reduces `x instanceof ExtendedClass` to the
+    // always-false `x instanceof <native extended ctor>`. Defining the
+    // default here as a non-writable own property restores the correct
+    // `instanceof` behaviour WITHOUT reparenting the constructor to
+    // Function.prototype (which would also override its class-name
+    // `toString`).
+    {
+      JSObjectRef jsGlobal = JSContextGetGlobalObject(env->context);
+      JSValueRef symbolVal = JSObjectGetProperty(env->context, jsGlobal,
+                                                 JSString("Symbol"), nullptr);
+      JSObjectRef symbolCtor =
+          JSValueToObject(env->context, symbolVal, nullptr);
+      JSValueRef funcVal = JSObjectGetProperty(env->context, jsGlobal,
+                                               JSString("Function"), nullptr);
+      JSObjectRef funcCtor = JSValueToObject(env->context, funcVal, nullptr);
+      if (symbolCtor != nullptr && funcCtor != nullptr) {
+        JSValueRef hasInstanceKey = JSObjectGetProperty(
+            env->context, symbolCtor, JSString("hasInstance"), nullptr);
+        JSValueRef funcProtoVal = JSObjectGetProperty(
+            env->context, funcCtor, JSString("prototype"), nullptr);
+        JSObjectRef funcProto =
+            JSValueToObject(env->context, funcProtoVal, nullptr);
+        if (hasInstanceKey != nullptr &&
+            JSValueIsSymbol(env->context, hasInstanceKey) &&
+            funcProto != nullptr) {
+          JSValueRef defaultHasInstance = JSObjectGetPropertyForKey(
+              env->context, funcProto, hasInstanceKey, nullptr);
+          if (defaultHasInstance != nullptr &&
+              JSValueIsObject(env->context, defaultHasInstance)) {
+            // Non-writable (blocks the __extends `[[Set]]`
+            // assignment, matching the inherited default's
+            // writability on V8/QuickJS) but CONFIGURABLE, so
+            // interfaces can still install their own java-backed
+            // @@hasInstance via Object.defineProperty
+            // (RegisterSymbolHasInstanceCallback).
+            JSObjectSetPropertyForKey(
+                env->context, constructor, hasInstanceKey, defaultHasInstance,
+                kJSPropertyAttributeReadOnly | kJSPropertyAttributeDontEnum,
+                nullptr);
+          }
+        }
+      }
+    }
+
     JSValueRef exception{};
     if (length) {
       napi_value name;
@@ -329,20 +390,15 @@ class ConstructorInfo : public NativeInfo {
                           ToJSValue(name), kJSPropertyAttributeNone,
                           &exception);
     }
-    JSObjectSetProperty(
-        env->context, constructor, JSString("length"),
-        JSValueMakeNumber(
-            env->context,
-            static_cast<double>(length == NAPI_AUTO_LENGTH ? 0 : length)),
-        kJSPropertyAttributeDontEnum | kJSPropertyAttributeReadOnly,
-        &exception);
-    JSObjectRef prototype{JSObjectMake(env->context, info->_class, nullptr)};
-    JSObjectSetProperty(env->context, constructor, JSString("prototype"),
-                        prototype, kJSPropertyAttributeDontDelete, &exception);
+    JSObjectRef prototype{(JSObjectRef)JSObjectGetProperty(
+        env->context, constructor, JSString("prototype"), &exception)};
 
     //            JSObjectSetPrototype(env->context, prototype,
     //            JSObjectGetPrototype(env->context, constructor));
     //            JSObjectSetPrototype(env->context, constructor, prototype);
+
+    NativeInfo::SetNativeInfo(env->context, constructor, info->_class,
+                              "[[jsc_constructor_info]]", info);
 
     JSObjectSetProperty(env->context, prototype, JSString("constructor"),
                         constructor, kJSPropertyAttributeNone, &exception);
@@ -360,162 +416,13 @@ class ConstructorInfo : public NativeInfo {
         _name{name, (length == NAPI_AUTO_LENGTH ? std::strlen(name) : length)},
         _cb{cb},
         _data{data} {
-    JSClassDefinition instanceDefinition{kJSClassDefinitionEmpty};
-    instanceDefinition.className = _name.data();
-    _class = JSClassCreate(&instanceDefinition);
-
-    JSClassDefinition constructorDefinition{kJSClassDefinitionEmpty};
-    constructorDefinition.className = _name.data();
-    constructorDefinition.attributes = kJSClassAttributeNoAutomaticPrototype;
-    constructorDefinition.initialize = Initialize;
-    constructorDefinition.callAsFunction = CallAsFunction;
-    constructorDefinition.callAsConstructor = CallAsConstructor;
-    constructorDefinition.hasInstance = HasInstance;
-    constructorDefinition.finalize = Finalize;
-    _constructorClass = JSClassCreate(&constructorDefinition);
+    JSClassDefinition classDefinition{kJSClassDefinitionEmpty};
+    classDefinition.className = _name.data();
+    classDefinition.finalize = Finalize;
+    _class = JSClassCreate(&classDefinition);
   }
 
-  ~ConstructorInfo() {
-    JSClassRelease(_constructorClass);
-    JSClassRelease(_class);
-  }
-
-  static void Initialize(JSContextRef ctx, JSObjectRef object) {
-    JSObjectRef global = JSContextGetGlobalObject(ctx);
-    JSValueRef value =
-        JSObjectGetProperty(ctx, global, JSString("Function"), nullptr);
-    JSObjectRef funcCtor = JSValueToObject(ctx, value, nullptr);
-    if (!funcCtor) {
-      return;
-    }
-
-    JSValueRef funcProto = JSObjectGetPrototype(ctx, funcCtor);
-    JSObjectSetPrototype(ctx, object, funcProto);
-  }
-
-  static JSValueRef CallAsFunction(JSContextRef ctx, JSObjectRef constructor,
-                                   JSObjectRef thisObject, size_t argumentCount,
-                                   const JSValueRef arguments[],
-                                   JSValueRef* exception) {
-    ConstructorInfo* info = NativeInfo::Get<ConstructorInfo>(constructor);
-    if (info == nullptr) {
-      return JSValueMakeUndefined(ctx);
-    }
-
-    napi_clear_last_error(info->_env);
-
-    napi_callback_info__ cbinfo{};
-    cbinfo.thisArg = ToNapi(
-        thisObject != nullptr ? thisObject : JSContextGetGlobalObject(ctx));
-    cbinfo.newTarget = nullptr;
-    cbinfo.argc = argumentCount;
-    cbinfo.argv = ToNapi(arguments);
-    cbinfo.data = info->_data;
-
-    napi_value result = info->_cb(info->_env, &cbinfo);
-
-    if (info->_env->last_exception != nullptr) {
-      *exception = info->_env->last_exception;
-      info->_env->last_exception = nullptr;
-    }
-
-    return ToJSValue(result);
-  }
-
-  static bool HasInstance(JSContextRef ctx, JSObjectRef constructor,
-                          JSValueRef possibleInstance, JSValueRef* exception) {
-    if (!JSValueIsObject(ctx, possibleInstance)) {
-      return false;
-    }
-
-    napi_env env = napi_env__::get(const_cast<JSGlobalContextRef>(ctx));
-    if (env != nullptr) {
-      void* constructorData = nullptr;
-      napi_status ctorStatus =
-          napi_unwrap(env, ToNapi(constructor), &constructorData);
-      if (ctorStatus == napi_ok && constructorData != nullptr) {
-        JSObjectRef instanceObject =
-            JSValueToObject(ctx, possibleInstance, exception);
-        if (*exception == nullptr && instanceObject != nullptr) {
-          void* instanceData = nullptr;
-          napi_status instanceStatus =
-              napi_unwrap(env, ToNapi(instanceObject), &instanceData);
-          if (instanceStatus == napi_ok && instanceData != nullptr) {
-            Class expectedClass = static_cast<Class>(constructorData);
-            Class currentClass = object_getClass(static_cast<id>(instanceData));
-            while (currentClass != nullptr) {
-              if (currentClass == expectedClass) {
-                return true;
-              }
-              currentClass = class_getSuperclass(currentClass);
-            }
-            return false;
-          }
-        }
-      }
-    }
-
-    JSValueRef prototypeValue =
-        JSObjectGetProperty(ctx, constructor, JSString("prototype"), exception);
-    if (*exception != nullptr || prototypeValue == nullptr ||
-        !JSValueIsObject(ctx, prototypeValue)) {
-      return false;
-    }
-
-    JSObjectRef prototypeObject =
-        JSValueToObject(ctx, prototypeValue, exception);
-    if (*exception != nullptr || prototypeObject == nullptr) {
-      return false;
-    }
-
-    JSObjectRef global = JSContextGetGlobalObject(ctx);
-    JSValueRef objectCtorValue =
-        JSObjectGetProperty(ctx, global, JSString("Object"), exception);
-    if (*exception != nullptr || objectCtorValue == nullptr ||
-        !JSValueIsObject(ctx, objectCtorValue)) {
-      return false;
-    }
-
-    JSObjectRef objectCtor = JSValueToObject(ctx, objectCtorValue, exception);
-    if (*exception != nullptr || objectCtor == nullptr) {
-      return false;
-    }
-
-    JSValueRef objectPrototypeValue =
-        JSObjectGetProperty(ctx, objectCtor, JSString("prototype"), exception);
-    if (*exception != nullptr || objectPrototypeValue == nullptr ||
-        !JSValueIsObject(ctx, objectPrototypeValue)) {
-      return false;
-    }
-
-    JSObjectRef objectPrototype =
-        JSValueToObject(ctx, objectPrototypeValue, exception);
-    if (*exception != nullptr || objectPrototype == nullptr) {
-      return false;
-    }
-
-    JSValueRef isPrototypeOfValue = JSObjectGetProperty(
-        ctx, objectPrototype, JSString("isPrototypeOf"), exception);
-    if (*exception != nullptr || isPrototypeOfValue == nullptr ||
-        !JSValueIsObject(ctx, isPrototypeOfValue)) {
-      return false;
-    }
-
-    JSObjectRef isPrototypeOf =
-        JSValueToObject(ctx, isPrototypeOfValue, exception);
-    if (*exception != nullptr || isPrototypeOf == nullptr) {
-      return false;
-    }
-
-    JSValueRef args[] = {possibleInstance};
-    JSValueRef callResult = JSObjectCallAsFunction(
-        ctx, isPrototypeOf, prototypeObject, 1, args, exception);
-    if (*exception != nullptr || callResult == nullptr) {
-      return false;
-    }
-
-    return JSValueToBoolean(ctx, callResult);
-  }
+  ~ConstructorInfo() { JSClassRelease(_class); }
 
   // JSObjectCallAsConstructorCallback
   static JSObjectRef CallAsConstructor(JSContextRef ctx,
@@ -523,21 +430,16 @@ class ConstructorInfo : public NativeInfo {
                                        size_t argumentCount,
                                        const JSValueRef arguments[],
                                        JSValueRef* exception) {
-    ConstructorInfo* info = NativeInfo::Get<ConstructorInfo>(constructor);
-    if (info == nullptr) {
-      return nullptr;
-    }
+    //           ConstructorInfo* info =
+    //           NativeInfo::FindInPrototypeChain<ConstructorInfo>(ctx,
+    //           constructor);
+    ConstructorInfo* info = NativeInfo::GetNativeInfo<ConstructorInfo>(
+        ctx, constructor, "[[jsc_constructor_info]]");
 
     // Make sure any errors encountered last time we were in N-API are gone.
     napi_clear_last_error(info->_env);
 
     JSObjectRef instance{JSObjectMake(ctx, info->_class, nullptr)};
-    JSValueRef prototypeValue =
-        JSObjectGetProperty(ctx, constructor, JSString("prototype"), exception);
-    if (*exception == nullptr && prototypeValue != nullptr &&
-        JSValueIsObject(ctx, prototypeValue)) {
-      JSObjectSetPrototype(ctx, instance, prototypeValue);
-    }
 
     //            JSObjectSetPrototype(ctx, instance, JSObjectGetPrototype(ctx,
     //            constructor));
@@ -578,7 +480,6 @@ class ConstructorInfo : public NativeInfo {
   napi_callback _cb;
   void* _data;
   JSClassRef _class;
-  JSClassRef _constructorClass;
 };
 
 namespace xyz {
@@ -596,37 +497,8 @@ class FunctionInfo : public NativeInfo {
     if (info == nullptr) {
       return napi_set_last_error(env, napi_generic_failure);
     }
-
-    JSString name(utf8name != nullptr ? utf8name : "",
-                  utf8name != nullptr ? length : 0);
-    JSObjectRef function = JSObjectMakeFunctionWithCallback(
-        env->context,
-        utf8name != nullptr ? static_cast<JSStringRef>(name) : nullptr,
-        FunctionInfo::CallAsFunction);
-    if (function == nullptr) {
-      delete info;
-      return napi_set_last_error(env, napi_generic_failure);
-    }
-
-    NativeInfo::SetNativeInfoKey(env->context, function, xyz::functionInfoClass,
-                                 env->function_info_symbol, info);
-
-    JSValueRef exception{};
-    JSObjectSetProperty(env->context, function, JSString("length"),
-                        JSValueMakeNumber(env->context, 0),
-                        kJSPropertyAttributeDontEnum |
-                            kJSPropertyAttributeReadOnly |
-                            kJSPropertyAttributeDontDelete,
-                        &exception);
-    if (utf8name != nullptr) {
-      JSObjectSetProperty(env->context, function, JSString("name"),
-                          JSValueMakeString(env->context, name),
-                          kJSPropertyAttributeDontEnum |
-                              kJSPropertyAttributeReadOnly |
-                              kJSPropertyAttributeDontDelete,
-                          &exception);
-    }
-
+    JSObjectRef function =
+        JSObjectMake(env->context, xyz::functionInfoClass, info);
     *result = ToNapi(function);
     return napi_ok;
   }
@@ -640,7 +512,7 @@ class FunctionInfo : public NativeInfo {
       definition.callAsFunction = FunctionInfo::CallAsFunction;
       definition.attributes = kJSClassAttributeNoAutomaticPrototype;
       definition.initialize = FunctionInfo::initialize;
-      definition.finalize = FinalizeInfo;
+      definition.finalize = Finalize;
       xyz::functionInfoClass = JSClassCreate(&definition);
     });
   }
@@ -653,9 +525,9 @@ class FunctionInfo : public NativeInfo {
         JSObjectGetProperty(ctx, global, JSString("Function"), nullptr);
     JSObjectRef funcCtor = JSValueToObject(ctx, value, nullptr);
     if (!funcCtor) {
+      // We can't do anything if Function is not an object
       return;
     }
-
     JSValueRef funcProto = JSObjectGetPrototype(ctx, funcCtor);
     JSObjectSetPrototype(ctx, object, funcProto);
   }
@@ -665,39 +537,15 @@ class FunctionInfo : public NativeInfo {
                                    JSObjectRef thisObject, size_t argumentCount,
                                    const JSValueRef arguments[],
                                    JSValueRef* exception) {
+    //            FunctionInfo* info = NativeInfo::Get<FunctionInfo>(function);
     FunctionInfo* info =
         reinterpret_cast<FunctionInfo*>(JSObjectGetPrivate(function));
-    if (info == nullptr) {
-      napi_env env = napi_env__::get(const_cast<JSGlobalContextRef>(ctx));
-      if (env != nullptr) {
-        info = NativeInfo::GetNativeInfoKey<FunctionInfo>(
-            ctx, function, env->function_info_symbol);
-      }
-    }
-    if (info == nullptr) {
-      return JSValueMakeUndefined(ctx);
-    }
 
     // Make sure any errors encountered last time we were in N-API are gone.
     napi_clear_last_error(info->_env);
 
-    JSValueRef effectiveThis =
-        thisObject != nullptr ? thisObject : JSContextGetGlobalObject(ctx);
-    JSValueRef boundReceiverException{};
-    JSValueRef boundReceiver =
-        JSObjectGetProperty(ctx, function, JSString("__ns_bound_receiver"),
-                            &boundReceiverException);
-    bool hasBoundReceiver = boundReceiverException == nullptr &&
-                            boundReceiver != nullptr &&
-                            !JSValueIsUndefined(ctx, boundReceiver);
-    if (boundReceiverException == nullptr && boundReceiver != nullptr &&
-        !JSValueIsUndefined(ctx, boundReceiver) &&
-        JSValueIsObject(ctx, boundReceiver)) {
-      effectiveThis = boundReceiver;
-    }
-
     napi_callback_info__ cbinfo{};
-    cbinfo.thisArg = ToNapi(effectiveThis);
+    cbinfo.thisArg = ToNapi(thisObject);
     cbinfo.newTarget = nullptr;
     cbinfo.argc = argumentCount;
     cbinfo.argv = ToNapi(arguments);
@@ -714,7 +562,8 @@ class FunctionInfo : public NativeInfo {
     return ToJSValue(result);
   }
 
-  static void FinalizeInfo(JSObjectRef object) {
+  // JSObjectFinalizeCallback
+  static void Finalize(JSObjectRef object) {
     FunctionInfo* info = NativeInfo::Get<FunctionInfo>(object);
     assert(info->Type() == NativeType::Function);
     delete info;
@@ -791,6 +640,11 @@ class ExternalInfo : public BaseInfoT<ExternalInfo, NativeType::External> {
   ExternalInfo(napi_env env) : BaseInfoT{env, "Native (External)"} {}
 };
 
+#ifndef __ANDROID__
+// Backs weak references on Apple only: attaches a finalizer to the target so
+// napi_ref__::value() can tell whether it has been collected. Android uses
+// JSC's native weak handles instead and never instantiates this. See
+// napi_ref__ below.
 class ReferenceInfo : public BaseInfoT<ReferenceInfo, NativeType::Reference> {
  public:
   static napi_status Initialize(napi_env env, napi_value object,
@@ -803,11 +657,6 @@ class ReferenceInfo : public BaseInfoT<ReferenceInfo, NativeType::Reference> {
       if (info == nullptr) {
         return napi_set_last_error(env, napi_generic_failure);
       }
-
-      // JSObjectRef ref{JSObjectMake(env->context, info->_class, info)};
-      // JSObjectSetPrototype(env->context, prototype,
-      // JSObjectGetPrototype(env->context, ToJSObject(env, object)));
-      // JSObjectSetPrototype(env->context, ToJSObject(env, object), prototype);
 
       NativeInfo::SetNativeInfoKey(env->context, ToJSObject(env, object),
                                    info->_class, env->reference_info_symbol,
@@ -822,26 +671,23 @@ class ReferenceInfo : public BaseInfoT<ReferenceInfo, NativeType::Reference> {
  private:
   ReferenceInfo(napi_env env) : BaseInfoT{env, "Native (Reference)"} {}
 };
+#endif
 
 class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
  public:
   static napi_status Wrap(napi_env env, napi_value object,
                           WrapperInfo** result) {
-    RETURN_STATUS_IF_FALSE(env, IsJSObjectValue(env, object), napi_invalid_arg);
     WrapperInfo* info{};
 
-    info = GetCached(env, object);
-    if (info != nullptr) {
-      *result = info;
-      return napi_ok;
-    }
+    napi_value propertyKey;
+    napi_create_string_utf8(env, "[[jsc_wrapper_info]]", NAPI_AUTO_LENGTH,
+                            &propertyKey);
+    bool hasOwnProperty;
+    napi_has_own_property(env, object, propertyKey, &hasOwnProperty);
 
-    info = NativeInfo::GetNativeInfoKey<WrapperInfo>(
-        env->context, ToJSObject(env, object), env->wrapper_info_symbol);
-    if (info != nullptr) {
-      env->wrapper_info_cache[object] = info;
-      *result = info;
-      return napi_ok;
+    if (hasOwnProperty) {
+      return napi_generic_failure;
+      //                CHECK_NAPI(Unwrap(env, object, &info));
     }
 
     if (info == nullptr) {
@@ -851,15 +697,7 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
       }
 
       NativeInfo::SetNativeInfoKey(env->context, ToJSObject(env, object),
-                                   info->_class, env->wrapper_info_symbol,
-                                   info);
-      info->AddFinalizer([object](WrapperInfo* info) {
-        napi_env env = info->Env();
-        if (env != nullptr) {
-          env->wrapper_info_cache.erase(object);
-        }
-      });
-      env->wrapper_info_cache[object] = info;
+                                   info->_class, ToJSValue(propertyKey), info);
     }
 
     *result = info;
@@ -868,39 +706,12 @@ class WrapperInfo : public BaseInfoT<WrapperInfo, NativeType::Wrapper> {
 
   static napi_status Unwrap(napi_env env, napi_value object,
                             WrapperInfo** result) {
-    RETURN_STATUS_IF_FALSE(env, IsJSObjectValue(env, object), napi_invalid_arg);
-    auto cachedInfo = GetCached(env, object);
-    if (cachedInfo != nullptr) {
-      *result = cachedInfo;
-      return napi_ok;
-    }
-
-    *result = NativeInfo::GetNativeInfoKey<WrapperInfo>(
-        env->context, ToJSObject(env, object), env->wrapper_info_symbol);
-    if (*result != nullptr) {
-      env->wrapper_info_cache[object] = *result;
-    }
+    *result = NativeInfo::GetNativeInfo<WrapperInfo>(
+        env->context, ToJSObject(env, object), "[[jsc_wrapper_info]]");
     return napi_ok;
   }
 
  private:
-  static WrapperInfo* GetCached(napi_env env, napi_value object) {
-    auto cachedInfo = env->wrapper_info_cache.find(object);
-    if (cachedInfo == env->wrapper_info_cache.end()) {
-      return nullptr;
-    }
-
-    auto info = NativeInfo::GetNativeInfoKey<WrapperInfo>(
-        env->context, ToJSObject(env, object), env->wrapper_info_symbol);
-    if (info == nullptr ||
-        info != static_cast<WrapperInfo*>(cachedInfo->second)) {
-      env->wrapper_info_cache.erase(cachedInfo);
-      return nullptr;
-    }
-
-    return info;
-  }
-
   WrapperInfo(napi_env env) : BaseInfoT{env, "Native (Wrapper)"} {}
 };
 
@@ -947,8 +758,23 @@ class ExternalArrayBufferInfo {
 struct napi_ref__ {
   napi_ref__(napi_value value, uint32_t count) : _value{value}, _count{count} {}
 
+  // Weak-reference liveness is the one genuinely platform-specific part of the
+  // JSC backend. Android uses JSC's native weak handles; Apple has the symbols
+  // but no public header for them, so it keeps the finalizer-set scheme. See
+  // napi_env__::active_ref_values in jsc-api.h.
   napi_status init(napi_env env) {
-    // track the ref values to support weak refs
+#ifdef __ANDROID__
+    // For objects we hold a native JSC weak reference, which lets value()
+    // report when the target has been collected without pinning it or
+    // mutating the object. Non-object values (e.g. symbols) cannot be
+    // weakly tracked and are returned on a best-effort basis.
+    if (JSValueIsObject(env->context, ToJSValue(_value))) {
+      _weak = JSWeakCreate(JSContextGetGroup(env->context),
+                           ToJSObject(env, _value));
+    }
+#else
+    // Attach a finalizer that drops the value from active_ref_values when it is
+    // collected, so value() can tell a live target from a dead one.
     auto pair{env->active_ref_values.insert(_value)};
     if (pair.second) {
       CHECK_NAPI(ReferenceInfo::Initialize(
@@ -956,6 +782,7 @@ struct napi_ref__ {
             info->Env()->active_ref_values.erase(value);
           }));
     }
+#endif
 
     if (_count != 0) {
       protect(env);
@@ -969,6 +796,13 @@ struct napi_ref__ {
       unprotect(env);
     }
 
+#ifdef __ANDROID__
+    if (_weak != nullptr) {
+      JSWeakRelease(JSContextGetGroup(env->context), _weak);
+      _weak = nullptr;
+    }
+#endif
+
     _value = nullptr;
     _count = 0;
   }
@@ -979,6 +813,9 @@ struct napi_ref__ {
     }
   }
 
+  // Returns false when the reference is already at zero, which the caller
+  // reports as napi_generic_failure. Without the guard the decrement underflows
+  // to UINT32_MAX and the ref is never unprotected again.
   bool unref(napi_env env) {
     if (_count == 0) {
       return false;
@@ -994,6 +831,16 @@ struct napi_ref__ {
   uint32_t count() const { return _count; }
 
   napi_value value(napi_env env) const {
+#ifdef __ANDROID__
+    if (_weak != nullptr) {
+      // Returns NULL once the target object has been garbage-collected.
+      JSObjectRef object{JSWeakGetObject(_weak)};
+      return object != nullptr ? ToNapi(object) : nullptr;
+    }
+
+    // Non-object value: not weakly trackable, returned as-is.
+    return _value;
+#else
     if (_protected || _count != 0) {
       return _value;
     }
@@ -1003,9 +850,12 @@ struct napi_ref__ {
     }
 
     return _value;
+#endif
   }
 
  private:
+  // Idempotent: deinit() may run for a ref whose count already dropped to zero,
+  // and a second strong_refs.erase(_iter) on a stale iterator is UB.
   void protect(napi_env env) {
     if (_protected) {
       return;
@@ -1028,6 +878,9 @@ struct napi_ref__ {
 
   napi_value _value{};
   uint32_t _count{};
+#ifdef __ANDROID__
+  JSWeakRef _weak{};
+#endif
   std::list<napi_ref>::iterator _iter{};
   bool _protected{false};
 };
@@ -1167,8 +1020,9 @@ napi_status napi_get_property_names(napi_env env, napi_value object,
   CHECK_NAPI(napi_get_named_property(env, global, "Object", &object_ctor));
   CHECK_NAPI(napi_get_named_property(env, object_ctor, "getOwnPropertyNames",
                                      &function));
+  // Object.getOwnPropertyNames(object)
   CHECK_NAPI(
-      napi_call_function(env, object_ctor, function, 0, nullptr, result));
+      napi_call_function(env, object_ctor, function, 1, &object, result));
 
   return napi_ok;
 }
@@ -1179,6 +1033,8 @@ napi_status napi_set_property(napi_env env, napi_value object, napi_value key,
   CHECK_ARG(env, key);
   CHECK_ARG(env, value);
 
+  // Use the *ForKey APIs so the key can be a string or a symbol; converting to
+  // a JSString would coerce (and break) symbol keys.
   JSValueRef exception{};
   JSObjectSetPropertyForKey(env->context, ToJSObject(env, object),
                             ToJSValue(key), ToJSValue(value),
@@ -1218,8 +1074,8 @@ napi_status napi_get_property(napi_env env, napi_value object, napi_value key,
 napi_status napi_delete_property(napi_env env, napi_value object,
                                  napi_value key, bool* result) {
   CHECK_ENV(env);
-  CHECK_ARG(env, result);
   CHECK_ARG(env, key);
+  CHECK_ARG(env, result);
 
   JSValueRef exception{};
   *result = JSObjectDeletePropertyForKey(env->context, ToJSObject(env, object),
@@ -1232,19 +1088,16 @@ napi_status napi_delete_property(napi_env env, napi_value object,
 NAPI_EXTERN napi_status napi_has_own_property(napi_env env, napi_value object,
                                               napi_value key, bool* result) {
   CHECK_ENV(env);
-  CHECK_ARG(env, result);
-  CHECK_ARG(env, object);
   CHECK_ARG(env, key);
+  CHECK_ARG(env, result);
 
-  napi_value global{}, object_ctor{}, prototype{}, function{}, value{};
+  // Object.prototype.hasOwnProperty.call(object, key)
+  napi_value global{}, object_ctor{}, proto{}, function{}, value{};
   CHECK_NAPI(napi_get_global(env, &global));
   CHECK_NAPI(napi_get_named_property(env, global, "Object", &object_ctor));
-  CHECK_NAPI(
-      napi_get_named_property(env, object_ctor, "prototype", &prototype));
-  CHECK_NAPI(
-      napi_get_named_property(env, prototype, "hasOwnProperty", &function));
-  napi_value args[] = {key};
-  CHECK_NAPI(napi_call_function(env, object, function, 1, args, &value));
+  CHECK_NAPI(napi_get_named_property(env, object_ctor, "prototype", &proto));
+  CHECK_NAPI(napi_get_named_property(env, proto, "hasOwnProperty", &function));
+  CHECK_NAPI(napi_call_function(env, object, function, 1, &key, &value));
   *result = JSValueToBoolean(env->context, ToJSValue(value));
 
   return napi_ok;
@@ -1389,12 +1242,17 @@ napi_status napi_define_properties(napi_env env, napi_value object,
       napi_value method{};
       CHECK_NAPI(napi_create_function(env, p->utf8name, NAPI_AUTO_LENGTH,
                                       p->method, p->data, &method));
-      napi_value writable{};
-      CHECK_NAPI(
-          napi_get_boolean(env, (p->attributes & napi_writable), &writable));
-      CHECK_NAPI(
-          napi_set_named_property(env, descriptor, "writable", writable));
       CHECK_NAPI(napi_set_named_property(env, descriptor, "value", method));
+      // A method is a data property; honor the writable attribute like V8/Node
+      // do. Omitting it makes Object.defineProperty default writable to false,
+      // which leaves the method non-writable and prevents callers from
+      // shadowing it with an own property (e.g. ts_helpers wrapping
+      // URLSearchParams.set to propagate changes back to the parent URL).
+      napi_value method_writable{};
+      CHECK_NAPI(napi_get_boolean(env, (p->attributes & napi_writable),
+                                  &method_writable));
+      CHECK_NAPI(napi_set_named_property(env, descriptor, "writable",
+                                         method_writable));
     } else {
       RETURN_STATUS_IF_FALSE(env, p->value != nullptr, napi_invalid_arg);
 
@@ -1573,36 +1431,6 @@ napi_status napi_create_int64(napi_env env, int64_t value, napi_value* result) {
   return napi_ok;
 }
 
-napi_status napi_create_bigint_int64(napi_env env, int64_t value,
-                                     napi_value* result) {
-  CHECK_ENV(env);
-  CHECK_ARG(env, result);
-
-  if (__builtin_available(macOS 15.0, iOS 18.0, *)) {
-    JSValueRef exception{};
-    *result = ToNapi(JSBigIntCreateWithInt64(env->context, value, &exception));
-    CHECK_JSC(env, exception);
-    return napi_ok;
-  }
-
-  return napi_set_last_error(env, napi_generic_failure);
-}
-
-napi_status napi_create_bigint_uint64(napi_env env, uint64_t value,
-                                      napi_value* result) {
-  CHECK_ENV(env);
-  CHECK_ARG(env, result);
-
-  if (__builtin_available(macOS 15.0, iOS 18.0, *)) {
-    JSValueRef exception{};
-    *result = ToNapi(JSBigIntCreateWithUInt64(env->context, value, &exception));
-    CHECK_JSC(env, exception);
-    return napi_ok;
-  }
-
-  return napi_set_last_error(env, napi_generic_failure);
-}
-
 napi_status napi_get_boolean(napi_env env, bool value, napi_value* result) {
   CHECK_ENV(env);
   CHECK_ARG(env, result);
@@ -1615,11 +1443,17 @@ napi_status napi_create_symbol(napi_env env, napi_value description,
   CHECK_ENV(env);
   CHECK_ARG(env, result);
 
-  napi_value global{}, symbol_func{};
-  CHECK_NAPI(napi_get_global(env, &global));
-  CHECK_NAPI(napi_get_named_property(env, global, "Symbol", &symbol_func));
-  CHECK_NAPI(
-      napi_call_function(env, global, symbol_func, 1, &description, result));
+  // Create the symbol directly instead of round-tripping through the JS
+  // `Symbol()` constructor. A null description yields `Symbol()`.
+  if (description == nullptr ||
+      JSValueIsUndefined(env->context, ToJSValue(description))) {
+    *result = ToNapi(JSValueMakeSymbol(env->context, nullptr));
+  } else {
+    JSValueRef exception{};
+    JSString descriptionString{ToJSString(env, description, &exception)};
+    CHECK_JSC(env, exception);
+    *result = ToNapi(JSValueMakeSymbol(env->context, descriptionString));
+  }
   return napi_ok;
 }
 
@@ -1673,6 +1507,22 @@ napi_status napi_create_range_error(napi_env env, napi_value code,
   return napi_ok;
 }
 
+napi_status napi_create_syntax_error(napi_env env, napi_value code,
+                                     napi_value msg, napi_value* result) {
+  CHECK_ENV(env);
+  CHECK_ARG(env, msg);
+  CHECK_ARG(env, result);
+
+  napi_value global{}, error_ctor{}, error{};
+  CHECK_NAPI(napi_get_global(env, &global));
+  CHECK_NAPI(napi_get_named_property(env, global, "SyntaxError", &error_ctor));
+  CHECK_NAPI(napi_new_instance(env, error_ctor, 1, &msg, &error));
+  CHECK_NAPI(napi_set_error_code(env, error, code, nullptr));
+
+  *result = error;
+  return napi_ok;
+}
+
 napi_status napi_typeof(napi_env env, napi_value value,
                         napi_valuetype* result) {
   CHECK_ENV(env);
@@ -1693,14 +1543,14 @@ napi_status napi_typeof(napi_env env, napi_value value,
     case kJSTypeNumber:
       *result = napi_number;
       break;
-    case kJSTypeBigInt:
-      *result = napi_bigint;
-      break;
     case kJSTypeString:
       *result = napi_string;
       break;
     case kJSTypeSymbol:
       *result = napi_symbol;
+      break;
+    case kJSTypeBigInt:
+      *result = napi_bigint;
       break;
     default:
       JSObjectRef object{ToJSObject(env, value)};
@@ -1892,14 +1742,10 @@ napi_status napi_get_value_int32(napi_env env, napi_value value,
   CHECK_ARG(env, result);
 
   JSValueRef exception{};
-  double number = JSValueToNumber(env->context, ToJSValue(value), &exception);
-
-  if (number > INT_MAX) {
-    *result = -1;
-  } else {
-    *result = static_cast<int32_t>(number);
-  }
-
+  // JSValueToInt32 applies the ECMAScript ToInt32 conversion (modulo 2^32,
+  // NaN/Infinity -> 0), matching Node's napi_get_value_int32 semantics, and
+  // truncates BigInt values.
+  *result = JSValueToInt32(env->context, ToJSValue(value), &exception);
   CHECK_JSC(env, exception);
 
   return napi_ok;
@@ -1912,15 +1758,9 @@ napi_status napi_get_value_uint32(napi_env env, napi_value value,
   CHECK_ARG(env, result);
 
   JSValueRef exception{};
-  *result = static_cast<uint32_t>(
-      JSValueToNumber(env->context, ToJSValue(value), &exception));
-
-  double number = JSValueToNumber(env->context, ToJSValue(value), &exception);
-  if (number > UINT32_MAX) {
-    *result = -1;
-  } else {
-    *result = static_cast<uint32_t>(number);
-  }
+  // JSValueToUInt32 applies the ECMAScript ToUint32 conversion (modulo 2^32,
+  // NaN/Infinity -> 0), matching Node's napi_get_value_uint32 semantics.
+  *result = JSValueToUInt32(env->context, ToJSValue(value), &exception);
   CHECK_JSC(env, exception);
 
   return napi_ok;
@@ -1945,31 +1785,66 @@ napi_status napi_get_value_int64(napi_env env, napi_value value,
   return napi_ok;
 }
 
+napi_status napi_get_value_bool(napi_env env, napi_value value, bool* result) {
+  CHECK_ENV(env);
+  CHECK_ARG(env, value);
+  CHECK_ARG(env, result);
+  *result = JSValueToBoolean(env->context, ToJSValue(value));
+  return napi_ok;
+}
+
+// BigInt support relies on JSC APIs available in newer JavaScriptCore
+// (macOS 15 / iOS 18 and the corresponding Android build).
+napi_status napi_create_bigint_int64(napi_env env, int64_t value,
+                                     napi_value* result) {
+  CHECK_ENV(env);
+  CHECK_ARG(env, result);
+  CHECK_BIGINT_API(env);
+
+  JSValueRef exception{};
+  JSValueRef bigint{JSBigIntCreateWithInt64(env->context, value, &exception)};
+  CHECK_JSC(env, exception);
+
+  *result = ToNapi(bigint);
+  return napi_ok;
+}
+
+napi_status napi_create_bigint_uint64(napi_env env, uint64_t value,
+                                      napi_value* result) {
+  CHECK_ENV(env);
+  CHECK_ARG(env, result);
+  CHECK_BIGINT_API(env);
+
+  JSValueRef exception{};
+  JSValueRef bigint{JSBigIntCreateWithUInt64(env->context, value, &exception)};
+  CHECK_JSC(env, exception);
+
+  *result = ToNapi(bigint);
+  return napi_ok;
+}
+
 napi_status napi_get_value_bigint_int64(napi_env env, napi_value value,
                                         int64_t* result, bool* lossless) {
   CHECK_ENV(env);
   CHECK_ARG(env, value);
   CHECK_ARG(env, result);
   CHECK_ARG(env, lossless);
+  CHECK_BIGINT_API(env);
 
-  if (__builtin_available(macOS 15.0, iOS 18.0, *)) {
-    RETURN_STATUS_IF_FALSE(env, JSValueIsBigInt(env->context, ToJSValue(value)),
-                           napi_bigint_expected);
+  RETURN_STATUS_IF_FALSE(env, JSValueIsBigInt(env->context, ToJSValue(value)),
+                         napi_bigint_expected);
 
-    JSValueRef exception{};
-    *result = JSValueToInt64(env->context, ToJSValue(value), &exception);
-    CHECK_JSC(env, exception);
+  JSValueRef exception{};
+  *result = JSValueToInt64(env->context, ToJSValue(value), &exception);
+  CHECK_JSC(env, exception);
 
-    JSValueRef recreatedException{};
-    JSValueRef recreatedValue =
-        JSBigIntCreateWithInt64(env->context, *result, &recreatedException);
-    CHECK_JSC(env, recreatedException);
-    *lossless =
-        JSValueIsStrictEqual(env->context, ToJSValue(value), recreatedValue);
-    return napi_ok;
-  }
+  // The conversion is lossless when the (truncated) int64 compares equal to
+  // the original BigInt.
+  *lossless = JSValueCompareInt64(env->context, ToJSValue(value), *result,
+                                  &exception) == kJSRelationConditionEqual;
+  CHECK_JSC(env, exception);
 
-  return napi_set_last_error(env, napi_bigint_expected);
+  return napi_ok;
 }
 
 napi_status napi_get_value_bigint_uint64(napi_env env, napi_value value,
@@ -1978,32 +1853,19 @@ napi_status napi_get_value_bigint_uint64(napi_env env, napi_value value,
   CHECK_ARG(env, value);
   CHECK_ARG(env, result);
   CHECK_ARG(env, lossless);
+  CHECK_BIGINT_API(env);
 
-  if (__builtin_available(macOS 15.0, iOS 18.0, *)) {
-    RETURN_STATUS_IF_FALSE(env, JSValueIsBigInt(env->context, ToJSValue(value)),
-                           napi_bigint_expected);
+  RETURN_STATUS_IF_FALSE(env, JSValueIsBigInt(env->context, ToJSValue(value)),
+                         napi_bigint_expected);
 
-    JSValueRef exception{};
-    *result = JSValueToUInt64(env->context, ToJSValue(value), &exception);
-    CHECK_JSC(env, exception);
+  JSValueRef exception{};
+  *result = JSValueToUInt64(env->context, ToJSValue(value), &exception);
+  CHECK_JSC(env, exception);
 
-    JSValueRef recreatedException{};
-    JSValueRef recreatedValue =
-        JSBigIntCreateWithUInt64(env->context, *result, &recreatedException);
-    CHECK_JSC(env, recreatedException);
-    *lossless =
-        JSValueIsStrictEqual(env->context, ToJSValue(value), recreatedValue);
-    return napi_ok;
-  }
+  *lossless = JSValueCompareUInt64(env->context, ToJSValue(value), *result,
+                                   &exception) == kJSRelationConditionEqual;
+  CHECK_JSC(env, exception);
 
-  return napi_set_last_error(env, napi_bigint_expected);
-}
-
-napi_status napi_get_value_bool(napi_env env, napi_value value, bool* result) {
-  CHECK_ENV(env);
-  CHECK_ARG(env, value);
-  CHECK_ARG(env, result);
-  *result = JSValueToBoolean(env->context, ToJSValue(value));
   return napi_ok;
 }
 
@@ -2181,6 +2043,9 @@ napi_status napi_unwrap(napi_env env, napi_value js_object, void** result) {
   return napi_ok;
 }
 
+// Fast path for the Apple FFI layer: yields the native pointer a wrapped
+// object carries, without going through napi_unwrap's error plumbing. Returns
+// false for anything that is not a wrapped object.
 extern "C" bool nativescript_jsc_try_unwrap_native(napi_env env,
                                                    napi_value value,
                                                    void** result) {
@@ -2189,7 +2054,7 @@ extern "C" bool nativescript_jsc_try_unwrap_native(napi_env env,
   }
 
   *result = nullptr;
-  if (!IsJSObjectValue(env, value)) {
+  if (!JSValueIsObject(env->context, ToJSValue(value))) {
     return false;
   }
 
@@ -2594,6 +2459,8 @@ napi_status napi_get_typedarray_info(napi_env env, napi_value typedarray,
       case kJSTypedArrayTypeFloat64Array:
         *type = napi_float64_array;
         break;
+      // Without these two a BigInt64Array/BigUint64Array reaches the default
+      // arm and the call fails outright rather than reporting its type.
       case kJSTypedArrayTypeBigInt64Array:
         *type = napi_bigint64_array;
         break;
@@ -2712,79 +2579,72 @@ napi_status napi_get_version(napi_env env, uint32_t* result) {
   return napi_ok;
 }
 
+// Holds the resolve/reject functions of a deferred promise. Both are protected
+// from GC for the lifetime of the deferred and released when it is settled.
+struct napi_deferred__ {
+  JSObjectRef resolve;
+  JSObjectRef reject;
+};
+
 napi_status napi_create_promise(napi_env env, napi_deferred* deferred,
                                 napi_value* promise) {
   CHECK_ENV(env);
   CHECK_ARG(env, deferred);
   CHECK_ARG(env, promise);
 
-  napi_value global{}, promise_ctor{};
-  CHECK_NAPI(napi_get_global(env, &global));
-  CHECK_NAPI(napi_get_named_property(env, global, "Promise", &promise_ctor));
+  // Create the promise and its resolve/reject functions directly through the
+  // JSC C API instead of round-tripping through the JS `Promise` constructor
+  // with a native executor callback.
+  JSObjectRef resolve{}, reject{};
+  JSValueRef exception{};
+  JSObjectRef promiseObject{
+      JSObjectMakeDeferredPromise(env->context, &resolve, &reject, &exception)};
+  CHECK_JSC(env, exception);
 
-  struct Wrapper {
-    napi_value resolve{};
-    napi_value reject{};
+  napi_deferred__* holder{new napi_deferred__{resolve, reject}};
+  if (holder == nullptr) {
+    return napi_set_last_error(env, napi_generic_failure);
+  }
+  JSValueProtect(env->context, resolve);
+  JSValueProtect(env->context, reject);
 
-    static napi_value Callback(napi_env env, napi_callback_info cbinfo) {
-      Wrapper* wrapper = reinterpret_cast<Wrapper*>(cbinfo->data);
-      wrapper->resolve = cbinfo->argv[0];
-      wrapper->reject = cbinfo->argv[1];
-      return nullptr;
-    }
-  } wrapper;
+  *deferred = reinterpret_cast<napi_deferred>(holder);
+  *promise = ToNapi(promiseObject);
 
-  napi_value executor{};
-  CHECK_NAPI(napi_create_function(env, "executor", NAPI_AUTO_LENGTH,
-                                  Wrapper::Callback, &wrapper, &executor));
-  CHECK_NAPI(napi_new_instance(env, promise_ctor, 1, &executor, promise));
+  return napi_ok;
+}
 
-  napi_value deferred_value{};
-  CHECK_NAPI(napi_create_object(env, &deferred_value));
-  CHECK_NAPI(
-      napi_set_named_property(env, deferred_value, "resolve", wrapper.resolve));
-  CHECK_NAPI(
-      napi_set_named_property(env, deferred_value, "reject", wrapper.reject));
+// Shared body for resolve/reject: invokes the stored settle function with the
+// given value, then releases and frees the deferred.
+static napi_status napi_settle_deferred(napi_env env, napi_deferred deferred,
+                                        napi_value value, bool resolve) {
+  CHECK_ENV(env);
+  CHECK_ARG(env, deferred);
 
-  napi_ref deferred_ref{};
-  CHECK_NAPI(napi_create_reference(env, deferred_value, 1, &deferred_ref));
-  *deferred = reinterpret_cast<napi_deferred>(deferred_ref);
+  napi_deferred__* holder{reinterpret_cast<napi_deferred__*>(deferred)};
+  JSObjectRef settle{resolve ? holder->resolve : holder->reject};
 
+  JSValueRef exception{};
+  JSValueRef argument{ToJSValue(value)};
+  JSObjectCallAsFunction(env->context, settle, nullptr, 1, &argument,
+                         &exception);
+
+  JSValueUnprotect(env->context, holder->resolve);
+  JSValueUnprotect(env->context, holder->reject);
+  delete holder;
+
+  CHECK_JSC(env, exception);
   return napi_ok;
 }
 
 napi_status napi_resolve_deferred(napi_env env, napi_deferred deferred,
                                   napi_value resolution) {
-  CHECK_ENV(env);
-  CHECK_ARG(env, deferred);
-
-  napi_ref deferred_ref{reinterpret_cast<napi_ref>(deferred)};
-  napi_value undefined{}, deferred_value{}, resolve{};
-  CHECK_NAPI(napi_get_undefined(env, &undefined));
-  CHECK_NAPI(napi_get_reference_value(env, deferred_ref, &deferred_value));
-  CHECK_NAPI(napi_get_named_property(env, deferred_value, "resolve", &resolve));
-  CHECK_NAPI(
-      napi_call_function(env, undefined, resolve, 1, &resolution, nullptr));
-  CHECK_NAPI(napi_delete_reference(env, deferred_ref));
-
-  return napi_ok;
+  return napi_settle_deferred(env, deferred, resolution, /*resolve*/ true);
 }
 
 napi_status napi_reject_deferred(napi_env env, napi_deferred deferred,
                                  napi_value rejection) {
-  CHECK_ENV(env);
-  CHECK_ARG(env, deferred);
-
-  napi_ref deferred_ref{reinterpret_cast<napi_ref>(deferred)};
-  napi_value undefined{}, deferred_value{}, reject{};
-  CHECK_NAPI(napi_get_undefined(env, &undefined));
-  CHECK_NAPI(napi_get_reference_value(env, deferred_ref, &deferred_value));
-  CHECK_NAPI(napi_get_named_property(env, deferred_value, "reject", &reject));
-  CHECK_NAPI(
-      napi_call_function(env, undefined, reject, 1, &rejection, nullptr));
-  CHECK_NAPI(napi_delete_reference(env, deferred_ref));
-
-  return napi_ok;
+  return napi_settle_deferred(env, deferred, rejection, /*resolve*/ false);
 }
 
 napi_status napi_is_promise(napi_env env, napi_value promise,
@@ -2997,6 +2857,276 @@ napi_status napi_object_seal(napi_env env, napi_value object) {
   return napi_ok;
 }
 
+#ifdef USE_HOST_OBJECT
+
+namespace {
+static std::once_flag hostObjectClassOnceFlag;
+static JSClassRef hostObjectClass{};
+
+// JSC has no dedicated indexed-property callbacks: every property operation
+// arrives as a JSStringRef. To honour the `napi_host_object_methods` contract
+// (a number for indexed access, a string otherwise) we detect canonical array
+// indices ourselves and route them to the `indexed_*` fast paths when present,
+// matching the V8 implementation's behaviour.
+bool HostObjectToIndex(JSStringRef str, uint32_t* out) {
+  size_t length{JSStringGetLength(str)};
+  if (length == 0) {
+    return false;
+  }
+  const JSChar* chars{JSStringGetCharactersPtr(str)};
+  if (length > 1 && chars[0] == '0') {
+    return false;  // reject leading zeros ("01" is not a canonical index)
+  }
+  uint64_t value{0};
+  for (size_t i = 0; i < length; ++i) {
+    JSChar ch{chars[i]};
+    if (ch < '0' || ch > '9') {
+      return false;
+    }
+    value = value * 10 + (ch - '0');
+    if (value > 0xFFFFFFFEull) {  // max valid array index is 2^32 - 2
+      return false;
+    }
+  }
+  *out = static_cast<uint32_t>(value);
+  return true;
+}
+}  // namespace
+
+// A "host object" is a transparent proxy: every property operation is
+// dispatched to the native callbacks in `_methods`, which receive the host
+// object itself and the `_data` pointer. The callbacks are wired through a
+// single shared JSClass so a host object can be recognized by its class.
+struct HostObjectInfo {
+  napi_env _env;
+  napi_finalize _finalize;
+  void* _data;
+  napi_host_object_methods _methods;
+
+  static JSClassRef Class() {
+    std::call_once(hostObjectClassOnceFlag, []() {
+      JSClassDefinition definition{kJSClassDefinitionEmpty};
+      definition.className = "NapiHostObject";
+      definition.getProperty = GetProperty;
+      definition.setProperty = SetProperty;
+      definition.hasProperty = HasProperty;
+      definition.deleteProperty = DeleteProperty;
+      definition.getPropertyNames = GetPropertyNames;
+      definition.finalize = Finalize;
+      hostObjectClass = JSClassCreate(&definition);
+    });
+    return hostObjectClass;
+  }
+
+  static HostObjectInfo* From(JSObjectRef object) {
+    return reinterpret_cast<HostObjectInfo*>(JSObjectGetPrivate(object));
+  }
+
+  // Propagate any exception raised by a napi callback back to JSC.
+  static bool ForwardException(napi_env env, JSValueRef* exception) {
+    if (env->last_exception != nullptr) {
+      if (exception != nullptr) {
+        *exception = env->last_exception;
+      }
+      env->last_exception = nullptr;
+      return true;
+    }
+    return false;
+  }
+
+  // JSObjectGetPropertyCallback
+  static JSValueRef GetProperty(JSContextRef ctx, JSObjectRef object,
+                                JSStringRef propertyName,
+                                JSValueRef* exception) {
+    HostObjectInfo* info{From(object)};
+    if (info == nullptr) {
+      return nullptr;
+    }
+    napi_env env{info->_env};
+    napi_clear_last_error(env);
+
+    napi_value host{ToNapi(object)};
+    napi_value result{nullptr};
+    uint32_t index{};
+    if (HostObjectToIndex(propertyName, &index) &&
+        info->_methods.indexed_get != nullptr) {
+      result = info->_methods.indexed_get(env, host, index, info->_data);
+    } else {
+      napi_value prop{ToNapi(JSValueMakeString(ctx, propertyName))};
+      result = info->_methods.get(env, host, prop, info->_data);
+    }
+
+    if (ForwardException(env, exception)) {
+      return nullptr;
+    }
+    return result != nullptr ? ToJSValue(result) : JSValueMakeUndefined(ctx);
+  }
+
+  // JSObjectSetPropertyCallback
+  static bool SetProperty(JSContextRef ctx, JSObjectRef object,
+                          JSStringRef propertyName, JSValueRef value,
+                          JSValueRef* exception) {
+    HostObjectInfo* info{From(object)};
+    if (info == nullptr) {
+      return false;
+    }
+    napi_env env{info->_env};
+    napi_clear_last_error(env);
+
+    napi_value host{ToNapi(object)};
+    napi_value val{ToNapi(value)};
+    uint32_t index{};
+    if (HostObjectToIndex(propertyName, &index) &&
+        info->_methods.indexed_set != nullptr) {
+      info->_methods.indexed_set(env, host, index, val, info->_data);
+    } else {
+      napi_value prop{ToNapi(JSValueMakeString(ctx, propertyName))};
+      info->_methods.set(env, host, prop, val, info->_data);
+    }
+
+    ForwardException(env, exception);
+    return true;  // fully handled
+  }
+
+  // JSObjectHasPropertyCallback (no exception out-param available)
+  static bool HasProperty(JSContextRef ctx, JSObjectRef object,
+                          JSStringRef propertyName) {
+    HostObjectInfo* info{From(object)};
+    if (info == nullptr || info->_methods.has == nullptr) {
+      return false;
+    }
+    napi_env env{info->_env};
+    napi_clear_last_error(env);
+
+    napi_value host{ToNapi(object)};
+    napi_value prop{ToNapi(JSValueMakeString(ctx, propertyName))};
+    bool present{info->_methods.has(env, host, prop, info->_data) != 0};
+    env->last_exception = nullptr;
+    return present;
+  }
+
+  // JSObjectDeletePropertyCallback
+  static bool DeleteProperty(JSContextRef ctx, JSObjectRef object,
+                             JSStringRef propertyName, JSValueRef* exception) {
+    HostObjectInfo* info{From(object)};
+    if (info == nullptr || info->_methods.delete_property == nullptr) {
+      return false;
+    }
+    napi_env env{info->_env};
+    napi_clear_last_error(env);
+
+    napi_value host{ToNapi(object)};
+    napi_value prop{ToNapi(JSValueMakeString(ctx, propertyName))};
+    bool deleted{info->_methods.delete_property(env, host, prop, info->_data) !=
+                 0};
+
+    ForwardException(env, exception);
+    return deleted;
+  }
+
+  // JSObjectGetPropertyNamesCallback
+  static void GetPropertyNames(JSContextRef ctx, JSObjectRef object,
+                               JSPropertyNameAccumulatorRef propertyNames) {
+    HostObjectInfo* info{From(object)};
+    if (info == nullptr || info->_methods.own_keys == nullptr) {
+      return;
+    }
+    napi_env env{info->_env};
+    napi_clear_last_error(env);
+
+    napi_value host{ToNapi(object)};
+    napi_value keys{info->_methods.own_keys(env, host, info->_data)};
+    env->last_exception = nullptr;
+    if (keys == nullptr) {
+      return;
+    }
+
+    uint32_t length{};
+    if (napi_get_array_length(env, keys, &length) != napi_ok) {
+      return;
+    }
+    for (uint32_t i = 0; i < length; ++i) {
+      napi_value element{};
+      if (napi_get_element(env, keys, i, &element) != napi_ok) {
+        continue;
+      }
+      JSValueRef exception{};
+      JSStringRef name{
+          JSValueToStringCopy(ctx, ToJSValue(element), &exception)};
+      if (name != nullptr) {
+        JSPropertyNameAccumulatorAddName(propertyNames, name);
+        JSStringRelease(name);
+      }
+    }
+  }
+
+  // JSObjectFinalizeCallback
+  static void Finalize(JSObjectRef object) {
+    HostObjectInfo* info{From(object)};
+    if (info == nullptr) {
+      return;
+    }
+    if (info->_finalize != nullptr) {
+      info->_finalize(info->_env, info->_data, nullptr);
+    }
+    delete info;
+  }
+};
+
+napi_status napi_create_host_object(napi_env env, napi_finalize finalize,
+                                    void* data,
+                                    const napi_host_object_methods* methods,
+                                    napi_value* result) {
+  CHECK_ENV(env);
+  CHECK_ARG(env, methods);
+  CHECK_ARG(env, result);
+  RETURN_STATUS_IF_FALSE(env,
+                         methods->get != nullptr && methods->set != nullptr,
+                         napi_invalid_arg);
+
+  HostObjectInfo* info{new HostObjectInfo{env, finalize, data, *methods}};
+  if (info == nullptr) {
+    return napi_set_last_error(env, napi_generic_failure);
+  }
+
+  JSObjectRef object{JSObjectMake(env->context, HostObjectInfo::Class(), info)};
+  *result = ToNapi(object);
+  return napi_ok;
+}
+
+napi_status napi_get_host_object_data(napi_env env, napi_value object,
+                                      void** data) {
+  CHECK_ENV(env);
+  CHECK_ARG(env, object);
+  CHECK_ARG(env, data);
+
+  *data = nullptr;
+  JSValueRef value{ToJSValue(object)};
+  if (JSValueIsObjectOfClass(env->context, value, HostObjectInfo::Class())) {
+    HostObjectInfo* info{HostObjectInfo::From(ToJSObject(env, object))};
+    if (info != nullptr) {
+      *data = info->_data;
+    }
+  }
+  return napi_ok;
+}
+
+napi_status napi_is_host_object(napi_env env, napi_value object, bool* result) {
+  CHECK_ENV(env);
+  CHECK_ARG(env, object);
+  CHECK_ARG(env, result);
+
+  *result = JSValueIsObjectOfClass(env->context, ToJSValue(object),
+                                   HostObjectInfo::Class());
+  return napi_ok;
+}
+
+// Instance data. Ported from the Apple backend, which was the only one that
+// had it; the fields live on napi_env__ so nothing else has to change.
+//
+// NOTE: finalize_cb is stored but never invoked -- nothing calls it on env
+// teardown, which Node's contract requires. Carried over as-is rather than
+// changed here so this stays a move; worth fixing separately.
 napi_status napi_set_instance_data(napi_env env, void* data,
                                    napi_finalize finalize_cb,
                                    void* finalize_hint) {
@@ -3020,3 +3150,5 @@ napi_status napi_get_instance_data(napi_env env, void** data) {
 
   return napi_ok;
 }
+
+#endif  // USE_HOST_OBJECT
