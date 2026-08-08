@@ -225,7 +225,7 @@ android {
 
     compileSdk computeCompileSdkVersion()
     buildToolsVersion = computeBuildToolsVersion()
-    ndkVersion = project.findProperty("ndkVersion") ?: "27.1.12297006"
+    ndkVersion = project.findProperty("ndkVersion") ?: "29.0.14206865"
 
     defaultConfig {
         def manifest = new XmlSlurper().parse(file(android.sourceSets.main.manifest.srcFile))

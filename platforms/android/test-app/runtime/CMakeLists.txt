@@ -232,6 +232,8 @@ if (V8)
             # spell paths relative to the V8 checkout root.
             ${VENDOR_DIR}/v8
             ${VENDOR_DIR}/v8/include
+            # V8 14.9's internals include Abseil as <absl/...>.
+            ${VENDOR_DIR}/v8/third_party/abseil-cpp
             ${NS_NAPI_DIR}/common
             ${NS_NAPI_DIR}/v8/v8_inspector
     )

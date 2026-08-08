@@ -133,9 +133,21 @@ function install_shared_headers() {
     # src-headers/ holds src/ and third_party/ at its root; the same strip puts
     # them beside include/, which is the layout the inspector sources expect
     # (they spell paths relative to the V8 checkout root).
+    #
+    # Only the subtrees the build actually reaches are unpacked. src/ ships 47
+    # directories and 27 MB; the transitive include closure from our sources
+    # touches four of them. The rest is V8's compiler, heap, wasm, etc. --
+    # nothing an embedder includes. Recompute the closure with:
+    #   grep -rho '#include *[<"][^>"]*' <our sources> | ...
+    # or just let the build tell you: a missing header is a hard compile error,
+    # never a silent misbuild.
     tar -xzf "$DL_DIR/v8-$V8_NUMERIC_VERSION-src-headers.tar.gz" \
         -C "$VENDOR_DIR" --strip-components=1 \
-        "src-headers/src" "src-headers/third_party"
+        "src-headers/src/base" \
+        "src-headers/src/common" \
+        "src-headers/src/debug" \
+        "src-headers/src/inspector" \
+        "src-headers/third_party"
 
     echo "$V8_NUMERIC_VERSION" > "$VENDOR_DIR/V8_VERSION"
 
