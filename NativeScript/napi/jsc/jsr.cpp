@@ -21,6 +21,67 @@
 #endif
 
 #ifdef __ANDROID__
+// Forces a full, synchronous collection. Declared in
+// JavaScriptCore/ExtraSymbolsForTAPI.h and exported by the prebuilt
+// libJavaScriptCore, but not reachable through any public header.
+//
+// Unlike JSGarbageCollect, this entry point does NOT take the VM's API lock in
+// the vendored jsc-android build -- it jumps straight to Heap::collectNow, and
+// Heap::requestCollection opens with
+//
+//   RELEASE_ASSERT(vm().atomStringTable() == Thread::current().atomStringTable())
+//
+// The VM's AtomStringTable is only installed on a thread by JSLock::lock, so
+// the caller must already hold the API lock. See JscCollectSynchronously below
+// for why that is not automatic inside a napi callback.
+extern "C" void JSSynchronousGarbageCollectForDebugging(JSContextRef);
+
+namespace {
+
+// JSC hands a property callback the context with the API lock still held, so
+// this runs on the locked side and may force the collection.
+JSValueRef JscSyncGcGetProperty(JSContextRef ctx, JSObjectRef, JSStringRef,
+                                JSValueRef*) {
+  JSSynchronousGarbageCollectForDebugging(ctx);
+  return JSValueMakeUndefined(ctx);
+}
+
+JSClassRef JscSyncGcClass() {
+  static JSClassRef cls = [] {
+    JSClassDefinition definition{kJSClassDefinitionEmpty};
+    definition.className = "NativeScriptSynchronousGC";
+    definition.getProperty = JscSyncGcGetProperty;
+    return JSClassCreate(&definition);
+  }();
+  return cls;
+}
+
+// Runs a full collection that has actually finished by the time it returns.
+//
+// The detour through a property read is not decoration. JSC's C API takes the
+// VM's API lock inside each entry point, but JSCallbackObject wraps a
+// callAsFunction callback in JSLock::DropAllLocks -- so for the whole body of a
+// napi function callback (which is what global.gc() is) this thread holds no
+// lock and does not have the VM's AtomStringTable installed. Calling
+// JSSynchronousGarbageCollectForDebugging from there trips the RELEASE_ASSERT
+// quoted above and aborts the process.
+//
+// Property callbacks are not wrapped in DropAllLocks, so entering through
+// JSObjectGetProperty puts us back inside the lock, which is exactly the state
+// the collector requires. Verified on-device: the same probe reports the VM's
+// table installed in getProperty and initialize, and the thread's default table
+// in callAsFunction.
+void JscCollectSynchronously(JSGlobalContextRef context) {
+  JSObjectRef trigger = JSObjectMake(context, JscSyncGcClass(), nullptr);
+  JSStringRef name = JSStringCreateWithUTF8CString("collect");
+  JSObjectGetProperty(context, trigger, name, nullptr);
+  JSStringRelease(name);
+}
+
+}  // namespace
+#endif
+
+#ifdef __ANDROID__
 // Native trampoline for JSC's unhandled-promise-rejection callback. JSC invokes
 // it with (promise, reason); we forward to the JS-side
 // globalThis.onUnhandledPromiseRejectionTracker (installed by ts_helpers.js),
@@ -61,40 +122,15 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
   napi_create_function(
       *env, "gc", strlen("gc"),
       [](napi_env env, napi_callback_info info) -> napi_value {
-        // NOTE: JSGarbageCollect is advisory — JSC may defer or skip the
-        // collection, so `gc()` does not guarantee unreachable objects are
-        // reclaimed by the time it returns. This is why the timers spec
-        // "frees up resources after complete" fails on JSC. Retrying gc() does
-        // not help: repeated advisory hints are still advisory.
-        //
-        // Switching to JSSynchronousGarbageCollectForDebugging (declared in
-        // JavaScriptCore/ExtraSymbolsForTAPI.h and exported by the prebuilt
-        // libJavaScriptCore) does force a full collection, and the suite then
-        // dies with SIGSEGV. What is known about that crash so far:
-        //
-        //   * It is deterministic, and always lands on the first spec of the
-        //     TNS Workers suite that survives a worker teardown ("Send a
-        //     message from worker -> worker scope and receive back the same
-        //     message"), i.e. after earlier specs have created, terminated and
-        //     gc()'d workers.
-        //   * Symbolized: JSObjectMakeError <- napi_create_error <-
-        //     ReThrowToNapi (NativeScriptException.cpp:71, the plain-m_message
-        //     branch) <- MetadataNode::InterfaceConstructorCallback
-        //     (MetadataNode.cpp:732, the catch block). So an exception is
-        //     already in flight and the process dies while *reporting* it --
-        //     the interesting failure is whatever threw first.
-        //   * The message string handed to napi_create_error is freshly made
-        //     and fine; the fault is a bad pointer dereferenced inside JSC,
-        //     which points at heap damage that already happened.
-        //   * Ruled out: the napi_envs data race (fixed separately, crash
-        //     unchanged), weak refs returning stale values (the Android
-        //     JSWeakGetObject path correctly yields nullptr once collected),
-        //     and the context being under-retained (napi_env__ does retain it).
-        //
-        // Prime remaining suspect is a lifetime bug around worker teardown that
-        // only becomes fatal once memory is really reclaimed. Fix that before
-        // making gc() synchronous here.
+        // JSGarbageCollect only hints -- JSC may defer or skip the
+        // collection, so unreachable objects need not be gone by the time it
+        // returns, and the timers spec "frees up resources after complete"
+        // fails. Retrying it does not help; repeated hints are still hints.
+#ifdef __ANDROID__
+        JscCollectSynchronously(env->context);
+#else
         JSGarbageCollect(env->context);
+#endif
         napi_value undefined;
         napi_get_undefined(env, &undefined);
         return undefined;
