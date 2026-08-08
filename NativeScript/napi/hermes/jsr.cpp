@@ -343,6 +343,25 @@ extern "C" napi_status jsr_drain_microtasks(napi_env env,
   }
 
   NapiScope scope(env, false);
-  *result = itFound->second->rt->drainMicrotasks(max_count_hint);
+  *result = false;
+
+  // drainMicrotasks() is JSI, so it reports a failed job by *throwing* a C++
+  // jsi::JSError (HermesRuntimeImpl::checkStatus -> throwPendingError). Callers
+  // here are C and Objective-C block contexts -- notably the CFRunLoop block in
+  // runtime/apple/Runtime.cpp -- and letting a C++ exception unwind through
+  // those aborts the process. Worse, building the JSError runs
+  // JSError::recordStackTrace against a runtime that is already in a thrown
+  // state, which is where this used to die.
+  //
+  // Catching converts the failure into a napi status, and consuming the
+  // exception is what returns the runtime to a usable state.
+  try {
+    *result = itFound->second->rt->drainMicrotasks(max_count_hint);
+  } catch (const facebook::jsi::JSError& e) {
+    return napi_pending_exception;
+  } catch (const facebook::jsi::JSIException& e) {
+    return napi_generic_failure;
+  }
+
   return napi_ok;
 }
