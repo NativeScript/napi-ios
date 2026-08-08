@@ -45,7 +45,12 @@ if (bytecodeStacktraces) {
     println "Bytecode stack-trace frame support enabled."
 }
 
-def defaultNdkVersion = "27.1.12297006"
+// V8 14.9's internal headers (src/base/atomicops.h, src/base/memcopy.h) use
+// std::atomic_ref unconditionally. libc++ only ships it from LLVM 19, which
+// means NDK r29 -- r27 and r28 both fail to compile the inspector sources.
+// Upstream V8 never hits this because Chromium builds Android with its own
+// clang rather than the NDK's.
+def defaultNdkVersion = "29.0.14206865"
 
 def hasNdkVersion = project.hasProperty("ndkVersion")
 if (hasNdkVersion) {
@@ -80,6 +85,34 @@ if (hasNdkVersion) {
    } else {
        NDK_PATH = "$System.env.ANDROID_HOME/ndk/${ndkVersion}"
    }
+}
+
+// V8 14.9's internal headers use std::atomic_ref, which libc++ only ships from
+// LLVM 19 (NDK r29). r27/r28 fail deep inside src/base/atomicops.h with a wall
+// of template errors that says nothing about the real cause, and $ANDROID_NDK
+// in the environment silently outranks defaultNdkVersion -- so check here and
+// either pick a usable NDK or say plainly what is wrong.
+if (jsEngine.contains("V8")) {
+    def MIN_NDK_MAJOR_FOR_V8 = 29
+    def resolvedMajor = (NDK_PATH =~ /ndk\/(\d+)\./) ? ((NDK_PATH =~ /ndk\/(\d+)\./)[0][1] as int) : -1
+
+    if (resolvedMajor in 0..<MIN_NDK_MAJOR_FOR_V8) {
+        def ndkRoot = new File("$System.env.ANDROID_HOME/ndk")
+        def candidate = (ndkRoot.listFiles({ File f -> f.isDirectory() } as FileFilter) ?: [])
+                .findAll { (it.name =~ /^(\d+)\./) && ((it.name =~ /^(\d+)\./)[0][1] as int) >= MIN_NDK_MAJOR_FOR_V8 }
+                .min { it.name }
+
+        if (candidate != null) {
+            println "WARNING: NDK ${resolvedMajor} cannot build V8 14.9 (needs std::atomic_ref, " +
+                    "NDK r${MIN_NDK_MAJOR_FOR_V8}+). Using ${candidate.name} instead."
+            NDK_PATH = candidate.absolutePath
+        } else {
+            throw new GradleException(
+                "V8 requires NDK r${MIN_NDK_MAJOR_FOR_V8} or newer (std::atomic_ref in V8 14.9's " +
+                "headers); resolved NDK is r${resolvedMajor} at ${NDK_PATH}. Install r${MIN_NDK_MAJOR_FOR_V8}+ " +
+                "and pass -PndkVersion=<version>, or point \$ANDROID_NDK at it.")
+        }
+    }
 }
 
 println "Runtime using NDK_PATH: " + NDK_PATH
