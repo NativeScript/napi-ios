@@ -63,8 +63,7 @@ Runtime* Runtime::GetRuntime(napi_env env) {
 class HermesRuntimeUnlockScope final {
  public:
   explicit HermesRuntimeUnlockScope(napi_env env) {
-    auto it = JSR::env_to_jsr_cache.find(env);
-    jsr_ = it != JSR::env_to_jsr_cache.end() ? it->second : nullptr;
+    jsr_ = JSR::FromEnv(env);
     if (jsr_ == nullptr) {
       return;
     }
@@ -129,21 +128,29 @@ Runtime::~Runtime() {
     runtimeLoop_ = nullptr;
   }
 
-  if (env_) {
-    {
-      // Enter isolate/context for deinit work without creating another
-      // temporary N-API handle scope. We must close the long-lived
-      // `globalScope_` in LIFO order.
-      NapiScope scope(env_, false);
+  // Tearing down the env runs JS (env cleanup hooks, finalizers), and on a JSI
+  // engine a failing job is reported by throwing a C++ jsi::JSError. A
+  // destructor is implicitly noexcept, so letting that escape calls
+  // std::terminate instead of finishing teardown. Swallow it here: the runtime
+  // is being destroyed, so there is nothing left to report it to.
+  try {
+    if (env_) {
+      {
+        // Enter isolate/context for deinit work without creating another
+        // temporary N-API handle scope. We must close the long-lived
+        // `globalScope_` in LIFO order.
+        NapiScope scope(env_, false);
 
+        modules_.DeInit();
+        napi_close_handle_scope(env_, globalScope_);
+        js_free_napi_env(env_);
+      }
+
+      js_free_runtime(runtime_);
+    } else {
       modules_.DeInit();
-      napi_close_handle_scope(env_, globalScope_);
-      js_free_napi_env(env_);
     }
-
-    js_free_runtime(runtime_);
-  } else {
-    modules_.DeInit();
+  } catch (...) {
   }
 
   {
