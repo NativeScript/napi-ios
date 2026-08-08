@@ -357,8 +357,8 @@ if(ENABLE_JS_RUNTIME)
 
     include_directories(
       napi/v8
-      napi/v8/v8_inspector
       ${V8_VENDOR_DIR}
+      ${V8_VENDOR_DIR}/v8_inspector
       ${V8_VENDOR_DIR}/include
       # V8 14.9's internals include Abseil as <absl/...>.
       ${V8_VENDOR_DIR}/third_party/abseil-cpp
@@ -366,10 +366,10 @@ if(ENABLE_JS_RUNTIME)
 
     set(SOURCE_FILES
       ${SOURCE_FILES}
-      napi/v8/v8-api.cpp
-      napi/v8/v8-module-loader.cpp
+      ${V8_VENDOR_DIR}/v8-api.cpp
+      ${V8_VENDOR_DIR}/v8-module-loader.cpp
       napi/v8/jsr.cpp
-      napi/v8/SimpleAllocator.cpp
+      ${V8_VENDOR_DIR}/SimpleAllocator.cpp
     )
 
     if(NS_EFFECTIVE_FFI_BACKEND STREQUAL "v8")
@@ -431,7 +431,7 @@ if(ENABLE_JS_RUNTIME)
       ../vendor/quickjs/source_ng/dtoa.c
 
       # napi
-      napi/quickjs/quickjs-api.c
+      ../vendor/quickjs/quickjs-api.c
       napi/quickjs/jsr.cpp
     )
 
@@ -445,11 +445,12 @@ if(ENABLE_JS_RUNTIME)
   elseif(TARGET_ENGINE_JSC)
     include_directories(
       napi/jsc
+      ../vendor/jsc
       napi/common
     )
 
     set(SOURCE_FILES ${SOURCE_FILES}
-      napi/jsc/jsc-api.cpp
+      ../vendor/jsc/jsc-api.cpp
       napi/jsc/jsr.cpp
     )
 

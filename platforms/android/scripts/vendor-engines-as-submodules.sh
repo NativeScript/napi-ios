@@ -54,7 +54,7 @@ cd "$REPO_ROOT"
 
 # Paths are relative to the napi-ios repository root: the engine submodules are
 # registered there, while the patch files live under platforms/android.
-NAPI_QJS_REL="NativeScript/napi/android/quickjs"
+NAPI_QJS_REL="vendor/quickjs"
 PATCHES_REL="platforms/android/tools/patches"
 
 command -v rsync >/dev/null || { echo "error: rsync is required" >&2; exit 1; }

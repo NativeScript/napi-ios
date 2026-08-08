@@ -58,7 +58,6 @@ set(NS_RUNTIME_DIR "${NS_ROOT}/runtime")
 set(NS_ANDROID_RUNTIME_DIR "${NS_RUNTIME_DIR}/android")
 set(NS_RUNTIME_MODULES_DIR "${NS_RUNTIME_DIR}/modules")
 set(NS_NAPI_DIR "${NS_ROOT}/napi")
-set(NS_ANDROID_NAPI_DIR "${NS_NAPI_DIR}/android")
 # Third-party JS engine sources shared by the Apple and Android builds.
 set(VENDOR_DIR "${REPO_ROOT}/vendor")
 set(NS_JNI_NAPI_DIR "${NS_ROOT}/ffi/jni/napi")
@@ -143,7 +142,7 @@ if (QUICKJS OR QUICKJS_NG)
             ${QJS_SOURCE_DIR}/quickjs.c
             ${QJS_SOURCE_DIR}/dtoa.c
             # napi
-            ${NS_NAPI_DIR}/quickjs/quickjs-api.c
+            ${VENDOR_DIR}/quickjs/quickjs-api.c
             ${NS_NAPI_DIR}/quickjs/jsr.cpp
     )
 
@@ -166,13 +165,14 @@ endif ()
 
 if (PRIMJS)
     set(SOURCES ${SOURCES}
-            ${NS_ANDROID_NAPI_DIR}/primjs/jsr.cpp
-            ${NS_ANDROID_NAPI_DIR}/primjs/js_native_api_adapter.cc
-            ${NS_ANDROID_NAPI_DIR}/primjs/js_native_api_extensions.cc
+            ${NS_NAPI_DIR}/primjs/jsr.cpp
+            ${VENDOR_DIR}/primjs/js_native_api_adapter.cc
+            ${VENDOR_DIR}/primjs/js_native_api_extensions.cc
     )
     include_directories(
-            ${NS_ANDROID_NAPI_DIR}/primjs
-            ${NS_ANDROID_NAPI_DIR}/primjs/include
+            ${NS_NAPI_DIR}/primjs
+            ${VENDOR_DIR}/primjs
+            ${VENDOR_DIR}/primjs/include
             ${NS_NAPI_DIR}/common
     )
 
@@ -202,14 +202,15 @@ endif ()
 if (JSC)
     include_directories(
             ${NS_NAPI_DIR}/jsc
+            ${VENDOR_DIR}/jsc
             ${NS_NAPI_DIR}/common
-            # jsc-android's own JavaScriptCore headers. Apple deliberately does
+            # vendor/jsc's own JavaScriptCore headers. Apple deliberately does
             # not get these -- it resolves <JavaScriptCore/...> to the SDK
             # framework, whose JSC is a different build with a different ABI.
-            ${VENDOR_DIR}/jsc-android/include
+            ${VENDOR_DIR}/jsc/include
     )
     set(SOURCES ${SOURCES}
-            ${NS_NAPI_DIR}/jsc/jsc-api.cpp
+            ${VENDOR_DIR}/jsc/jsc-api.cpp
             ${NS_NAPI_DIR}/jsc/jsr.cpp
     )
 endif ()
@@ -235,7 +236,7 @@ if (V8)
             # V8 14.9's internals include Abseil as <absl/...>.
             ${VENDOR_DIR}/v8/third_party/abseil-cpp
             ${NS_NAPI_DIR}/common
-            ${NS_NAPI_DIR}/v8/v8_inspector
+            ${VENDOR_DIR}/v8/v8_inspector
     )
 
     if (NOT OPTIMIZED_BUILD OR OPTIMIZED_WITH_INSPECTOR_BUILD)
@@ -243,15 +244,15 @@ if (V8)
         set(
                 SOURCES
                 ${SOURCES}
-                ${NS_NAPI_DIR}/v8/v8_inspector/Utils.cpp
-                ${NS_NAPI_DIR}/v8/v8_inspector/ns-v8-tracing-agent-impl.cpp
+                ${VENDOR_DIR}/v8/v8_inspector/Utils.cpp
+                ${VENDOR_DIR}/v8/v8_inspector/ns-v8-tracing-agent-impl.cpp
         )
     endif ()
 
     set(SOURCES ${SOURCES}
-            ${NS_NAPI_DIR}/v8/v8-api.cpp
+            ${VENDOR_DIR}/v8/v8-api.cpp
             ${NS_NAPI_DIR}/v8/jsr.cpp
-            ${NS_NAPI_DIR}/v8/SimpleAllocator.cpp
+            ${VENDOR_DIR}/v8/SimpleAllocator.cpp
     )
 
 

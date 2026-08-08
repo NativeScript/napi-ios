@@ -25,7 +25,7 @@ const ANDROID_ROOT = path.resolve(__dirname, '..');
 const REPO_ROOT = path.resolve(__dirname, '../../..');
 const NPM = process.platform === 'win32' ? 'npm.cmd' : 'npm';
 
-const NAPI_QJS = 'NativeScript/napi/android/quickjs';
+const NAPI_QJS = 'vendor/quickjs';
 const PATCHES = path.join(ANDROID_ROOT, 'tools/patches');
 const ENGINES = [
   {
