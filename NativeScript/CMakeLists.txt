@@ -339,9 +339,21 @@ if(ENABLE_JS_RUNTIME)
   )
 
   if(TARGET_ENGINE_V8)
+    # V8's headers come from the pinned release via scripts/download_v8.sh, the
+    # same set Android uses. Both spellings are needed: <v8.h> from the napi
+    # backend, and "src/inspector/..." from the console/inspector code, which
+    # spells paths relative to the V8 checkout root.
+    set(V8_VENDOR_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../vendor/v8")
+    if(NOT EXISTS "${V8_VENDOR_DIR}/src/inspector/v8-console-message.h")
+      message(FATAL_ERROR
+        "V8 headers missing at ${V8_VENDOR_DIR}. Run scripts/download_v8.sh.")
+    endif()
+
     include_directories(
       napi/v8
       napi/v8/v8_inspector
+      ${V8_VENDOR_DIR}
+      ${V8_VENDOR_DIR}/include
     )
 
     set(SOURCE_FILES
