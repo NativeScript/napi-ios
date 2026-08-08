@@ -101,6 +101,11 @@ class PersistentToLocal {
 
 // [BABYLON-NATIVE-ADDITION]: Increase perf by using internal field instead of
 // private property
+#if V8_MAJOR_VERSION >= 14
+// V8 14 removed Context::GetIsolate().
+#define NAPI_PRIVATE_KEY(context) (v8::Private::New(v8::Isolate::GetCurrent()))
+#else
 #define NAPI_PRIVATE_KEY(context) (v8::Private::New(context->GetIsolate()))
+#endif
 
 #endif  // SRC_JS_NATIVE_API_V8_INTERNALS_H_

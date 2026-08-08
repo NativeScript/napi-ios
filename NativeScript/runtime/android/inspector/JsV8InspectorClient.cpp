@@ -976,18 +976,11 @@ void JsV8InspectorClient::consoleLogCallback(napi_env env, ConsoleAPIType method
     v8::Local<v8::Context> context = client->context_.Get(client->env->isolate);
     const int contextId = V8ContextInfo::executionContextId(context);
 
-#ifdef __V8_13__
     v8::MemorySpan<const v8::Local<v8::Value>> argsSpan((v8::Local<v8::Value> *) args.data(), args.size());
     std::unique_ptr<v8_inspector::V8ConsoleMessage> msg =
         v8_inspector::V8ConsoleMessage::createForConsoleAPI(
             context, contextId, contextGroupId, impl, client->currentTimeMS(),
             method, argsSpan, String16{}, std::move(stack));
-#else
-    std::unique_ptr<v8_inspector::V8ConsoleMessage> msg =
-            v8_inspector::V8ConsoleMessage::createForConsoleAPI(
-                    context, contextId, contextGroupId, impl, client->currentTimeMS(),
-                    method, args, String16{}, std::move(stack));
-#endif
 
     // Going through the message storage both reports to the session when the
     // frontend has enabled the Runtime agent AND keeps the message for replay
@@ -1047,7 +1040,8 @@ void JsV8InspectorClient::registerModules() {
     assert(success);
 
     // __inspectorSendEvent
-    Local<External> data = External::New(isolate, this);
+    Local<External> data =
+        External::New(isolate, this, v8::kExternalPointerTypeTagDefault);
     success = v8::Function::New(context, inspectorSendEventCallback, data).ToLocal(&func);
     assert(success);
     success = global->Set(context, tns::ConvertToV8String(isolate, "__inspectorSendEvent"), func).FromMaybe(false);

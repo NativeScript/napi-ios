@@ -294,8 +294,6 @@ void Runtime::Init(JNIEnv *_env, jstring filesPath, jstring nativeLibsDir,
     engineVariant = "HERMES";
 #elif defined(__JSC__)
     engineVariant = "JSC";
-#elif defined(__V8_13__)
-    engineVariant = "V8-13";
 #elif defined(__V8__)
     engineVariant = "V8";
 #elif defined(__PRIMJS__)

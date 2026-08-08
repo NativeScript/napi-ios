@@ -5,17 +5,15 @@
 #ifndef TEST_APP_JSR_H
 #define TEST_APP_JSR_H
 
-// The two platforms link different Hermes builds that expose different
-// Node-API entry points:
+// Both platforms link the same Hermes build (scripts/download_hermes.sh
+// installs the xcframework and the Android .so files from one release) and use
+// the upstream C ABI: hermes_napi_create_env / hermes_run_script /
+// hermes_run_bytecode, reaching the VM runtime through
+// facebook::hermes::IHermes.
 //
-//   Apple   - hermes.xcframework, a NativeScript-patched Hermes exposing the
-//             C++ jsi::Runtime::createNodeApiEnv() hook (see jsi/jsi.h).
-//   Android - libhermesvm.so, which exports the upstream C ABI
-//             (hermes_napi_create_env / hermes_run_script /
-//             hermes_run_bytecode) and reaches the VM runtime through
-//             facebook::hermes::IHermes.
-//
-// Everything below that is not ABI-specific is shared.
+// Apple previously went through a NativeScript-local
+// jsi::Runtime::createNodeApiEnv() hook. That is gone upstream, so the two
+// entry paths have collapsed into one.
 
 #include <memory>
 #include <mutex>
@@ -25,25 +23,18 @@
 #include "jsi/threadsafe.h"
 #include "jsr_common.h"
 
-#ifdef __ANDROID__
-// Node-API surface exported by libhermesvm.so.
-#include "napi/hermes_napi.h"
-#endif
-
 class JSR {
  public:
   JSR();
   std::unique_ptr<facebook::jsi::ThreadSafeRuntime> runtime;
-#ifdef __ANDROID__
-  // The android path needs the concrete HermesRuntime to reach IHermes.
+  // Both platforms reach IHermes through the concrete HermesRuntime.
   facebook::hermes::HermesRuntime* rt;
+#ifdef __ANDROID__
   // Depth of nested JS scopes entered from the host (see NapiScope). Hermes is
   // configured with an explicit microtask queue, so promise jobs only run when
   // we drain them; we drain once this returns to 0, i.e. when the native call
   // stack has fully unwound back out of JS.
   int jsEnterState = 0;
-#else
-  facebook::jsi::Runtime* rt;
 #endif
   std::recursive_mutex js_mutex;
   void lock();

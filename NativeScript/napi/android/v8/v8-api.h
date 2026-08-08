@@ -98,9 +98,11 @@ class Finalizer;
 }  // end of namespace v8impl
 
 struct napi_env__ {
-  explicit napi_env__(v8::Local<v8::Context> context,
+  // The isolate is passed in rather than derived: V8 14.9 removed
+  // Context::GetIsolate().
+  explicit napi_env__(v8::Isolate* isolate, v8::Local<v8::Context> context,
                       int32_t module_api_version)
-      : isolate(context->GetIsolate()),
+      : isolate(isolate),
         context_persistent(isolate, context),
         module_api_version(module_api_version) {
     napi_clear_last_error(this);
@@ -194,7 +196,7 @@ struct napi_env__ {
     }
   }
 
-  v8::Isolate* const isolate;  // Shortcut for context()->GetIsolate()
+  v8::Isolate* const isolate;
   v8impl::Persistent<v8::Context> context_persistent;
 
   v8impl::Persistent<v8::Value> last_exception;
