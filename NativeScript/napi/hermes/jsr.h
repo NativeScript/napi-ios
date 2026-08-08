@@ -41,11 +41,39 @@ class JSR {
   void unlock();
   int currentLockDepth() const;
 
+  // Workers each build their own runtime and env on their own thread
+  // (WorkerImpl::BackgroundLooper), so this map is inserted into and erased
+  // from off the main thread while other threads are looking envs up. An
+  // unsynchronized rehash during insert frees the bucket list a concurrent
+  // find() is walking, which hands back a garbage JSR* and crashes deep inside
+  // the VM. Reach it only through these three accessors, which hold the mutex.
+  static JSR* FromEnv(napi_env env);
+  static void RegisterEnv(napi_env env, JSR* jsr);
+  static void UnregisterEnv(napi_env env);
+
+ private:
   static std::unordered_map<napi_env, JSR*> env_to_jsr_cache;
+  static std::mutex env_to_jsr_mutex;
 };
 
 int js_current_env_lock_depth(napi_env env);
 facebook::jsi::Runtime* js_get_jsi_runtime(napi_env env);
+
+// The Objective-C bridge (ffi/objc/hermes) only ever holds the jsi::Runtime&
+// that JSI handed it, which is ThreadSafeRuntime::getUnsafeRuntime() -- the
+// lock is not reachable through it. Native callbacks arrive on whatever thread
+// the platform picks (an NSOperationQueue worker, a URLSession delegate
+// queue), so the bridge needs a way back to the ThreadSafeRuntime guarding
+// that runtime before it enters the VM. V8 has the same problem and solves it
+// with v8::Locker; this is the Hermes equivalent. Returns null for a runtime
+// this layer did not create.
+//
+// Lock through the returned JSR rather than its ThreadSafeRuntime directly:
+// JSR::lock() also maintains the per-thread depth counter that
+// js_current_env_lock_depth() reports, and callers such as
+// shouldAvoidMainQueueSyncWhileHoldingHermesLock() in Timers.mm use that count
+// to decide whether a synchronous hop to the main queue would deadlock.
+JSR* js_jsr_for_runtime(facebook::jsi::Runtime* runtime);
 
 typedef struct jsr_ns_runtime__ {
   JSR* hermes;
@@ -56,8 +84,7 @@ class NapiScope {
   explicit NapiScope(napi_env env, bool openHandle = true) : env_(env) {
     js_lock_env(env_);
 #ifdef __ANDROID__
-    auto it = JSR::env_to_jsr_cache.find(env_);
-    jsr_ = it != JSR::env_to_jsr_cache.end() ? it->second : nullptr;
+    jsr_ = JSR::FromEnv(env_);
     if (jsr_) {
       jsr_->jsEnterState++;
     }

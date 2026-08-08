@@ -42,8 +42,17 @@ using namespace std;
 
 namespace {
 
-// Cache for package.json \"type\" field lookups
-std::unordered_map<std::string, bool> g_modulePackageTypeCache;
+// Cache for package.json \"type\" field lookups.
+//
+// Deliberately leaked rather than a plain global: DeInit() clears it from
+// Runtime's destructor, which for the process-wide runtime runs from a static
+// destructor at exit. Static destruction order across translation units is
+// unspecified, so a plain global can already be destroyed by then and the
+// clear() frees garbage.
+std::unordered_map<std::string, bool>& ModulePackageTypeCache() {
+  static auto* cache = new std::unordered_map<std::string, bool>();
+  return *cache;
+}
 
 // Strip shebang line from source code (e.g., #!/usr/bin/env node)
 std::string StripShebang(const std::string& source) {
@@ -353,8 +362,8 @@ std::string FindNearestPackageJson(const std::filesystem::path& startDir) {
 
 // Check if package.json has "type": "module"
 bool IsPackageTypeModule(const std::string& packageJsonPath) {
-  auto cacheIt = g_modulePackageTypeCache.find(packageJsonPath);
-  if (cacheIt != g_modulePackageTypeCache.end()) {
+  auto cacheIt = ModulePackageTypeCache().find(packageJsonPath);
+  if (cacheIt != ModulePackageTypeCache().end()) {
     return cacheIt->second;
   }
 
@@ -384,7 +393,7 @@ bool IsPackageTypeModule(const std::string& packageJsonPath) {
     }
   }
 
-  g_modulePackageTypeCache[packageJsonPath] = isModule;
+  ModulePackageTypeCache()[packageJsonPath] = isModule;
   return isModule;
 }
 
@@ -818,7 +827,7 @@ void ModuleInternal::DeInit() {
 #endif
 
   // Clear the package.json type cache
-  g_modulePackageTypeCache.clear();
+  ModulePackageTypeCache().clear();
 
   if (m_env != nullptr) {
     napi_delete_reference(m_env, this->m_requireFunction);

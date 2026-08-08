@@ -26,9 +26,49 @@
 
 using namespace facebook::jsi;
 std::unordered_map<napi_env, JSR*> JSR::env_to_jsr_cache;
+std::mutex JSR::env_to_jsr_mutex;
+
+JSR* JSR::FromEnv(napi_env env) {
+  std::lock_guard<std::mutex> guard(env_to_jsr_mutex);
+  auto it = env_to_jsr_cache.find(env);
+  return it != env_to_jsr_cache.end() ? it->second : nullptr;
+}
+
+void JSR::RegisterEnv(napi_env env, JSR* jsr) {
+  std::lock_guard<std::mutex> guard(env_to_jsr_mutex);
+  env_to_jsr_cache[env] = jsr;
+}
+
+void JSR::UnregisterEnv(napi_env env) {
+  std::lock_guard<std::mutex> guard(env_to_jsr_mutex);
+  env_to_jsr_cache.erase(env);
+}
 
 namespace {
-thread_local std::unordered_map<JSR*, int> g_runtime_lock_depth;
+std::mutex g_unsafe_to_threadsafe_mutex;
+std::unordered_map<facebook::jsi::Runtime*, JSR*>& UnsafeToThreadSafe() {
+  static std::unordered_map<facebook::jsi::Runtime*, JSR*> map;
+  return map;
+}
+}  // namespace
+
+JSR* js_jsr_for_runtime(facebook::jsi::Runtime* runtime) {
+  if (runtime == nullptr) return nullptr;
+  std::lock_guard<std::mutex> guard(g_unsafe_to_threadsafe_mutex);
+  auto& map = UnsafeToThreadSafe();
+  auto it = map.find(runtime);
+  return it != map.end() ? it->second : nullptr;
+}
+
+namespace {
+// Deliberately leaked rather than a plain thread_local object: Runtime's
+// destructor opens a NapiScope, and on the main thread it runs from a static
+// destructor at process exit -- by which point a thread_local with automatic
+// storage has already been torn down, so touching it faults.
+std::unordered_map<JSR*, int>& RuntimeLockDepths() {
+  static thread_local auto* depths = new std::unordered_map<JSR*, int>();
+  return *depths;
+}
 
 class RuntimeLockGuard {
  public:
@@ -46,15 +86,15 @@ class RuntimeLockGuard {
 void JSR::lock() {
   runtime->lock();
   js_mutex.lock();
-  g_runtime_lock_depth[this] += 1;
+  RuntimeLockDepths()[this] += 1;
 }
 
 void JSR::unlock() {
-  auto depth = g_runtime_lock_depth.find(this);
-  if (depth != g_runtime_lock_depth.end()) {
+  auto depth = RuntimeLockDepths().find(this);
+  if (depth != RuntimeLockDepths().end()) {
     depth->second -= 1;
     if (depth->second <= 0) {
-      g_runtime_lock_depth.erase(depth);
+      RuntimeLockDepths().erase(depth);
     }
   }
   js_mutex.unlock();
@@ -62,19 +102,16 @@ void JSR::unlock() {
 }
 
 int JSR::currentLockDepth() const {
-  auto depth = g_runtime_lock_depth.find(const_cast<JSR*>(this));
-  if (depth == g_runtime_lock_depth.end()) {
+  auto depth = RuntimeLockDepths().find(const_cast<JSR*>(this));
+  if (depth == RuntimeLockDepths().end()) {
     return 0;
   }
   return depth->second;
 }
 
 int js_current_env_lock_depth(napi_env env) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end() || itFound->second == nullptr) {
-    return 0;
-  }
-  return itFound->second->currentLockDepth();
+  JSR* jsr = JSR::FromEnv(env);
+  return jsr != nullptr ? jsr->currentLockDepth() : 0;
 }
 
 JSR::JSR() {
@@ -97,6 +134,8 @@ JSR::JSR() {
   rt = static_cast<facebook::hermes::HermesRuntime*>(
       &runtime->getUnsafeRuntime());
 #endif
+  std::lock_guard<std::mutex> guard(g_unsafe_to_threadsafe_mutex);
+  UnsafeToThreadSafe()[rt] = this;
 }
 
 napi_status js_create_runtime(jsr_ns_runtime* runtime) {
@@ -108,21 +147,21 @@ napi_status js_create_runtime(jsr_ns_runtime* runtime) {
 }
 
 napi_status js_lock_env(napi_env env) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end()) {
+  JSR* jsr = JSR::FromEnv(env);
+  if (jsr == nullptr) {
     return napi_invalid_arg;
   }
-  itFound->second->lock();
+  jsr->lock();
 
   return napi_ok;
 }
 
 napi_status js_unlock_env(napi_env env) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end()) {
+  JSR* jsr = JSR::FromEnv(env);
+  if (jsr == nullptr) {
     return napi_invalid_arg;
   }
-  itFound->second->unlock();
+  jsr->unlock();
 
   return napi_ok;
 }
@@ -150,16 +189,13 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
   if (vmRuntime == nullptr) return napi_generic_failure;
   *env = hermes_napi_create_env(vmRuntime);
   if (*env == nullptr) return napi_generic_failure;
-  JSR::env_to_jsr_cache.insert(std::make_pair(*env, runtime->hermes));
+  JSR::RegisterEnv(*env, runtime->hermes);
   return napi_ok;
 }
 
 facebook::jsi::Runtime* js_get_jsi_runtime(napi_env env) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end()) {
-    return nullptr;
-  }
-  return itFound->second->rt;
+  JSR* jsr = JSR::FromEnv(env);
+  return jsr != nullptr ? jsr->rt : nullptr;
 }
 
 napi_status js_set_runtime_flags(const char* flags) { return napi_ok; }
@@ -168,12 +204,16 @@ napi_status js_free_napi_env(napi_env env) {
 #ifndef NS_HERMES_SKIP_ENV_CLEANUP_HOOKS
   js_run_env_cleanup_hooks(env);
 #endif
-  JSR::env_to_jsr_cache.erase(env);
+  JSR::UnregisterEnv(env);
   return napi_ok;
 }
 
 napi_status js_free_runtime(jsr_ns_runtime runtime) {
   if (runtime == nullptr) return napi_invalid_arg;
+  {
+    std::lock_guard<std::mutex> guard(g_unsafe_to_threadsafe_mutex);
+    UnsafeToThreadSafe().erase(runtime->hermes->rt);
+  }
   runtime->hermes->runtime.reset();
   runtime->hermes->rt = nullptr;
   delete runtime->hermes;
@@ -266,11 +306,11 @@ napi_status js_run_bytecode_file(napi_env env, const char* file,
 
 napi_status js_execute_pending_jobs(napi_env env) {
 #ifdef __ANDROID__
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end()) {
+  JSR* jsr = JSR::FromEnv(env);
+  if (jsr == nullptr) {
     return napi_invalid_arg;
   }
-  itFound->second->rt->drainMicrotasks();
+  jsr->rt->drainMicrotasks();
   return napi_ok;
 #else
   bool result;
@@ -337,8 +377,8 @@ extern "C" napi_status jsr_run_script(napi_env env, napi_value source,
 extern "C" napi_status jsr_drain_microtasks(napi_env env,
                                             int32_t max_count_hint,
                                             bool* result) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end() || result == nullptr) {
+  JSR* jsr = JSR::FromEnv(env);
+  if (jsr == nullptr || result == nullptr) {
     return napi_invalid_arg;
   }
 
@@ -356,7 +396,7 @@ extern "C" napi_status jsr_drain_microtasks(napi_env env,
   // Catching converts the failure into a napi status, and consuming the
   // exception is what returns the runtime to a usable state.
   try {
-    *result = itFound->second->rt->drainMicrotasks(max_count_hint);
+    *result = jsr->rt->drainMicrotasks(max_count_hint);
   } catch (const facebook::jsi::JSError& e) {
     return napi_pending_exception;
   } catch (const facebook::jsi::JSIException& e) {

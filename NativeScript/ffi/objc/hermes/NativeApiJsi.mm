@@ -33,6 +33,9 @@
 #include "MetadataReader.h"
 #include "ffi.h"
 #include "NativeApiJsiSignatureDispatch.h"
+// js_threadsafe_runtime_for: maps the bridge's unsafe jsi::Runtime back to the
+// ThreadSafeRuntime that guards it (see NativeApiRuntimeScope below).
+#include "napi/hermes/jsr.h"
 
 @protocol NativeApiClassBuilderProtocol
 @end
@@ -73,6 +76,38 @@ void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
       objectConstructor.getPropertyAsFunction(runtime, "setPrototypeOf");
   setPrototypeOf.call(runtime, Value(runtime, object), Value(runtime, prototype));
 }
+
+// Entering the VM has to take the ThreadSafeRuntime lock, because native
+// callbacks and host-object accessors run on whatever thread the platform
+// hands them to -- an NSOperationQueue worker, a URLSession delegate queue --
+// and the bridge only holds getUnsafeRuntime(). Without this, Callbacks.mm
+// falls back to its empty default scope and lets two threads into the
+// interpreter at once, which corrupts the handle stack and GC roots. V8
+// supplies the same thing as a v8::Locker (see NativeApiV8RuntimeSupport.mm).
+// HermesMutex is a recursive_mutex, so nesting these is safe.
+#define NATIVESCRIPT_NATIVE_API_RUNTIME_SCOPE 1
+
+class NativeApiRuntimeScope final {
+ public:
+  explicit NativeApiRuntimeScope(Runtime& runtime)
+      : jsr_(js_jsr_for_runtime(&runtime)) {
+    if (jsr_ != nullptr) {
+      jsr_->lock();
+    }
+  }
+
+  ~NativeApiRuntimeScope() {
+    if (jsr_ != nullptr) {
+      jsr_->unlock();
+    }
+  }
+
+  NativeApiRuntimeScope(const NativeApiRuntimeScope&) = delete;
+  NativeApiRuntimeScope& operator=(const NativeApiRuntimeScope&) = delete;
+
+ private:
+  JSR* jsr_;
+};
 
 // clang-format off
 #define NATIVESCRIPT_NATIVE_API_RUNTIME_NAME "jsi"

@@ -56,12 +56,11 @@ class NativeCallRuntimeUnlockScope final {
       return;
     }
 
-    auto it = JSR::env_to_jsr_cache.find(env);
-    if (it == JSR::env_to_jsr_cache.end() || it->second == nullptr) {
+    jsr_ = JSR::FromEnv(env);
+    if (jsr_ == nullptr) {
       return;
     }
 
-    jsr_ = it->second;
     unlockedDepth_ = js_current_env_lock_depth(env);
     for (int i = 0; i < unlockedDepth_; i++) {
       jsr_->unlock();
@@ -123,9 +122,8 @@ class NativeCallbackScope final {
       return;
     }
 
-    auto it = JSR::env_to_jsr_cache.find(env_);
-    if (it != JSR::env_to_jsr_cache.end() && it->second != nullptr) {
-      jsr_ = it->second;
+    if (JSR* jsr = JSR::FromEnv(env_)) {
+      jsr_ = jsr;
       jsr_->lock();
       detail::native_caller_thread_callback_depth += 1;
       napi_open_handle_scope(env_, &napiHandleScope_);
