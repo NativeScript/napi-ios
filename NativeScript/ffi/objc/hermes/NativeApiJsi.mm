@@ -33,9 +33,13 @@
 #include "MetadataReader.h"
 #include "ffi.h"
 #include "NativeApiJsiSignatureDispatch.h"
-// js_threadsafe_runtime_for: maps the bridge's unsafe jsi::Runtime back to the
-// ThreadSafeRuntime that guards it (see NativeApiRuntimeScope below).
+#ifndef NATIVESCRIPT_REACT_NATIVE
+// js_jsr_for_runtime: maps the bridge's unsafe jsi::Runtime back to the
+// ThreadSafeRuntime that guards it (see NativeApiRuntimeScope below). Only the
+// standalone runtime owns a JSR; @nativescript/react-native ships this
+// translation unit without napi/, so the include must not be reached there.
 #include "napi/hermes/jsr.h"
+#endif
 
 @protocol NativeApiClassBuilderProtocol
 @end
@@ -85,6 +89,14 @@ void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
 // interpreter at once, which corrupts the handle stack and GC roots. V8
 // supplies the same thing as a v8::Locker (see NativeApiV8RuntimeSupport.mm).
 // HermesMutex is a recursive_mutex, so nesting these is safe.
+//
+// Not under @nativescript/react-native: there the bridge is installed into a
+// jsi::Runtime React Native created and owns, so no JSR exists to look up and
+// serialization is React Native's job (its JS thread and CallInvoker). That
+// build falls through to the empty default scope in Callbacks.mm, which is what
+// it has always used. The guard is negative on purpose -- a build that forgets
+// to define the macro keeps the lock rather than silently losing it.
+#ifndef NATIVESCRIPT_REACT_NATIVE
 #define NATIVESCRIPT_NATIVE_API_RUNTIME_SCOPE 1
 
 class NativeApiRuntimeScope final {
@@ -108,6 +120,7 @@ class NativeApiRuntimeScope final {
  private:
   JSR* jsr_;
 };
+#endif  // NATIVESCRIPT_REACT_NATIVE
 
 // clang-format off
 #define NATIVESCRIPT_NATIVE_API_RUNTIME_NAME "jsi"
