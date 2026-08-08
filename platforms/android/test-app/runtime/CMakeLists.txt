@@ -215,22 +215,25 @@ if (JSC)
 endif ()
 
 if (V8)
-    # V8 comes from the same pinned prebuilt release as the Apple build, so the
-    # public headers are shared from vendor/. The v8-10/v8-11 trees were dropped
-    # earlier; v8-13 went with the move to 14.9.
+    # One V8 backend for both platforms: same pinned release, same headers, same
+    # sources under NativeScript/napi/v8. Android used to carry its own copy
+    # that had drifted ~1000 lines from Apple's; the only genuine differences
+    # (JNI helpers, isolate entry, the message-loop pump) are now __ANDROID__
+    # seams in jsr.cpp/jsr.h. The v8-10/v8-11 trees were dropped earlier; v8-13
+    # went with the move to 14.9.
     #
-    # v8_inspector keeps its own hand-picked copy of V8's internal headers
-    # (src/, third_party/) -- the release ships the full ~27MB set and only a
-    # small fraction is reachable from the inspector sources.
+    # V8's internal headers (src/, third_party/) come from the release too, via
+    # download_v8.sh. They were previously a hand-picked subset committed under
+    # v8_inspector/ and never refreshed past V8 13.
     include_directories(
-            ${NS_ANDROID_NAPI_DIR}/v8
+            ${NS_NAPI_DIR}/v8
             # Both forms are used: <v8.h> from the napi backend, and
-            # "include/v8-local-handle.h" from the inspector's vendored headers,
-            # which spell paths relative to the V8 checkout root.
+            # "include/v8-local-handle.h" from the inspector sources, which
+            # spell paths relative to the V8 checkout root.
             ${VENDOR_DIR}/v8
             ${VENDOR_DIR}/v8/include
             ${NS_NAPI_DIR}/common
-            ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
+            ${NS_NAPI_DIR}/v8/v8_inspector
     )
 
     if (NOT OPTIMIZED_BUILD OR OPTIMIZED_WITH_INSPECTOR_BUILD)
@@ -238,14 +241,14 @@ if (V8)
         set(
                 SOURCES
                 ${SOURCES}
-                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector/Utils.cpp
-                ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector/ns-v8-tracing-agent-impl.cpp
+                ${NS_NAPI_DIR}/v8/v8_inspector/Utils.cpp
+                ${NS_NAPI_DIR}/v8/v8_inspector/ns-v8-tracing-agent-impl.cpp
         )
     endif ()
 
     set(SOURCES ${SOURCES}
-            ${NS_ANDROID_NAPI_DIR}/v8/v8-api.cpp
-            ${NS_ANDROID_NAPI_DIR}/v8/jsr.cpp
+            ${NS_NAPI_DIR}/v8/v8-api.cpp
+            ${NS_NAPI_DIR}/v8/jsr.cpp
             ${NS_NAPI_DIR}/v8/SimpleAllocator.cpp
     )
 

@@ -1,7 +1,6 @@
 #ifndef SRC_JS_NATIVE_API_V8_H_
 #define SRC_JS_NATIVE_API_V8_H_
 
-#include <iostream>
 #include <stdexcept>
 #include <string>
 #include <unordered_set>
@@ -99,6 +98,8 @@ class Finalizer;
 }  // end of namespace v8impl
 
 struct napi_env__ {
+  // The isolate is passed in rather than derived: V8 14.9 removed
+  // Context::GetIsolate().
   explicit napi_env__(v8::Isolate* isolate, v8::Local<v8::Context> context,
                       int32_t module_api_version)
       : isolate(isolate),

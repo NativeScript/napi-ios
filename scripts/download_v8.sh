@@ -100,6 +100,7 @@ function download_v8() {
         # reports what was skipped.
         fetch_asset "v8-$V8_NUMERIC_VERSION-${entry##*:}.tar.gz" || true
     done
+    fetch_asset "v8-$V8_NUMERIC_VERSION-src-headers.tar.gz"
 
     verify_checksums
 }
@@ -108,24 +109,33 @@ function download_v8() {
 # share it. It is V8's public API and self-contained -- no header in it includes
 # anything from src/ or third_party/.
 #
-# The release also ships src-headers.tar.gz (V8's internal headers, ~27 MB) for
-# the v8_inspector sources. It is deliberately NOT installed here. The inspector
-# trees under napi/*/v8_inspector carry a hand-picked subset instead -- ~144
-# files against the 2223 in the full tree -- and vendoring the whole thing to
-# avoid that curation would put 27 MB of unused headers in git forever.
+# src/ and third_party/ come from src-headers.tar.gz: V8's internal headers,
+# which the v8_inspector sources need. Both used to be a hand-picked subset
+# committed once per platform under napi/*/v8_inspector. Those copies were cut
+# from V8 13 and never refreshed, so they went stale the moment both platforms
+# moved to 14.9 -- curating ~150 of 2400 headers by hand is not a maintainable
+# way to track an engine. Fetching the whole set costs 5.4 MB over the wire and
+# nothing in git.
 function install_shared_headers() {
     checkpoint 'installing shared V8 headers...'
     local first_slice="${ANDROID_SLICES[0]##*:}"
 
-    # Only the fetched subtree is replaced. vendor/v8 also holds the
+    # Only the fetched subtrees are replaced. vendor/v8 also holds the
     # NativeScript-authored napi binding, which must survive a re-fetch --
     # this script installs headers and binaries, nothing else.
-    rm -rf "$VENDOR_DIR/include"
+    rm -rf "$VENDOR_DIR/include" "$VENDOR_DIR/src" "$VENDOR_DIR/third_party"
     mkdir -p "$VENDOR_DIR"
 
     # strip only the slice dir, so include/ is preserved as vendor/v8/include
     tar -xzf "$DL_DIR/v8-$V8_NUMERIC_VERSION-$first_slice.tar.gz" \
         -C "$VENDOR_DIR" --strip-components=1 "$first_slice/include"
+
+    # src-headers/ holds src/ and third_party/ at its root; the same strip puts
+    # them beside include/, which is the layout the inspector sources expect
+    # (they spell paths relative to the V8 checkout root).
+    tar -xzf "$DL_DIR/v8-$V8_NUMERIC_VERSION-src-headers.tar.gz" \
+        -C "$VENDOR_DIR" --strip-components=1 \
+        "src-headers/src" "src-headers/third_party"
 
     echo "$V8_NUMERIC_VERSION" > "$VENDOR_DIR/V8_VERSION"
 
