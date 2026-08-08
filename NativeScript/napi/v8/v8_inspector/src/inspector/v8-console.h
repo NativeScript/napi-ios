@@ -112,7 +112,7 @@ class V8Console : public v8::debug::ConsoleDelegate {
   template <void (V8Console::*func)(const v8::FunctionCallbackInfo<v8::Value>&)>
   static void call(const v8::FunctionCallbackInfo<v8::Value>& info) {
     V8Console* console =
-        static_cast<V8Console*>(info.Data().As<v8::External>()->Value());
+        static_cast<V8Console*>(info.Data().As<v8::External>()->Value(v8::kExternalPointerTypeTagDefault));
     (console->*func)(info);
   }
   using CommandLineAPIData = std::pair<V8Console*, int>;

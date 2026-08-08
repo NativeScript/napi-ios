@@ -378,7 +378,7 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
 
   if (isInternalField) {
     reference = static_cast<v8impl::Reference*>(
-        obj->GetAlignedPointerFromInternalField(0));
+        obj->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
     // printf("internal field works\n");
   } else {
     auto pkey = v8::Private::ForApi(
@@ -389,7 +389,7 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
     v8::Local<v8::Value> val = maybe_value.ToLocalChecked();
     RETURN_STATUS_IF_FALSE(env, val->IsExternal(), napi_invalid_arg);
     reference =
-        static_cast<v8impl::Reference*>(val.As<v8::External>()->Value());
+        static_cast<v8impl::Reference*>(val.As<v8::External>()->Value(v8::kExternalPointerTypeTagDefault));
   }
 
   if (reference == nullptr) {
@@ -408,7 +408,7 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
     // [BABYLON-NATIVE-ADDITION]: Increase perf by using internal field instead
     // of private property
     if (isInternalField) {
-      obj->SetAlignedPointerInInternalField(0, nullptr);
+      obj->SetAlignedPointerInInternalField(0, nullptr, v8::kEmbedderDataTypeTagDefault);
     } else {
       auto pkey = v8::Private::ForApi(
           env->isolate, v8::String::NewFromUtf8(env->isolate, "napi_private")
@@ -445,7 +445,7 @@ class CallbackBundle {
     bundle->cb_data = data;
     bundle->env = env;
 
-    v8::Local<v8::Value> cbdata = v8::External::New(env->isolate, bundle);
+    v8::Local<v8::Value> cbdata = v8::External::New(env->isolate, bundle, v8::kExternalPointerTypeTagDefault);
     Reference::New(env, cbdata, 0, Ownership::kRuntime, Delete, bundle,
                    nullptr);
     return cbdata;
@@ -495,7 +495,7 @@ class CallbackWrapperBase : public CallbackWrapper {
                         nullptr),
         _cbinfo(cbinfo) {
     _bundle = reinterpret_cast<CallbackBundle*>(
-        cbinfo.Data().As<v8::External>()->Value());
+        cbinfo.Data().As<v8::External>()->Value(v8::kExternalPointerTypeTagDefault));
     _data = _bundle->cb_data;
   }
 
@@ -647,13 +647,13 @@ inline napi_status Wrap(napi_env env, napi_value js_object, void* native_object,
   // private property
 
   if (obj->InternalFieldCount() > 0) {
-    obj->SetAlignedPointerInInternalField(0, reference);
+    obj->SetAlignedPointerInInternalField(0, reference, v8::kEmbedderDataTypeTagDefault);
   } else {
     auto pkey = v8::Private::ForApi(
         env->isolate,
         v8::String::NewFromUtf8(env->isolate, "napi_private").ToLocalChecked());
 
-    obj->SetPrivate(context, pkey, v8::External::New(env->isolate, reference));
+    obj->SetPrivate(context, pkey, v8::External::New(env->isolate, reference, v8::kExternalPointerTypeTagDefault));
   }
 
   return GET_RETURN_STATUS(env);
@@ -2490,7 +2490,7 @@ napi_status NAPI_CDECL napi_create_external(napi_env env, void* data,
 
   v8::Isolate* isolate = env->isolate;
 
-  v8::Local<v8::Value> external_value = v8::External::New(isolate, data);
+  v8::Local<v8::Value> external_value = v8::External::New(isolate, data, v8::kExternalPointerTypeTagDefault);
 
   if (finalize_cb) {
     // The Reference object will delete itself after invoking the finalizer
@@ -2587,7 +2587,7 @@ napi_status NAPI_CDECL napi_get_value_external(napi_env env, napi_value value,
   RETURN_STATUS_IF_FALSE(env, val->IsExternal(), napi_invalid_arg);
 
   v8::Local<v8::External> external_value = val.As<v8::External>();
-  *result = external_value->Value();
+  *result = external_value->Value(v8::kExternalPointerTypeTagDefault);
 
   return napi_clear_last_error(env);
 }
@@ -3612,7 +3612,7 @@ class NapiHostObject {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
 
@@ -3655,7 +3655,7 @@ class NapiHostObject {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3704,7 +3704,7 @@ class NapiHostObject {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3722,7 +3722,7 @@ class NapiHostObject {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3739,7 +3739,7 @@ class NapiHostObject {
     auto isolate = info.GetIsolate();
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3753,7 +3753,7 @@ class NapiHostObject {
       uint32_t index, const v8::PropertyCallbackInfo<v8::Value>& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3798,7 +3798,7 @@ class NapiHostObject {
       const NAPI_HOSTOBJECT_SETTER_INFO& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3847,7 +3847,7 @@ class NapiHostObject {
       uint32_t index, const v8::PropertyCallbackInfo<v8::Integer>& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3864,7 +3864,7 @@ class NapiHostObject {
       uint32_t index, const v8::PropertyCallbackInfo<v8::Boolean>& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3881,7 +3881,7 @@ class NapiHostObject {
       const v8::PropertyCallbackInfo<v8::Array>& info) {
     v8::Local<v8::Object> self = info.Holder();
     auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0));
+        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
     v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
     v8::Local<v8::Object> target = v8Value.As<v8::Object>();
@@ -3942,7 +3942,7 @@ napi_status napi_create_host_object(napi_env env, napi_value value,
         v8impl::NapiHostObject::IndexedSetter,
         v8impl::NapiHostObject::IndexedQuery,
         v8impl::NapiHostObject::IndexedDeleter, nullptr,
-        v8::External::New(isolate, nullptr)  // Data
+        v8::External::New(isolate, nullptr, v8::kExternalPointerTypeTagDefault)  // Data
     );
 
     // Set the indexed property handler configuration on the template
@@ -3969,7 +3969,7 @@ napi_status napi_create_host_object(napi_env env, napi_value value,
   auto* hostInfo = new v8impl::NapiHostObject(env, is_array, finalize, data,
                                               v8Value, v8Getter, v8Setter);
 
-  hostObject->SetAlignedPointerInInternalField(0, hostInfo);
+  hostObject->SetAlignedPointerInInternalField(0, hostInfo, v8::kEmbedderDataTypeTagDefault);
 
   // Set the prototype of the host object to the prototype of the value
   v8::Local<v8::Object> valueObject = v8Value.As<v8::Object>();
@@ -4049,7 +4049,7 @@ napi_status napi_get_host_object_data(napi_env env, napi_value object,
     *data = nullptr;
     return napi_ok;
   }
-  void* v8data = v8Value->GetAlignedPointerFromInternalField(0);
+  void* v8data = v8Value->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault);
 
   auto hostInfo = reinterpret_cast<v8impl::NapiHostObject*>(v8data);
 
