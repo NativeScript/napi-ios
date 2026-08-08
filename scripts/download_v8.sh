@@ -134,13 +134,17 @@ function install_shared_headers() {
     # them beside include/, which is the layout the inspector sources expect
     # (they spell paths relative to the V8 checkout root).
     #
-    # Only the subtrees the build actually reaches are unpacked. src/ ships 47
-    # directories and 27 MB; the transitive include closure from our sources
-    # touches four of them. The rest is V8's compiler, heap, wasm, etc. --
-    # nothing an embedder includes. Recompute the closure with:
-    #   grep -rho '#include *[<"][^>"]*' <our sources> | ...
-    # or just let the build tell you: a missing header is a hard compile error,
-    # never a silent misbuild.
+    # v8-buildscripts now packages only the transitive include closure of the V8
+    # internals the inspector glue reaches -- 66 headers, not the 2223 in a
+    # checkout. If a new V8 internal header is needed, add it to ENTRY_POINTS in
+    # its scripts/matrix/package-src-headers.sh and cut a release; everything
+    # below it comes along automatically.
+    #
+    # The paths are still listed out because the currently pinned release
+    # predates that change and carries all 47 of src/'s directories (32 MB).
+    # Naming the four we reach keeps the install small either way. Once
+    # V8_VERSION points at a release built by the new packaging this can become
+    # a plain "src-headers/src src-headers/third_party".
     tar -xzf "$DL_DIR/v8-$V8_NUMERIC_VERSION-src-headers.tar.gz" \
         -C "$VENDOR_DIR" --strip-components=1 \
         "src-headers/src/base" \
