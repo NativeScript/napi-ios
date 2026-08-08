@@ -17,7 +17,7 @@ source "$(dirname "$0")/build_utils.sh"
 # The fork rather than NativeScript/v8-buildscripts: upstream's matrix has no
 # macOS slices, and the macOS runtime needs one built from the same V8 commit as
 # the iOS and Android slices.
-V8_VERSION="v8-14.9.207.39-4"
+V8_VERSION="v8-14.9.207.39-5"
 V8_NUMERIC_VERSION="14.9.207.39"
 V8_RELEASE_URL="https://github.com/ammarahm-ed/v8-buildscripts/releases/download/$V8_VERSION"
 
@@ -134,23 +134,15 @@ function install_shared_headers() {
     # them beside include/, which is the layout the inspector sources expect
     # (they spell paths relative to the V8 checkout root).
     #
-    # v8-buildscripts now packages only the transitive include closure of the V8
+    # The release packages only the transitive include closure of the V8
     # internals the inspector glue reaches -- 66 headers, not the 2223 in a
-    # checkout. If a new V8 internal header is needed, add it to ENTRY_POINTS in
-    # its scripts/matrix/package-src-headers.sh and cut a release; everything
-    # below it comes along automatically.
-    #
-    # The paths are still listed out because the currently pinned release
-    # predates that change and carries all 47 of src/'s directories (32 MB).
-    # Naming the four we reach keeps the install small either way. Once
-    # V8_VERSION points at a release built by the new packaging this can become
-    # a plain "src-headers/src src-headers/third_party".
+    # checkout -- so the whole archive is installed as-is. If a new V8 internal
+    # header is needed, add it to ENTRY_POINTS in v8-buildscripts'
+    # scripts/matrix/package-src-headers.sh and cut a release; everything below
+    # it comes along automatically.
     tar -xzf "$DL_DIR/v8-$V8_NUMERIC_VERSION-src-headers.tar.gz" \
         -C "$VENDOR_DIR" --strip-components=1 \
-        "src-headers/src/base" \
-        "src-headers/src/common" \
-        "src-headers/src/debug" \
-        "src-headers/src/inspector" \
+        "src-headers/src" \
         "src-headers/third_party"
 
     echo "$V8_NUMERIC_VERSION" > "$VENDOR_DIR/V8_VERSION"
