@@ -64,16 +64,36 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
         // NOTE: JSGarbageCollect is advisory — JSC may defer or skip the
         // collection, so `gc()` does not guarantee unreachable objects are
         // reclaimed by the time it returns. This is why the timers spec
-        // "frees up resources after complete" fails on JSC.
+        // "frees up resources after complete" fails on JSC. Retrying gc() does
+        // not help: repeated advisory hints are still advisory.
         //
-        // Switching to JSSynchronousGarbageCollectForDebugging (exported by the
-        // prebuilt libJavaScriptCore) does force a full collection, but a real
-        // collection then reclaims something the JSC binding holds without
-        // protecting, and the suite dies later with SIGSEGV:
-        //   JSObjectMakeError <- napi_create_error <- ReThrowToNapi
-        //   <- MetadataNode::InterfaceConstructorCallback
-        // That missing protect is a separate latent bug; fix it before making
-        // gc() synchronous here.
+        // Switching to JSSynchronousGarbageCollectForDebugging (declared in
+        // JavaScriptCore/ExtraSymbolsForTAPI.h and exported by the prebuilt
+        // libJavaScriptCore) does force a full collection, and the suite then
+        // dies with SIGSEGV. What is known about that crash so far:
+        //
+        //   * It is deterministic, and always lands on the first spec of the
+        //     TNS Workers suite that survives a worker teardown ("Send a
+        //     message from worker -> worker scope and receive back the same
+        //     message"), i.e. after earlier specs have created, terminated and
+        //     gc()'d workers.
+        //   * Symbolized: JSObjectMakeError <- napi_create_error <-
+        //     ReThrowToNapi (NativeScriptException.cpp:71, the plain-m_message
+        //     branch) <- MetadataNode::InterfaceConstructorCallback
+        //     (MetadataNode.cpp:732, the catch block). So an exception is
+        //     already in flight and the process dies while *reporting* it --
+        //     the interesting failure is whatever threw first.
+        //   * The message string handed to napi_create_error is freshly made
+        //     and fine; the fault is a bad pointer dereferenced inside JSC,
+        //     which points at heap damage that already happened.
+        //   * Ruled out: the napi_envs data race (fixed separately, crash
+        //     unchanged), weak refs returning stale values (the Android
+        //     JSWeakGetObject path correctly yields nullptr once collected),
+        //     and the context being under-retained (napi_env__ does retain it).
+        //
+        // Prime remaining suspect is a lifetime bug around worker teardown that
+        // only becomes fatal once memory is really reclaimed. Fix that before
+        // making gc() synchronous here.
         JSGarbageCollect(env->context);
         napi_value undefined;
         napi_get_undefined(env, &undefined);
