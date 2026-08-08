@@ -92,7 +92,6 @@ function download_v8() {
     mkdir -p "$DL_DIR"
 
     curl -L --fail "$V8_RELEASE_URL/SHA256SUMS" -o "$DL_DIR/SHA256SUMS"
-    fetch_asset "v8-$V8_NUMERIC_VERSION-src-headers.tar.gz"
     for entry in "${ANDROID_SLICES[@]}"; do
         fetch_asset "v8-$V8_NUMERIC_VERSION-${entry##*:}.tar.gz"
     done
@@ -106,8 +105,14 @@ function download_v8() {
 }
 
 # include/ is identical in every slice (same build), so take it from one and
-# share it. src/ + third_party/ are V8's internal headers, needed by the
-# v8_inspector sources.
+# share it. It is V8's public API and self-contained -- no header in it includes
+# anything from src/ or third_party/.
+#
+# The release also ships src-headers.tar.gz (V8's internal headers, ~27 MB) for
+# the v8_inspector sources. It is deliberately NOT installed here. The inspector
+# trees under napi/*/v8_inspector carry a hand-picked subset instead -- ~144
+# files against the 2223 in the full tree -- and vendoring the whole thing to
+# avoid that curation would put 27 MB of unused headers in git forever.
 function install_shared_headers() {
     checkpoint 'installing shared V8 headers...'
     local first_slice="${ANDROID_SLICES[0]##*:}"
@@ -118,8 +123,6 @@ function install_shared_headers() {
     # strip only the slice dir, so include/ is preserved as vendor/v8/include
     tar -xzf "$DL_DIR/v8-$V8_NUMERIC_VERSION-$first_slice.tar.gz" \
         -C "$VENDOR_DIR" --strip-components=1 "$first_slice/include"
-    tar -xzf "$DL_DIR/v8-$V8_NUMERIC_VERSION-src-headers.tar.gz" \
-        -C "$VENDOR_DIR" --strip-components=1 "src-headers/src" "src-headers/third_party"
 
     echo "$V8_NUMERIC_VERSION" > "$VENDOR_DIR/V8_VERSION"
 
