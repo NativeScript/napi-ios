@@ -366,23 +366,24 @@ if(ENABLE_JS_RUNTIME)
     endif()
 
   elseif(TARGET_ENGINE_HERMES)
-    set(HERMES_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../Frameworks/hermes-headers")
+    set(HERMES_HEADERS_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../vendor/hermes/include")
 
     include_directories(
       napi/hermes
     )
 
-    if(EXISTS "${HERMES_HEADERS_DIR}/jsi/jsi.h" AND EXISTS "${HERMES_HEADERS_DIR}/hermes/hermes.h")
-      include_directories(
-        ${HERMES_HEADERS_DIR}
-      )
-    else()
-      include_directories(
-        napi/hermes/include
-        napi/hermes/include/hermes
-        napi/hermes/include/jsi
-      )
+    # Fetched by scripts/download_hermes.sh alongside hermes.xcframework, not
+    # committed -- these headers must match the prebuilt binary, and a stale
+    # in-tree copy silently compiling against the wrong ABI is worse than a
+    # missing one.
+    if(NOT EXISTS "${HERMES_HEADERS_DIR}/jsi/jsi.h")
+      message(FATAL_ERROR
+        "Hermes headers missing at ${HERMES_HEADERS_DIR}. Run scripts/download_hermes.sh.")
     endif()
+
+    include_directories(
+      ${HERMES_HEADERS_DIR}
+    )
 
     set(SOURCE_FILES
       ${SOURCE_FILES}
@@ -502,16 +503,13 @@ target_sources(
   "NativeScript.h"
 )
 
-if(TARGET_ENGINE_V8 AND TARGET_PLATFORM_IOS)
-  # iOS V8 slices are built with pointer compression enabled. Keep embedder
-  # build flags in sync to satisfy V8::Initialize() build config checks.
-  target_compile_definitions(
-    ${NAME}
-    PRIVATE
-    V8_COMPRESS_POINTERS
-    V8_31BIT_SMIS_ON_64BIT_ARCH
-  )
-endif()
+# NOTE: the Apple V8 slices are built with v8_enable_pointer_compression=false
+# (see scripts/matrix/build-ios.sh in v8-buildscripts), so the embedder must NOT
+# declare V8_COMPRESS_POINTERS -- V8::Initialize() aborts on a mismatch in
+# either direction. This previously defined it for iOS, which was correct for
+# the old 14.3 xcframework but would abort at startup against 14.9. The Android
+# slices differ: they leave the gn arg at its default, which is ON for 64-bit.
+
 
 if(ENABLE_JS_RUNTIME)
   target_compile_definitions(${NAME} PRIVATE ENABLE_JS_RUNTIME)

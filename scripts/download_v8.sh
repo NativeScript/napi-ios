@@ -117,7 +117,10 @@ function install_shared_headers() {
     checkpoint 'installing shared V8 headers...'
     local first_slice="${ANDROID_SLICES[0]##*:}"
 
-    rm -rf "$VENDOR_DIR"
+    # Only the fetched subtree is replaced. vendor/v8 also holds the
+    # NativeScript-authored napi binding, which must survive a re-fetch --
+    # this script installs headers and binaries, nothing else.
+    rm -rf "$VENDOR_DIR/include"
     mkdir -p "$VENDOR_DIR"
 
     # strip only the slice dir, so include/ is preserved as vendor/v8/include

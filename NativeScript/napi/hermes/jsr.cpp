@@ -4,6 +4,15 @@
 
 #include "jsr_common.h"
 
+// Node-API surface exported by the prebuilt Hermes. Included here rather than
+// in jsr.h on purpose: it drags in Hermes' own node_api_types.h, whose
+// napi_threadsafe_function (struct pointer) and napi_tsfn_* enums collide with
+// NativeScript's authoritative definitions in napi/common/js_native_tsfn.h.
+// Keeping it out of the header confines it to this file, so translation units
+// that include jsr.h -- notably runtime/apple/ThreadSafeFunction.mm -- never
+// see it. jsr.h needs nothing from it.
+#include "napi/hermes_napi.h"
+
 #ifdef __ANDROID__
 #include <cstdio>
 #include <cstring>
@@ -119,7 +128,8 @@ JSR::JSR() {
                                          .withEnableEval(true)
                                          .build();
   runtime = facebook::hermes::makeThreadSafeHermesRuntime(config);
-  rt = &runtime->getUnsafeRuntime();
+  rt = static_cast<facebook::hermes::HermesRuntime*>(
+      &runtime->getUnsafeRuntime());
 #endif
 #ifndef __ANDROID__
   std::lock_guard<std::mutex> guard(UnsafeRuntimeMapMutex());
@@ -181,25 +191,25 @@ napi_status js_unlock_env(napi_env env) {
 napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
   if (env == nullptr) return napi_invalid_arg;
   RuntimeLockGuard lock(runtime->hermes);
-#ifdef __ANDROID__
   // Extract the underlying hermes::vm::Runtime from the JSI HermesRuntime via
   // the IHermes interface, then create the Node-API env on top of it. This is
   // the same path Hermes' own tools (repl, test-runner, napi-runner) use and
-  // relies only on symbols exported by libhermesvm.so.
+  // relies only on symbols the prebuilt Hermes exports.
+  //
+  // Apple used to take a different route through a NativeScript-local
+  // jsi::Runtime::createNodeApiEnv hook. That hook no longer exists upstream,
+  // and both platforms now build against the same headers, so there is one path.
   auto hermesInterface =
       facebook::jsi::castInterface<facebook::hermes::IHermes>(
           runtime->hermes->rt);
   if (!hermesInterface) {
-    // The linked libhermesvm.so does not expose IHermes, so there is no way to
-    // reach the VM runtime. Fail here rather than dereferencing null.
+    // The linked Hermes does not expose IHermes, so there is no way to reach
+    // the VM runtime. Fail here rather than dereferencing null.
     return napi_generic_failure;
   }
   void* vmRuntime = hermesInterface->getVMRuntimeUnsafe();
   if (vmRuntime == nullptr) return napi_generic_failure;
   *env = hermes_napi_create_env(vmRuntime);
-#else
-  *env = (napi_env)runtime->hermes->rt->createNodeApiEnv(9);
-#endif
   if (*env == nullptr) return napi_generic_failure;
   JSR::RegisterEnv(*env, runtime->hermes);
 
