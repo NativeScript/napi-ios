@@ -1,10 +1,10 @@
 apply plugin: 'com.android.library'
 
-// can be: "V8-13", "JSC", "HERMES", "QUICKJS", "QUICKJS_NG", "PRIMJS".
+// can be: "V8", "JSC", "HERMES", "QUICKJS", "QUICKJS_NG", "PRIMJS".
 // QUICKJS is an alias for QUICKJS_NG; the bellard tree was dropped.
 // "SHERMES" is accepted as a compatibility alias for the Static Hermes build.
 
-def jsEngine = "V8-13"
+def jsEngine = "V8"
 def hasEngine = project.hasProperty("engine")
 if (hasEngine) {
     jsEngine = engine
@@ -163,8 +163,6 @@ android {
                     arguments.add("-DJSC=1")
                 } else if (jsEngine.contains("V8")) {
                     arguments.add("-DV8=1")
-                   // V8 13 is the only supported V8; v8-10 and v8-11 were dropped.
-                   arguments.add("-DV8_13=1")
                 }
 
 //              arguments "-DANDROID_TOOLCHAIN=clang", "-DANDROID_STL=c++_static", "-DANDROID_NDK_ROOT=${NDK_PATH}"
@@ -373,9 +371,7 @@ tasks.configureEach { task ->
 // for the Apple xcframework, and pulls from the same pinned release so both
 // platforms link the same V8 build.
 //
-// Keyed to the selected engine's own lib directory: V8-13's libs are still
-// committed, so this stays skipped until Android moves onto the shared "V8".
-def v8EngineLibDir = new File(projectDir, "src/main/libs/" + (jsEngine == "V8-13" ? "v8-13" : "v8"))
+def v8EngineLibDir = new File(projectDir, "src/main/libs/v8")
 
 tasks.register('downloadV8Libs', Exec) {
     description = 'Fetch the prebuilt V8 static libs when they are not present.'

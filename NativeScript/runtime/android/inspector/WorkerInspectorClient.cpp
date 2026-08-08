@@ -317,17 +317,11 @@ void WorkerInspectorClient::consoleLog(ConsoleAPIType method,
     Local<Context> context = context_.Get(isolate_);
     const int contextId = V8ContextInfo::executionContextId(context);
 
-#ifdef __V8_13__
     v8::MemorySpan<const v8::Local<v8::Value>> argsSpan((v8::Local<v8::Value>*) args.data(),
                                                         args.size());
     std::unique_ptr<V8ConsoleMessage> msg = V8ConsoleMessage::createForConsoleAPI(
         context, contextId, contextGroupId, impl, this->currentTimeMS(), method, argsSpan,
         String16{}, std::move(stackImpl));
-#else
-    std::unique_ptr<V8ConsoleMessage> msg = V8ConsoleMessage::createForConsoleAPI(
-        context, contextId, contextGroupId, impl, this->currentTimeMS(), method, args, String16{},
-        std::move(stackImpl));
-#endif
 
     // Going through the message storage both reports to the session when the
     // frontend has enabled the Runtime agent AND keeps the message for replay
