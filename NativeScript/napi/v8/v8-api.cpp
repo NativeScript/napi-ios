@@ -2906,10 +2906,16 @@ napi_status NAPI_CDECL napi_create_external_arraybuffer(
 
   v8::Isolate* isolate = env->isolate;
 
-  // The raw external-backing-store path has been a persistent source of V8
-  // ArrayBuffer GC instability in the embedded runtime. Always copy into a
-  // V8-owned backing store and keep the original finalizer contract by
+#ifdef V8_ENABLE_SANDBOX
+  // The sandbox requires every ArrayBuffer backing store to live inside the
+  // sandbox's own address space, so a caller-owned pointer cannot back one.
+  // Node errors out here; copy instead, and keep the finalizer contract by
   // attaching a weak finalizer to the JS ArrayBuffer.
+  //
+  // The prebuilt slices are currently built with the sandbox off (it comes with
+  // pointer compression, which is disabled for exactly this reason), so this
+  // arm is not the one in use -- but the copy is the only correct behaviour if
+  // that ever changes.
   auto buffer = v8::ArrayBuffer::New(isolate, byte_length);
   if (byte_length > 0) {
     std::memcpy(buffer->GetBackingStore()->Data(), external_data, byte_length);
@@ -2919,6 +2925,31 @@ napi_status NAPI_CDECL napi_create_external_arraybuffer(
     v8impl::Reference::New(env, buffer, 0, v8impl::Ownership::kUserland,
                            finalize_cb, external_data, finalize_hint);
   }
+#else
+  // Genuinely external: V8 points at the caller's memory and calls Finalize
+  // when the backing store dies, which is the documented Node-API contract.
+  struct FinalizeData {
+    napi_env env;
+    napi_finalize finalize_cb;
+    void* finalize_hint;
+
+    static void Finalize(void* data, size_t length, void* deleter_data) {
+      auto finalize_data = reinterpret_cast<FinalizeData*>(deleter_data);
+
+      if (finalize_data->finalize_cb != nullptr) {
+        finalize_data->finalize_cb(finalize_data->env, data,
+                                   finalize_data->finalize_hint);
+      }
+
+      delete finalize_data;
+    }
+  };
+
+  auto buffer = v8::ArrayBuffer::New(
+      isolate, v8::ArrayBuffer::NewBackingStore(
+                   external_data, byte_length, FinalizeData::Finalize,
+                   new FinalizeData{env, finalize_cb, finalize_hint}));
+#endif
 
   *result = v8impl::JsValueFromV8LocalValue(buffer);
 
@@ -3568,498 +3599,321 @@ napi_status NAPI_CDECL napi_is_detached_arraybuffer(napi_env env,
   return napi_clear_last_error(env);
 }
 
-namespace v8impl {
-#if V8_MAJOR_VERSION >= 14
-#define NAPI_HOSTOBJECT_INTERCEPTED v8::Intercepted
-#define NAPI_HOSTOBJECT_RETURN_YES return v8::Intercepted::kYes
-#define NAPI_HOSTOBJECT_RETURN_NO return v8::Intercepted::kNo
-#define NAPI_HOSTOBJECT_SETTER_INFO v8::PropertyCallbackInfo<void>
-#else
-#define NAPI_HOSTOBJECT_INTERCEPTED void
-#define NAPI_HOSTOBJECT_RETURN_YES return
-#define NAPI_HOSTOBJECT_RETURN_NO return
-#define NAPI_HOSTOBJECT_SETTER_INFO v8::PropertyCallbackInfo<v8::Value>
-#endif
+#ifdef USE_HOST_OBJECT
 
+namespace v8impl {
+
+// Property interceptors return v8::Intercepted on V8 12.1+. These macros date
+// from when V8 10/11 (which returned void) were also supported; they are kept
+// so the host-object implementation below reads the same on both platforms.
+#define HOST_INTERCEPTED v8::Intercepted
+#define HOST_HANDLED return v8::Intercepted::kYes
+#define HOST_FALLTHROUGH return v8::Intercepted::kNo
+#define HOST_SETTER_INFO const v8::PropertyCallbackInfo<void>&
+#define HOST_SETTER_HANDLED return v8::Intercepted::kYes
+
+// A "host object" is a transparent proxy: every property operation is
+// dispatched to the native callbacks in `methods_`, which receive the host
+// object itself and the `data` pointer. There is no JS target and no prototype
+// fiddling at this layer (callers do that); this keeps the proxy fully native.
 class NapiHostObject {
  public:
-  NapiHostObject(napi_env env, bool is_array, napi_finalize finalize,
-                 void* data, v8::Local<v8::Value> value,
-                 v8::Local<v8::Value> getter, v8::Local<v8::Value> setter)
-      : env_(env), is_array_(is_array), finalize_(finalize), data_(data) {
-    value_.Reset(env->isolate, value);
-    getter_.Reset(env->isolate, getter);
-    setter_.Reset(env->isolate, setter);
+  // Internal field 0 holds the wrapper; field 1 holds a process-unique sentinel
+  // so a host object can be recognized by a fast internal-field read.
+  enum InternalFields { kSlot = 0, kTypeSlot = 1, kInternalFieldCount = 2 };
+  static void* TypeId() {
+    static char id = 0;
+    return &id;
   }
 
-  ~NapiHostObject() {
-    value_.Reset();
-    getter_.Reset();
-    setter_.Reset();
+  static NapiHostObject* New(napi_env env, napi_finalize finalize, void* data,
+                             const napi_host_object_methods* methods) {
+    return new NapiHostObject(env, finalize, data, methods);
   }
 
-  static NAPI_HOSTOBJECT_INTERCEPTED Getter(
+  static void Wrap(v8::Local<v8::Object> object, NapiHostObject* self) {
+    object->SetAlignedPointerInInternalField(kSlot, self, v8::kEmbedderDataTypeTagDefault);
+    object->SetAlignedPointerInInternalField(kTypeSlot, TypeId(),
+                                             v8::kEmbedderDataTypeTagDefault);
+  }
+
+  static bool IsHostObject(v8::Local<v8::Object> object) {
+    return object->InternalFieldCount() >= kInternalFieldCount &&
+           object->GetAlignedPointerFromInternalField(kTypeSlot, v8::kEmbedderDataTypeTagDefault) == TypeId();
+  }
+
+  static NapiHostObject* From(v8::Local<v8::Object> object) {
+    return static_cast<NapiHostObject*>(
+        object->GetAlignedPointerFromInternalField(kSlot, v8::kEmbedderDataTypeTagDefault));
+  }
+
+  void* Data() { return data_; }
+
+  // Runs (via a Reference finalizer) after the host object is collected:
+  // invokes the user finalizer (if any) and frees the wrapper.
+  static void Finalize(napi_env env, void* data, void* /*hint*/) {
+    auto* self = static_cast<NapiHostObject*>(data);
+    if (self->finalize_ != nullptr) {
+      self->finalize_(env, self->data_, nullptr);
+    }
+    delete self;
+  }
+
+  // ---------------- named interceptors ----------------
+  static HOST_INTERCEPTED Getter(
       v8::Local<v8::Name> property,
       const v8::PropertyCallbackInfo<v8::Value>& info) {
-    auto isolate = info.GetIsolate();
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    if (hostObject->is_array_) {
-      v8::Local<v8::Value> v8Getter = hostObject->getter_.Get(isolate);
-      napi_value js_property = v8impl::JsValueFromV8LocalValue(property);
-      napi_value result;
-
-      napi_value argv[3] = {v8impl::JsValueFromV8LocalValue(v8Value),
-                            js_property, v8impl::JsValueFromV8LocalValue(self)};
-
-      napi_status status = napi_call_function(
-          hostObject->env_,
-          v8impl::JsValueFromV8LocalValue(
-              isolate->GetCurrentContext()->Global()),
-          v8impl::JsValueFromV8LocalValue(v8Getter), 3, argv, &result);
-      if (status == napi_ok) {
-        info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(result));
-        NAPI_HOSTOBJECT_RETURN_YES;
-      } else {
-        napi_value ex;
-        napi_get_and_clear_last_exception(hostObject->env_, &ex);
-        info.GetIsolate()->ThrowException(v8impl::V8LocalValueFromJsValue(ex));
-        NAPI_HOSTOBJECT_RETURN_YES;
-      }
-    } else {
-      v8::Local<v8::Value> result;
-      if (target->Get(isolate->GetCurrentContext(), property)
-              .ToLocal(&result)) {
-        info.GetReturnValue().Set(result);
-        NAPI_HOSTOBJECT_RETURN_YES;
-      }
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value prop = JsValueFromV8LocalValue(property);
+    napi_value result = nullptr;
+    w->env_->CallIntoModule([&](napi_env env) {
+      result = w->methods_.get(env, host, prop, w->data_);
+    });
+    if (result != nullptr) {
+      info.GetReturnValue().Set(V8LocalValueFromJsValue(result));
     }
-    NAPI_HOSTOBJECT_RETURN_NO;
+    HOST_HANDLED;
   }
 
-  static NAPI_HOSTOBJECT_INTERCEPTED Setter(
-      v8::Local<v8::Name> property, v8::Local<v8::Value> value,
-      const NAPI_HOSTOBJECT_SETTER_INFO& info) {
-    auto isolate = info.GetIsolate();
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    if (hostObject->is_array_) {
-      v8::Local<v8::Value> v8Setter = hostObject->setter_.Get(isolate);
-      napi_value js_property = v8impl::JsValueFromV8LocalValue(property);
-      napi_value js_value = v8impl::JsValueFromV8LocalValue(value);
-      napi_value result;
-
-      napi_value argv[4] = {v8impl::JsValueFromV8LocalValue(v8Value),
-                            js_property, js_value,
-                            v8impl::JsValueFromV8LocalValue(self)};
-
-      napi_status status = napi_call_function(
-          hostObject->env_,
-          v8impl::JsValueFromV8LocalValue(
-              isolate->GetCurrentContext()->Global()),
-          v8impl::JsValueFromV8LocalValue(v8Setter), 4, argv, &result);
-      if (status == napi_ok) {
-#if V8_MAJOR_VERSION < 14
-        info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(result));
-#endif
-        NAPI_HOSTOBJECT_RETURN_YES;
-      } else {
-        napi_value ex;
-        napi_get_and_clear_last_exception(hostObject->env_, &ex);
-        info.GetIsolate()->ThrowException(v8impl::V8LocalValueFromJsValue(ex));
-        NAPI_HOSTOBJECT_RETURN_YES;
-      }
-    } else {
-      if (target->Set(isolate->GetCurrentContext(), property, value)
-              .FromMaybe(false)) {
-#if V8_MAJOR_VERSION < 14
-        info.GetReturnValue().Set(value);
-#endif
-        NAPI_HOSTOBJECT_RETURN_YES;
-      }
-    }
-    NAPI_HOSTOBJECT_RETURN_NO;
+  static HOST_INTERCEPTED Setter(v8::Local<v8::Name> property,
+                                 v8::Local<v8::Value> value,
+                                 HOST_SETTER_INFO info) {
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value prop = JsValueFromV8LocalValue(property);
+    napi_value val = JsValueFromV8LocalValue(value);
+    w->env_->CallIntoModule(
+        [&](napi_env env) { w->methods_.set(env, host, prop, val, w->data_); });
+    HOST_SETTER_HANDLED;
   }
 
-  static NAPI_HOSTOBJECT_INTERCEPTED Query(
+  static HOST_INTERCEPTED Query(
       v8::Local<v8::Name> property,
       const v8::PropertyCallbackInfo<v8::Integer>& info) {
-    auto isolate = info.GetIsolate();
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    if (target->Has(isolate->GetCurrentContext(), property).FromMaybe(false)) {
-      info.GetReturnValue().Set(v8::Integer::New(isolate, v8::None));
-      NAPI_HOSTOBJECT_RETURN_YES;
-    }
-    NAPI_HOSTOBJECT_RETURN_NO;
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    if (w->methods_.has == nullptr) HOST_FALLTHROUGH;
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value prop = JsValueFromV8LocalValue(property);
+    bool present = false;
+    w->env_->CallIntoModule([&](napi_env env) {
+      present = w->methods_.has(env, host, prop, w->data_);
+    });
+    if (!present) HOST_FALLTHROUGH;
+    info.GetReturnValue().Set(v8::Integer::New(info.GetIsolate(), v8::None));
+    HOST_HANDLED;
   }
 
-  static NAPI_HOSTOBJECT_INTERCEPTED Deleter(
+  static HOST_INTERCEPTED Deleter(
       v8::Local<v8::Name> property,
       const v8::PropertyCallbackInfo<v8::Boolean>& info) {
-    auto isolate = info.GetIsolate();
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    if (target->Delete(isolate->GetCurrentContext(), property)
-            .FromMaybe(false)) {
-      info.GetReturnValue().Set(true);
-      NAPI_HOSTOBJECT_RETURN_YES;
-    }
-    NAPI_HOSTOBJECT_RETURN_NO;
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    if (w->methods_.delete_property == nullptr) HOST_FALLTHROUGH;
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value prop = JsValueFromV8LocalValue(property);
+    bool deleted = false;
+    w->env_->CallIntoModule([&](napi_env env) {
+      deleted = w->methods_.delete_property(env, host, prop, w->data_);
+    });
+    info.GetReturnValue().Set(deleted);
+    HOST_HANDLED;
   }
 
   static void Enumerator(const v8::PropertyCallbackInfo<v8::Array>& info) {
-    auto isolate = info.GetIsolate();
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(isolate);
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    v8::Local<v8::Array> propertyNames =
-        target->GetPropertyNames(isolate->GetCurrentContext()).ToLocalChecked();
-    info.GetReturnValue().Set(propertyNames);
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    if (w->methods_.own_keys == nullptr) return;
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value keys = nullptr;
+    w->env_->CallIntoModule([&](napi_env env) {
+      keys = w->methods_.own_keys(env, host, w->data_);
+    });
+    if (keys == nullptr) return;
+    v8::Local<v8::Value> keys_value = V8LocalValueFromJsValue(keys);
+    if (keys_value->IsArray()) {
+      info.GetReturnValue().Set(keys_value.As<v8::Array>());
+    }
   }
 
-  static NAPI_HOSTOBJECT_INTERCEPTED IndexedGetter(
+  // ---------------- indexed interceptors ----------------
+  static HOST_INTERCEPTED IndexedGetter(
       uint32_t index, const v8::PropertyCallbackInfo<v8::Value>& info) {
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    if (hostObject->is_array_) {
-      v8::Local<v8::Value> v8Getter =
-          v8::Local<v8::Value>::New(info.GetIsolate(), hostObject->getter_);
-      napi_value js_index = v8impl::JsValueFromV8LocalValue(
-          v8::Number::New(info.GetIsolate(), index));
-      napi_value result;
-
-      napi_value argv[3] = {v8impl::JsValueFromV8LocalValue(v8Value), js_index,
-                            v8impl::JsValueFromV8LocalValue(info.Holder())};
-
-      napi_status status = napi_call_function(
-          hostObject->env_,
-          v8impl::JsValueFromV8LocalValue(
-              info.GetIsolate()->GetCurrentContext()->Global()),
-          v8impl::JsValueFromV8LocalValue(v8Getter), 3, argv, &result);
-      if (status == napi_ok) {
-        info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(result));
-        NAPI_HOSTOBJECT_RETURN_YES;
-      } else {
-        napi_value ex;
-        napi_get_and_clear_last_exception(hostObject->env_, &ex);
-        info.GetIsolate()->ThrowException(v8impl::V8LocalValueFromJsValue(ex));
-        NAPI_HOSTOBJECT_RETURN_YES;
-      }
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value result = nullptr;
+    if (w->methods_.indexed_get != nullptr) {
+      w->env_->CallIntoModule([&](napi_env env) {
+        result = w->methods_.indexed_get(env, host, index, w->data_);
+      });
     } else {
-      v8::Local<v8::Value> result;
-      if (target->Get(info.GetIsolate()->GetCurrentContext(), index)
-              .ToLocal(&result)) {
-        info.GetReturnValue().Set(result);
-        NAPI_HOSTOBJECT_RETURN_YES;
-      }
+      napi_value prop = JsValueFromV8LocalValue(
+          v8::Integer::NewFromUnsigned(info.GetIsolate(), index));
+      w->env_->CallIntoModule([&](napi_env env) {
+        result = w->methods_.get(env, host, prop, w->data_);
+      });
     }
-    NAPI_HOSTOBJECT_RETURN_NO;
+    if (result != nullptr) {
+      info.GetReturnValue().Set(V8LocalValueFromJsValue(result));
+    }
+    HOST_HANDLED;
   }
 
-  static NAPI_HOSTOBJECT_INTERCEPTED IndexedSetter(
-      uint32_t index, v8::Local<v8::Value> value,
-      const NAPI_HOSTOBJECT_SETTER_INFO& info) {
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    if (hostObject->is_array_) {
-      v8::Local<v8::Value> v8Setter =
-          v8::Local<v8::Value>::New(info.GetIsolate(), hostObject->setter_);
-      napi_value js_index = v8impl::JsValueFromV8LocalValue(
-          v8::Number::New(info.GetIsolate(), index));
-      napi_value js_value = v8impl::JsValueFromV8LocalValue(value);
-      napi_value result;
-
-      napi_value argv[4] = {v8impl::JsValueFromV8LocalValue(v8Value), js_index,
-                            js_value,
-                            v8impl::JsValueFromV8LocalValue(info.Holder())};
-
-      napi_status status = napi_call_function(
-          hostObject->env_,
-          v8impl::JsValueFromV8LocalValue(
-              info.GetIsolate()->GetCurrentContext()->Global()),
-          v8impl::JsValueFromV8LocalValue(v8Setter), 4, argv, &result);
-      if (status == napi_ok) {
-#if V8_MAJOR_VERSION < 14
-        info.GetReturnValue().Set(v8impl::V8LocalValueFromJsValue(result));
-#endif
-        NAPI_HOSTOBJECT_RETURN_YES;
-      } else {
-        napi_value ex;
-        napi_get_and_clear_last_exception(hostObject->env_, &ex);
-        info.GetIsolate()->ThrowException(v8impl::V8LocalValueFromJsValue(ex));
-        NAPI_HOSTOBJECT_RETURN_YES;
-      }
+  static HOST_INTERCEPTED IndexedSetter(uint32_t index,
+                                        v8::Local<v8::Value> value,
+                                        HOST_SETTER_INFO info) {
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value val = JsValueFromV8LocalValue(value);
+    if (w->methods_.indexed_set != nullptr) {
+      w->env_->CallIntoModule([&](napi_env env) {
+        w->methods_.indexed_set(env, host, index, val, w->data_);
+      });
     } else {
-      if (target->Set(info.GetIsolate()->GetCurrentContext(), index, value)
-              .FromMaybe(false)) {
-#if V8_MAJOR_VERSION < 14
-        info.GetReturnValue().Set(value);
-#endif
-        NAPI_HOSTOBJECT_RETURN_YES;
-      }
+      napi_value prop = JsValueFromV8LocalValue(
+          v8::Integer::NewFromUnsigned(info.GetIsolate(), index));
+      w->env_->CallIntoModule([&](napi_env env) {
+        w->methods_.set(env, host, prop, val, w->data_);
+      });
     }
-    NAPI_HOSTOBJECT_RETURN_NO;
+    HOST_SETTER_HANDLED;
   }
 
-  static NAPI_HOSTOBJECT_INTERCEPTED IndexedQuery(
+  static HOST_INTERCEPTED IndexedQuery(
       uint32_t index, const v8::PropertyCallbackInfo<v8::Integer>& info) {
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    if (target->Has(info.GetIsolate()->GetCurrentContext(), index)
-            .FromMaybe(false)) {
-      info.GetReturnValue().Set(v8::Integer::New(info.GetIsolate(), v8::None));
-      NAPI_HOSTOBJECT_RETURN_YES;
-    }
-    NAPI_HOSTOBJECT_RETURN_NO;
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    if (w->methods_.has == nullptr) HOST_FALLTHROUGH;
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value prop = JsValueFromV8LocalValue(
+        v8::Integer::NewFromUnsigned(info.GetIsolate(), index));
+    bool present = false;
+    w->env_->CallIntoModule([&](napi_env env) {
+      present = w->methods_.has(env, host, prop, w->data_);
+    });
+    if (!present) HOST_FALLTHROUGH;
+    info.GetReturnValue().Set(v8::Integer::New(info.GetIsolate(), v8::None));
+    HOST_HANDLED;
   }
 
-  static NAPI_HOSTOBJECT_INTERCEPTED IndexedDeleter(
+  static HOST_INTERCEPTED IndexedDeleter(
       uint32_t index, const v8::PropertyCallbackInfo<v8::Boolean>& info) {
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
-
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    if (target->Delete(info.GetIsolate()->GetCurrentContext(), index)
-            .FromMaybe(false)) {
-      info.GetReturnValue().Set(true);
-      NAPI_HOSTOBJECT_RETURN_YES;
-    }
-    NAPI_HOSTOBJECT_RETURN_NO;
+    v8::Local<v8::Object> holder = info.Holder();
+    auto* w = From(holder);
+    if (w->methods_.delete_property == nullptr) HOST_FALLTHROUGH;
+    napi_value host = JsValueFromV8LocalValue(holder);
+    napi_value prop = JsValueFromV8LocalValue(
+        v8::Integer::NewFromUnsigned(info.GetIsolate(), index));
+    bool deleted = false;
+    w->env_->CallIntoModule([&](napi_env env) {
+      deleted = w->methods_.delete_property(env, host, prop, w->data_);
+    });
+    info.GetReturnValue().Set(deleted);
+    HOST_HANDLED;
   }
 
-  static void IndexedEnumerator(
-      const v8::PropertyCallbackInfo<v8::Array>& info) {
-    v8::Local<v8::Object> self = info.Holder();
-    auto* hostObject = static_cast<NapiHostObject*>(
-        self->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
+ private:
+  NapiHostObject(napi_env env, napi_finalize finalize, void* data,
+                 const napi_host_object_methods* methods)
+      : env_(env), finalize_(finalize), data_(data), methods_(*methods) {}
 
-    v8::Local<v8::Value> v8Value = hostObject->value_.Get(info.GetIsolate());
-    v8::Local<v8::Object> target = v8Value.As<v8::Object>();
-
-    v8::Local<v8::Array> propertyNames =
-        target->GetPropertyNames(info.GetIsolate()->GetCurrentContext())
-            .ToLocalChecked();
-    info.GetReturnValue().Set(propertyNames);
-  }
+  ~NapiHostObject() = default;
 
   napi_env env_;
-  bool is_array_;
   napi_finalize finalize_;
   void* data_;
-  v8::Persistent<v8::Value> value_;
-  v8::Persistent<v8::Value> getter_;
-  v8::Persistent<v8::Value> setter_;
+  napi_host_object_methods methods_;
 };
 
-#undef NAPI_HOSTOBJECT_INTERCEPTED
-#undef NAPI_HOSTOBJECT_RETURN_YES
-#undef NAPI_HOSTOBJECT_RETURN_NO
-#undef NAPI_HOSTOBJECT_SETTER_INFO
+#undef HOST_INTERCEPTED
+#undef HOST_HANDLED
+#undef HOST_FALLTHROUGH
+#undef HOST_SETTER_INFO
+#undef HOST_SETTER_HANDLED
+
 }  // namespace v8impl
 
-napi_status napi_create_host_object(napi_env env, napi_value value,
-                                    napi_finalize finalize, void* data,
-                                    bool is_array, napi_value getter,
-                                    napi_value setter, napi_value* result) {
+napi_status NAPI_CDECL napi_create_host_object(
+    napi_env env, napi_finalize finalize, void* data,
+    const napi_host_object_methods* methods, napi_value* result) {
+  CHECK_ARG(env, methods);
+  CHECK_ARG(env, result);
+  RETURN_STATUS_IF_FALSE(env,
+                         methods->get != nullptr && methods->set != nullptr,
+                         napi_invalid_arg);
+
   v8::Isolate* isolate = env->isolate;
   v8::Local<v8::Context> context = isolate->GetCurrentContext();
 
-  // Convert napi_value to v8::Local<v8::Value>
-  v8::Local<v8::Value> v8Value = v8impl::V8LocalValueFromJsValue(value);
-
-  // Check if the template is already cached
   if (env->host_object_template.IsEmpty()) {
-    // Create an ObjectTemplate for the host object
-    v8::Local<v8::ObjectTemplate> hostObjectTemplate =
-        v8::ObjectTemplate::New(isolate);
-    hostObjectTemplate->SetInternalFieldCount(
-        4);  // To store the NapiHostObject instance
+    v8::Local<v8::ObjectTemplate> tpl = v8::ObjectTemplate::New(isolate);
+    tpl->SetInternalFieldCount(v8impl::NapiHostObject::kInternalFieldCount);
 
-    // Define the property handler configuration
-    v8::NamedPropertyHandlerConfiguration handlerConfiguration(
+    v8::NamedPropertyHandlerConfiguration named(
         v8impl::NapiHostObject::Getter, v8impl::NapiHostObject::Setter,
         v8impl::NapiHostObject::Query, v8impl::NapiHostObject::Deleter,
-        v8impl::NapiHostObject::Enumerator,
-        v8::Local<v8::Value>(),  // Data
+        v8impl::NapiHostObject::Enumerator, v8::Local<v8::Value>(),
         v8::PropertyHandlerFlags::kNonMasking);
+    tpl->SetHandler(named);
 
-    // Set the property handler configuration on the template
-    hostObjectTemplate->SetHandler(handlerConfiguration);
-
-    // Define the indexed property handler configuration
-    v8::IndexedPropertyHandlerConfiguration indexedHandlerConfiguration(
+    v8::IndexedPropertyHandlerConfiguration indexed(
         v8impl::NapiHostObject::IndexedGetter,
         v8impl::NapiHostObject::IndexedSetter,
         v8impl::NapiHostObject::IndexedQuery,
-        v8impl::NapiHostObject::IndexedDeleter, nullptr,
-        v8::External::New(isolate, nullptr, v8::kExternalPointerTypeTagDefault)  // Data
-    );
+        v8impl::NapiHostObject::IndexedDeleter, nullptr, nullptr, nullptr);
+    tpl->SetHandler(indexed);
 
-    // Set the indexed property handler configuration on the template
-    hostObjectTemplate->SetHandler(indexedHandlerConfiguration);
-
-    // Cache the template
-    env->host_object_template.Reset(isolate, hostObjectTemplate);
+    env->host_object_template.Reset(isolate, tpl);
   }
 
-  // Create an instance of the host object
-  v8::Local<v8::ObjectTemplate> hostObjectTemplate =
-      env->host_object_template.Get(isolate);
-  v8::Local<v8::Object> hostObject =
-      hostObjectTemplate->NewInstance(context).ToLocalChecked();
+  v8::Local<v8::ObjectTemplate> tpl = env->host_object_template.Get(isolate);
+  v8::Local<v8::Object> hostObject = tpl->NewInstance(context).ToLocalChecked();
 
-  v8::Local<v8::Value> v8Getter;
-  v8::Local<v8::Value> v8Setter;
-  if (is_array) {
-    v8Getter = v8impl::V8LocalValueFromJsValue(getter);
-    v8Setter = v8impl::V8LocalValueFromJsValue(setter);
-  }
+  auto* self = v8impl::NapiHostObject::New(env, finalize, data, methods);
+  v8impl::NapiHostObject::Wrap(hostObject, self);
 
-  // Store the NapiHostObject instance in the internal field
-  auto* hostInfo = new v8impl::NapiHostObject(env, is_array, finalize, data,
-                                              v8Value, v8Getter, v8Setter);
-
-  hostObject->SetAlignedPointerInInternalField(0, hostInfo, v8::kEmbedderDataTypeTagDefault);
-
-  // Set the prototype of the host object to the prototype of the value
-  v8::Local<v8::Object> valueObject = v8Value.As<v8::Object>();
-#if V8_MAJOR_VERSION >= 14
-  if (!hostObject->SetPrototypeV2(context, valueObject->GetPrototypeV2())
-           .FromMaybe(false)) {
-#else
-  if (!hostObject->SetPrototype(context, valueObject->GetPrototype())
-           .FromMaybe(false)) {
-#endif
-    napi_throw_error(env, nullptr, "Failed to set prototype");
-    return napi_generic_failure;
-  }
-
-  v8::Local<v8::String> superPropertyName =
-      v8::String::NewFromUtf8(isolate, "super").ToLocalChecked();
-#if V8_MAJOR_VERSION >= 14
-  if (!hostObject
-           ->SetNativeDataProperty(
-               context, superPropertyName,
-               [](v8::Local<v8::Name> property,
-                  const v8::PropertyCallbackInfo<v8::Value>& info) {
-                 v8::Local<v8::Object> jsThis = info.Data().As<v8::Object>();
-                 v8::Local<v8::Value> superValue;
-                 if (jsThis
-                         ->Get(info.GetIsolate()->GetCurrentContext(), property)
-                         .ToLocal(&superValue)) {
-                   info.GetReturnValue().Set(superValue);
-                 }
-               },
-               nullptr, valueObject)
-           .FromMaybe(false)) {
-    napi_throw_error(env, nullptr, "Failed to set super accessor");
-    return napi_generic_failure;
-  }
-#else
-  hostObject->SetAccessor(
-      context, superPropertyName,
-      [](v8::Local<v8::Name> property,
-         const v8::PropertyCallbackInfo<v8::Value>& info) {
-        v8::Local<v8::Object> jsThis = info.Data().As<v8::Object>();
-        v8::Local<v8::Value> superValue;
-        if (jsThis->Get(info.GetIsolate()->GetCurrentContext(), property)
-                .ToLocal(&superValue)) {
-          info.GetReturnValue().Set(superValue);
-        }
-      },
-      nullptr, valueObject);
-#endif
-
-  // Wrap the host object in a napi_value
   *result = v8impl::JsValueFromV8LocalValue(hostObject);
 
-  // Set the finalizer if provided
-  if (finalize != nullptr) {
-    v8impl::Reference::New(
-        env, hostObject, 0, v8impl::Ownership::kRuntime,
-        [](napi_env env, void* d1, void* d2) {
-          auto hostInfo = reinterpret_cast<v8impl::NapiHostObject*>(d1);
-          if (hostInfo->finalize_) {
-            hostInfo->finalize_(env, hostInfo->data_, nullptr);
-          }
-          delete hostInfo;
-        },
-        hostInfo, nullptr);
-  }
+  // Free the wrapper (and run the user finalizer, if any) once the host
+  // object is collected. Registered unconditionally so the wrapper never
+  // leaks.
+  v8impl::Reference::New(env, hostObject, 0, v8impl::Ownership::kRuntime,
+                         v8impl::NapiHostObject::Finalize, self, nullptr);
 
-  return napi_ok;
+  return napi_clear_last_error(env);
 }
 
-napi_status napi_get_host_object_data(napi_env env, napi_value object,
-                                      void** data) {
-  v8::Local<v8::Object> v8Value =
-      v8::Local<v8::Object>::Cast(v8impl::V8LocalValueFromJsValue(object));
+napi_status NAPI_CDECL napi_get_host_object_data(napi_env env,
+                                                 napi_value object,
+                                                 void** data) {
+  CHECK_ARG(env, object);
+  CHECK_ARG(env, data);
 
-  if (v8Value->InternalFieldCount() != 4) {
-    *data = nullptr;
-    return napi_ok;
+  v8::Local<v8::Value> value = v8impl::V8LocalValueFromJsValue(object);
+  *data = nullptr;
+  if (value->IsObject()) {
+    v8::Local<v8::Object> obj = value.As<v8::Object>();
+    if (v8impl::NapiHostObject::IsHostObject(obj)) {
+      *data = v8impl::NapiHostObject::From(obj)->Data();
+    }
   }
-  void* v8data = v8Value->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault);
-
-  auto hostInfo = reinterpret_cast<v8impl::NapiHostObject*>(v8data);
-
-  *data = hostInfo->data_;
-
-  return napi_ok;
+  return napi_clear_last_error(env);
 }
 
-napi_status napi_is_host_object(napi_env env, napi_value object, bool* result) {
-  v8::Local<v8::Object> v8Value =
-      v8::Local<v8::Object>::Cast(v8impl::V8LocalValueFromJsValue(object));
+napi_status NAPI_CDECL napi_is_host_object(napi_env env, napi_value object,
+                                           bool* result) {
+  CHECK_ARG(env, object);
+  CHECK_ARG(env, result);
 
-  if (v8Value->InternalFieldCount() != 4) {
-    *result = false;
-    return napi_ok;
-  }
-
-  *result = true;
-
-  return napi_ok;
+  v8::Local<v8::Value> value = v8impl::V8LocalValueFromJsValue(object);
+  *result = value->IsObject() &&
+            v8impl::NapiHostObject::IsHostObject(value.As<v8::Object>());
+  return napi_clear_last_error(env);
 }
+
+#endif  // USE_HOST_OBJECT
