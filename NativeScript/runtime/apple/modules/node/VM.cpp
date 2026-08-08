@@ -983,7 +983,7 @@ bool ExtractV8DependencySpecifiers(v8::Isolate* isolate,
 
   for (int index = 0; index < length; ++index) {
     v8::Local<v8::Data> entry =
-        requests->Get(isolate->GetCurrentContext(), index);
+        requests->Get(index);
     v8::Local<v8::String> specifier =
         v8::ModuleRequest::Cast(*entry)->GetSpecifier();
     v8::String::Utf8Value text(isolate, specifier);
