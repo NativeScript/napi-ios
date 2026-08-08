@@ -3329,7 +3329,12 @@ napi_status napi_run_script_source(napi_env env, napi_value script,
       env, v8impl::JsValueFromV8LocalValue(source_with_comment), result);
 }
 
-// ES Module support
+// ES Module support.
+//
+// Apple-only: the resolver lives in v8-module-loader.cpp, which reads the app
+// layout through runtime/apple/RuntimeConfig.h. Android resolves modules in its
+// own require() implementation and never calls this.
+#ifndef __ANDROID__
 napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
                                                  napi_value script,
                                                  const char* source_url,
@@ -3483,6 +3488,7 @@ napi_status NAPI_CDECL napi_run_script_as_module(napi_env env,
 
   return GET_RETURN_STATUS(env);
 }
+#endif  // !__ANDROID__
 
 napi_status NAPI_CDECL napi_add_finalizer(napi_env env, napi_value js_object,
                                           void* finalize_data,

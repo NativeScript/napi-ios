@@ -360,6 +360,8 @@ if(ENABLE_JS_RUNTIME)
       napi/v8/v8_inspector
       ${V8_VENDOR_DIR}
       ${V8_VENDOR_DIR}/include
+      # V8 14.9's internals include Abseil as <absl/...>.
+      ${V8_VENDOR_DIR}/third_party/abseil-cpp
     )
 
     set(SOURCE_FILES
