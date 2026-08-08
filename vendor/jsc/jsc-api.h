@@ -9,6 +9,7 @@
 #include <list>
 #include <mutex>
 #include <thread>
+#include <unordered_map>
 #include <unordered_set>
 
 // Angle brackets deliberately: on Apple this resolves to the SDK's
@@ -61,7 +62,7 @@ struct napi_env__ {
   std::recursive_mutex js_mutex{};
 
   napi_env__(JSGlobalContextRef context) : context{context} {
-    napi_envs[context] = this;
+    register_env(context, this);
     JSGlobalContextRetain(context);
     init_symbol(constructor_info_symbol, "NS_ConstructorInfo");
     init_symbol(function_info_symbol, "NS_FunctionInfo");
@@ -80,11 +81,12 @@ struct napi_env__ {
     deinit_symbol(reference_info_symbol);
     deinit_symbol(function_info_symbol);
     deinit_symbol(constructor_info_symbol);
-    napi_envs.erase(context);
+    unregister_env(context);
     JSGlobalContextRelease(context);
   }
 
   static napi_env get(JSGlobalContextRef context) {
+    std::lock_guard<std::mutex> guard(napi_envs_mutex);
     auto it = napi_envs.find(context);
     if (it != napi_envs.end()) {
       return it->second;
@@ -94,7 +96,24 @@ struct napi_env__ {
   }
 
  private:
+  // Every worker builds its own context and env on its own thread, so this map
+  // is inserted into and erased from concurrently. Unsynchronized mutation of
+  // an unordered_map is undefined behaviour -- a rehash on one thread frees the
+  // bucket array another is walking -- and the resulting heap damage surfaces
+  // later as a SIGSEGV somewhere unrelated, typically inside JSC. Always go
+  // through these three accessors.
+  static void register_env(JSGlobalContextRef context, napi_env env) {
+    std::lock_guard<std::mutex> guard(napi_envs_mutex);
+    napi_envs[context] = env;
+  }
+
+  static void unregister_env(JSGlobalContextRef context) {
+    std::lock_guard<std::mutex> guard(napi_envs_mutex);
+    napi_envs.erase(context);
+  }
+
   static inline std::unordered_map<JSGlobalContextRef, napi_env> napi_envs{};
+  static inline std::mutex napi_envs_mutex{};
   void deinit_refs();
   void init_symbol(JSValueRef& symbol, const char* description);
   void deinit_symbol(JSValueRef symbol);
