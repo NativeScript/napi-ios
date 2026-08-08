@@ -17,7 +17,9 @@
 #include <stdint.h>
 
 // [BABYLON-NATIVE-ADDITION]: Enable V8 Pointer Compression and Sandbox for
-// 64-bit architecture #if INTPTR_MAX == INT64_MAX #ifndef V8_COMPRESS_POINTERS
+// 64-bit architecture
+// #if INTPTR_MAX == INT64_MAX
+// #ifndef V8_COMPRESS_POINTERS
 // #define V8_COMPRESS_POINTERS 1
 // #endif
 // #ifndef V8_31BIT_SMIS_ON_64BIT_ARCH
@@ -46,17 +48,41 @@ inline v8::Local<v8::String> OneByteString(v8::Isolate* isolate,
   OneByteString((isolate), (string), sizeof(string) - 1)
 
 namespace v8impl {
-
+// https://github.com/nodejs/node/blob/66f19ddd18d0f18a079aaa1141d5c987bcceff8e/src/js_native_api_v8_internals.h#L34
 template <typename T>
-using Persistent = v8::Persistent<T>;
-
+using Persistent = v8::Global<T>;
+// https://github.com/nodejs/node/blob/66f19ddd18d0f18a079aaa1141d5c987bcceff8e/src/util.h#L788
 class PersistentToLocal {
  public:
+  // If persistent.IsWeak() == false, then do not call persistent.Reset()
+  // while the returned Local<T> is still in scope, it will destroy the
+  // reference to the object.
+  template <class TypeName>
+  static inline v8::Local<TypeName> Default(
+      v8::Isolate* isolate, const v8::PersistentBase<TypeName>& persistent) {
+    if (persistent.IsWeak()) {
+      return PersistentToLocal::Weak(isolate, persistent);
+    } else {
+      return PersistentToLocal::Strong(persistent);
+    }
+  }
+
+  // Unchecked conversion from a non-weak Persistent<T> to Local<T>,
+  // use with care!
+  //
+  // Do not call persistent.Reset() while the returned Local<T> is still in
+  // scope, it will destroy the reference to the object.
   template <class TypeName>
   static inline v8::Local<TypeName> Strong(
-      const Persistent<TypeName>& persistent) {
+      const v8::PersistentBase<TypeName>& persistent) {
     return *reinterpret_cast<v8::Local<TypeName>*>(
-        const_cast<Persistent<TypeName>*>(&persistent));
+        const_cast<v8::PersistentBase<TypeName>*>(&persistent));
+  }
+
+  template <class TypeName>
+  static inline v8::Local<TypeName> Weak(
+      v8::Isolate* isolate, const v8::PersistentBase<TypeName>& persistent) {
+    return v8::Local<TypeName>::New(isolate, persistent);
   }
 };
 }  // end of namespace v8impl
@@ -76,6 +102,7 @@ class PersistentToLocal {
 // [BABYLON-NATIVE-ADDITION]: Increase perf by using internal field instead of
 // private property
 #if V8_MAJOR_VERSION >= 14
+// V8 14 removed Context::GetIsolate().
 #define NAPI_PRIVATE_KEY(context) (v8::Private::New(v8::Isolate::GetCurrent()))
 #else
 #define NAPI_PRIVATE_KEY(context) (v8::Private::New(context->GetIsolate()))
