@@ -22,7 +22,7 @@ set(COMMON_CMAKE_ARGUMENTS "-Wno-error -Wno-deprecated-declarations -Wno-unused-
 
 # All engines build with C++20: the vendored ada 3.3.0 (used by the URL module,
 # compiled for every engine) requires C++20 (std::endian, concepts). Previously
-# only V8_13 got -std=c++20 (and the empty `elseif ()` set nothing for the rest),
+# only V8 got -std=c++20 (and the empty `elseif ()` set nothing for the rest),
 # so non-V8-13 engine builds failed on ada.h.
 set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -std=c++20")
 
@@ -183,15 +183,14 @@ if (HERMES OR SHERMES)
     # different Hermes builds, so they use different header sets and only the
     # JSR implementation (napi/hermes/jsr.cpp) is shared, selected by #ifdef.
     #
-    # Android uses the stock headers matching the prebuilt libhermesvm.so under
-    # napi/android/hermes/include. It must NOT see napi/hermes/include: that set
-    # belongs to the Apple hermes.xcframework and carries a NativeScript-local
-    # `virtual createNodeApiEnv` on jsi::Runtime. Compiling against it inserts a
-    # vtable slot the prebuilt libhermesvm.so does not have, so virtual dispatch
-    # through jsi::Runtime lands on the wrong function and segfaults while
-    # constructing the runtime.
+    # One header set for both platforms, installed by scripts/download_hermes.sh
+    # from the same release the Apple xcframework and these .so files come from.
+    # The two used to be committed separately and drifted: the Apple copy carried
+    # a NativeScript-local `virtual createNodeApiEnv` on jsi::Runtime that the
+    # prebuilt libhermesvm.so had no vtable slot for. That hook is gone upstream,
+    # so the sets are now identical and the split is unnecessary.
     include_directories(
-            ${NS_ANDROID_NAPI_DIR}/hermes/include
+            ${VENDOR_DIR}/hermes/include
             ${NS_NAPI_DIR}/hermes
             ${NS_NAPI_DIR}/common
     )
@@ -216,15 +215,22 @@ if (JSC)
 endif ()
 
 if (V8)
-    # V8 13 is the only supported V8. The v8-10 and v8-11 trees (and their
-    # ~393MB of prebuilt archives) were dropped.
+    # V8 comes from the same pinned prebuilt release as the Apple build, so the
+    # public headers are shared from vendor/. The v8-10/v8-11 trees were dropped
+    # earlier; v8-13 went with the move to 14.9.
+    #
+    # v8_inspector keeps its own hand-picked copy of V8's internal headers
+    # (src/, third_party/) -- the release ships the full ~27MB set and only a
+    # small fraction is reachable from the inspector sources.
     include_directories(
             ${NS_ANDROID_NAPI_DIR}/v8
-            ${NS_ANDROID_NAPI_DIR}/v8-13
-            ${NS_ANDROID_NAPI_DIR}/v8-13/include
+            # Both forms are used: <v8.h> from the napi backend, and
+            # "include/v8-local-handle.h" from the inspector's vendored headers,
+            # which spell paths relative to the V8 checkout root.
+            ${VENDOR_DIR}/v8
+            ${VENDOR_DIR}/v8/include
             ${NS_NAPI_DIR}/common
             ${NS_ANDROID_NAPI_DIR}/v8/v8_inspector
-            ${NS_ANDROID_NAPI_DIR}/v8-13/v8_inspector
     )
 
     if (NOT OPTIMIZED_BUILD OR OPTIMIZED_WITH_INSPECTOR_BUILD)
@@ -327,11 +333,16 @@ endif ()
 
 if (V8)
     target_compile_definitions(NativeScript PRIVATE __V8__)
-endif ()
 
-if (V8_13)
-    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/v8-13/${ANDROID_ABI}/libv8_monolith.a)
-    target_compile_definitions(NativeScript PRIVATE __V8_13__)
+    # Fetched by the downloadV8Libs gradle task rather than committed.
+    target_link_libraries(NativeScript ${PROJECT_SOURCE_DIR}/src/main/libs/v8/${ANDROID_ABI}/libv8_monolith.a)
+
+    # V8_COMPRESS_POINTERS is deliberately NOT defined. Pointer compression
+    # pulls in the sandbox's constraints on external memory, which rules out
+    # the external backing stores the runtime uses for ArrayBuffers. The
+    # prebuilt slices are built with v8_enable_pointer_compression=false to
+    # match (see scripts/matrix/build-android.sh in v8-buildscripts); V8
+    # aborts at Initialize() if the two sides disagree in either direction.
 endif ()
 
 if (PRIMJS)

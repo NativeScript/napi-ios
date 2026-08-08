@@ -350,7 +350,7 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
   // [BABYLON-NATIVE-ADDITION]: Increase perf by using internal field instead of
   // private property
   Reference* reference = static_cast<v8impl::Reference*>(
-      obj->GetAlignedPointerFromInternalField(0));
+      obj->GetAlignedPointerFromInternalField(0, v8::kEmbedderDataTypeTagDefault));
 
   if (result) {
     *result = reference->Data();
@@ -359,7 +359,7 @@ inline napi_status Unwrap(napi_env env, napi_value js_object, void** result,
   if (action == RemoveWrap) {
     // [BABYLON-NATIVE-ADDITION]: Increase perf by using internal field instead
     // of private property
-    obj->SetAlignedPointerInInternalField(0, nullptr);
+    obj->SetAlignedPointerInInternalField(0, nullptr, v8::kEmbedderDataTypeTagDefault);
     if (reference->ownership() == Ownership::kUserland) {
       // When the wrap is been removed, the finalizer should be reset.
       reference->ResetFinalizer();
@@ -390,7 +390,7 @@ class CallbackBundle {
     bundle->cb_data = data;
     bundle->env = env;
 
-    v8::Local<v8::Value> cbdata = v8::External::New(env->isolate, bundle);
+    v8::Local<v8::Value> cbdata = v8::External::New(env->isolate, bundle, v8::kExternalPointerTypeTagDefault);
     Reference::New(env, cbdata, 0, Ownership::kRuntime, Delete, bundle,
                    nullptr);
     return cbdata;
@@ -440,7 +440,7 @@ class CallbackWrapperBase : public CallbackWrapper {
                         nullptr),
         _cbinfo(cbinfo) {
     _bundle = reinterpret_cast<CallbackBundle*>(
-        cbinfo.Data().As<v8::External>()->Value());
+        cbinfo.Data().As<v8::External>()->Value(v8::kExternalPointerTypeTagDefault));
     _data = _bundle->cb_data;
   }
 
@@ -574,7 +574,7 @@ inline napi_status Wrap(napi_env env, napi_value js_object, void* native_object,
 
   // [BABYLON-NATIVE-ADDITION]: Increase perf by using internal field instead of
   // private property
-  obj->SetAlignedPointerInInternalField(0, reference);
+  obj->SetAlignedPointerInInternalField(0, reference, v8::kEmbedderDataTypeTagDefault);
 
   return GET_RETURN_STATUS(env);
 }
@@ -2224,9 +2224,17 @@ napi_status NAPI_CDECL napi_get_value_string_latin1(napi_env env,
     CHECK_ARG(env, result);
     *result = val.As<v8::String>()->Length();
   } else if (bufsize != 0) {
+#if V8_MAJOR_VERSION >= 14
+    v8::Local<v8::String> str = val.As<v8::String>();
+    size_t copied = std::min(static_cast<size_t>(str->Length()), bufsize - 1);
+    str->WriteOneByteV2(env->isolate, 0, static_cast<uint32_t>(copied),
+                        reinterpret_cast<uint8_t*>(buf),
+                        v8::String::WriteFlags::kNone);
+#else
     int copied = val.As<v8::String>()->WriteOneByte(
         env->isolate, reinterpret_cast<uint8_t*>(buf), 0, bufsize - 1,
         v8::String::NO_NULL_TERMINATION);
+#endif
 
     buf[copied] = '\0';
     if (result != nullptr) {
@@ -2259,11 +2267,22 @@ napi_status NAPI_CDECL napi_get_value_string_utf8(napi_env env,
 
   if (!buf) {
     CHECK_ARG(env, result);
-    *result = val.As<v8::String>()->Utf8Length(env->isolate);
+    *result =
+#if V8_MAJOR_VERSION >= 14
+        val.As<v8::String>()->Utf8LengthV2(env->isolate);
+#else
+        val.As<v8::String>()->Utf8Length(env->isolate);
+#endif
   } else if (bufsize != 0) {
+#if V8_MAJOR_VERSION >= 14
+    size_t copied = val.As<v8::String>()->WriteUtf8V2(
+        env->isolate, buf, bufsize - 1,
+        v8::String::WriteFlags::kReplaceInvalidUtf8);
+#else
     int copied = val.As<v8::String>()->WriteUtf8(
         env->isolate, buf, bufsize - 1, nullptr,
         v8::String::REPLACE_INVALID_UTF8 | v8::String::NO_NULL_TERMINATION);
+#endif
 
     buf[copied] = '\0';
     if (result != nullptr) {
@@ -2300,9 +2319,17 @@ napi_status NAPI_CDECL napi_get_value_string_utf16(napi_env env,
     // V8 assumes UTF-16 length is the same as the number of characters.
     *result = val.As<v8::String>()->Length();
   } else if (bufsize != 0) {
+#if V8_MAJOR_VERSION >= 14
+    v8::Local<v8::String> str = val.As<v8::String>();
+    size_t copied = std::min(static_cast<size_t>(str->Length()), bufsize - 1);
+    str->WriteV2(env->isolate, 0, static_cast<uint32_t>(copied),
+                 reinterpret_cast<uint16_t*>(buf),
+                 v8::String::WriteFlags::kNone);
+#else
     int copied = val.As<v8::String>()->Write(
         env->isolate, reinterpret_cast<uint16_t*>(buf), 0, bufsize - 1,
         v8::String::NO_NULL_TERMINATION);
+#endif
 
     buf[copied] = '\0';
     if (result != nullptr) {
@@ -2378,7 +2405,7 @@ napi_status NAPI_CDECL napi_create_external(napi_env env, void* data,
 
   v8::Isolate* isolate = env->isolate;
 
-  v8::Local<v8::Value> external_value = v8::External::New(isolate, data);
+  v8::Local<v8::Value> external_value = v8::External::New(isolate, data, v8::kExternalPointerTypeTagDefault);
 
   if (finalize_cb) {
     // The Reference object will delete itself after invoking the finalizer
@@ -2475,7 +2502,7 @@ napi_status NAPI_CDECL napi_get_value_external(napi_env env, napi_value value,
   RETURN_STATUS_IF_FALSE(env, val->IsExternal(), napi_invalid_arg);
 
   v8::Local<v8::External> external_value = val.As<v8::External>();
-  *result = external_value->Value();
+  *result = external_value->Value(v8::kExternalPointerTypeTagDefault);
 
   return napi_clear_last_error(env);
 }
@@ -3322,26 +3349,14 @@ napi_status NAPI_CDECL napi_is_detached_arraybuffer(napi_env env,
 
 namespace v8impl {
 
-// Property interceptors return v8::Intercepted on V8 12.1+ (here __V8_13__) and
-// void on older V8 (the __else__ / V8_10 branch). These macros let the single
-// host-object implementation below serve both ABIs.
-#ifdef __V8_13__
+// Property interceptors return v8::Intercepted on V8 12.1+. These macros date
+// from when V8 10/11 (which returned void) were also supported; they are kept
+// so the host-object implementation below reads the same on both platforms.
 #define HOST_INTERCEPTED v8::Intercepted
 #define HOST_HANDLED return v8::Intercepted::kYes
 #define HOST_FALLTHROUGH return v8::Intercepted::kNo
 #define HOST_SETTER_INFO const v8::PropertyCallbackInfo<void>&
 #define HOST_SETTER_HANDLED return v8::Intercepted::kYes
-#else
-#define HOST_INTERCEPTED void
-#define HOST_HANDLED return
-#define HOST_FALLTHROUGH return
-#define HOST_SETTER_INFO const v8::PropertyCallbackInfo<v8::Value>&
-#define HOST_SETTER_HANDLED           \
-  do {                                \
-    info.GetReturnValue().Set(value); \
-    return;                           \
-  } while (0)
-#endif
 
 // A "host object" is a transparent proxy: every property operation is
 // dispatched to the native callbacks in `methods_`, which receive the host
@@ -3363,18 +3378,19 @@ class NapiHostObject {
   }
 
   static void Wrap(v8::Local<v8::Object> object, NapiHostObject* self) {
-    object->SetAlignedPointerInInternalField(kSlot, self);
-    object->SetAlignedPointerInInternalField(kTypeSlot, TypeId());
+    object->SetAlignedPointerInInternalField(kSlot, self, v8::kEmbedderDataTypeTagDefault);
+    object->SetAlignedPointerInInternalField(kTypeSlot, TypeId(),
+                                             v8::kEmbedderDataTypeTagDefault);
   }
 
   static bool IsHostObject(v8::Local<v8::Object> object) {
     return object->InternalFieldCount() >= kInternalFieldCount &&
-           object->GetAlignedPointerFromInternalField(kTypeSlot) == TypeId();
+           object->GetAlignedPointerFromInternalField(kTypeSlot, v8::kEmbedderDataTypeTagDefault) == TypeId();
   }
 
   static NapiHostObject* From(v8::Local<v8::Object> object) {
     return static_cast<NapiHostObject*>(
-        object->GetAlignedPointerFromInternalField(kSlot));
+        object->GetAlignedPointerFromInternalField(kSlot, v8::kEmbedderDataTypeTagDefault));
   }
 
   void* Data() { return data_; }

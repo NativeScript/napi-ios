@@ -73,13 +73,11 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
   if (env == nullptr) return napi_invalid_arg;
   JSR* jsr = (JSR*)runtime;
   // Must enter explictly
-#ifdef __V8_13__
   jsr->isolate->Enter();
-#endif
   try {
     v8::HandleScope handle_scope(jsr->isolate);
     v8::Local<v8::Context> context = v8::Context::New(jsr->isolate);
-    *env = new napi_env__(context, NAPI_VERSION_EXPERIMENTAL);
+    *env = new napi_env__(jsr->isolate, context, NAPI_VERSION_EXPERIMENTAL);
     JSR::env_to_jsr_cache.insert(std::make_pair(*env, jsr));
 
     Local<Object> global = context->Global();
@@ -97,7 +95,7 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
 
     jsr->isolate->SetPromiseRejectCallback([](PromiseRejectMessage message) {
       Local<Promise> promise = message.GetPromise();
-      Isolate* isolate = promise->GetIsolate();
+      Isolate* isolate = Isolate::GetCurrent();
       Local<Value> value = message.GetValue();
       Local<Integer> event = Integer::New(isolate, message.GetEvent());
       v8::HandleScope handle_scope(isolate);
@@ -115,13 +113,9 @@ napi_status js_create_napi_env(napi_env* env, jsr_ns_runtime runtime) {
     });
 
     // Must exit explictly
-#ifdef __V8_13__
     jsr->isolate->Exit();
-#endif
   } catch (...) {
-#ifdef __V8_13__
     jsr->isolate->Exit();
-#endif
     return napi_generic_failure;
   }
   return napi_ok;
@@ -227,11 +221,7 @@ static napi_status CompileRunAndCache(napi_env env, napi_value script,
                               ? ("file://" + fsPath)
                               : (file ? std::string(file) : std::string());
   auto originStr = v8::String::NewFromUtf8(env->isolate, sourceUrl.c_str());
-#ifdef __V8_13__
   v8::ScriptOrigin origin(originStr.ToLocalChecked());
-#else
-  v8::ScriptOrigin origin(env->isolate, originStr.ToLocalChecked());
-#endif
 
   ScriptCompiler::Source source(sourceString, origin);
   Local<Script> compiled;
@@ -282,7 +272,7 @@ napi_status js_execute_pending_jobs(napi_env env) {
 }
 
 napi_status js_get_engine_ptr(napi_env env, int64_t* engine_ptr) {
-  *engine_ptr = reinterpret_cast<int64_t>(env->context()->GetIsolate());
+  *engine_ptr = reinterpret_cast<int64_t>(env->isolate);
   return napi_ok;
 }
 
@@ -309,11 +299,7 @@ napi_status js_cache_script(napi_env env, const char* source,
   std::string sourceUrl = "file://" + fsPath;
   v8::Local<v8::String> fileString =
       v8::String::NewFromUtf8(env->isolate, sourceUrl.c_str()).ToLocalChecked();
-#ifdef __V8_13__
   v8::ScriptOrigin origin(fileString);
-#else
-  v8::ScriptOrigin origin(env->isolate, fileString);
-#endif
 
   // Guard the compile and never let a failed cache write leak a pending
   // exception into the caller.
@@ -377,11 +363,7 @@ napi_status js_run_cached_script(napi_env env, const char* file,
 
   std::string sourceUrl = "file://" + fsPath;
   auto originStr = v8::String::NewFromUtf8(env->isolate, sourceUrl.c_str());
-#ifdef __V8_13__
   v8::ScriptOrigin origin(originStr.ToLocalChecked());
-#else
-  v8::ScriptOrigin origin(env->isolate, originStr.ToLocalChecked());
-#endif
 
   ScriptCompiler::Source source(sourceString, origin, cacheData);
   Local<Script> cachedScript;
