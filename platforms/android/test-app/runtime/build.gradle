@@ -294,6 +294,9 @@ tasks.configureEach { task ->
 
     if (task =~ /configureCMake.*/) {
         task.finalizedBy(":app:buildMetadata")
+        if (jsEngine.startsWith("V8")) {
+            task.dependsOn('downloadV8Libs')
+        }
     }
 
     if (task =~ /buildCMake.*/) {
@@ -362,6 +365,26 @@ tasks.configureEach { task ->
 
     if (taskName.contains("bundleLibCompileToJar")) {
         task.finalizedBy(":app:cleanupAllJars")
+    }
+}
+
+// The prebuilt V8 static libs are ~380 MB, so they are fetched on demand rather
+// than committed (see .gitignore). This mirrors what build_nativescript.sh does
+// for the Apple xcframework, and pulls from the same pinned release so both
+// platforms link the same V8 build.
+//
+// Keyed to the selected engine's own lib directory: V8-13's libs are still
+// committed, so this stays skipped until Android moves onto the shared "V8".
+def v8EngineLibDir = new File(projectDir, "src/main/libs/" + (jsEngine == "V8-13" ? "v8-13" : "v8"))
+
+tasks.register('downloadV8Libs', Exec) {
+    description = 'Fetch the prebuilt V8 static libs when they are not present.'
+    workingDir = new File(projectDir, "../../../..")
+    commandLine 'bash', 'scripts/download_v8.sh'
+    onlyIf {
+        // Missing entirely, or present but with no ABI subdirectory in it.
+        !v8EngineLibDir.isDirectory() ||
+            (v8EngineLibDir.listFiles({ File f -> f.isDirectory() } as FileFilter) ?: []).length == 0
     }
 }
 
