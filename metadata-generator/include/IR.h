@@ -95,6 +95,7 @@ enum VariableConstEvalKind {
 struct EnumConstDecl {
   std::string name;
   int64_t value;
+  AvailabilityInfo availability;
 };
 
 class VariableDecl {
@@ -105,6 +106,7 @@ class VariableDecl {
   VariableDecl(std::string& framework, const EnumConstDecl& decl);
 
   std::string framework;
+  AvailabilityInfo availability;
 
   std::string name;
   TypeSpec type;
@@ -122,6 +124,7 @@ class EnumDecl {
   EnumDecl(CXCursor cursor);
 
   std::string framework;
+  AvailabilityInfo availability;
 
   std::string name;
   std::vector<EnumConstDecl> constants;
@@ -142,6 +145,7 @@ class StructDecl {
   StructDecl(CXCursor cursor);
 
   std::string framework;
+  AvailabilityInfo availability;
 
   std::string name;
   uint16_t size;
@@ -162,6 +166,7 @@ class UnionDecl {
   UnionDecl(CXCursor cursor);
 
   std::string framework;
+  AvailabilityInfo availability;
 
   std::string name;
   uint16_t size;
@@ -182,6 +187,7 @@ class FunctionDecl {
   FunctionDecl(CXCursor cursor);
 
   std::string framework;
+  AvailabilityInfo availability;
 
   std::string name;
   TypeSpec returnType;
@@ -207,6 +213,8 @@ class MemberDecl {
   // Common
   MemberKind kind;
   std::string name;
+
+  AvailabilityInfo availability;
 
   std::string parentClassName;
   std::string parentProtocolName;
@@ -255,6 +263,7 @@ class ClassDecl {
   void postProcessMembers();
 
   std::string framework;
+  AvailabilityInfo availability;
 
   std::string name;
   std::string runtimeName;
@@ -287,6 +296,7 @@ class ProtocolDecl {
   void postProcessMembers();
 
   std::string framework;
+  AvailabilityInfo availability;
 
   std::string name;
   std::vector<std::string> protocolNames;

@@ -56,7 +56,29 @@ typedef std::unordered_map<std::string, MethodDescriptor> MethodMap;
 
 class ObjCClassMember;
 
-typedef std::unordered_map<std::string, ObjCClassMember> ObjCClassMemberMap;
+// Static and instance members may share a JS name with different selectors
+// and signatures (e.g. NSEvent.modifierFlags); keying by name alone makes the
+// last-defined variant's selector/cif win for both, so the key must carry
+// staticness.
+struct ObjCClassMemberKey {
+  std::string name;
+  bool isStatic = false;
+
+  bool operator==(const ObjCClassMemberKey& other) const {
+    return isStatic == other.isStatic && name == other.name;
+  }
+};
+
+struct ObjCClassMemberKeyHash {
+  size_t operator()(const ObjCClassMemberKey& key) const {
+    return std::hash<std::string>()(key.name) ^
+           (key.isStatic ? 0x9e3779b97f4a7c15ull : 0);
+  }
+};
+
+typedef std::unordered_map<ObjCClassMemberKey, ObjCClassMember,
+                           ObjCClassMemberKeyHash>
+    ObjCClassMemberMap;
 
 class ObjCClass;
 

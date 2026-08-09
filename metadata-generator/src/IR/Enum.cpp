@@ -13,7 +13,7 @@ namespace metagen {
 // - Deferred
 // Basically, split the name into parts (assuming camel case), and then remove
 // the repeating parts from the beginning and end of the name.
-void transformEnumMemberNames(std::vector<EnumConstDecl> &members) {
+void transformEnumMemberNames(std::vector<EnumConstDecl>& members) {
   std::vector<std::vector<std::string>> parts;
   parts.reserve(members.size());
   size_t skip_begin = 0, skip_end = 0;
@@ -88,6 +88,9 @@ void transformEnumMemberNames(std::vector<EnumConstDecl> &members) {
 
 EnumDecl::EnumDecl(CXCursor cursor) {
   framework = getFrameworkName(cursor);
+  if (gCaptureAvailability) {
+    availability = getAvailabilityInfo(cursor);
+  }
 
   CXString cxname = clang_getCursorSpelling(cursor);
   name = clang_getCString(cxname);
@@ -104,40 +107,42 @@ EnumDecl::EnumDecl(CXCursor cursor) {
           return CXChildVisit_Continue;
         }
 
-        auto state = (EnumDecl *)clientData;
+        auto state = (EnumDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_EnumConstantDecl: {
-          CXString name = clang_getCursorSpelling(cursor);
-          std::string nameStr = clang_getCString(name);
-          clang_disposeString(name);
-          auto value = clang_getEnumConstantDeclValue(cursor);
-          EnumConstDecl decl;
-          decl.name = nameStr;
-          decl.value = value;
-          state->constants.emplace_back(decl);
-          break;
-        }
+          case CXCursor_EnumConstantDecl: {
+            CXString name = clang_getCursorSpelling(cursor);
+            std::string nameStr = clang_getCString(name);
+            clang_disposeString(name);
+            auto value = clang_getEnumConstantDeclValue(cursor);
+            EnumConstDecl decl;
+            decl.name = nameStr;
+            decl.value = value;
+            if (gCaptureAvailability) {
+              decl.availability = getAvailabilityInfo(cursor);
+            }
+            state->constants.emplace_back(decl);
+            break;
+          }
 
-        default:
-          break;
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
       },
       this);
 
-  if (!name.empty())
-    transformEnumMemberNames(constants);
+  if (!name.empty()) transformEnumMemberNames(constants);
 }
 
 void MetadataFactory::processEnumRefs() {
   std::unordered_set<std::string> refs;
   refs.swap(referencedEnums);
 
-  for (const std::string &ref : refs) {
+  for (const std::string& ref : refs) {
     if (enums.contains(ref)) {
       continue;
     }
@@ -151,4 +156,4 @@ void MetadataFactory::processEnumRefs() {
   }
 }
 
-} // namespace metagen
+}  // namespace metagen

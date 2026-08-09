@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "IR.h"
+#include "JSONEmitter.h"
 #include "Metadata.h"
 #include "MetadataWriter.h"
 #include "SignatureDispatchEmitter.h"
@@ -55,6 +56,7 @@ int main(int argc, char** argv) {
   std::string outputBinFile;
   std::string outputSignatureBindingsCppFile;
   std::string outputDtsFolder;
+  std::string outputJsonFolder;
   std::string docSetFile;
   std::string blacklistModulesFile;
   std::string whitelistModulesFile;
@@ -116,6 +118,8 @@ int main(int argc, char** argv) {
       outputSignatureBindingsCppFile = argv[++i];
     } else if (arg == "-output-dts" || arg == "-output-typescript") {
       outputDtsFolder = argv[++i];
+    } else if (arg == "-output-json") {
+      outputJsonFolder = argv[++i];
     } else if (arg == "-docset-path") {
       docSetFile = argv[++i];
     } else if (arg == "-blacklist-modules") {
@@ -145,6 +149,8 @@ int main(int argc, char** argv) {
       outputBinFile = arg.substr(7);
     } else if (arg.find("types=") == 0) {
       outputDtsFolder = arg.substr(6);
+    } else if (arg.find("json=") == 0) {
+      outputJsonFolder = arg.substr(5);
     } else if (arg.find("ts-index-mode=") == 0) {
       tsIndexMode = arg.substr(14);
     } else if (arg.find("ts-index-frameworks=") == 0) {
@@ -257,6 +263,10 @@ int main(int argc, char** argv) {
 
   CXCursor cursor = clang_getTranslationUnitCursor(unit);
 
+  // Must be set before IR construction — availability is captured while
+  // cursors are alive, not at emit time.
+  gCaptureAvailability = !outputJsonFolder.empty();
+
   MetadataFactory factory;
   factory.includePaths = includePaths;
   factory.process(cursor);
@@ -276,6 +286,11 @@ int main(int argc, char** argv) {
     tsOptions.indexFrameworks = tsIndexFrameworks;
     TSEmitter ts(factory, outputDtsFolder, tsOptions);
     ts.write();
+  }
+
+  if (!outputJsonFolder.empty()) {
+    JSONEmitter json(factory, outputJsonFolder);
+    json.write();
   }
 
   if (!outputBinFile.empty()) {

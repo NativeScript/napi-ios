@@ -11,8 +11,10 @@
 #include <memory>
 #include <optional>
 #include <unordered_set>
-#include "ClassBuilder.h"
+#include "Block.h"
 #include "CallbackThreading.h"
+#include "Class.h"
+#include "ClassBuilder.h"
 #include "Closure.h"
 #include "Interop.h"
 #include "MetadataReader.h"
@@ -20,12 +22,10 @@
 #include "SignatureDispatch.h"
 #include "TypeConv.h"
 #include "Util.h"
-#include "Block.h"
-#include "Class.h"
-#include "runtime/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"
+#include "runtime/NativeScriptException.h"
 
 namespace nativescript {
 
@@ -101,11 +101,11 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
     return hasOwn;
   };
 
-  auto tryGetSuperclassMember = [&](const std::string& name) -> ObjCClassMember* {
+  auto tryGetSuperclassMember = [&](const std::string& name, bool isStatic) -> ObjCClassMember* {
     if (cls == nullptr || cls->superclass == nullptr) {
       return nullptr;
     }
-    auto it = cls->superclass->members.find(name);
+    auto it = cls->superclass->members.find({name, isStatic});
     if (it == cls->superclass->members.end()) {
       return nullptr;
     }
@@ -120,8 +120,9 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
     next = (flags & mdMemberNext) != 0;
     offset += sizeof(flags);
 
+    const bool isStaticMember = (flags & mdMemberStatic) != 0;
     napi_value jsObject;
-    if ((flags & mdMemberStatic) != 0) {
+    if (isStaticMember) {
       jsObject = constructor;
     } else {
       jsObject = prototype;
@@ -155,7 +156,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
       bool hasOwnProperty = hasOwnNamedProperty(jsObject, name);
       bool inheritedProperty = hasProperty && !hasOwnProperty;
 
-      ObjCClassMember* superMember = tryGetSuperclassMember(name);
+      ObjCClassMember* superMember = tryGetSuperclassMember(name, isStaticMember);
 
       if (inheritedProperty && superMember != nullptr && superMember->methodOrGetter.isProperty) {
         bool superReadonly = superMember->setter.selector == nullptr;
@@ -175,11 +176,12 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
           !readonly ? sel_registerName(setterSelector) : nullptr,
           getterSignature + bridgeState->metadata->signaturesOffset,
           !readonly ? setterSignature + bridgeState->metadata->signaturesOffset : 0, flags);
-      auto memberIt = memberMap.find(name);
+      auto memberIt = memberMap.find({name, isStaticMember});
       if (memberIt != memberMap.end()) {
         memberIt->second = updatedMember;
       } else {
-        const auto& inserted = memberMap.emplace(name, updatedMember);
+        const auto& inserted =
+            memberMap.emplace(ObjCClassMemberKey{name, isStaticMember}, updatedMember);
         memberIt = inserted.first;
       }
 
@@ -209,7 +211,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
 
       SEL methodSelector = sel_registerName(selector);
       MDSectionOffset signatureOffset = signature + bridgeState->metadata->signaturesOffset;
-      ObjCClassMember* superMember = tryGetSuperclassMember(name);
+      ObjCClassMember* superMember = tryGetSuperclassMember(name, isStaticMember);
       bool selectorExistsInSuper = false;
       if (superMember != nullptr && !superMember->methodOrGetter.isProperty) {
         selectorExistsInSuper = superMember->methodOrGetter.selector == methodSelector;
@@ -229,7 +231,8 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
         continue;
       }
 
-      auto memberIt = memberMap.find(name);
+      const ObjCClassMemberKey memberKey{name, isStaticMember};
+      auto memberIt = memberMap.find(memberKey);
       ObjCClassMember* member = nullptr;
       if (memberIt != memberMap.end()) {
         if (memberIt->second.methodOrGetter.isProperty) {
@@ -241,8 +244,8 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
       } else if (inheritedProperty && superMember != nullptr &&
                  !superMember->methodOrGetter.isProperty) {
         const auto& inserted = memberMap.emplace(
-            name, ObjCClassMember(bridgeState, superMember->methodOrGetter.selector,
-                                  superMember->methodOrGetter.signatureOffset, flags));
+            memberKey, ObjCClassMember(bridgeState, superMember->methodOrGetter.selector,
+                                       superMember->methodOrGetter.signatureOffset, flags));
         member = &inserted.first->second;
         for (const auto& overload : superMember->overloads) {
           member->addOverload(overload.method.selector, overload.method.signatureOffset,
@@ -252,7 +255,7 @@ void ObjCClassMember::defineMembers(napi_env env, ObjCClassMemberMap& memberMap,
                             (flags & metagen::mdMemberReturnOwned) != 0 ? 1 : 0);
       } else {
         const auto& inserted = memberMap.emplace(
-            name, ObjCClassMember(bridgeState, methodSelector, signatureOffset, flags));
+            memberKey, ObjCClassMember(bridgeState, methodSelector, signatureOffset, flags));
         member = &inserted.first->second;
       }
 
@@ -779,7 +782,11 @@ ObjCClassMember* findInitializerForArgs(napi_env env, ObjCClassMemberMap* initia
       continue;
     }
 
-    const std::string& memberName = pair.first;
+    // Initializers are instance members by definition.
+    if (pair.first.isStatic) {
+      continue;
+    }
+    const std::string& memberName = pair.first.name;
     if (memberName.rfind("init", 0) != 0) {
       continue;
     }
@@ -1448,9 +1455,8 @@ napi_value ObjCClassMember::jsCall(napi_env env, napi_callback_info cbinfo) {
   return jsCallDirect(env, method, jsThis, actualArgc, stackArgs);
 }
 
-napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
-                                         napi_value jsThis, size_t actualArgc,
-                                         const napi_value* rawCallArgs) {
+napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method, napi_value jsThis,
+                                         size_t actualArgc, const napi_value* rawCallArgs) {
   if (method == nullptr) {
     napi_throw_error(env, "NativeScriptException", "Missing Objective-C method metadata.");
     return nullptr;
@@ -1503,8 +1509,7 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
     method->cif = selectedCif;
   }
 
-  if (selectedCif != nullptr && !selectedCif->isVariadic &&
-      selectedCif->argc != actualArgc) {
+  if (selectedCif != nullptr && !selectedCif->isVariadic && selectedCif->argc != actualArgc) {
     Method runtimeMethod = receiverIsClass
                                ? class_getClassMethod(receiverClass, selectedMethod->selector)
                                : class_getInstanceMethod(receiverClass, selectedMethod->selector);
@@ -1667,8 +1672,7 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
       if (obj != nil) {
         ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
         if (state != nullptr) {
-          if (napi_value cached = state->findCachedObjectWrapper(env, obj);
-              cached != nullptr) {
+          if (napi_value cached = state->findCachedObjectWrapper(env, obj); cached != nullptr) {
             return cached;
           }
         }
@@ -1692,8 +1696,7 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method,
       }
     }
 
-    return cif->returnType->toJS(env, nativeResult,
-                                 method->returnOwned ? kReturnOwned : 0);
+    return cif->returnType->toJS(env, nativeResult, method->returnOwned ? kReturnOwned : 0);
   };
 
   bool usesBlockFallback = false;
@@ -1877,8 +1880,7 @@ napi_value ObjCClassMember::jsGetterDirect(napi_env env, ObjCClassMember* method
     if (obj != nil) {
       ObjCBridgeState* state = ObjCBridgeState::InstanceData(env);
       if (state != nullptr) {
-        if (napi_value cached = state->findCachedObjectWrapper(env, obj);
-            cached != nullptr) {
+        if (napi_value cached = state->findCachedObjectWrapper(env, obj); cached != nullptr) {
           return cached;
         }
       }
@@ -1909,8 +1911,8 @@ napi_value ObjCClassMember::jsSetter(napi_env env, napi_callback_info cbinfo) {
   return jsSetterDirect(env, method, jsThis, argv);
 }
 
-napi_value ObjCClassMember::jsSetterDirect(napi_env env, ObjCClassMember* method,
-                                           napi_value jsThis, napi_value value) {
+napi_value ObjCClassMember::jsSetterDirect(napi_env env, ObjCClassMember* method, napi_value jsThis,
+                                           napi_value value) {
   if (method == nullptr) {
     napi_throw_error(env, "NativeScriptException", "Missing Objective-C setter metadata.");
     return nullptr;

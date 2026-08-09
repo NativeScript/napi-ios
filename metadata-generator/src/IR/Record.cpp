@@ -1,10 +1,14 @@
-#include "IR.h"
 #include <string>
+
+#include "IR.h"
 
 namespace metagen {
 
 StructDecl::StructDecl(CXCursor cursor) {
   framework = getFrameworkName(cursor);
+  if (gCaptureAvailability) {
+    availability = getAvailabilityInfo(cursor);
+  }
 
   CXString cxname = clang_getCursorSpelling(cursor);
   name = transformStructName(clang_getCString(cxname));
@@ -19,26 +23,26 @@ StructDecl::StructDecl(CXCursor cursor) {
           return CXChildVisit_Continue;
         }
 
-        auto decl = (StructDecl *)clientData;
+        auto decl = (StructDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_FieldDecl: {
-          StructFieldDecl field;
-          CXString cxName = clang_getCursorSpelling(cursor);
-          field.name = clang_getCString(cxName);
-          clang_disposeString(cxName);
-          auto type = clang_getCursorType(cursor);
-          field.type = TypeSpec(type);
-          field.type.isNullable = true;
-          field.offset = clang_Cursor_getOffsetOfField(cursor) / 8;
-          decl->fields.emplace_back(field);
-          break;
-        }
+          case CXCursor_FieldDecl: {
+            StructFieldDecl field;
+            CXString cxName = clang_getCursorSpelling(cursor);
+            field.name = clang_getCString(cxName);
+            clang_disposeString(cxName);
+            auto type = clang_getCursorType(cursor);
+            field.type = TypeSpec(type);
+            field.type.isNullable = true;
+            field.offset = clang_Cursor_getOffsetOfField(cursor) / 8;
+            decl->fields.emplace_back(field);
+            break;
+          }
 
-        default:
-          break;
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
@@ -48,6 +52,9 @@ StructDecl::StructDecl(CXCursor cursor) {
 
 UnionDecl::UnionDecl(CXCursor cursor) {
   framework = getFrameworkName(cursor);
+  if (gCaptureAvailability) {
+    availability = getAvailabilityInfo(cursor);
+  }
 
   CXString cxname = clang_getCursorSpelling(cursor);
   name = transformStructName(clang_getCString(cxname));
@@ -62,25 +69,25 @@ UnionDecl::UnionDecl(CXCursor cursor) {
           return CXChildVisit_Continue;
         }
 
-        auto decl = (UnionDecl *)clientData;
+        auto decl = (UnionDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_FieldDecl: {
-          UnionFieldDecl field;
-          CXString cxName = clang_getCursorSpelling(cursor);
-          field.name = clang_getCString(cxName);
-          clang_disposeString(cxName);
-          auto type = clang_getCursorType(cursor);
-          field.type = TypeSpec(type);
-          field.type.isNullable = true;
-          decl->fields.emplace_back(field);
-          break;
-        }
+          case CXCursor_FieldDecl: {
+            UnionFieldDecl field;
+            CXString cxName = clang_getCursorSpelling(cursor);
+            field.name = clang_getCString(cxName);
+            clang_disposeString(cxName);
+            auto type = clang_getCursorType(cursor);
+            field.type = TypeSpec(type);
+            field.type.isNullable = true;
+            decl->fields.emplace_back(field);
+            break;
+          }
 
-        default:
-          break;
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
@@ -93,7 +100,7 @@ void MetadataFactory::processRecordRefs() {
     std::unordered_set<std::string> refs;
     refs.swap(referencedRecords);
 
-    for (const std::string &name : refs) {
+    for (const std::string& name : refs) {
       if (unions.contains(name) || structs.contains(name)) {
         continue;
       }
@@ -113,4 +120,4 @@ void MetadataFactory::processRecordRefs() {
   }
 }
 
-} // namespace metagen
+}  // namespace metagen

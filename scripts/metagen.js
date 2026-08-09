@@ -334,6 +334,13 @@ async function main() {
   }
 
   const typesDir = path.resolve(__dirname, "..", "packages", sdkName, "types");
+  const metadataJsonDir = path.resolve(
+    __dirname,
+    "..",
+    "packages",
+    sdkName,
+    "metadata-json",
+  );
   const metadataDir = path.resolve(__dirname, "..", "metadata-generator", "metadata");
   const signatureBindingsPath =
     process.env.NS_SIGNATURE_BINDINGS_CPP_PATH ||
@@ -341,6 +348,7 @@ async function main() {
     path.resolve(__dirname, "..", "NativeScript", "ffi", "napi", "GeneratedSignatureDispatch.inc");
   await fsp.rm(typesDir, { recursive: true, force: true });
   await fsp.mkdir(typesDir, { recursive: true });
+  await fsp.rm(metadataJsonDir, { recursive: true, force: true });
   await fsp.mkdir(metadataDir, { recursive: true });
   await fsp.mkdir(path.dirname(signatureBindingsPath), { recursive: true });
 
@@ -377,6 +385,7 @@ async function main() {
 
     const args = [
       `types=${typesDir}`,
+      `json=${metadataJsonDir}`,
       ...(sdkName === "macos"
         ? [
             "ts-index-mode=frameworks-list",
