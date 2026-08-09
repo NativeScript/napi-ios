@@ -930,8 +930,11 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
           }
           var expectedName = nativeClass.runtimeName || nativeClass.name;
           try {
+            // Pass the proxied wrapper: the raw constructable carries no
+            // __nativeApiClass, so it does not marshal to the Objective-C
+            // Class and isKindOfClass() misreports.
             if (typeof value.isKindOfClass === 'function' &&
-                value.isKindOfClass(constructable)) {
+                value.isKindOfClass(wrapper || constructable) === true) {
               return true;
             }
           } catch (_) {
