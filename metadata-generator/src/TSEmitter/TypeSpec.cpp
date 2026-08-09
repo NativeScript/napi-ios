@@ -34,6 +34,10 @@ std::string TSFile::typeToString(const TypeSpec& type, bool isStatic, bool isRet
       result = "bigint";
       break;
 
+    case kTypeUnichar:
+      result = "string";
+      break;
+
     case kTypeSelector:
     case kTypeString:
       result = "string";
