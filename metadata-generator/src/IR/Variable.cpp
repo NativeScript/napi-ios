@@ -51,6 +51,7 @@ VariableDecl::VariableDecl(CXCursor cursor) {
 
 VariableDecl::VariableDecl(std::string& framework, const EnumConstDecl& decl) {
   this->framework = framework;
+  availability = decl.availability;
   name = decl.name;
   constEvalI64 = decl.value;
   constEvalKind = kEvalI64;

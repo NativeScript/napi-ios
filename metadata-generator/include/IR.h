@@ -95,6 +95,7 @@ enum VariableConstEvalKind {
 struct EnumConstDecl {
   std::string name;
   int64_t value;
+  AvailabilityInfo availability;
 };
 
 class VariableDecl {

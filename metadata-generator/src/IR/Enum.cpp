@@ -120,6 +120,9 @@ EnumDecl::EnumDecl(CXCursor cursor) {
             EnumConstDecl decl;
             decl.name = nameStr;
             decl.value = value;
+            if (gCaptureAvailability) {
+              decl.availability = getAvailabilityInfo(cursor);
+            }
             state->constants.emplace_back(decl);
             break;
           }

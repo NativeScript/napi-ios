@@ -124,7 +124,8 @@ void JSONEmitter::writeMembers(std::string& out,
       out += jsonEscape(selector);
       out += "\"";
     }
-    if (member.kind == kMemberProperty && !member.setterSelector.empty()) {
+    if (member.kind == kMemberProperty && !member.isReadonly &&
+        !member.setterSelector.empty()) {
       out += ",\"setterSelector\":\"";
       out += jsonEscape(member.setterSelector);
       out += "\"";

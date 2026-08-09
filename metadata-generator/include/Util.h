@@ -14,6 +14,7 @@ namespace metagen {
 enum class AvailabilityPlatform {
   Unknown,
   IOS,
+  MacCatalyst,
   MacOS,
   TvOS,
   WatchOS,
@@ -27,6 +28,8 @@ inline int gAvailabilityTargetMinor = -1;
 
 inline AvailabilityPlatform platformFromTargetTriple(
     const std::string& targetTriple) {
+  if (targetTriple.find("macabi") != std::string::npos)
+    return AvailabilityPlatform::MacCatalyst;
   // Check 'macosx' before 'macos' to avoid partial match; also handle modern
   // 'macos' spelling used in triples like x86_64-apple-macos11.0.
   if (targetTriple.find("macosx") != std::string::npos ||
@@ -101,6 +104,8 @@ inline const char* platformNameForAvailability(AvailabilityPlatform platform) {
   switch (platform) {
     case AvailabilityPlatform::IOS:
       return "ios";
+    case AvailabilityPlatform::MacCatalyst:
+      return "maccatalyst";
     case AvailabilityPlatform::MacOS:
       return "macos";
     case AvailabilityPlatform::TvOS:
