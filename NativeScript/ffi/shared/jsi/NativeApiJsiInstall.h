@@ -1,7 +1,7 @@
 Object CreateNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
   auto bridge = std::make_shared<NativeApiJsiBridge>(config);
-  return Object::createFromHostObject(
-      runtime, std::make_shared<NativeApiHostObject>(std::move(bridge)));
+  return Object::createFromHostObject(runtime,
+                                      std::make_shared<NativeApiHostObject>(std::move(bridge)));
 }
 
 void NativeApiJsiWriteSmokeStage(const char* stage) {
@@ -10,10 +10,9 @@ void NativeApiJsiWriteSmokeStage(const char* stage) {
     return;
   }
 
-  NSString* path = [NSTemporaryDirectory()
-      stringByAppendingPathComponent:@"NativeScriptNativeApiSmoke.marker"];
-  NSString* content =
-      [NSString stringWithFormat:@"stage=%s\n", stage != nullptr ? stage : ""];
+  NSString* path =
+      [NSTemporaryDirectory() stringByAppendingPathComponent:@"NativeScriptNativeApiSmoke.marker"];
+  NSString* content = [NSString stringWithFormat:@"stage=%s\n", stage != nullptr ? stage : ""];
   [content writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
 
@@ -184,10 +183,22 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
           Object.defineProperty(globalThis, name, {
             configurable: true,
             enumerable: false,
-            writable: false,
+            writable: true,
             value: value
           });
           return value;
+        },
+        set: function(value) {
+          // Assignment over a lazy global must behave like a plain global
+          // assignment (@nativescript/core writes shims such as
+          // global.System), not throw "no setter for property".
+          cacheGlobal(name, value);
+          Object.defineProperty(globalThis, name, {
+            configurable: true,
+            enumerable: true,
+            writable: true,
+            value: value
+          });
         }
       });
     } catch (_) {
@@ -197,7 +208,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
         Object.defineProperty(globalThis, name, {
           configurable: true,
           enumerable: false,
-          writable: false,
+          writable: true,
           value: value
         });
       }

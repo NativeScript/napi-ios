@@ -56,11 +56,28 @@ static JSValue NativeApiQuickJSLazyGlobalGetter(JSContext* context, JSValueConst
   JSAtom atom = JS_ValueToAtom(context, data[0]);
   if (atom != JS_ATOM_NULL) {
     JS_DefinePropertyValue(context, global, atom, JS_DupValue(context, result),
-                           JS_PROP_CONFIGURABLE);
+                           JS_PROP_CONFIGURABLE | JS_PROP_WRITABLE);
     JS_FreeAtom(context, atom);
   }
   JS_FreeValue(context, global);
   return result;
+}
+
+// Assigning over a lazy global must behave like a plain global assignment
+// (@nativescript/core writes shims such as global.System); replace the
+// accessor with an ordinary writable property instead of throwing
+// "no setter for property".
+static JSValue NativeApiQuickJSLazyGlobalSetter(JSContext* context, JSValueConst, int argc,
+                                                JSValueConst* argv, int, JSValueConst* data) {
+  JSValue global = JS_GetGlobalObject(context);
+  JSAtom atom = JS_ValueToAtom(context, data[0]);
+  if (atom != JS_ATOM_NULL) {
+    JSValue value = argc > 0 ? JS_DupValue(context, argv[0]) : JS_UNDEFINED;
+    JS_DefinePropertyValue(context, global, atom, value, JS_PROP_C_W_E);
+    JS_FreeAtom(context, atom);
+  }
+  JS_FreeValue(context, global);
+  return JS_UNDEFINED;
 }
 
 bool InstallNativeApiEngineLazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiJsiBridge>,
@@ -103,16 +120,18 @@ bool InstallNativeApiEngineLazyGlobal(Runtime& runtime, std::shared_ptr<NativeAp
   }
 
   JSValue getter = JS_NewCFunctionData(context, NativeApiQuickJSLazyGlobalGetter, 0, 0, 2, data);
+  JSValue setter = JS_NewCFunctionData(context, NativeApiQuickJSLazyGlobalSetter, 1, 0, 2, data);
   JS_FreeValue(context, data[0]);
   JS_FreeValue(context, data[1]);
-  if (JS_IsException(getter)) {
+  if (JS_IsException(getter) || JS_IsException(setter)) {
+    JS_FreeValue(context, getter);
+    JS_FreeValue(context, setter);
     JS_FreeAtom(context, atom);
     JS_FreeValue(context, global);
     return false;
   }
 
-  int status =
-      JS_DefinePropertyGetSet(context, global, atom, getter, JS_UNDEFINED, JS_PROP_CONFIGURABLE);
+  int status = JS_DefinePropertyGetSet(context, global, atom, getter, setter, JS_PROP_CONFIGURABLE);
   JS_FreeAtom(context, atom);
   JS_FreeValue(context, global);
   return status >= 0;
