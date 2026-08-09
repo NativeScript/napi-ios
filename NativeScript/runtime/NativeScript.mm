@@ -1,10 +1,10 @@
 #include "NativeScript.h"
 #include "Runtime.h"
 #include "RuntimeConfig.h"
-#include "runtime/NativeScriptException.h"
 #include "ffi/shared/Tasks.h"
 #include "js_native_api.h"
 #include "jsr.h"
+#include "runtime/NativeScriptException.h"
 
 using namespace nativescript;
 
@@ -33,7 +33,10 @@ std::unique_ptr<Runtime> runtime_;
 }
 
 - (void)runMainApplication {
-  std::string spec = "./app/index.js";
+  // Boot from the application directory so the entry resolves through its
+  // package.json "main" (falling back to index.*) — a literal index.js is not
+  // guaranteed to exist (CLI-built apps ship bundle.js).
+  std::string spec = RuntimeConfig.ApplicationPath;
   try {
     runtime_->RunModule(spec);
   } catch (const NativeScriptException& e) {
