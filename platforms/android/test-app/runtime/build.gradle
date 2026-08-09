@@ -452,6 +452,12 @@ tasks.register('downloadV8Libs', Exec) {
 // Hermes ships as prebuilt .so files rather than sources, from the same pinned
 // release the Apple xcframework comes from, and is gitignored like the V8 libs.
 //
+// CMake links these prebuilts by absolute path, and AGP packages them into the
+// APK only because it records that link as a CMake "runtimeFile" -- so a
+// configure that runs while they are absent produces a build that succeeds and
+// then fails at launch with a dlopen error. Fetching them before configureCMake
+// is what keeps that from happening.
+//
 // The check is for the .so itself, not just the directory: a partial or
 // interrupted download leaves the tree in place, and "directory exists" would
 // then skip the fetch and fail in ninja with "missing and no known rule to make
