@@ -582,7 +582,12 @@ std::vector<MethodDescriptor*> ClassBuilder::lookupMethodDescriptors(std::string
   // method in the superclass chain.
   ObjCClass* currentClass = superclass;
   while (currentClass != nullptr) {
-    auto findMethod = currentClass->members.find(name);
+    // JS extend() overrides target instance members; fall back to a static
+    // twin only when no instance member exists under this name.
+    auto findMethod = currentClass->members.find({name, false});
+    if (findMethod == currentClass->members.end()) {
+      findMethod = currentClass->members.find({name, true});
+    }
     if (findMethod != currentClass->members.end()) {
       appendMemberDescriptors(findMethod->second);
       if (!descriptors.empty()) {
@@ -597,7 +602,10 @@ std::vector<MethodDescriptor*> ClassBuilder::lookupMethodDescriptors(std::string
   std::function<void(std::unordered_set<ObjCProtocol*>&)> processProtocols =
       [&](std::unordered_set<ObjCProtocol*>& protocols) {
         for (auto protocol : protocols) {
-          auto findMethod = protocol->members.find(name);
+          auto findMethod = protocol->members.find({name, false});
+          if (findMethod == protocol->members.end()) {
+            findMethod = protocol->members.find({name, true});
+          }
           if (findMethod != protocol->members.end()) {
             appendMemberDescriptors(findMethod->second);
           }
@@ -951,8 +959,7 @@ napi_value ClassBuilder::ExtendCallback(napi_env env, napi_callback_info info) {
     if (existingClass != nullptr) {
       newClassName = nextAvailableClassName(requestedName);
       shouldAliasRequestedName =
-          !class_conformsToProtocol(existingClass,
-                                    @protocol(ObjCBridgeClassBuilderProtocol));
+          !class_conformsToProtocol(existingClass, @protocol(ObjCBridgeClassBuilderProtocol));
     }
   } else {
     newClassName = baseClassNameBuf;
