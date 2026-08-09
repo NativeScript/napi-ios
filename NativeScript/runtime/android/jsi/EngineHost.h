@@ -1,7 +1,7 @@
 #ifndef NS_RUNTIME_ANDROID_JSI_ENGINE_HOST_H
 #define NS_RUNTIME_ANDROID_JSI_ENGINE_HOST_H
 
-// The jsi tree's replacement for the per-engine napi/android/<engine>/jsr.h.
+// The jsi tree's replacement for the per-engine napi/<engine>/jsr.h.
 //
 // The napi runtime reaches the engine through the JSR contract (js_create_runtime,
 // js_create_napi_env, js_execute_script, ...) plus that engine's NapiScope. There

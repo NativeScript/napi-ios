@@ -342,7 +342,7 @@ void ensureClasses(Runtime& runtime);
 //
 // Backed by a JS `WeakRef`, which is what QuickJS exposes -- it has no
 // C-level weak handle. Same mechanism the Node-API binding uses
-// (napi/android/quickjs/quickjs-api.c's napi_create_reference), so the two
+// (vendor/quickjs/quickjs-api.c's napi_create_reference), so the two
 // binding layers have the same collection behaviour.
 //
 // A value WeakRef cannot hold -- a primitive, or a string -- is kept strongly

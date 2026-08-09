@@ -368,7 +368,7 @@ v8::Local<v8::ObjectTemplate> nativeObjectTemplate(Runtime& runtime) {
         // at 20-30% on every `javaArray[0]` read and write.
         //
         // This is also what the reference implementation does: the V8 Node-API
-        // backend in NativeScript/napi/android/v8/v8-api.cpp passes
+        // backend in vendor/v8/v8-api.cpp passes
         // kNonMasking for its named handler and default (masking) flags for its
         // indexed one.
         nullptr, nullptr, nullptr, v8::Local<v8::Value>(),
