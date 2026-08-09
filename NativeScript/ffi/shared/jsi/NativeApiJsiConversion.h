@@ -823,14 +823,10 @@ Value convertNativeReturnValue(Runtime& runtime,
       return static_cast<double>(*static_cast<uint8_t*>(value));
     case metagen::mdTypeSShort:
       return static_cast<double>(*static_cast<int16_t*>(value));
-    case metagen::mdTypeUShort: {
-      uint16_t raw = *static_cast<uint16_t*>(value);
-      if (raw >= 32 && raw <= 126) {
-        char buffer[2] = {static_cast<char>(raw), '\0'};
-        return String::createFromUtf8(runtime, buffer);
-      }
-      return static_cast<double>(raw);
-    }
+    // Always a number — unichar and numeric unsigned short share this kind;
+    // a string projection makes return types value-dependent.
+    case metagen::mdTypeUShort:
+      return static_cast<double>(*static_cast<uint16_t*>(value));
     case metagen::mdTypeSInt:
       return static_cast<double>(*static_cast<int32_t*>(value));
     case metagen::mdTypeUInt:

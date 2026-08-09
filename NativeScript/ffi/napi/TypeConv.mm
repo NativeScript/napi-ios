@@ -800,17 +800,13 @@ class UInt16TypeConv : public TypeConv {
     kind = mdTypeUShort;
   }
 
+  // Always a number: unichar and numeric unsigned short share this metadata
+  // kind, so a string projection would make return types value-dependent
+  // (NSEvent.keyCode 49 → "1"). Single-character strings remain accepted on
+  // the toNative side.
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    uint16_t raw = *(uint16_t*)value;
-    if (raw >= 32 && raw <= 126) {
-      char buffer[2] = {static_cast<char>(raw), '\0'};
-      napi_value result;
-      napi_create_string_utf8(env, buffer, NAPI_AUTO_LENGTH, &result);
-      return result;
-    }
-
     napi_value result;
-    napi_create_uint32(env, raw, &result);
+    napi_create_uint32(env, *(uint16_t*)value, &result);
     return result;
   }
 
