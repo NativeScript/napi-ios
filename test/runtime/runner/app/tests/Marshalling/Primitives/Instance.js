@@ -98,6 +98,17 @@ describe(module.id, function () {
         expect(actual).toBe("65535");
     });
 
+    it("InstanceMethodWithUShortPrintableRange", function () {
+        // Unsigned short returns must stay numbers even for values inside the
+        // printable-ASCII range (32-126), e.g. NSEvent.keyCode.
+        var result = TNSPrimitives.alloc().init().methodWithUShort(49);
+        expect(typeof result).toBe("number");
+        expect(result).toBe(49);
+
+        var actual = TNSGetOutput();
+        expect(actual).toBe("49");
+    });
+
     it("InstanceMethodWithUInt", function () {
         var result = TNSPrimitives.alloc().init().methodWithUInt(4294967295);
         expect(result).toBe(4294967295);

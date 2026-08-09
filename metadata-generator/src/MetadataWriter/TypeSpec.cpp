@@ -24,6 +24,9 @@ MDTypeInfo* MDMetadataWriter::getTypeInfo(const TypeSpec& type) {
     case kTypeU16:
       info->kind = mdTypeUShort;
       break;
+    case kTypeUnichar:
+      info->kind = mdTypeUnichar;
+      break;
     case kTypeU32:
       info->kind = mdTypeUInt;
       break;

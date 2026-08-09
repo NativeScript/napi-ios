@@ -144,6 +144,7 @@ std::string getEncodedType(napi_env env, napi_value value) {
           return "s";
 
         case mdTypeUShort:
+        case mdTypeUnichar:
           return "S";
 
         case mdTypeSInt:

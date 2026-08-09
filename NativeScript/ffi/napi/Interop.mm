@@ -70,6 +70,7 @@ inline bool isInteropTypeCode(int32_t value) {
     case mdTypeUInt8:
     case mdTypeSShort:
     case mdTypeUShort:
+    case mdTypeUnichar:
     case mdTypeSInt:
     case mdTypeUInt:
     case mdTypeSInt64:
@@ -677,7 +678,7 @@ void registerInterop(napi_env env, napi_value global) {
   napi_set_named_property(env, types, "float", createJSNumber(env, mdTypeFloat));
   napi_set_named_property(env, types, "double", createJSNumber(env, mdTypeDouble));
   napi_set_named_property(env, types, "UTF8CString", createJSNumber(env, mdTypeString));
-  napi_set_named_property(env, types, "unichar", createJSNumber(env, mdTypeUShort));
+  napi_set_named_property(env, types, "unichar", createJSNumber(env, mdTypeUnichar));
   napi_set_named_property(env, types, "id", createJSNumber(env, mdTypeAnyObject));
   napi_set_named_property(env, types, "protocol", createJSNumber(env, mdTypePointer));
   napi_set_named_property(env, types, "class", createJSNumber(env, mdTypeAnyObject));
@@ -995,6 +996,7 @@ size_t jsSizeof(napi_env env, napi_value arg) {
 
         case mdTypeSShort:
         case mdTypeUShort:
+        case mdTypeUnichar:
           return sizeof(uint16_t);
 
         case mdTypeSInt:

@@ -44,6 +44,9 @@ enum TypeSpecKind {
   kTypeComplex,
   kTypeFunctionPointer,
   kTypeF16,
+  // unichar/UniChar: same width as kTypeU16 but projected to JS as a
+  // single-character string rather than a number.
+  kTypeUnichar,
 };
 
 class TypeSpec {

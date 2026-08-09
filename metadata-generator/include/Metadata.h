@@ -75,6 +75,10 @@ enum MDTypeKind : uint8_t {
   mdTypeComplex,
 
   mdTypeF16,
+
+  // unichar/UniChar: u16 width, projected to JS as a single-character string.
+  // Appended last — kind values are embedded in .nsmd.
+  mdTypeUnichar,
 };
 
 enum MDTypeFlag : uint8_t {
