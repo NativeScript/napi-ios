@@ -8,6 +8,9 @@ namespace metagen {
 
 ClassDecl::ClassDecl(CXCursor cursor) {
   framework = getFrameworkName(cursor);
+  if (gCaptureAvailability) {
+    availability = getAvailabilityInfo(cursor);
+  }
 
   CXString cxname = clang_getCursorSpelling(cursor);
   name = clang_getCString(cxname);

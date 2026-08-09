@@ -39,6 +39,7 @@ set(EXEC_SOURCE_FILES
   src/IR/Record.cpp
   src/IR/TypeSpec.cpp
   src/IR/Variable.cpp
+  src/JSONEmitter/Emitter.cpp
   src/TSEmitter/Class.cpp
   src/TSEmitter/Emitter.cpp
   src/TSEmitter/Enum.cpp

@@ -1,6 +1,7 @@
-#include "IR.h"
 #include <cctype>
 #include <cstring>
+
+#include "IR.h"
 
 namespace {
 
@@ -9,9 +10,10 @@ bool hasOwnershipWord(const std::string& functionName, const char* word) {
   while (pos != std::string::npos) {
     const size_t after = pos + std::strlen(word);
     const unsigned char next =
-        after < functionName.size() ? static_cast<unsigned char>(functionName[after]) : 0;
-    const bool endsWord =
-        after == functionName.size() || !std::islower(next);
+        after < functionName.size()
+            ? static_cast<unsigned char>(functionName[after])
+            : 0;
+    const bool endsWord = after == functionName.size() || !std::islower(next);
     if (endsWord) {
       return true;
     }
@@ -31,6 +33,9 @@ namespace metagen {
 
 FunctionDecl::FunctionDecl(CXCursor cursor) {
   framework = getFrameworkName(cursor);
+  if (gCaptureAvailability) {
+    availability = getAvailabilityInfo(cursor);
+  }
 
   CXString cxname = clang_getCursorSpelling(cursor);
   name = clang_getCString(cxname);
@@ -73,4 +78,4 @@ FunctionDecl::FunctionDecl(CXCursor cursor) {
   isVariadic = clang_Cursor_isVariadic(cursor);
 }
 
-} // namespace metagen
+}  // namespace metagen

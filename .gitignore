@@ -61,6 +61,7 @@ v8_build
 
 dist
 packages/*/types
+packages/*/metadata-json
 
 SwiftBindgen
 

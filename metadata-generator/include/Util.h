@@ -114,6 +114,110 @@ inline const char* platformNameForAvailability(AvailabilityPlatform platform) {
   }
 }
 
+// Populated on IR decls only when a JSON metadata output is requested
+// (-output-json); capturing costs an extra clang availability query per
+// cursor, so default builds skip it.
+inline bool gCaptureAvailability = false;
+
+struct AvailabilityInfo {
+  std::string introduced;
+  std::string deprecated;  // version, or "unversioned" for bare deprecation
+  std::string obsoleted;
+  bool unavailable = false;
+  std::string message;
+
+  bool hasData() const {
+    return unavailable || !introduced.empty() || !deprecated.empty() ||
+           !obsoleted.empty();
+  }
+};
+
+inline std::string formatCXVersion(const CXVersion& version) {
+  // 100000 is Apple's API_TO_BE_DEPRECATED sentinel — an intent marker, not
+  // an actual version; treat it as no data.
+  if (version.Major < 0 || version.Major >= 100000) {
+    return "";
+  }
+  std::string result = std::to_string(version.Major);
+  if (version.Minor >= 0) {
+    result += "." + std::to_string(version.Minor);
+    if (version.Subminor >= 0) {
+      result += "." + std::to_string(version.Subminor);
+    }
+  }
+  return result;
+}
+
+// Availability of a declaration for the current target platform
+// (gAvailabilityPlatform). Unlike isAvailable(), which filters decls out,
+// this captures the version data itself for downstream emitters.
+inline AvailabilityInfo getAvailabilityInfo(CXCursor cursor) {
+  AvailabilityInfo info;
+
+  int alwaysDeprecated = 0;
+  int alwaysUnavailable = 0;
+  CXString deprecatedMessage;
+  CXString unavailableMessage;
+  int availabilityCount = clang_getCursorPlatformAvailability(
+      cursor, &alwaysDeprecated, &deprecatedMessage, &alwaysUnavailable,
+      &unavailableMessage, nullptr, 0);
+  clang_disposeString(deprecatedMessage);
+  clang_disposeString(unavailableMessage);
+
+  if (alwaysUnavailable) {
+    info.unavailable = true;
+  }
+  if (alwaysDeprecated) {
+    info.deprecated = "unversioned";
+  }
+  if (availabilityCount <= 0) {
+    return info;
+  }
+
+  std::vector<CXPlatformAvailability> platformAvailability(
+      static_cast<size_t>(availabilityCount));
+  clang_getCursorPlatformAvailability(
+      cursor, &alwaysDeprecated, &deprecatedMessage, &alwaysUnavailable,
+      &unavailableMessage, platformAvailability.data(), availabilityCount);
+  clang_disposeString(deprecatedMessage);
+  clang_disposeString(unavailableMessage);
+
+  const char* wantedPlatform =
+      platformNameForAvailability(gAvailabilityPlatform);
+  for (auto& item : platformAvailability) {
+    const char* platform = clang_getCString(item.Platform);
+    if (wantedPlatform != nullptr && platform != nullptr &&
+        std::string(platform) == wantedPlatform) {
+      if (item.Unavailable) {
+        info.unavailable = true;
+      }
+      std::string introduced = formatCXVersion(item.Introduced);
+      if (!introduced.empty()) {
+        info.introduced = introduced;
+      }
+      std::string deprecated = formatCXVersion(item.Deprecated);
+      if (!deprecated.empty()) {
+        info.deprecated = deprecated;
+      }
+      std::string obsoleted = formatCXVersion(item.Obsoleted);
+      if (!obsoleted.empty()) {
+        info.obsoleted = obsoleted;
+      }
+      const char* message = clang_getCString(item.Message);
+      if (message != nullptr && message[0] != '\0') {
+        info.message = message;
+      }
+      break;
+    }
+  }
+
+  for (auto& item : platformAvailability) {
+    clang_disposeCXPlatformAvailability(&item);
+  }
+
+  return info;
+}
+
 inline std::string jsifySelector(const std::string& selector) {
   std::string jsifiedSelector;
   jsifiedSelector.reserve(selector.size());

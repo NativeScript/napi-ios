@@ -4,6 +4,9 @@ namespace metagen {
 
 ProtocolDecl::ProtocolDecl(CXCursor cursor) {
   framework = getFrameworkName(cursor);
+  if (gCaptureAvailability) {
+    availability = getAvailabilityInfo(cursor);
+  }
 
   CXString cxname = clang_getCursorSpelling(cursor);
   name = clang_getCString(cxname);
@@ -16,30 +19,30 @@ ProtocolDecl::ProtocolDecl(CXCursor cursor) {
           return CXChildVisit_Continue;
         }
 
-        auto protocol = (ProtocolDecl *)clientData;
+        auto protocol = (ProtocolDecl*)clientData;
 
         CXCursorKind kind = clang_getCursorKind(cursor);
 
         switch (kind) {
-        case CXCursor_ObjCProtocolRef: {
-          CXString name = clang_getCursorSpelling(cursor);
-          std::string nameStr = clang_getCString(name);
-          protocol->protocolNames.emplace_back(nameStr);
-          clang_disposeString(name);
-          break;
-        }
+          case CXCursor_ObjCProtocolRef: {
+            CXString name = clang_getCursorSpelling(cursor);
+            std::string nameStr = clang_getCString(name);
+            protocol->protocolNames.emplace_back(nameStr);
+            clang_disposeString(name);
+            break;
+          }
 
-        case CXCursor_ObjCPropertyDecl:
-        case CXCursor_ObjCClassMethodDecl:
-        case CXCursor_ObjCInstanceMethodDecl: {
-          auto member = MemberDecl(cursor);
-          member.parentProtocolName = protocol->name;
-          protocol->members.emplace_back(std::move(member));
-          break;
-        }
+          case CXCursor_ObjCPropertyDecl:
+          case CXCursor_ObjCClassMethodDecl:
+          case CXCursor_ObjCInstanceMethodDecl: {
+            auto member = MemberDecl(cursor);
+            member.parentProtocolName = protocol->name;
+            protocol->members.emplace_back(std::move(member));
+            break;
+          }
 
-        default:
-          break;
+          default:
+            break;
         }
 
         return CXChildVisit_Continue;
@@ -47,8 +50,8 @@ ProtocolDecl::ProtocolDecl(CXCursor cursor) {
       this);
 }
 
-MemberDecl *ProtocolDecl::getMemberNamed(const std::string &name) {
-  for (auto &member : members) {
+MemberDecl* ProtocolDecl::getMemberNamed(const std::string& name) {
+  for (auto& member : members) {
     if (member.name == name) {
       return &member;
     }
@@ -61,7 +64,7 @@ void MetadataFactory::processProtocolRefs() {
     std::unordered_set<std::string> refs;
     refs.swap(referencedProtocols);
 
-    for (const std::string &name : refs) {
+    for (const std::string& name : refs) {
       if (protocols.contains(name)) {
         continue;
       }
@@ -78,18 +81,18 @@ void MetadataFactory::processProtocolRefs() {
 }
 
 void ProtocolDecl::postProcessMembers() {
-  for (MemberDecl &member : members) {
-    for (ClassDecl *cls : implementerRefs) {
+  for (MemberDecl& member : members) {
+    for (ClassDecl* cls : implementerRefs) {
       convertMethodToPropertyIfNeeded(member, cls->getMemberNamed(member.name),
                                       false);
     }
 
-    for (ProtocolDecl *protocol : protocolRefs) {
+    for (ProtocolDecl* protocol : protocolRefs) {
       convertMethodToPropertyIfNeeded(
           member, protocol->getMemberNamed(member.name), true);
     }
 
-    for (ProtocolDecl *protocol : derivedProtocolRefs) {
+    for (ProtocolDecl* protocol : derivedProtocolRefs) {
       convertMethodToPropertyIfNeeded(
           member, protocol->getMemberNamed(member.name), false);
     }
@@ -100,4 +103,4 @@ void ProtocolDecl::postProcessMembers() {
   }
 }
 
-} // namespace metagen
+}  // namespace metagen
