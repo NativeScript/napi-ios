@@ -420,7 +420,7 @@ static void nativeFunctionFinalize(JSRuntime*, JSValue value) {
 // properties and the whole prototype chain are consulted first, and the host is
 // asked only if nothing was found. Every other exotic stays authoritative.
 //
-// The Node-API binding (napi/android/quickjs/quickjs-api.c) owns that symbol on
+// The Node-API binding (vendor/quickjs/quickjs-api.c) owns that symbol on
 // its build. On the jsi build that file is not linked, so this layer must both
 // define it -- otherwise quickjs.c has an undefined reference -- and register
 // its class with it, or host objects would mask their own prototypes and every
