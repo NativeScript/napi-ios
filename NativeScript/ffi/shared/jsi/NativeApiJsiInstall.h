@@ -928,6 +928,24 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
           if (!value || typeof value !== 'object') {
             return false;
           }
+          // `this` is the constructor instanceof was invoked on. A
+          // TypeScript-derived native class inherits this method through the
+          // wrapper prototype chain until it materializes, so membership must
+          // be answered for the DERIVED Objective-C class — and before
+          // materialization no instance of it can exist.
+          try {
+            if (this && this !== constructable && this !== wrapper &&
+                this.__nativeApiTypeScriptState) {
+              var derivedWrapper = this.__nativeApiTypeScriptState.wrapper;
+              if (!derivedWrapper) {
+                return false;
+              }
+              if (derivedWrapper !== constructable && derivedWrapper !== wrapper) {
+                return derivedWrapper[Symbol.hasInstance](value);
+              }
+            }
+          } catch (_) {
+          }
           var expectedName = nativeClass.runtimeName || nativeClass.name;
           try {
             if (typeof value.isKindOfClass === 'function' &&
