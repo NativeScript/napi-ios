@@ -745,8 +745,12 @@ Value invokeNativeApiJsiBaseMethod(
     throw facebook::jsi::JSError(runtime, "__invokeBase receiver is not native.");
   }
 
-  id receiver =
-      receiverObject.getHostObject<NativeApiObjectHostObject>(runtime)->object();
+  // Dispatch through the host object so initializer selectors get their
+  // receiver-consumption bookkeeping (disown + round-trip/expando forget);
+  // calling the raw selector path here leaves dangling ownership of the
+  // placeholder an init consumes (e.g. UIColor.alloc().initWith...).
+  auto hostObject = receiverObject.getHostObject<NativeApiObjectHostObject>(runtime);
+  id receiver = hostObject->object();
   std::string memberName = args[2].asString(runtime).utf8(runtime);
   size_t actualArgc = count - 3;
 
@@ -760,9 +764,8 @@ Value invokeNativeApiJsiBaseMethod(
       if (actualArgc == 0) {
         Class dispatchClass =
             dispatchSuperclassForJsiDerivedReceiver(receiver, baseClass);
-        return callObjCSelector(runtime, bridge, receiver, false,
-                                propertyMember->selectorName, propertyMember,
-                                nullptr, 0, dispatchClass);
+        return hostObject->callObjectSelector(runtime, propertyMember->selectorName,
+                                              propertyMember, nullptr, 0, dispatchClass);
       }
       if (actualArgc == 1 && !propertyMember->setterSelectorName.empty() &&
           !propertyMember->readonly) {
@@ -771,9 +774,8 @@ Value invokeNativeApiJsiBaseMethod(
         NativeApiMember setterMember = *propertyMember;
         setterMember.selectorName = propertyMember->setterSelectorName;
         setterMember.signatureOffset = propertyMember->setterSignatureOffset;
-        return callObjCSelector(runtime, bridge, receiver, false,
-                                setterMember.selectorName, &setterMember,
-                                args + 3, actualArgc, dispatchClass);
+        return hostObject->callObjectSelector(runtime, setterMember.selectorName, &setterMember,
+                                              args + 3, actualArgc, dispatchClass);
       }
     }
   }
@@ -784,6 +786,6 @@ Value invokeNativeApiJsiBaseMethod(
 
   Class dispatchClass =
       dispatchSuperclassForJsiDerivedReceiver(receiver, baseClass);
-  return callObjCSelector(runtime, bridge, receiver, false, member->selectorName,
-                          member, args + 3, actualArgc, dispatchClass);
+  return hostObject->callObjectSelector(runtime, member->selectorName, member, args + 3,
+                                        actualArgc, dispatchClass);
 }
