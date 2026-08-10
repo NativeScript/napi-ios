@@ -639,6 +639,19 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
 		    function rememberInstanceClass(instance) {
 		      return rememberClassOnInstance(instance, wrapper || constructable);
 		    }
+		    // Static allocators may be invoked with a TypeScript-derived class as
+		    // the receiver (core does `_super.new.call(this)`); those must
+		    // materialize and allocate the derived Objective-C class, not the base.
+		    function derivedClassWrapper(target) {
+		      if (target && target !== constructable && target !== wrapper &&
+		          typeof target.__nativeApiEnsureClass === 'function') {
+		        var derived = target.__nativeApiEnsureClass();
+		        if (derived && derived !== constructable && derived !== wrapper) {
+		          return derived;
+		        }
+		      }
+		      return undefined;
+		    }
 	    try {
 	      Object.defineProperty(constructable, 'name', {
 	        configurable: true,
@@ -706,6 +719,10 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
         enumerable: false,
         writable: true,
         value: function() {
+          var derived = derivedClassWrapper(this);
+          if (derived && typeof derived.alloc === 'function') {
+            return rememberClassOnInstance(derived.alloc.apply(derived, arguments), this);
+          }
           return rememberInstanceClass(nativeClass.alloc.apply(nativeClass, arguments));
         }
       });
@@ -719,6 +736,10 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
         value: function() {
           if (arguments.length !== 0) {
             throw new Error('new does not take arguments; use invoke for an explicit Objective-C selector.');
+          }
+          var derived = derivedClassWrapper(this);
+          if (derived && typeof derived.new === 'function') {
+            return rememberClassOnInstance(derived.new(), this);
           }
           if (typeof nativeClass.alloc !== 'function') {
             throw new Error('Native class cannot be allocated');
