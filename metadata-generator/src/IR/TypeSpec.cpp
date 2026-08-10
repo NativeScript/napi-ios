@@ -63,9 +63,15 @@ TypeSpec::TypeSpec(CXType type, std::vector<std::string>* classTypeParameters) {
       kind = kTypeU8;
       break;
     }
-    case CXType_UShort:
-      kind = kTypeU16;
+    case CXType_UShort: {
+      const std::string strippedName = stripCInfo(name);
+      if (strippedName == "unichar" || strippedName == "UniChar") {
+        kind = kTypeUnichar;
+      } else {
+        kind = kTypeU16;
+      }
       break;
+    }
     case CXType_UInt:
       kind = kTypeU32;
       break;

@@ -801,16 +801,8 @@ class UInt16TypeConv : public TypeConv {
   }
 
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-    uint16_t raw = *(uint16_t*)value;
-    if (raw >= 32 && raw <= 126) {
-      char buffer[2] = {static_cast<char>(raw), '\0'};
-      napi_value result;
-      napi_create_string_utf8(env, buffer, NAPI_AUTO_LENGTH, &result);
-      return result;
-    }
-
     napi_value result;
-    napi_create_uint32(env, raw, &result);
+    napi_create_uint32(env, *(uint16_t*)value, &result);
     return result;
   }
 
@@ -844,6 +836,22 @@ class UInt16TypeConv : public TypeConv {
 };
 
 static const std::shared_ptr<UInt16TypeConv> uint16TypeConv = std::make_shared<UInt16TypeConv>();
+
+// unichar/UniChar (mdTypeUnichar): u16 width, but projected to JS as a
+// single-character string for any code unit — not just printable ASCII.
+class UnicharTypeConv : public UInt16TypeConv {
+ public:
+  UnicharTypeConv() { kind = mdTypeUnichar; }
+
+  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    char16_t unit = *(char16_t*)value;
+    napi_value result;
+    napi_create_string_utf16(env, &unit, 1, &result);
+    return result;
+  }
+};
+
+static const std::shared_ptr<UnicharTypeConv> unicharTypeConv = std::make_shared<UnicharTypeConv>();
 
 class SInt32TypeConv : public TypeConv {
  public:
@@ -1568,6 +1576,7 @@ class PointerTypeConv : public TypeConv {
                                   case mdTypeUChar:
                                   case mdTypeUInt:
                                   case mdTypeUShort:
+                                  case mdTypeUnichar:
                                   case mdTypeULong:
                                   case mdTypeUInt64:
                                   case mdTypeUInt8:
@@ -3604,6 +3613,10 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
 
     case mdTypeUShort: {
       return uint16TypeConv;
+    }
+
+    case mdTypeUnichar: {
+      return unicharTypeConv;
     }
 
     case mdTypeULong:

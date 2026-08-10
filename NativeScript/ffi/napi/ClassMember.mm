@@ -511,6 +511,7 @@ bool canConvertToType(napi_env env, napi_value value, std::shared_ptr<TypeConv> 
       return jsType == napi_number || jsType == napi_bigint;
 
     case mdTypeUShort:
+    case mdTypeUnichar:
       if (jsType == napi_string) {
         size_t len = 0;
         napi_get_value_string_utf16(env, value, nullptr, 0, &len);

@@ -1,7 +1,7 @@
 Object CreateNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
   auto bridge = std::make_shared<NativeApiJsiBridge>(config);
-  return Object::createFromHostObject(
-      runtime, std::make_shared<NativeApiHostObject>(std::move(bridge)));
+  return Object::createFromHostObject(runtime,
+                                      std::make_shared<NativeApiHostObject>(std::move(bridge)));
 }
 
 void NativeApiJsiWriteSmokeStage(const char* stage) {
@@ -10,10 +10,9 @@ void NativeApiJsiWriteSmokeStage(const char* stage) {
     return;
   }
 
-  NSString* path = [NSTemporaryDirectory()
-      stringByAppendingPathComponent:@"NativeScriptNativeApiSmoke.marker"];
-  NSString* content =
-      [NSString stringWithFormat:@"stage=%s\n", stage != nullptr ? stage : ""];
+  NSString* path =
+      [NSTemporaryDirectory() stringByAppendingPathComponent:@"NativeScriptNativeApiSmoke.marker"];
+  NSString* content = [NSString stringWithFormat:@"stage=%s\n", stage != nullptr ? stage : ""];
   [content writeToFile:path atomically:YES encoding:NSUTF8StringEncoding error:nil];
 }
 
@@ -184,10 +183,22 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
           Object.defineProperty(globalThis, name, {
             configurable: true,
             enumerable: false,
-            writable: false,
+            writable: true,
             value: value
           });
           return value;
+        },
+        set: function(value) {
+          // Assignment over a lazy global must behave like a plain global
+          // assignment (@nativescript/core writes shims such as
+          // global.System), not throw "no setter for property".
+          cacheGlobal(name, value);
+          Object.defineProperty(globalThis, name, {
+            configurable: true,
+            enumerable: true,
+            writable: true,
+            value: value
+          });
         }
       });
     } catch (_) {
@@ -197,7 +208,7 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
         Object.defineProperty(globalThis, name, {
           configurable: true,
           enumerable: false,
-          writable: false,
+          writable: true,
           value: value
         });
       }
@@ -628,6 +639,19 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
 		    function rememberInstanceClass(instance) {
 		      return rememberClassOnInstance(instance, wrapper || constructable);
 		    }
+		    // Static allocators may be invoked with a TypeScript-derived class as
+		    // the receiver (core does `_super.new.call(this)`); those must
+		    // materialize and allocate the derived Objective-C class, not the base.
+		    function derivedClassWrapper(target) {
+		      if (target && target !== constructable && target !== wrapper &&
+		          typeof target.__nativeApiEnsureClass === 'function') {
+		        var derived = target.__nativeApiEnsureClass();
+		        if (derived && derived !== constructable && derived !== wrapper) {
+		          return derived;
+		        }
+		      }
+		      return undefined;
+		    }
 	    try {
 	      Object.defineProperty(constructable, 'name', {
 	        configurable: true,
@@ -695,6 +719,10 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
         enumerable: false,
         writable: true,
         value: function() {
+          var derived = derivedClassWrapper(this);
+          if (derived && typeof derived.alloc === 'function') {
+            return rememberClassOnInstance(derived.alloc.apply(derived, arguments), this);
+          }
           return rememberInstanceClass(nativeClass.alloc.apply(nativeClass, arguments));
         }
       });
@@ -708,6 +736,10 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
         value: function() {
           if (arguments.length !== 0) {
             throw new Error('new does not take arguments; use invoke for an explicit Objective-C selector.');
+          }
+          var derived = derivedClassWrapper(this);
+          if (derived && typeof derived.new === 'function') {
+            return rememberClassOnInstance(derived.new(), this);
           }
           if (typeof nativeClass.alloc !== 'function') {
             throw new Error('Native class cannot be allocated');
@@ -928,10 +960,31 @@ void InstallNativeApiJsiGlobalSymbols(Runtime& runtime, const char* globalName) 
           if (!value || typeof value !== 'object') {
             return false;
           }
+          // `this` is the constructor instanceof was invoked on. A
+          // TypeScript-derived native class inherits this method through the
+          // wrapper prototype chain until it materializes, so membership must
+          // be answered for the DERIVED Objective-C class — and before
+          // materialization no instance of it can exist.
+          try {
+            if (this && this !== constructable && this !== wrapper &&
+                this.__nativeApiTypeScriptState) {
+              var derivedWrapper = this.__nativeApiTypeScriptState.wrapper;
+              if (!derivedWrapper) {
+                return false;
+              }
+              if (derivedWrapper !== constructable && derivedWrapper !== wrapper) {
+                return derivedWrapper[Symbol.hasInstance](value);
+              }
+            }
+          } catch (_) {
+          }
           var expectedName = nativeClass.runtimeName || nativeClass.name;
           try {
+            // Pass the proxied wrapper: the raw constructable carries no
+            // __nativeApiClass, so it does not marshal to the Objective-C
+            // Class and isKindOfClass() misreports.
             if (typeof value.isKindOfClass === 'function' &&
-                value.isKindOfClass(constructable)) {
+                value.isKindOfClass(wrapper || constructable) === true) {
               return true;
             }
           } catch (_) {

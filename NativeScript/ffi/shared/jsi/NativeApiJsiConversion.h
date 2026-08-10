@@ -608,6 +608,7 @@ void convertJsiArgument(Runtime& runtime,
       writeNumericArgument<int16_t>(runtime, value, target, "int16");
       break;
     case metagen::mdTypeUShort:
+    case metagen::mdTypeUnichar:
       if (value.isString()) {
         std::string text = value.asString(runtime).utf8(runtime);
         if (text.size() != 1) {
@@ -823,13 +824,30 @@ Value convertNativeReturnValue(Runtime& runtime,
       return static_cast<double>(*static_cast<uint8_t*>(value));
     case metagen::mdTypeSShort:
       return static_cast<double>(*static_cast<int16_t*>(value));
-    case metagen::mdTypeUShort: {
-      uint16_t raw = *static_cast<uint16_t*>(value);
-      if (raw >= 32 && raw <= 126) {
-        char buffer[2] = {static_cast<char>(raw), '\0'};
-        return String::createFromUtf8(runtime, buffer);
+    case metagen::mdTypeUShort:
+      return static_cast<double>(*static_cast<uint16_t*>(value));
+    case metagen::mdTypeUnichar: {
+      const char16_t unit = *static_cast<char16_t*>(value);
+      // UTF-8 encode one UTF-16 code unit (1-3 bytes; unpaired surrogates
+      // fall back to U+FFFD).
+      char buffer[4] = {0};
+      size_t length = 0;
+      if (unit < 0x80) {
+        buffer[length++] = static_cast<char>(unit);
+      } else if (unit < 0x800) {
+        buffer[length++] = static_cast<char>(0xC0 | (unit >> 6));
+        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
+      } else if (unit >= 0xD800 && unit <= 0xDFFF) {
+        buffer[length++] = static_cast<char>(0xEF);
+        buffer[length++] = static_cast<char>(0xBF);
+        buffer[length++] = static_cast<char>(0xBD);
+      } else {
+        buffer[length++] = static_cast<char>(0xE0 | (unit >> 12));
+        buffer[length++] = static_cast<char>(0x80 | ((unit >> 6) & 0x3F));
+        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
       }
-      return static_cast<double>(raw);
+      return String::createFromUtf8(
+          runtime, reinterpret_cast<const uint8_t*>(buffer), length);
     }
     case metagen::mdTypeSInt:
       return static_cast<double>(*static_cast<int32_t*>(value));
@@ -1204,6 +1222,7 @@ std::optional<NativeApiJsiType> primitiveInteropTypeFromCode(int32_t code) {
     case metagen::mdTypeUInt8:
     case metagen::mdTypeSShort:
     case metagen::mdTypeUShort:
+    case metagen::mdTypeUnichar:
     case metagen::mdTypeSInt:
     case metagen::mdTypeUInt:
     case metagen::mdTypeSLong:
@@ -1617,7 +1636,7 @@ Object createInteropObject(Runtime& runtime,
   setType("float", metagen::mdTypeFloat);
   setType("double", metagen::mdTypeDouble);
   setType("UTF8CString", metagen::mdTypeString);
-  setType("unichar", metagen::mdTypeUShort);
+  setType("unichar", metagen::mdTypeUnichar);
   setType("id", metagen::mdTypeAnyObject);
   setType("class", metagen::mdTypeClass);
   setType("protocol", metagen::mdTypeProtocolObject);

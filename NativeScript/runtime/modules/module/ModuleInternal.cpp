@@ -15,8 +15,8 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "runtime/NativeScriptException.h"
 #include "native_api_util.h"
+#include "runtime/NativeScriptException.h"
 #include "runtime/RuntimeConfig.h"
 #include "runtime/Util.h"
 #include "runtime/modules/node/Node.h"
@@ -173,7 +173,14 @@ bool PathExistsWithExactCase(const std::filesystem::path& path) {
       }
     }
 
-    if (iterEc || !matched) {
+    if (iterEc) {
+      // On device the sandbox forbids enumerating everything above the app
+      // container (/private/var/...), so case verification is only possible
+      // for listable levels; exists() already vouched for the full path.
+      current /= component;
+      continue;
+    }
+    if (!matched) {
       return false;
     }
 
