@@ -57,6 +57,18 @@ const metadataGeneratorSymbolAnalyzer = path.join(
     "bin",
     "ns-metadata-symbols"
 );
+const metadataGeneratorSourceInputs = [
+    path.join(metadataGeneratorRoot, "src"),
+    path.join(metadataGeneratorRoot, "include"),
+    path.join(metadataGeneratorRoot, "tests"),
+    path.join(metadataGeneratorRoot, "symbol-analyzer", "Cargo.toml"),
+    path.join(metadataGeneratorRoot, "symbol-analyzer", "Cargo.lock"),
+    path.join(metadataGeneratorRoot, "symbol-analyzer", "src"),
+    path.join(metadataGeneratorRoot, "symbol-analyzer", "tests"),
+    path.join(metadataGeneratorRoot, "build-step-metadata-generator.py"),
+    path.join(metadataGeneratorRoot, "CMakeLists.txt"),
+    path.join(__dirname, "build_metadata_generator.sh")
+];
 const buildStatePath = path.join(derivedDataPath, ".macos-test-build-state.json");
 const macosBuildInputs = [
     path.join(__dirname, "../platforms/apple/NativeScriptRuntime.xcodeproj", "project.pbxproj"),
@@ -64,11 +76,7 @@ const macosBuildInputs = [
     path.join(__dirname, "../platforms/apple/test/runtime/runner", "Info.plist"),
     path.join(__dirname, "../platforms/apple/test/runtime/fixtures"),
     path.join(__dirname, "../platforms/apple/TKLiveSync"),
-    path.join(metadataGeneratorRoot, "src"),
-    path.join(metadataGeneratorRoot, "include"),
-    path.join(metadataGeneratorRoot, "symbol-analyzer"),
-    path.join(metadataGeneratorRoot, "CMakeLists.txt"),
-    path.join(__dirname, "build_metadata_generator.sh"),
+    ...metadataGeneratorSourceInputs,
     metadataGeneratorBinary,
     metadataGeneratorBuildStepScript,
     metadataGeneratorSymbolAnalyzer,
@@ -474,15 +482,7 @@ function runBuildAndRequireSuccess(command, args, timeoutMs = commandTimeoutMs) 
 }
 
 function ensureMetadataGeneratorBuilt() {
-    const sourceInputs = [
-        path.join(metadataGeneratorRoot, "src"),
-        path.join(metadataGeneratorRoot, "include"),
-        path.join(metadataGeneratorRoot, "symbol-analyzer"),
-        path.join(metadataGeneratorRoot, "build-step-metadata-generator.py"),
-        path.join(metadataGeneratorRoot, "CMakeLists.txt")
-    ];
-
-    const sourceMtime = sourceInputs.reduce(
+    const sourceMtime = metadataGeneratorSourceInputs.reduce(
         (latest, inputPath) => Math.max(latest, getPathStats(inputPath).maxMtimeMs),
         0
     );
@@ -509,14 +509,10 @@ function ensureMacOSRuntimeArtifactsBuilt() {
     const cachePath = path.join(__dirname, "../dist", "intermediates", "macos", "CMakeCache.txt");
     const sourceInputs = [
         nativeScriptSourceRoot,
-        path.join(metadataGeneratorRoot, "src"),
-        path.join(metadataGeneratorRoot, "include"),
-        path.join(metadataGeneratorRoot, "symbol-analyzer"),
-        path.join(metadataGeneratorRoot, "CMakeLists.txt"),
+        ...metadataGeneratorSourceInputs,
         metadataGeneratorBinary,
         metadataGeneratorBuildStepScript,
         metadataGeneratorSymbolAnalyzer,
-        path.join(__dirname, "build_metadata_generator.sh"),
         path.join(__dirname, "build_nativescript.sh")
     ];
 
