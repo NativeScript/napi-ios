@@ -4790,12 +4790,15 @@ function runUIKitHostLifecycleFromNative(
   }
 
   const profileBeforeCreate = profileHostCalls ? performance.now() : 0;
-  const handles = createRegisteredUIKitHostFromNative(
-    hostId,
-    undefined,
-    false,
-    nativeMountInfoJson,
-  );
+  // nativeMountInfoJson was already parsed and synced by
+  // syncUIKitNativeMountInfo just above (unconditionally, for every phase
+  // including this call's own eventual host lookup) -- passing it again here
+  // made createRegisteredUIKitHostFromNative re-parse the identical JSON and
+  // re-resolve every native handle in it a second time on every single
+  // lifecycle crossing. Omit it; the pending-host-creation path this
+  // function also serves already observes the mount info synced above via
+  // pending.nativeMountInfoRef.current.
+  const handles = createRegisteredUIKitHostFromNative(hostId, undefined, false);
   if (profileHostCalls) {
     const createMs = performance.now() - profileBeforeCreate;
     if (createMs >= 8) {
@@ -4872,12 +4875,24 @@ function runUIKitHostLifecycleFromNative(
       }
     }
   } else if (phase === "transactionCommitted") {
-    commitUIKitHostFabricTransaction(
-      host,
-      nextProps,
-      host.previousProps,
-      parseUIKitFabricTransactionJson(transactionJson),
-    );
+    // commitUIKitHostFabricTransaction is a no-op whenever the host defines
+    // neither callback -- but transactionJson can carry a full mounted-
+    // children snapshot (native handles resolved per child), and parsing it
+    // unconditionally paid that cost on every Fabric transaction even when
+    // the result was discarded immediately. Several registered hosts (the
+    // navigation stack/screen controllers, the badge) have no
+    // mountingTransactionDidMount/transactionCommitted callback at all and
+    // paid this parse for nothing; hosts that DO define one (e.g. the tabs
+    // host) are unaffected -- this only skips work whose result was already
+    // being thrown away.
+    if (host.mountingTransactionDidMount != null || host.transactionCommitted != null) {
+      commitUIKitHostFabricTransaction(
+        host,
+        nextProps,
+        host.previousProps,
+        parseUIKitFabricTransactionJson(transactionJson),
+      );
+    }
   } else if (phase === "hostReady") {
     const hostReadyEvent = parseUIKitHostReadyEventJson(transactionJson);
     if (hostReadyEvent != null) {

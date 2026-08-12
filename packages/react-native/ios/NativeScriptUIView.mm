@@ -2327,6 +2327,22 @@ static void NativeScriptSetHostedViewOwner(UIView* view, NativeScriptUIView* own
 
   _updateRevision = updateRevision;
   if (_updateRevision > 0) {
+    // REVERTED (cold-launch host-profile burst fix, attempt #1): deferring
+    // this crossing via dispatch_async + a coalescing token (mirroring
+    // -scheduleUIKitHostPropsTransactionCommitIfNeeded below) DID collapse
+    // the redundant cold-launch "update" bursts, but itest's `pop-slide`
+    // content-discipline gate caught a real regression from it: deferring
+    // "update" (which runs the adapter's stack reconcile -- the thing that
+    // arms a pop's content-slide) by even one runloop turn let a
+    // synchronous transactionCommitted/pop-transition step elsewhere run
+    // BEFORE the reconcile it depended on, so ~half of a 10-pop cycle
+    // dropped the content slide (POP_DID_NOT_SLIDE, slides=5/10). The
+    // adjacent transactionCommitted token-coalescing survives (that path
+    // was already async before this pass and is unaffected); only this
+    // synchronous "update" delivery is restored to its original,
+    // known-correct-ordering behavior. See NS_NS_HOST_PROFILE findings in
+    // the cold-launch task writeup for the still-real redundant-crossing
+    // cost this leaves unresolved.
     [self runUIKitHostLifecycle:@"update"];
     [self scheduleUIKitHostPropsTransactionCommitIfNeeded];
   }
