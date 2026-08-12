@@ -65,8 +65,14 @@ assert(
     index.includes("host.propsRevision") &&
     index.includes("syncUIKitHostPropsFromNative(hostId, propsJson)") &&
     index.includes("shouldRunMountedOrNativeMountInfo: boolean | string = false") &&
+    // 6738e4ef (cut redundant cold-launch host-lifecycle crossings):
+    // runUIKitHostLifecycleFromNative's own createRegisteredUIKitHostFromNative
+    // call deliberately stopped re-passing nativeMountInfoJson -- it was
+    // already parsed and synced by syncUIKitNativeMountInfo just above, so
+    // re-passing it made every crossing re-parse the identical JSON and
+    // re-resolve every native handle a second time.
     normalizedIndex.includes(
-      "createRegisteredUIKitHostFromNative( hostId, undefined, false, nativeMountInfoJson, )",
+      "createRegisteredUIKitHostFromNative(hostId, undefined, false);",
     ) &&
     !index.includes("createRegisteredUIKitHostFromNative(hostId, propsJson)"),
   "UI worklet host lifecycle should merge native-commit props once before running updates",

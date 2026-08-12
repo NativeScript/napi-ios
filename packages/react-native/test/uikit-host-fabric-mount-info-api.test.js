@@ -59,8 +59,16 @@ assert(
     index.includes("typeof shouldRunMountedOrNativeMountInfo === \"string\"") &&
     index.includes("parseUIKitNativeMountInfoJson(nativeMountInfoJson)") &&
     index.includes("createRegisteredUIKitHostFromNative") &&
+    // 6738e4ef (cut redundant cold-launch host-lifecycle crossings):
+    // runUIKitHostLifecycleFromNative's own createRegisteredUIKitHostFromNative
+    // call deliberately stopped re-passing nativeMountInfoJson -- it was
+    // already parsed and synced by syncUIKitNativeMountInfo a few lines above,
+    // so re-passing it made every crossing re-parse the identical JSON and
+    // re-resolve every native handle a second time. The pending-host-creation
+    // path this function also serves still observes the mount info synced
+    // above via pending.nativeMountInfoRef.current, so nothing is lost.
     index.includes(
-      "const handles = createRegisteredUIKitHostFromNative(\n    hostId,\n    undefined,\n    false,\n    nativeMountInfoJson,\n  );",
+      "const handles = createRegisteredUIKitHostFromNative(hostId, undefined, false);",
     ),
   "Native-created UIKit hosts should preserve Fabric mount info through both create and lifecycle-created host paths without breaking existing mounted calls",
 );
