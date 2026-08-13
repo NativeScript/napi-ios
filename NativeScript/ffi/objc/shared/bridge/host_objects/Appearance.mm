@@ -51,6 +51,30 @@ Class appearanceProxyCustomizableClassFromExactDescription(id object) {
 // The customizable class an appearance proxy wraps, preferring the tagged
 // expando (set once by tagStaticAppearanceNativeResult) over re-parsing the
 // description on every access.
+//
+// The description-parsing fallback below sends a real `-description` message
+// to `object` -- an arbitrary, potentially-overridden Objective-C method, not
+// a safe runtime introspection call. It must NEVER run while `object` is a
+// callback argument native code just handed to JS reentrantly (tracked by
+// gNativeCallerThreadEngineCallbackDepth, incremented for the duration of
+// exactly that kind of invocation -- see callOnNativeCallerThread in
+// Callbacks.mm and its use in performNativeInvocation's skipInvoker check
+// above): a real UIAppearance proxy is only ever obtained by JS calling an
+// `+appearance`-family method itself (an OUTBOUND call this engine makes,
+// never something delivered inbound as a callback argument), so skipping the
+// fallback in that situation never regresses genuine appearance-proxy
+// detection. It matters for callback arguments that are NOT appearance
+// proxies but are transient/live objects UIKit hands to a block while its own
+// internal machinery is still on the stack -- e.g. the
+// UISheetPresentationControllerDetentResolutionContext passed to a custom
+// detent's resolver block. Calling `-description` on that object from inside
+// the resolver deadlocks (confirmed: an otherwise-identical resolver that
+// never touches the context argument returns cleanly; the hang is inside
+// this function, specifically in the `-description` send, per an os_log
+// breadcrumb trace -- see item 2 of the parity-tail investigation). This
+// guard trades a rare caching miss (a brand-new, untagged appearance proxy
+// obtained for the first time from inside some other callback) for
+// eliminating that deadlock class entirely.
 Class taggedAppearanceProxyClass(
     Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
     id object) {
@@ -61,6 +85,9 @@ Class taggedAppearanceProxyClass(
   Value classNameValue = bridge->findObjectExpando(
       runtime, object, kNativeApiAppearanceClassNameExpando);
   if (!classNameValue.isString()) {
+    if (gNativeCallerThreadEngineCallbackDepth > 0) {
+      return Nil;
+    }
     return appearanceProxyCustomizableClassFromExactDescription(object);
   }
 
