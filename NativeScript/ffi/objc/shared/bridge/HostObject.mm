@@ -80,6 +80,14 @@ class NativeApiHostObject final : public HostObject {
                     bridge, static_cast<id<NSFastEnumeration>>(object)));
           });
     }
+    // Both walkers' HostFunctions are only compiled into BatchOps.mm's
+    // `namespace nativescript` under `#if TARGET_OS_IPHONE` (see that file's
+    // top-of-block comment) -- guarded identically here so a non-iOS build
+    // (the V8/napi-cli backend's macOS/tvOS/visionOS targets) never
+    // references an undefined symbol. On such a build these two properties
+    // are simply absent; every JS call site already fails open to its
+    // original walk when `typeof api.__nsFillHostedSubtree !== 'function'`.
+#if TARGET_OS_IPHONE
     if (property == "__nsFillHostedSubtree") {
       // iteration-5 Stage 2 (dev-notes/perf/iteration-5-batching-design.md
       // §B.6) -- see BatchOps.mm for the walker itself and the scope note on
@@ -98,6 +106,7 @@ class NativeApiHostObject final : public HostObject {
           PropNameID::forAscii(runtime, "__nsScanAttachedContentPresence"), 1,
           nativescript::NsScanAttachedContentPresenceHostFunction);
     }
+#endif  // TARGET_OS_IPHONE
     if (property == "import") {
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "import"), 1,

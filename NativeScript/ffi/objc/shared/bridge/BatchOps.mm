@@ -38,6 +38,22 @@
 
 namespace nativescript {
 
+// Both walkers below are pure UIKit code (UIView/UIScrollView/UIWindow).
+// This shared TU is compiled into BOTH the Hermes and the V8/napi-cli
+// backends, and the V8/napi-cli backend also targets non-iOS platforms
+// (macOS/tvOS/visionOS via the standalone CLI build) that either lack
+// UIKit entirely or -- unlike the Hermes path's CocoaPods/Xcode-project
+// build, which gets an implicit UIKit import from its target's prefix
+// header -- never import it in this translation unit at all. Guarded
+// the same way as the codebase's existing UIKit-only code (see
+// host_objects/Appearance.mm's `#if TARGET_OS_IPHONE`); the matching
+// __nsFillHostedSubtree/__nsScanAttachedContentPresence registrations in
+// HostObject.mm carry the identical guard, so on a non-iOS build these
+// two ops are simply absent (`typeof api.__nsFillHostedSubtree !==
+// 'function'`) and every JS call site already fails open to its
+// original walk in that case -- never a crash, never new behavior.
+#if TARGET_OS_IPHONE
+
 // Mirrors `isNativeScrollView` (NativeScriptScreenStack.tsx :2565).
 inline bool NsFillIsScrollView(UIView* view) {
   return view != nil && [view isKindOfClass:[UIScrollView class]];
@@ -323,5 +339,7 @@ inline Value NsScanAttachedContentPresenceHostFunction(Runtime& runtime,
 
   return NsScanAttachedContentPresenceReturnArray(runtime, err, result);
 }
+
+#endif  // TARGET_OS_IPHONE
 
 }  // namespace nativescript
