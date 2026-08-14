@@ -9,8 +9,9 @@
 // per hosted view. Every decision mirrored below is pure geometry, cited
 // from the exact JS it replaces -- see each function's comment.
 //
-// Textually included by NativeApiJsi.mm (see the #include block near the
-// top of that file), same convention as every other shared bridge TU. Must
+// Textually included by the Hermes engine JSI translation unit (see the
+// #include block near the top of that file), same convention as every
+// other shared bridge TU. Must
 // appear AFTER host_objects/Object.mm (for NativeApiObjectHostObject) and
 // AFTER ObjCBridge.mm (for makeString) -- both already true at the include
 // site chosen (immediately before HostObject.mm's own #include).
