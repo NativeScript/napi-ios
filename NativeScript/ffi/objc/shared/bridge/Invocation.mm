@@ -1642,6 +1642,11 @@ Value callPreparedObjCSelector(
       nativeSizeForType(signature.returnType));
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
     if (prepared.preparedInvoker != nullptr && dispatchSuperClass == Nil) {
+      // Counter-completeness fix (iteration-5 Stage 0): this fast path never
+      // constructs a NativeScriptInteropCallTimer, so without this line it is
+      // counted by neither gCalls nor gCallsAlways. Metrology only -- no
+      // timing, no behavior change.
+      ::nsInteropProfiler::gCallsAlways.fetch_add(1, std::memory_order_relaxed);
       prepared.preparedInvoker(reinterpret_cast<void*>(objc_msgSend),
                                values.data(), returnStorage.data());
     } else {
@@ -1834,6 +1839,10 @@ Value callObjCSelector(Runtime& runtime,
           : nullptr;
   performNativeInvocation(runtime, bridge->nativeInvocationInvoker(), [&]() {
     if (preparedInvoker != nullptr) {
+      // Counter-completeness fix (iteration-5 Stage 0): see the matching
+      // comment in callPreparedObjCSelector above -- this fast path never
+      // constructs a NativeScriptInteropCallTimer either.
+      ::nsInteropProfiler::gCallsAlways.fetch_add(1, std::memory_order_relaxed);
       preparedInvoker(reinterpret_cast<void*>(objc_msgSend), values.data(),
                       returnStorage.data());
     } else {
