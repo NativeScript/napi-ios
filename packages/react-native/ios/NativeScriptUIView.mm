@@ -2854,7 +2854,23 @@ static void NativeScriptSetHostedViewOwner(UIView* view, NativeScriptUIView* own
 - (NSDictionary<NSString*, id>*)fabricChildEventForComponentView:(UIView*)componentView
                                               childContainerView:(UIView*)childContainerView
                                                            index:(NSInteger)index {
-  NSDictionary<NSString*, NSString*>* ownerHandles = [self uikitHostHandles];
+  return [self fabricChildEventForComponentView:componentView
+                             childContainerView:childContainerView
+                                          index:index
+                                   ownerHandles:[self uikitHostHandles]];
+}
+
+// C-fix-2 (iteration 9): -fabricMountedChildrenSnapshot (below) calls this
+// once per mounted child; the owner (self) does not change across that
+// loop, so recomputing -uikitHostHandles (5 %p-formatted handle strings)
+// per child was pure repeated work. Callers that already have the owner's
+// handles (the snapshot loop) pass them in directly; the single-child
+// convenience wrapper above still computes them once per call, which is
+// already minimal for its call sites (notifyFabricChildMounted/Unmounted).
+- (NSDictionary<NSString*, id>*)fabricChildEventForComponentView:(UIView*)componentView
+                                              childContainerView:(UIView*)childContainerView
+                                                           index:(NSInteger)index
+                                                    ownerHandles:(NSDictionary<NSString*, NSString*>*)ownerHandles {
   NSDictionary<NSString*, NSString*>* childHandles = @{};
   if ([childContainerView isKindOfClass:NativeScriptUIView.class]) {
     childHandles = [static_cast<NativeScriptUIView*>(childContainerView) uikitHostHandles];
@@ -2946,6 +2962,9 @@ static void NativeScriptSetHostedViewOwner(UIView* view, NativeScriptUIView* own
   NSMutableArray<NSDictionary<NSString*, id>*>* snapshot =
       [NSMutableArray arrayWithCapacity:mountedChildren.count];
   NSInteger childIndex = 0;
+  // C-fix-2 (iteration 9): owner (self) is fixed across this whole loop --
+  // compute the owner's handles once instead of once per child.
+  NSDictionary<NSString*, NSString*>* ownerHandles = [self uikitHostHandles];
 
   for (UIView* child in mountedChildren) {
     if (child == nil || child == self || child == _nativeView || child == _childrenView ||
@@ -2957,7 +2976,8 @@ static void NativeScriptSetHostedViewOwner(UIView* view, NativeScriptUIView* own
                             fabricChildEventForComponentView:child
                                           childContainerView:
                                               NativeScriptCurrentContainerViewForComponentView(child)
-                                                       index:childIndex]];
+                                                       index:childIndex
+                                                ownerHandles:ownerHandles]];
     childIndex += 1;
   }
 
@@ -3693,8 +3713,25 @@ static void NativeScriptSetHostedViewOwner(UIView* view, NativeScriptUIView* own
 - (NSString*)fabricTransactionJsonWithModifiedChildren:(BOOL)hasModifiedChildren
                                          modifiedProps:(BOOL)hasModifiedProps
                                              mutations:(NSArray<NSDictionary<NSString*, id>*>*)mutations {
+  return [self fabricTransactionJsonWithModifiedChildren:hasModifiedChildren
+                                           modifiedProps:hasModifiedProps
+                                               mutations:mutations
+                                        childrenSnapshot:nil];
+}
+
+// C-fix-2 (iteration 9): `childrenSnapshot`, when non-nil, is used as-is
+// instead of recomputing -fabricMountedChildrenSnapshot. This lets
+// -notifyFabricTransactionCommittedWithModifiedChildren:... (below) -- the
+// single funnel every `transactionCommitted` producer converges on --
+// compute the snapshot exactly ONCE per commit (it needed one already, for
+// its own debug-log summary) and thread it through here, instead of
+// building the same snapshot a second time for the same commit.
+- (NSString*)fabricTransactionJsonWithModifiedChildren:(BOOL)hasModifiedChildren
+                                         modifiedProps:(BOOL)hasModifiedProps
+                                             mutations:(NSArray<NSDictionary<NSString*, id>*>*)mutations
+                                      childrenSnapshot:(NSArray<NSDictionary<NSString*, id>*>*)childrenSnapshot {
   NSDictionary<NSString*, id>* transaction = @{
-    @"children" : [self fabricMountedChildrenSnapshot],
+    @"children" : childrenSnapshot ?: [self fabricMountedChildrenSnapshot],
     @"hasModifiedChildren" : @(hasModifiedChildren),
     @"hasModifiedProps" : @(hasModifiedProps),
     @"mutations" : mutations ?: @[],
@@ -3753,7 +3790,8 @@ static void NativeScriptSetHostedViewOwner(UIView* view, NativeScriptUIView* own
   NSString* transactionJson =
       [self fabricTransactionJsonWithModifiedChildren:hasModifiedChildren
                                         modifiedProps:hasModifiedProps
-                                            mutations:mutations];
+                                            mutations:mutations
+                                     childrenSnapshot:mountedChildren];
   [self runUIKitHostLifecycle:@"transactionCommitted" transactionJson:transactionJson];
 }
 
