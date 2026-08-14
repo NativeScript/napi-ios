@@ -191,4 +191,137 @@ inline Value NsFillHostedSubtreeHostFunction(Runtime& runtime, const Value&,
   return NsFillHostedSubtreeReturnArray(runtime, err, result);
 }
 
+// iteration-6 JOB 2: the tabs host content-presence scan walker.
+//
+// Mirrors the tabs adapter's `attachedDescendantContentPresence` /
+// `selectedTabAttachedContentPresence` (react-native-screens-nativescript-
+// tabs-snapshot repo, src/components/tabs/native-script/NativeScriptTabs.ios.tsx
+// :2128-:2262 at this op's pin -- the PRESENCE-only, early-exit variant, not
+// the exact-count `attachedDescendantContentCounts` sibling which is only
+// used by exported test utilities, never on the cold-launch hot path). A
+// read-only recursive tree walk computing two booleans (does the subtree
+// have >=1 visible descendant? >=1 interactive descendant?), depth cap 16,
+// early-exit the instant BOTH are true.
+//
+// This is the walk that dominates the tabs host's cold-launch
+// `mountChild`/`transactionCommitted` crossing counts (663/87/1067/455
+// measured pre-fix, dev-notes/perf/iteration-4-phases.md +
+// iteration-5a-results.md): at first commit, content frames often still
+// read zero-size until layout catches up, so the early-exit rarely fires
+// and the walk runs close to the full freshly-mounted subtree, at ~5-7
+// crossings per node (subviews array fetch + hidden + alpha + window +
+// frame + userInteractionEnabled + accessibilityElementsHidden, each a
+// separate FFI round-trip through the JS-side `arrayCount`/`arrayItem`
+// helpers). One native crossing replaces the whole walk.
+//
+// Read-only: never mutates any view (unlike NsFillHostedSubtree above).
+// Never calls -description (33b583af).
+struct NsContentPresenceResult {
+  bool ok;
+  bool visible;
+  bool interactive;
+};
+
+// Mirrors `selectedTabSubviewWindowIsCompatible` + the per-subview
+// hidden/alpha/frame/interactive checks inside
+// `attachedDescendantContentPresence`'s loop body verbatim.
+inline void NsScanContentPresenceRecurse(UIView* view, UIWindow* rootWindow,
+                                         bool* visible, bool* interactive,
+                                         int depth) {
+  if (view == nil || depth > 16 || (*visible && *interactive)) {
+    return;
+  }
+  NSArray<UIView*>* subviews = view.subviews;
+  for (UIView* subview in subviews) {
+    if (*visible && *interactive) {
+      return;
+    }
+    if (subview == nil || subview.hidden || subview.alpha <= 0.01) {
+      continue;
+    }
+    UIWindow* subviewWindow = subview.window;
+    if (rootWindow != nil && subviewWindow != nil &&
+        subviewWindow != rootWindow) {
+      continue;
+    }
+
+    CGRect frame = subview.frame;
+    if (isfinite(frame.size.width) && frame.size.width > 0 &&
+        isfinite(frame.size.height) && frame.size.height > 0) {
+      *visible = true;
+      if (subview.userInteractionEnabled &&
+          !subview.accessibilityElementsHidden) {
+        *interactive = true;
+      }
+    }
+
+    NsScanContentPresenceRecurse(subview, rootWindow, visible, interactive,
+                                 depth + 1);
+  }
+}
+
+// Mirrors `selectedTabAttachedContentPresence` -- the root window is read
+// ONCE (`view?.window ?? null`) and threaded down unchanged through the
+// whole recursion, exactly like the JS.
+inline NsContentPresenceResult NsScanAttachedContentPresence(
+    UIView* rootView) {
+  NsContentPresenceResult result{false, false, false};
+  if (rootView == nil) {
+    return result;
+  }
+  UIWindow* rootWindow = rootView.window;
+  bool visible = false;
+  bool interactive = false;
+  NsScanContentPresenceRecurse(rootView, rootWindow, &visible, &interactive,
+                               0);
+  result.ok = true;
+  result.visible = visible;
+  result.interactive = interactive;
+  return result;
+}
+
+// jsi-facing entry point: `[err, visible(0/1), interactive(0/1)]`. Never
+// throws -- a bad argument or an ObjC exception mid-walk becomes a
+// non-empty `err` string, never a JS exception (same convention as
+// NsFillHostedSubtreeHostFunction above).
+inline Value NsScanAttachedContentPresenceReturnArray(
+    Runtime& runtime, const std::string& err,
+    const NsContentPresenceResult& result) {
+  Array out(runtime, 3);
+  out.setValueAtIndex(runtime, 0, makeString(runtime, err));
+  out.setValueAtIndex(runtime, 1, Value(result.visible ? 1 : 0));
+  out.setValueAtIndex(runtime, 2, Value(result.interactive ? 1 : 0));
+  return out;
+}
+
+inline Value NsScanAttachedContentPresenceHostFunction(Runtime& runtime,
+                                                        const Value&,
+                                                        const Value* args,
+                                                        size_t count) {
+  NsContentPresenceResult empty{false, false, false};
+  if (count < 1 || !args[0].isObject()) {
+    return NsScanAttachedContentPresenceReturnArray(runtime, "bad-arg", empty);
+  }
+  id object = NativeApiObjectHostObject::nativeObjectFromValue(runtime, args[0]);
+  if (object == nil || ![object isKindOfClass:[UIView class]]) {
+    return NsScanAttachedContentPresenceReturnArray(runtime, "not-a-view",
+                                                     empty);
+  }
+
+  UIView* rootView = (UIView*)object;
+  NsContentPresenceResult result = empty;
+  std::string err;
+  @try {
+    result = NsScanAttachedContentPresence(rootView);
+  } @catch (NSException* exception) {
+    // NSException.name is a plain NSString property read, never a
+    // -description call (the hazard fixed in 33b583af).
+    NSString* name = exception.name ?: @"NSException";
+    err = std::string("exc:") + (name.UTF8String ?: "unknown");
+    result = empty;
+  }
+
+  return NsScanAttachedContentPresenceReturnArray(runtime, err, result);
+}
+
 }  // namespace nativescript

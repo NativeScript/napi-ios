@@ -89,6 +89,15 @@ class NativeApiHostObject final : public HostObject {
           runtime, PropNameID::forAscii(runtime, "__nsFillHostedSubtree"), 1,
           nativescript::NsFillHostedSubtreeHostFunction);
     }
+    if (property == "__nsScanAttachedContentPresence") {
+      // iteration-6 JOB 2 -- see BatchOps.mm for the tabs content-presence
+      // scan walker itself (the tabs analogue of __nsFillHostedSubtree
+      // above; read-only instead of mutating).
+      return Function::createFromHostFunction(
+          runtime,
+          PropNameID::forAscii(runtime, "__nsScanAttachedContentPresence"), 1,
+          nativescript::NsScanAttachedContentPresenceHostFunction);
+    }
     if (property == "import") {
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "import"), 1,
