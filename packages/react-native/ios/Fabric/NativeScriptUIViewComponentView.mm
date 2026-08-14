@@ -1095,8 +1095,6 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
   // whether this host observed modifications, mirroring how Fabric always
   // pairs a mountingTransactionWillMount with a mountingTransactionDidMount.
   [_containerView clearFabricChildComponentViewTagsPendingUnmountForCurrentTransaction];
-  NSArray<NSDictionary<NSString*, id>*>* mutationRecords =
-      NativeScriptFabricMutationRecords(transaction);
   const BOOL hasModifiedChildren =
       _hasModifiedChildrenInCurrentTransaction ||
       _hasPendingFabricTransactionCommitFallbackChildren;
@@ -1110,6 +1108,21 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
   if (!hasModifiedChildren && !hasModifiedProps) {
     return;
   }
+
+  // C-fix-1 (iteration 9): this used to build one 7-key NSDictionary per
+  // mutation (~109 at cold launch) UNCONDITIONALLY, above, before the
+  // early-return -- so every registered observer paid the allocation for
+  // every transaction in the app, including hosts with no modification in
+  // this transaction and hosts that never consume `mutations` at all.
+  // Build it lazily, only once we know this call is actually about to
+  // deliver a commit, and only for hosts that opted into fabric lifecycle
+  // callbacks (mountChild/unmountChild gate on the same flag elsewhere in
+  // this file; -fabricTransactionJsonWithModifiedChildren:...mutations: in
+  // NativeScriptUIView.mm already turns `mutations:nil` into `@[]`, so the
+  // delivered payload is byte-identical for hosts that DO consume it).
+  NSArray<NSDictionary<NSString*, id>*>* mutationRecords =
+      _containerView.fabricLifecycleCallbacks ? NativeScriptFabricMutationRecords(transaction)
+                                               : nil;
 
   _hasPendingFabricTransactionCommitFallbackChildren = NO;
   _hasPendingFabricTransactionCommitFallbackProps = NO;
