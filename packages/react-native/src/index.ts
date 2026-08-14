@@ -168,6 +168,19 @@ export type UIKitFabricTransaction = {
   // (and monotonically increasing) only on transactions parsed from a real
   // native payload; synthesized/empty transactions omit it.
   readonly deliveryToken?: number;
+  // iteration 10, Stage 1 (nativeCommitObservations, default off): native-
+  // computed commit-time observations, present only for hosts that set the
+  // `nativeCommitObservations` descriptor bit AND whose adopted controller
+  // matches an observation native knows how to compute. Absent means "read
+  // the live native state yourself" (the pre-Stage-1 behavior) -- consumers
+  // must treat this as an optional fast path, never a required field.
+  readonly observations?: UIKitFabricCommitObservations;
+};
+
+export type UIKitFabricCommitObservations = {
+  readonly v: number;
+  readonly selectedControllerHandle?: string;
+  readonly viewControllerHandles?: readonly string[];
 };
 
 export type UIKitFabricMutation = {
@@ -434,6 +447,16 @@ export type UIKitHostViewProps = ViewProps & {
   immediateTransactionCommit?: boolean;
   /** Defer transaction commits when the mutation only removes children. */
   deferTransactionCommitOnRemovals?: boolean;
+  /**
+   * iteration 10, Stage 1 (default off): ask native to compute
+   * `observations` (adopted-controller state, e.g. the tab controller's
+   * selected/ordered view-controller handles) into the committed
+   * transaction payload, so JS commit-skip checks can compare handle
+   * strings instead of issuing FFI reads against the live controller.
+   * Fail-open: absent unless set AND the adopted controller matches the
+   * observation native knows how to compute (currently UITabBarController).
+   */
+  nativeCommitObservations?: boolean;
   /** Mount RN children straight into the children view. */
   mountChildrenDirectlyToChildrenView?: boolean;
   /** Lay out direct children to the children view's bounds. */
@@ -810,6 +833,7 @@ const hostViewPropNames = new Set([
   "importantForAccessibility",
   "immediateTransactionCommit",
   "deferTransactionCommitOnRemovals",
+  "nativeCommitObservations",
   "mountChildrenDirectlyToChildrenView",
   "layoutDirectChildrenToChildrenViewBounds",
   "emitOffWindowHostReady",
@@ -4169,6 +4193,40 @@ function parseUIKitFabricTransactionJson(
       deliveryTokenValue !== -Infinity
         ? deliveryTokenValue
         : undefined;
+    // iteration 10, Stage 1: parse `observations` defensively -- any shape
+    // mismatch (missing bit, older native build, wrong controller kind)
+    // yields `undefined` rather than a malformed object, so every consumer's
+    // existing `observations?.field != null` fallback check does the right
+    // thing without needing a try/catch of its own.
+    const observationsValue =
+      parsed != null && typeof parsed === "object" && !Array.isArray(parsed)
+        ? (parsed as Record<string, unknown>).observations
+        : undefined;
+    let observations: UIKitFabricCommitObservations | undefined;
+    if (
+      observationsValue != null &&
+      typeof observationsValue === "object" &&
+      !Array.isArray(observationsValue)
+    ) {
+      const observationsRecord = observationsValue as Record<string, unknown>;
+      const rawHandles = observationsRecord.viewControllerHandles;
+      const viewControllerHandles = Array.isArray(rawHandles)
+        ? rawHandles.filter(
+            (handle): handle is string => typeof handle === "string",
+          )
+        : undefined;
+      const selectedControllerHandle =
+        typeof observationsRecord.selectedControllerHandle === "string"
+          ? observationsRecord.selectedControllerHandle
+          : undefined;
+      if (viewControllerHandles != null || selectedControllerHandle != null) {
+        observations = {
+          v: typeof observationsRecord.v === "number" ? observationsRecord.v : 1,
+          selectedControllerHandle,
+          viewControllerHandles,
+        };
+      }
+    }
     const children: UIKitFabricMountedChild[] = [];
     if (Array.isArray(childrenValue)) {
       for (
@@ -4317,6 +4375,7 @@ function parseUIKitFabricTransactionJson(
         (parsed as Record<string, unknown>).hasModifiedProps === true,
       mutations,
       deliveryToken,
+      observations,
     };
   } catch {
     return {
@@ -5750,6 +5809,7 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
           immediateTransactionCommit: props.immediateTransactionCommit === true,
           deferTransactionCommitOnRemovals:
             props.deferTransactionCommitOnRemovals === true,
+          nativeCommitObservations: props.nativeCommitObservations === true,
           mountChildrenDirectlyToChildrenView,
           layoutDirectChildrenToChildrenViewBounds,
           pinNativeViewToHost,
@@ -6459,6 +6519,8 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
           props.immediateTransactionCommit === true ? true : undefined,
         deferTransactionCommitOnRemovals:
           props.deferTransactionCommitOnRemovals === true ? true : undefined,
+        nativeCommitObservations:
+          props.nativeCommitObservations === true ? true : undefined,
         mountChildrenDirectlyToChildrenView,
         layoutDirectChildrenToChildrenViewBounds,
         pinNativeViewToHost,

@@ -894,6 +894,8 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
   // mountingTransactionDidMount below.
   _containerView.deferTransactionCommitOnRemovals =
       boolValue(@"deferTransactionCommitOnRemovals");
+  // iteration 10, Stage 1: default-off, see NativeScriptUIViewNativeComponent.ts.
+  _containerView.nativeCommitObservations = boolValue(@"nativeCommitObservations");
   _containerView.mountChildrenDirectlyToChildrenView =
       boolValue(@"mountChildrenDirectlyToChildrenView");
   _containerView.layoutDirectChildrenToChildrenViewBounds =
@@ -1481,6 +1483,9 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
       oldViewProps->deferTransactionCommitOnRemovals;
   const auto newDeferTransactionCommitOnRemovals =
       newViewProps->deferTransactionCommitOnRemovals;
+  // iteration 10, Stage 1: default-off, see NativeScriptUIViewNativeComponent.ts.
+  const auto oldNativeCommitObservations = oldViewProps->nativeCommitObservations;
+  const auto newNativeCommitObservations = newViewProps->nativeCommitObservations;
   const auto oldMountChildrenDirectlyToChildrenView =
       oldViewProps->mountChildrenDirectlyToChildrenView;
   const auto newMountChildrenDirectlyToChildrenView =
@@ -1626,6 +1631,10 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
     _containerView.deferTransactionCommitOnRemovals = newDeferTransactionCommitOnRemovals;
   }
 
+  if (oldNativeCommitObservations != newNativeCommitObservations) {
+    _containerView.nativeCommitObservations = newNativeCommitObservations;
+  }
+
   if (oldMountChildrenDirectlyToChildrenView !=
       newMountChildrenDirectlyToChildrenView) {
     _containerView.mountChildrenDirectlyToChildrenView = newMountChildrenDirectlyToChildrenView;
@@ -1767,6 +1776,7 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
   _containerView.fabricLifecycleCallbacks = NO;
   _containerView.immediateTransactionCommit = NO;
   _containerView.deferTransactionCommitOnRemovals = NO;
+  _containerView.nativeCommitObservations = NO;
   _containerView.mountChildrenDirectlyToChildrenView = NO;
   _containerView.layoutDirectChildrenToChildrenViewBounds = NO;
   _containerView.pinNativeViewToHost = NO;

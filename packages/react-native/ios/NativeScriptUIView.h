@@ -29,6 +29,8 @@
 @property(nonatomic, assign) BOOL fabricLifecycleCallbacks;
 @property(nonatomic, assign) BOOL immediateTransactionCommit;
 @property(nonatomic, assign) BOOL deferTransactionCommitOnRemovals;
+// iteration 10, Stage 1: default-off. See NativeScriptUIViewNativeComponent.ts.
+@property(nonatomic, assign) BOOL nativeCommitObservations;
 @property(nonatomic, assign) BOOL mountChildrenDirectlyToChildrenView;
 @property(nonatomic, assign) BOOL layoutDirectChildrenToChildrenViewBounds;
 @property(nonatomic, assign) BOOL pinNativeViewToHost;

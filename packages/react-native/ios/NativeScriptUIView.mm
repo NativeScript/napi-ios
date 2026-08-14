@@ -3760,7 +3760,7 @@ static BOOL NativeScriptShouldCoalesceInTransactionRefreshTail(NativeScriptUIVie
                                          modifiedProps:(BOOL)hasModifiedProps
                                              mutations:(NSArray<NSDictionary<NSString*, id>*>*)mutations
                                       childrenSnapshot:(NSArray<NSDictionary<NSString*, id>*>*)childrenSnapshot {
-  NSDictionary<NSString*, id>* transaction = @{
+  NSMutableDictionary<NSString*, id>* transaction = [[@{
     @"children" : childrenSnapshot ?: [self fabricMountedChildrenSnapshot],
     @"hasModifiedChildren" : @(hasModifiedChildren),
     @"hasModifiedProps" : @(hasModifiedProps),
@@ -3771,7 +3771,33 @@ static BOOL NativeScriptShouldCoalesceInTransactionRefreshTail(NativeScriptUIVie
     // per-host commit-sequence predicate instead of re-deriving readiness
     // by walking view state on every call.
     @"deliveryToken" : @(_fabricTransactionDeliveryToken),
-  };
+  } mutableCopy] autorelease];
+  // iteration 10, Stage 1 (nativeCommitObservations, default-off): native
+  // already holds a live reference to the adopted view controller
+  // (_viewController, set from the controllerHandle prop -- see
+  // -setViewController: below). When it is a UITabBarController, ship its
+  // selectedViewController/viewControllers as handle strings so the tabs
+  // commit's JS consumer (tabControllerViewControllersMatch /
+  // nativeObjectsEqual(selected...) in NativeScriptTabs.ios.tsx) can compare
+  // handle strings it already tracks instead of reading the live controller
+  // via FFI (579+404 interop calls measured, iteration 6). Fail-open: the
+  // field is simply absent unless the bit is set AND _viewController is
+  // actually a UITabBarController -- JS falls back to its current FFI reads.
+  if (_nativeCommitObservations && [_viewController isKindOfClass:UITabBarController.class]) {
+    UITabBarController* tabController = static_cast<UITabBarController*>(_viewController);
+    NSArray<__kindof UIViewController*>* viewControllers = tabController.viewControllers ?: @[];
+    NSMutableArray<NSString*>* viewControllerHandles =
+        [NSMutableArray arrayWithCapacity:viewControllers.count];
+    for (UIViewController* vc in viewControllers) {
+      [viewControllerHandles addObject:NativeScriptHandleFromNSObject(vc)];
+    }
+    transaction[@"observations"] = @{
+      @"v" : @1,
+      @"selectedControllerHandle" :
+          NativeScriptHandleFromNSObject(tabController.selectedViewController),
+      @"viewControllerHandles" : viewControllerHandles,
+    };
+  }
   NSError* error = nil;
   NSData* transactionData =
       [NSJSONSerialization dataWithJSONObject:transaction options:0 error:&error];

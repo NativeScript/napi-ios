@@ -38,6 +38,13 @@ export interface NativeProps extends ViewProps {
   fabricLifecycleCallbacks?: boolean;
   immediateTransactionCommit?: boolean;
   deferTransactionCommitOnRemovals?: boolean;
+  // iteration 10, Stage 1 (nativeCommitObservations): default-off. When set,
+  // the committed transaction payload's `observations` field carries
+  // native-computed tab-controller state (selectedControllerHandle,
+  // viewControllerHandles) so JS commit-skip checks compare handle strings
+  // instead of reading the live UITabBarController via FFI. Fail-open: the
+  // field is simply absent when this bit is off.
+  nativeCommitObservations?: boolean;
   mountChildrenDirectlyToChildrenView?: boolean;
   layoutDirectChildrenToChildrenViewBounds?: boolean;
   pinNativeViewToHost?: boolean;
