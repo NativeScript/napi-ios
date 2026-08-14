@@ -145,13 +145,7 @@ struct GsdObjCContext {
     info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, v));
   }
   void setUInt16(uint16_t v) {
-    if (v >= 32 && v <= 126) {
-      char buffer[2] = {static_cast<char>(v), '\0'};
-      info.GetReturnValue().Set(
-          engine::v8engine::makeV8String(isolate, buffer));
-    } else {
-      info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, v));
-    }
+    info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, v));
   }
   void setInt64(int64_t v) {
     info.GetReturnValue().Set(v8Integer64Value(isolate, v));

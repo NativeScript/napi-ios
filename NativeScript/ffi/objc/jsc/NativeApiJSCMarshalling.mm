@@ -222,6 +222,7 @@ bool prepareJSCEngineArgument(
     case metagen::mdTypeSShort:
       return writeJSCNumber<int16_t>(runtime, value, target);
     case metagen::mdTypeUShort:
+    case metagen::mdTypeUnichar:
       if (JSValueIsString(runtime.context(), value)) {
         std::string text = jscValueToUtf8(runtime, value);
         if (text.size() != 1) {
@@ -382,16 +383,32 @@ JSValueRef setJSCEngineReturnValue(
     case metagen::mdTypeSShort:
       return JSValueMakeNumber(runtime.context(),
                                *static_cast<int16_t*>(value));
-    case metagen::mdTypeUShort: {
-      uint16_t raw = *static_cast<uint16_t*>(value);
-      if (raw >= 32 && raw <= 126) {
-        char buffer[2] = {static_cast<char>(raw), '\0'};
-        JSStringRef string = engine::jscengine::makeJSString(buffer);
-        JSValueRef result = JSValueMakeString(runtime.context(), string);
-        JSStringRelease(string);
-        return result;
+    case metagen::mdTypeUShort:
+      return JSValueMakeNumber(runtime.context(), *static_cast<uint16_t*>(value));
+    case metagen::mdTypeUnichar: {
+      const char16_t unit = *static_cast<char16_t*>(value);
+      // UTF-8 encode one UTF-16 code unit (1-3 bytes; unpaired surrogates
+      // fall back to U+FFFD).
+      char buffer[4] = {0};
+      size_t length = 0;
+      if (unit < 0x80) {
+        buffer[length++] = static_cast<char>(unit);
+      } else if (unit < 0x800) {
+        buffer[length++] = static_cast<char>(0xC0 | (unit >> 6));
+        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
+      } else if (unit >= 0xD800 && unit <= 0xDFFF) {
+        buffer[length++] = static_cast<char>(0xEF);
+        buffer[length++] = static_cast<char>(0xBF);
+        buffer[length++] = static_cast<char>(0xBD);
+      } else {
+        buffer[length++] = static_cast<char>(0xE0 | (unit >> 12));
+        buffer[length++] = static_cast<char>(0x80 | ((unit >> 6) & 0x3F));
+        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
       }
-      return JSValueMakeNumber(runtime.context(), raw);
+      JSStringRef string = engine::jscengine::makeJSString(std::string(buffer, length));
+      JSValueRef result = JSValueMakeString(runtime.context(), string);
+      JSStringRelease(string);
+      return result;
     }
     case metagen::mdTypeSInt:
       return JSValueMakeNumber(runtime.context(),

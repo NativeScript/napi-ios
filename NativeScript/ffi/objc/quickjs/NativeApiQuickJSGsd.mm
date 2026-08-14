@@ -184,19 +184,10 @@ struct GsdObjCContext {
   }
   void setUInt16(uint16_t v) {
     if (materializeValueResult) {
-      if (v >= 32 && v <= 126) {
-        valueResult = makeString(runtime, std::string(1, static_cast<char>(v)));
-      } else {
-        valueResult = Value(static_cast<double>(v));
-      }
+      valueResult = Value(static_cast<double>(v));
       return;
     }
-    if (v >= 32 && v <= 126) {
-      char buffer[2] = {static_cast<char>(v), '\0'};
-      result = JS_NewStringLen(context, buffer, 1);
-    } else {
-      result = JS_NewUint32(context, v);
-    }
+    result = JS_NewUint32(context, v);
   }
   void setInt64(int64_t v) {
     if (materializeValueResult) {

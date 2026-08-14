@@ -275,7 +275,8 @@ bool prepareV8EngineArgument(
       *static_cast<int16_t*>(target) = static_cast<int16_t>(converted);
       return true;
     }
-    case metagen::mdTypeUShort: {
+    case metagen::mdTypeUShort:
+    case metagen::mdTypeUnichar: {
       if (value->IsString()) {
         std::string text = v8StringToUtf8(runtime.isolate(), value);
         if (text.size() != 1) {
@@ -484,14 +485,32 @@ bool setV8EngineReturnValue(
       info.GetReturnValue().Set(
           v8::Integer::New(isolate, *static_cast<int16_t*>(value)));
       return true;
-    case metagen::mdTypeUShort: {
-      uint16_t raw = *static_cast<uint16_t*>(value);
-      if (raw >= 32 && raw <= 126) {
-        char buffer[2] = {static_cast<char>(raw), '\0'};
-        info.GetReturnValue().Set(engine::v8engine::makeV8String(isolate, buffer));
+    case metagen::mdTypeUShort:
+      info.GetReturnValue().Set(
+          v8::Integer::NewFromUnsigned(isolate, *static_cast<uint16_t*>(value)));
+      return true;
+    case metagen::mdTypeUnichar: {
+      const char16_t unit = *static_cast<char16_t*>(value);
+      // UTF-8 encode one UTF-16 code unit (1-3 bytes; unpaired surrogates
+      // fall back to U+FFFD).
+      char buffer[4] = {0};
+      size_t length = 0;
+      if (unit < 0x80) {
+        buffer[length++] = static_cast<char>(unit);
+      } else if (unit < 0x800) {
+        buffer[length++] = static_cast<char>(0xC0 | (unit >> 6));
+        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
+      } else if (unit >= 0xD800 && unit <= 0xDFFF) {
+        buffer[length++] = static_cast<char>(0xEF);
+        buffer[length++] = static_cast<char>(0xBF);
+        buffer[length++] = static_cast<char>(0xBD);
       } else {
-        info.GetReturnValue().Set(v8::Integer::NewFromUnsigned(isolate, raw));
+        buffer[length++] = static_cast<char>(0xE0 | (unit >> 12));
+        buffer[length++] = static_cast<char>(0x80 | ((unit >> 6) & 0x3F));
+        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
       }
+      info.GetReturnValue().Set(
+          engine::v8engine::makeV8String(isolate, std::string(buffer, length)));
       return true;
     }
     case metagen::mdTypeSInt:

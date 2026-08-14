@@ -206,6 +206,7 @@ bool prepareQuickJSEngineArgument(
     case metagen::mdTypeSShort:
       return writeQuickJSNumber<int16_t>(context, value, target);
     case metagen::mdTypeUShort:
+    case metagen::mdTypeUnichar:
       if (JS_IsString(value)) {
         std::string text = quickJSValueToUtf8(context, value);
         if (text.size() != 1) {
@@ -390,13 +391,29 @@ JSValue setQuickJSEngineReturnValue(
       return JS_NewUint32(context, *static_cast<uint8_t*>(value));
     case metagen::mdTypeSShort:
       return JS_NewInt32(context, *static_cast<int16_t*>(value));
-    case metagen::mdTypeUShort: {
-      uint16_t raw = *static_cast<uint16_t*>(value);
-      if (raw >= 32 && raw <= 126) {
-        char buffer[2] = {static_cast<char>(raw), '\0'};
-        return JS_NewStringLen(context, buffer, 1);
+    case metagen::mdTypeUShort:
+      return JS_NewUint32(context, *static_cast<uint16_t*>(value));
+    case metagen::mdTypeUnichar: {
+      const char16_t unit = *static_cast<char16_t*>(value);
+      // UTF-8 encode one UTF-16 code unit (1-3 bytes; unpaired surrogates
+      // fall back to U+FFFD).
+      char buffer[4] = {0};
+      size_t length = 0;
+      if (unit < 0x80) {
+        buffer[length++] = static_cast<char>(unit);
+      } else if (unit < 0x800) {
+        buffer[length++] = static_cast<char>(0xC0 | (unit >> 6));
+        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
+      } else if (unit >= 0xD800 && unit <= 0xDFFF) {
+        buffer[length++] = static_cast<char>(0xEF);
+        buffer[length++] = static_cast<char>(0xBF);
+        buffer[length++] = static_cast<char>(0xBD);
+      } else {
+        buffer[length++] = static_cast<char>(0xE0 | (unit >> 12));
+        buffer[length++] = static_cast<char>(0x80 | ((unit >> 6) & 0x3F));
+        buffer[length++] = static_cast<char>(0x80 | (unit & 0x3F));
       }
-      return JS_NewUint32(context, raw);
+      return JS_NewStringLen(context, buffer, length);
     }
     case metagen::mdTypeSInt:
       return JS_NewInt32(context, *static_cast<int32_t*>(value));

@@ -103,11 +103,7 @@ struct GsdObjCContext {
   void setInt32(int32_t v) { result = Value(static_cast<double>(v)); }
   void setUInt32(uint32_t v) { result = Value(static_cast<double>(v)); }
   void setUInt16(uint16_t v) {
-    if (v >= 32 && v <= 126) {
-      result = makeString(runtime, std::string(1, static_cast<char>(v)));
-    } else {
-      result = Value(static_cast<double>(v));
-    }
+    result = Value(static_cast<double>(v));
   }
   void setInt64(int64_t v) { result = signedInteger64ToEngineValue(runtime, v); }
   void setUInt64(uint64_t v) {
