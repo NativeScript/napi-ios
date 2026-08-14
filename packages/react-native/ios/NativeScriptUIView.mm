@@ -3562,6 +3562,25 @@ static void NativeScriptSetHostedViewOwner(UIView* view, NativeScriptUIView* own
   [self notifyHostReadyIfNeeded];
 }
 
+// C-fix-3 (iteration 9 cold-launch stall series): mirrors
+// NativeScriptUIViewComponentView's -nativeScriptShouldCoalesceInTransactionRefreshTail.
+// YES only while the owning ComponentView is applying an insert/update-only
+// Fabric mounting transaction (no Remove/Delete anywhere in it) -- see that
+// method's doc for why mountingTransactionDidMount's own unconditional
+// -refreshContainerViewFrameAndHost (which calls -refreshDetachedChildrenHost,
+// itself running this exact layout/display/sentinel/hostReady suite) makes a
+// per-insert repeat of it here redundant in that window.
+static BOOL NativeScriptShouldCoalesceInTransactionRefreshTail(NativeScriptUIView* view) {
+  UIView* componentView = view.fabricComponentView;
+  if (![componentView isKindOfClass:NativeScriptUIViewComponentView.class]) {
+    return NO;
+  }
+  NativeScriptUIViewComponentView* fabricComponentView =
+      (NativeScriptUIViewComponentView*)componentView;
+  return fabricComponentView.isApplyingMountingTransaction &&
+      !fabricComponentView.currentTransactionHasRemovalMutation;
+}
+
 - (void)insertSubview:(UIView*)view atIndex:(NSInteger)index {
   if (_childrenView != nil && view != _nativeView && view != _childrenView) {
     if (_collectChildren) {
@@ -3593,6 +3612,17 @@ static void NativeScriptSetHostedViewOwner(UIView* view, NativeScriptUIView* own
       [self invalidateDetachedChildrenDisplaySnapshot];
       [self invalidateHostReadySnapshot];
       [self notifyHostReadyIfNeeded];
+      return;
+    }
+    if (NativeScriptShouldCoalesceInTransactionRefreshTail(self)) {
+      // C-fix-3: insert-only Fabric mounting transaction -- this exact
+      // layout/display/sentinel/hostReady suite (each with its own
+      // depth-3/depth-10 topology walks) converges once at
+      // mountingTransactionDidMount's own unconditional refresh instead of
+      // repeating per direct child insert. A transaction with ANY
+      // Remove/Delete mutation never reaches this branch (see
+      // NativeScriptShouldCoalesceInTransactionRefreshTail above), so the
+      // pop/content-discipline path is untouched.
       return;
     }
     [self layoutDetachedChildrenViewSubviewsIfNeeded];

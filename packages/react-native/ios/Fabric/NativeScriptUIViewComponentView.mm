@@ -14,6 +14,7 @@
 #import <React/RCTSurfaceTouchHandler.h>
 #endif
 
+#include <chrono>
 #include <cstring>
 
 using namespace facebook::react;
@@ -447,6 +448,10 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
   BOOL _hasModifiedPropsInCurrentTransaction;
   BOOL _hasObservedPropsUpdateSinceLastTransaction;
   BOOL _isApplyingMountingTransaction;
+  // C-fix-3 (iteration 9): set once per mountingTransactionWillMount, from a
+  // transaction-wide (not host-scoped) scan for any Remove/Delete mutation.
+  // See the .h property doc.
+  BOOL _currentTransactionHasRemovalMutation;
   BOOL _hasPendingFabricTransactionCommitFallbackChildren;
   BOOL _hasPendingFabricTransactionCommitFallbackProps;
   NSInteger _registeredReactTag;
@@ -970,7 +975,9 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
                                       childComponentView)
                             index:index];
   }
-  [self refreshContainerViewFrameAndHost];
+  if (![self nativeScriptShouldCoalesceInTransactionRefreshTail]) {
+    [self refreshContainerViewFrameAndHost];
+  }
   [self scheduleFabricTransactionCommitFallbackIfNeeded];
 }
 
@@ -1049,11 +1056,23 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
   // resurrects a view Fabric is deleting here.
   NSMutableSet<NSNumber*>* pendingUnmountTags = nil;
   const auto selfTag = static_cast<facebook::react::Tag>(self.tag);
+  // C-fix-3 (iteration 9): a single transaction-wide scan (this loop already
+  // walks every mutation for transactionTouchesThisHost/pendingUnmountTags),
+  // independent of transactionTouchesThisHost/deferTransactionCommitOnRemovals
+  // -- ANY Remove/Delete anywhere in the transaction, not just ones that touch
+  // this host, disqualifies the whole transaction from mid-transaction
+  // refresh-tail coalescing below (see mountChildComponentView:index:,
+  // updateProps:oldProps:, and NativeScriptUIView.mm's insertSubview:atIndex:).
+  BOOL transactionHasAnyRemovalMutation = NO;
   for (const auto& mutation : transaction.getMutations()) {
     if (mutation.parentTag == selfTag ||
         mutation.newChildShadowView.tag == selfTag ||
         mutation.oldChildShadowView.tag == selfTag) {
       transactionTouchesThisHost = YES;
+    }
+    if (mutation.type == facebook::react::ShadowViewMutation::Remove ||
+        mutation.type == facebook::react::ShadowViewMutation::Delete) {
+      transactionHasAnyRemovalMutation = YES;
     }
     if (mutation.parentTag == selfTag &&
         (mutation.type == facebook::react::ShadowViewMutation::Remove ||
@@ -1064,6 +1083,7 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
       [pendingUnmountTags addObject:@(mutation.oldChildShadowView.tag)];
     }
   }
+  _currentTransactionHasRemovalMutation = transactionHasAnyRemovalMutation;
   if (pendingUnmountTags != nil) {
     [_containerView
         markFabricChildComponentViewTagsPendingUnmountForCurrentTransaction:pendingUnmountTags];
@@ -1078,6 +1098,24 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
   return _isApplyingMountingTransaction;
 }
 
+- (BOOL)currentTransactionHasRemovalMutation {
+  return _currentTransactionHasRemovalMutation;
+}
+
+// C-fix-3 (iteration 9): YES while applying an insert/update-only Fabric
+// mounting transaction (no Remove/Delete anywhere in it). mountChild's and
+// updateProps's own -refreshContainerViewFrameAndHost tail calls are safe to
+// skip in this window: mountingTransactionDidMount ALREADY runs a full,
+// unconditional -refreshContainerViewFrameAndHost before it delivers
+// (immediately if immediateTransactionCommit, else one dispatch_async hop
+// later) whenever this host had any modification in the transaction -- which
+// is a precondition for reaching either call site below. A transaction with a
+// removal never returns YES here, so the pop/content-discipline path (which
+// always contains a Remove/Delete) is completely untouched.
+- (BOOL)nativeScriptShouldCoalesceInTransactionRefreshTail {
+  return _isApplyingMountingTransaction && !_currentTransactionHasRemovalMutation;
+}
+
 - (void)mountingTransactionDidMount:(const facebook::react::MountingTransaction&)transaction
                withSurfaceTelemetry:(const facebook::react::SurfaceTelemetry&)surfaceTelemetry {
   (void)surfaceTelemetry;
@@ -1088,6 +1126,22 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
           _hasModifiedChildrenInCurrentTransaction ? 1 : 0,
           (_hasModifiedPropsInCurrentTransaction || _hasPendingFabricTransactionCommitFallbackProps) ? 1 : 0,
           _containerView.immediateTransactionCommit ? 1 : 0);
+  }
+  // TEMPORARY INSTRUMENTATION (iteration 9, C-fix-3 measurement) --
+  // Fabric's OWN per-transaction mount telemetry (facebook::react::
+  // TransactionTelemetry), read directly rather than inferred. Removed
+  // before this iteration's work lands for real (see the final "remove all
+  // instrumentation, clean rebuild" pass).
+  static const BOOL profileMountPhase = getenv("NS_NS_FABRIC7") != nullptr;
+  if (profileMountPhase) {
+    auto& telemetry = transaction.getTelemetry();
+    const double mountMs =
+        std::chrono::duration<double, std::milli>(telemetry.getMountEndTime() -
+                                                    telemetry.getMountStartTime())
+            .count();
+    NSLog(@"[FABRIC7] host=%@ txn=%lld mountMs=%.2f mutations=%zu",
+          _containerView.hostId ?: @"?", static_cast<long long>(transaction.getNumber()),
+          mountMs, transaction.getMutations().size());
   }
   _isApplyingMountingTransaction = NO;
   // RNS `willBeUnmountedInUpcomingTransaction` parity: the pending-unmount-tag
@@ -1608,7 +1662,12 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
     _containerView.mountedRevision = newMountedRevision;
   }
 
-  [self refreshContainerViewFrameAndHost];
+  // C-fix-3 (iteration 9): see nativeScriptShouldCoalesceInTransactionRefreshTail
+  // -- mountingTransactionDidMount's own unconditional refresh converges this
+  // for insert/update-only transactions.
+  if (![self nativeScriptShouldCoalesceInTransactionRefreshTail]) {
+    [self refreshContainerViewFrameAndHost];
+  }
   [self scheduleFabricTransactionCommitFallbackIfNeeded];
 }
 
