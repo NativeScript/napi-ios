@@ -88,6 +88,7 @@ void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
 #include "../shared/bridge/TypeConv.mm"
 #include "../shared/bridge/Invocation.mm"
 #include "../shared/bridge/ClassBuilder.mm"
+#include "../shared/bridge/BatchOps.mm"
 #include "../shared/bridge/HostObject.mm"
 // clang-format on
 

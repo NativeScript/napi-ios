@@ -80,6 +80,15 @@ class NativeApiHostObject final : public HostObject {
                     bridge, static_cast<id<NSFastEnumeration>>(object)));
           });
     }
+    if (property == "__nsFillHostedSubtree") {
+      // iteration-5 Stage 2 (dev-notes/perf/iteration-5-batching-design.md
+      // §B.6) -- see BatchOps.mm for the walker itself and the scope note on
+      // why this is its own host function rather than the design's generic
+      // `__applyOps` (Stage 3+).
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "__nsFillHostedSubtree"), 1,
+          nativescript::NsFillHostedSubtreeHostFunction);
+    }
     if (property == "import") {
       return Function::createFromHostFunction(
           runtime, PropNameID::forAscii(runtime, "import"), 1,
