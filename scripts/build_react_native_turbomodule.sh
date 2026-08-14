@@ -75,6 +75,7 @@ cp NativeScript/ffi/objc/hermes/NativeApiJsi*.mm "$PACKAGE_DIR/native-api/ffi/ob
 cp NativeScript/ffi/objc/hermes/NativeApiJsi*.h "$PACKAGE_DIR/native-api/ffi/objc/hermes/"
 cp NativeScript/ffi/objc/hermes/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api/ffi/objc/hermes/"
 cp NativeScript/ffi/objc/shared/bridge/ObjCBridge.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/BatchOps.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
 cp NativeScript/ffi/objc/shared/bridge/Callbacks.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
 cp NativeScript/ffi/objc/shared/bridge/ClassBuilder.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
 cp NativeScript/ffi/objc/shared/bridge/HostObject.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"

@@ -80,11 +80,11 @@ class NativeApiHostObject final : public HostObject {
                     bridge, static_cast<id<NSFastEnumeration>>(object)));
           });
     }
-    // Both walkers' HostFunctions are only compiled into BatchOps.mm's
+    // All three walkers' HostFunctions are only compiled into BatchOps.mm's
     // `namespace nativescript` under `#if TARGET_OS_IPHONE` (see that file's
     // top-of-block comment) -- guarded identically here so a non-iOS build
     // (the V8/napi-cli backend's macOS/tvOS/visionOS targets) never
-    // references an undefined symbol. On such a build these two properties
+    // references an undefined symbol. On such a build these properties
     // are simply absent; every JS call site already fails open to its
     // original walk when `typeof api.__nsFillHostedSubtree !== 'function'`.
 #if TARGET_OS_IPHONE
@@ -105,6 +105,26 @@ class NativeApiHostObject final : public HostObject {
           runtime,
           PropNameID::forAscii(runtime, "__nsScanAttachedContentPresence"), 1,
           nativescript::NsScanAttachedContentPresenceHostFunction);
+    }
+    if (property == "__nsResolveEmbeddedNavigationController") {
+      // iteration-8 -- see BatchOps.mm for the tabs `mountChild`
+      // embedded-navigation-controller resolver (the BFS walk that
+      // dominates the tabs host's cold-launch crossing count). Needs
+      // `bridge_` (to wrap resolved native objects for return to JS), so
+      // unlike the two walkers above this is a capturing lambda, not a
+      // bare host-function pointer -- same convention as `__fastEnumeration`
+      // just above.
+      auto bridge = bridge_;
+      return Function::createFromHostFunction(
+          runtime,
+          PropNameID::forAscii(runtime,
+                               "__nsResolveEmbeddedNavigationController"),
+          1,
+          [bridge](Runtime& runtime, const Value&, const Value* args,
+                   size_t count) -> Value {
+            return nativescript::NsResolveEmbeddedNavigationControllerHostFunction(
+                runtime, bridge, args, count);
+          });
     }
 #endif  // TARGET_OS_IPHONE
     if (property == "import") {

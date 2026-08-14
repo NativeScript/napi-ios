@@ -340,6 +340,274 @@ inline Value NsScanAttachedContentPresenceHostFunction(Runtime& runtime,
   return NsScanAttachedContentPresenceReturnArray(runtime, err, result);
 }
 
+// iteration-8: the native tabs `mountChild` embedded-navigation-controller
+// resolver. Mirrors `embeddedNavigationControllerRecordOnView` +
+// `embeddedNavigationControllerRecordInMountedTabsChildSubviewTree` +
+// `embeddedNavigationControllerRecordForMountedTabsChild`'s SECOND
+// (descendant-BFS) pass -- react-native-screens-nativescript-tabs-snapshot
+// repo, src/components/tabs/native-script/NativeScriptTabs.ios.tsx
+// :1975/:4196/:4313-:4327 at this op's pin. This is the walk that dominates
+// the tabs host's cold-launch `mountChild` crossing count (663 measured,
+// dev-notes/perf/iteration-4-phases.md + iteration-6-measurement.md): up to
+// 16 mount-child candidates, each BFS-scanned (queue cap 64, subview
+// fan-out cap 16/node) for an ancestor/descendant carrying a stored
+// UINavigationController, at ~1-2 crossings per visited node. One native
+// crossing replaces the whole scan across ALL candidates.
+//
+// Two-tier associated-object lookup (mirrors `associatedObjectForKey` +
+// its `ASSOCIATED_HANDLE_SUFFIX`/`ASSOCIATED_VALUE_SUFFIX` convention
+// exactly): tier 1 reads `<key>.NativeScriptHandle`; if that is a non-empty
+// NSString, it is parsed as a pointer address (same grammar as
+// `interop.object`'s string branch -- see `parseIntegerTextToUintptr` in
+// Callbacks.mm, decimal or `0x`-prefixed hex, optional leading `-`) and
+// cast back to `id` (an intentionally UNSAFE raw-pointer resolution --
+// this is the SAME risk profile as the existing JS `nativeObjectFromHandle`
+// mechanism this mirrors, not a new one introduced here) -- and that tier's
+// result (possibly nil, if the address failed to parse) is returned
+// WITHOUT falling through to tier 2, exactly matching
+// `associatedObjectForKey`'s `if (typeof handle === 'string' && ...) return
+// nativeObjectFromHandle(handle);` (a non-empty handle string always short-
+// circuits, even to a nil result). Only when tier 1 has no handle string at
+// all does tier 2 read `<key>.NativeScriptValue` directly. The association
+// KEY derivation (`sel_registerName((key + suffix).c_str())`) matches
+// TypeConv.mm's `interop.set/getAssociatedObject` exactly -- these read the
+// SAME `objc_getAssociatedObject` slots that mechanism writes.
+//
+// Deliberate, documented narrowing vs the JS original: the JS-expando tier
+// (`view.__nativeScriptNavigationController` etc, checked BEFORE the
+// associated-object read in `embeddedNavigationControllerRecordOnView`) is
+// not replicated here. This native walker operates on raw `id`s reached via
+// live view-hierarchy traversal, never through a JS proxy wrapper -- there
+// is no JS object identity for an expando to have been set on in the first
+// place (the same reason JS expandos on NS proxies never round-trip, see
+// the codebase's "Memo expando/proxy trap" precedent) -- so that tier is
+// unreachable dead code in this call shape, not a behavior change.
+//
+// nextResponder-chain fallback tier (mirrors `nextResponderForObject`):
+// only reachable for `UIResponder`-kind receivers (UIView/UIViewController,
+// the only two candidate shapes this system ever produces), reading the
+// plain `.nextResponder` property (the JS's function-call branch is
+// unreachable for a real UIResponder -- `nextResponder` bridges as a
+// property, never a callable -- so only the JS's property-read fallback
+// branch applies here).
+inline id NsAssociatedObjectForKey(id object, const char* key) {
+  if (object == nil) {
+    return nil;
+  }
+
+  std::string handleKey = std::string(key) + ".NativeScriptHandle";
+  id handleAssoc =
+      objc_getAssociatedObject(object, sel_registerName(handleKey.c_str()));
+  if ([handleAssoc isKindOfClass:[NSString class]]) {
+    NSString* handleStr = (NSString*)handleAssoc;
+    if (handleStr.length > 0) {
+      uintptr_t address = 0;
+      const char* utf8 = handleStr.UTF8String;
+      std::string text = utf8 != nullptr ? std::string(utf8) : std::string();
+      if (parseIntegerTextToUintptr(text, &address) && address != 0) {
+        return (__bridge id)(void*)address;
+      }
+      // Non-empty handle string that failed to resolve: matches JS's
+      // `nativeObjectFromHandle` returning null WITHOUT falling through to
+      // the `.NativeScriptValue` tier -- see the comment above.
+      return nil;
+    }
+  }
+
+  std::string valueKey = std::string(key) + ".NativeScriptValue";
+  return objc_getAssociatedObject(object, sel_registerName(valueKey.c_str()));
+}
+
+struct NsEmbeddedNavRecord {
+  bool ok;
+  id containerView;
+  id navigationController;
+  id navigationView;
+};
+
+// Mirrors `embeddedNavigationControllerRecordOnView` (tabs snapshot
+// :1975-:2023 at this op's pin) verbatim, minus the dead JS-expando tier
+// (see the block comment above).
+inline NsEmbeddedNavRecord NsEmbeddedNavRecordOnView(id view) {
+  NsEmbeddedNavRecord empty{false, nil, nil, nil};
+  if (view == nil) {
+    return empty;
+  }
+
+  id navigationController = NsAssociatedObjectForKey(
+      view, "react-native-screens.NativeScriptStackNavigationController");
+  if (navigationController != nil &&
+      [navigationController
+          respondsToSelector:@selector(popToRootViewControllerAnimated:)]) {
+    id containerView = NsAssociatedObjectForKey(
+        view, "react-native-screens.NativeScriptStackContainerView");
+    if (containerView == nil) {
+      containerView = view;
+    }
+    id navigationView = NsAssociatedObjectForKey(
+        view,
+        "react-native-screens.NativeScriptStackEmbeddedNavigationView");
+    if (navigationView == nil &&
+        [navigationController isKindOfClass:[UIViewController class]]) {
+      navigationView = ((UIViewController*)navigationController).view;
+    }
+    return NsEmbeddedNavRecord{true, containerView, navigationController,
+                               navigationView};
+  }
+
+  id responder = nil;
+  if ([view isKindOfClass:[UIResponder class]]) {
+    responder = ((UIResponder*)view).nextResponder;
+  }
+  if (responder != nil &&
+      [responder
+          respondsToSelector:@selector(popToRootViewControllerAnimated:)]) {
+    id responderView = nil;
+    if ([responder isKindOfClass:[UIViewController class]]) {
+      responderView = ((UIViewController*)responder).view;
+    }
+    return NsEmbeddedNavRecord{true, view, responder, responderView};
+  }
+
+  return empty;
+}
+
+// Mirrors `embeddedNavigationControllerRecordInMountedTabsChildSubviewTree`
+// (:4196-:4240 at this op's pin) -- BFS, queue cap 64 nodes PROCESSED
+// (matching the JS's `cursor < 64`, not a cap on total enqueued), subview
+// fan-out capped to 16 children per node
+// (`Math.min(arrayCount(subviews), 16)`). The JS's unused
+// `_navigationControllerRecordForHost` parameter (a per-descendant host-
+// record probe the JS's own comment says was already tried and reverted
+// for being ~900ms/mount -- "No per-descendant host-record probe") is
+// correctly NOT replicated here; it is dead code in the JS too.
+inline NsEmbeddedNavRecord NsEmbeddedNavRecordInSubviewTree(id rootView) {
+  NsEmbeddedNavRecord empty{false, nil, nil, nil};
+  if (rootView == nil) {
+    return empty;
+  }
+
+  NSMutableArray* queue = [NSMutableArray arrayWithObject:rootView];
+  NSUInteger cursor = 0;
+
+  while (cursor < queue.count && cursor < 64) {
+    id view = queue[cursor];
+    cursor += 1;
+    if (view == nil) {
+      continue;
+    }
+
+    NsEmbeddedNavRecord directRecord = NsEmbeddedNavRecordOnView(view);
+    if (directRecord.ok && directRecord.navigationController != nil) {
+      return directRecord;
+    }
+
+    // A mount-child candidate can be a UIViewController (no `.subviews`,
+    // matching JS's `view.subviews` reading `undefined` off a controller
+    // and `arrayCount` treating that as 0) as well as a UIView.
+    if (![view isKindOfClass:[UIView class]]) {
+      continue;
+    }
+    NSArray<UIView*>* subviews = ((UIView*)view).subviews;
+    NSUInteger subviewCount = subviews.count;
+    if (subviewCount > 16) {
+      subviewCount = 16;
+    }
+    for (NSUInteger i = 0; i < subviewCount; i++) {
+      UIView* subview = subviews[i];
+      if (subview != nil) {
+        [queue addObject:subview];
+      }
+    }
+  }
+
+  return empty;
+}
+
+// Wraps a (possibly nil) resolved native object exactly like
+// `interop.object`/`interop.getAssociatedObject` do (TypeConv.mm) -- same
+// `nativeObjectReturnTypeForClass` classification +
+// `convertNativeReturnValue` construction, so the JS side gets back a
+// normal live host-object wrapper, indistinguishable from one produced by
+// any other native call.
+inline Value NsWrapMaybeNativeObject(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    id object) {
+  if (object == nil) {
+    return Value::null();
+  }
+  NativeApiType type = nativeObjectReturnTypeForClass(object_getClass(object));
+  id boxed = object;
+  return convertNativeReturnValue(runtime, bridge, type, &boxed);
+}
+
+// jsi-facing entry point: `[err, ok(0/1), containerView, navigationController,
+// navigationView]`. `err !== ''` means the op itself failed (bad argument or
+// a native exception) -- the JS caller must fall back to its original
+// per-candidate loop, same convention as the two walkers above. `err === ''`
+// with `ok === 0` is a TRUSTED negative (the scan ran cleanly across every
+// candidate and found nothing) -- the JS caller must NOT re-run the
+// original walk in that case, or the crossing-count win is lost. Never
+// calls -description (33b583af).
+inline Value NsResolveEmbeddedNavRecordReturnArray(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const std::string& err, const NsEmbeddedNavRecord& record) {
+  Array out(runtime, 5);
+  out.setValueAtIndex(runtime, 0, makeString(runtime, err));
+  out.setValueAtIndex(runtime, 1, Value(record.ok ? 1 : 0));
+  out.setValueAtIndex(runtime, 2,
+                      NsWrapMaybeNativeObject(runtime, bridge, record.containerView));
+  out.setValueAtIndex(
+      runtime, 3,
+      NsWrapMaybeNativeObject(runtime, bridge, record.navigationController));
+  out.setValueAtIndex(runtime, 4,
+                      NsWrapMaybeNativeObject(runtime, bridge, record.navigationView));
+  return out;
+}
+
+inline Value NsResolveEmbeddedNavigationControllerHostFunction(
+    Runtime& runtime, const std::shared_ptr<NativeApiBridge>& bridge,
+    const Value* args, size_t count) {
+  NsEmbeddedNavRecord empty{false, nil, nil, nil};
+  if (count < 1 || !args[0].isObject() ||
+      !args[0].asObject(runtime).isArray(runtime)) {
+    return NsResolveEmbeddedNavRecordReturnArray(runtime, bridge, "bad-arg",
+                                                 empty);
+  }
+
+  Array candidates = args[0].asObject(runtime).getArray(runtime);
+  size_t candidateCount = candidates.size(runtime);
+
+  NsEmbeddedNavRecord result = empty;
+  std::string err;
+  @try {
+    for (size_t index = 0; index < candidateCount; index += 1) {
+      Value candidateValue = candidates.getValueAtIndex(runtime, index);
+      if (!candidateValue.isObject()) {
+        continue;
+      }
+      id candidate = NativeApiObjectHostObject::nativeObjectFromValue(
+          runtime, candidateValue);
+      if (candidate == nil) {
+        continue;
+      }
+      NsEmbeddedNavRecord record = NsEmbeddedNavRecordInSubviewTree(candidate);
+      if (record.ok && record.navigationController != nil) {
+        result = record;
+        break;
+      }
+    }
+  } @catch (NSException* exception) {
+    // NSException.name is a plain NSString property read, never a
+    // -description call (the hazard fixed in 33b583af).
+    NSString* name = exception.name ?: @"NSException";
+    err = std::string("exc:") + (name.UTF8String ?: "unknown");
+    result = empty;
+  }
+
+  return NsResolveEmbeddedNavRecordReturnArray(runtime, bridge, err, result);
+}
+
 #endif  // TARGET_OS_IPHONE
 
 }  // namespace nativescript
