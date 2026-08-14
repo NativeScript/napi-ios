@@ -637,14 +637,10 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
       if (args.length > 0) {
         return rememberInstanceClass(constructNativeInstance(nativeClass, args, rememberInstanceClass));
       }
-      if (typeof nativeClass.alloc !== 'function') {
-        throw new Error('Native class cannot be allocated');
+      if (typeof nativeClass.new !== 'function') {
+        throw new Error('Native class cannot be initialized');
       }
-      var instance = nativeClass.alloc();
-      if (instance && typeof instance.init === 'function') {
-        return rememberInstanceClass(instance.init());
-      }
-      return rememberInstanceClass(instance);
+      return rememberInstanceClass(nativeClass.new());
 	    };
 		    function rememberInstanceClass(instance) {
 		      return rememberClassOnInstance(instance, wrapper || constructable);
