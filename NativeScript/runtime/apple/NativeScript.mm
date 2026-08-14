@@ -5,7 +5,6 @@
 #include "ffi/objc/shared/Tasks.h"
 #include "js_native_api.h"
 #include "jsr.h"
-#include "runtime/NativeScriptException.h"
 
 using namespace nativescript;
 

@@ -22,13 +22,10 @@
 #include "SignatureDispatch.h"
 #include "TypeConv.h"
 #include "Util.h"
-#include "Block.h"
-#include "Class.h"
 #include "runtime/apple/NativeScriptException.h"
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 #include "node_api_util.h"
-#include "runtime/NativeScriptException.h"
 
 namespace nativescript {
 
