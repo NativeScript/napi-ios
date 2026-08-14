@@ -1128,22 +1128,6 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
           (_hasModifiedPropsInCurrentTransaction || _hasPendingFabricTransactionCommitFallbackProps) ? 1 : 0,
           _containerView.immediateTransactionCommit ? 1 : 0);
   }
-  // TEMPORARY INSTRUMENTATION (iteration 11, Stage 0 -- [ITER11-TXN]) -- a
-  // per-host, per-transaction line (transaction index + mutation count,
-  // captured BEFORE the modified-children/modified-props flags are cleared
-  // below) so the settle-cascade transactions #2-#7 the audit predicts will
-  // disappear under nativeHandleAuthority can be counted directly, not just
-  // inferred from wall-clock. Env-gated (NS_NS_ITER11_TXN), default off;
-  // removed before this iteration lands for real. See
-  // dev-notes/perf/iteration-11-*.md.
-  static const BOOL profileIter11Txn = getenv("NS_NS_ITER11_TXN") != nullptr;
-  if (profileIter11Txn) {
-    NSLog(@"[ITER11-TXN] host=%@ txn=%lld mutations=%zu children=%d props=%d",
-          _containerView.hostId ?: @"?", static_cast<long long>(transaction.getNumber()),
-          transaction.getMutations().size(),
-          _hasModifiedChildrenInCurrentTransaction ? 1 : 0,
-          (_hasModifiedPropsInCurrentTransaction || _hasPendingFabricTransactionCommitFallbackProps) ? 1 : 0);
-  }
   _isApplyingMountingTransaction = NO;
   // RNS `willBeUnmountedInUpcomingTransaction` parity: the pending-unmount-tag
   // set is transaction-scoped only; always clear it here regardless of
