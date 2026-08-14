@@ -14,7 +14,6 @@
 #import <React/RCTSurfaceTouchHandler.h>
 #endif
 
-#include <chrono>
 #include <cstring>
 
 using namespace facebook::react;
@@ -1126,22 +1125,6 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
           _hasModifiedChildrenInCurrentTransaction ? 1 : 0,
           (_hasModifiedPropsInCurrentTransaction || _hasPendingFabricTransactionCommitFallbackProps) ? 1 : 0,
           _containerView.immediateTransactionCommit ? 1 : 0);
-  }
-  // TEMPORARY INSTRUMENTATION (iteration 9, C-fix-3 measurement) --
-  // Fabric's OWN per-transaction mount telemetry (facebook::react::
-  // TransactionTelemetry), read directly rather than inferred. Removed
-  // before this iteration's work lands for real (see the final "remove all
-  // instrumentation, clean rebuild" pass).
-  static const BOOL profileMountPhase = getenv("NS_NS_FABRIC7") != nullptr;
-  if (profileMountPhase) {
-    auto& telemetry = transaction.getTelemetry();
-    const double mountMs =
-        std::chrono::duration<double, std::milli>(telemetry.getMountEndTime() -
-                                                    telemetry.getMountStartTime())
-            .count();
-    NSLog(@"[FABRIC7] host=%@ txn=%lld mountMs=%.2f mutations=%zu",
-          _containerView.hostId ?: @"?", static_cast<long long>(transaction.getNumber()),
-          mountMs, transaction.getMutations().size());
   }
   _isApplyingMountingTransaction = NO;
   // RNS `willBeUnmountedInUpcomingTransaction` parity: the pending-unmount-tag
