@@ -457,6 +457,22 @@ export type UIKitHostViewProps = ViewProps & {
    * observation native knows how to compute (currently UITabBarController).
    */
   nativeCommitObservations?: boolean;
+  /**
+   * iteration 11, Stage 1 (default off): native is already the handle
+   * authority on every path that matters (every lifecycle crossing applies
+   * `uikitHostHandles(host)` to the container natively; the create-miss race
+   * heals via `refreshContainerViewFrameAndHost` -> `mountUIKitHostIfNeeded`;
+   * the React-delivered handle props are inert no-ops behind the Bug-B
+   * empty-string guards). When true, `defineUIKitHost` stops echoing the
+   * worklet-returned handles into React state (`applyHostHandles` becomes a
+   * no-op) and stops bumping `nativeHostRevision` -- removing the settle
+   * `setState`s that spawn the post-content Fabric transaction cascade
+   * (#2-#7) without changing what native ends up doing. Fail-open: the state
+   * machinery, the rendered (now-inert) handle props, and native's own
+   * ingest paths are all unchanged and stay compiled. Per-host, JS-only; no
+   * native/codegen diff. See dev-notes/perf/iteration-11-*.md.
+   */
+  nativeHandleAuthority?: boolean;
   /** Mount RN children straight into the children view. */
   mountChildrenDirectlyToChildrenView?: boolean;
   /** Lay out direct children to the children view's bounds. */
@@ -5836,6 +5852,17 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
       if (handles == null) {
         return;
       }
+      // iteration 11, Stage 1 (nativeHandleAuthority): native already applied
+      // these same handles to the container synchronously as part of the
+      // crossing that produced `handles` (NativeScriptUIView.mm's
+      // applyUIKitHostHandles:). Echoing them into React state only serves
+      // to re-render this component with the (Bug-B-guarded, inert) handle
+      // props -- which is exactly the settle cascade this bit removes. The
+      // call sites and their `.then` chains stay compiled and still run;
+      // only this echo is skipped.
+      if (props.nativeHandleAuthority === true) {
+        return;
+      }
 
       setNativeViewHandle((previous) =>
         previous === handles.nativeViewHandle
@@ -6068,7 +6095,14 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
             }
             previousPropsRef.current = propsRef.current;
             applyHostHandles(handles);
-            if (handles != null) {
+            // iteration 11, Stage 1 (nativeHandleAuthority): this bump only
+            // exists to drive the `mountedRevision` prop -> `"mounted"`
+            // crossing render fallback; native's own one-shot `mounted`
+            // delivery (`scheduleUIKitHostMountedLifecycleIfNeeded`) already
+            // fires first and is idempotent on the JS side, so this is
+            // strictly the redundant, slower deliverer. See §1.1 row 2 of
+            // dev-notes/perf/iteration-11-handle-authority-audit.md.
+            if (handles != null && props.nativeHandleAuthority !== true) {
               setNativeHostRevision((revision) => revision + 1);
             }
           })
@@ -6189,7 +6223,9 @@ function defineUIKitHost<Props extends object, NativeView = unknown>(
             }
             previousPropsRef.current = propsRef.current;
             applyHostHandles(handles);
-            if (handles != null) {
+            // iteration 11, Stage 1 (nativeHandleAuthority): see the sibling
+            // gate above (async-prepare path); same reasoning, bootstrap path.
+            if (handles != null && props.nativeHandleAuthority !== true) {
               setNativeHostRevision((revision) => revision + 1);
             }
             updateMeasuredSize();
