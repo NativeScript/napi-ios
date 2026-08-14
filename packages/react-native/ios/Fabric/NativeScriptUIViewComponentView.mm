@@ -1,6 +1,5 @@
 #import "NativeScriptUIViewComponentView.h"
 
-#import <QuartzCore/QuartzCore.h>
 #import <React/RCTFabricComponentsPlugins.h>
 #import <React/RCTConversions.h>
 #import <React/RCTMountingTransactionObserving.h>
@@ -15,7 +14,6 @@
 #import <React/RCTSurfaceTouchHandler.h>
 #endif
 
-#include <chrono>
 #include <cstring>
 
 using namespace facebook::react;
@@ -1130,48 +1128,6 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
           (_hasModifiedPropsInCurrentTransaction || _hasPendingFabricTransactionCommitFallbackProps) ? 1 : 0,
           _containerView.immediateTransactionCommit ? 1 : 0);
   }
-  // TEMPORARY INSTRUMENTATION (iteration 9, C-fix-3 measurement; restored for
-  // iteration 10 Stage 0 -- see dev-notes/perf/iteration-10-*.md §0) --
-  // Fabric's OWN per-transaction mount telemetry (facebook::react::
-  // TransactionTelemetry), read directly rather than inferred. Removed
-  // before this iteration's work lands for real (see the final "remove all
-  // instrumentation, clean rebuild" pass).
-  static const BOOL profileMountPhase = getenv("NS_NS_FABRIC7") != nullptr;
-  if (profileMountPhase) {
-    auto& telemetry = transaction.getTelemetry();
-    const double mountMs =
-        std::chrono::duration<double, std::milli>(telemetry.getMountEndTime() -
-                                                    telemetry.getMountStartTime())
-            .count();
-    NSLog(@"[FABRIC7] host=%@ txn=%lld mountMs=%.2f mutations=%zu",
-          _containerView.hostId ?: @"?", static_cast<long long>(transaction.getNumber()),
-          mountMs, transaction.getMutations().size());
-  }
-  // TEMPORARY INSTRUMENTATION (iteration 10, Stage 0 -- [FABRIC10]) --
-  // §0's correction: Fabric's own mount telemetry (above, [FABRIC7]) is
-  // stamped BEFORE `notifyObserversMountingTransactionDidMount` runs
-  // (TelemetryController.cpp:19-51 / RCTMountingManager.mm:259-270), so it
-  // structurally cannot see this callback's own body -- exactly the code
-  // iteration 9's C-fix-1/2/3 touch. Bracket the OBSERVER PHASE + same-turn
-  // tails here instead: entry-to-return for the synchronous (immediate)
-  // path, entry-to-return of the dispatch_async tail for the deferred path.
-  // `cumulativeMs` is measured from the FIRST observer entry seen for a
-  // given transaction number (observers run back-to-back on main, so the
-  // last-logged `cumulativeMs` for a transaction approximates the whole
-  // multi-host observer-phase span). Removed before this iteration lands.
-  static const BOOL profileObserverPhase = getenv("NS_NS_FABRIC10") != nullptr;
-  static NSInteger sFabric10Txn = -1;
-  static CFTimeInterval sFabric10PhaseStart = 0;
-  CFTimeInterval fabric10Entry = 0;
-  long long fabric10TxnNumber = 0;
-  if (profileObserverPhase) {
-    fabric10Entry = CACurrentMediaTime();
-    fabric10TxnNumber = static_cast<long long>(transaction.getNumber());
-    if (fabric10TxnNumber != sFabric10Txn) {
-      sFabric10Txn = fabric10TxnNumber;
-      sFabric10PhaseStart = fabric10Entry;
-    }
-  }
   _isApplyingMountingTransaction = NO;
   // RNS `willBeUnmountedInUpcomingTransaction` parity: the pending-unmount-tag
   // set is transaction-scoped only; always clear it here regardless of
@@ -1189,12 +1145,6 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
   _hasObservedPropsUpdateSinceLastTransaction = NO;
 
   if (!hasModifiedChildren && !hasModifiedProps) {
-    if (profileObserverPhase) {
-      const CFTimeInterval now = CACurrentMediaTime();
-      NSLog(@"[FABRIC10] host=%@ txn=%lld hostMs=%.2f cumulativeMs=%.2f empty=1 deferred=0",
-            _containerView.hostId ?: @"?", fabric10TxnNumber,
-            (now - fabric10Entry) * 1000.0, (now - sFabric10PhaseStart) * 1000.0);
-    }
     return;
   }
 
@@ -1247,35 +1197,19 @@ static UIView* NativeScriptFabricHitTestTabBarAtPoint(UIView* root, UIWindow* wi
         notifyFabricTransactionCommittedWithModifiedChildren:hasModifiedChildren
                                                modifiedProps:hasModifiedProps
                                                    mutations:mutationRecords];
-    if (profileObserverPhase) {
-      const CFTimeInterval now = CACurrentMediaTime();
-      NSLog(@"[FABRIC10] host=%@ txn=%lld hostMs=%.2f cumulativeMs=%.2f empty=0 deferred=0",
-            _containerView.hostId ?: @"?", fabric10TxnNumber,
-            (now - fabric10Entry) * 1000.0, (now - sFabric10PhaseStart) * 1000.0);
-    }
     return;
   }
 
-  const CFTimeInterval fabric10ScheduleTime = profileObserverPhase ? CACurrentMediaTime() : 0;
   dispatch_async(dispatch_get_main_queue(), ^{
     if ([self->_containerView fabricTransactionDeliveryToken] != transactionToken) {
       return;
     }
 
-    const CFTimeInterval fabric10TailEntry = profileObserverPhase ? CACurrentMediaTime() : 0;
     [self refreshContainerViewFrameAndHost];
     [self->_containerView
         notifyFabricTransactionCommittedWithModifiedChildren:hasModifiedChildren
                                                modifiedProps:hasModifiedProps
                                                    mutations:mutationRecords];
-    if (profileObserverPhase) {
-      const CFTimeInterval now = CACurrentMediaTime();
-      NSLog(@"[FABRIC10] host=%@ txn=%lld hostMs=%.2f cumulativeMs=%.2f empty=0 deferred=1 "
-            @"scheduleDelayMs=%.2f",
-            self->_containerView.hostId ?: @"?", fabric10TxnNumber,
-            (now - fabric10TailEntry) * 1000.0, (now - sFabric10PhaseStart) * 1000.0,
-            (fabric10TailEntry - fabric10ScheduleTime) * 1000.0);
-    }
   });
 }
 
