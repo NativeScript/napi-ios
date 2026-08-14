@@ -7,6 +7,26 @@
 
 #include "../shared/bridge/InteropProfiler.h"
 
+// `../shared/bridge/BatchOps.mm` (textually included below, inside this
+// TU's `namespace nativescript { namespace { ... } }`) is pure UIKit code
+// (UIView/UIScrollView/etc, guarded `#if TARGET_OS_IPHONE`). The Hermes
+// engine's translation unit gets UIKit imported for free via its
+// CocoaPods/Xcode target's implicit prefix header; this standalone V8/
+// napi-cli CLI build (this file, no prefix header) does not, and CI's
+// iOS-simulator build of this target failed on exactly that ("unknown type
+// name 'UIView'", commits 77e93b22/93aa4a0f) even after BatchOps.mm's own
+// body was correctly TARGET_OS_IPHONE-guarded -- the guard's condition is
+// true for iOS *simulator* too (same as device), so the guarded code was
+// reached, just without UIKit declared. The import cannot live inside
+// BatchOps.mm itself: it is textually included below AFTER `namespace
+// nativescript {`/the anonymous namespace both open, and Objective-C
+// @interface/@protocol declarations (UIKit.h is full of them) are illegal
+// inside a C++ namespace -- it must be here, at this file's true global
+// scope, before either namespace opens.
+#if TARGET_OS_IPHONE
+#import <UIKit/UIKit.h>
+#endif  // TARGET_OS_IPHONE
+
 namespace nativescript {
 
 namespace {
