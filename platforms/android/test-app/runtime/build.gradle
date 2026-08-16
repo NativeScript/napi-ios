@@ -328,6 +328,14 @@ tasks.configureEach { task ->
         if (jsEngine.startsWith("V8")) {
             task.dependsOn('downloadV8Libs')
         }
+        // Before configure, not before build: CMake records the prebuilt .so as
+        // the imported target's runtime file, and that is what AGP packages into
+        // the APK. A config generated while the libs are missing carries no
+        // runtime file, so a later build succeeds and the app dies at launch
+        // with "dlopen failed: library libhermesvm.so not found".
+        if (jsEngine == "HERMES" || jsEngine == "SHERMES") {
+            task.dependsOn('downloadHermesLibs')
+        }
     }
 
     if (task =~ /buildCMake.*/) {
@@ -414,6 +422,29 @@ tasks.register('downloadV8Libs', Exec) {
         // Missing entirely, or present but with no ABI subdirectory in it.
         !v8EngineLibDir.isDirectory() ||
             (v8EngineLibDir.listFiles({ File f -> f.isDirectory() } as FileFilter) ?: []).length == 0
+    }
+}
+
+// Hermes ships as prebuilt .so files rather than sources, from the same pinned
+// release the Apple xcframework comes from, and is gitignored like the V8 libs.
+//
+// The check is for the .so itself, not just the directory: a partial or
+// interrupted download leaves the tree in place, and "directory exists" would
+// then skip the fetch and fail in ninja with "missing and no known rule to make
+// it", which reads like a broken checkout rather than a missing download.
+def hermesEngineLibDir = new File(projectDir, "src/main/libs/hermes")
+
+tasks.register('downloadHermesLibs', Exec) {
+    description = 'Fetch the prebuilt Hermes libs when they are not present.'
+    workingDir = new File(projectDir, "../../../..")
+    commandLine 'bash', 'scripts/download_hermes.sh'
+    onlyIf {
+        def abis = ["arm64-v8a", "armeabi-v7a", "x86", "x86_64"]
+        !["debug", "release"].every { variant ->
+            abis.every { abi ->
+                new File(hermesEngineLibDir, "${variant}/${abi}/libhermesvm.so").isFile()
+            }
+        }
     }
 }
 
