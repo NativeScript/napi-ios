@@ -465,7 +465,7 @@ Function Function::createFromHostConstructor(Runtime& runtime, const PropNameID&
             auto* holder =
                 static_cast<v8engine::FunctionHolder*>(info.Data().As<v8::External>()->Value(v8::kExternalPointerTypeTagDefault));
             Runtime runtime(holder->state);
-            v8engine::StackValueArray<8> args(static_cast<size_t>(info.Length()));
+            StackValueArray<Value, 8> args(static_cast<size_t>(info.Length()));
             for (int i = 0; i < info.Length(); i++) {
               args.emplace(static_cast<size_t>(i), Value::borrowed(runtime, info[i]));
             }
