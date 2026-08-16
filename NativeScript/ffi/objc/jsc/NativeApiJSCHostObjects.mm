@@ -4,10 +4,6 @@
 #ifdef TARGET_ENGINE_JSC
 
 namespace nativescript {
-class NativeApiObjectHostObject;
-}
-
-namespace nativescript {
 namespace engine {
 
 namespace jscengine {
@@ -36,7 +32,7 @@ bool shouldDeferToNativeInstancePrototype(JSContextRef context,
                                           HostObjectHolder* holder) {
   if (context == nullptr || object == nullptr || propertyName == nullptr ||
       holder == nullptr ||
-      holder->typeToken != hostObjectTypeToken<NativeApiObjectHostObject>() ||
+      !holder->nativeInstance ||
       isNativeInstancePrototypeBypassExcluded(propertyName)) {
     return false;
   }
@@ -204,8 +200,9 @@ void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function) {
 }  // namespace jscengine
 
 Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
-                                             const void* typeToken) {
-  auto* holder = new jscengine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
+                                             const void* typeToken, bool nativeInstance) {
+  auto* holder =
+      new jscengine::HostObjectHolder(runtime.state(), std::move(host), typeToken, nativeInstance);
   JSObjectRef object = JSObjectMake(runtime.context(), jscengine::hostClass(runtime), holder);
   return Object::fromValueStorage(Value(runtime, object).storage_);
 }
