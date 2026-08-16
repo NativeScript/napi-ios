@@ -192,7 +192,13 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
           }
           if (state.boundReceiverState != nullptr) {
             receiverHostObject = state.boundReceiver.lock();
-          } else if (thisValue.isObject()) {
+          }
+          // Fall through rather than else-if: the bound receiver is weak, so a
+          // collected wrapper leaves it empty, and the call still has a perfectly
+          // good receiver in thisValue. Binding must not turn a live call into
+          // "requires a native receiver". SelectorGroupCall.h already resolves it
+          // this way; this lambda was the one place that did not.
+          if (!receiverHostObject && thisValue.isObject()) {
             Object receiverObject = thisValue.asObject(runtime);
             if (receiverObject.isHostObject<NativeApiObjectHostObject>(
                     runtime)) {

@@ -34,9 +34,17 @@ inline NativeApiResolvedSelectorGroupCall resolveNativeApiSelectorGroupCall(
   result.receiver =
       data.receiverIsClass ? static_cast<id>(data.lookupClass) : nil;
   if (!data.receiverIsClass) {
-    result.receiver = data.boundReceiverState != nullptr
-                          ? data.boundReceiverState->object()
-                          : resolveReceiver();
+    // The bound receiver's lifetime state is cleared when its ObjC object goes
+    // away, so "bound" does not mean "still has an object". Falling back to the
+    // call's own receiver keeps a live call working; the ternary turned it into
+    // "requires a native receiver". This mirrors how the init path below
+    // resolves the receiver host.
+    if (data.boundReceiverState != nullptr) {
+      result.receiver = data.boundReceiverState->object();
+    }
+    if (result.receiver == nil) {
+      result.receiver = resolveReceiver();
+    }
   }
   if (result.receiver == nil) {
     throw JSError(runtime,
