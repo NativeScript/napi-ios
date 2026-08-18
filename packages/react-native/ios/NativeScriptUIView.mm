@@ -784,11 +784,7 @@ static BOOL NativeScriptFabricDebugEnabled() {
   return enabled != nullptr && enabled[0] != '\0' && strcmp(enabled, "0") != 0;
 }
 
-static void NativeScriptFabricDebugLog(NSString* format, ...) {
-  if (!NativeScriptFabricDebugEnabled()) {
-    return;
-  }
-
+static void NativeScriptFabricDebugLogImpl(NSString* format, ...) {
   va_list args;
   va_start(args, format);
   NSString* message = [[NSString alloc] initWithFormat:format arguments:args];
@@ -796,6 +792,27 @@ static void NativeScriptFabricDebugLog(NSString* format, ...) {
   NSLog(@"[NS_NS_FABRIC_DEBUG] %@", message);
   [message release];
 }
+
+// iteration 14: NativeScriptFabricDebugLog was a plain C variadic function, so
+// (matching iteration 13's identical fix for the sibling
+// NativeScriptFabricLifecycleLog, see NativeScriptUIViewComponentView.mm)
+// every one of this file's 14 call sites paid for building its arguments --
+// including, at several sites, a per-mounted-child loop each calling
+// NativeScriptFabricDebugChildEventSummary (an 11-field NSDictionary lookup +
+// -stringWithFormat: build) -- on EVERY invocation, even with
+// NS_NS_FABRIC_DEBUG unset (the default/production/itest state), because the
+// function's own early-return guard only fires after the arguments are
+// already built. Macro-ize so the whole call, arguments included, is skipped
+// entirely when the debug flag is off. Byte-identical output whenever
+// NS_NS_FABRIC_DEBUG IS set (same NativeScriptFabricDebugLogImpl body, same
+// format strings, same arguments); purely removes dead-when-disabled work
+// otherwise.
+#define NativeScriptFabricDebugLog(format, ...)               \
+  do {                                                        \
+    if (NativeScriptFabricDebugEnabled()) {                   \
+      NativeScriptFabricDebugLogImpl(format, ##__VA_ARGS__);  \
+    }                                                          \
+  } while (0)
 
 static NSString* NativeScriptFabricDebugChildEventSummary(
     NSDictionary<NSString*, id>* event) {
