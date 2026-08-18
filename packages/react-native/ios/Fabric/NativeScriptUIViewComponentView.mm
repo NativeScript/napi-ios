@@ -63,7 +63,7 @@ static NSString* NativeScriptFabricDescribeView(UIView* view) {
                                     static_cast<unsigned long>(view.subviews.count)];
 }
 
-static void NativeScriptFabricLifecycleLog(NSString* format, ...) {
+static void NativeScriptFabricLifecycleLogImpl(NSString* format, ...) {
   if (!NativeScriptFabricLifecycleDebugEnabled()) {
     return;
   }
@@ -75,6 +75,27 @@ static void NativeScriptFabricLifecycleLog(NSString* format, ...) {
   NSLog(@"[NS_NS_FABRIC_DEBUG] %@", message);
   [message release];
 }
+
+// iteration 13: every call site below passes 1-2 NativeScriptFabricDescribeView(...)
+// arguments (each a multi-field -stringWithFormat: build: class name, frame,
+// bounds, hidden/alpha, window pointer, superview class+pointer, subview
+// count). Objective-C/C evaluates ALL arguments of a function call before the
+// call itself runs, so when this was a plain function, EVERY init/mountChild/
+// unmountChild/didMoveToWindow/willMoveToSuperview/didMoveToSuperview/
+// updateLayoutMetrics/prepareForRecycle/invalidate call paid that formatting
+// cost even with NS_NS_FABRIC_DEBUG unset (the default, production/itest
+// state) -- an always-on tax for a debug-only feature, measured via the
+// per-mutation histogram in dev-notes/perf/iteration-13-*.md. Macro-ize so
+// the whole call, arguments included, is skipped when the flag is off; this
+// is a behavior-preserving optimization (byte-identical output whenever the
+// flag IS set) in the same "stays landed even if ms is small" class as
+// iteration 9's C-fix-1/C-fix-3.
+#define NativeScriptFabricLifecycleLog(format, ...)                    \
+  do {                                                                 \
+    if (NativeScriptFabricLifecycleDebugEnabled()) {                   \
+      NativeScriptFabricLifecycleLogImpl(format, ##__VA_ARGS__);       \
+    }                                                                  \
+  } while (0)
 
 static NSMapTable<NSNumber*, NativeScriptUIViewComponentView*>*
 NativeScriptFabricComponentViewRegistry() {
