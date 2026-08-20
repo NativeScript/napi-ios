@@ -124,56 +124,7 @@ class CFunctionInvocationFrame final {
 };
 
 inline bool unwrapCompatNativeHandleForCFunction(napi_env env, napi_value value, void** out) {
-  if (value == nullptr || out == nullptr) {
-    return false;
-  }
-
-  if (Pointer::isInstance(env, value)) {
-    Pointer* ptr = Pointer::unwrap(env, value);
-    *out = ptr != nullptr ? ptr->data : nullptr;
-    return ptr != nullptr;
-  }
-
-  if (Reference::isInstance(env, value)) {
-    Reference* ref = Reference::unwrap(env, value);
-    *out = ref != nullptr ? ref->data : nullptr;
-    return ref != nullptr;
-  }
-
-  napi_valuetype valueType = napi_undefined;
-  if (napi_typeof(env, value, &valueType) != napi_ok) {
-    return false;
-  }
-
-  if (valueType == napi_bigint) {
-    uint64_t raw = 0;
-    bool lossless = false;
-    if (napi_get_value_bigint_uint64(env, value, &raw, &lossless) != napi_ok) {
-      return false;
-    }
-    *out = reinterpret_cast<void*>(static_cast<uintptr_t>(raw));
-    return true;
-  }
-
-  if (valueType == napi_external) {
-    return napi_get_value_external(env, value, out) == napi_ok;
-  }
-
-  if (valueType != napi_object && valueType != napi_function) {
-    return false;
-  }
-
-  bool hasNativePointer = false;
-  if (napi_has_named_property(env, value, "__ns_native_ptr", &hasNativePointer) == napi_ok &&
-      hasNativePointer) {
-    napi_value nativePointerValue = nullptr;
-    if (napi_get_named_property(env, value, "__ns_native_ptr", &nativePointerValue) == napi_ok &&
-        napi_get_value_external(env, nativePointerValue, out) == napi_ok && *out != nullptr) {
-      return true;
-    }
-  }
-
-  return napi_unwrap(env, value, out) == napi_ok && *out != nullptr;
+  return unwrapKnownNativeHandle(env, value, out);
 }
 
 inline napi_value createCompatDispatchQueueWrapperForCFunction(napi_env env,
@@ -463,6 +414,14 @@ napi_value CFunction::jsCallDirect(napi_env env, MDSectionOffset offset,
       cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i], &argShouldFree,
                                  &shouldFreeAny);
       shouldFree[i] = argShouldFree ? 1 : 0;
+      if (ConsumeNapiArgumentConversionFailure(env)) {
+        for (unsigned int converted = 0; converted <= i; converted++) {
+          if (shouldFree[converted]) {
+            cif->argTypes[converted]->free(env, *((void**)avalues[converted]));
+          }
+        }
+        return nullptr;
+      }
     }
   }
 

@@ -9,7 +9,7 @@ using namespace std;
 using namespace tns;
 
 NativeScriptException::NativeScriptException(JEnv& env)
-    : m_javascriptException(nullptr) {
+    : m_javascriptException(nullptr), m_napiEnv(nullptr) {
     jthrowable  thrw = env.ExceptionOccurred();
     m_javaException = JniLocalRef(thrw);
     env.ExceptionClear();
@@ -17,24 +17,40 @@ NativeScriptException::NativeScriptException(JEnv& env)
 }
 
 NativeScriptException::NativeScriptException(const string& message)
-    : m_javascriptException(nullptr), m_javaException(JniLocalRef()), m_message(message) {
+    : m_javascriptException(nullptr), m_napiEnv(nullptr), m_javaException(JniLocalRef()), m_message(message) {
 
     DEBUG_WRITE("%s", m_message.c_str());
 }
 
 NativeScriptException::NativeScriptException(const string& message, const string& stackTrace)
-    : m_javascriptException(nullptr), m_javaException(JniLocalRef()), m_message(message), m_stackTrace(stackTrace) {
+    : m_javascriptException(nullptr), m_napiEnv(nullptr), m_javaException(JniLocalRef()), m_message(message), m_stackTrace(stackTrace) {
 
     DEBUG_WRITE("%s, %s ", m_message.c_str(), m_stackTrace.c_str());
 }
 
 NativeScriptException::NativeScriptException(napi_env env, napi_value error, const string& message)
-    : m_javaException(JniLocalRef()) {
-    m_javascriptException = nullptr;
+    : m_javascriptException(nullptr), m_napiEnv(env), m_javaException(JniLocalRef()) {
     napi_create_reference(env, error, 1, &m_javascriptException);
     m_message = GetErrorMessage(env, error, message);
     m_stackTrace = GetErrorStackTrace(env, error);
     m_fullMessage = GetFullMessage(env, error, m_message);
+}
+
+NativeScriptException::NativeScriptException(NativeScriptException&& other) noexcept
+    : m_javascriptException(other.m_javascriptException),
+      m_napiEnv(other.m_napiEnv),
+      m_javaException(std::move(other.m_javaException)),
+      m_message(std::move(other.m_message)),
+      m_stackTrace(std::move(other.m_stackTrace)),
+      m_fullMessage(std::move(other.m_fullMessage)) {
+    other.m_javascriptException = nullptr;
+    other.m_napiEnv = nullptr;
+}
+
+NativeScriptException::~NativeScriptException() {
+    if (m_javascriptException != nullptr && m_napiEnv != nullptr) {
+        napi_delete_reference(m_napiEnv, m_javascriptException);
+    }
 }
 
 void NativeScriptException::ReThrowToNapi(napi_env env) {
@@ -61,6 +77,12 @@ void NativeScriptException::ReThrowToNapi(napi_env env) {
 
     napi_throw(env, errObj);
 
+    if (m_javascriptException != nullptr) {
+        napi_delete_reference(env, m_javascriptException);
+        m_javascriptException = nullptr;
+        m_napiEnv = nullptr;
+    }
+
 //    JSLeave
 }
 
@@ -69,6 +91,7 @@ void NativeScriptException::ReThrowToJava(napi_env env) {
         NapiScope scope(env);
     }
     jthrowable ex = nullptr;
+    bool transferredJavascriptException = false;
     JEnv jEnv;
 
     if (!m_javaException.IsNull()) {
@@ -98,6 +121,7 @@ void NativeScriptException::ReThrowToJava(napi_env env) {
 
         if (ex == nullptr) {
             ex = static_cast<jthrowable>(jEnv.NewObject(NATIVESCRIPTEXCEPTION_CLASS, NATIVESCRIPTEXCEPTION_JSVALUE_CTOR_ID, (jstring)msg, (jstring)stackTrace, reinterpret_cast<jlong>(m_javascriptException)));
+            transferredJavascriptException = true;
         } else {
             auto objectManager = Runtime::GetRuntime(env)->GetObjectManager();
             auto excClassName = objectManager->GetClassName(ex);
@@ -114,6 +138,14 @@ void NativeScriptException::ReThrowToJava(napi_env env) {
          ex = static_cast<jthrowable>(jEnv.NewObject(NATIVESCRIPTEXCEPTION_CLASS, NATIVESCRIPTEXCEPTION_JSVALUE_CTOR_ID, (jstring)msg, (jstring)nullptr, (jlong)0));
     }
     jEnv.Throw(ex);
+
+    if (m_javascriptException != nullptr) {
+        if (!transferredJavascriptException && m_napiEnv != nullptr) {
+            napi_delete_reference(m_napiEnv, m_javascriptException);
+        }
+        m_javascriptException = nullptr;
+        m_napiEnv = nullptr;
+    }
 }
 
 void NativeScriptException::Init() {
@@ -183,6 +215,7 @@ napi_value NativeScriptException::WrapJavaToJsException(napi_env env) {
             auto pv = reinterpret_cast<napi_ref>(addr);
             napi_get_reference_value(env, pv, &errObj);
             napi_delete_reference(env, pv);
+            jenv.SetLongField(m_javaException, fieldID, 0);
         } else {
             errObj = GetJavaExceptionFromEnv(env, m_javaException, jenv);
         }

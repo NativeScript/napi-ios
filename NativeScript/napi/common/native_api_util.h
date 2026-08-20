@@ -62,9 +62,7 @@ struct char_traits<unsigned short> {
 #include "js_native_api.h"
 #include "js_native_api_types.h"
 
-#ifndef NAPI_PREAMBLE
-#define NAPI_PREAMBLE napi_status status;
-#endif
+#define NS_NAPI_PREAMBLE napi_status status;
 
 #define NAPI_CALLBACK_BEGIN(n_args)                                      \
   napi_status status;                                                    \
@@ -180,9 +178,9 @@ class PersistentObject {
   napi_env GetEnv() const { return env_; }
 
  private:
-  bool isOwnedRef_ = false;
   napi_env env_;
   napi_ref ref_;
+  bool isOwnedRef_ = false;
 };
 
 inline napi_property_descriptor desc(const char* name, napi_callback method,

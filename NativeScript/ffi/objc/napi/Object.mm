@@ -426,7 +426,7 @@ void attachObjectLifecycleAssociation(napi_env env, id object) {
 }
 
 namespace {
-void finalize_objc_object_now(napi_env /*env*/, void* data, void* hint) {
+void finalize_objc_object_now(napi_env env, void* data, void* hint) {
   (void)hint;
   JSObjectFinalizerContext* context = static_cast<JSObjectFinalizerContext*>(data);
   if (context == nullptr) {
@@ -437,6 +437,13 @@ void finalize_objc_object_now(napi_env /*env*/, void* data, void* hint) {
   if (IsBridgeStateLive(bridgeState, context->bridgeStateToken)) {
     bridgeState->unregisterObjectIfRefMatches(context->object, context->ref);
   }
+
+#if defined(TARGET_ENGINE_HERMES)
+  if (env != nullptr && context->ref != nullptr) {
+    napi_delete_reference(env, context->ref);
+    context->ref = nullptr;
+  }
+#endif
 
   delete context;
 }
@@ -456,7 +463,7 @@ napi_value ObjCBridgeState::getObject(napi_env env, id obj, napi_value construct
     return nullptr;
   }
 
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   Class cls = object_getClass(obj);
 
@@ -596,7 +603,8 @@ napi_value ObjCBridgeState::findCachedObjectWrapper(napi_env env, id obj) {
   }
 
   JSWrapperObjectAssociation* association = [JSWrapperObjectAssociation associationFor:obj];
-  if (association != nil) {
+  if (association != nil && association.env == env && association.bridgeState == this &&
+      IsBridgeStateLive(association.bridgeState, association.bridgeStateToken)) {
     napi_value jsObject = get_ref_value(env, association.ref);
     if (jsObject != nullptr) {
       bool isArrayBuffer = false;
@@ -704,7 +712,7 @@ napi_value findConstructorForObject(napi_env env, ObjCBridgeState* bridgeState, 
 napi_value ObjCBridgeState::getObject(napi_env env, id obj, ObjectOwnership ownership,
                                       MDSectionOffset classOffset,
                                       std::vector<MDSectionOffset>* protocolOffsets) {
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   if (obj == nullptr) {
     return nullptr;

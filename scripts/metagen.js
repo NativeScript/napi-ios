@@ -360,7 +360,7 @@ async function main() {
   const signatureBindingsPath =
     process.env.NS_SIGNATURE_BINDINGS_CPP_PATH ||
     process.env.TNS_SIGNATURE_BINDINGS_CPP_PATH ||
-    path.resolve(__dirname, "..", "NativeScript", "ffi", "objc", "napi", "GeneratedSignatureDispatch.inc");
+    path.resolve(__dirname, "..", "NativeScript", "ffi", "objc", "shared", "GeneratedSignatureDispatch.inc");
   await fsp.rm(typesDir, { recursive: true, force: true });
   await fsp.mkdir(typesDir, { recursive: true });
   await fsp.rm(metadataJsonDir, { recursive: true, force: true });
@@ -368,8 +368,8 @@ async function main() {
   await fsp.mkdir(path.dirname(signatureBindingsPath), { recursive: true });
 
   for (const arch of targetArchs) {
-    // Use the matching arch binary when available, falling back to arm64.
-    // build_metadata_generator.sh produces both dist/arm64 and dist/x86_64.
+    // Use the matching executable when available. The generator process may
+    // use the host architecture while Clang emits metadata for another target.
     const preferredArch = arch;
     const preferredExec = path.resolve(
       __dirname,
@@ -385,7 +385,7 @@ async function main() {
       "..",
       "metadata-generator",
       "dist",
-      "arm64",
+      process.arch === "x64" ? "x86_64" : process.arch,
       "bin",
       "objc-metadata-generator",
     );

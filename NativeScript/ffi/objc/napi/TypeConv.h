@@ -29,8 +29,10 @@ class TypeConv {
                                         MDSectionOffset* offset,
                                         uint8_t opaquePointers = 0);
 
-  ffi_type* type;
+  ffi_type* type = nullptr;
   MDTypeKind kind = mdTypeChar;
+
+  virtual ~TypeConv() = default;
 
   virtual napi_value toJS(napi_env env, void* value, uint32_t flags = 0) {
     return nullptr;
@@ -52,6 +54,10 @@ class TypeConv {
 bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
                                 void* result);
 
+// Returns and clears conversion failures that cannot be observed through
+// napi_is_exception_pending on every backend.
+bool ConsumeNapiArgumentConversionFailure(napi_env env);
+
 // Fast direct conversion for uint16_t / unichar arguments used by generated
 // dispatch wrappers. Supports both numeric values and single-character JS
 // strings.
@@ -59,7 +65,7 @@ bool TryFastConvertNapiUInt16Argument(napi_env env, napi_value value,
                                       uint16_t* result);
 
 // Cleanup function to clear thread-local struct type caches
-void clearStructTypeCaches();
+void clearStructTypeCaches(napi_env env);
 
 }  // namespace nativescript
 

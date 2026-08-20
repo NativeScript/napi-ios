@@ -21,7 +21,6 @@
 namespace nativescript {
 
 namespace {
-std::unordered_map<uintptr_t, napi_ref> g_pointerCache;
 constexpr const char* kPointerMarker = "__ns_pointer";
 constexpr const char* kNativePointerProperty = "__ns_native_ptr";
 constexpr const char* kReferenceMarker = "__ns_reference";
@@ -179,6 +178,9 @@ inline bool referenceSetValueAtIndex(napi_env env, Reference* ref, uint32_t inde
   bool shouldFree = false;
   ref->type->toNative(env, value, slot, &shouldFree, &shouldFree);
 
+  if (ConsumeNapiArgumentConversionFailure(env)) {
+    return false;
+  }
   bool hasPendingException = false;
   napi_is_exception_pending(env, &hasPendingException);
   return !hasPendingException;
@@ -305,38 +307,50 @@ void finalizePointerNow(napi_env env, void* data, void* hint) {
   if (ptr == nullptr) {
     return;
   }
-  auto it = g_pointerCache.find(pointerKey(ptr->data));
-  if (it != g_pointerCache.end()) {
-    g_pointerCache.erase(it);
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState != nullptr && ptr->cached) {
+    auto& cache = bridgeState->pointerCache;
+    auto it = cache.find(pointerKey(ptr->data));
+    if (it != cache.end() && it->second.owner == ptr) {
+      napi_ref ref = it->second.ref;
+      cache.erase(it);
+      napi_delete_reference(env, ref);
+    }
   }
   delete ptr;
 }
 
 inline bool getCachedPointer(napi_env env, void* data, napi_value* value) {
-  auto it = g_pointerCache.find(pointerKey(data));
-  if (it == g_pointerCache.end()) {
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr) {
     return false;
   }
 
-  *value = get_ref_value(env, it->second);
+  auto& cache = bridgeState->pointerCache;
+  auto it = cache.find(pointerKey(data));
+  if (it == cache.end()) {
+    return false;
+  }
+
+  *value = get_ref_value(env, it->second.ref);
   if (*value == nullptr) {
-    napi_delete_reference(env, it->second);
-    g_pointerCache.erase(it);
+    napi_delete_reference(env, it->second.ref);
+    cache.erase(it);
     return false;
   }
 
   napi_valuetype valueType = napi_undefined;
   if (napi_typeof(env, *value, &valueType) != napi_ok || valueType != napi_object) {
-    napi_delete_reference(env, it->second);
-    g_pointerCache.erase(it);
+    napi_delete_reference(env, it->second.ref);
+    cache.erase(it);
     *value = nullptr;
     return false;
   }
 
   Pointer* ptr = Pointer::unwrap(env, *value);
   if (ptr == nullptr || ptr->data != data) {
-    napi_delete_reference(env, it->second);
-    g_pointerCache.erase(it);
+    napi_delete_reference(env, it->second.ref);
+    cache.erase(it);
     *value = nullptr;
     return false;
   }
@@ -344,14 +358,23 @@ inline bool getCachedPointer(napi_env env, void* data, napi_value* value) {
   return true;
 }
 
-inline void cachePointer(napi_env env, void* data, napi_value value) {
-  const uintptr_t key = pointerKey(data);
-  if (g_pointerCache.find(key) != g_pointerCache.end()) {
-    return;
+inline bool cachePointer(napi_env env, Pointer* owner, napi_value value) {
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr) {
+    return false;
+  }
+
+  auto& cache = bridgeState->pointerCache;
+  const uintptr_t key = pointerKey(owner->data);
+  if (cache.find(key) != cache.end()) {
+    return false;
   }
   napi_ref ref = nullptr;
-  napi_create_reference(env, value, 0, &ref);
-  g_pointerCache[key] = ref;
+  if (napi_create_reference(env, value, 0, &ref) != napi_ok) {
+    return false;
+  }
+  cache[key] = {owner, ref};
+  return true;
 }
 
 inline std::string pointerHexString(void* data) {
@@ -385,8 +408,37 @@ inline void* lookupSymbolByName(ObjCBridgeState* bridgeState, const char* symbol
   return fn;
 }
 
-inline bool unwrapKnownNativeHandle(napi_env env, napi_value value, void** out) {
-  if (value == nullptr) {
+inline bool unwrapKnownNativeHandleImpl(napi_env env, napi_value value, void** out) {
+  if (env == nullptr || value == nullptr || out == nullptr) {
+    return false;
+  }
+  *out = nullptr;
+
+  napi_valuetype valueType = napi_undefined;
+  if (napi_typeof(env, value, &valueType) != napi_ok) {
+    return false;
+  }
+
+  if (valueType == napi_bigint) {
+    uint64_t raw = 0;
+    bool lossless = false;
+    if (napi_get_value_bigint_uint64(env, value, &raw, &lossless) != napi_ok) {
+      return false;
+    }
+    *out = reinterpret_cast<void*>(static_cast<uintptr_t>(raw));
+    return true;
+  }
+
+  if (valueType == napi_external) {
+    return napi_get_value_external(env, value, out) == napi_ok;
+  }
+
+  if (valueType != napi_object && valueType != napi_function) {
+    return false;
+  }
+
+  bool isArray = false;
+  if (valueType == napi_object && napi_is_array(env, value, &isArray) == napi_ok && isArray) {
     return false;
   }
 
@@ -412,63 +464,69 @@ inline bool unwrapKnownNativeHandle(napi_env env, napi_value value, void** out) 
     return true;
   }
 
-  if (StructObject* structObject = StructObject::unwrap(env, value)) {
-    *out = structObject->data;
-    return structObject->data != nullptr;
+  if (valueType == napi_object && StructObject::isInstance(env, value)) {
+    StructObject* object = StructObject::unwrap(env, value);
+    *out = object != nullptr ? object->data : nullptr;
+    return object != nullptr;
+  }
+
+  bool hasNativePointer = false;
+  napi_has_named_property(env, value, kNativePointerProperty, &hasNativePointer);
+  if (hasNativePointer) {
+    napi_value nativePointerValue = nullptr;
+    if (napi_get_named_property(env, value, kNativePointerProperty, &nativePointerValue) ==
+        napi_ok) {
+      if (Pointer::isInstance(env, nativePointerValue)) {
+        Pointer* pointer = Pointer::unwrap(env, nativePointerValue);
+        if (pointer != nullptr && pointer->data != nullptr) {
+          *out = pointer->data;
+          return true;
+        }
+      } else {
+        void* nativePointer = nullptr;
+        if (napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
+            nativePointer != nullptr) {
+          *out = nativePointer;
+          return true;
+        }
+      }
+    }
+  }
+
+  if (valueType != napi_function) {
+    return false;
   }
 
   void* wrapped = nullptr;
   if (napi_unwrap(env, value, &wrapped) != napi_ok || wrapped == nullptr) {
-    bool hasNativePointer = false;
-    napi_has_named_property(env, value, kNativePointerProperty, &hasNativePointer);
-    if (hasNativePointer) {
-      napi_value nativePointerValue;
-      if (napi_get_named_property(env, value, kNativePointerProperty, &nativePointerValue) ==
-          napi_ok) {
-        if (Pointer::isInstance(env, nativePointerValue)) {
-          Pointer* pointer = Pointer::unwrap(env, nativePointerValue);
-          if (pointer != nullptr && pointer->data != nullptr) {
-            *out = pointer->data;
-            return true;
-          }
-        } else {
-          void* nativePointer = nullptr;
-          if (napi_get_value_external(env, nativePointerValue, &nativePointer) == napi_ok &&
-              nativePointer != nullptr) {
-            *out = nativePointer;
-            return true;
-          }
-        }
-      }
-    }
-
     return false;
   }
 
   bridgeState = ObjCBridgeState::InstanceData(env);
-  for (const auto& entry : bridgeState->classes) {
-    if (entry.second == wrapped) {
-      *out = (void*)entry.second->nativeClass;
-      return true;
+  if (bridgeState != nullptr) {
+    for (const auto& entry : bridgeState->classes) {
+      if (entry.second == wrapped) {
+        *out = (void*)entry.second->nativeClass;
+        return true;
+      }
+    }
+
+    for (const auto& entry : bridgeState->protocols) {
+      if (entry.second == wrapped) {
+        *out = (void*)objc_getProtocol(entry.second->name.c_str());
+        return true;
+      }
+    }
+
+    for (const auto& entry : bridgeState->cFunctionCache) {
+      if (entry.second == wrapped) {
+        *out = entry.second->fnptr;
+        return true;
+      }
     }
   }
 
-  for (const auto& entry : bridgeState->protocols) {
-    if (entry.second == wrapped) {
-      *out = (void*)objc_getProtocol(entry.second->name.c_str());
-      return true;
-    }
-  }
-
-  for (const auto& entry : bridgeState->cFunctionCache) {
-    if (entry.second == wrapped) {
-      *out = entry.second->fnptr;
-      return true;
-    }
-  }
-
-  *out = wrapped;
-  return true;
+  return false;
 }
 
 inline bool resolveNativePointerFromRegisteredFunction(napi_env env, napi_value value, void** out) {
@@ -569,6 +627,10 @@ inline void setObjectPrototype(napi_env env, napi_value object, napi_value proto
   napi_call_function(env, jsObject, setPrototypeOf, 2, argv, nullptr);
 }
 }  // namespace
+
+bool unwrapKnownNativeHandle(napi_env env, napi_value value, void** out) {
+  return unwrapKnownNativeHandleImpl(env, value, out);
+}
 
 inline napi_value createJSNumber(napi_env env, int32_t ival) {
   napi_value value;
@@ -909,11 +971,16 @@ napi_value interop_free(napi_env env, napi_callback_info info) {
   napi_unwrap(env, arg, (void**)&ptr);
 
   if (ptr != nullptr && ptr->data != nullptr) {
-    auto it = g_pointerCache.find(pointerKey(ptr->data));
-    if (it != g_pointerCache.end()) {
-      napi_delete_reference(env, it->second);
-      g_pointerCache.erase(it);
+    ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+    if (bridgeState != nullptr) {
+      auto& cache = bridgeState->pointerCache;
+      auto it = cache.find(pointerKey(ptr->data));
+      if (it != cache.end() && it->second.owner == ptr) {
+        napi_delete_reference(env, it->second.ref);
+        cache.erase(it);
+      }
     }
+    ptr->cached = false;
     free(ptr->data);
     ptr->data = nullptr;
   }
@@ -1307,21 +1374,18 @@ bool Pointer::isInstance(napi_env env, napi_value value) {
     return false;
   }
 
-  bool hasMarker = false;
-  napi_has_named_property(env, value, kPointerMarker, &hasMarker);
-  if (!hasMarker) {
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr || bridgeState->pointerClass == nullptr) {
     return false;
   }
 
-  napi_value marker = nullptr;
-  if (napi_get_named_property(env, value, kPointerMarker, &marker) != napi_ok ||
-      marker == nullptr) {
+  napi_value constructor = get_ref_value(env, bridgeState->pointerClass);
+  bool result = false;
+  if (constructor == nullptr ||
+      napi_instanceof(env, value, constructor, &result) != napi_ok) {
     return false;
   }
-
-  bool markerValue = false;
-  napi_get_value_bool(env, marker, &markerValue);
-  return markerValue;
+  return result;
 }
 
 napi_value Pointer::create(napi_env env, void* data) {
@@ -1416,10 +1480,10 @@ napi_value Pointer::constructor(napi_env env, napi_callback_info info) {
     }
 
     case napi_bigint: {
-      int64_t value = 0;
+      uint64_t value = 0;
       bool lossless = false;
-      napi_get_value_bigint_int64(env, arg, &value, &lossless);
-      data = (void*)((intptr_t)value);
+      napi_get_value_bigint_uint64(env, arg, &value, &lossless);
+      data = reinterpret_cast<void*>(static_cast<uintptr_t>(value));
       break;
     }
 
@@ -1465,7 +1529,7 @@ napi_value Pointer::constructor(napi_env env, napi_callback_info info) {
 
   Pointer* ptr = new Pointer(data);
   napi_wrap(env, jsThis, ptr, Pointer::finalize, nullptr, nullptr);
-  cachePointer(env, data, jsThis);
+  ptr->cached = cachePointer(env, ptr, jsThis);
 
   return jsThis;
 }
@@ -1652,21 +1716,18 @@ bool Reference::isInstance(napi_env env, napi_value value) {
     return false;
   }
 
-  bool hasMarker = false;
-  napi_has_named_property(env, value, kReferenceMarker, &hasMarker);
-  if (!hasMarker) {
+  ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
+  if (bridgeState == nullptr || bridgeState->referenceClass == nullptr) {
     return false;
   }
 
-  napi_value marker = nullptr;
-  if (napi_get_named_property(env, value, kReferenceMarker, &marker) != napi_ok ||
-      marker == nullptr) {
+  napi_value constructor = get_ref_value(env, bridgeState->referenceClass);
+  bool result = false;
+  if (constructor == nullptr ||
+      napi_instanceof(env, value, constructor, &result) != napi_ok) {
     return false;
   }
-
-  bool markerValue = false;
-  napi_get_value_bool(env, marker, &markerValue);
-  return markerValue;
+  return result;
 }
 
 napi_value Reference::create(napi_env env, std::shared_ptr<TypeConv> type, void* data,
@@ -1850,6 +1911,10 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
         napi_value initValue = Reference::getInitValue(env, argv[1], other);
         if (initValue != nullptr) {
           reference->type->toNative(env, initValue, reference->data, &shouldFree, &shouldFree);
+          if (ConsumeNapiArgumentConversionFailure(env)) {
+            delete reference;
+            return nullptr;
+          }
         }
       }
     } else {
@@ -1861,6 +1926,10 @@ napi_value Reference::constructor(napi_env env, napi_callback_info info) {
       reference->ownsData = true;
       bool shouldFree;
       reference->type->toNative(env, argv[1], reference->data, &shouldFree, &shouldFree);
+      if (ConsumeNapiArgumentConversionFailure(env)) {
+        delete reference;
+        return nullptr;
+      }
     }
   } else {
     napi_throw_error(env, nullptr, "Invalid number of arguments");
@@ -1924,6 +1993,9 @@ napi_value Reference::set_value(napi_env env, napi_callback_info info) {
 
   bool shouldFree = false;
   ref->type->toNative(env, arg, ref->data, &shouldFree, &shouldFree);
+  if (ConsumeNapiArgumentConversionFailure(env)) {
+    return nullptr;
+  }
   Reference::clearInitValue(env, jsThis, ref);
 
   return nullptr;
@@ -1993,16 +2065,26 @@ bool FunctionReference::isInstance(napi_env env, napi_value value) {
   }
 
   bool hasMarker = false;
-  napi_has_named_property(env, value, kFunctionReferenceMarker, &hasMarker);
-  if (!hasMarker) {
+  bool hasNativeRef = false;
+  if (napi_has_named_property(env, value, kFunctionReferenceMarker, &hasMarker) != napi_ok ||
+      !hasMarker ||
+      napi_has_named_property(env, value, kFunctionReferenceDataProperty, &hasNativeRef) !=
+          napi_ok ||
+      !hasNativeRef) {
     return false;
   }
 
-  napi_value marker;
-  napi_get_named_property(env, value, kFunctionReferenceMarker, &marker);
+  napi_value marker = nullptr;
+  napi_value nativeRef = nullptr;
   bool markerValue = false;
-  napi_get_value_bool(env, marker, &markerValue);
-  return markerValue;
+  void* nativeData = nullptr;
+  if (napi_get_named_property(env, value, kFunctionReferenceMarker, &marker) != napi_ok ||
+      napi_get_value_bool(env, marker, &markerValue) != napi_ok || !markerValue ||
+      napi_get_named_property(env, value, kFunctionReferenceDataProperty, &nativeRef) != napi_ok ||
+      napi_get_value_external(env, nativeRef, &nativeData) != napi_ok) {
+    return false;
+  }
+  return nativeData != nullptr;
 }
 
 FunctionReference* FunctionReference::unwrap(napi_env env, napi_value value) {

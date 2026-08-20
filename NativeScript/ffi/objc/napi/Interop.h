@@ -10,6 +10,7 @@ namespace nativescript {
 class ObjCBridgeState;
 
 void registerInterop(napi_env env, napi_value global);
+bool unwrapKnownNativeHandle(napi_env env, napi_value value, void** out);
 
 napi_value interop_addMethod(napi_env env, napi_callback_info info);
 napi_value interop_addProtocol(napi_env env, napi_callback_info info);
@@ -46,6 +47,7 @@ class Pointer {
 
   void* data;
   bool adopted = false;
+  bool cached = false;
 };
 
 class Reference {

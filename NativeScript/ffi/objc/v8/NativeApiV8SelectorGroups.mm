@@ -171,10 +171,29 @@ void setV8EnginePreparedObjCResult(
                          prepared.selectorName, info);
 }
 
+struct NativeApiSelectorGroupDataHolder {
+  explicit NativeApiSelectorGroupDataHolder(
+      std::shared_ptr<NativeApiSelectorGroupData> data)
+      : data(std::move(data)) {}
+
+  ~NativeApiSelectorGroupDataHolder() { function.Reset(); }
+
+  std::shared_ptr<NativeApiSelectorGroupData> data;
+  v8::Global<v8::Function> function;
+};
+
+void NativeApiSelectorGroupWeakCallback(
+    const v8::WeakCallbackInfo<NativeApiSelectorGroupDataHolder>& info) {
+  engine::v8engine::untrackRuntimeAllocation(info.GetIsolate(),
+                                             info.GetParameter());
+  delete info.GetParameter();
+}
+
 void NativeApiSelectorGroupCallback(
     const v8::FunctionCallbackInfo<v8::Value>& info) {
-  auto* data = static_cast<NativeApiSelectorGroupData*>(
+  auto* holder = static_cast<NativeApiSelectorGroupDataHolder*>(
       info.Data().As<v8::External>()->Value());
+  auto* data = holder != nullptr ? holder->data.get() : nullptr;
   if (data == nullptr || data->selectors == nullptr ||
       data->preparedInvocations == nullptr) {
     return;
@@ -243,11 +262,11 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
       runtime.state(), std::move(bridge), lookupClass, receiverIsClass,
       std::move(selectors), std::move(preparedInvocations),
       std::move(boundReceiver), std::move(boundReceiverState));
-  auto* rawData = data.get();
-  runtime.state()->retainedNativeData.push_back(std::move(data));
+  auto* holder = new NativeApiSelectorGroupDataHolder(std::move(data));
+  engine::v8engine::trackRuntimeAllocation(runtime.isolate(), holder);
 
   v8::Local<v8::External> external =
-      v8::External::New(runtime.isolate(), rawData);
+      v8::External::New(runtime.isolate(), holder);
   v8::Local<v8::FunctionTemplate> functionTemplate =
       v8::FunctionTemplate::New(runtime.isolate(),
                                 NativeApiSelectorGroupCallback, external);
@@ -255,6 +274,9 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
       functionTemplate->GetFunction(runtime.context()).ToLocalChecked();
   function->SetName(
       engine::v8engine::makeV8String(runtime.isolate(), "__nativeSelectorGroup"));
+  holder->function.Reset(runtime.isolate(), function);
+  holder->function.SetWeak(holder, NativeApiSelectorGroupWeakCallback,
+                           v8::WeakCallbackType::kParameter);
   Value functionValue(runtime, function);
   return functionValue.asObject(runtime).asFunction(runtime);
 }

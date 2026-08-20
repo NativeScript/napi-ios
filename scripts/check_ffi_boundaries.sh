@@ -62,7 +62,8 @@ search_sources() {
 
   if command -v rg >/dev/null 2>&1; then
     rg -n "$pattern" "$@" -g '*.{h,hh,hpp,c,cc,cpp,m,mm,inc}' \
-      -g '!GeneratedSignatureDispatch.inc'
+      -g '!GeneratedSignatureDispatch.inc' \
+      -g '!GeneratedGsdSignatureDispatch.inc'
     return
   fi
 
@@ -77,7 +78,8 @@ search_sources() {
       -name '*.m' -o \
       -name '*.mm' -o \
       -name '*.inc' \
-    \) ! -name 'GeneratedSignatureDispatch.inc' -print0 | xargs -0 grep -nE "$pattern"
+    \) ! -name 'GeneratedSignatureDispatch.inc' \
+       ! -name 'GeneratedGsdSignatureDispatch.inc' -print0 | xargs -0 grep -nE "$pattern"
 }
 
 if search_sources '(^|[^[:alnum:]_])(napi_|napi_env|napi_value|js_native_api|node_api)($|[^[:alnum:]_])' \
@@ -145,7 +147,7 @@ if [ "${#NON_HERMES_JSI_DIRS[@]}" -gt 0 ] &&
 fi
 
 if search_sources '(^|[^[:alnum:]_])(EngineDispatch|FastNative|HermesFast|V8Fast|JSCFast|QuickJSFast)($|[^[:alnum:]_])' \
-  "$ROOT_DIR/NativeScript/ffi/objc/napi" | grep -v 'GeneratedSignatureDispatch.inc'; then
+  "$ROOT_DIR/NativeScript/ffi/objc/napi"; then
   echo "Engine FFI code is not allowed in ffi/objc/napi." >&2
   exit 1
 fi
@@ -162,7 +164,8 @@ if command -v rg >/dev/null 2>&1; then
   if rg -n "$STALE_FFI_PATTERN" \
     "$ROOT_DIR/NativeScript" "$ROOT_DIR/scripts" "$ROOT_DIR/packages" \
     "$ROOT_DIR/metadata-generator" "$ROOT_DIR/platforms/apple/benchmarks" \
-    -g '!NativeScript/ffi/objc/napi/GeneratedSignatureDispatch.inc'; then
+    -g '!GeneratedSignatureDispatch.inc' \
+    -g '!GeneratedGsdSignatureDispatch.inc'; then
     echo "Stale FFI layer names are not allowed." >&2
     exit 1
   fi

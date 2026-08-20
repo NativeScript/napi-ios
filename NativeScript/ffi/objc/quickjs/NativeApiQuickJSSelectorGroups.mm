@@ -185,6 +185,9 @@ static JSClassID gNativeApiSelectorGroupDataClassId = 0;
 void NativeApiSelectorGroupFinalize(JSRuntime*, JSValue value) {
   auto* data = static_cast<NativeApiSelectorGroupData*>(
       JS_GetOpaque(value, gNativeApiSelectorGroupDataClassId));
+  if (data != nullptr && data->runtime.state() != nullptr) {
+    data->runtime.state()->untrack(data);
+  }
   delete data;
 }
 
@@ -268,6 +271,15 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
     throw JSError(runtime, "QuickJS selector group allocation failed.");
   }
   JS_SetOpaque(dataObject, data);
+  runtime.state()->track(data, [](void* pointer) {
+    auto* tracked = static_cast<NativeApiSelectorGroupData*>(pointer);
+    tracked->runtime.detachState();
+    tracked->bridge.reset();
+    tracked->selectors.reset();
+    tracked->preparedInvocations.reset();
+    tracked->boundReceiver.reset();
+    tracked->boundReceiverState.reset();
+  });
 
   JSValue function =
       JS_NewCFunctionData(runtime.context(), NativeApiSelectorGroupCall,

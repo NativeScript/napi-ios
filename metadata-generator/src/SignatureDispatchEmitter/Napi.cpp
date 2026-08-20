@@ -311,6 +311,15 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
             << "], &arg" << i
             << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
       }
+      out << "    bool conversionFailed" << i << " = false;\n";
+      out << "    if (ConsumeNapiArgumentConversionFailure(env) || "
+             "napi_is_exception_pending(env, &conversionFailed"
+          << i << ") != napi_ok || conversionFailed" << i << ") {\n";
+      if (hasCleanupArgs) {
+        out << "      cleanupManagedArgs();\n";
+      }
+      out << "      return false;\n";
+      out << "    }\n";
       out << "  }\n";
     } else {
       if (argKindMayNeedCleanup(argTypeInfos[i]->kind)) {
@@ -323,6 +332,15 @@ void writeNapiWrapper(std::ostringstream& out, DispatchKind kind,
             << "], &arg" << i
             << ", &ignoredShouldFree, &ignoredShouldFreeAny);\n";
       }
+      out << "  bool conversionFailed" << i << " = false;\n";
+      out << "  if (ConsumeNapiArgumentConversionFailure(env) || "
+             "napi_is_exception_pending(env, &conversionFailed"
+          << i << ") != napi_ok || conversionFailed" << i << ") {\n";
+      if (hasCleanupArgs) {
+        out << "    cleanupManagedArgs();\n";
+      }
+      out << "    return false;\n";
+      out << "  }\n";
     }
   }
 

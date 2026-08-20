@@ -299,10 +299,12 @@ v8::Local<v8::ObjectTemplate> nativeObjectTemplate(Runtime& runtime) {
 }
 
 void hostObjectWeakCallback(const v8::WeakCallbackInfo<HostObjectHolder>& info) {
+  untrackRuntimeAllocation(info.GetIsolate(), info.GetParameter());
   delete info.GetParameter();
 }
 
 void functionWeakCallback(const v8::WeakCallbackInfo<FunctionHolder>& info) {
+  untrackRuntimeAllocation(info.GetIsolate(), info.GetParameter());
   delete info.GetParameter();
 }
 
@@ -313,6 +315,7 @@ Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<H
   v8::Local<v8::Object> object =
       v8engine::hostObjectTemplate(runtime)->NewInstance(runtime.context()).ToLocalChecked();
   auto* holder = new v8engine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
+  v8engine::trackRuntimeAllocation(runtime.isolate(), holder);
   object->SetAlignedPointerInInternalField(0, holder);
   holder->object.Reset(runtime.isolate(), object);
   holder->object.SetWeak(holder, v8engine::hostObjectWeakCallback,
@@ -325,6 +328,7 @@ Object Object::createNativeInstanceWithToken(Runtime& runtime, std::shared_ptr<H
   v8::Local<v8::Object> object =
       v8engine::nativeObjectTemplate(runtime)->NewInstance(runtime.context()).ToLocalChecked();
   auto* holder = new v8engine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
+  v8engine::trackRuntimeAllocation(runtime.isolate(), holder);
   object->SetAlignedPointerInInternalField(0, holder);
   holder->object.Reset(runtime.isolate(), object);
   holder->object.SetWeak(holder, v8engine::hostObjectWeakCallback,
@@ -335,6 +339,7 @@ Object Object::createNativeInstanceWithToken(Runtime& runtime, std::shared_ptr<H
 Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& name, unsigned int,
                                           HostFunctionType callback) {
   auto* holder = new v8engine::FunctionHolder(runtime.state(), std::move(callback));
+  v8engine::trackRuntimeAllocation(runtime.isolate(), holder);
   v8::Local<v8::External> data = v8::External::New(runtime.isolate(), holder);
   v8::Local<v8::FunctionTemplate> functionTemplate = v8::FunctionTemplate::New(
       runtime.isolate(),

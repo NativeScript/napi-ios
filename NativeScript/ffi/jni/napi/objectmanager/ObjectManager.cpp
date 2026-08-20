@@ -144,7 +144,7 @@ napi_value ObjectManager::GetOrCreateProxy(jint javaObjectID, napi_value instanc
 
     napi_has_named_property(m_env, instance, "__is__javaArray", &is_array);
 
-    auto data = new JSInstanceInfo(javaObjectID, nullptr);
+    auto data = new JSInstanceInfo(javaObjectID);
 
     if (is_array) {
         napi_value global;
@@ -177,7 +177,7 @@ napi_value ObjectManager::GetOrCreateProxy(jint javaObjectID, napi_value instanc
     }
 
 
-    auto data = new JSInstanceInfo(javaObjectID, nullptr);
+    auto data = new JSInstanceInfo(javaObjectID);
 
     napi_value external;
     napi_create_external(m_env, data, JSObjectProxyFinalizerCallback, data, &external);
@@ -228,7 +228,7 @@ JniLocalRef ObjectManager::GetJavaObjectByJsObject(napi_value object, int *objec
         *objectId = javaObjectId;
     }
 
-    if (javaObjectId != -1) return {GetJavaObjectByID(javaObjectId), true};
+    if (javaObjectId != -1) return GetJavaObjectByID(javaObjectId);
 
     return {};
 }
@@ -244,7 +244,7 @@ JniLocalRef ObjectManager::GetJavaObjectByJsObjectFast(napi_value object) {
 
     if (data) {
         auto info = reinterpret_cast<JSInstanceInfo *>(data);
-        return {GetJavaObjectByID(info->JavaObjectID), true};
+        return GetJavaObjectByID(info->JavaObjectID);
     }
 
     return GetJavaObjectByJsObject(object);
@@ -299,8 +299,9 @@ bool ObjectManager::IsRuntimeJsObject(napi_value object) {
     return result;
 }
 
-jweak ObjectManager::GetJavaObjectByID(uint32_t javaObjectID) {
-    return m_cache(javaObjectID);
+JniLocalRef ObjectManager::GetJavaObjectByID(uint32_t javaObjectID) {
+    JEnv env;
+    return JniLocalRef(env.NewLocalRef(m_cache(javaObjectID)));
 }
 
 jobject ObjectManager::GetJavaObjectByIDImpl(uint32_t javaObjectID) {
@@ -312,18 +313,6 @@ jobject ObjectManager::GetJavaObjectByIDImpl(uint32_t javaObjectID) {
 
 void ObjectManager::UpdateCache(int objectID, jobject obj) {
     m_cache.update(objectID, obj);
-}
-
-jclass ObjectManager::GetJavaClass(napi_value value) {
-    JSInstanceInfo *jsInfo = GetJSInstanceInfo(value);
-    jclass clazz = jsInfo->ObjectClazz;
-
-    return clazz;
-}
-
-void ObjectManager::SetJavaClass(napi_value value, jclass clazz) {
-    JSInstanceInfo *jsInfo = GetJSInstanceInfo(value);
-    jsInfo->ObjectClazz = clazz;
 }
 
 int ObjectManager::GetOrCreateObjectId(jobject object) {
@@ -366,9 +355,7 @@ ObjectManager::CreateJSWrapperHelper(jint javaObjectID, const std::string &typeN
     napi_value proxy = nullptr;
     napi_value jsWrapper = node->CreateJSWrapper(m_env, this);
     if (jsWrapper != nullptr) {
-        JEnv jenv;
-        auto claz = jenv.FindClass(className);
-        Link(jsWrapper, javaObjectID, claz);
+        Link(jsWrapper, javaObjectID);
         if (node->isArray()) {
             napi_set_named_property(m_env, jsWrapper, "__is__javaArray",
                                     napi_util::get_true(m_env));
@@ -379,7 +366,7 @@ ObjectManager::CreateJSWrapperHelper(jint javaObjectID, const std::string &typeN
     return proxy;
 }
 
-void ObjectManager::Link(napi_value object, uint32_t javaObjectID, jclass clazz) {
+void ObjectManager::Link(napi_value object, uint32_t javaObjectID) {
     if (!IsRuntimeJsObject(object)) {
         std::string errMsg("Trying to link invalid 'this' to a Java object");
         throw NativeScriptException(errMsg);
@@ -387,7 +374,7 @@ void ObjectManager::Link(napi_value object, uint32_t javaObjectID, jclass clazz)
 
     DEBUG_WRITE("Linking js object and java instance id: %d", javaObjectID);
 
-    auto jsInstanceInfo = new JSInstanceInfo(javaObjectID, clazz);
+    auto jsInstanceInfo = new JSInstanceInfo(javaObjectID);
 
     napi_ref objectHandle = napi_util::make_ref(m_env, object, 1);
 
@@ -603,11 +590,14 @@ void ObjectManager::ReleaseNativeObject(napi_env env, napi_value object) {
 
 void ObjectManager::OnGarbageCollected(JNIEnv *jEnv, jintArray object_ids) {
     JEnv jenv(jEnv);
+    auto rt = Runtime::GetRuntimeUnchecked(m_env);
+    if (!rt || rt->is_destroying) return;
+
     jsize length = jenv.GetArrayLength(object_ids);
-    int *cppArray = jenv.GetIntArrayElements(object_ids, nullptr);
+    jint *cppArray = jenv.GetIntArrayElements(object_ids, nullptr);
+    if (cppArray == nullptr) return;
     for (jsize i = 0; i < length; i++) {
-        auto rt = Runtime::GetRuntimeUnchecked(m_env);
-        if (rt && rt->is_destroying) return;
+        if (rt->is_destroying) break;
         int javaObjectId = cppArray[i];
         auto itFound = this->m_idToObject.find(javaObjectId);
         if (itFound != this->m_idToObject.end()) {
@@ -627,4 +617,5 @@ void ObjectManager::OnGarbageCollected(JNIEnv *jEnv, jintArray object_ids) {
         }
 
     }
+    jEnv->ReleaseIntArrayElements(object_ids, cppArray, JNI_ABORT);
 }

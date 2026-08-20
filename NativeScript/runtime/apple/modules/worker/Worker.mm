@@ -62,36 +62,34 @@ JS_METHOD(Worker::Constructor) {
     std::string workerPath = napi_util::get_cxx_string(env, argv[0]);
 
     WorkerImpl* worker = new WorkerImpl(env, Worker::OnMessage);
-    napi_ref result = nullptr;
-    napi_wrap(env, jsThis, worker, Worker::Finalize, nullptr, &result);
+    napi_status wrapStatus =
+        napi_wrap(env, jsThis, worker, Worker::Finalize, nullptr, nullptr);
+    if (wrapStatus != napi_ok) {
+      delete worker;
+      throw NativeScriptException(env, "Unable to wrap Worker instance.");
+    }
 
     std::shared_ptr<napi_util::PersistentObject> poWorker =
-        std::make_shared<napi_util::PersistentObject>(env, result);
+        std::make_shared<napi_util::PersistentObject>(env, jsThis);
 
     std::function<napi_env()> func([worker, workerPath]() {
       Runtime* runtime = new Runtime();
-      runtime->Init(true);
-      napi_env env = runtime->GetEnv();
-
       try {
+        runtime->Init(true);
+        napi_env env = runtime->GetEnv();
         NapiScope scope(env);
         runtime->SetWorkerId(worker->WorkerId());
-        int workerId = worker->WorkerId();
-        Worker::SetWorkerId(env, workerId);
         runtime->RunModule(workerPath);
+        return env;
       } catch (NativeScriptException& ex) {
-        NapiScope scope(env);
-        worker->PassUncaughtExceptionFromWorkerToMain(env, ex, false);
+        worker->PassUncaughtExceptionFromWorkerToMain(runtime->GetEnv(), ex, false);
         worker->Terminate();
+        delete runtime;
+        return static_cast<napi_env>(nullptr);
       }
-
-      return env;
     });
 
     worker->Start(poWorker, func);
-
-    int workerId = worker->Id();
-    WorkerImpl::Workers->Insert(workerId, worker);
 
     return jsThis;
   } catch (NativeScriptException& ex) {
@@ -111,8 +109,7 @@ JS_METHOD(Worker::PostMessageToMain) {
   try {
     napi_value argv[1];
     size_t argc = 1;
-    napi_value jsThis;
-    napi_get_cb_info(env, cbinfo, &argc, argv, &jsThis, nullptr);
+    napi_get_cb_info(env, cbinfo, &argc, argv, nullptr, nullptr);
 
     if (argc < 1) {
       throw NativeScriptException("Not enough arguments.");
@@ -124,7 +121,7 @@ JS_METHOD(Worker::PostMessageToMain) {
       return nullptr;
     }
 
-    int workerId = Worker::GetWorkerId(env, jsThis);
+    int workerId = Worker::GetWorkerId(env);
     WorkerImpl* worker = WorkerImpl::Workers->Get(workerId);
 
     if (worker == nullptr) {
@@ -143,15 +140,29 @@ JS_METHOD(Worker::PostMessageToMain) {
     message->Serialize(env, object);
 
     napi_env mainEnv = worker->GetMainEnv();
+    Runtime* mainRuntime = Runtime::GetRuntime(mainEnv);
+    if (mainRuntime == nullptr || worker->GetWorkerHandle() == nullptr) {
+      return nullptr;
+    }
 
-    CFRunLoopRef queue = Runtime::GetRuntime(mainEnv)->RuntimeLoop();
+    CFRunLoopRef queue = mainRuntime->RuntimeLoop();
+    if (queue == nullptr) {
+      return nullptr;
+    }
 
     ExecuteOnRunLoop(
         queue,
-        [mainEnv, worker, message] {
+        [mainEnv, workerId, message]() mutable {
+          WorkerImpl* activeWorker = WorkerImpl::Workers->Get(workerId);
+          if (activeWorker == nullptr) {
+            return;
+          }
+          auto workerHandle = activeWorker->GetWorkerHandle();
+          if (workerHandle == nullptr) {
+            return;
+          }
           NapiScope scope(mainEnv);
-          napi_value global = napi_util::global(mainEnv);
-          napi_value workerInstance = worker->GetWorkerObject();
+          napi_value workerInstance = workerHandle->GetValue();
           Worker::OnMessage(mainEnv, workerInstance, message);
         },
         true);
@@ -239,102 +250,68 @@ void Worker::OnMessage(napi_env env, napi_value receiver,
 }
 
 JS_METHOD(Worker::CloseWorker) {
-  napi_value jsThis;
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
+  try {
+    napi_value jsThis = napi_util::global(env);
 
-  WorkerImpl* worker = nullptr;
-  napi_unwrap(env, jsThis, reinterpret_cast<void**>(&worker));
+    int workerId = Worker::GetWorkerId(env);
+    WorkerImpl* worker = WorkerImpl::Workers->Get(workerId);
 
-  if (worker == nullptr) {
-    throw NativeScriptException("Worker is not initialized.");
-    return nullptr;
-  }
-
-  if (!worker->IsRunning() || worker->IsClosing()) {
-    return nullptr;
-  }
-
-  worker->Close();
-
-  napi_value oncloseVal;
-  napi_get_named_property(env, jsThis, "onclose", &oncloseVal);
-
-  if (!napi_util::is_of_type(env, oncloseVal, napi_function)) {
-    return nullptr;
-  }
-
-  napi_value result;
-  napi_status status = napi_call_function(env, jsThis, oncloseVal, 0, nullptr, &result);
-  if (status != napi_ok) {
-    napi_value exception;
-    napi_get_and_clear_last_exception(env, &exception);
-    if (exception != nullptr && napi_util::is_of_type(env, exception, napi_object)) {
-      worker->CallOnErrorHandlers(env, exception);
+    if (worker == nullptr) {
+      throw NativeScriptException("Worker is not initialized.");
     }
+
+    if (!worker->IsRunning() || worker->IsClosing()) {
+      return nullptr;
+    }
+
+    worker->Close();
+
+    napi_value oncloseVal;
+    napi_get_named_property(env, jsThis, "onclose", &oncloseVal);
+
+    if (!napi_util::is_of_type(env, oncloseVal, napi_function)) {
+      return nullptr;
+    }
+
+    napi_value result;
+    napi_status status = napi_call_function(env, jsThis, oncloseVal, 0, nullptr, &result);
+    if (status != napi_ok) {
+      napi_value exception;
+      napi_get_and_clear_last_exception(env, &exception);
+      if (exception != nullptr && napi_util::is_of_type(env, exception, napi_object)) {
+        worker->CallOnErrorHandlers(env, exception);
+      }
+    }
+  } catch (NativeScriptException& ex) {
+    ex.ReThrowToJS(env);
   }
 
   return nullptr;
 }
 
 JS_METHOD(Worker::Terminate) {
-  napi_value jsThis;
-  napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
+  try {
+    napi_value jsThis;
+    napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
 
-  WorkerImpl* worker = nullptr;
-  napi_unwrap(env, jsThis, reinterpret_cast<void**>(&worker));
+    WorkerImpl* worker = nullptr;
+    napi_unwrap(env, jsThis, reinterpret_cast<void**>(&worker));
 
-  if (worker == nullptr) {
-    throw NativeScriptException("Worker is not initialized.");
-    return nullptr;
+    if (worker == nullptr) {
+      throw NativeScriptException("Worker is not initialized.");
+    }
+
+    worker->Terminate();
+  } catch (NativeScriptException& ex) {
+    ex.ReThrowToJS(env);
   }
-
-  worker->Terminate();
 
   return nullptr;
 }
 
-napi_value Worker::Serialize(napi_env env, napi_value value) {
-  // Local<Context> context = isolate->GetCurrentContext();
-  // Local<ObjectTemplate> objTemplate = ObjectTemplate::New(isolate);
-
-  // Local<Object> obj;
-  // bool success = objTemplate->NewInstance(context).ToLocal(&obj);
-  // tns::Assert(success, isolate);
-
-  // success = obj->Set(context, tns::ToV8String(isolate, "data"), value).FromMaybe(false);
-  // tns::Assert(success, isolate);
-
-  // Local<Value> result;
-  // TryCatch tc(isolate);
-  // success = v8::JSON::Stringify(context, obj).ToLocal(&result);
-  // if (!success && tc.HasCaught()) {
-  //     error = tc.Exception();
-  //     return Local<v8::String>();
-  // }
-
-  // tns::Assert(success, isolate);
-
-  // return result.As<v8::String>();
-
-  return nullptr;
-}
-
-void Worker::SetWorkerId(napi_env env, int workerId) {
-  napi_value global = napi_util::global(env);
-
-  // TODO: make this a private property
-  napi_set_named_property(env, global, "__private_worker_id__",
-                          napi_util::to_js_number(env, workerId));
-}
-
-int Worker::GetWorkerId(napi_env env, napi_value global) {
-  napi_value workerIdVal;
-  napi_get_named_property(env, global, "__private_worker_id__", &workerIdVal);
-  if (napi_util::is_of_type(env, workerIdVal, napi_number)) {
-    return napi_util::get_int32(env, workerIdVal);
-  }
-
-  return -1;
+int Worker::GetWorkerId(napi_env env) {
+  Runtime* runtime = Runtime::GetRuntime(env);
+  return runtime != nullptr ? runtime->WorkerId() : -1;
 }
 
 }  // namespace nativescript

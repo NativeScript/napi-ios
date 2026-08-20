@@ -18,8 +18,8 @@ void ConcurrentQueue::Initialize(CFRunLoopRef runLoop,
 }
 
 void ConcurrentQueue::Push(std::shared_ptr<worker::Message> message) {
-  if (this->runLoopTasksSource_ != nullptr &&
-      !CFRunLoopSourceIsValid(this->runLoopTasksSource_)) {
+  std::unique_lock<std::mutex> initializationLock(initializationMutex_);
+  if (terminated) {
     return;
   }
 
@@ -28,7 +28,10 @@ void ConcurrentQueue::Push(std::shared_ptr<worker::Message> message) {
     this->messagesQueue_.push(message);
   }
 
-  this->SignalAndWakeUp();
+  if (this->runLoopTasksSource_ != nullptr &&
+      CFRunLoopSourceIsValid(this->runLoopTasksSource_)) {
+    this->SignalAndWakeUp();
+  }
 }
 
 std::vector<std::shared_ptr<worker::Message>> ConcurrentQueue::PopAll() {
@@ -67,7 +70,9 @@ void ConcurrentQueue::Terminate() {
                           kCFRunLoopCommonModes);
     CFRunLoopSourceInvalidate(this->runLoopTasksSource_);
     CFRelease(this->runLoopTasksSource_);
+    this->runLoopTasksSource_ = nullptr;
   }
+  this->runLoop_ = nullptr;
 }
 
 }  // namespace nativescript

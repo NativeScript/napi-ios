@@ -1122,6 +1122,7 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetClassMembersFro
 
             if (callbackData == nullptr) {
                 callbackData = new MethodCallbackData(this);
+                MetadataNode::GetMetadataNodeCache(env)->methodCallbackData.push_back(callbackData);
 
                 napi_value method;
                 napi_create_function(env, methodName.c_str(), methodName.size(), MethodCallback,
@@ -1151,6 +1152,7 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetClassMembersFro
 
             if (callbackData == nullptr) {
                 callbackData = new MethodCallbackData(this);
+                MetadataNode::GetMetadataNodeCache(env)->methodCallbackData.push_back(callbackData);
                 napi_value method;
                 napi_create_function(env, methodName.c_str(), methodName.size(), MethodCallback,
                                      callbackData, &method);
@@ -1218,6 +1220,7 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetClassMembersFro
 
         auto propertyInfo = new PropertyCallbackData(propertyName, getterMethodName,
                                                      setterMethodName);
+        MetadataNode::GetMetadataNodeCache(env)->propertyCallbackData.push_back(propertyInfo);
         napi_util::define_property(env, prototype, propertyName.c_str(), nullptr,
                                    PropertyAccessorGetterCallback, PropertyAccessorSetterCallback,
                                    propertyInfo);
@@ -1238,6 +1241,7 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetClassMembersFro
         auto &methodName = entry.getName();
         if (methodName != lastMethodName) {
             callbackData = new MethodCallbackData(this);
+            MetadataNode::GetMetadataNodeCache(env)->methodCallbackData.push_back(callbackData);
             napi_value method;
             napi_create_function(env, methodName.c_str(), methodName.size(), MethodCallback,
                                  callbackData, &method);
@@ -1345,6 +1349,7 @@ std::vector<MetadataNode::MethodCallbackData *> MetadataNode::SetInstanceMembers
             if (entry.name != lastMethodName) {
                 entry.type = NodeType::Method;
                 callbackData = new MethodCallbackData(this);
+                MetadataNode::GetMetadataNodeCache(env)->methodCallbackData.push_back(callbackData);
                 instanceMethodData.push_back(callbackData);
                 instanceMethodsCallbackData.push_back(callbackData);
 
@@ -1427,11 +1432,6 @@ napi_value MetadataNode::GetConstructorFunctionInternal(napi_env env, MetadataTr
     }
 
     if (itFound != cache->CtorFuncCache.end()) {
-#ifndef __JSC__
-        for (auto data: itFound->second.instanceMethodCallbacks) {
-            delete data;
-        }
-#endif
         itFound->second.instanceMethodCallbacks.clear();
         if (itFound->second.constructorFunction != nullptr) {
             napi_delete_reference(env, itFound->second.constructorFunction);
@@ -1888,13 +1888,15 @@ napi_value MetadataNode::ExtendMethodCallback(napi_env env, napi_callback_info i
 
         auto baseClassCtorFunction = node->GetConstructorFunction(env);
 
+        auto extendedClassCallbackData = new ExtendedClassCallbackData(
+                node, extendNameAndLocation, napi_util::make_ref(env, implementationObject),
+                fullClassName);
+        GetMetadataNodeCache(env)->extendedClassCallbackData.push_back(extendedClassCallbackData);
+
         napi_value extendFuncCtor;
         napi_define_class(env, fullExtendedName.c_str(), NAPI_AUTO_LENGTH,
                           MetadataNode::ExtendedClassConstructorCallback,
-                          new ExtendedClassCallbackData(node, extendNameAndLocation,
-                                                        napi_util::make_ref(env,
-                                                                            implementationObject),
-                                                        fullClassName), 0, nullptr,
+                          extendedClassCallbackData, 0, nullptr,
                           &extendFuncCtor);
         napi_value extendFuncPrototype = napi_util::get_prototype(env, extendFuncCtor);
         ObjectManager::MarkObject(env, extendFuncPrototype);
@@ -2119,6 +2121,7 @@ void MetadataNode::SetMissingBaseMethods(
                 continue;
             }
 
+            callbackData = nullptr;
             for (auto data: instanceMethodData) {
                 if (data->candidates.front().name == methodName) {
                     callbackData = data;
@@ -2128,6 +2131,7 @@ void MetadataNode::SetMissingBaseMethods(
 
             if (callbackData == nullptr) {
                 callbackData = new MethodCallbackData(this);
+                MetadataNode::GetMetadataNodeCache(env)->methodCallbackData.push_back(callbackData);
                 napi_value proto = napi_util::get_prototype(env, constructor);
                 napi_value method;
                 napi_create_function(env, methodName.c_str(), NAPI_AUTO_LENGTH, MethodCallback,
@@ -2159,25 +2163,41 @@ void MetadataNode::onDisposeEnv(napi_env env) {
         auto it = s_metadata_node_cache.Get(env);
         if (it != nullptr) {
             for (const auto &entry: it->CtorFuncCache) {
-                if (entry.second.constructorFunction == nullptr) {
+                if (entry.second.constructorFunction != nullptr) {
                     napi_delete_reference(env, entry.second.constructorFunction);
-                }
-                for (const auto data: entry.second.instanceMethodCallbacks) {
-                    delete data;
                 }
             }
             it->CtorFuncCache.clear();
 
             for (const auto &entry: it->ExtendedCtorFuncCache) {
-                if (entry.second.extendedCtorFunction == nullptr) {
+                if (entry.second.extendedCtorFunction != nullptr) {
                     napi_delete_reference(env, entry.second.extendedCtorFunction);
                 }
             }
             it->ExtendedCtorFuncCache.clear();
 
+            for (const auto data: it->methodCallbackData) {
+                delete data;
+            }
+            it->methodCallbackData.clear();
+
             for (const auto &entry: it->fieldCallbackData) {
                 delete entry;
             }
+            it->fieldCallbackData.clear();
+
+            for (const auto data: it->propertyCallbackData) {
+                delete data;
+            }
+            it->propertyCallbackData.clear();
+
+            for (const auto data: it->extendedClassCallbackData) {
+                if (data->implementationObject != nullptr) {
+                    napi_delete_reference(env, data->implementationObject);
+                }
+                delete data;
+            }
+            it->extendedClassCallbackData.clear();
         }
         s_metadata_node_cache.Remove(env);
         delete it;

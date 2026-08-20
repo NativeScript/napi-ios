@@ -362,6 +362,9 @@ std::string MDTypeInfoSerde::encode(MDTypeInfo* type) {
     case mdTypeUShort:
       result = "S";
       break;
+    case mdTypeUnichar:
+      result = "S";
+      break;
     case mdTypeSInt:
       result = "i";
       break;

@@ -80,7 +80,9 @@ Runtime *Runtime::Current() {
 }
 
 Runtime::Runtime(JNIEnv *jEnv, jobject runtime, int id)
-        : m_id(id), m_lastUsedMemory(0),m_gcFunc(nullptr){
+        : js_method_cache(nullptr), m_id(id), m_runtime(nullptr), rt(nullptr), env(nullptr), global_scope(nullptr),
+          m_loopTimer(nullptr), m_lastUsedMemory(0), m_gcFunc(nullptr), m_runGC(false),
+          m_objectManager(nullptr), m_isMainThread(false) {
     m_runtime = jEnv->NewGlobalRef(runtime);
     m_objectManager = new ObjectManager(m_runtime);
     m_loopTimer = new MessageLoopTimer();
@@ -377,6 +379,12 @@ Runtime::~Runtime() {
     delete this->m_objectManager;
     delete this->m_loopTimer;
 
+    if (m_runtime != nullptr) {
+        JEnv env;
+        env.DeleteGlobalRef(m_runtime);
+        m_runtime = nullptr;
+    }
+
 #ifdef __V8__
     js_free_runtime(rt);
 #endif
@@ -405,16 +413,25 @@ std::string Runtime::ReadFileText(const std::string &filePath) {
 }
 
 void Runtime::DestroyRuntime() {
+    if (is_destroying) {
+        return;
+    }
     is_destroying = true;
+    delete m_loopTimer;
+    m_loopTimer = nullptr;
     MetadataNode::onDisposeEnv(env);
     ArgConverter::onDisposeEnv(env);
     tns::GlobalHelpers::onDisposeEnv(env);
-    this->js_method_cache->cleanupCache();
     delete this->js_method_cache;
+    this->js_method_cache = nullptr;
     this->m_module.DeInit();
     Console::onDisposeEnv(env);
     CallbackHandlers::RemoveEnvEntries(env);
     this->m_objectManager->OnDisposeEnv();
+    if (m_gcFunc != nullptr) {
+        napi_delete_reference(env, m_gcFunc);
+        m_gcFunc = nullptr;
+    }
     napi_close_handle_scope(env, this->global_scope);
     Runtime::thread_id_to_rt_cache.Remove(this->my_thread_id);
     id_to_runtime_cache.Remove(m_id);
@@ -559,12 +576,6 @@ Runtime::CallJSMethodNative(JNIEnv *_jEnv, jobject obj, jint javaObjectID, jclas
         throw NativeScriptException(ss.str());
     }
 
-    if (isConstructor) {
-        DEBUG_WRITE("CallJSMethodNative: Updating linked instance with its real class");
-        jclass instanceClass = jEnv.GetObjectClass(obj);
-        m_objectManager->SetJavaClass(jsObject, instanceClass);
-    }
-
     string method_name = ArgConverter::jstringToString(methodName);
 
     DEBUG_WRITE("CallJSMethodNative called jsObject %s", method_name.c_str());
@@ -614,7 +625,7 @@ Runtime::CreateJSInstanceNative(JNIEnv *_jEnv, jobject obj, jobject javaObject, 
 
     DEBUG_WRITE("createJSInstanceNative: implementationObject");
 
-    m_objectManager->Link(jsInstance, javaObjectID, nullptr);
+    m_objectManager->Link(jsInstance, javaObjectID);
 }
 
 jint Runtime::GenerateNewObjectId(JNIEnv *jEnv, jobject obj) {

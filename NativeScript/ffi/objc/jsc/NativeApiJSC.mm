@@ -59,6 +59,12 @@ void InstallNativeApi(JSGlobalContextRef context, const NativeApiConfig& config)
   InstallNativeApi(runtime, config);
 }
 
+void CleanupNativeApi(JSGlobalContextRef context) {
+  if (context != nullptr) {
+    engine::jscengine::releaseStateForContext(context);
+  }
+}
+
 }  // namespace nativescript
 
 extern "C" void NativeScriptInstallNativeApi(JSGlobalContextRef context,

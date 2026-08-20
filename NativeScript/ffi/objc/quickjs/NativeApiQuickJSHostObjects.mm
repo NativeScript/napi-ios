@@ -39,6 +39,21 @@ std::shared_ptr<RuntimeState> stateForContext(JSContext* context) {
   return state;
 }
 
+void releaseStateForContext(JSContext* context) {
+  std::shared_ptr<RuntimeState> state;
+  {
+    std::lock_guard<std::mutex> lock(runtimeStatesMutex());
+    auto& states = runtimeStates();
+    auto it = states.find(context);
+    if (it == states.end()) {
+      return;
+    }
+    state = std::move(it->second);
+    states.erase(it);
+  }
+  state->cleanup();
+}
+
 static bool isNativeInstancePrototypeBypassExcluded(JSContext* ctx,
                                                     JSAtom atom) {
   const char* name = JS_AtomToCString(ctx, atom);
@@ -215,6 +230,9 @@ static int nativeHostOwnNames(JSContext* ctx, JSPropertyEnum** ptab, uint32_t* p
 
 static void nativeHostFinalize(JSRuntime*, JSValue value) {
   auto* holder = static_cast<HostObjectHolder*>(JS_GetOpaque(value, gHostClassId));
+  if (holder != nullptr && holder->state != nullptr) {
+    holder->state->untrack(holder);
+  }
   delete holder;
 }
 
@@ -252,6 +270,9 @@ static JSValue nativeFunctionCallData(JSContext* ctx, JSValue thisValue, int arg
 
 static void nativeFunctionFinalize(JSRuntime*, JSValue value) {
   auto* holder = static_cast<FunctionHolder*>(JS_GetOpaque(value, gFunctionClassId));
+  if (holder != nullptr && holder->state != nullptr) {
+    holder->state->untrack(holder);
+  }
   delete holder;
 }
 
@@ -311,6 +332,11 @@ Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<H
   auto* holder = new quickjsengine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
   JSValue object = JS_NewObjectClass(runtime.context(), quickjsengine::gHostClassId);
   JS_SetOpaque(object, holder);
+  runtime.state()->track(holder, [](void* pointer) {
+    auto* tracked = static_cast<quickjsengine::HostObjectHolder*>(pointer);
+    tracked->state.reset();
+    tracked->hostObject.reset();
+  });
   Object result = Object::fromValueStorage(Value(runtime, object).storage_);
   JS_FreeValue(runtime.context(), object);
   return result;
@@ -326,6 +352,11 @@ Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& na
     throw JSError(runtime, "QuickJS host function data allocation failed.");
   }
   JS_SetOpaque(data, holder);
+  runtime.state()->track(holder, [](void* pointer) {
+    auto* tracked = static_cast<quickjsengine::FunctionHolder*>(pointer);
+    tracked->state.reset();
+    tracked->callback = {};
+  });
 
   JSValue function = JS_NewCFunctionData(runtime.context(), quickjsengine::nativeFunctionCallData,
                                          static_cast<int>(parameterCount), 0, 1, &data);

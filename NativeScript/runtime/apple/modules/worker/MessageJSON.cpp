@@ -10,12 +10,14 @@
 
 #include <cstdlib>
 #include <cstring>
+#include <mutex>
 #include <string>
 #include <unordered_map>
 #include <utility>
 #include <vector>
 
 #include "js_native_api.h"
+#include "jsr_common.h"
 #include "runtime/apple/NativeScriptException.h"
 
 #ifdef TARGET_ENGINE_QUICKJS
@@ -149,13 +151,36 @@ napi_value Construct(napi_env env, const char* constructorName,
   return result;
 }
 
-napi_value GetStructuredCloneHelper(napi_env env) {
-  static std::unordered_map<napi_env, napi_ref> helperRefs;
+std::mutex g_helperRefsMutex;
+std::unordered_map<napi_env, napi_ref> g_helperRefs;
 
-  auto it = helperRefs.find(env);
-  if (it != helperRefs.end()) {
+void CleanupStructuredCloneHelper(void* data) {
+  napi_env env = static_cast<napi_env>(data);
+  napi_ref ref = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(g_helperRefsMutex);
+    auto it = g_helperRefs.find(env);
+    if (it == g_helperRefs.end()) {
+      return;
+    }
+    ref = it->second;
+    g_helperRefs.erase(it);
+  }
+  napi_delete_reference(env, ref);
+}
+
+napi_value GetStructuredCloneHelper(napi_env env) {
+  napi_ref cachedRef = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(g_helperRefsMutex);
+    auto it = g_helperRefs.find(env);
+    if (it != g_helperRefs.end()) {
+      cachedRef = it->second;
+    }
+  }
+  if (cachedRef != nullptr) {
     napi_value helper = nullptr;
-    Check(env, napi_get_reference_value(env, it->second, &helper),
+    Check(env, napi_get_reference_value(env, cachedRef, &helper),
           "Unable to read structured clone helper");
     return helper;
   }
@@ -239,7 +264,28 @@ napi_value GetStructuredCloneHelper(napi_env env) {
   napi_ref ref = nullptr;
   Check(env, napi_create_reference(env, helper, 1, &ref),
         "Unable to retain structured clone helper");
-  helperRefs.emplace(env, ref);
+  napi_ref retainedRef = ref;
+  bool inserted = false;
+  {
+    std::lock_guard<std::mutex> lock(g_helperRefsMutex);
+    auto entry = g_helperRefs.emplace(env, ref);
+    inserted = entry.second;
+    retainedRef = entry.first->second;
+  }
+  if (!inserted) {
+    napi_delete_reference(env, ref);
+    napi_value cachedHelper = nullptr;
+    Check(env, napi_get_reference_value(env, retainedRef, &cachedHelper),
+          "Unable to read structured clone helper");
+    return cachedHelper;
+  }
+  napi_status cleanupStatus =
+      js_add_env_cleanup_hook(env, CleanupStructuredCloneHelper, env);
+  if (cleanupStatus != napi_ok) {
+    CleanupStructuredCloneHelper(env);
+    Check(env, cleanupStatus,
+          "Unable to register structured clone helper cleanup");
+  }
   return helper;
 }
 

@@ -23,9 +23,7 @@
 #include "runtime/apple/modules/node/Node.h"
 #include "runtime/apple/modules/web/Web.h"
 
-#ifdef TARGET_ENGINE_V8
-#include "../../napi/v8/v8-module-loader.h"
-#elif defined(TARGET_ENGINE_QUICKJS)
+#ifdef TARGET_ENGINE_QUICKJS
 #include "quickjs.h"
 #include "quicks-runtime.h"
 #endif
@@ -42,7 +40,7 @@ using namespace std;
 namespace {
 
 // Cache for package.json \"type\" field lookups
-std::unordered_map<std::string, bool> g_modulePackageTypeCache;
+thread_local std::unordered_map<std::string, bool> g_modulePackageTypeCache;
 
 // Strip shebang line from source code (e.g., #!/usr/bin/env node)
 std::string StripShebang(const std::string& source) {
@@ -809,19 +807,18 @@ ModuleInternal::ModuleInternal()
       m_requireFactoryFunction(nullptr) {}
 
 void ModuleInternal::DeInit() {
-#ifdef TARGET_ENGINE_V8
-  for (auto& kv : v8impl::g_moduleRegistry) {
-    kv.second.Reset();
-  }
-  v8impl::g_moduleRegistry.clear();
-#endif
-
   // Clear the package.json type cache
   g_modulePackageTypeCache.clear();
 
   if (m_env != nullptr) {
-    napi_delete_reference(m_env, this->m_requireFunction);
-    napi_delete_reference(m_env, this->m_requireFactoryFunction);
+    if (m_requireFunction != nullptr) {
+      napi_delete_reference(m_env, m_requireFunction);
+      m_requireFunction = nullptr;
+    }
+    if (m_requireFactoryFunction != nullptr) {
+      napi_delete_reference(m_env, m_requireFactoryFunction);
+      m_requireFactoryFunction = nullptr;
+    }
   }
 
   for (const auto& pair : this->m_requireCache) {
@@ -830,6 +827,7 @@ void ModuleInternal::DeInit() {
     }
   }
   this->m_requireCache.clear();
+  m_env = nullptr;
 }
 
 void ModuleInternal::Init(napi_env env, const std::string& baseDir) {
@@ -2100,4 +2098,4 @@ const char* ModuleInternal::MODULE_PROLOGUE =
 #endif
 const char* ModuleInternal::MODULE_EPILOGUE = "\n})";
 int ModuleInternal::MODULE_PROLOGUE_LENGTH =
-    std::string(ModuleInternal::MODULE_PROLOGUE).length();
+    static_cast<int>(std::string(ModuleInternal::MODULE_PROLOGUE).length());

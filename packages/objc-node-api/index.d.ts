@@ -60,6 +60,7 @@ declare global {
       readonly __brand__: interop.PointerObject["__brand__"];
 
       constructor(address: number);
+      constructor(address: string);
 
       add(offset: number): Pointer;
       subtract(offset: number): Pointer;
@@ -79,6 +80,33 @@ declare global {
     // converted to Objective-C equivalents.
     // deno-lint-ignore no-explicit-any
     export type Object = any;
+
+    export function object<T extends NativeObject = NativeObject>(
+      pointer: PointerConvertible | string,
+    ): T | null;
+
+    export type NativeCallback<T extends CallableFunction> = T & {
+      readonly kind: "block" | "functionReference";
+      readonly sizeof: number;
+      readonly __nativeApiCallbackEncoding?: string;
+    };
+
+    export function Block<T extends CallableFunction>(
+      callback: T,
+      encoding?: string,
+    ): NativeCallback<T>;
+    export function Block<T extends CallableFunction>(
+      encoding: string,
+      callback: T,
+    ): NativeCallback<T>;
+    export function FunctionReference<T extends CallableFunction>(
+      callback: T,
+      encoding?: string,
+    ): NativeCallback<T>;
+    export function FunctionReference<T extends CallableFunction>(
+      encoding: string,
+      callback: T,
+    ): NativeCallback<T>;
 
     // deno-lint-ignore no-explicit-any
     export class Reference<T = any> implements PointerObject {

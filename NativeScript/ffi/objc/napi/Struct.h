@@ -40,6 +40,9 @@ class StructObject {
   bool owned;
   napi_env env = nullptr;
   napi_ref backingRef = nullptr;
+#if defined(TARGET_ENGINE_HERMES)
+  napi_ref wrapperRef = nullptr;
+#endif
   ObjCBridgeState* bridgeState = nullptr;
   uint64_t bridgeStateToken = 0;
 

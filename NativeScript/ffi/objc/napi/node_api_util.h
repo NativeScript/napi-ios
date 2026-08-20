@@ -12,10 +12,10 @@ inline bool napiSupportsThreadsafeFunctions(void* dl) {
 
 #define NAPI_EXPORT __attribute__((visibility("default")))
 
-#define NAPI_PREAMBLE napi_status status;
+#define NS_OBJC_NAPI_PREAMBLE napi_status status;
 
 #define NAPI_CALLBACK_BEGIN(n_args)                                        \
-  NAPI_PREAMBLE                                                            \
+  NS_OBJC_NAPI_PREAMBLE                                                    \
   napi_value argv[n_args];                                                 \
   size_t argc = n_args;                                                    \
   napi_value jsThis;                                                       \

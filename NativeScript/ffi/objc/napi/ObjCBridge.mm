@@ -20,6 +20,7 @@
 #include "node_api_util.h"
 
 #import <Foundation/Foundation.h>
+
 #include <TargetConditionals.h>
 #include <dispatch/dispatch.h>
 #include <mach-o/dyld.h>
@@ -166,19 +167,23 @@ bool PostFinalizer(napi_env env, napi_finalize finalize_cb, void* finalize_data,
 
   ObjCBridgeState* bridgeState = ObjCBridgeState::InstanceData(env);
   if (bridgeState != nullptr && bridgeState->jsThreadId == std::this_thread::get_id()) {
-#if !defined(TARGET_ENGINE_QUICKJS)
+#if !defined(TARGET_ENGINE_QUICKJS) && !defined(TARGET_ENGINE_V8)
     finalize_cb(env, finalize_data, finalize_hint);
     return true;
 #endif
   }
 
-  CFRunLoopRef runLoop = bridgeState != nullptr ? bridgeState->jsRunLoop : CFRunLoopGetMain();
+  if (bridgeState != nullptr) {
+    return bridgeState->enqueueFinalizer(finalize_cb, finalize_data, finalize_hint);
+  }
+
+  CFRunLoopRef runLoop = CFRunLoopGetMain();
   if (runLoop == nullptr) {
     return false;
   }
 
   if (bridgeState == nullptr && [NSThread isMainThread]) {
-#if !defined(TARGET_ENGINE_QUICKJS)
+#if !defined(TARGET_ENGINE_QUICKJS) && !defined(TARGET_ENGINE_V8)
     finalize_cb(env, finalize_data, finalize_hint);
     return true;
 #endif
@@ -193,28 +198,118 @@ bool PostFinalizer(napi_env env, napi_finalize finalize_cb, void* finalize_data,
   return true;
 }
 
+bool ObjCBridgeState::enqueueFinalizer(napi_finalize callback, void* data, void* hint) {
+  if (callback == nullptr || jsRunLoop == nullptr) {
+    return false;
+  }
+
+  bool scheduleDrain = false;
+  {
+    std::lock_guard<std::mutex> lock(pendingFinalizersMutex);
+    if (!acceptingFinalizers) {
+      return false;
+    }
+    pendingFinalizers.push_back({callback, data, hint});
+    if (!finalizerDrainScheduled) {
+      finalizerDrainScheduled = true;
+      scheduleDrain = true;
+    }
+  }
+
+  if (!scheduleDrain) {
+    return true;
+  }
+
+  CFRunLoopRef runLoop = jsRunLoop;
+  const uint64_t token = lifetimeToken;
+  CFRunLoopPerformBlock(runLoop, kCFRunLoopCommonModes, ^{
+    if (IsBridgeStateLive(this, token)) {
+      drainFinalizers();
+    }
+  });
+  CFRunLoopWakeUp(runLoop);
+  return true;
+}
+
+void ObjCBridgeState::drainFinalizers(bool stop) {
+  std::vector<PendingFinalizer> pending;
+  {
+    std::lock_guard<std::mutex> lock(pendingFinalizersMutex);
+    if (stop) {
+      acceptingFinalizers = false;
+    }
+    pending.swap(pendingFinalizers);
+    finalizerDrainScheduled = false;
+  }
+
+  for (const auto& finalizer : pending) {
+    finalizer.callback(env, finalizer.data, finalizer.hint);
+  }
+}
+
 void finalize_bridge_data(napi_env env, void* data, void* hint) {
   auto bridgeState = (ObjCBridgeState*)data;
   delete bridgeState;
 }
 
-MDMetadataReader* loadMetadataFromFile(const char* metadata_path) {
-  if (metadata_path == nullptr) {
-    metadata_path = "metadata.nsmd";
+#if defined(TARGET_ENGINE_HERMES)
+napi_value runObjectFinalizer(napi_env env, napi_callback_info info) {
+  napi_value token = nullptr;
+  size_t argc = 1;
+  void* data = nullptr;
+  napi_get_cb_info(env, info, &argc, &token, nullptr, &data);
+
+  uint64_t rawContext = 0;
+  bool lossless = false;
+  if (argc == 1 && napi_get_value_bigint_uint64(env, token, &rawContext, &lossless) == napi_ok &&
+      lossless) {
+    auto* bridgeState = static_cast<ObjCBridgeState*>(data);
+    auto* context = reinterpret_cast<JSObjectFinalizerContext*>(
+        static_cast<uintptr_t>(rawContext));
+    if (IsBridgeStateLive(bridgeState, bridgeState != nullptr ? bridgeState->lifetimeToken : 0) &&
+        bridgeState->takeObjectFinalizer(context)) {
+      finalize_objc_object(env, context, nullptr);
+    }
   }
 
-  auto f = fopen(metadata_path == nullptr ? "metadata.nsmd" : metadata_path, "r");
+  napi_value undefined = nullptr;
+  napi_get_undefined(env, &undefined);
+  return undefined;
+}
+#endif
+
+MDMetadataReader* loadMetadataFromFile(const char* metadata_path) {
+  const char* path = metadata_path != nullptr ? metadata_path : "metadata.nsmd";
+  auto f = fopen(path, "rb");
   if (f == nullptr) {
-    fprintf(stderr, "metadata.nsmd not found\n");
+    fprintf(stderr, "metadata.nsmd not found: %s\n", path);
     exit(1);
   }
   fseek(f, 0, SEEK_END);
-  auto size = ftell(f);
+  const long size = ftell(f);
   fseek(f, 0, SEEK_SET);
-  auto buffer = (uint8_t*)malloc(size);
-  fread(buffer, 1, size, f);
+  if (size <= 0) {
+    fclose(f);
+    fprintf(stderr, "metadata.nsmd is empty: %s\n", path);
+    exit(1);
+  }
+
+  auto buffer = static_cast<uint8_t*>(malloc(static_cast<size_t>(size)));
+  if (buffer == nullptr) {
+    fclose(f);
+    fprintf(stderr, "failed to allocate metadata buffer: %s\n", path);
+    exit(1);
+  }
+
+  const size_t bytesRead = fread(buffer, 1, static_cast<size_t>(size), f);
   fclose(f);
-  return new MDMetadataReader(buffer);
+  if (bytesRead != static_cast<size_t>(size)) {
+    free(buffer);
+    fprintf(stderr, "failed to read metadata: %s\n", path);
+    exit(1);
+  }
+
+  return new MDMetadataReader(buffer, true);
 }
 
 inline bool hasNamedProperty(napi_env env, napi_value object, const char* name) {
@@ -435,12 +530,13 @@ inline void registerStructAlias(napi_env env, napi_value global, ObjCBridgeState
   }
 }
 
-inline void ensureSyntheticCGPoint(napi_env env, napi_value global) {
+inline void ensureSyntheticCGPoint(napi_env env, napi_value global,
+                                   ObjCBridgeState* bridgeState) {
   if (hasConstructableNamedProperty(env, global, "CGPoint")) {
     return;
   }
 
-  static StructInfo* syntheticInfo = nullptr;
+  StructInfo*& syntheticInfo = bridgeState->syntheticCGPointInfo;
   if (syntheticInfo == nullptr) {
     syntheticInfo = new StructInfo();
     syntheticInfo->name = strdup("CGPoint");
@@ -511,9 +607,21 @@ inline void ensureConstructableStructAlias(napi_env env, napi_value global,
   }
 }
 
-inline void installMacUIColorCompatShim(napi_env env) {
+inline void installMacCompatShim(napi_env env) {
   const char* script = R"(
     (function (globalObject) {
+      ["CGPoint", "CGSize", "CGRect"].forEach(function (name) {
+        const constructor = globalObject[name + "Struct"];
+        if (typeof globalObject[name] !== "function" &&
+            typeof constructor === "function") {
+          Object.defineProperty(globalObject, name, {
+            configurable: true,
+            enumerable: true,
+            value: constructor
+          });
+        }
+      });
+
       if (typeof globalObject.UIColor === "undefined" &&
           typeof globalObject.NSColor !== "undefined") {
         globalObject.UIColor = globalObject.NSColor;
@@ -576,56 +684,7 @@ inline void* resolveSymbolPointer(ObjCBridgeState* bridgeState, const char* symb
 }
 
 inline bool unwrapCompatNativeHandle(napi_env env, napi_value value, void** out) {
-  if (value == nullptr || out == nullptr) {
-    return false;
-  }
-
-  if (Pointer::isInstance(env, value)) {
-    Pointer* ptr = Pointer::unwrap(env, value);
-    *out = ptr != nullptr ? ptr->data : nullptr;
-    return ptr != nullptr;
-  }
-
-  if (Reference::isInstance(env, value)) {
-    Reference* ref = Reference::unwrap(env, value);
-    *out = ref != nullptr ? ref->data : nullptr;
-    return ref != nullptr;
-  }
-
-  napi_valuetype valueType = napi_undefined;
-  if (napi_typeof(env, value, &valueType) != napi_ok) {
-    return false;
-  }
-
-  if (valueType == napi_bigint) {
-    uint64_t raw = 0;
-    bool lossless = false;
-    if (napi_get_value_bigint_uint64(env, value, &raw, &lossless) != napi_ok) {
-      return false;
-    }
-    *out = reinterpret_cast<void*>(static_cast<uintptr_t>(raw));
-    return true;
-  }
-
-  if (valueType == napi_external) {
-    return napi_get_value_external(env, value, out) == napi_ok;
-  }
-
-  if (valueType != napi_object && valueType != napi_function) {
-    return false;
-  }
-
-  bool hasNativePointer = false;
-  if (napi_has_named_property(env, value, "__ns_native_ptr", &hasNativePointer) == napi_ok &&
-      hasNativePointer) {
-    napi_value nativePointerValue = nullptr;
-    if (napi_get_named_property(env, value, "__ns_native_ptr", &nativePointerValue) == napi_ok &&
-        napi_get_value_external(env, nativePointerValue, out) == napi_ok && *out != nullptr) {
-      return true;
-    }
-  }
-
-  return napi_unwrap(env, value, out) == napi_ok && *out != nullptr;
+  return unwrapKnownNativeHandle(env, value, out);
 }
 
 inline napi_value createCompatDispatchQueueWrapper(napi_env env, dispatch_queue_t queue) {
@@ -782,11 +841,11 @@ void registerLegacyCompatGlobals(napi_env env, napi_value global, ObjCBridgeStat
                       {"CGSize", "_CGSize", "NSSize", "_NSSize"});
   registerStructAlias(env, global, bridgeState, "CGRect",
                       {"CGRect", "_CGRect", "NSRect", "_NSRect"});
-  ensureSyntheticCGPoint(env, global);
+  ensureSyntheticCGPoint(env, global, bridgeState);
   ensureConstructableStructAlias(
       env, global, bridgeState, "CGPoint",
       {"CGPointStruct", "NSPoint", "NSPointStruct", "_CGPoint", "_NSPoint", "CGPoint"});
-  installMacUIColorCompatShim(env);
+  installMacCompatShim(env);
 #endif
 
   // CommonCrypto compatibility used by historical runtime tests and apps.
@@ -844,6 +903,25 @@ ObjCBridgeState::ObjCBridgeState(napi_env env, const char* metadata_path,
 }
 
 ObjCBridgeState::~ObjCBridgeState() {
+  drainFinalizers(true);
+#if defined(TARGET_ENGINE_HERMES)
+  auto pendingObjectFinalizers = std::move(objectFinalizers);
+  objectFinalizers.clear();
+  if (env != nullptr && objectFinalizationRegistry != nullptr) {
+    napi_delete_reference(env, objectFinalizationRegistry);
+    objectFinalizationRegistry = nullptr;
+  }
+  for (auto* context : pendingObjectFinalizers) {
+    if (context == nullptr) {
+      continue;
+    }
+    unregisterObjectIfRefMatches(context->object, context->ref);
+    if (env != nullptr && context->ref != nullptr) {
+      napi_delete_reference(env, context->ref);
+    }
+    delete context;
+  }
+#endif
   UnregisterBridgeState(this);
 
   auto deleteRef = [&](napi_ref& ref) {
@@ -857,6 +935,11 @@ ObjCBridgeState::~ObjCBridgeState() {
     deleteRef(pair.second);
   }
   constructorsByPointer.clear();
+
+  for (auto& pair : pointerCache) {
+    deleteRef(pair.second.ref);
+  }
+  pointerCache.clear();
 
   for (auto& frame : roundTripCacheFrames) {
     for (auto& entry : frame) {
@@ -937,9 +1020,20 @@ ObjCBridgeState::~ObjCBridgeState() {
 
   // Clean up StructInfo objects
   for (auto& pair : structInfoCache) {
+    deleteRef(pair.second->jsClass);
     delete pair.second;
   }
   structInfoCache.clear();
+
+  if (syntheticCGPointInfo != nullptr) {
+    deleteRef(syntheticCGPointInfo->jsClass);
+    std::free(syntheticCGPointInfo->name);
+    for (auto& field : syntheticCGPointInfo->fields) {
+      std::free(field.name);
+    }
+    delete syntheticCGPointInfo;
+    syntheticCGPointInfo = nullptr;
+  }
 
   // Clean up CFunction objects
   for (auto& pair : cFunctionCache) {
@@ -956,6 +1050,8 @@ ObjCBridgeState::~ObjCBridgeState() {
   trackedObjectLiveness = nullptr;
   [trackedObjectTable release];
 
+  clearStructTypeCaches(env);
+
   // if (objc_autoreleasePool != nullptr)
   //   objc_autoreleasePoolPop(objc_autoreleasePool);
 
@@ -964,7 +1060,7 @@ ObjCBridgeState::~ObjCBridgeState() {
 }
 
 napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, id nativeObject) {
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   napi_value result = object;
   const bool nativeIsArray = [nativeObject isKindOfClass:NSArray.class];
@@ -983,15 +1079,28 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
   if (nativePointer != nullptr) {
     napi_set_named_property(env, result, kNativePointerProperty, nativePointer);
   }
+  napi_ref ref = nullptr;
   napi_wrap(env, result, nativeObject, nullptr, nullptr, nullptr);
 
-  napi_ref ref = nullptr;
   auto* finalizerContext = new JSObjectFinalizerContext{
       .bridgeState = this,
       .bridgeStateToken = lifetimeToken,
       .object = nativeObject,
       .ref = nullptr,
   };
+#if defined(TARGET_ENGINE_HERMES)
+  NAPI_GUARD(napi_create_reference(env, result, 0, &ref)) {
+    delete finalizerContext;
+    NAPI_THROW_LAST_ERROR
+    return nullptr;
+  }
+  finalizerContext->ref = ref;
+  if (!registerObjectFinalizer(env, result, finalizerContext)) {
+    napi_delete_reference(env, ref);
+    delete finalizerContext;
+    return nullptr;
+  }
+#else
   NAPI_GUARD(
       napi_add_finalizer(env, result, finalizerContext, finalize_objc_object, nullptr, &ref)) {
     delete finalizerContext;
@@ -999,6 +1108,7 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
     return nullptr;
   }
   finalizerContext->ref = ref;
+#endif
 
   storeObjectRef(nativeObject, ref);
   cacheHandleObjectRef(env, nativeObject, ref);
@@ -1008,6 +1118,46 @@ napi_value ObjCBridgeState::proxyNativeObject(napi_env env, napi_value object, i
 
   return result;
 }
+
+#if defined(TARGET_ENGINE_HERMES)
+bool ObjCBridgeState::registerObjectFinalizer(napi_env env, napi_value object,
+                                              JSObjectFinalizerContext* context) {
+  if (objectFinalizationRegistry == nullptr) {
+    napi_value global = nullptr;
+    napi_value constructor = nullptr;
+    napi_value callback = nullptr;
+    napi_value registry = nullptr;
+    if (napi_get_global(env, &global) != napi_ok ||
+        napi_get_named_property(env, global, "FinalizationRegistry", &constructor) != napi_ok ||
+        napi_create_function(env, "", 0, runObjectFinalizer, this, &callback) != napi_ok ||
+        napi_new_instance(env, constructor, 1, &callback, &registry) != napi_ok ||
+        napi_create_reference(env, registry, 1, &objectFinalizationRegistry) != napi_ok) {
+      return false;
+    }
+  }
+
+  napi_value registry = get_ref_value(env, objectFinalizationRegistry);
+  napi_value registerFunction = nullptr;
+  napi_value token = nullptr;
+  napi_value args[2] = {object, nullptr};
+  if (registry == nullptr ||
+      napi_get_named_property(env, registry, "register", &registerFunction) != napi_ok ||
+      napi_create_bigint_uint64(env, reinterpret_cast<uintptr_t>(context), &token) != napi_ok) {
+    return false;
+  }
+  args[1] = token;
+  if (napi_call_function(env, registry, registerFunction, 2, args, nullptr) != napi_ok) {
+    return false;
+  }
+
+  objectFinalizers.insert(context);
+  return true;
+}
+
+bool ObjCBridgeState::takeObjectFinalizer(JSObjectFinalizerContext* context) {
+  return context != nullptr && objectFinalizers.erase(context) != 0;
+}
+#endif
 
 void ObjCBridgeState::trackObject(id object) noexcept {
   if (object == nil) {

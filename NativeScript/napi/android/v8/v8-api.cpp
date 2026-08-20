@@ -2589,7 +2589,9 @@ napi_status NAPI_CDECL napi_type_tag_object(napi_env env,
     CHECK_TO_OBJECT_WITH_PREAMBLE(env, context, obj, object);
     CHECK_ARG_WITH_PREAMBLE(env, type_tag);
 
-    auto key = NAPI_PRIVATE_KEY(context);
+    auto key = v8::Private::ForApi(
+            env->isolate,
+            v8::String::NewFromUtf8(env->isolate, "napi_type_tag").ToLocalChecked());
     auto maybe_has = obj->HasPrivate(context, key);
     CHECK_MAYBE_NOTHING_WITH_PREAMBLE(env, maybe_has, napi_generic_failure);
     RETURN_STATUS_IF_FALSE_WITH_PREAMBLE(
@@ -2618,8 +2620,10 @@ napi_status NAPI_CDECL napi_check_object_type_tag(napi_env env,
     CHECK_ARG_WITH_PREAMBLE(env, type_tag);
     CHECK_ARG_WITH_PREAMBLE(env, result);
 
-    auto maybe_value =
-            obj->GetPrivate(context, NAPI_PRIVATE_KEY(context));
+    auto key = v8::Private::ForApi(
+            env->isolate,
+            v8::String::NewFromUtf8(env->isolate, "napi_type_tag").ToLocalChecked());
+    auto maybe_value = obj->GetPrivate(context, key);
     CHECK_MAYBE_EMPTY_WITH_PREAMBLE(env, maybe_value, napi_generic_failure);
     v8::Local<v8::Value> val = maybe_value.ToLocalChecked();
 
@@ -3455,10 +3459,9 @@ napi_status NAPI_CDECL napi_add_finalizer(napi_env env,
 
 #ifdef NAPI_EXPERIMENTAL
 
-napi_status NAPI_CDECL node_api_post_finalizer(napi_env env,
-                                               napi_finalize finalize_cb,
-                                               void *finalize_data,
-                                               void *finalize_hint) {
+extern "C" napi_status NAPI_CDECL node_api_post_finalizer(
+        napi_env env, napi_finalize finalize_cb, void *finalize_data,
+        void *finalize_hint) {
     CHECK_ENV(env);
     env->EnqueueFinalizer(v8impl::TrackedFinalizer::New(
             env, finalize_cb, finalize_data, finalize_hint));

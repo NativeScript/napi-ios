@@ -12,7 +12,7 @@ namespace tns {
     /**
      * A Timer Task
      * this class is used to store the persistent values and context
-     * once Unschedule is called everything is released
+     * once Dispose is called everything is released
      */
     class TimerTask {
     public:
@@ -36,11 +36,31 @@ namespace tns {
             return startTime_ + frequency_ * (div.quot + 1);
         }
 
-        inline void Unschedule() {
+        inline void Dispose() {
+            if (env_ != nullptr) {
+                if (callback_ != nullptr) {
+                    napi_delete_reference(env_, callback_);
+                }
+                if (args_ != nullptr) {
+                    for (const auto arg : *args_) {
+                        if (arg != nullptr) {
+                            napi_delete_reference(env_, arg);
+                        }
+                    }
+                }
+                if (thisArg != nullptr) {
+                    napi_delete_reference(env_, thisArg);
+                }
+            }
             callback_ = nullptr;
+            thisArg = nullptr;
             args_.reset();
             env_ = nullptr;
             queued_ = false;
+        }
+
+        ~TimerTask() {
+            Dispose();
         }
 
         int nestingLevel_ = 0;
@@ -124,12 +144,12 @@ namespace tns {
         // background thread lost cycles
         std::set<int> deletedTimers_;
         int fd_[2];
-        std::atomic_bool isBufferFull = ATOMIC_VAR_INIT(false);
+        std::atomic_bool isBufferFull{false};
         std::condition_variable taskReady;
         std::condition_variable bufferFull;
         std::mutex mutex;
         std::thread watcher_;
-        bool stopped = false;
+        std::atomic_bool stopped{false};
     };
 
 }

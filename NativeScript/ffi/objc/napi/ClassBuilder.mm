@@ -7,6 +7,7 @@
 #include "Metadata.h"
 #include "ObjCBridge.h"
 #include "Protocol.h"
+#include "TypeConv.h"
 #include "Util.h"
 #include "js_native_api.h"
 #include "node_api_util.h"
@@ -427,6 +428,9 @@ NSUInteger JS_SymbolIteratorCountByEnumerating(id self, SEL _cmd, NSFastEnumerat
     bool shouldFree = false;
     bool shouldFreeAny = false;
     objectConverter->toNative(env, value, &nativeValue, &shouldFree, &shouldFreeAny);
+    if (ConsumeNapiArgumentConversionFailure(env)) {
+      break;
+    }
     stackbuf[count++] = nativeValue;
   }
 

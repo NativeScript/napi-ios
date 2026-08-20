@@ -68,6 +68,12 @@ void InstallNativeApi(v8::Isolate* isolate, v8::Local<v8::Context> context,
   InstallNativeApi(runtime, config);
 }
 
+void CleanupNativeApi(v8::Isolate* isolate) {
+  if (isolate != nullptr) {
+    engine::v8engine::cleanupRuntimeAllocations(isolate);
+  }
+}
+
 }  // namespace nativescript
 
 extern "C" void NativeScriptInstallNativeApi(v8::Isolate* isolate, v8::Local<v8::Context> context,

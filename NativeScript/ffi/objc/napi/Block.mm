@@ -174,6 +174,14 @@ napi_value callFunctionPointerAsCFunctionDirect(napi_env env, nativescript::Func
     cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i], &shouldFreeArg,
                                &shouldFreeAny);
     shouldFree[i] = shouldFreeArg ? 1 : 0;
+    if (nativescript::ConsumeNapiArgumentConversionFailure(env)) {
+      for (unsigned int converted = 0; converted <= i; converted++) {
+        if (shouldFree[converted]) {
+          cif->argTypes[converted]->free(env, *((void**)avalues[converted]));
+        }
+      }
+      return nullptr;
+    }
   }
 
   void* rvalue = cif->rvalue;
@@ -248,6 +256,14 @@ napi_value callFunctionPointerAsBlockDirect(napi_env env, nativescript::Function
     cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i + 1], &shouldFreeArg,
                                &shouldFreeAny);
     shouldFree[i] = shouldFreeArg ? 1 : 0;
+    if (nativescript::ConsumeNapiArgumentConversionFailure(env)) {
+      for (unsigned int converted = 0; converted <= i; converted++) {
+        if (shouldFree[converted]) {
+          cif->argTypes[converted]->free(env, *((void**)avalues[converted + 1]));
+        }
+      }
+      return nullptr;
+    }
   }
 
   void* rvalue = cif->rvalue;

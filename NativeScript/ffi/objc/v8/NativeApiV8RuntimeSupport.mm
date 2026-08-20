@@ -8,13 +8,22 @@ struct NativeApiLazyGlobalData {
   }
 
   ~NativeApiLazyGlobalData() {
+    external.Reset();
     nameValue.Reset();
     kindValue.Reset();
   }
 
+  v8::Global<v8::External> external;
   v8::Global<v8::String> nameValue;
   v8::Global<v8::String> kindValue;
 };
+
+void NativeApiLazyGlobalWeakCallback(
+    const v8::WeakCallbackInfo<NativeApiLazyGlobalData>& info) {
+  engine::v8engine::untrackRuntimeAllocation(info.GetIsolate(),
+                                             info.GetParameter());
+  delete info.GetParameter();
+}
 
 std::shared_ptr<Runtime> retainNativeApiRuntime(Runtime& runtime) {
   return std::make_shared<Runtime>(runtime.state());
@@ -94,15 +103,21 @@ bool InstallNativeApiLazyGlobal(Runtime& runtime, std::shared_ptr<NativeApiBridg
     return false;
   }
 
-  auto data = std::make_shared<NativeApiLazyGlobalData>(isolate, name, kind);
-  v8::Local<v8::External> external = v8::External::New(isolate, data.get());
+  auto* data = new NativeApiLazyGlobalData(isolate, name, kind);
+  engine::v8engine::trackRuntimeAllocation(isolate, data);
+  v8::Local<v8::External> external = v8::External::New(isolate, data);
 
   bool installed = global
                        ->SetNativeDataProperty(context, property, NativeApiLazyGlobalGetter,
                                                nullptr, external, v8::DontEnum)
                        .FromMaybe(false);
   if (installed) {
-    runtime.state()->retainedNativeData.push_back(std::move(data));
+    data->external.Reset(isolate, external);
+    data->external.SetWeak(data, NativeApiLazyGlobalWeakCallback,
+                           v8::WeakCallbackType::kParameter);
+  } else {
+    engine::v8engine::untrackRuntimeAllocation(isolate, data);
+    delete data;
   }
   return installed;
 }
@@ -118,4 +133,3 @@ void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
                                                             tryCatch));
   }
 }
-

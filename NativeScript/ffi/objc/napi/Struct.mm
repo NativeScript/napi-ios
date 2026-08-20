@@ -153,7 +153,7 @@ void ObjCBridgeState::registerUnionGlobals(napi_env env, napi_value global) {
 }
 
 NAPI_FUNCTION(structGetter) {
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   void* data;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, &data);
@@ -165,7 +165,7 @@ NAPI_FUNCTION(structGetter) {
 }
 
 NAPI_FUNCTION(unionGetter) {
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   void* data;
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, nullptr, &data);
@@ -242,6 +242,11 @@ StructInfo* getStructInfoFromUnionMetadata(napi_env env, MDMetadataReader* metad
 }
 
 namespace {
+constexpr napi_type_tag kStructObjectTypeTag = {
+    0x93d4bc8be2d74d2dULL,
+    0xa3c150244f745f84ULL,
+};
+
 void StructObject_finalize_now(napi_env env, void* data, void* hint) {
   auto structObject = (StructObject*)data;
   delete structObject;
@@ -257,7 +262,7 @@ void StructObject_finalize(napi_env env, void* data, void* hint) {
 }
 
 NAPI_FUNCTION(StructConstructor) {
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   napi_value jsThis;
   napi_value argv[1];
@@ -323,14 +328,26 @@ NAPI_FUNCTION(StructConstructor) {
     object = new StructObject(info);
   }
 
-  napi_ref ref;
-  napi_wrap(env, jsThis, object, StructObject_finalize, nullptr, &ref);
+  napi_ref* wrapperRef = nullptr;
+#if defined(TARGET_ENGINE_HERMES)
+  wrapperRef = &object->wrapperRef;
+#endif
+  if (napi_wrap(env, jsThis, object, StructObject_finalize, nullptr, wrapperRef) != napi_ok) {
+    delete object;
+    return nullptr;
+  }
+  if (napi_type_tag_object(env, jsThis, &kStructObjectTypeTag) != napi_ok) {
+    void* removed = nullptr;
+    napi_remove_wrap(env, jsThis, &removed);
+    delete static_cast<StructObject*>(removed);
+    return nullptr;
+  }
 
   return jsThis;
 }
 
 NAPI_FUNCTION(StructPropertyGetter) {
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   napi_value jsThis;
   StructFieldInfo* info;
@@ -338,6 +355,10 @@ NAPI_FUNCTION(StructPropertyGetter) {
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, (void**)&info);
 
   auto object = StructObject::unwrap(env, jsThis);
+  if (object == nullptr) {
+    napi_throw_type_error(env, nullptr, "Invalid struct receiver");
+    return nullptr;
+  }
   auto value = object->get(env, info);
 
   if (StructObject::isInstance(env, value)) {
@@ -353,7 +374,7 @@ NAPI_FUNCTION(StructPropertyGetter) {
 }
 
 NAPI_FUNCTION(StructPropertySetter) {
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   napi_value jsThis, arg;
   StructFieldInfo* info;
@@ -362,6 +383,10 @@ NAPI_FUNCTION(StructPropertySetter) {
   napi_get_cb_info(env, cbinfo, &argc, &arg, &jsThis, (void**)&info);
 
   auto object = StructObject::unwrap(env, jsThis);
+  if (object == nullptr) {
+    napi_throw_type_error(env, nullptr, "Invalid struct receiver");
+    return nullptr;
+  }
   object->set(env, info, arg);
 
   return nullptr;
@@ -372,6 +397,10 @@ NAPI_FUNCTION(StructCustomInspect) {
   napi_get_cb_info(env, cbinfo, nullptr, nullptr, &jsThis, nullptr);
 
   auto object = StructObject::unwrap(env, jsThis);
+  if (object == nullptr) {
+    napi_throw_type_error(env, nullptr, "Invalid struct receiver");
+    return nullptr;
+  }
   std::string str = "struct ";
   str += object->info->name;
   str += " {}";
@@ -476,6 +505,15 @@ StructObject::StructObject(napi_env env, StructInfo* info, napi_value object, vo
 }
 
 StructObject::~StructObject() {
+#if defined(TARGET_ENGINE_HERMES)
+  if (this->wrapperRef != nullptr && this->env != nullptr &&
+      (this->bridgeState == nullptr ||
+       IsBridgeStateLive(this->bridgeState, this->bridgeStateToken))) {
+    DeleteReferenceOnOwningThread(this->env, this->bridgeState, this->bridgeStateToken,
+                                  this->wrapperRef);
+  }
+  this->wrapperRef = nullptr;
+#endif
   if (this->backingRef != nullptr && this->env != nullptr &&
       (this->bridgeState == nullptr ||
        IsBridgeStateLive(this->bridgeState, this->bridgeStateToken))) {
@@ -497,12 +535,32 @@ void StructObject::set(napi_env env, StructFieldInfo* field, napi_value value) {
   auto data = (char*)this->data + field->offset;
   bool shouldFree = false;
   field->type->toNative(env, value, data, &shouldFree, &shouldFree);
+  ConsumeNapiArgumentConversionFailure(env);
 }
 
 StructObject* StructObject::unwrap(napi_env env, napi_value object) {
-  StructObject* result;
+  bool matches = false;
+  if (napi_check_object_type_tag(env, object, &kStructObjectTypeTag, &matches) != napi_ok ||
+      !matches) {
+    return nullptr;
+  }
+
+  StructObject* result = nullptr;
   auto status = napi_unwrap(env, object, (void**)&result);
   if (status != napi_ok) return nullptr;
+#if defined(TARGET_ENGINE_HERMES)
+  if (result == nullptr || result->wrapperRef == nullptr) {
+    return nullptr;
+  }
+
+  napi_value wrapper = nullptr;
+  bool same = false;
+  if (napi_get_reference_value(env, result->wrapperRef, &wrapper) != napi_ok ||
+      wrapper == nullptr || napi_strict_equals(env, object, wrapper, &same) != napi_ok ||
+      !same) {
+    return nullptr;
+  }
+#endif
   return result;
 }
 
@@ -593,18 +651,11 @@ napi_value StructObject::defineJSClass(napi_env env, StructInfo* info) {
 }
 
 bool StructObject::isInstance(napi_env env, napi_value object) {
-  napi_valuetype valueType = napi_undefined;
-  napi_typeof(env, object, &valueType);
-  if (valueType != napi_object && valueType != napi_function) {
-    return false;
-  }
-
-  napi_value sizeofSymbol = jsSymbolFor(env, "sizeof");
-  bool hasProp = false;
-  if (napi_has_property(env, object, sizeofSymbol, &hasProp) != napi_ok) {
-    return false;
-  }
-  return hasProp;
+  bool matches = false;
+  return object != nullptr &&
+         napi_check_object_type_tag(env, object, &kStructObjectTypeTag,
+                                    &matches) == napi_ok &&
+         matches && StructObject::unwrap(env, object) != nullptr;
 }
 
 napi_value StructObject::getJSClass(napi_env env, StructInfo* info) {

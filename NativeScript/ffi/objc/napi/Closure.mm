@@ -216,6 +216,7 @@ inline void JSCallbackInner(Closure* closure, napi_value func, napi_value thisAr
   // fill the return value memory with something so that it doesn't crash.
   bool shouldFree;
   closure->returnType->toNative(env, result, ret, &shouldFree, &shouldFree);
+  ConsumeNapiArgumentConversionFailure(env);
 }
 
 // Bridge calls from Objective-C to JavaScript.
@@ -334,6 +335,7 @@ void JSMethodCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
 
   bool shouldFree;
   closure->returnType->toNative(env, result, ret, &shouldFree, &shouldFree);
+  ConsumeNapiArgumentConversionFailure(env);
 }
 
 void JSFunctionCallback(ffi_cif* cif, void* ret, void* args[], void* data) {
@@ -557,7 +559,9 @@ Closure::Closure(napi_env env, MDMetadataReader* reader, MDSectionOffset offset,
   }
 
   ffi_status status =
-      ffi_prep_cif(&cif, FFI_DEFAULT_ABI, argTypes.size() + skipArgs, rtype, this->atypes);
+      ffi_prep_cif(&cif, FFI_DEFAULT_ABI,
+                   static_cast<unsigned int>(argTypes.size() + skipArgs), rtype,
+                   this->atypes);
 
   if (status != FFI_OK) {
     std::cout << "Failed to prepare CIF, libffi returned error:" << status << std::endl;

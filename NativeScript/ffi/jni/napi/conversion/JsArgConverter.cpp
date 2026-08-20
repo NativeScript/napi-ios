@@ -279,7 +279,7 @@ bool JsArgConverter::ConvertArg(napi_env env, napi_value arg, int index) {
                         success = !obj.IsNull();
 
                         if (success) {
-                            SetConvertedObject(index, obj.Move(), obj.IsGlobal());
+                            SetConvertedObject(index, obj.Move(), false);
                         } else {
                             if (napi_util::is_number_object(env, arg)) {
                                 success = ConvertJavaScriptNumber(env, arg, index, true);
@@ -717,16 +717,9 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
                                &offset);
     }
 
-    jobject directBuffer;
-
-    if (isDataView || isTypedArray) {
-        directBuffer =jEnv.NewDirectByteBuffer(static_cast<uint8_t *>(data) + offset, length);
-    } else {
-        directBuffer = jEnv.NewDirectByteBuffer(static_cast<uint8_t *>(data), length);
-    }
-
-
-    auto directBufferClazz = jEnv.GetObjectClass(directBuffer);
+    JniLocalRef directBuffer(jEnv.NewDirectByteBuffer(
+        static_cast<uint8_t *>(data) + (isDataView || isTypedArray ? offset : 0), length));
+    JniLocalRef directBufferClazz(jEnv.GetObjectClass(directBuffer));
 
     auto byteOrderId = BYTE_ORDER_METHOD_ID;
 
@@ -736,7 +729,7 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
         BYTE_ORDER_METHOD_ID = byteOrderId;
     }
 
-    auto byteOrderClazz = jEnv.FindClass("java/nio/ByteOrder");
+    JniLocalRef byteOrderClazz(jEnv.FindClass("java/nio/ByteOrder"));
 
     auto byteOrderEnumId = BYTE_ORDER_ENUM_ID;
 
@@ -747,14 +740,13 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
         BYTE_ORDER_ENUM_ID = byteOrderEnumId;
     }
 
-    auto nativeByteOrder = jEnv.CallStaticObjectMethodA(byteOrderClazz,
-                                                        byteOrderEnumId,
-                                                        nullptr);
+    JniLocalRef nativeByteOrder(jEnv.CallStaticObjectMethodA(byteOrderClazz,
+                                                             byteOrderEnumId,
+                                                             nullptr));
+    directBuffer = JniLocalRef(jEnv.CallObjectMethod(directBuffer, byteOrderId,
+                                                     static_cast<jobject>(nativeByteOrder)));
 
-    directBuffer = jEnv.CallObjectMethod(directBuffer, byteOrderId,
-                                         nativeByteOrder);
-
-    jobject buffer;
+    JniLocalRef buffer;
 
     if (bufferCastType == BufferCastType::Short) {
         auto id = AS_SHORT_BUFFER;
@@ -764,7 +756,7 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
             AS_SHORT_BUFFER = id;
         }
 
-        buffer = jEnv.CallObjectMethodA(directBuffer, id, nullptr);
+        buffer = JniLocalRef(jEnv.CallObjectMethodA(directBuffer, id, nullptr));
     } else if (bufferCastType == BufferCastType::Int) {
         auto id = AS_INT_BUFFER;
 
@@ -773,7 +765,7 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
                                   "()Ljava/nio/IntBuffer;");
             AS_INT_BUFFER = id;
         }
-        buffer = jEnv.CallObjectMethodA(directBuffer, id, nullptr);
+        buffer = JniLocalRef(jEnv.CallObjectMethodA(directBuffer, id, nullptr));
     } else if (bufferCastType == BufferCastType::Long) {
         auto id = AS_LONG_BUFFER;
 
@@ -783,7 +775,7 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
             AS_LONG_BUFFER = id;
         }
 
-        buffer = jEnv.CallObjectMethodA(directBuffer, id, nullptr);
+        buffer = JniLocalRef(jEnv.CallObjectMethodA(directBuffer, id, nullptr));
     } else if (bufferCastType == BufferCastType::Float) {
 
         auto id = AS_FLOAT_BUFFER;
@@ -793,7 +785,7 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
             AS_FLOAT_BUFFER = id;
         }
 
-        buffer = jEnv.CallObjectMethodA(directBuffer, id, nullptr);
+        buffer = JniLocalRef(jEnv.CallObjectMethodA(directBuffer, id, nullptr));
     } else if (bufferCastType == BufferCastType::Double) {
 
         auto id = AS_DOUBLE_BUFFER;
@@ -802,21 +794,17 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
                                   "()Ljava/nio/DoubleBuffer;");
             AS_DOUBLE_BUFFER = id;
         }
-        buffer = jEnv.CallObjectMethodA(directBuffer, id, nullptr);
+        buffer = JniLocalRef(jEnv.CallObjectMethodA(directBuffer, id, nullptr));
     } else {
-        buffer = directBuffer;
+        buffer = std::move(directBuffer);
     }
-
-    buffer = jEnv.NewGlobalRef(buffer);
 
     ObjectManager *objectManager = Runtime::GetRuntime(env)->GetObjectManager();
 
     int id = objectManager->GetOrCreateObjectId(buffer);
-    auto clazz = jEnv.GetObjectClass(buffer);
-
     ObjectManager::MarkObject(env, object);
 
-    objectManager->Link(object, id, clazz);
+    objectManager->Link(object, id);
 
     return objectManager->GetJavaObjectByJsObject(object);
 }

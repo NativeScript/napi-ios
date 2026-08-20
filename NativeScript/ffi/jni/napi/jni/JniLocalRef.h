@@ -8,28 +8,24 @@ namespace tns {
 class JniLocalRef {
     public:
         JniLocalRef()
-            : m_obj(nullptr), m_isGlobal(false) {
+            : m_obj(nullptr) {
         }
 
-        JniLocalRef(jobject obj, bool isGlobal = false)
-            : m_obj(obj), m_isGlobal(isGlobal) {
+        JniLocalRef(jobject obj)
+            : m_obj(obj) {
         }
 
         JniLocalRef(jclass obj)
-            : m_obj(obj), m_isGlobal(false) {
+            : m_obj(obj) {
         }
 
         JniLocalRef(JniLocalRef&& rhs)
-            : m_obj(rhs.m_obj), m_isGlobal(rhs.m_isGlobal) {
+            : m_obj(rhs.m_obj) {
             rhs.m_obj = nullptr;
         }
 
         bool IsNull() const {
             return m_obj == nullptr;
-        }
-
-        bool IsGlobal() const {
-            return m_isGlobal;
         }
 
         jobject Move() {
@@ -39,8 +35,14 @@ class JniLocalRef {
         }
 
         JniLocalRef& operator=(JniLocalRef&& rhs) {
+            if (this == &rhs) {
+                return *this;
+            }
+            if (m_obj != nullptr) {
+                JEnv env;
+                env.DeleteLocalRef(m_obj);
+            }
             m_obj = rhs.m_obj;
-            m_isGlobal = rhs.m_isGlobal;
             rhs.m_obj = nullptr;
             return *this;
         }
@@ -107,7 +109,7 @@ class JniLocalRef {
         }
 
         ~JniLocalRef() {
-            if ((m_obj != nullptr) && !m_isGlobal) {
+            if (m_obj != nullptr) {
                 JEnv env;
                 env.DeleteLocalRef(m_obj);
             }
@@ -115,7 +117,6 @@ class JniLocalRef {
 
     private:
         jobject m_obj;
-        bool m_isGlobal;
 };
 }
 

@@ -239,25 +239,24 @@ namespace tns {
         void cleanupObject(int javaObjectId) {
             auto it = methodCache.find(javaObjectId);
             if (it != methodCache.end()) {
-                for (auto &methodEntry: it->second) {
-                    napi_delete_reference(rt->GetNapiEnv(), methodEntry.second);
-                    it->second.erase(methodEntry.first);
+                for (const auto &methodEntry: it->second) {
+                    if (methodEntry.second != nullptr) {
+                        napi_delete_reference(rt->GetNapiEnv(), methodEntry.second);
+                    }
                 }
                 methodCache.erase(it);
             }
         }
 
         void cleanupCache() {
-            JEnv env;
-            for (auto &classEntry: methodCache) {
-                for (auto &methodEntry: classEntry.second) {
+            for (const auto &classEntry: methodCache) {
+                for (const auto &methodEntry: classEntry.second) {
                     if (methodEntry.second != nullptr) {
                         napi_delete_reference(rt->GetNapiEnv(), methodEntry.second);
                     }
-                    classEntry.second.erase(methodEntry.first);
                 }
-                methodCache.erase(classEntry.first);
             }
+            methodCache.clear();
         }
 
 

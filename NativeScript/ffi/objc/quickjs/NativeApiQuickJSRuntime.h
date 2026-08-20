@@ -31,6 +31,7 @@
 #include <utility>
 #include <vector>
 
+#include "../shared/RuntimeCleanupRegistry.h"
 #include "Metadata.h"
 #include "MetadataReader.h"
 #include "ffi.h"
@@ -110,7 +111,7 @@ const void* hostObjectTypeToken() {
   return &token;
 }
 
-struct RuntimeState {
+struct RuntimeState : RuntimeCleanupRegistry {
   explicit RuntimeState(JSContext* context) : context(context) {}
   JSContext* context = nullptr;
   bool hostClassRegistered = false;
@@ -122,6 +123,7 @@ extern JSClassID gHostClassId;
 extern JSClassID gFunctionClassId;
 
 std::shared_ptr<RuntimeState> stateForContext(JSContext* context);
+void releaseStateForContext(JSContext* context);
 
 struct ValueStorage {
   enum class Kind {
@@ -211,6 +213,7 @@ class Runtime {
   explicit Runtime(std::shared_ptr<quickjsengine::RuntimeState> state) : state_(std::move(state)) {}
   JSContext* context() const { return state_->context; }
   std::shared_ptr<quickjsengine::RuntimeState> state() const { return state_; }
+  void detachState() { state_.reset(); }
   Object global();
   Value evaluateJavaScript(std::shared_ptr<StringBuffer> buffer, const std::string& sourceURL);
   void drainMicrotasks() {

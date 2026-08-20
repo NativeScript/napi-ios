@@ -238,8 +238,12 @@ JSValueRef NativeApiSelectorGroupCall(
 }
 
 void NativeApiSelectorGroupFinalize(JSObjectRef function) {
-  delete static_cast<NativeApiSelectorGroupData*>(
+  auto* data = static_cast<NativeApiSelectorGroupData*>(
       JSObjectGetPrivate(function));
+  if (data != nullptr && data->runtime.state() != nullptr) {
+    data->runtime.state()->untrack(data);
+  }
+  delete data;
 }
 
 JSClassRef NativeApiSelectorGroupFunctionClass(Runtime& runtime) {
@@ -267,6 +271,15 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
       runtime.state(), std::move(bridge), lookupClass, receiverIsClass,
       std::move(selectors), std::move(preparedInvocations),
       std::move(boundReceiver), std::move(boundReceiverState));
+  runtime.state()->track(data, [](void* pointer) {
+    auto* tracked = static_cast<NativeApiSelectorGroupData*>(pointer);
+    tracked->runtime.detachState();
+    tracked->bridge.reset();
+    tracked->selectors.reset();
+    tracked->preparedInvocations.reset();
+    tracked->boundReceiver.reset();
+    tracked->boundReceiverState.reset();
+  });
   JSObjectRef function =
       JSObjectMake(runtime.context(),
                    NativeApiSelectorGroupFunctionClass(runtime), data);

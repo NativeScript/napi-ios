@@ -1642,6 +1642,22 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
     }
   }
 
+  function installObjcHelpers() {
+    var objc = globalThis.objc;
+    if (!objc || (typeof objc !== 'object' && typeof objc !== 'function')) {
+      objc = {};
+      Object.defineProperty(globalThis, 'objc', {
+        configurable: true,
+        enumerable: true,
+        writable: true,
+        value: objc
+      });
+    }
+    if (typeof objc.autoreleasepool !== 'function') {
+      objc.autoreleasepool = api.autoreleasepool;
+    }
+  }
+
   function defineInlineFunction(name, value) {
     if (Object.prototype.hasOwnProperty.call(globalThis, name)) {
       return;
@@ -1811,6 +1827,7 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
   defineLazyGlobal('CC_SHA256', function() { return api.CC_SHA256; });
 
 	  installInteropConstructors();
+	  installObjcHelpers();
 	  installTypeScriptNativeHelpers();
 	  installInlineFunctions();
 

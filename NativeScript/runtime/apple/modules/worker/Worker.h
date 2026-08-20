@@ -26,9 +26,7 @@ class Worker {
   static JS_METHOD(PostMessageToMain);
   static JS_METHOD(CloseWorker);
 
-  static napi_value Serialize(napi_env env, napi_value value);
-  static void SetWorkerId(napi_env env, int workerId);
-  static int GetWorkerId(napi_env env, napi_value global);
+  static int GetWorkerId(napi_env env);
 };
 
 }  // namespace nativescript

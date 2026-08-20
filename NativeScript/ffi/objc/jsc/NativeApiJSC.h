@@ -11,6 +11,7 @@ using NativeApiConfig = NativeApiBackendConfig;
 
 void InstallNativeApi(JSGlobalContextRef context,
                          const NativeApiConfig& config = NativeApiConfig{});
+void CleanupNativeApi(JSGlobalContextRef context);
 
 }  // namespace nativescript
 
