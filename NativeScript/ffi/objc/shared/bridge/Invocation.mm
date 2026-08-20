@@ -1588,7 +1588,6 @@ Value callPreparedObjCSelector(
   if (prepared.isInitMethod &&
       isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeInstanceObject;
-    returnType.returnOwned = true;
   }
   if (hasImplicitNSErrorOutArg && implicitNSError != nil) {
     const char* errorMessage = [[implicitNSError description] UTF8String];
@@ -1754,7 +1753,6 @@ Value callObjCSelector(Runtime& runtime,
   }
   if (engineInvocation.isInitMethod && isObjectiveCObjectType(returnType)) {
     returnType.kind = metagen::mdTypeInstanceObject;
-    returnType.returnOwned = true;
   }
   if (hasImplicitNSErrorOutArg && implicitNSError != nil) {
     const char* errorMessage = [[implicitNSError description] UTF8String];

@@ -22,11 +22,11 @@ class RuntimeCleanupRegistry {
 
   void cleanup() {
     while (!actions_.empty()) {
-      auto actions = std::move(actions_);
-      actions_.clear();
-      for (const auto& [pointer, cleanup] : actions) {
-        cleanup(pointer);
-      }
+      auto action = actions_.begin();
+      void* pointer = action->first;
+      Cleanup cleanup = action->second;
+      actions_.erase(action);
+      cleanup(pointer);
     }
   }
 

@@ -357,7 +357,7 @@ Value makeNativeObjectValue(Runtime& runtime,
   }
   bridge->rememberScopedRoundTripValue(
       runtime, object, Value(runtime, result),
-      nativeObjectIsStringLike(object), false);
+      nativeObjectIsStringLike(object));
   return result;
 }
 
