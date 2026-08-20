@@ -1285,9 +1285,13 @@ class NativeApiObjectHostObject final
                                  @protocol(NativeApiClassBuilderProtocol));
 
     if (object_ != nil && !isEngineExtendedInstance) {
-      if (const NativeApiSymbol* symbol =
-              bridge_->findClassForRuntimeClass(object_getClass(object_))) {
-        const auto& members = bridge_->membersForClass(*symbol);
+      // Tries to resolve `property` as a metadata getter or method against
+      // one member table, returning the resolved JS value if it does.
+      // Shared by the ordinary class-hierarchy lookup below and the
+      // protocol-conformance fallback, so both paths behave identically.
+      auto tryResolveFromMembers =
+          [&](const std::vector<NativeApiMember>& members)
+          -> std::optional<Value> {
         if (const NativeApiMember* propertyMember =
                 selectPropertyMember(members, property, false)) {
           if (auto getter = respondingPropertyGetterSelector(
@@ -1334,6 +1338,30 @@ class NativeApiObjectHostObject final
                                       methodFunction);
             return methodFunction;
           }
+        }
+        return std::nullopt;
+      };
+
+      if (const NativeApiSymbol* symbol =
+              bridge_->findClassForRuntimeClass(object_getClass(object_))) {
+        if (auto result =
+                tryResolveFromMembers(bridge_->membersForClass(*symbol))) {
+          return std::move(*result);
+        }
+      }
+
+      // Fallback for a selector declared solely on a protocol the object
+      // conforms to only at the ObjC runtime level (a category/class-
+      // extension conformance the metadata generator never parsed, or a
+      // fully private concrete class such as the one behind
+      // UIViewControllerTransitionCoordinator). Only reached once the
+      // ordinary class-hierarchy lookup above has already missed, so
+      // classes with complete metadata pay nothing extra.
+      const auto& protocolMembers = bridge_->protocolMembersForRuntimeClass(
+          object_getClass(object_));
+      if (!protocolMembers.empty()) {
+        if (auto result = tryResolveFromMembers(protocolMembers)) {
+          return std::move(*result);
         }
       }
     }
@@ -1493,25 +1521,46 @@ class NativeApiObjectHostObject final
       }
     }
 
+    // Tries to resolve `property` as a writable metadata property against
+    // one member table. Returns true (and performs the assignment) if it
+    // does. Shared by the ordinary class-hierarchy lookup and the
+    // protocol-conformance fallback below.
+    auto tryAssignFromMembers =
+        [&](const std::vector<NativeApiMember>& members) -> bool {
+      const NativeApiMember* propertyMember =
+          selectWritablePropertyMember(members, property, false);
+      if (propertyMember == nullptr) {
+        return false;
+      }
+      if (propertyMember->readonly) {
+        throw JSError(runtime, "Attempted to assign to readonly property.");
+      }
+      NativeApiMember setterMember = *propertyMember;
+      setterMember.selectorName = propertyMember->setterSelectorName;
+      setterMember.signatureOffset = propertyMember->setterSignatureOffset;
+      Value args[] = {Value(runtime, value)};
+      callObjCSelector(runtime, bridge_, object_, false,
+                       setterMember.selectorName, &setterMember, args, 1);
+      cacheAppearanceProxyPropertyValue(runtime, bridge_, object_, property,
+                                        value);
+      return true;
+    };
+
     if (const NativeApiSymbol* symbol =
             bridge_->findClassForRuntimeClass(object_getClass(object_))) {
-      const auto& members = bridge_->membersForClass(*symbol);
-      if (const NativeApiMember* propertyMember =
-              selectWritablePropertyMember(members, property, false)) {
-        if (propertyMember->readonly) {
-          throw JSError(
-              runtime, "Attempted to assign to readonly property.");
-        }
-        NativeApiMember setterMember = *propertyMember;
-        setterMember.selectorName = propertyMember->setterSelectorName;
-        setterMember.signatureOffset = propertyMember->setterSignatureOffset;
-        Value args[] = {Value(runtime, value)};
-        callObjCSelector(runtime, bridge_, object_, false,
-                         setterMember.selectorName, &setterMember, args, 1);
-        cacheAppearanceProxyPropertyValue(runtime, bridge_, object_, property,
-                                          value);
+      if (tryAssignFromMembers(bridge_->membersForClass(*symbol))) {
         NATIVE_API_SET_RETURN(true);
       }
+    }
+
+    // Fallback for a writable property declared solely on a protocol the
+    // object conforms to only at the ObjC runtime level. See
+    // NativeApiBridge::protocolMembersForRuntimeClass. Only reached once the
+    // ordinary class-hierarchy lookup above has already missed.
+    const auto& protocolMembers =
+        bridge_->protocolMembersForRuntimeClass(object_getClass(object_));
+    if (!protocolMembers.empty() && tryAssignFromMembers(protocolMembers)) {
+      NATIVE_API_SET_RETURN(true);
     }
 
     if (auto setterSelectorName =

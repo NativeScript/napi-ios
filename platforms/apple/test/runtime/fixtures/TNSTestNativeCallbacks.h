@@ -79,3 +79,35 @@ typedef UIView TNSPlatformView;
 - (void (^)())getBlockFromNative;
 
 @end
+
+// Fixtures for the "protocol-only method metadata" resolution path: a
+// selector declared solely on an Objective-C protocol, with the conforming
+// class's *public* header (the only thing the metadata generator parses)
+// never declaring that conformance. This mirrors
+// UIViewControllerTransitionCoordinator, where every method lives on the
+// protocol and the concrete class is private -- interop.Block(fn, encoding)
+// is the documented workaround for exactly this shape of metadata gap.
+@protocol TNSProtocolOnlyBlockProtocol <NSObject>
+- (void)invokeBlockCallback:(void (^)(NSInteger value))callback;
+- (NSInteger)invokeBlockCallbackReturningSum:(NSInteger (^)(NSInteger a, NSInteger b))callback;
+@end
+
+// Deliberately declared WITHOUT <TNSProtocolOnlyBlockProtocol> here: the
+// metadata generator only ever sees this public interface. Conformance is
+// added in the .m via a class extension, which is invisible to the
+// metadata generator but real at the Objective-C runtime level -- the same
+// gap as a private Apple class implementing a public protocol.
+@interface TNSProtocolOnlyMembersImplementor : NSObject
+@end
+
+// Control case: the same protocol, but conformance IS declared on the
+// public interface, so metadata already resolves it today. Used to prove
+// the fix doesn't regress (or change the behavior of) the already-working
+// path.
+@interface TNSProtocolDeclaredMembersImplementor : NSObject <TNSProtocolOnlyBlockProtocol>
+@end
+
+@interface TNSProtocolOnlyMembersFactory : NSObject
++ (id<TNSProtocolOnlyBlockProtocol>)createImplementorWithHiddenConformance;
++ (id<TNSProtocolOnlyBlockProtocol>)createImplementorWithDeclaredConformance;
+@end

@@ -596,7 +596,162 @@ class NativeApiBridge {
       }
       current = class_getSuperclass(current);
     }
-    return nullptr;
+
+    // The class-name walk above found nothing at all: not even a distant
+    // ancestor (e.g. NSObject) is known to metadata. As a last resort,
+    // identify the object by the most specific conformed protocol metadata
+    // does know about (see forEachConformedProtocol for the deterministic
+    // traversal/tie-break order), so callers that just need *some* symbol to
+    // key off (building a class-identity/prototype value, for instance)
+    // still get one instead of nullptr.
+    //
+    // This is the rarer half of the protocol-method-metadata fallback. The
+    // common real-world case -- a class walk that *does* resolve to a known
+    // symbol (the object's own class, or an ancestor), but whose
+    // metadata-baked member table doesn't carry a method declared solely on
+    // a protocol the object conforms to only at the ObjC runtime level (a
+    // category/class-extension conformance the metadata generator never
+    // parsed, or a fully private concrete class such as the one behind
+    // UIViewControllerTransitionCoordinator) -- is handled by
+    // protocolMembersForRuntimeClass below, which callers consult once a
+    // normal member lookup on this symbol comes up empty.
+    const NativeApiSymbol* protocolSymbol = nullptr;
+    forEachConformedProtocol(cls, [&](Protocol* protocol) {
+      auto it = protocolSymbolsByRuntimePointer_.find(
+          normalizeRuntimePointer(reinterpret_cast<uintptr_t>(protocol)));
+      if (it != protocolSymbolsByRuntimePointer_.end()) {
+        protocolSymbol = &it->second;
+        return true;
+      }
+      return false;
+    });
+    return protocolSymbol;
+  }
+
+  // Invokes `visit` for every protocol that `cls` (or an ancestor in its
+  // *runtime* class hierarchy) conforms to, until `visit` returns true.
+  // class_copyProtocolList only reports protocols adopted directly at the
+  // queried class level -- it does not walk superclasses -- so this walks
+  // class_getSuperclass itself (mirroring findClassForRuntimeClass's own
+  // walk) to collect the full picture.
+  //
+  // Traversal order (this is the deterministic tie-break rule for a class
+  // that conforms to more than one protocol declaring the same selector):
+  // the most-derived class in cls's hierarchy is visited first, then each
+  // ancestor in turn; within one class's own adopted-protocol list, in the
+  // order class_copyProtocolList returns them (stable per compiled binary --
+  // it reflects the order protocols were listed in that class's
+  // @interface/category/extension); each protocol's own inherited protocols
+  // are expanded depth-first immediately after it, ahead of its next
+  // sibling. The first protocol in this order that satisfies the caller's
+  // `visit` wins. This mirrors the "closest/most-specific declaration wins"
+  // rule the class-hierarchy member composition elsewhere in this file
+  // already follows (see appendSurfaceMember).
+  template <typename Visitor>
+  void forEachConformedProtocol(Class cls, Visitor&& visit) const {
+    std::unordered_set<Protocol*> visited;
+    for (Class current = cls; current != Nil;
+        current = class_getSuperclass(current)) {
+      unsigned int count = 0;
+      Protocol* __unsafe_unretained* protocols =
+          class_copyProtocolList(current, &count);
+      if (protocols == nullptr) {
+        continue;
+      }
+      bool stop = false;
+      for (unsigned int i = 0; i < count && !stop; i++) {
+        stop = visitProtocolDepthFirst(protocols[i], visited, visit);
+      }
+      free(protocols);
+      if (stop) {
+        return;
+      }
+    }
+  }
+
+  template <typename Visitor>
+  bool visitProtocolDepthFirst(Protocol* protocol,
+                               std::unordered_set<Protocol*>& visited,
+                               Visitor&& visit) const {
+    if (protocol == nullptr || !visited.insert(protocol).second) {
+      return false;
+    }
+    if (visit(protocol)) {
+      return true;
+    }
+
+    unsigned int count = 0;
+    Protocol* __unsafe_unretained* inherited =
+        protocol_copyProtocolList(protocol, &count);
+    if (inherited == nullptr) {
+      return false;
+    }
+    bool stop = false;
+    for (unsigned int i = 0; i < count && !stop; i++) {
+      stop = visitProtocolDepthFirst(inherited[i], visited, visit);
+    }
+    free(inherited);
+    return stop;
+  }
+
+  // Members contributed by protocols `cls` conforms to at the Objective-C
+  // runtime level, restricted to protocols metadata knows about. This is
+  // the fallback for a selector declared solely on a protocol -- e.g. every
+  // method of UIViewControllerTransitionCoordinator -- where
+  // findClassForRuntimeClass's plain class_getSuperclass walk resolves to a
+  // real, known class symbol (the object's own class, or some ancestor),
+  // but that symbol's own member table doesn't carry the method, because
+  // metadata bakes conformance from what each class's *own* processed
+  // header declares, not from what the object conforms to at runtime.
+  //
+  // Cached per runtime Class (not per metadata symbol offset, the way
+  // membersForClass/surfaceMembersForClass are): two different runtime
+  // classes can both resolve to the same metadata symbol while conforming
+  // to different runtime-only protocols, so the metadata-symbol cache would
+  // be the wrong granularity here and could leak members across unrelated
+  // classes.
+  //
+  // Callers are expected to consult this only once an ordinary
+  // membersForClass/surfaceMembersForClass lookup has already missed, so
+  // classes with complete metadata (the common case) pay nothing extra.
+  const std::vector<NativeApiMember>& protocolMembersForRuntimeClass(
+      Class cls) const {
+    static const std::vector<NativeApiMember> kEmptyMembers;
+    if (cls == Nil) {
+      return kEmptyMembers;
+    }
+
+    uintptr_t key = normalizeRuntimePointer(reinterpret_cast<uintptr_t>(cls));
+    auto cached = protocolMembersByRuntimeClass_.find(key);
+    if (cached != protocolMembersByRuntimeClass_.end()) {
+      return cached->second;
+    }
+
+    std::vector<NativeApiMember> members;
+    forEachConformedProtocol(cls, [&](Protocol* protocol) {
+      auto it = protocolSymbolsByRuntimePointer_.find(
+          normalizeRuntimePointer(reinterpret_cast<uintptr_t>(protocol)));
+      if (it != protocolSymbolsByRuntimePointer_.end()) {
+        for (const auto& member : membersForProtocol(it->second)) {
+          bool exists = false;
+          for (const auto& existing : members) {
+            if (sameMemberSlot(existing, member)) {
+              exists = true;
+              break;
+            }
+          }
+          if (!exists) {
+            members.push_back(member);
+          }
+        }
+      }
+      return false;  // Keep visiting: collect members from every conformed
+                     // protocol, not just the first.
+    });
+
+    auto inserted = protocolMembersByRuntimeClass_.emplace(
+        key, std::move(members));
+    return inserted.first->second;
   }
 
   const NativeApiSymbol* findClassForRuntimePointer(void* pointer) const {
@@ -2251,6 +2406,11 @@ class NativeApiBridge {
       surfaceMembersByClassOffset_;
   mutable std::unordered_map<MDSectionOffset, std::vector<NativeApiMember>>
       membersByProtocolOffset_;
+  // Keyed by runtime Class pointer (not metadata offset -- see
+  // protocolMembersForRuntimeClass for why). Caches the protocol-conformance
+  // method-metadata fallback.
+  mutable std::unordered_map<uintptr_t, std::vector<NativeApiMember>>
+      protocolMembersByRuntimeClass_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> structSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, NativeApiSymbol> unionSymbolsByOffset_;
   std::unordered_map<MDSectionOffset, std::shared_ptr<NativeApiAggregateInfo>>

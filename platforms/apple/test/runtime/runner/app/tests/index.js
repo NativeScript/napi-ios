@@ -222,6 +222,7 @@ loadTest("./Marshalling/ReferenceTests");
 loadTest("./Marshalling/FunctionPointerTests");
 loadTest("./Marshalling/EnumTests");
 loadTest("./Marshalling/ProtocolTests");
+loadTest("./Marshalling/ProtocolOnlyMethodMetadataTests");
 //
 // import "./Inheritance/ConstructorResolutionTests";
 loadTest("./Inheritance/InheritanceTests");

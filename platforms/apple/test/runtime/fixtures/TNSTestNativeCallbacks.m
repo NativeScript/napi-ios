@@ -380,3 +380,46 @@
 }
 
 @end
+
+// Conformance added here, in a class extension the metadata generator never
+// parses as part of the public @interface -- this is what makes the
+// selectors protocol-only from metadata's point of view while still being
+// real, callable methods at the Objective-C runtime level.
+@interface TNSProtocolOnlyMembersImplementor () <TNSProtocolOnlyBlockProtocol>
+@end
+
+@implementation TNSProtocolOnlyMembersImplementor
+
+- (void)invokeBlockCallback:(void (^)(NSInteger value))callback {
+  callback(42);
+}
+
+- (NSInteger)invokeBlockCallbackReturningSum:(NSInteger (^)(NSInteger a, NSInteger b))callback {
+  return callback(3, 4);
+}
+
+@end
+
+@implementation TNSProtocolDeclaredMembersImplementor
+
+- (void)invokeBlockCallback:(void (^)(NSInteger value))callback {
+  callback(42);
+}
+
+- (NSInteger)invokeBlockCallbackReturningSum:(NSInteger (^)(NSInteger a, NSInteger b))callback {
+  return callback(3, 4);
+}
+
+@end
+
+@implementation TNSProtocolOnlyMembersFactory
+
++ (id<TNSProtocolOnlyBlockProtocol>)createImplementorWithHiddenConformance {
+  return [[TNSProtocolOnlyMembersImplementor alloc] init];
+}
+
++ (id<TNSProtocolOnlyBlockProtocol>)createImplementorWithDeclaredConformance {
+  return [[TNSProtocolDeclaredMembersImplementor alloc] init];
+}
+
+@end
