@@ -19,3 +19,5 @@ dist_quickjs
 dist_hermes
 dist_jsc
 dist_*
+/test-app/analytics/build-statistics.json
+/test-app/build-tools/*.log
