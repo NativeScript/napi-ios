@@ -25,7 +25,7 @@ runPlainMemoryTest("circular-native-wrapper-finalization", async (t) => {
   const before = await sampleHeap();
 
   for (let round = 0; round < rounds; round++) {
-    (function createCircularGraphs() {
+    t.autoreleasepool(function createCircularGraphs() {
       for (let i = 0; i < objectsPerRound; i++) {
         const index = round * objectsPerRound + i;
         const native = NSMutableDictionary.dictionary();
@@ -57,7 +57,7 @@ runPlainMemoryTest("circular-native-wrapper-finalization", async (t) => {
         rootWeakRefs.push(new WeakRef(root));
         wrapperWeakRefs.push(new WeakRef(native));
       }
-    })();
+    });
 
     await t.forceGC(2, 8 * 1024 * 1024, 4);
   }

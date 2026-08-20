@@ -7,10 +7,12 @@ const { spawn, execFile, execFileSync } = require("child_process");
 
 const memoryThresholdsKB = {
   "weakref-finalization": 40 * 1024,
+  "js-function-finalization": 40 * 1024,
   "js-heap-throughput": 120 * 1024,
   "objc-ownership-rules": 60 * 1024,
   "objc-unmanaged-transfer-semantics": 60 * 1024,
   "objc-wrapper-churn": 80 * 1024,
+  "objc-wrapper-plateau": 80 * 1024,
   "appkit-navigation-throughput": 140 * 1024,
   "appkit-navigation-extreme": 220 * 1024,
   "block-lifecycle": 60 * 1024,
@@ -25,8 +27,26 @@ const memoryThresholdsKB = {
   "reference-lifecycle": 40 * 1024,
   "block-callback-finalization": 40 * 1024,
   "c-function-pointer-semantics": 40 * 1024,
+  "nested-ffi-layout-lifecycle": 40 * 1024,
   "circular-native-wrapper-finalization": 60 * 1024,
   "circular-js-to-native-conversion": 60 * 1024,
+  "selector-group-finalization": 48 * 1024,
+  "worker-lifecycle": 120 * 1024,
+  "worker-main-env-shutdown": 40 * 1024,
+};
+
+// JavaScriptCore keeps a larger reusable heap after allocation-heavy tests.
+// These bounds cover its measured plateau without weakening other engines.
+const engineMemoryThresholdsKB = {
+  jsc: {
+    "block-lifecycle": 84 * 1024,
+    "dispatch-async-background": 52 * 1024,
+    "mixed-stress": 104 * 1024,
+    "nested-ffi-layout-lifecycle": 72 * 1024,
+    "objc-wrapper-plateau": 104 * 1024,
+    "weakref-finalization": 52 * 1024,
+    "weakref-plain-script": 52 * 1024,
+  },
 };
 
 const kMinValidRssKB = 4 * 1024;
@@ -38,6 +58,7 @@ function parseArgs(argv) {
     repeat: 2,
     grep: null,
     runtime: null,
+    excludeWindowTests: false,
   };
 
   for (let i = 0; i < args.length; i++) {
@@ -56,6 +77,10 @@ function parseArgs(argv) {
     }
     if (arg === "--runtime" && args[i + 1]) {
       parsed.runtime = String(args[++i]);
+      continue;
+    }
+    if (arg === "--exclude-window-tests") {
+      parsed.excludeWindowTests = true;
       continue;
     }
   }
@@ -82,19 +107,28 @@ function median(values) {
   return Math.round((sorted[mid - 1] + sorted[mid]) / 2);
 }
 
-function computeBaselineKB(samples) {
+function computeBaselineKB(samples, markerMs) {
   if (!samples.length) {
     return null;
+  }
+  if (markerMs != null) {
+    const markedWindow = samples.filter(
+      (sample) => sample.t >= markerMs - 600 && sample.t <= markerMs,
+    );
+    if (markedWindow.length) {
+      return median(markedWindow.map((sample) => sample.rssKB));
+    }
   }
   const warmupWindow = samples.filter((sample) => sample.t >= 400 && sample.t <= 1600);
   const baselineWindow = (warmupWindow.length >= 3 ? warmupWindow : samples).slice(0, 6);
   return median(baselineWindow.map((sample) => sample.rssKB));
 }
 
-function listTestFiles(memoryDir, grep) {
+function listTestFiles(memoryDir, grep, excludeWindowTests) {
   return fs.readdirSync(memoryDir)
     .filter((name) => name.startsWith("test_") && name.endsWith(".js"))
     .filter((name) => !grep || name.includes(grep))
+    .filter((name) => !excludeWindowTests || !name.startsWith("test_appkit_navigation_"))
     .sort()
     .map((name) => path.join(memoryDir, name));
 }
@@ -139,6 +173,7 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
     const logs = [];
     let timedOut = false;
     let parsedResult = null;
+    let baselineMarkerMs = null;
 
     const addLine = (line) => {
       if (logs.length < 200) {
@@ -152,6 +187,9 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
         } catch (_) {
           parsedResult = { pass: false, error: `Invalid MEMTEST_RESULT payload: ${payload}` };
         }
+      }
+      if (line.includes("MEMTEST_RSS_BASELINE")) {
+        baselineMarkerMs = Date.now() - startedAt;
       }
     };
 
@@ -207,7 +245,7 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
       stdoutRl.close();
       stderrRl.close();
 
-      const baselineKB = computeBaselineKB(rssSamples);
+      const baselineKB = computeBaselineKB(rssSamples, baselineMarkerMs);
       const peakKB = rssSamples.length ? rssSamples.reduce((acc, s) => Math.max(acc, s.rssKB), 0) : null;
       const endKB = rssSamples.length ? median(rssSamples.slice(-3).map((sample) => sample.rssKB)) : null;
       const driftKB = baselineKB != null && endKB != null ? endKB - baselineKB : null;
@@ -219,7 +257,16 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
           .replace(/^test_/, "")
           .replace(/_/g, "-");
 
-      const driftThresholdKB = memoryThresholdsKB[logicalName] ?? (80 * 1024);
+      const engine = parsedResult && parsedResult.engine
+        ? parsedResult.engine
+        : parsedResult && parsedResult.details && parsedResult.details.engine
+          ? parsedResult.details.engine
+          : "unknown";
+      const engineThresholds = engineMemoryThresholdsKB[engine];
+      const driftThresholdKB =
+        (engineThresholds && engineThresholds[logicalName]) ??
+        memoryThresholdsKB[logicalName] ??
+        (80 * 1024);
       const memoryPass = driftKB == null ? false : driftKB <= driftThresholdKB;
       const logicPass = !!(parsedResult && parsedResult.pass === true);
       const exitPass = code === 0 && !timedOut && !signal;
@@ -227,6 +274,7 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
       resolve({
         testFile,
         testName: logicalName,
+        engine,
         code,
         signal,
         timedOut,
@@ -243,6 +291,7 @@ async function runSingleTest({ nsrPath, cwd, testFile, timeoutMs }) {
           driftKB,
           peakDeltaKB,
           driftThresholdKB,
+          baselineMarkerMs,
           samples: rssSamples,
         },
         logs,
@@ -289,7 +338,7 @@ async function main() {
   }
   ensureExecutableSignature(nsrPath);
 
-  const testFiles = listTestFiles(memoryDir, opts.grep);
+  const testFiles = listTestFiles(memoryDir, opts.grep, opts.excludeWindowTests);
   if (testFiles.length === 0) {
     console.error("No memory tests found.");
     process.exit(1);

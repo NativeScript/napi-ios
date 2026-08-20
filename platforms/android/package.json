@@ -4,7 +4,8 @@
   "version": "8.8.5",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NativeScript/android.git"
+    "url": "https://github.com/NativeScript/runtimes.git",
+    "directory": "platforms/android"
   },
   "files": [
     "**/*"

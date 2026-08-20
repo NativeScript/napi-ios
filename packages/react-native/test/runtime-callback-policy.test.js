@@ -85,8 +85,7 @@ assert(
 );
 
 for (const relativePath of [
-  "packages/react-native/native-api/ffi/shared/NativeApiBackendConfig.h",
-  "NativeScript/ffi/shared/NativeApiBackendConfig.h",
+  "NativeScript/ffi/objc/shared/NativeApiBackendConfig.h",
 ]) {
   const source = readRepo(relativePath);
   assert(
@@ -96,8 +95,7 @@ for (const relativePath of [
 }
 
 for (const relativePath of [
-  "packages/react-native/native-api/ffi/shared/bridge/Callbacks.mm",
-  "NativeScript/ffi/shared/bridge/Callbacks.mm",
+  "NativeScript/ffi/objc/shared/bridge/Callbacks.mm",
 ]) {
   const source = readRepo(relativePath);
   assert(

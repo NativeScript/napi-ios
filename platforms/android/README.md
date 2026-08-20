@@ -35,42 +35,42 @@ The new runtime is based on the Node-API and is designed to be more stable, fast
 
 The repo is structured in the following projects (ordered by dependencies):
 
-- [**android-metadata-generator**](android-metadata-generator) - generates metadata necessary for the Android Runtime.
+- [**android-metadata-generator**](test-app/build-tools/android-metadata-generator) - generates metadata necessary for the Android Runtime.
 - [**android-binding-generator**](test-app/runtime-binding-generator) - enables Java & Android types to be dynamically created at runtime. Needed by the `extend` routine.
 - [**android-runtime**](test-app/runtime) - contains the core logic behind the NativeScript's Android Runtime. This project contains native C++ code and needs the Android NDK to build properly.
 - [**android-runtime-testapp**](test-app/app) - this is a vanilla Android Application, which contains the tests for the runtime project.
-- [**napi-implementations**](test-app/runtime/src/main//cpp/napi/) - contains the implementation of the Node-API for each supported JS engine.
+- [**native runtime sources**](../../NativeScript) - contains the shared runtime, JNI bridge, and engine-specific Node-API implementations.
 
 ## Helper Projects
 
-- [**android-static-binding-generator**](android-static-binding-generator) - build tool that generates bindings based on the user's javascript code.
+- [**android-static-binding-generator**](test-app/build-tools/static-binding-generator) - build tool that generates bindings based on the user's JavaScript code.
 - [**project-template**](build-artifacts/project-template-gradle) - this is an empty placeholder Android Application project, used by the [NativeScript CLI](https://github.com/NativeScript/nativescript-cli) when building an Android project.
 
 ### Build Prerequisites
 
 Following are the minimal prerequisites to build the runtime package.
 
+- Install JDK 17 and set `JAVA_HOME` to it. Newer JDKs are not supported by the current Gradle toolchain.
 - Install the latest [Android Studio](https://developer.android.com/studio/index.html).
 - From the SDK Manager (Android Studio -> Tools -> Android -> SDK Manager) install the following components:
 
-  - Android API Level 23, 24, 25, 26, 27
-  - Android NDK
-  - Android Support Repository
-  - Download Build Tools
+  - Android SDK Platform 34
+  - Android SDK Build Tools 35.0.0 or newer
+  - Android NDK r27
   - CMake
-  - LLDB
 
 ## How to Build
 
 Clone the repo:
 
 ```Shell
-git clone https://github.com/NativeScript/napi-android.git
+git clone https://github.com/NativeScript/runtimes.git
+cd runtimes/platforms/android
 ```
 
 Set the following environment variables:
 
-- `JAVA_HOME` such that `$JAVA_HOME/bin/java` points to your Java executable
+- `JAVA_HOME` such that `$JAVA_HOME/bin/java` points to a JDK 17 Java executable
 - `ANDROID_HOME` pointing to where you have installed the Android SDK
 - `ANDROID_NDK_HOME` pointing to the version of the Android NDK needed for this version of NativeScript
 
@@ -110,12 +110,12 @@ You can change the JS engine used by the runtime by setting the `jsEngine` prope
 
 ## Contribute
 
-We love PRs! Check out the [contributing guidelines](CONTRIBUTING.md). If you want to contribute, but you are not sure where to start - look for [issues labeled `help wanted`](https://github.com/NativeScript/napi-android/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22).
+We love PRs! Check out the [contributing guidelines](../../CONTRIBUTING.md). If you want to contribute, but you are not sure where to start, look for [issues labeled `help wanted`](https://github.com/NativeScript/runtimes/issues?q=is%3Aopen+is%3Aissue+label%3A%22help+wanted%22).
 
 ## Get Help
 
-Please, use [github issues](https://github.com/NativeScript/napi-android/issues) strictly for [reporting bugs](CONTRIBUTING.md#reporting-bugs) or [requesting features](CONTRIBUTING.md#requesting-new-features). For general questions and support, check out [Stack Overflow](https://stackoverflow.com/questions/tagged/nativescript) or ask our experts in [NativeScript community on Discord](https://nativescript.org/discord).
+Please use [GitHub issues](https://github.com/NativeScript/runtimes/issues) for reporting bugs or requesting features. For general questions and support, check out [Stack Overflow](https://stackoverflow.com/questions/tagged/nativescript) or ask the [NativeScript community on Discord](https://nativescript.org/discord).
 
 ## License
 
-This project is licensed under the Apache License Version 2.0. See the [LICENSE file](LICENSE) for more info.
+This project is licensed under the Apache License Version 2.0. See the [LICENSE file](../../LICENSE) for more info.

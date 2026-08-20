@@ -12,6 +12,12 @@ runPlainMemoryTest("pointer-c-buffer-semantics", async (t) => {
   t.assert(pointerFromHandle === pointer, "interop.handleof(pointer) should reuse the cached wrapper");
   t.assert(pointerRoundTrip === pointer, "pointer arithmetic should round-trip to the cached wrapper");
 
+  const fakeStruct = { [Symbol.for("sizeof")]: 8 };
+  t.assert(
+    interop.handleof(fakeStruct) === null,
+    "objects imitating struct metadata must not unwrap as native memory",
+  );
+
   const buffer = interop.alloc(6);
   const bytes = new interop.Reference(interop.types.uint8, buffer);
   bytes[0] = "h".charCodeAt(0);

@@ -36,6 +36,13 @@ async function forceGC(rounds, pressureBytes, pauseMs) {
     await sleep(pause);
     drainPendingJobs();
   }
+
+  if (typeof gc === "function") {
+    gc();
+  }
+  drainPendingJobs();
+  await sleep(pause);
+  drainPendingJobs();
 }
 
 function assert(condition, message) {
@@ -59,12 +66,12 @@ function weakTableCount(table) {
     return 0;
   }
 
-  const objects = table.allObjects;
-  if (objects && typeof objects.count === "number") {
-    return objects.count;
+  let count = 0;
+  for (const ignored of table) {
+    void ignored;
+    count += 1;
   }
-
-  return typeof table.count === "number" ? table.count : 0;
+  return count;
 }
 
 async function waitUntil(predicate, timeoutMs, intervalMs) {
@@ -142,13 +149,28 @@ async function drainRunLoopUntilIdle(predicate, options) {
 }
 
 function emitResult(result) {
-  const payload = JSON.stringify(result);
+  const engine =
+    (typeof process === "object" && process && process.versions && process.versions.engine) ||
+    "unknown";
+  const payload = JSON.stringify({ engine, ...result });
   console.log(`MEMTEST_RESULT:${payload}`);
+}
+
+function markRssBaseline() {
+  console.log("MEMTEST_RSS_BASELINE");
+}
+
+function autoreleasepool(fn) {
+  if (typeof objc === "object" && typeof objc.autoreleasepool === "function") {
+    return objc.autoreleasepool(fn);
+  }
+  return fn();
 }
 
 function runPlainMemoryTest(name, fn, options) {
   const opts = options || {};
   const timeoutMs = opts.timeoutMs ?? 40_000;
+  const warmupMs = opts.warmupMs ?? 800;
 
   setTimeout(() => {
     let finished = false;
@@ -167,28 +189,29 @@ function runPlainMemoryTest(name, fn, options) {
     }, timeoutMs);
 
     Promise.resolve()
-      .then(() => fn({
-        sleep,
-        forceGC,
-        forceCollectUntil,
-        drainRunLoopUntilIdle,
-        assert,
-        waitUntil,
-        makePressure,
-        countAliveWeakRefs,
-        weakTableCount,
-        now: () => Date.now(),
-        autoreleasepool:
-          typeof objc === "object" && typeof objc.autoreleasepool === "function"
-            ? objc.autoreleasepool
-            : (fn) => fn(),
-        engine:
-          (typeof process === "object" &&
-            process &&
-            process.versions &&
-            process.versions.engine) ||
-          "unknown",
-      }))
+      .then(() => {
+        markRssBaseline();
+        return fn({
+          sleep,
+          forceGC,
+          forceCollectUntil,
+          drainRunLoopUntilIdle,
+          assert,
+          waitUntil,
+          makePressure,
+          countAliveWeakRefs,
+          weakTableCount,
+          markRssBaseline,
+          now: () => Date.now(),
+          autoreleasepool,
+          engine:
+            (typeof process === "object" &&
+              process &&
+              process.versions &&
+              process.versions.engine) ||
+            "unknown",
+        });
+      })
       .then((details) => {
         if (finished) {
           return;
@@ -207,13 +230,15 @@ function runPlainMemoryTest(name, fn, options) {
         }
         finished = true;
         clearTimeout(timeoutId);
+        const message = String(error && error.message ? error.message : error);
+        const stack = error && error.stack ? String(error.stack) : "";
         emitResult({
           name,
           pass: false,
-          error: String(error && error.stack ? error.stack : error),
+          error: stack && !stack.includes(message) ? `${message}\n${stack}` : (stack || message),
         });
       });
-  }, 0);
+  }, warmupMs);
 }
 
 module.exports = {

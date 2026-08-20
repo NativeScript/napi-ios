@@ -13,15 +13,16 @@ SKIP_PACK=false
 
 function metadata_generator_source_hash {
   find "$REPO_ROOT/metadata-generator/src" "$REPO_ROOT/metadata-generator/include" "$REPO_ROOT/metadata-generator/CMakeLists.txt" \
-    -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}'
+    -type f -print | LC_ALL=C sort | xargs shasum | awk '{print $1}' | shasum | awk '{print $1}'
 }
 
 function ensure_metadata_generator {
   local expected_hash
   expected_hash=$(metadata_generator_source_hash)
   local hash_file="$REPO_ROOT/metadata-generator/dist/.source_hash"
-  if [ ! -x "$REPO_ROOT/metadata-generator/dist/arm64/bin/objc-metadata-generator" ] || \
-     [ ! -x "$REPO_ROOT/metadata-generator/dist/x86_64/bin/objc-metadata-generator" ] || \
+  local host_arch
+  host_arch=$(uname -m)
+  if [ ! -x "$REPO_ROOT/metadata-generator/dist/$host_arch/bin/objc-metadata-generator" ] || \
      [ ! -f "$hash_file" ] || \
      [ "$(cat "$hash_file")" != "$expected_hash" ]; then
     "$SCRIPT_DIR/build_metadata_generator.sh"
@@ -63,6 +64,7 @@ mkdir -p \
   "$PACKAGE_DIR/native-api/ffi/objc/hermes" \
   "$PACKAGE_DIR/native-api/ffi/objc/shared" \
   "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge" \
+  "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/host_objects" \
   "$PACKAGE_DIR/native-api/metadata/include" \
   "$PACKAGE_DIR/metadata" \
   "$PACKAGE_DIR/ios/vendor/libffi/include" \
@@ -73,21 +75,17 @@ mkdir -p \
 cp NativeScript/ffi/objc/hermes/NativeApiJsi*.mm "$PACKAGE_DIR/native-api/ffi/objc/hermes/"
 cp NativeScript/ffi/objc/hermes/NativeApiJsi*.h "$PACKAGE_DIR/native-api/ffi/objc/hermes/"
 cp NativeScript/ffi/objc/hermes/NativeApiJsiReactNative.h "$PACKAGE_DIR/native-api/ffi/objc/hermes/"
-cp NativeScript/ffi/objc/shared/bridge/ObjCBridge.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
-cp NativeScript/ffi/objc/shared/bridge/Callbacks.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
-cp NativeScript/ffi/objc/shared/bridge/ClassBuilder.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
-cp NativeScript/ffi/objc/shared/bridge/HostObject.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
-cp NativeScript/ffi/objc/shared/bridge/HostObjects.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
-cp NativeScript/ffi/objc/shared/bridge/Install.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
-cp NativeScript/ffi/objc/shared/bridge/Invocation.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
-cp NativeScript/ffi/objc/shared/bridge/TypeConv.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/*.mm "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/*.h "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/"
+cp NativeScript/ffi/objc/shared/bridge/host_objects/*.mm \
+  "$PACKAGE_DIR/native-api/ffi/objc/shared/bridge/host_objects/"
 cp NativeScript/ffi/objc/shared/NativeApiBackendConfig.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
 cp NativeScript/ffi/objc/shared/SignatureDispatchCore.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
 cp NativeScript/ffi/objc/shared/PreparedSignatureDispatch.h "$PACKAGE_DIR/native-api/ffi/objc/shared/"
-cp "$GENERATED_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/objc/hermes/GeneratedSignatureDispatch.inc"
+cp "$GENERATED_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/objc/shared/GeneratedSignatureDispatch.inc"
 GENERATED_GSD_SIGNATURE_DISPATCH="$(dirname "$GENERATED_SIGNATURE_DISPATCH")/GeneratedGsdSignatureDispatch.inc"
 if [ -f "$GENERATED_GSD_SIGNATURE_DISPATCH" ]; then
-  cp "$GENERATED_GSD_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/objc/hermes/GeneratedGsdSignatureDispatch.inc"
+  cp "$GENERATED_GSD_SIGNATURE_DISPATCH" "$PACKAGE_DIR/native-api/ffi/objc/shared/GeneratedGsdSignatureDispatch.inc"
 fi
 if [ -z "$GENERATED_SIGNATURE_DISPATCH_OVERRIDE" ]; then
   rm -f "$GENERATED_SIGNATURE_DISPATCH" "$GENERATED_SIGNATURE_DISPATCH.stamp" \

@@ -5,8 +5,7 @@ const path = require("path");
 const repoRoot = path.resolve(__dirname, "../../..");
 
 for (const relativePath of [
-  "NativeScript/ffi/shared/bridge/HostObjects.mm",
-  "packages/react-native/native-api/ffi/shared/bridge/HostObjects.mm",
+  "NativeScript/ffi/objc/shared/bridge/host_objects/Object.mm",
 ]) {
   const source = fs.readFileSync(path.join(repoRoot, relativePath), "utf8");
 

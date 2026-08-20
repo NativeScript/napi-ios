@@ -5,8 +5,7 @@ const path = require("path");
 const repoRoot = path.resolve(__dirname, "../../..");
 
 for (const relativePath of [
-  "packages/react-native/native-api/ffi/shared/bridge/TypeConv.mm",
-  "NativeScript/ffi/shared/bridge/TypeConv.mm",
+  "NativeScript/ffi/objc/shared/bridge/TypeConv.mm",
 ]) {
   const source = fs.readFileSync(path.join(repoRoot, relativePath), "utf8");
   const blockCaseIndex = source.indexOf(

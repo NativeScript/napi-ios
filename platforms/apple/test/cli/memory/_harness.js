@@ -36,6 +36,13 @@ async function forceGC(rounds, pressureBytes, pauseMs) {
     await sleep(pause);
     drainPendingJobs();
   }
+
+  if (typeof gc === "function") {
+    gc();
+  }
+  drainPendingJobs();
+  await sleep(pause);
+  drainPendingJobs();
 }
 
 function assert(condition, message) {
@@ -59,12 +66,12 @@ function weakTableCount(table) {
     return 0;
   }
 
-  const objects = table.allObjects;
-  if (objects && typeof objects.count === "number") {
-    return objects.count;
+  let count = 0;
+  for (const ignored of table) {
+    void ignored;
+    count += 1;
   }
-
-  return typeof table.count === "number" ? table.count : 0;
+  return count;
 }
 
 async function waitUntil(predicate, timeoutMs, intervalMs) {
@@ -144,8 +151,22 @@ async function drainRunLoopUntilIdle(predicate, options) {
 }
 
 function emitResult(result) {
-  const payload = JSON.stringify(result);
+  const engine =
+    (typeof process === "object" && process && process.versions && process.versions.engine) ||
+    "unknown";
+  const payload = JSON.stringify({ engine, ...result });
   console.log(`MEMTEST_RESULT:${payload}`);
+}
+
+function markRssBaseline() {
+  console.log("MEMTEST_RSS_BASELINE");
+}
+
+function autoreleasepool(fn) {
+  if (typeof objc === "object" && typeof objc.autoreleasepool === "function") {
+    return objc.autoreleasepool(fn);
+  }
+  return fn();
 }
 
 function terminateApp() {
@@ -160,96 +181,83 @@ function runAsyncMemoryTest(name, fn, options) {
   const activationPolicy = opts.activationPolicy ?? NSApplicationActivationPolicy.Prohibited;
   let finished = false;
 
-  class MemoryTestDelegate extends NSObject {
-    static ObjCProtocols = [NSApplicationDelegate];
+  const drainId = setInterval(() => {
+    if (typeof __drainMicrotaskQueue === "function") {
+      __drainMicrotaskQueue();
+    }
+  }, 5);
 
-    static {
-      NativeClass(this);
+  const timeoutId = setTimeout(() => {
+    if (finished) {
+      return;
+    }
+    finished = true;
+    clearInterval(drainId);
+    emitResult({
+      name,
+      pass: false,
+      reason: "timeout",
+      timeoutMs,
+    });
+    terminateApp();
+  }, timeoutMs);
+
+  const app = NSApplication.sharedApplication;
+  app.setActivationPolicy(activationPolicy);
+  app.finishLaunching();
+
+  setTimeout(async () => {
+    if (finished) {
+      return;
     }
 
-    applicationDidFinishLaunching(_notification) {
-      const drainId = setInterval(() => {
-        if (typeof __drainMicrotaskQueue === "function") {
-          __drainMicrotaskQueue();
-        }
-      }, 5);
+    try {
+      const details = await fn({
+        sleep,
+        forceGC,
+        forceCollectUntil,
+        assert,
+        waitUntil,
+        drainRunLoopUntilIdle,
+        makePressure,
+        countAliveWeakRefs,
+        weakTableCount,
+        markRssBaseline,
+        now: () => Date.now(),
+        autoreleasepool,
+        engine:
+          (typeof process === "object" &&
+            process &&
+            process.versions &&
+            process.versions.engine) ||
+          "unknown",
+      });
 
-      const timeoutId = setTimeout(() => {
-        if (finished) {
-          return;
-        }
+      if (!finished) {
         finished = true;
+        clearTimeout(timeoutId);
+        clearInterval(drainId);
+        emitResult({
+          name,
+          pass: true,
+          details: details || {},
+        });
+        terminateApp();
+      }
+    } catch (error) {
+      if (!finished) {
+        finished = true;
+        clearTimeout(timeoutId);
         clearInterval(drainId);
         emitResult({
           name,
           pass: false,
-          reason: "timeout",
-          timeoutMs,
+          error: String(error && error.stack ? error.stack : error),
         });
         terminateApp();
-      }, timeoutMs);
-
-      setTimeout(async () => {
-        if (finished) {
-          return;
-        }
-
-        try {
-          const details = await fn({
-            sleep,
-            forceGC,
-            forceCollectUntil,
-            assert,
-            waitUntil,
-            drainRunLoopUntilIdle,
-            makePressure,
-            countAliveWeakRefs,
-            weakTableCount,
-            now: () => Date.now(),
-            autoreleasepool: objc.autoreleasepool,
-            engine:
-              (typeof process === "object" &&
-                process &&
-                process.versions &&
-                process.versions.engine) ||
-              "unknown",
-          });
-
-          if (!finished) {
-            finished = true;
-            clearTimeout(timeoutId);
-            clearInterval(drainId);
-            emitResult({
-              name,
-              pass: true,
-              details: details || {},
-            });
-            terminateApp();
-          }
-        } catch (error) {
-          if (!finished) {
-            finished = true;
-            clearTimeout(timeoutId);
-            clearInterval(drainId);
-            emitResult({
-              name,
-              pass: false,
-              error: String(error && error.stack ? error.stack : error),
-            });
-            terminateApp();
-          }
-        }
-      }, 0);
+      }
     }
-  }
-
-  const app = NSApplication.sharedApplication;
-  app.setActivationPolicy(activationPolicy);
-  if (activationPolicy === NSApplicationActivationPolicy.Regular) {
-    app.activateIgnoringOtherApps(true);
-  }
-  app.delegate = MemoryTestDelegate.new();
-  app.run();
+  }, 0);
 }
 
 module.exports = {

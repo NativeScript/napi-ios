@@ -9,11 +9,11 @@ Pod::Spec.new do |s|
   s.name = "NativeScriptNativeApi"
   s.version = package["version"]
   s.summary = package["description"]
-  s.homepage = "https://github.com/NativeScript/napi-ios"
+  s.homepage = "https://github.com/NativeScript/runtimes"
   s.license = "Apache-2.0"
   s.author = package["author"]
   s.platforms = { :ios => "13.0" }
-  s.source = { :git => "https://github.com/NativeScript/napi-ios.git", :tag => "react-native-v#{s.version}" }
+  s.source = { :git => "https://github.com/NativeScript/runtimes.git", :tag => "react-native-v#{s.version}" }
   s.requires_arc = false
 
   s.source_files = [

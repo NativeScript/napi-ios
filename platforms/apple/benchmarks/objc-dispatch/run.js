@@ -10,7 +10,7 @@ const { pathToFileURL } = require("url");
 const repoRoot = path.resolve(__dirname, "../../../..");
 const benchmarkFile = path.join(__dirname, "objc-dispatch-benchmarks.js");
 const marker = "NS_BENCH_RESULT:";
-const defaultLegacyRepo = "/Users/dj/.codex/worktrees/0a0e/ios";
+const defaultLegacyRepo = process.env.NS_LEGACY_IOS_REPO || "";
 const defaultMetadataPath = path.join(
   repoRoot,
   "build/derived-data/macos-tests/Build/Products/Debug/metadata-arm64.bin"
@@ -19,12 +19,12 @@ const defaultWorkRoot = path.join(repoRoot, "build/benchmarks/objc-dispatch");
 
 function parseArgs(argv) {
   const args = {
-    runtime: "all",
+    runtime: "napi-node",
     iterations: 250000,
     warmupIterations: undefined,
     includeGsdOff: false,
     includeLegacyAotOff: false,
-    legacyRepo: process.env.NS_LEGACY_IOS_REPO || defaultLegacyRepo,
+    legacyRepo: defaultLegacyRepo,
     metadataPath: process.env.METADATA_PATH || defaultMetadataPath,
     destination: process.env.IOS_DESTINATION || "",
     workRoot: defaultWorkRoot,
@@ -93,7 +93,7 @@ Options:
   --runtime all|napi-node|ios-package|legacy-ios
   --iterations N
   --warmup N
-  --legacy-repo PATH          Default: ${defaultLegacyRepo}
+  --legacy-repo PATH          Legacy iOS checkout (or NS_LEGACY_IOS_REPO)
   --metadata-path PATH        Used by napi-node. Default: ${defaultMetadataPath}
   --destination DEST_OR_UDID  iOS simulator destination or UDID
   --package-tgz PATH          @nativescript/ios* package tgz for iOS package benchmarks
@@ -670,6 +670,11 @@ function readAppBundleId(appPath, fallback) {
 }
 
 async function runLegacyIOS(options, variant = "aot-on") {
+  if (!options.legacyRepo) {
+    throw new Error(
+      "Legacy iOS benchmarks require --legacy-repo or NS_LEGACY_IOS_REPO"
+    );
+  }
   const appName = "TestRunner";
   let bundleId = "com.descendra.TestRunner";
   const appDir = path.join(options.legacyRepo, "TestRunner/app");

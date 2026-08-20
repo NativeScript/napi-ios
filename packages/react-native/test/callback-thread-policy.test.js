@@ -4,8 +4,7 @@ const path = require("path");
 
 const repoRoot = path.resolve(__dirname, "../../..");
 const callbackSourcePaths = [
-  "packages/react-native/native-api/ffi/shared/bridge/Callbacks.mm",
-  "NativeScript/ffi/shared/bridge/Callbacks.mm",
+  "NativeScript/ffi/objc/shared/bridge/Callbacks.mm",
 ];
 
 for (const relativePath of callbackSourcePaths) {
