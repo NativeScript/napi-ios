@@ -333,6 +333,21 @@ async function main() {
     throw new Error(`Invalid platform: ${sdkName}`);
   }
 
+  const requestedArchs = new Set(
+    (process.env.METAGEN_ARCHS || "")
+      .split(",")
+      .map((arch) => arch.trim())
+      .filter(Boolean),
+  );
+  const targetArchs = Object.keys(sdk.targets).filter((arch) => {
+    return requestedArchs.size === 0 || requestedArchs.has(arch);
+  });
+  if (targetArchs.length === 0) {
+    throw new Error(
+      `No matching metadata architectures for ${sdkName}; requested ${Array.from(requestedArchs).join(",")}`,
+    );
+  }
+
   const typesDir = path.resolve(__dirname, "..", "packages", sdkName, "types");
   const metadataJsonDir = path.resolve(
     __dirname,
@@ -345,14 +360,14 @@ async function main() {
   const signatureBindingsPath =
     process.env.NS_SIGNATURE_BINDINGS_CPP_PATH ||
     process.env.TNS_SIGNATURE_BINDINGS_CPP_PATH ||
-    path.resolve(__dirname, "..", "NativeScript", "ffi", "napi", "GeneratedSignatureDispatch.inc");
+    path.resolve(__dirname, "..", "NativeScript", "ffi", "objc", "napi", "GeneratedSignatureDispatch.inc");
   await fsp.rm(typesDir, { recursive: true, force: true });
   await fsp.mkdir(typesDir, { recursive: true });
   await fsp.rm(metadataJsonDir, { recursive: true, force: true });
   await fsp.mkdir(metadataDir, { recursive: true });
   await fsp.mkdir(path.dirname(signatureBindingsPath), { recursive: true });
 
-  for (const arch of Object.keys(sdk.targets)) {
+  for (const arch of targetArchs) {
     // Use the matching arch binary when available, falling back to arm64.
     // build_metadata_generator.sh produces both dist/arm64 and dist/x86_64.
     const preferredArch = arch;

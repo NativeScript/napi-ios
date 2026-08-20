@@ -1,23 +1,56 @@
 #include "jsr.h"
 
+#include "jsr_common.h"
 #include "js_runtime.h"
+
+#include <functional>
 
 using namespace facebook::jsi;
 std::unordered_map<napi_env, JSR*> JSR::env_to_jsr_cache;
 
 namespace {
+thread_local std::unordered_map<JSR*, int> g_runtime_lock_depth;
+
 class RuntimeLockGuard {
  public:
   explicit RuntimeLockGuard(JSR* runtime) : runtime_(runtime) {
     runtime_->lock();
   }
 
-  ~RuntimeLockGuard() { runtime_->unlock(); }
+  ~RuntimeLockGuard() {
+    runtime_->unlock();
+  }
 
  private:
   JSR* runtime_;
 };
 }  // namespace
+
+void JSR::lock() {
+  runtime->lock();
+  js_mutex.lock();
+  g_runtime_lock_depth[this] += 1;
+}
+
+void JSR::unlock() {
+  auto depth = g_runtime_lock_depth.find(this);
+  if (depth != g_runtime_lock_depth.end()) {
+    depth->second -= 1;
+    if (depth->second <= 0) {
+      g_runtime_lock_depth.erase(depth);
+    }
+  }
+  js_mutex.unlock();
+  runtime->unlock();
+}
+
+int JSR::currentLockDepth() const {
+  auto depth = g_runtime_lock_depth.find(const_cast<JSR*>(this));
+  if (depth == g_runtime_lock_depth.end()) {
+    return 0;
+  }
+  return depth->second;
+}
 
 int js_current_env_lock_depth(napi_env env) {
   auto itFound = JSR::env_to_jsr_cache.find(env);
@@ -68,6 +101,7 @@ napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
   if (env == nullptr) return napi_invalid_arg;
   RuntimeLockGuard lock(runtime->hermes);
   *env = (napi_env)runtime->hermes->rt->createNodeApiEnv(9);
+  if (*env == nullptr) return napi_generic_failure;
   JSR::env_to_jsr_cache.insert(std::make_pair(*env, runtime->hermes));
   return napi_ok;
 }
@@ -83,6 +117,9 @@ facebook::jsi::Runtime* js_get_jsi_runtime(napi_env env) {
 napi_status js_set_runtime_flags(const char* flags) { return napi_ok; }
 
 napi_status js_free_napi_env(napi_env env) {
+#ifndef NS_HERMES_SKIP_ENV_CLEANUP_HOOKS
+  js_run_env_cleanup_hooks(env);
+#endif
   JSR::env_to_jsr_cache.erase(env);
   return napi_ok;
 }
