@@ -26,9 +26,10 @@ function ensure_metadata_generator {
   local host_arch
   host_arch=$(uname -m)
   if [ ! -x "$REPO_ROOT/metadata-generator/dist/$host_arch/bin/objc-metadata-generator" ] || \
+     [ ! -x "$REPO_ROOT/metadata-generator/dist/$host_arch/bin/ns-metadata-symbols" ] || \
      [ ! -f "$hash_file" ] || \
      [ "$(cat "$hash_file")" != "$expected_hash" ]; then
-    "$SCRIPT_DIR/build_metadata_generator.sh"
+    METADATA_GENERATOR_ARCHS="$host_arch" "$SCRIPT_DIR/build_metadata_generator.sh"
   fi
 }
 

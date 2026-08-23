@@ -23,7 +23,7 @@ export function topVisibleViewController(
 export async function presentDocumentCamera(
   delegate: VNDocumentCameraViewControllerDelegate,
 ) {
-  await NativeScript.runOnUI(() => {
+  await NativeScript.scheduleOnUI(() => {
     'worklet';
     if (
       !NativeScript.loadFramework('VisionKit') ||
@@ -48,7 +48,7 @@ export async function presentDocumentCamera(
 }
 
 export async function presentPasses(pass: PKPass) {
-  await NativeScript.runOnUI(() => {
+  await NativeScript.scheduleOnUI(() => {
     'worklet';
     if (
       !NativeScript.loadFramework('PassKit') ||

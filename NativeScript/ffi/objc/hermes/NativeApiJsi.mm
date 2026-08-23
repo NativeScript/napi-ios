@@ -190,7 +190,7 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
         }
 
         // GSD fast path: read jsi args directly, call objc_msgSend with a
-        // typed cast, produce the jsi return value — bypassing all generic
+        // typed cast, produce the jsi return value , bypassing all generic
         // marshalling. Only engages for plain calls (no super dispatch, init
         // disown handling, implicit NSError-out argument, or appearance
         // static selector — those need the generic path's proxy tagging).
@@ -245,6 +245,49 @@ Object CreateNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
 
 void InstallNativeApiJSI(Runtime& runtime, const NativeApiJsiConfig& config) {
   InstallNativeApi(runtime, config);
+}
+
+namespace {
+// The bridge for a given runtime is reached the same way every other
+// caller finds it: the `NativeApiHostObject` stashed under the well-known
+// global name every InstallNativeApi call uses by default
+// (NativeApiBackendConfig::globalName, "__nativeScriptNativeApi") --
+// identical to how `nativeApiInstalled()` in NativeScriptNativeApiModule.mm
+// already probes for this same global.
+std::shared_ptr<NativeApiBridge> NativeScriptBridgeForRuntime(Runtime& runtime) {
+  Value apiValue = runtime.global().getProperty(runtime, "__nativeScriptNativeApi");
+  if (!apiValue.isObject()) {
+    return nullptr;
+  }
+  Object apiObject = apiValue.asObject(runtime);
+  if (!apiObject.isHostObject<NativeApiHostObject>(runtime)) {
+    return nullptr;
+  }
+  return apiObject.getHostObject<NativeApiHostObject>(runtime)->bridge();
+}
+}  // namespace
+
+Value NativeScriptWrapNativeObject(Runtime& runtime, void* object, bool ownsObject) {
+  if (object == nullptr) {
+    return Value::null();
+  }
+  auto bridge = NativeScriptBridgeForRuntime(runtime);
+  if (bridge == nullptr) {
+    return Value::null();
+  }
+  // __bridge: a plain ownership-neutral cast, valid identically whether this
+  // translation unit is compiled ARC or MRC (unlike a raw C-style cast,
+  // which ARC rejects for void* <-> id without an explicit bridge
+  // annotation).
+  return makeNativeObjectValue(runtime, bridge, (__bridge id)object, ownsObject);
+}
+
+void* NativeScriptUnwrapNativeObject(Runtime& runtime, const Value& value) {
+  void* pointer = nullptr;
+  if (readPointerLikeValue(runtime, value, &pointer)) {
+    return pointer;
+  }
+  return nullptr;
 }
 
 }  // namespace nativescript

@@ -25,11 +25,15 @@ assert(
 );
 
 const publicApi = fs.readFileSync(path.join(packageRoot, "src/index.ts"), "utf8");
+const dispatcherApi = fs.readFileSync(
+  path.join(packageRoot, "src/ui/dispatcher.ts"),
+  "utf8",
+);
 assert(
   publicApi.includes("export function loadImage(") &&
     publicApi.includes(".__nativeScriptLoadReactImage") &&
     publicApi.includes("interop?.object?.(interop.Pointer(handle))") &&
-    publicApi.includes("loadImage: (source, options, callback)"),
+    dispatcherApi.includes("loadImage: (source, options, callback)"),
   "public TS API should wrap image handles into NativeScript objects and expose ctx.loadImage",
 );
 

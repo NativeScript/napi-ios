@@ -1,17 +1,22 @@
 const PACKAGE_NAME = '@nativescript/react-native';
-const UIKIT_DEFINITION_CALLEES = new Set([
-  'defineUIKitContainer',
-  'defineUIKitView',
-  'defineUIViewController',
-]);
-const UIKIT_WORKLET_CALLBACKS = new Set([
+// D1 (DECISIONS.md): the old `defineUIKitView`/`defineUIKitContainer`/
+// `defineUIViewController` surface is retired; this plugin only
+// auto-workletizes `defineNativeComponent` specs now.
+const NATIVE_COMPONENT_DEFINITION_CALLEES = new Set(['defineNativeComponent']);
+const NATIVE_COMPONENT_WORKLET_CALLBACKS = new Set([
   'create',
-  'createController',
-  'childrenView',
-  'dispose',
-  'mounted',
-  'update',
+  'updateProps',
+  'mountChildComponentView',
+  'unmountChildComponentView',
+  'mountingTransactionWillMount',
+  'mountingTransactionDidMount',
+  'updateLayoutMetrics',
+  'finalizeUpdates',
+  'prepareForRecycle',
 ]);
+// The one nested object in a defineNativeComponent spec whose OWN properties
+// (not the object itself) are hooks; `commands: { doThing(ctx, args) {} }`.
+const NATIVE_COMPONENT_NESTED_CALLBACK_CONTAINERS = new Set(['commands']);
 
 function isDirectiveFunction(path) {
   const body = path.node.body;
@@ -90,7 +95,7 @@ function findNativeScriptIdentifier(programPath, t) {
 
 function collectNativeScriptBindings(programPath, t) {
   const nativeScriptIdentifiers = new Set();
-  const uikitDefinitionIdentifiers = new Set();
+  const nativeComponentDefinitionIdentifiers = new Set();
 
   for (const statement of programPath.get('body')) {
     if (statement.isImportDeclaration()) {
@@ -108,8 +113,8 @@ function collectNativeScriptBindings(programPath, t) {
           const importedName = t.isIdentifier(imported)
             ? imported.name
             : imported.value;
-          if (UIKIT_DEFINITION_CALLEES.has(importedName)) {
-            uikitDefinitionIdentifiers.add(specifier.local.name);
+          if (NATIVE_COMPONENT_DEFINITION_CALLEES.has(importedName)) {
+            nativeComponentDefinitionIdentifiers.add(specifier.local.name);
           }
         }
       }
@@ -147,10 +152,10 @@ function collectNativeScriptBindings(programPath, t) {
           const value = property.value;
           const keyName = t.isIdentifier(key) ? key.name : key.value;
           if (
-            UIKIT_DEFINITION_CALLEES.has(keyName) &&
+            NATIVE_COMPONENT_DEFINITION_CALLEES.has(keyName) &&
             t.isIdentifier(value)
           ) {
-            uikitDefinitionIdentifiers.add(value.name);
+            nativeComponentDefinitionIdentifiers.add(value.name);
           }
         }
       }
@@ -159,7 +164,7 @@ function collectNativeScriptBindings(programPath, t) {
 
   return {
     nativeScriptIdentifiers,
-    uikitDefinitionIdentifiers,
+    nativeComponentDefinitionIdentifiers,
   };
 }
 
@@ -212,27 +217,6 @@ function ensureNativeScriptIdentifier(programPath, state, t) {
   return identifier.name;
 }
 
-function isUIKitDefinitionCall(path, state, t) {
-  const callee = path.node.callee;
-  if (
-    t.isIdentifier(callee) &&
-    state.uikitDefinitionIdentifiers?.has(callee.name)
-  ) {
-    return true;
-  }
-  if (
-    t.isMemberExpression(callee) &&
-    !callee.computed &&
-    t.isIdentifier(callee.object) &&
-    t.isIdentifier(callee.property) &&
-    state.nativeScriptIdentifiers?.has(callee.object.name) &&
-    UIKIT_DEFINITION_CALLEES.has(callee.property.name)
-  ) {
-    return true;
-  }
-  return false;
-}
-
 function propertyKeyName(property, t) {
   const key = property.node.key;
   if (t.isIdentifier(key)) {
@@ -263,8 +247,42 @@ function ensureWorkletDirective(functionNode, t) {
   ];
 }
 
-function workletizeUIKitDefinitionCallbacks(path, state, t) {
-  if (!isUIKitDefinitionCall(path, state, t)) {
+function isNativeComponentDefinitionCall(path, state, t) {
+  const callee = path.node.callee;
+  if (
+    t.isIdentifier(callee) &&
+    state.nativeComponentDefinitionIdentifiers?.has(callee.name)
+  ) {
+    return true;
+  }
+  if (
+    t.isMemberExpression(callee) &&
+    !callee.computed &&
+    t.isIdentifier(callee.object) &&
+    t.isIdentifier(callee.property) &&
+    state.nativeScriptIdentifiers?.has(callee.object.name) &&
+    NATIVE_COMPONENT_DEFINITION_CALLEES.has(callee.property.name)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function ensureWorkletDirectiveOnProperty(property, t) {
+  if (property.isObjectMethod()) {
+    ensureWorkletDirective(property.node, t);
+  } else if (property.isObjectProperty()) {
+    const value = property.get('value');
+    if (value.isFunctionExpression() || value.isArrowFunctionExpression()) {
+      ensureWorkletDirective(value.node, t);
+    }
+  }
+}
+
+// Auto-workletizes a `defineNativeComponent` spec's Fabric-named hooks --
+// PLUS one level of nesting for `commands: {...}`.
+function workletizeNativeComponentDefinitionCallbacks(path, state, t) {
+  if (!isNativeComponentDefinitionCall(path, state, t)) {
     return;
   }
 
@@ -278,15 +296,22 @@ function workletizeUIKitDefinitionCallbacks(path, state, t) {
       continue;
     }
     const keyName = propertyKeyName(property, t);
-    if (!UIKIT_WORKLET_CALLBACKS.has(keyName)) {
+    if (NATIVE_COMPONENT_WORKLET_CALLBACKS.has(keyName)) {
+      ensureWorkletDirectiveOnProperty(property, t);
       continue;
     }
-    if (property.isObjectMethod()) {
-      ensureWorkletDirective(property.node, t);
-    } else if (property.isObjectProperty()) {
-      const value = property.get('value');
-      if (value.isFunctionExpression() || value.isArrowFunctionExpression()) {
-        ensureWorkletDirective(value.node, t);
+    if (
+      NATIVE_COMPONENT_NESTED_CALLBACK_CONTAINERS.has(keyName) &&
+      property.isObjectProperty()
+    ) {
+      const container = property.get('value');
+      if (!container.isObjectExpression()) {
+        continue;
+      }
+      for (const commandProperty of container.get('properties')) {
+        if (!commandProperty.isSpreadElement()) {
+          ensureWorkletDirectiveOnProperty(commandProperty, t);
+        }
       }
     }
   }
@@ -314,7 +339,7 @@ function wrapDirectiveFunction(path, state, t) {
   }
   if (policy === 'ui') {
     throw path.buildCodeFrameError(
-      'NativeScript "use ui" callbacks are not supported in React Native. Use a Worklets "worklet" callback with NativeScript.runOnUI().',
+      'NativeScript "use ui" callbacks are not supported in React Native. Use a Worklets "worklet" callback with NativeScript.scheduleOnUI().',
     );
   }
 
@@ -340,11 +365,11 @@ module.exports = function nativeScriptReactNativeBabelPlugin({types: t}) {
       Program(path, state) {
         const bindings = collectNativeScriptBindings(path, t);
         state.nativeScriptIdentifiers = bindings.nativeScriptIdentifiers;
-        state.uikitDefinitionIdentifiers = bindings.uikitDefinitionIdentifiers;
+        state.nativeComponentDefinitionIdentifiers = bindings.nativeComponentDefinitionIdentifiers;
         state.nativeScriptIdentifier = findNativeScriptIdentifier(path, t);
       },
       CallExpression(path, state) {
-        workletizeUIKitDefinitionCallbacks(path, state, t);
+        workletizeNativeComponentDefinitionCallbacks(path, state, t);
       },
       ArrowFunctionExpression(path, state) {
         wrapDirectiveFunction(path, state, t);
