@@ -29,6 +29,7 @@
   "files": [
     "app.plugin.js",
     "babel-plugin.js",
+    "metro-config.js",
     "cli",
     "examples",
     "plugin",
@@ -66,9 +67,6 @@
       "javaPackageName": "org.nativescript.nativeapi"
     },
     "ios": {
-      "componentProvider": {
-        "NativeScriptUIView": "NativeScriptUIViewComponentView"
-      },
       "modulesProvider": {
         "NativeScriptNativeApi": "NativeScriptNativeApiModuleProvider"
       }

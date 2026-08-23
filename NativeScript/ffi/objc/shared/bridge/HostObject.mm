@@ -37,6 +37,14 @@ class NativeApiHostObject final : public HostObject {
   explicit NativeApiHostObject(std::shared_ptr<NativeApiBridge> bridge)
       : bridge_(std::move(bridge)) {}
 
+  // General accessor (not RN-specific): lets any caller holding the
+  // per-runtime `__nativeScriptNativeApi` global's HostObject recover the
+  // underlying bridge, e.g. to wrap/unwrap a native object into an engine
+  // value via the same mechanism every other crossing already uses (see the
+  // Hermes-backend wrap/unwrap helpers, ffi/objc/hermes/; this file stays
+  // engine-neutral and does not itself reference any engine-specific type).
+  const std::shared_ptr<NativeApiBridge>& bridge() const { return bridge_; }
+
   Value get(Runtime& runtime, const PropNameID& name) override {
     std::string property = name.utf8(runtime);
     if (property == "runtime") {

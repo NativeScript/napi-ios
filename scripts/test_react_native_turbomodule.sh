@@ -97,7 +97,7 @@ async function runSmoke(): Promise<string> {
       throw new Error('enum global install failed');
     }
 
-    const uiSummary = await NativeScript.runOnUI(() => {
+    const uiSummary = await NativeScript.scheduleOnUI(() => {
       'worklet';
       const uiGlobal = globalThis as any;
       const uiApi = uiGlobal.__nativeScriptNativeApi;

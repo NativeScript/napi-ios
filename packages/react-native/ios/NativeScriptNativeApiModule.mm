@@ -9,7 +9,9 @@
 #include <dispatch/dispatch.h>
 
 #include "NativeApiJsiReactNative.h"
-#include "NativeScriptUIKitHost.h"
+#include "NativeScriptFabricGateway.h"
+#include "Fabric/NativeScriptComponentRegistration.h"
+#include "Fabric/NativeScriptComponentView.h"
 
 #import <React/RCTBridge+Private.h>
 #import <React/RCTConvert.h>
@@ -19,6 +21,10 @@
 #import <ReactCommon/RCTTurboModule.h>
 #include <worklets/Compat/Holders.h>
 #include <worklets/WorkletRuntime/WorkletRuntime.h>
+
+#import <pthread.h>
+
+#include <sstream>
 
 namespace {
 
@@ -95,6 +101,72 @@ bool writeSmokeMarkerContentIfRequested(const std::string& content) {
   return ok == YES;
 }
 
+// Dev-reload (JOB2) phase tracking; deliberately a SEPARATE file from the
+// smoke marker above. First cut of this reused the smoke-marker file/path
+// for both; that broke (infinite reload loop, observed on-sim) because
+// writeSmokeMarkerIfRequested's OWN install-milestone writes
+// ("stage=engine:installed" etc, fired by the native re-install sequence a
+// DevSettings.reload() triggers) clobber it before the reloaded JS ever
+// gets to read back what it wrote as "phase 1 done". A dedicated file next
+// to it is immune to that.
+NSString* reloadPhaseMarkerPath() {
+  return [NSTemporaryDirectory() stringByAppendingPathComponent:@"NativeScriptM1ReloadPhase.marker"];
+}
+
+bool writeReloadPhaseMarkerIfRequested(const std::string& content) {
+  const char* enabled = getenv("NATIVESCRIPT_RN_TURBO_SMOKE_MARKER");
+  if (enabled == nullptr || enabled[0] == '\0') {
+    return false;
+  }
+  NSString* nativeContent = [[NSString alloc] initWithBytes:content.data()
+                                                     length:content.size()
+                                                   encoding:NSUTF8StringEncoding];
+  if (nativeContent == nil) {
+    nativeContent = @"";
+  }
+  BOOL ok = [nativeContent writeToFile:reloadPhaseMarkerPath() atomically:YES encoding:NSUTF8StringEncoding error:nil];
+#if !__has_feature(objc_arc)
+  [nativeContent release];
+#endif
+  return ok == YES;
+}
+
+std::string readReloadPhaseMarkerIfRequested() {
+  const char* enabled = getenv("NATIVESCRIPT_RN_TURBO_SMOKE_MARKER");
+  if (enabled == nullptr || enabled[0] == '\0') {
+    return "";
+  }
+  NSString* content = [NSString stringWithContentsOfFile:reloadPhaseMarkerPath()
+                                                  encoding:NSUTF8StringEncoding
+                                                     error:nil];
+  if (content == nil) {
+    return "";
+  }
+  return std::string(content.UTF8String != nullptr ? content.UTF8String : "");
+}
+
+// Symmetric to writeSmokeMarkerContentIfRequested above; test-only (same
+// NATIVESCRIPT_RN_TURBO_SMOKE_MARKER gate), used by the M1 dev-reload test
+// (JOB2) so JS can detect "did a previous phase already run" by reading
+// back its own marker file across a DevSettings.reload() cycle, which tears
+// down the JS VM (and any JS-side globals) but not the on-disk file or this
+// TurboModule's process. Returns "" if disabled, unreadable, or absent --
+// never throws, so a pre-first-write read is a normal, expected case.
+std::string readSmokeMarkerContentIfRequested() {
+  const char* enabled = getenv("NATIVESCRIPT_RN_TURBO_SMOKE_MARKER");
+  if (enabled == nullptr || enabled[0] == '\0') {
+    return "";
+  }
+
+  NSString* path =
+      [NSTemporaryDirectory() stringByAppendingPathComponent:@"NativeScriptNativeApiSmoke.marker"];
+  NSString* content = [NSString stringWithContentsOfFile:path encoding:NSUTF8StringEncoding error:nil];
+  if (content == nil) {
+    return "";
+  }
+  return std::string(content.UTF8String != nullptr ? content.UTF8String : "");
+}
+
 bool nativeApiInstalled(facebook::jsi::Runtime& runtime) {
   return runtime.global().hasProperty(runtime, "__nativeScriptNativeApi");
 }
@@ -134,36 +206,6 @@ UIImage* imageWithRenderingMode(UIImage* image, bool isTemplate) {
 
   return [image imageWithRenderingMode:isTemplate ? UIImageRenderingModeAlwaysTemplate
                                                   : UIImageRenderingModeAlwaysOriginal];
-}
-
-std::mutex& nativeScriptWorkletRuntimeMutex() {
-  static std::mutex mutex;
-  return mutex;
-}
-
-std::weak_ptr<worklets::WorkletRuntime>& nativeScriptWorkletRuntime() {
-  static std::weak_ptr<worklets::WorkletRuntime> runtime;
-  return runtime;
-}
-
-void setNativeScriptWorkletRuntime(std::shared_ptr<worklets::WorkletRuntime> runtime) {
-  std::lock_guard<std::mutex> lock(nativeScriptWorkletRuntimeMutex());
-  nativeScriptWorkletRuntime() = std::move(runtime);
-}
-
-std::shared_ptr<worklets::WorkletRuntime> getNativeScriptWorkletRuntime() {
-  std::lock_guard<std::mutex> lock(nativeScriptWorkletRuntimeMutex());
-  return nativeScriptWorkletRuntime().lock();
-}
-
-NSString* stringProperty(facebook::jsi::Runtime& runtime, facebook::jsi::Object& object,
-                         const char* name) {
-  auto value = object.getProperty(runtime, name);
-  if (!value.isString()) {
-    return nil;
-  }
-  std::string text = value.getString(runtime).utf8(runtime);
-  return [NSString stringWithUTF8String:text.c_str()];
 }
 
 id imageSourceFromJSIValue(facebook::jsi::Runtime& runtime,
@@ -218,94 +260,7 @@ void callImageLoadCallback(
       });
 }
 
-NSDictionary<NSString*, NSString*>* handlesFromJSIValue(facebook::jsi::Runtime& runtime,
-                                                        facebook::jsi::Value&& result) {
-  if (!result.isObject()) {
-    return nil;
-  }
-
-  auto resultObject = result.asObject(runtime);
-  NSMutableDictionary<NSString*, NSString*>* handles =
-      [NSMutableDictionary dictionaryWithCapacity:3];
-  NSString* nativeViewHandle = stringProperty(runtime, resultObject, "nativeViewHandle");
-  NSString* childrenViewHandle = stringProperty(runtime, resultObject, "childrenViewHandle");
-  NSString* controllerHandle = stringProperty(runtime, resultObject, "controllerHandle");
-
-  if (nativeViewHandle.length > 0) {
-    handles[@"nativeViewHandle"] = nativeViewHandle;
-  }
-  if (childrenViewHandle.length > 0) {
-    handles[@"childrenViewHandle"] = childrenViewHandle;
-  }
-  if (controllerHandle.length > 0) {
-    handles[@"controllerHandle"] = controllerHandle;
-  }
-  return handles;
-}
-
-NSDictionary<NSString*, NSString*>* runUIKitHostFunction(NSString* hostId, NSString* phase,
-                                                         const char* globalName,
-                                                         const char* logAction) {
-  if (hostId.length == 0 || ![NSThread isMainThread]) {
-    return nil;
-  }
-
-  auto workletRuntime = getNativeScriptWorkletRuntime();
-  if (workletRuntime == nullptr) {
-    return nil;
-  }
-
-  std::string hostIdString = hostId.UTF8String != nullptr ? hostId.UTF8String : "";
-  if (hostIdString.empty()) {
-    return nil;
-  }
-
-  std::string phaseString = phase.UTF8String != nullptr ? phase.UTF8String : "";
-
-  try {
-    return workletRuntime->runSync(
-        [hostIdString = std::move(hostIdString), phaseString = std::move(phaseString),
-         globalName](facebook::jsi::Runtime& runtime) -> NSDictionary<NSString*, NSString*>* {
-          auto global = runtime.global();
-          auto functionValue = global.getProperty(runtime, globalName);
-          if (!functionValue.isObject()) {
-            return nil;
-          }
-
-          auto functionObject = functionValue.asObject(runtime);
-          if (!functionObject.isFunction(runtime)) {
-            return nil;
-          }
-
-          auto function = functionObject.asFunction(runtime);
-          auto hostIdValue = facebook::jsi::String::createFromUtf8(runtime, hostIdString);
-          if (phaseString.empty()) {
-            return handlesFromJSIValue(runtime, function.call(runtime, hostIdValue));
-          }
-
-          return handlesFromJSIValue(
-              runtime, function.call(runtime, hostIdValue,
-                                     facebook::jsi::String::createFromUtf8(runtime, phaseString)));
-        });
-  } catch (const std::exception& error) {
-    NSLog(@"NativeScript failed to %s UIKit host %@: %s", logAction, hostId, error.what());
-  } catch (...) {
-    NSLog(@"NativeScript failed to %s UIKit host %@", logAction, hostId);
-  }
-  return nil;
-}
-
 }  // namespace
-
-NSDictionary<NSString*, NSString*>* NativeScriptCreateUIKitHost(NSString* hostId) {
-  return runUIKitHostFunction(hostId, nil, "__nativeScriptCreateUIKitHostFromNative", "create");
-}
-
-NSDictionary<NSString*, NSString*>* NativeScriptRunUIKitHostLifecycle(NSString* hostId,
-                                                                      NSString* phase) {
-  return runUIKitHostFunction(hostId, phase, "__nativeScriptRunUIKitHostLifecycleFromNative",
-                              "run");
-}
 
 namespace facebook::react {
 
@@ -329,32 +284,81 @@ bool NativeScriptNativeApiModule::install(jsi::Runtime& runtime, std::string met
   return isInstalled(runtime);
 }
 
-bool NativeScriptNativeApiModule::installWorkletRuntime(jsi::Runtime& runtime,
-                                                        jsi::Object runtimeHolder,
-                                                        std::string metadataPath) {
-  writeSmokeMarkerIfRequested("installWorkletRuntime:headers");
+bool NativeScriptNativeApiModule::installUIRuntime(jsi::Runtime& runtime,
+                                                   jsi::Object runtimeHolder,
+                                                   jsi::Object schedulerHolder,
+                                                   std::string metadataPath) {
+  writeSmokeMarkerIfRequested("installUIRuntime:headers");
   if (!runtimeHolder.hasNativeState<worklets::WorkletRuntimeHolder>(runtime)) {
-    writeSmokeMarkerIfRequested("installWorkletRuntime:no-holder");
+    writeSmokeMarkerIfRequested("installUIRuntime:no-holder");
     return false;
   }
 
   auto holder = runtimeHolder.getNativeState<worklets::WorkletRuntimeHolder>(runtime);
   if (holder == nullptr || holder->runtime_ == nullptr) {
-    writeSmokeMarkerIfRequested("installWorkletRuntime:null-runtime");
+    writeSmokeMarkerIfRequested("installUIRuntime:null-runtime");
     return false;
   }
 
-  setNativeScriptWorkletRuntime(holder->runtime_);
+  // The gateway is the single source of truth for the installed UI runtime
+  // (M1: the old dual-write; a second, separately-maintained weak_ptr here
+  //; is gone).
+  nativescript::NativeScriptFabricGatewaySetUIRuntime(holder->runtime_);
+
+  // UIScheduler holder handshake (ARCHITECTURE.md §3.3/§7.1), same unwrap
+  // pattern as the WorkletRuntime holder just above (StableApi.h's
+  // getUISchedulerFromHolder, which; unlike the WorkletRuntimeHolder path
+  // above; throws rather than returning null if the object carries no
+  // native state, so the hasNativeState check here is load-bearing, not
+  // defensive noise). Missing/invalid is non-fatal: the gateway's
+  // ScheduleOnUI falls back to a plain dispatch_async(main) when no
+  // scheduler is installed, so this never blocks bootstrap.
+  auto uiScheduler = schedulerHolder.hasNativeState<worklets::UISchedulerHolder>(runtime)
+                          ? worklets::getUISchedulerFromHolder(runtime, schedulerHolder)
+                          : nullptr;
+  if (uiScheduler != nullptr) {
+    nativescript::NativeScriptFabricGatewaySetUIScheduler(std::move(uiScheduler));
+  }
 
   std::string resolvedMetadataPath = metadataPath.empty() ? bundledMetadataPath() : metadataPath;
   auto jsInvoker = jsInvoker_;
   auto workletRuntimeRef = holder->runtime_;
-  return holder->runtime_->runSync(
+
+  // This call itself is the ONE sanctioned exception to "only enter the UI
+  // runtime from main" (ARCHITECTURE.md §3.3/§9.2): it runs once, at
+  // bootstrap, before any TS hook exists to race with. But everything it
+  // installs (host functions, the ObjC bridge's own notion of its "home"
+  // thread) must behave as if it always runs on main from here on; so we
+  // hop to main, rather than calling runSync directly from the RN JS thread
+  // as the refactor baseline did. Otherwise NativeApiBridge captures the JS
+  // thread as its "home" thread and later, genuinely-main-thread nested
+  // re-entry (spike 1) takes the wrong (off-home-thread) callback-dispatch
+  // path.
+  //
+  // M1 review §3/#3 (a real contract breach): this used to be
+  // `dispatch_sync(main)`, called FROM the JS thread; exactly the
+  // blocking cross-thread wait §3.4 says must never exist, and a live
+  // AB-BA edge if main is ever itself blocked waiting on the JS thread
+  // during some other RN synchronous-surface startup path. Fixed per the
+  // review's own suggested option: `dispatch_async` instead, with the
+  // gateway's existing "not yet installed" graceful no-op (every Fabric
+  // hook dispatch already tolerates a runtime with no dispatcher installed
+  // yet; NativeScriptFabricGatewayDispatchComponentHook returns
+  // Value::undefined() rather than crashing) covering the now-nonzero
+  // window between this call returning and the async block actually
+  // running. That window cannot be observed by a REAL Fabric hook in
+  // practice: Fabric cannot call anything before React's first commit,
+  // which cannot happen before this synchronous JS-thread call already
+  // returned. `installed` can therefore no longer report the async work's
+  // actual outcome; it now means "accepted for install", matching how
+  // `runOnUIAsync`-style bootstrap calls already work elsewhere in this file.
+  bool installed = true;
+  dispatch_async(dispatch_get_main_queue(), ^{
+    workletRuntimeRef->runSync(
       [jsInvoker = std::move(jsInvoker), resolvedMetadataPath = std::move(resolvedMetadataPath),
-       workletRuntimeRef = std::move(workletRuntimeRef)](
+       workletRuntimeRef](
           jsi::Runtime& workletRuntime) -> bool {
         if (!nativeApiInstalled(workletRuntime)) {
-          std::weak_ptr<worklets::WorkletRuntime> workletRuntimeWeak(workletRuntimeRef);
           const char* metadataPathArg =
               resolvedMetadataPath.empty() ? nullptr : resolvedMetadataPath.c_str();
           auto config =
@@ -362,42 +366,24 @@ bool NativeScriptNativeApiModule::installWorkletRuntime(jsi::Runtime& runtime,
                   jsInvoker, nullptr, metadataPathArg, nullptr, "__nativeScriptNativeApi");
           config.installGlobalSymbols = true;
           config.invokeCallbacksOnNativeCallerThread = true;
-          config.runtimeCallbackInvoker =
-              [workletRuntimeWeak](std::function<void()> task) mutable {
-                auto runtimeStrong = workletRuntimeWeak.lock();
-                if (runtimeStrong == nullptr) {
-                  return;
-                }
-
-                auto taskBox =
-                    std::make_shared<std::function<void()>>(std::move(task));
-                dispatch_semaphore_t done = dispatch_semaphore_create(0);
-                runtimeStrong->schedule(
-                    [taskBox = std::move(taskBox), done](jsi::Runtime&) mutable {
-                      (*taskBox)();
-                      dispatch_semaphore_signal(done);
-                    });
-                dispatch_semaphore_wait(done, DISPATCH_TIME_FOREVER);
-              };
+          // ARCHITECTURE.md §3.3/§3.4: no blocking cross-thread waits. A
+          // callback arriving off the UI runtime's home thread is routed
+          // through the gateway's ScheduleOnUI; the sanctioned
+          // `worklets::scheduleOnUI` (M1; M0 used a raw dispatch_async(main)
+          // here and flagged it as the one deviation from the design's
+          // letter). The DISPATCH_TIME_FOREVER semaphore the refactor
+          // baseline used here remains deleted, not just widened; both
+          // paths are fire-and-forget async, never a blocking wait.
+          config.runtimeCallbackInvoker = [](std::function<void()> task) {
+            nativescript::NativeScriptFabricGatewayScheduleOnUI(std::move(task));
+          };
           nativescript::InstallNativeApiJSI(workletRuntime, config);
         }
 
-	        auto refreshUIKitHostView = jsi::Function::createFromHostFunction(
-	            workletRuntime,
-	            jsi::PropNameID::forAscii(workletRuntime, "__nativeScriptRefreshUIKitHostView"),
-            1,
-            [](jsi::Runtime& runtime, const jsi::Value&, const jsi::Value* args,
-               size_t count) -> jsi::Value {
-              if (count < 1 || !args[0].isString()) {
-                return false;
-              }
-
-              std::string handle = args[0].asString(runtime).utf8(runtime);
-              NSString* nativeHandle = [NSString stringWithUTF8String:handle.c_str()];
-              return NativeScriptRefreshUIKitHostView(nativeHandle) == YES;
-            });
-	        workletRuntime.global().setProperty(
-	            workletRuntime, "__nativeScriptRefreshUIKitHostView", std::move(refreshUIKitHostView));
+	        // ctx.emit / ctx.setContentSize / ctx.scheduleOnMainQueue targets
+	        // (src/ui/dispatcher.ts); idempotent, safe to call on every
+	        // install (including reload re-installs onto a fresh UI VM).
+	        NativeScriptInstallComponentHostFunctions(workletRuntime);
 
 	        std::weak_ptr<worklets::WorkletRuntime> imageWorkletRuntimeWeak(workletRuntimeRef);
 	        auto loadImage = jsi::Function::createFromHostFunction(
@@ -451,7 +437,9 @@ bool NativeScriptNativeApiModule::installWorkletRuntime(jsi::Runtime& runtime,
 	            workletRuntime, "__nativeScriptLoadReactImage", std::move(loadImage));
 	        return nativeApiInstalled(workletRuntime);
 	      });
-	}
+  });
+  return installed;
+}
 
 bool NativeScriptNativeApiModule::isInstalled(jsi::Runtime& runtime) {
   return nativeApiInstalled(runtime);
@@ -468,6 +456,65 @@ std::string NativeScriptNativeApiModule::getRuntimeBackend(jsi::Runtime&) {
 
 bool NativeScriptNativeApiModule::__writeTestMarker(jsi::Runtime&, std::string content) {
   return writeSmokeMarkerContentIfRequested(content);
+}
+
+std::string NativeScriptNativeApiModule::__readTestMarker(jsi::Runtime&) {
+  return readSmokeMarkerContentIfRequested();
+}
+
+bool NativeScriptNativeApiModule::__writeReloadPhaseMarker(jsi::Runtime&, std::string content) {
+  return writeReloadPhaseMarkerIfRequested(content);
+}
+
+std::string NativeScriptNativeApiModule::__readReloadPhaseMarker(jsi::Runtime&) {
+  return readReloadPhaseMarkerIfRequested();
+}
+
+// ---------------------------------------------------------------------------
+// registerComponent (ARCHITECTURE.md §5.2 steps 1-2). M0's three spike*
+// entry points (registerFlavoredComponent/spikeRunSyncFromMain/
+// spikeFlavorMountSnapshot) are gone: real Fabric hooks now exercise the
+// same gateway path they existed only to prove in isolation.
+// ---------------------------------------------------------------------------
+
+bool NativeScriptNativeApiModule::registerComponent(jsi::Runtime& runtime, std::string name, jsi::Object spec,
+                                                     double hookMask, double shouldBeRecycled) {
+  if (name.empty()) {
+    return false;
+  }
+
+  // Extraction happens HERE, on the JS thread, synchronously; it never
+  // enters the UI runtime (extractSerializable just walks the JS value
+  // graph). By the time this call returns, `name`'s spec is fully stored;
+  // Fabric's first mount of a component with this name can only happen
+  // after React renders it, which can only happen after this call already
+  // returned; so there is no ordering race between "definition shipped"
+  // and "first mount" (§5.2 step 1).
+  std::shared_ptr<worklets::Serializable> serializable;
+  try {
+    serializable = worklets::extractSerializable(
+        runtime, jsi::Value(runtime, spec),
+        "[NativeScript] defineNativeComponent's spec must be serializable by react-native-worklets "
+        "(plain data plus 'worklet' functions).");
+  } catch (const std::exception& error) {
+    NSLog(@"NativeScript: failed to register component \"%s\": %s", name.c_str(), error.what());
+    return false;
+  }
+  if (serializable == nullptr) {
+    return false;
+  }
+
+  uint32_t hookMaskValue = hookMask > 0 ? static_cast<uint32_t>(hookMask) : 0;
+  nativescript::NativeScriptFabricGatewayRegisterComponentSpec(name, std::move(serializable), hookMaskValue);
+
+  NSString* nsName = [NSString stringWithUTF8String:name.c_str()];
+  if (nsName.length == 0) {
+    return false;
+  }
+  BOOL hasShouldBeRecycled = shouldBeRecycled >= 0;
+  BOOL shouldBeRecycledValue = shouldBeRecycled > 0;
+  NativeScriptRegisterFlavoredComponent(nsName, hookMaskValue, hasShouldBeRecycled, shouldBeRecycledValue);
+  return true;
 }
 
 }  // namespace facebook::react
