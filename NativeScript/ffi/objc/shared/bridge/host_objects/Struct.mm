@@ -45,3 +45,110 @@ class NativeApiStructObjectHostObject final : public HostObject {
   void* data_ = nullptr;
   bool ownsData_ = true;
 };
+
+#ifdef TARGET_ENGINE_HERMES
+class NativeApiStructObjectState final : public NativeApiNativeState {
+ public:
+  explicit NativeApiStructObjectState(
+      std::shared_ptr<NativeApiStructObjectHostObject> host)
+      : host_(std::move(host)) {}
+
+  std::shared_ptr<NativeApiStructObjectHostObject> host() const {
+    return host_;
+  }
+
+ private:
+  std::shared_ptr<NativeApiStructObjectHostObject> host_;
+};
+#endif
+
+std::shared_ptr<NativeApiStructObjectHostObject> getNativeStructHostObject(
+    Runtime& runtime, const Object& object) {
+  if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
+    return object.getHostObject<NativeApiStructObjectHostObject>(runtime);
+  }
+#ifdef TARGET_ENGINE_HERMES
+  if (!object.hasNativeState<NativeApiStructObjectState>(runtime)) {
+    return nullptr;
+  }
+  return object.getNativeState<NativeApiStructObjectState>(runtime)->host();
+#else
+  return nullptr;
+#endif
+}
+
+Object createNativeStructHostObject(
+    Runtime& runtime, std::shared_ptr<NativeApiStructObjectHostObject> host) {
+#ifdef TARGET_ENGINE_HERMES
+  Object objectConstructor =
+      runtime.global().getPropertyAsObject(runtime, "Object");
+  Function defineProperty =
+      objectConstructor.getPropertyAsFunction(runtime, "defineProperty");
+  Object object(runtime);
+  object.setNativeState(runtime,
+                        std::make_shared<NativeApiStructObjectState>(host));
+  std::weak_ptr<NativeApiStructObjectHostObject> weakHost = host;
+
+  for (const auto& propertyName : host->getPropertyNames(runtime)) {
+    std::string property = propertyName.utf8(runtime);
+    const auto info = host->info();
+    const bool isField = info != nullptr && std::any_of(
+        info->fields.begin(), info->fields.end(),
+        [&](const NativeApiAggregateField& field) {
+          return field.name == property;
+        });
+    if (!isField) {
+      object.setProperty(runtime, property.c_str(),
+                         host->get(runtime, propertyName));
+      continue;
+    }
+
+    Object descriptor(runtime);
+    descriptor.setProperty(runtime, "configurable", false);
+    descriptor.setProperty(runtime, "enumerable", true);
+    descriptor.setProperty(
+        runtime, "get",
+        Function::createFromHostFunction(
+            runtime, PropNameID::forUtf8(runtime, property), 0,
+            [weakHost, property](Runtime& runtime, const Value& receiver,
+                                 const Value*, size_t) -> Value {
+              auto host = weakHost.lock();
+              if (host == nullptr || !receiver.isObject()) {
+                throw JSError(runtime, "Invalid struct receiver");
+              }
+              Object receiverObject = receiver.asObject(runtime);
+              if (getNativeStructHostObject(runtime, receiverObject).get() !=
+                  host.get()) {
+                throw JSError(runtime, "Invalid struct receiver");
+              }
+              return host->get(runtime,
+                               PropNameID::forUtf8(runtime, property));
+            }));
+
+    descriptor.setProperty(
+        runtime, "set",
+        Function::createFromHostFunction(
+            runtime, PropNameID::forUtf8(runtime, property), 1,
+            [weakHost, property](Runtime& runtime, const Value& receiver,
+                                 const Value* args, size_t count) -> Value {
+              auto host = weakHost.lock();
+              if (host == nullptr || !receiver.isObject() || count < 1) {
+                throw JSError(runtime, "Invalid struct receiver");
+              }
+              Object receiverObject = receiver.asObject(runtime);
+              if (getNativeStructHostObject(runtime, receiverObject).get() !=
+                  host.get()) {
+                throw JSError(runtime, "Invalid struct receiver");
+              }
+              host->set(runtime, PropNameID::forUtf8(runtime, property),
+                        args[0]);
+              return Value::undefined();
+            }));
+    defineProperty.call(runtime, object, makeString(runtime, property),
+                        descriptor);
+  }
+  return object;
+#else
+  return Object::createFromHostObject(runtime, host);
+#endif
+}

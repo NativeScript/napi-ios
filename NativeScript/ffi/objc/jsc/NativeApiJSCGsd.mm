@@ -282,8 +282,8 @@ struct GsdObjCContext {
 }  // namespace (temporary close for GSD .inc)
 
 #if defined(__has_include)
-#if __has_include("GeneratedGsdSignatureDispatch.inc")
-#include "GeneratedGsdSignatureDispatch.inc"
+#if __has_include("../shared/GeneratedGsdSignatureDispatch.inc")
+#include "../shared/GeneratedGsdSignatureDispatch.inc"
 #endif
 #endif
 

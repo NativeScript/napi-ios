@@ -41,6 +41,9 @@ NAPI_FUNCTION(ObjectRef_constructor) {
     auto conv = TypeConv::Make(env, &argenc);
     bool shouldFree;
     conv->toNative(env, arg, data, &shouldFree, &shouldFree);
+    if (ConsumeNapiArgumentConversionFailure(env)) {
+      return nullptr;
+    }
   } else {
     *(id*)data = nil;
   }
@@ -91,6 +94,7 @@ NAPI_FUNCTION(ObjectRef_set_value) {
   auto conv = TypeConv::Make(env, &argenc);
   bool shouldFree;
   conv->toNative(env, arg, data, &shouldFree, &shouldFree);
+  ConsumeNapiArgumentConversionFailure(env);
 
   return nullptr;
 }

@@ -4,7 +4,6 @@
 #include "js_native_api.h"
 #include "JEnv.h"
 #include "JniLocalRef.h"
-#include "JniLocalRef.h"
 #include "DirectBuffer.h"
 #include "LRUCache.h"
 #include <map>
@@ -31,10 +30,6 @@ namespace tns {
 
         void UpdateCache(int objectID, jobject obj);
 
-        jclass GetJavaClass(napi_value value);
-
-        void SetJavaClass(napi_value instance, jclass clazz);
-
         int GetOrCreateObjectId(jobject object);
 
         napi_value GetJsObjectByJavaObject(int javaObjectID);
@@ -49,7 +44,7 @@ namespace tns {
 
         napi_value GetOrCreateProxyWeak(jint javaObjectID, napi_value instance);
 
-        void Link(napi_value object, uint32_t javaObjectID, jclass clazz);
+        void Link(napi_value object, uint32_t javaObjectID);
 
         bool CloneLink(napi_value src, napi_value dest);
 
@@ -90,12 +85,11 @@ namespace tns {
 
         struct JSInstanceInfo {
         public:
-            JSInstanceInfo(uint32_t javaObjectID, jclass claz)
-                    : JavaObjectID(javaObjectID), ObjectClazz(claz) {
+            explicit JSInstanceInfo(uint32_t javaObjectID)
+                    : JavaObjectID(javaObjectID) {
             }
 
             uint32_t JavaObjectID;
-            jclass ObjectClazz;
         };
 
 
@@ -111,7 +105,7 @@ namespace tns {
         static void
         JSObjectProxyFinalizerCallback(napi_env env, void *finalizeData, void *finalizeHint);
 
-        jweak GetJavaObjectByID(uint32_t javaObjectID);
+        JniLocalRef GetJavaObjectByID(uint32_t javaObjectID);
 
         jobject GetJavaObjectByIDImpl(uint32_t javaObjectID);
 
@@ -154,8 +148,6 @@ namespace tns {
         napi_ref m_jsObjectCtor;
 
         napi_ref m_jsObjectProxyCreator;
-
-        napi_ref jid;
     };
 }
 

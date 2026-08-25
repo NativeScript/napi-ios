@@ -10,7 +10,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NativeScript/napi-ios"
+    "url": "https://github.com/NativeScript/runtimes"
   },
   "author": {
     "name": "NativeScript Team",
@@ -54,7 +54,8 @@
     "nsr": "./dist/nsr",
     "test:macos": "node ./scripts/run-tests-macos.js ./build/test-results/macos-junit.xml",
     "test:ios": "node ./scripts/run-tests-ios.js",
-    "benchmark:objc-dispatch": "node ./platforms/apple/benchmarks/objc-dispatch/run.js"
+    "benchmark:objc-dispatch": "node ./platforms/apple/benchmarks/objc-dispatch/run.js",
+    "test:react-native": "node ./packages/react-native/test/run-all.js"
   },
   "license": "Apache-2.0",
   "devDependencies": {

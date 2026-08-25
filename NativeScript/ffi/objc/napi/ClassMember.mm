@@ -1404,6 +1404,17 @@ napi_value ObjCClassMember::jsCallInit(napi_env env, napi_callback_info cbinfo) 
       shouldFree[i] = false;
       avalues[i + 2] = argStorage.at(i);
       cif->argTypes[i]->toNative(env, cif->argv[i], avalues[i + 2], &shouldFree[i], &shouldFreeAny);
+      if (ConsumeNapiArgumentConversionFailure(env)) {
+        for (unsigned int converted = 0; converted <= i; converted++) {
+          if (shouldFree[converted]) {
+            cif->argTypes[converted]->free(env, *((void**)avalues[converted + 2]));
+          }
+        }
+        if (retainedReceiver) {
+          [self release];
+        }
+        return nullptr;
+      }
     }
   }
 
@@ -1752,12 +1763,28 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method, 
 
   bool shouldFreeAny = false;
   bool shouldFree[cif->argc];
+  memset(shouldFree, 0, sizeof(shouldFree));
   std::vector<id> fallbackBlocksToRelease;
   NSError* implicitNSError = nil;
 
+  auto cleanupArguments = [&]() {
+    for (id block : fallbackBlocksToRelease) {
+      [block release];
+    }
+    fallbackBlocksToRelease.clear();
+
+    if (!shouldFreeAny) {
+      return;
+    }
+    for (unsigned int i = 0; i < cif->argc; i++) {
+      if (shouldFree[i]) {
+        cif->argTypes[i]->free(env, *reinterpret_cast<void**>(avalues[i + 2]));
+      }
+    }
+  };
+
   if (cif->argc > 0) {
     for (unsigned int i = 0; i < cif->argc; i++) {
-      shouldFree[i] = false;
       avalues[i + 2] = argStorage.at(i);
       const char* blockEncoding = blockEncodingForSelector(selectedSelectorName, i);
 
@@ -1783,6 +1810,12 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method, 
       if (!convertedViaBlockFallback) {
         cif->argTypes[i]->toNative(env, invocationArgs[i], avalues[i + 2], &shouldFree[i],
                                    &shouldFreeAny);
+        bool conversionFailed = false;
+        if (ConsumeNapiArgumentConversionFailure(env) ||
+            napi_is_exception_pending(env, &conversionFailed) != napi_ok || conversionFailed) {
+          cleanupArguments();
+          return nullptr;
+        }
       }
     }
   }
@@ -1791,23 +1824,11 @@ napi_value ObjCClassMember::jsCallDirect(napi_env env, ObjCClassMember* method, 
 
   if (!objcNativeCall(env, cif, self, receiverIsClass, selectedMethod,
                       selectedMethod->dispatchFlags, avalues, rvalue)) {
-    for (id block : fallbackBlocksToRelease) {
-      [block release];
-    }
+    cleanupArguments();
     return nullptr;
   }
 
-  for (id block : fallbackBlocksToRelease) {
-    [block release];
-  }
-
-  if (shouldFreeAny) {
-    for (unsigned int i = 0; i < cif->argc; i++) {
-      if (shouldFree[i]) {
-        cif->argTypes[i]->free(env, *((void**)avalues[i + 2]));
-      }
-    }
-  }
+  cleanupArguments();
 
   if (hasImplicitNSErrorOutArg && implicitNSError != nil) {
     const char* errorMessage = [[implicitNSError description] UTF8String];
@@ -1976,6 +1997,12 @@ napi_value ObjCClassMember::jsSetterDirect(napi_env env, ObjCClassMember* method
 
   bool shouldFree = false;
   cif->argTypes[0]->toNative(env, value, avalues[2], &shouldFree, &shouldFree);
+  if (ConsumeNapiArgumentConversionFailure(env)) {
+    if (shouldFree) {
+      cif->argTypes[0]->free(env, *((void**)avalues[2]));
+    }
+    return nullptr;
+  }
 
   if (!objcNativeCall(env, cif, self, receiverIsClass, &method->setter,
                       method->setter.dispatchFlags, avalues, rvalue)) {

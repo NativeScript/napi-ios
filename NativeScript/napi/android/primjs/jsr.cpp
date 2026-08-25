@@ -2,7 +2,7 @@
 #include "jsr.h"
 
 JSR::JSR() = default;
-tns::SimpleMap<napi_env, JSR *> JSR::env_to_jsr_cache;
+tns::ConcurrentMap<napi_env, JSR *> JSR::env_to_jsr_cache;
 
 struct napi_runtime__ {
     LEPUSRuntime* runtime;

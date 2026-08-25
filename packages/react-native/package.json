@@ -11,7 +11,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/NativeScript/napi-ios",
+    "url": "https://github.com/NativeScript/runtimes",
     "directory": "packages/react-native"
   },
   "author": {
@@ -54,6 +54,9 @@
     "react-native-worklets": {
       "optional": true
     }
+  },
+  "devDependencies": {
+    "@babel/core": "^7.28.0"
   },
   "codegenConfig": {
     "name": "NativeScriptNativeApiSpec",

@@ -150,50 +150,33 @@ function effective_ffi_backend () {
 }
 
 function signature_dispatch_path () {
-  local is_macos_napi="${1:-false}"
   if [ -n "$REQUESTED_SIGNATURE_DISPATCH" ]; then
     echo "$REQUESTED_SIGNATURE_DISPATCH"
     return
   fi
-
-  local backend
-  backend=$(effective_gsd_backend "$is_macos_napi")
-  local ffi_backend
-  ffi_backend=$(effective_ffi_backend "$is_macos_napi")
-
-  case "$backend" in
-    hermes) echo "./NativeScript/ffi/objc/hermes/GeneratedSignatureDispatch.inc" ;;
-    v8) echo "./NativeScript/ffi/objc/v8/GeneratedSignatureDispatch.inc" ;;
-    jsc) echo "./NativeScript/ffi/objc/jsc/GeneratedSignatureDispatch.inc" ;;
-    quickjs) echo "./NativeScript/ffi/objc/quickjs/GeneratedSignatureDispatch.inc" ;;
-    *) echo "./NativeScript/ffi/objc/napi/GeneratedSignatureDispatch.inc" ;;
-  esac
+  echo "./NativeScript/ffi/objc/shared/GeneratedSignatureDispatch.inc"
 }
 
 function metadata_generator_source_hash () {
   find ./metadata-generator/src ./metadata-generator/include ./metadata-generator/CMakeLists.txt \
-    -type f -print | LC_ALL=C sort | xargs shasum | shasum | awk '{print $1}'
+    -type f -print | LC_ALL=C sort | xargs shasum | awk '{print $1}' | shasum | awk '{print $1}'
 }
 
 function signature_dispatch_stamp () {
   local platform="$1"
-  local is_macos_napi="${2:-false}"
-  local backend
-  backend=$(effective_gsd_backend "$is_macos_napi")
-  local ffi_backend
-  ffi_backend=$(effective_ffi_backend "$is_macos_napi")
   local generator_hash
   generator_hash=$(metadata_generator_source_hash)
-  printf "platform=%s\nbackend=%s\nffi_backend=%s\ntarget_engine=%s\nmetadata_size=%s\ngenerator_hash=%s\n" \
-    "$platform" "$backend" "$ffi_backend" "$TARGET_ENGINE" "$METADATA_SIZE" "$generator_hash"
+  printf "platform=%s\nmetadata_size=%s\ngenerator_hash=%s\n" \
+    "$platform" "$METADATA_SIZE" "$generator_hash"
 }
 
 function ensure_metadata_generator () {
   local expected_hash
   expected_hash=$(metadata_generator_source_hash)
   local hash_file="./metadata-generator/dist/.source_hash"
-  if [ ! -x "./metadata-generator/dist/arm64/bin/objc-metadata-generator" ] || \
-     [ ! -x "./metadata-generator/dist/x86_64/bin/objc-metadata-generator" ] || \
+  local host_arch
+  host_arch=$(uname -m)
+  if [ ! -x "./metadata-generator/dist/$host_arch/bin/objc-metadata-generator" ] || \
      [ ! -f "$hash_file" ] || \
      [ "$(cat "$hash_file")" != "$expected_hash" ]; then
     "$SCRIPT_DIR/build_metadata_generator.sh"

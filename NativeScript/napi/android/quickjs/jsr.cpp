@@ -2,7 +2,7 @@
 #include "quicks-runtime.h"
 
 JSR::JSR() = default;
-tns::SimpleMap<napi_env, JSR *> JSR::env_to_jsr_cache;
+tns::ConcurrentMap<napi_env, JSR *> JSR::env_to_jsr_cache;
 
 napi_status js_create_runtime(napi_runtime *runtime) {
     return qjs_create_runtime(runtime);

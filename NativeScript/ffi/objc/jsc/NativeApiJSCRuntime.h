@@ -33,6 +33,8 @@
 #include <utility>
 #include <vector>
 
+#include "../shared/RuntimeCleanupRegistry.h"
+
 #include "Metadata.h"
 #include "MetadataReader.h"
 #include "ffi.h"
@@ -178,7 +180,7 @@ inline void setException(JSContextRef context, JSValueRef* exception, const std:
   }
 }
 
-struct RuntimeState {
+struct RuntimeState : RuntimeCleanupRegistry {
   explicit RuntimeState(JSGlobalContextRef context) : context(context) {}
 
   ~RuntimeState() {
@@ -198,6 +200,9 @@ struct RuntimeState {
   JSClassRef functionClass = nullptr;
   JSClassRef selectorGroupFunctionClass = nullptr;
 };
+
+std::shared_ptr<RuntimeState> stateForContext(JSGlobalContextRef context);
+void releaseStateForContext(JSGlobalContextRef context);
 
 struct ValueStorage {
   enum class Kind {
@@ -261,12 +266,13 @@ void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function);
 class Runtime {
  public:
   explicit Runtime(JSGlobalContextRef context)
-      : state_(std::make_shared<jscengine::RuntimeState>(context)) {}
+      : state_(jscengine::stateForContext(context)) {}
 
   explicit Runtime(std::shared_ptr<jscengine::RuntimeState> state) : state_(std::move(state)) {}
 
   JSGlobalContextRef context() const { return state_->context; }
   std::shared_ptr<jscengine::RuntimeState> state() const { return state_; }
+  void detachState() { state_.reset(); }
 
   Object global();
   Value evaluateJavaScript(std::shared_ptr<StringBuffer> buffer, const std::string& sourceURL);

@@ -2,6 +2,20 @@
 #error Engine backends must define NATIVESCRIPT_NATIVE_API_BACKEND_NAME.
 #endif
 
+extern "C" {
+void* objc_autoreleasePoolPush(void);
+void objc_autoreleasePoolPop(void* pool);
+}
+
+class NativeApiAutoreleasePool final {
+ public:
+  NativeApiAutoreleasePool() : pool_(objc_autoreleasePoolPush()) {}
+  ~NativeApiAutoreleasePool() { objc_autoreleasePoolPop(pool_); }
+
+ private:
+  void* pool_;
+};
+
 #ifndef NATIVESCRIPT_NATIVE_API_RUNTIME_NAME
 #define NATIVESCRIPT_NATIVE_API_RUNTIME_NAME NATIVESCRIPT_NATIVE_API_BACKEND_NAME
 #endif
@@ -39,6 +53,20 @@ class NativeApiHostObject final : public HostObject {
     }
     if (property == "interop") {
       return createInteropObject(runtime, bridge_);
+    }
+    if (property == "autoreleasepool") {
+      return Function::createFromHostFunction(
+          runtime, PropNameID::forAscii(runtime, "autoreleasepool"), 1,
+          [](Runtime& runtime, const Value&, const Value* args,
+             size_t count) -> Value {
+            if (count < 1 || !args[0].isObject() ||
+                !args[0].asObject(runtime).isFunction(runtime)) {
+              throw JSError(runtime,
+                            "autoreleasepool expects a callback function.");
+            }
+            NativeApiAutoreleasePool pool;
+            return args[0].asObject(runtime).asFunction(runtime).call(runtime);
+          });
     }
 #ifdef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS
     if (property == "__defineLazyGlobal") {
@@ -514,6 +542,7 @@ class NativeApiHostObject final : public HostObject {
     addPropertyName(runtime, names, "metadata");
     addPropertyName(runtime, names, "hasScheduler");
     addPropertyName(runtime, names, "interop");
+    addPropertyName(runtime, names, "autoreleasepool");
 #ifdef NATIVESCRIPT_NATIVE_API_HAS_ENGINE_LAZY_GLOBALS
     addPropertyName(runtime, names, "__defineLazyGlobal");
 #endif

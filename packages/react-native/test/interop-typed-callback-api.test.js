@@ -14,8 +14,7 @@ function readPackage(relativePath) {
 }
 
 for (const relativePath of [
-  "packages/react-native/native-api/ffi/shared/bridge/TypeConv.mm",
-  "NativeScript/ffi/shared/bridge/TypeConv.mm",
+  "NativeScript/ffi/objc/shared/bridge/TypeConv.mm",
 ]) {
   const source = readRepo(relativePath);
   assert(
@@ -38,8 +37,7 @@ for (const relativePath of [
 }
 
 for (const relativePath of [
-  "packages/react-native/native-api/ffi/shared/bridge/Install.mm",
-  "NativeScript/ffi/shared/bridge/Install.mm",
+  "NativeScript/ffi/objc/shared/bridge/Install.mm",
 ]) {
   const source = readRepo(relativePath);
   assert(
@@ -48,7 +46,7 @@ for (const relativePath of [
   );
 }
 
-const declarations = readPackage("types/objc-node-api/index.d.ts");
+const declarations = readRepo("packages/objc-node-api/index.d.ts");
 assert(
   declarations.includes("function Block<T extends") &&
     declarations.includes("function FunctionReference<T extends") &&

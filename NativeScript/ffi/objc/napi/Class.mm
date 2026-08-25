@@ -690,7 +690,7 @@ void defineProtocolMembers(napi_env env, ObjCClassMemberMap& members, napi_value
 }
 
 ObjCClass::ObjCClass(napi_env env, MDSectionOffset offset) {
-  NAPI_PREAMBLE
+  NS_OBJC_NAPI_PREAMBLE
 
   this->env = env;
 

@@ -3,7 +3,7 @@
 const { runPlainMemoryTest } = require("./_plain_harness");
 
 runPlainMemoryTest("block-lifecycle", async (t) => {
-  const queue = NSOperationQueue.new();
+  let queue = NSOperationQueue.new();
   queue.maxConcurrentOperationCount = 8;
 
   const totalOperations = 900;
@@ -33,6 +33,8 @@ runPlainMemoryTest("block-lifecycle", async (t) => {
   t.assert(executed === totalOperations, `executed blocks mismatch ${executed}/${totalOperations}`);
   t.assert(completed === totalOperations, `completion blocks mismatch ${completed}/${totalOperations}`);
 
+  queue.cancelAllOperations();
+  queue = null;
   await t.forceGC(8, 40 * 1024 * 1024, 5);
 
   return {

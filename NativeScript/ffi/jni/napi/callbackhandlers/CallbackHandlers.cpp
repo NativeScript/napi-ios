@@ -461,7 +461,7 @@ bool CallbackHandlers::RegisterInstance(napi_env env, napi_value jsObject,
 
     int javaObjectID = objectManager->GenerateNewObjectID();
 
-    objectManager->Link(jsObject, javaObjectID, nullptr);
+    objectManager->Link(jsObject, javaObjectID);
 
     // resolve constructor
     auto mi = MethodCache::ResolveConstructorSignature(env, argWrapper, fullClassName,
@@ -514,8 +514,6 @@ bool CallbackHandlers::RegisterInstance(napi_env env, napi_value jsObject,
     success = !localInstance.IsNull();
 
     if (success) {
-        jclass instanceClass = jEnv.FindClass(fullClassName);
-        objectManager->SetJavaClass(jsObject, instanceClass);
         *jsThisProxy = objectManager->GetOrCreateProxy(javaObjectID, jsObject);
     } else {
         DEBUG_WRITE_FORCE("RegisterInstance failed with null new instance class: %s",
@@ -1245,18 +1243,21 @@ void CallbackHandlers::InitChoreographer() {
 }
 
 void CallbackHandlers::RemoveEnvEntries(napi_env env) {
-    for (auto &item: cache_) {
-        if (item.second.env_ == env) {
-            cache_.erase(item.first);
+    for (auto it = cache_.begin(); it != cache_.end();) {
+        if (it->second.env_ == env) {
+            it = cache_.erase(it);
+        } else {
+            ++it;
         }
     }
 
-    for (auto &item: frameCallbackCache_) {
-        if (item.second.env == env) {
-            frameCallbackCache_.erase(item.first);
+    for (auto it = frameCallbackCache_.begin(); it != frameCallbackCache_.end();) {
+        if (it->second.env == env) {
+            it = frameCallbackCache_.erase(it);
+        } else {
+            ++it;
         }
     }
-
 }
 
 // Worker

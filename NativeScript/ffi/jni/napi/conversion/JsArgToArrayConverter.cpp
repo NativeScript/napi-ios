@@ -296,7 +296,7 @@ bool JsArgToArrayConverter::ConvertArg(napi_env env, napi_value arg, int index) 
 
                 success = !obj.IsNull();
                 if (success) {
-                    SetConvertedObject(jEnv, index, obj.Move(), obj.IsGlobal());
+                    SetConvertedObject(jEnv, index, obj.Move(), false);
                 } else {
                     if (napi_util::is_number_object(env, arg)) {
                         napi_value numValue = napi_util::valueOf(env, arg);

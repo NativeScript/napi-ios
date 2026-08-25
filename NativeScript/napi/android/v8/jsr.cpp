@@ -18,18 +18,34 @@ JSR::JSR() : isolate(nullptr) {
     v8::Isolate::CreateParams create_params;
     create_params.array_buffer_allocator = &g_allocator;
 
-    if (!JSR::s_mainThreadInitialized) {
+    std::call_once(JSR::initialization_once, [] {
         JSR::platform = v8::platform::NewDefaultPlatform();
         v8::V8::InitializePlatform(JSR::platform.get());
         v8::V8::Initialize();
-        JSR::s_mainThreadInitialized = true;
-    }
+    });
     isolate = v8::Isolate::New(create_params);
 }
 
 std::unique_ptr<v8::Platform> JSR::platform = nullptr;
-bool JSR::s_mainThreadInitialized = false;
+std::once_flag JSR::initialization_once;
+std::mutex JSR::env_cache_mutex;
 std::unordered_map<napi_env, JSR *> JSR::env_to_jsr_cache;
+
+JSR* JSR::ForEnv(napi_env env) {
+    std::lock_guard<std::mutex> lock(env_cache_mutex);
+    auto it = env_to_jsr_cache.find(env);
+    return it == env_to_jsr_cache.end() ? nullptr : it->second;
+}
+
+void JSR::RegisterEnv(napi_env env, JSR* runtime) {
+    std::lock_guard<std::mutex> lock(env_cache_mutex);
+    env_to_jsr_cache[env] = runtime;
+}
+
+void JSR::UnregisterEnv(napi_env env) {
+    std::lock_guard<std::mutex> lock(env_cache_mutex);
+    env_to_jsr_cache.erase(env);
+}
 
 napi_status js_create_runtime(napi_runtime *runtime) {
     if (!runtime) return napi_invalid_arg;
@@ -44,23 +60,23 @@ napi_status js_set_runtime_flags(const char *flags) {
 }
 
 napi_status js_lock_env(napi_env env) {
-    auto itFound = JSR::env_to_jsr_cache.find(env);
-    if (itFound == JSR::env_to_jsr_cache.end()) {
+    JSR* runtime = JSR::ForEnv(env);
+    if (runtime == nullptr) {
         return napi_invalid_arg;
     }
 
-    itFound->second->lock();
+    runtime->lock();
 
     return napi_ok;
 }
 
 napi_status js_unlock_env(napi_env env) {
-    auto itFound = JSR::env_to_jsr_cache.find(env);
-    if (itFound == JSR::env_to_jsr_cache.end()) {
+    JSR* runtime = JSR::ForEnv(env);
+    if (runtime == nullptr) {
         return napi_invalid_arg;
     }
 
-    itFound->second->unlock();
+    runtime->unlock();
 
     return napi_ok;
 }
@@ -76,7 +92,7 @@ napi_status js_create_napi_env(napi_env *env, napi_runtime runtime) {
         v8::HandleScope handle_scope(jsr->isolate);
         v8::Local<v8::Context> context = v8::Context::New(jsr->isolate);
         *env = new napi_env__(context, NAPI_VERSION_EXPERIMENTAL);
-        JSR::env_to_jsr_cache.insert(std::make_pair(*env, jsr));
+        JSR::RegisterEnv(*env, jsr);
 
         Local<Object> global = context->Global();
         global->Set(context,
@@ -118,12 +134,14 @@ napi_status js_create_napi_env(napi_env *env, napi_runtime runtime) {
 
 napi_status js_free_napi_env(napi_env env) {
     if (env == nullptr) return napi_invalid_arg;
+    JSR::UnregisterEnv(env);
     env->DeleteMe();
     return napi_ok;
 }
 
 napi_status js_free_runtime(napi_runtime runtime) {
     JSR *jsr = (JSR *) runtime;
+    v8::platform::NotifyIsolateShutdown(JSR::platform.get(), jsr->isolate);
     jsr->isolate->Dispose();
     delete jsr;
     return napi_ok;

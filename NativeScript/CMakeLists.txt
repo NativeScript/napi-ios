@@ -309,7 +309,6 @@ if(ENABLE_JS_RUNTIME)
     runtime/apple/modules/worker/MessageV8.cpp
     runtime/apple/modules/worker/ConcurrentQueue.cpp
     runtime/apple/modules/worker/WorkerImpl.mm
-    runtime/apple/modules/worker/WorkerImpl.mm
     runtime/apple/modules/module/ModuleInternal.cpp
     runtime/apple/modules/node/Node.cpp
     runtime/apple/modules/node/FS.cpp

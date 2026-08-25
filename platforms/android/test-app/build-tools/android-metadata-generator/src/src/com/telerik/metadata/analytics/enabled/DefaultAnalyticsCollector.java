@@ -22,11 +22,6 @@ public final class DefaultAnalyticsCollector implements AnalyticsCollector {
     private final Gson gson;
     private boolean hasMarked;
 
-    public static void main(String... args) {
-        DefaultAnalyticsCollector a = new DefaultAnalyticsCollector("/Users/vmutafov/work/android_runtime_release/android-runtime/test-app/analytics/build-statistics.json");
-        a.markHasKotlinRuntimeClassesIfNotMarkedAlready();
-    }
-
     public DefaultAnalyticsCollector(String analyticsFilePath) {
         this.analyticsFilePath = analyticsFilePath;
         this.gson = new GsonBuilder().setPrettyPrinting().create();

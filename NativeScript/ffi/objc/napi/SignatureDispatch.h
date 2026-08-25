@@ -51,8 +51,8 @@ struct CFunctionNapiDispatchEntry {
   (NS_GSD_BACKEND_HERMES || NS_GSD_BACKEND_NAPI || NS_GSD_BACKEND_PREPARED)
 
 #if defined(__has_include)
-#if __has_include("GeneratedSignatureDispatch.inc")
-#include "GeneratedSignatureDispatch.inc"
+#if __has_include("../shared/GeneratedSignatureDispatch.inc")
+#include "../shared/GeneratedSignatureDispatch.inc"
 #elif NS_REQUIRES_GENERATED_SIGNATURE_DISPATCH
 #error GeneratedSignatureDispatch.inc is required when generated signature dispatch is enabled.
 #endif

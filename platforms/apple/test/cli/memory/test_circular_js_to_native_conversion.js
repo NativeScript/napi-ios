@@ -41,7 +41,7 @@ runPlainMemoryTest("circular-js-to-native-conversion", async (t) => {
   }
 
   for (let i = 0; i < iterations; i++) {
-    (function attemptCircularConversion() {
+    t.autoreleasepool(function attemptCircularConversion() {
       const native = NSMutableDictionary.dictionary();
       native.setObjectForKey(NSNumber.numberWithInt(i), "index");
       nativeObjects.addObject(native);
@@ -55,14 +55,14 @@ runPlainMemoryTest("circular-js-to-native-conversion", async (t) => {
       } catch (error) {
         t.assert(
           String(error).includes("Circular JavaScript object graphs"),
-          `unexpected circular conversion error: ${error}`,
+          `unexpected circular conversion error at iteration ${i}: ${error}`,
         );
         rejected++;
         return;
       }
 
       throw new Error("circular JS-to-native conversion was accepted");
-    })();
+    });
 
     if ((i + 1) % 20 === 0) {
       await t.forceGC(2, 8 * 1024 * 1024, 3);

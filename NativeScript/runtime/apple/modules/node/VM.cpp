@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "js_native_api.h"
+#include "jsr_common.h"
 #include "native_api_util.h"
 
 #if defined(TARGET_ENGINE_V8)
@@ -402,10 +403,13 @@ struct ModuleState {
 };
 
 #if defined(TARGET_ENGINE_V8)
-std::unordered_map<int, ModuleState*>& GetV8ModuleRegistry();
+using V8ModuleRegistry = std::unordered_map<int, ModuleState*>;
+std::unordered_map<v8::Isolate*, V8ModuleRegistry>& GetV8ModuleRegistries();
+V8ModuleRegistry& GetV8ModuleRegistry(v8::Isolate* isolate);
 #elif defined(TARGET_ENGINE_QUICKJS)
 struct QuickJSModuleRegistry {
   bool installed = false;
+  bool cleanupHookRegistered = false;
   std::unordered_map<std::string, ModuleState*> modulesById;
   std::unordered_map<JSModuleDef*, ModuleState*> modulesByDef;
   std::unordered_map<std::string, std::string> resolutions;
@@ -415,7 +419,8 @@ std::unordered_map<JSRuntime*, QuickJSModuleRegistry>&
 GetQuickJSModuleRegistries();
 std::string MakeQuickJSResolutionKey(const std::string& base,
                                      const std::string& specifier);
-QuickJSModuleRegistry& EnsureQuickJSModuleRegistry(JSRuntime* runtime);
+QuickJSModuleRegistry& EnsureQuickJSModuleRegistry(napi_env env,
+                                                   JSRuntime* runtime);
 std::string GetQuickJSModuleStatusString(ModuleState* state);
 bool EnsureQuickJSImportMeta(ModuleState* state);
 bool EnsureQuickJSLinked(napi_env env, ModuleState* state);
@@ -454,12 +459,19 @@ void FinalizeModuleState(napi_env env, void* data, void* /*hint*/) {
   }
 
 #if defined(TARGET_ENGINE_V8)
-  auto& registry = GetV8ModuleRegistry();
-  for (auto it = registry.begin(); it != registry.end();) {
-    if (it->second == state) {
-      it = registry.erase(it);
-    } else {
-      ++it;
+  auto& registries = GetV8ModuleRegistries();
+  auto registryIt = registries.find(env->isolate);
+  if (registryIt != registries.end()) {
+    auto& registry = registryIt->second;
+    for (auto it = registry.begin(); it != registry.end();) {
+      if (it->second == state) {
+        it = registry.erase(it);
+      } else {
+        ++it;
+      }
+    }
+    if (registry.empty()) {
+      registries.erase(registryIt);
     }
   }
   state->module.Reset();
@@ -631,286 +643,16 @@ std::unordered_set<std::string> ToKeySet(const std::vector<std::string>& keys) {
   return std::unordered_set<std::string>(keys.begin(), keys.end());
 }
 
-#if defined(TARGET_ENGINE_QUICKJS)
-struct QuickJSModuleRegistry {
-  bool installed = false;
-  std::unordered_map<std::string, ModuleState*> modulesById;
-  std::unordered_map<std::string, std::string> resolutions;
-};
 
-std::unordered_map<JSRuntime*, QuickJSModuleRegistry>&
-GetQuickJSModuleRegistries() {
-  static std::unordered_map<JSRuntime*, QuickJSModuleRegistry> registries;
-  return registries;
+thread_local std::unordered_map<v8::Isolate*, V8ModuleRegistry>
+    g_v8ModuleRegistries;
+
+std::unordered_map<v8::Isolate*, V8ModuleRegistry>& GetV8ModuleRegistries() {
+  return g_v8ModuleRegistries;
 }
 
-std::string MakeQuickJSResolutionKey(const std::string& base,
-                                     const std::string& specifier) {
-  return base + "\n" + specifier;
-}
-
-char* NormalizeQuickJSVmModule(JSContext* ctx, const char* base_name,
-                               const char* name, void* opaque) {
-  QuickJSModuleRegistry* registry = static_cast<QuickJSModuleRegistry*>(opaque);
-  if (registry == nullptr) {
-    return js_strdup(ctx, name);
-  }
-
-  const std::string base = base_name != nullptr ? base_name : "";
-  const auto it =
-      registry->resolutions.find(MakeQuickJSResolutionKey(base, name));
-  if (it != registry->resolutions.end()) {
-    return js_strdup(ctx, it->second.c_str());
-  }
-
-  return js_strdup(ctx, name);
-}
-
-JSModuleDef* LoadQuickJSVmModule(JSContext* /*ctx*/, const char* module_name,
-                                 void* opaque) {
-  QuickJSModuleRegistry* registry = static_cast<QuickJSModuleRegistry*>(opaque);
-  if (registry == nullptr) {
-    return nullptr;
-  }
-
-  const auto it = registry->modulesById.find(module_name);
-  if (it == registry->modulesById.end() || it->second == nullptr) {
-    return nullptr;
-  }
-
-  return static_cast<JSModuleDef*>(JS_VALUE_GET_PTR(it->second->moduleValue));
-}
-
-QuickJSModuleRegistry& EnsureQuickJSModuleRegistry(JSRuntime* runtime) {
-  auto& registries = GetQuickJSModuleRegistries();
-  QuickJSModuleRegistry& registry = registries[runtime];
-  if (!registry.installed) {
-    JS_SetModuleLoaderFunc(runtime, &NormalizeQuickJSVmModule,
-                           &LoadQuickJSVmModule, &registry);
-    registry.installed = true;
-  }
-  return registry;
-}
-
-std::string GetQuickJSModuleStatusString(ModuleState* state) {
-  if (state->errored) {
-    return "errored";
-  }
-  if (state->evaluating) {
-    return "evaluating";
-  }
-  if (state->evaluated) {
-    return "evaluated";
-  }
-  if (state->linked) {
-    return "linked";
-  }
-  return "unlinked";
-}
-
-bool EnsureQuickJSImportMeta(ModuleState* state) {
-  JSModuleDef* module =
-      static_cast<JSModuleDef*>(JS_VALUE_GET_PTR(state->moduleValue));
-  JSValue meta = JS_GetImportMeta(state->context, module);
-  if (JS_IsException(meta)) {
-    return false;
-  }
-
-  if (JS_DefinePropertyValueStr(
-          state->context, meta, "url",
-          JS_NewString(state->context, state->identifier.c_str()),
-          JS_PROP_C_W_E) < 0 ||
-      JS_DefinePropertyValueStr(state->context, meta, "main", JS_FALSE,
-                                JS_PROP_C_W_E) < 0) {
-    JS_FreeValue(state->context, meta);
-    return false;
-  }
-
-  JS_FreeValue(state->context, meta);
-  return true;
-}
-
-bool EnsureQuickJSLinked(napi_env env, ModuleState* state) {
-  if (state->linked) {
-    return true;
-  }
-
-  if (JS_ResolveModule(state->context, state->moduleValue) < 0) {
-    state->errored = true;
-    state->errorMessage = GetQuickJSExceptionMessage(
-        state->context, JS_GetException(state->context));
-    napi_throw_error(env, nullptr, state->errorMessage.c_str());
-    return false;
-  }
-
-  state->linked = true;
-  return true;
-}
-
-bool CacheQuickJSError(napi_env env, ModuleState* state, JSValue exception) {
-  JSContext* mainContext = qjs_get_context(env);
-  JSValue cloned = CloneQuickJSValue(state->context, mainContext, exception);
-  JS_FreeValue(state->context, exception);
-  if (JS_IsException(cloned)) {
-    state->errorMessage =
-        GetQuickJSExceptionMessage(mainContext, JS_GetException(mainContext));
-    napi_throw_error(env, nullptr, state->errorMessage.c_str());
-    return false;
-  }
-
-  napi_value error;
-  if (qjs_create_scoped_value(env, cloned, &error) != napi_ok ||
-      !SetModuleError(env, state, error)) {
-    return false;
-  }
-
-  return true;
-}
-
-bool CreateQuickJSSourceTextModule(napi_env env, const std::string& sourceText,
-                                   napi_value options, napi_value* result) {
-  ContextState* contextState = nullptr;
-  napi_value contextObject = nullptr;
-  if (!ReadModuleContextOption(env, options, &contextState, &contextObject)) {
-    return false;
-  }
-
-  JSContext* context =
-      contextState != nullptr ? contextState->context : qjs_get_context(env);
-  JSRuntime* runtime = JS_GetRuntime(context);
-  QuickJSModuleRegistry& registry = EnsureQuickJSModuleRegistry(runtime);
-  const std::string identifier = ReadIdentifierOption(env, options);
-
-  JSValue moduleValue = JS_Eval(
-      context, sourceText.c_str(), sourceText.size(), identifier.c_str(),
-      JS_EVAL_TYPE_MODULE | JS_EVAL_FLAG_COMPILE_ONLY |
-          JS_EVAL_FLAG_COMPILE_ONLY_NO_RESOLVE);
-  if (JS_IsException(moduleValue)) {
-    return ThrowLatestQuickJSException(env, context);
-  }
-
-  std::unique_ptr<ModuleState> state(new ModuleState());
-  state->env = env;
-  state->kind = ModuleKind::kSourceText;
-  state->identifier = identifier;
-  state->contextState = contextState;
-  state->runtime = runtime;
-  state->context = context;
-  state->moduleValue = moduleValue;
-  state->dependencySpecifiers = ExtractModuleDependencySpecifiers(sourceText);
-  if (contextObject != nullptr &&
-      napi_create_reference(env, contextObject, 1, &state->contextRef) !=
-          napi_ok) {
-    return false;
-  }
-
-  registry.modulesById[identifier] = state.get();
-  registry
-      .modulesByDef[static_cast<JSModuleDef*>(JS_VALUE_GET_PTR(moduleValue))] =
-      state.get();
-  if (!CreateModuleHandle(env, state.get(), result)) {
-    return false;
-  }
-
-  state.release();
-  return true;
-}
-
-bool ApplyQuickJSSyntheticExports(ModuleState* state) {
-  JSModuleDef* moduleDef =
-      static_cast<JSModuleDef*>(JS_VALUE_GET_PTR(state->moduleValue));
-  for (const auto& exportName : state->exportNames) {
-    JSValue exportValue = JS_UNDEFINED;
-    auto valueIt = state->syntheticExports.find(exportName);
-    if (valueIt != state->syntheticExports.end()) {
-      exportValue = JS_DupValue(state->context, valueIt->second);
-    }
-
-    if (JS_SetModuleExport(state->context, moduleDef, exportName.c_str(),
-                           exportValue) < 0) {
-      return false;
-    }
-  }
-
-  return true;
-}
-
-int InitializeQuickJSSyntheticModule(JSContext* ctx, JSModuleDef* moduleDef) {
-  auto& registries = GetQuickJSModuleRegistries();
-  auto registryIt = registries.find(JS_GetRuntime(ctx));
-  if (registryIt == registries.end()) {
-    return -1;
-  }
-
-  auto stateIt = registryIt->second.modulesByDef.find(moduleDef);
-  if (stateIt == registryIt->second.modulesByDef.end() ||
-      stateIt->second == nullptr) {
-    return -1;
-  }
-
-  return ApplyQuickJSSyntheticExports(stateIt->second) ? 0 : -1;
-}
-
-bool CreateQuickJSSyntheticModule(napi_env env,
-                                  const std::vector<std::string>& exportNames,
-                                  napi_value options, napi_value* result) {
-  ContextState* contextState = nullptr;
-  napi_value contextObject = nullptr;
-  if (!ReadModuleContextOption(env, options, &contextState, &contextObject)) {
-    return false;
-  }
-
-  JSContext* context =
-      contextState != nullptr ? contextState->context : qjs_get_context(env);
-  JSRuntime* runtime = JS_GetRuntime(context);
-  QuickJSModuleRegistry& registry = EnsureQuickJSModuleRegistry(runtime);
-  const std::string identifier = ReadIdentifierOption(env, options);
-
-  JSModuleDef* moduleDef = JS_NewCModule(context, identifier.c_str(),
-                                         &InitializeQuickJSSyntheticModule);
-  if (moduleDef == nullptr) {
-    return ThrowLatestQuickJSException(env, context);
-  }
-
-  for (const auto& exportName : exportNames) {
-    if (JS_AddModuleExport(context, moduleDef, exportName.c_str()) < 0) {
-      return ThrowLatestQuickJSException(env, context);
-    }
-  }
-
-  std::unique_ptr<ModuleState> state(new ModuleState());
-  state->env = env;
-  state->kind = ModuleKind::kSynthetic;
-  state->identifier = identifier;
-  state->contextState = contextState;
-  state->runtime = runtime;
-  state->context = context;
-  state->exportNames = exportNames;
-  state->moduleValue = JS_DupValue(context, JS_MKPTR(JS_TAG_MODULE, moduleDef));
-  if (contextObject != nullptr &&
-      napi_create_reference(env, contextObject, 1, &state->contextRef) !=
-          napi_ok) {
-    return false;
-  }
-
-  registry.modulesById[identifier] = state.get();
-  registry.modulesByDef[moduleDef] = state.get();
-  if (!EnsureQuickJSLinked(env, state.get())) {
-    return false;
-  }
-
-  if (!CreateModuleHandle(env, state.get(), result)) {
-    return false;
-  }
-
-  state.release();
-  return true;
-}
-#endif
-
-std::unordered_map<int, ModuleState*>& GetV8ModuleRegistry() {
-  static std::unordered_map<int, ModuleState*> registry;
-  return registry;
+V8ModuleRegistry& GetV8ModuleRegistry(v8::Isolate* isolate) {
+  return g_v8ModuleRegistries[isolate];
 }
 
 v8::Local<v8::Context> GetV8ModuleContext(napi_env env, ModuleState* state) {
@@ -940,14 +682,15 @@ std::string GetV8ModuleStatusString(v8::Module::Status status) {
 
 bool SetV8ModuleRegistryEntry(v8::Local<v8::Module> module,
                               ModuleState* state) {
-  GetV8ModuleRegistry()[module->GetIdentityHash()] = state;
+  GetV8ModuleRegistry(v8::Isolate::GetCurrent())[module->GetIdentityHash()] =
+      state;
   return true;
 }
 
 v8::MaybeLocal<v8::Module> ResolveV8VmModuleByIndex(
     v8::Local<v8::Context> context, size_t index,
     v8::Local<v8::Module> referrer) {
-  auto& registry = GetV8ModuleRegistry();
+  auto& registry = GetV8ModuleRegistry(v8::Isolate::GetCurrent());
   auto it = registry.find(referrer->GetIdentityHash());
   if (it == registry.end() || it->second == nullptr) {
     return v8::MaybeLocal<v8::Module>();
@@ -1362,7 +1105,8 @@ bool ThrowLatestQuickJSException(napi_env env, JSContext* context);
 
 std::unordered_map<JSRuntime*, QuickJSModuleRegistry>&
 GetQuickJSModuleRegistries() {
-  static std::unordered_map<JSRuntime*, QuickJSModuleRegistry> registries;
+  static thread_local std::unordered_map<JSRuntime*, QuickJSModuleRegistry>
+      registries;
   return registries;
 }
 
@@ -1403,13 +1147,30 @@ JSModuleDef* LoadQuickJSVmModule(JSContext* /*ctx*/, const char* module_name,
   return static_cast<JSModuleDef*>(JS_VALUE_GET_PTR(it->second->moduleValue));
 }
 
-QuickJSModuleRegistry& EnsureQuickJSModuleRegistry(JSRuntime* runtime) {
+void CleanupQuickJSModuleRegistry(void* data) {
+  JSRuntime* runtime = static_cast<JSRuntime*>(data);
+  auto& registries = GetQuickJSModuleRegistries();
+  auto registry = registries.find(runtime);
+  if (registry == registries.end()) {
+    return;
+  }
+  JS_SetModuleLoaderFunc(runtime, nullptr, nullptr, nullptr);
+  registries.erase(registry);
+}
+
+QuickJSModuleRegistry& EnsureQuickJSModuleRegistry(napi_env env,
+                                                   JSRuntime* runtime) {
   auto& registries = GetQuickJSModuleRegistries();
   QuickJSModuleRegistry& registry = registries[runtime];
   if (!registry.installed) {
     JS_SetModuleLoaderFunc(runtime, &NormalizeQuickJSVmModule,
                            &LoadQuickJSVmModule, &registry);
     registry.installed = true;
+  }
+  if (!registry.cleanupHookRegistered &&
+      js_add_env_cleanup_hook(env, CleanupQuickJSModuleRegistry, runtime) ==
+          napi_ok) {
+    registry.cleanupHookRegistered = true;
   }
   return registry;
 }
@@ -1544,7 +1305,7 @@ bool CreateQuickJSSourceTextModule(napi_env env, const std::string& sourceText,
   JSContext* context =
       contextState != nullptr ? contextState->context : qjs_get_context(env);
   JSRuntime* runtime = JS_GetRuntime(context);
-  QuickJSModuleRegistry& registry = EnsureQuickJSModuleRegistry(runtime);
+  QuickJSModuleRegistry& registry = EnsureQuickJSModuleRegistry(env, runtime);
   const std::string identifier = ReadIdentifierOption(env, options);
 
   JSValue moduleValue = JS_Eval(
@@ -1629,7 +1390,7 @@ bool CreateQuickJSSyntheticModule(napi_env env,
   JSContext* context =
       contextState != nullptr ? contextState->context : qjs_get_context(env);
   JSRuntime* runtime = JS_GetRuntime(context);
-  QuickJSModuleRegistry& registry = EnsureQuickJSModuleRegistry(runtime);
+  QuickJSModuleRegistry& registry = EnsureQuickJSModuleRegistry(env, runtime);
   const std::string identifier = ReadIdentifierOption(env, options);
 
   JSModuleDef* moduleDef = JS_NewCModule(context, identifier.c_str(),
@@ -2563,7 +2324,8 @@ napi_value ModuleLinkRequestsCallback(napi_env env, napi_callback_info info) {
     return nullptr;
   }
 #elif defined(TARGET_ENGINE_QUICKJS)
-  QuickJSModuleRegistry& registry = EnsureQuickJSModuleRegistry(state->runtime);
+  QuickJSModuleRegistry& registry =
+      EnsureQuickJSModuleRegistry(env, state->runtime);
   for (const auto& specifier : state->dependencySpecifiers) {
     registry.resolutions.erase(
         MakeQuickJSResolutionKey(state->identifier, specifier));

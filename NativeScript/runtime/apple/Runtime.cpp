@@ -51,6 +51,7 @@ std::atomic<int> Runtime::nextIsolateId{0};
 void unregisterRuntimePromiseRunLoop(CFRunLoopRef runLoop);
 
 Runtime* Runtime::GetRuntime(napi_env env) {
+  SpinLock lock(envsMutex_);
   auto it = runtimes_.find(env);
   if (it != runtimes_.end()) {
     return it->second;
@@ -62,8 +63,7 @@ Runtime* Runtime::GetRuntime(napi_env env) {
 class HermesRuntimeUnlockScope final {
  public:
   explicit HermesRuntimeUnlockScope(napi_env env) {
-    auto it = JSR::env_to_jsr_cache.find(env);
-    jsr_ = it != JSR::env_to_jsr_cache.end() ? it->second : nullptr;
+    jsr_ = JSR::ForEnv(env);
     if (jsr_ == nullptr) {
       return;
     }
@@ -136,7 +136,17 @@ Runtime::~Runtime() {
       NapiScope scope(env_, false);
 
       modules_.DeInit();
-      napi_close_handle_scope(env_, globalScope_);
+#if NS_FFI_BACKEND_V8 && defined(TARGET_ENGINE_V8)
+      CleanupNativeApi(env_->isolate);
+#elif NS_FFI_BACKEND_QUICKJS && defined(TARGET_ENGINE_QUICKJS)
+      CleanupNativeApi(qjs_get_context(env_));
+#elif NS_FFI_BACKEND_JSC && defined(TARGET_ENGINE_JSC)
+      CleanupNativeApi(env_->context);
+#endif
+      if (globalScope_ != nullptr) {
+        napi_close_handle_scope(env_, globalScope_);
+        globalScope_ = nullptr;
+      }
       js_free_napi_env(env_);
     }
 
@@ -335,8 +345,14 @@ void Runtime::Init(bool isWorker) {
                         sysNow.time_since_epoch())
                         .count();
 
-  js_create_runtime(&runtime_);
-  js_create_napi_env(&env_, runtime_);
+  if (js_create_runtime(&runtime_) != napi_ok || runtime_ == nullptr) {
+    throw NativeScriptException("Unable to create JavaScript runtime.");
+  }
+  if (js_create_napi_env(&env_, runtime_) != napi_ok || env_ == nullptr) {
+    js_free_runtime(runtime_);
+    runtime_ = nullptr;
+    throw NativeScriptException("Unable to create Node-API environment.");
+  }
 
   runtimeLoop_ = CFRunLoopGetCurrent();
   {
@@ -369,10 +385,19 @@ void Runtime::Init(bool isWorker) {
   v8::Context::Scope context_scope(env_->context());
 #endif  // TARGET_ENGINE_V8
 
-  napi_open_handle_scope(env_, &globalScope_);
+  if (napi_open_handle_scope(env_, &globalScope_) != napi_ok) {
+    throw NativeScriptException("Unable to open runtime handle scope.");
+  }
 
-  napi_handle_scope scope;
-  napi_open_handle_scope(env_, &scope);
+  napi_handle_scope scope = nullptr;
+  if (napi_open_handle_scope(env_, &scope) != napi_ok) {
+    throw NativeScriptException("Unable to open initialization handle scope.");
+  }
+  struct InitScopeGuard {
+    napi_env env;
+    napi_handle_scope scope;
+    ~InitScopeGuard() { napi_close_handle_scope(env, scope); }
+  } initScopeGuard{env_, scope};
 
   napi_value global;
   napi_get_global(env_, &global);
@@ -749,7 +774,6 @@ void Runtime::Init(bool isWorker) {
     nativeApiJsiConfig.metadataPath = metadata_path;
     nativeApiJsiConfig.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiJsiConfig.installGlobalSymbols = true;
-    nativeApiJsiConfig.invokeCallbacksOnNativeCallerThread = true;
     nativeApiJsiConfig.nativeInvocationInvoker =
         [env = env_](std::function<void()> task) {
           InvokeWithUnlockedHermesRuntime(env, task);
@@ -848,7 +872,6 @@ void Runtime::Init(bool isWorker) {
   }
 #endif  // NS_FFI_BACKEND_QUICKJS && TARGET_ENGINE_QUICKJS
 
-  napi_close_handle_scope(env_, scope);
 }
 
 const int Runtime::WorkerId() { return this->workerId_; }

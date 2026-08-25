@@ -20,6 +20,9 @@ endif ()
 
 set(COMMON_CMAKE_ARGUMENTS "-Wno-error -Wno-deprecated-declarations -Wno-unused-result -mstackrealign -fexceptions -fno-builtin-stpcpy")
 set(MI_OVERRIDE OFF)
+set(MI_BUILD_OBJECT OFF)
+set(MI_BUILD_SHARED OFF)
+set(MI_BUILD_TESTS OFF)
 
 if (V8_13)
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -std=c++20")
@@ -117,7 +120,7 @@ set(MODULE_FILES
 set(SOURCES ${ANDROID_RUNTIME_FILES} ${JNI_NAPI_FILES} ${MODULE_FILES})
 
 if (QUICKJS OR QUICKJS_NG)
-    add_subdirectory(${NS_ANDROID_NAPI_DIR}/quickjs/mimalloc-dev mimalloc)
+    add_subdirectory(${NS_NAPI_DIR}/quickjs/mimalloc-dev mimalloc)
 
     if (QUICKJS_NG)
         set(QJS_SOURCE_DIR ${NS_ANDROID_NAPI_DIR}/quickjs/source_ng)
@@ -141,10 +144,11 @@ if (QUICKJS OR QUICKJS_NG)
 
     include_directories(
             ${NS_ANDROID_NAPI_DIR}/quickjs
+            ${NS_NAPI_DIR}/quickjs
             ${QJS_SOURCE_DIR}
             ${NS_NAPI_DIR}/common
             # mimalloc
-            ${NS_ANDROID_NAPI_DIR}/quickjs/mimalloc-dev/include
+            ${NS_NAPI_DIR}/quickjs/mimalloc-dev/include
     )
 
 endif ()
@@ -179,6 +183,7 @@ endif ()
 if (JSC)
     include_directories(
             ${NS_ANDROID_NAPI_DIR}/jsc
+            ${NS_NAPI_DIR}/jsc
             ${NS_ANDROID_NAPI_DIR}/jsc/include
             ${NS_NAPI_DIR}/common
     )
@@ -231,7 +236,7 @@ if (V8)
     set(SOURCES ${SOURCES}
             ${NS_ANDROID_NAPI_DIR}/v8/v8-api.cpp
             ${NS_ANDROID_NAPI_DIR}/v8/jsr.cpp
-            ${NS_ANDROID_NAPI_DIR}/v8/SimpleAllocator.cpp
+            ${NS_NAPI_DIR}/v8/SimpleAllocator.cpp
     )
 
 

@@ -3,6 +3,17 @@
 const { runPlainMemoryTest } = require("./_plain_harness");
 
 runPlainMemoryTest("objc-unmanaged-transfer-semantics", async (t) => {
+  const capabilityProbe = NSObject.alloc();
+  if (
+    typeof capabilityProbe.takeRetainedValue !== "function" ||
+    typeof capabilityProbe.takeUnretainedValue !== "function"
+  ) {
+    return {
+      supported: false,
+      reason: "unmanaged transfer helpers are only exposed by direct engine backends",
+    };
+  }
+
   const rounds = 1000;
   let retainedFailures = 0;
   let unretainedFailures = 0;

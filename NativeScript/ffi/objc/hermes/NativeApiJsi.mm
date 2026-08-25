@@ -50,6 +50,7 @@ using facebook::jsi::BigInt;
 using facebook::jsi::Function;
 using facebook::jsi::HostObject;
 using facebook::jsi::MutableBuffer;
+using NativeApiNativeState = facebook::jsi::NativeState;
 using facebook::jsi::Object;
 using facebook::jsi::PropNameID;
 using facebook::jsi::Runtime;

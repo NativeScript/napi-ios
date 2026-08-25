@@ -38,8 +38,8 @@
 
 // The main .inc (prepared invokers + tables) is included here.
 #if defined(__has_include)
-#if __has_include("GeneratedSignatureDispatch.inc")
-#include "GeneratedSignatureDispatch.inc"
+#if __has_include("../shared/GeneratedSignatureDispatch.inc")
+#include "../shared/GeneratedSignatureDispatch.inc"
 #endif
 #endif
 

@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <cerrno>
 #include <thread>
+#include <fcntl.h>
 #include <android/log.h>
 #include "NativeScriptAssert.h"
 #include "Runtime.h"
@@ -10,6 +11,13 @@
 using namespace tns;
 
 static const int SLEEP_INTERVAL_MS = 100;
+
+MessageLoopTimer::MessageLoopTimer()
+    : m_isRunning(false), m_fd{-1, -1}, m_looper(nullptr) {}
+
+MessageLoopTimer::~MessageLoopTimer() {
+    Stop();
+}
 
 void MessageLoopTimer::Init(napi_env env) {
     this->RegisterStartStopFunctions(env);
@@ -41,29 +49,7 @@ napi_value MessageLoopTimer::StartCallback(napi_env env, napi_callback_info info
 
     auto self = static_cast<MessageLoopTimer *>(data);
 
-    if (self->m_isRunning) {
-        return nullptr;
-    }
-
-    self->m_isRunning = true;
-
-    auto looper = ALooper_forThread();
-    if (looper == nullptr) {
-        __android_log_print(ANDROID_LOG_ERROR, "NAPI", "Unable to get looper for the current thread");
-        return nullptr;
-    }
-
-    int status = pipe(self->m_fd);
-    if (status != 0) {
-        __android_log_print(ANDROID_LOG_ERROR, "NAPI", "Unable to create a pipe: %s", strerror(errno));
-        return nullptr;
-    }
-
-    ALooper_addFd(looper, self->m_fd[0], 0, ALOOPER_EVENT_INPUT, MessageLoopTimer::PumpMessageLoopCallback, env);
-
-    std::thread worker(MessageLoopTimer::WorkerThreadRun, self);
-
-    worker.detach();
+    self->Start(env);
 
     return nullptr;
 }
@@ -74,11 +60,7 @@ napi_value MessageLoopTimer::StopCallback(napi_env env, napi_callback_info info)
     auto self = static_cast<MessageLoopTimer *>(data);
 
 
-    if (!self->m_isRunning) {
-        return nullptr;
-    }
-
-    self->m_isRunning = false;
+    self->Stop();
 
     return nullptr;
 }
@@ -94,12 +76,72 @@ int MessageLoopTimer::PumpMessageLoopCallback(int fd, int events, void* data) {
 }
 
 void MessageLoopTimer::WorkerThreadRun(MessageLoopTimer* timer) {
-    while (timer->m_isRunning) {
+    while (timer->m_isRunning.load(std::memory_order_acquire)) {
         uint8_t msg = 1;
         write(timer->m_fd[1], &msg, sizeof(uint8_t));
         std::this_thread::sleep_for(std::chrono::milliseconds(SLEEP_INTERVAL_MS));
     }
+}
 
-    uint8_t msg = 0;
-    write(timer->m_fd[1], &msg, sizeof(uint8_t));
+bool MessageLoopTimer::Start(napi_env env) {
+    bool expected = false;
+    if (!m_isRunning.compare_exchange_strong(expected, true)) {
+        return true;
+    }
+
+    m_looper = ALooper_forThread();
+    if (m_looper == nullptr) {
+        __android_log_print(ANDROID_LOG_ERROR, "NAPI", "Unable to get looper for the current thread");
+        m_isRunning.store(false, std::memory_order_release);
+        return false;
+    }
+    ALooper_acquire(m_looper);
+
+    if (pipe2(m_fd, O_NONBLOCK | O_CLOEXEC) != 0) {
+        __android_log_print(ANDROID_LOG_ERROR, "NAPI", "Unable to create a pipe: %s", strerror(errno));
+        ALooper_release(m_looper);
+        m_looper = nullptr;
+        m_isRunning.store(false, std::memory_order_release);
+        return false;
+    }
+
+    if (ALooper_addFd(m_looper, m_fd[0], ALOOPER_POLL_CALLBACK,
+                      ALOOPER_EVENT_INPUT, MessageLoopTimer::PumpMessageLoopCallback,
+                      env) < 0) {
+        __android_log_print(ANDROID_LOG_ERROR, "NAPI", "Unable to register message-loop pipe");
+        close(m_fd[0]);
+        close(m_fd[1]);
+        m_fd[0] = m_fd[1] = -1;
+        ALooper_release(m_looper);
+        m_looper = nullptr;
+        m_isRunning.store(false, std::memory_order_release);
+        return false;
+    }
+
+    m_worker = std::thread(MessageLoopTimer::WorkerThreadRun, this);
+    return true;
+}
+
+void MessageLoopTimer::Stop() {
+    m_isRunning.store(false, std::memory_order_release);
+    if (m_worker.joinable()) {
+        m_worker.join();
+    }
+
+    if (m_looper != nullptr) {
+        if (m_fd[0] != -1) {
+            ALooper_removeFd(m_looper, m_fd[0]);
+        }
+        ALooper_release(m_looper);
+        m_looper = nullptr;
+    }
+
+    if (m_fd[0] != -1) {
+        close(m_fd[0]);
+        m_fd[0] = -1;
+    }
+    if (m_fd[1] != -1) {
+        close(m_fd[1]);
+        m_fd[1] = -1;
+    }
 }

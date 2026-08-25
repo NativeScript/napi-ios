@@ -3,7 +3,6 @@
 
 #include "js_native_api.h"
 
-#include <atomic>
 #include <functional>
 #include <memory>
 
@@ -16,20 +15,10 @@ namespace nativescript {
 namespace detail {
 
 #if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
-inline std::atomic<int> native_call_unlocked_runtime_count{0};
 inline thread_local int native_caller_thread_callback_depth = 0;
 #endif
 
 }  // namespace detail
-
-inline bool isNativeCallRuntimeUnlockedForCallbacks() {
-#if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
-  return detail::native_call_unlocked_runtime_count.load(
-             std::memory_order_acquire) > 0;
-#else
-  return false;
-#endif
-}
 
 inline bool isNativeCallerThreadCallbackActive() {
 #if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
@@ -41,8 +30,7 @@ inline bool isNativeCallerThreadCallbackActive() {
 
 inline bool shouldInvokeCallbackOnNativeCallerThread() {
 #if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
-  return isNativeCallRuntimeUnlockedForCallbacks() ||
-         isNativeCallerThreadCallbackActive();
+  return isNativeCallerThreadCallbackActive();
 #else
   return false;
 #endif
@@ -56,12 +44,12 @@ class NativeCallRuntimeUnlockScope final {
       return;
     }
 
-    auto it = JSR::env_to_jsr_cache.find(env);
-    if (it == JSR::env_to_jsr_cache.end() || it->second == nullptr) {
+    JSR* runtime = JSR::ForEnv(env);
+    if (runtime == nullptr) {
       return;
     }
 
-    jsr_ = it->second;
+    jsr_ = runtime;
     unlockedDepth_ = js_current_env_lock_depth(env);
     for (int i = 0; i < unlockedDepth_; i++) {
       jsr_->unlock();
@@ -72,11 +60,6 @@ class NativeCallRuntimeUnlockScope final {
       relockRuntime_ = [runtime]() { runtime->lock(); };
       unlockedRuntime_ = true;
     }
-    if (unlockedDepth_ > 0 || unlockedRuntime_) {
-      didUnlock_ = true;
-      detail::native_call_unlocked_runtime_count.fetch_add(
-          1, std::memory_order_release);
-    }
 #else
     (void)env;
 #endif
@@ -84,10 +67,6 @@ class NativeCallRuntimeUnlockScope final {
 
   ~NativeCallRuntimeUnlockScope() {
 #if defined(ENABLE_JS_RUNTIME) && defined(TARGET_ENGINE_HERMES)
-    if (didUnlock_) {
-      detail::native_call_unlocked_runtime_count.fetch_sub(
-          1, std::memory_order_release);
-    }
     if (jsr_ != nullptr) {
       for (int i = 0; i < unlockedDepth_; i++) {
         jsr_->lock();
@@ -110,7 +89,6 @@ class NativeCallRuntimeUnlockScope final {
 #endif
   int unlockedDepth_ = 0;
   bool unlockedRuntime_ = false;
-  bool didUnlock_ = false;
 };
 
 class NativeCallbackScope final {
@@ -123,9 +101,9 @@ class NativeCallbackScope final {
       return;
     }
 
-    auto it = JSR::env_to_jsr_cache.find(env_);
-    if (it != JSR::env_to_jsr_cache.end() && it->second != nullptr) {
-      jsr_ = it->second;
+    JSR* runtime = JSR::ForEnv(env_);
+    if (runtime != nullptr) {
+      jsr_ = runtime;
       jsr_->lock();
       detail::native_caller_thread_callback_depth += 1;
       napi_open_handle_scope(env_, &napiHandleScope_);

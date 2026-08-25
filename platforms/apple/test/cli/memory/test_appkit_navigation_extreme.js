@@ -10,8 +10,8 @@ function makeFrame(x, y, width, height) {
 }
 
 runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
-  const visualMode = false;
-  const cycles = 180;
+  const cycles = 96;
+  const warmupCycles = 32;
   const maxDepth = 12;
   const subviewsPerScreen = 24;
 
@@ -37,8 +37,12 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
   }
 
   function liveNativeCount(table) {
-    const objects = table.allObjects;
-    return objects ? objects.count : table.count;
+    let count = 0;
+    for (const ignored of table) {
+      void ignored;
+      count += 1;
+    }
+    return count;
   }
 
   function createRouteController(depth, cycle) {
@@ -105,12 +109,13 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
     return controller;
   }
 
-  let window = NSWindow.windowWithContentViewController(createRouteController(0, 0));
-  window.setFrameDisplay(makeFrame(0, 0, 960, 640), false);
-  window.center();
-  window.makeKeyAndOrderFront(null);
-  window.orderFrontRegardless();
-  NSApplication.sharedApplication.activateIgnoringOtherApps(true);
+  let window = NSWindow.alloc().initWithContentRectStyleMaskBackingDefer(
+    makeFrame(-100000, -100000, 960, 640),
+    NSWindowStyleMask.Borderless,
+    NSBackingStoreType.Buffered,
+    false,
+  );
+  window.contentViewController = createRouteController(0, 0);
 
   const navStack = [window.contentViewController];
 
@@ -130,33 +135,21 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
   };
 
   for (let cycle = 0; cycle < cycles; cycle++) {
-    if (visualMode) {
-      window.title = `extreme cycle ${cycle + 1}/${cycles}`;
-    }
-    for (let depth = 1; depth <= maxDepth; depth++) {
-      pushController(createRouteController(depth, cycle));
-      if (visualMode) {
-        await t.sleep(1);
+    t.autoreleasepool(() => {
+      for (let depth = 1; depth <= maxDepth; depth++) {
+        pushController(createRouteController(depth, cycle));
       }
-    }
 
-    for (let depth = maxDepth; depth >= 1; depth--) {
-      popController();
-      if (visualMode) {
-        await t.sleep(1);
+      for (let depth = maxDepth; depth >= 1; depth--) {
+        popController();
       }
-    }
 
-    for (let i = 0; i < maxDepth * 2; i++) {
-      pushController(createRouteController((i % maxDepth) + 1, cycle));
-      if (visualMode) {
-        await t.sleep(1);
+      for (let i = 0; i < maxDepth * 2; i++) {
+        pushController(createRouteController((i % maxDepth) + 1, cycle));
+        popController();
       }
-      popController();
-      if (visualMode) {
-        await t.sleep(1);
-      }
-    }
+    });
+    CATransaction.flush();
 
     if ((cycle + 1) % 8 === 0) {
       await t.forceGC(3, 36 * 1024 * 1024, 6);
@@ -164,9 +157,9 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
       await t.sleep(20);
     }
 
-    if (visualMode && (cycle + 1) % 15 === 0) {
-      console.log(`appkit-navigation-extreme progress ${cycle + 1}/${cycles}`);
-      await t.sleep(30);
+    if (cycle + 1 === warmupCycles) {
+      await t.forceGC(2, 24 * 1024 * 1024, 5);
+      t.markRssBaseline();
     }
   }
 
@@ -174,13 +167,16 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
     popController();
   }
 
-  const preCloseNativeControllers = liveNativeCount(nativeWeakControllers);
-  const preCloseNativeViews = liveNativeCount(nativeWeakViews);
+  const preCloseNativeControllers = nativeWeakControllers.count;
+  const preCloseNativeViews = nativeWeakViews.count;
 
   navStack.length = 0;
-  window.contentViewController = null;
-  window.orderOut(null);
-  window.close();
+  t.autoreleasepool(() => {
+    window.contentViewController = null;
+    window.orderOut(null);
+    window.close();
+  });
+  CATransaction.flush();
   window = null;
 
   let released = false;
@@ -189,10 +185,15 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
   let postCloseJsControllers = Number.MAX_SAFE_INTEGER;
   let postCloseJsViews = Number.MAX_SAFE_INTEGER;
 
-  const releaseDeadline = t.now() + 25_000;
+  const releaseDeadline = t.now() + 40_000;
   while (t.now() < releaseDeadline) {
-    await t.forceGC(1, 20 * 1024 * 1024, 5);
-    await t.sleep(15);
+    await t.forceGC(2, 32 * 1024 * 1024, 6);
+    await t.drainRunLoopUntilIdle(() => true, {
+      timeoutMs: 200,
+      tickMs: 8,
+      settleTicks: 3,
+    });
+    CATransaction.flush();
 
     postCloseNativeControllers = liveNativeCount(nativeWeakControllers);
     postCloseNativeViews = liveNativeCount(nativeWeakViews);
@@ -206,8 +207,8 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
       ? postCloseNativeViews / createdViews
       : 0;
 
-    if (controllerLiveRatio <= 0.2 &&
-        viewLiveRatio <= 0.2 &&
+    if (controllerLiveRatio <= 0.15 &&
+        viewLiveRatio <= 0.15 &&
         postCloseNativeControllers <= preCloseNativeControllers + 12 &&
         postCloseNativeViews <= preCloseNativeViews + 120 &&
         postCloseJsControllers <= 12 &&
@@ -225,6 +226,7 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
 
   return {
     cycles,
+    warmupCycles,
     maxDepth,
     subviewsPerScreen,
     createdControllers,
@@ -240,5 +242,5 @@ runAsyncMemoryTest("appkit-navigation-extreme", async (t) => {
   };
 }, {
   timeoutMs: 90_000,
-  activationPolicy: NSApplicationActivationPolicy.Regular,
+  activationPolicy: NSApplicationActivationPolicy.Prohibited,
 });

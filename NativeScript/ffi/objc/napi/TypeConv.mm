@@ -137,6 +137,7 @@ struct ActiveObjectConversion {
 };
 
 thread_local std::vector<ActiveObjectConversion> activeObjectConversions;
+thread_local napi_env failedObjectConversionEnv = nullptr;
 
 class ScopedObjectConversion {
  public:
@@ -153,6 +154,7 @@ class ScopedObjectConversion {
       }
 
       if (isSameObject) {
+        failedObjectConversionEnv = env;
         napi_throw_error(
             env, nullptr,
             "Circular JavaScript object graphs cannot be converted to Objective-C collections.");
@@ -179,6 +181,9 @@ class ScopedObjectConversion {
 };
 
 static bool hasPendingException(napi_env env) {
+  if (failedObjectConversionEnv == env) {
+    return true;
+  }
   bool pending = false;
   return napi_is_exception_pending(env, &pending) == napi_ok && pending;
 }
@@ -467,21 +472,27 @@ MDSectionOffset findProtocolMetadataOffset(MDMetadataReader* metadata, const cha
 // Forward declaration
 class StructTypeConv;
 
-// Thread-local storage for tracking structs currently being processed to detect cycles
-thread_local std::unordered_set<MDSectionOffset> processingStructs;
-thread_local std::unordered_set<std::string> processingEncodingStructs;
+struct StructTypeCaches {
+  std::unordered_set<MDSectionOffset> processingStructs;
+  std::unordered_set<std::string> processingEncodingStructs;
+  std::unordered_map<MDSectionOffset, ffi_type*> forwardDeclaredStructs;
+  std::unordered_map<std::string, ffi_type*> forwardDeclaredEncodingStructs;
+  std::unordered_map<MDSectionOffset, std::shared_ptr<TypeConv>> structTypes;
+  std::unordered_map<std::string, std::shared_ptr<TypeConv>> encodingStructTypes;
+};
 
-// Cache for forward-declared struct types that need deferred resolution
-thread_local std::unordered_map<MDSectionOffset, ffi_type*> forwardDeclaredStructs;
-thread_local std::unordered_map<std::string, ffi_type*> forwardDeclaredEncodingStructs;
+thread_local std::unordered_map<napi_env, StructTypeCaches> structTypeCachesByEnv;
 
-// Cache for StructTypeConv instances to avoid recreating them and handle recursion
-thread_local std::unordered_map<MDSectionOffset, std::shared_ptr<StructTypeConv>> structTypeCache;
+inline StructTypeCaches& structTypeCaches(napi_env env) {
+  return structTypeCachesByEnv[env];
+}
 
-// Cache for encoding-based structs to handle recursion
-thread_local std::unordered_map<std::string, std::shared_ptr<StructTypeConv>> encodingStructCache;
-
-ffi_type* typeFromStruct(napi_env env, const char** encoding) {
+ffi_type* typeFromStruct(napi_env env, const char** encoding, bool* ownsType,
+                         std::vector<std::shared_ptr<TypeConv>>* retainedElementTypes) {
+  auto& caches = structTypeCaches(env);
+  auto& processingEncodingStructs = caches.processingEncodingStructs;
+  auto& forwardDeclaredEncodingStructs = caches.forwardDeclaredEncodingStructs;
+  *ownsType = false;
   // Extract struct name for cycle detection
   std::string structname;
   const char* nameStart = *encoding + 1;  // skip '{'
@@ -502,6 +513,20 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
     return &ffi_type_pointer;
   }
 
+  // Reuse a single placeholder when a recursive layout references the same
+  // struct more than once.
+  auto existingForwardIt = forwardDeclaredEncodingStructs.find(structname);
+  if (existingForwardIt != forwardDeclaredEncodingStructs.end()) {
+    (*encoding)++;  // skip '{'
+    while (**encoding != '\0' && **encoding != '}') {
+      (*encoding)++;
+    }
+    if (**encoding == '}') {
+      (*encoding)++;
+    }
+    return existingForwardIt->second;
+  }
+
   // Check if we're already processing this struct (cycle detection)
   if (processingEncodingStructs.find(structname) != processingEncodingStructs.end()) {
     // Create a forward declaration placeholder
@@ -516,19 +541,6 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
 
     // Skip the struct encoding
     (*encoding)++;  // skip '{'
-    while (**encoding != '}') {
-      (*encoding)++;
-    }
-    (*encoding)++;  // skip '}'
-
-    return forwardType;
-  }
-
-  // Check if we already have a forward declaration for this struct
-  auto existingForwardIt = forwardDeclaredEncodingStructs.find(structname);
-  if (existingForwardIt != forwardDeclaredEncodingStructs.end()) {
-    // Skip the struct encoding
-    (*encoding)++;  // skip '{'
     while (**encoding != '\0' && **encoding != '}') {
       (*encoding)++;
     }
@@ -536,7 +548,7 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
       (*encoding)++;  // skip '}'
     }
 
-    return existingForwardIt->second;
+    return forwardType;
   }
 
   // Mark this struct as being processed
@@ -564,8 +576,9 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
   (*encoding)++;  // skip '='
 
   while (**encoding != '\0' && **encoding != '}') {
-    ffi_type* elementType = TypeConv::Make(env, encoding)->type;
-    elements.push_back(elementType);
+    auto elementType = TypeConv::Make(env, encoding);
+    elements.push_back(elementType->type);
+    retainedElementTypes->push_back(std::move(elementType));
   }
 
   if (**encoding == '}') {
@@ -596,12 +609,23 @@ ffi_type* typeFromStruct(napi_env env, const char** encoding) {
 
   // Remove from processing set
   processingEncodingStructs.erase(structname);
+  *ownsType = true;
 
   return type;
 }
 
 ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset structOffset,
-                         bool isUnion) {
+                         bool isUnion, bool* ownsType,
+                         std::vector<std::shared_ptr<TypeConv>>* retainedElementTypes) {
+  auto& caches = structTypeCaches(env);
+  auto& processingStructs = caches.processingStructs;
+  auto& forwardDeclaredStructs = caches.forwardDeclaredStructs;
+  *ownsType = false;
+  auto existingForwardIt = forwardDeclaredStructs.find(structOffset);
+  if (existingForwardIt != forwardDeclaredStructs.end()) {
+    return existingForwardIt->second;
+  }
+
   // Check if we're already processing this struct (cycle detection)
   if (processingStructs.find(structOffset) != processingStructs.end()) {
     // Create a forward declaration placeholder
@@ -614,12 +638,6 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
     // Cache this forward declaration for later resolution
     forwardDeclaredStructs[structOffset] = forwardType;
     return forwardType;
-  }
-
-  // Check if we already have a forward declaration for this struct
-  auto existingForwardIt = forwardDeclaredStructs.find(structOffset);
-  if (existingForwardIt != forwardDeclaredStructs.end()) {
-    return existingForwardIt->second;
   }
 
   // Mark this struct as being processed
@@ -648,8 +666,9 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
     }
     currentOffset += sizeof(MDSectionOffset);         // skip name
     if (!isUnion) currentOffset += sizeof(uint16_t);  // skip offset
-    ffi_type* elementType = TypeConv::Make(env, reader, &currentOffset, 1)->type;
-    elements.push_back(elementType);
+    auto elementType = TypeConv::Make(env, reader, &currentOffset, 1);
+    elements.push_back(elementType->type);
+    retainedElementTypes->push_back(std::move(elementType));
   }
 
   type->elements = (ffi_type**)malloc(sizeof(ffi_type*) * (elements.size() + 1));
@@ -676,6 +695,7 @@ ffi_type* typeFromStruct(napi_env env, MDMetadataReader* reader, MDSectionOffset
 
   // Remove from processing set
   processingStructs.erase(structOffset);
+  *ownsType = true;
 
   return type;
 }
@@ -1355,67 +1375,9 @@ class PointerTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     void** res = (void**)result;
-
-    auto unwrapKnownNativeHandle = [&](napi_value input, void** out) -> bool {
-      auto bridgeState = ObjCBridgeState::InstanceData(env);
-      if (bridgeState != nullptr) {
-        napi_valuetype inputType = napi_undefined;
-        if (napi_typeof(env, input, &inputType) == napi_ok &&
-            (inputType == napi_function || inputType == napi_object)) {
-          id bridgedType = nil;
-          if (bridgeState->tryResolveBridgedTypeConstructor(env, input, &bridgedType) &&
-              bridgedType != nil) {
-            *out = (void*)bridgedType;
-            return true;
-          }
-        }
-      }
-
-      void* wrapped = nullptr;
-      napi_status unwrapStatus = napi_unwrap(env, input, &wrapped);
-      if (unwrapStatus != napi_ok) {
-        bool hasNativePointer = false;
-        if (napi_has_named_property(env, input, "__ns_native_ptr", &hasNativePointer) ==
-                napi_ok &&
-            hasNativePointer) {
-          napi_value nativePointerValue = nullptr;
-          if (napi_get_named_property(env, input, "__ns_native_ptr", &nativePointerValue) ==
-                  napi_ok &&
-              Pointer::isInstance(env, nativePointerValue)) {
-            Pointer* pointer = Pointer::unwrap(env, nativePointerValue);
-            if (pointer != nullptr && pointer->data != nullptr) {
-              *out = pointer->data;
-              return true;
-            }
-          }
-        }
-        return false;
-      }
-
-      if (bridgeState != nullptr) {
-        for (const auto& entry : bridgeState->classes) {
-          auto bridgedClass = entry.second;
-          if (bridgedClass == wrapped) {
-            *out = (void*)bridgedClass->nativeClass;
-            return true;
-          }
-        }
-
-        for (const auto& entry : bridgeState->protocols) {
-          auto bridgedProtocol = entry.second;
-          if (bridgedProtocol == wrapped) {
-            *out = (void*)objc_getProtocol(bridgedProtocol->name.c_str());
-            return true;
-          }
-        }
-      }
-
-      *out = wrapped;
-      return true;
-    };
 
     napi_valuetype type;
     napi_typeof(env, value, &type);
@@ -1789,11 +1751,14 @@ class PointerTypeConv : public TypeConv {
           *res = data;
           return;
         }
+        if (unwrapKnownNativeHandle(env, value, res)) {
+          return;
+        }
         break;
       }
 
       case napi_function: {
-        if (unwrapKnownNativeHandle(value, res)) {
+        if (unwrapKnownNativeHandle(env, value, res)) {
           return;
         }
         break;
@@ -1850,7 +1815,7 @@ class BlockTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     void** res = (void**)result;
 
@@ -1975,7 +1940,7 @@ class FunctionPointerTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     void** res = (void**)result;
 
@@ -2096,7 +2061,7 @@ class StringTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     napi_valuetype valuetype;
     napi_typeof(env, value, &valuetype);
@@ -2347,7 +2312,7 @@ class ObjCObjectTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     id* res = (id*)result;
 
@@ -2466,9 +2431,8 @@ class ObjCObjectTypeConv : public TypeConv {
         }
 
         void* wrapped = nullptr;
-        status = napi_unwrap(env, value, &wrapped);
-
-        if (status != napi_ok) {
+        bool knownNativeHandle = unwrapKnownNativeHandle(env, value, &wrapped);
+        if (!knownNativeHandle) {
           bool isArrayBuffer = false;
           napi_is_arraybuffer(env, value, &isArrayBuffer);
           if (isArrayBuffer) {
@@ -2874,7 +2838,7 @@ class ObjCNSMutableStringObjectTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     napi_valuetype type;
     napi_typeof(env, value, &type);
@@ -2915,24 +2879,25 @@ class ObjCClassTypeConv : public TypeConv {
     kind = mdTypeClass;
   }
 
-	  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
-	    Class cls = *((Class*)value);
+  napi_value toJS(napi_env env, void* value, uint32_t flags) override {
+    Class cls = *((Class*)value);
 
-	    if (cls == nullptr) {
-	      napi_value null;
-	      napi_get_null(env, &null);
-	      return null;
-	    }
+    if (cls == nullptr) {
+      napi_value null;
+      napi_get_null(env, &null);
+      return null;
+    }
 
-	    if (napi_value constructor = findRegisteredClassConstructor(env, cls);
-	        constructor != nullptr) {
-	      return constructor;
-	    }
+    if (napi_value constructor = findRegisteredClassConstructor(env, cls);
+        constructor != nullptr) {
+      return constructor;
+    }
 
-	    auto bridgeState = ObjCBridgeState::InstanceData(env);
-	    return bridgeState != nullptr ? bridgeState->getObject(env, (id)cls, kUnownedObject, 0, nullptr)
-	                                  : nullptr;
-	  }
+    auto bridgeState = ObjCBridgeState::InstanceData(env);
+    return bridgeState != nullptr
+               ? bridgeState->getObject(env, (id)cls, kUnownedObject, 0, nullptr)
+               : nullptr;
+  }
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
@@ -2945,8 +2910,6 @@ class ObjCClassTypeConv : public TypeConv {
 
 static const std::shared_ptr<ObjCClassTypeConv> objcClassTypeConv =
     std::make_shared<ObjCClassTypeConv>();
-
-char selector_name_buf[256];
 
 class SelectorTypeConv : public TypeConv {
  public:
@@ -2964,7 +2927,7 @@ class SelectorTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     SEL* res = (SEL*)result;
 
@@ -2972,14 +2935,24 @@ class SelectorTypeConv : public TypeConv {
     napi_typeof(env, value, &type);
 
     switch (type) {
-      case napi_string:
-        NAPI_GUARD(napi_get_value_string_utf8(env, value, selector_name_buf, 256, NULL)) {
+      case napi_string: {
+        size_t length = 0;
+        NAPI_GUARD(napi_get_value_string_utf8(env, value, nullptr, 0, &length)) {
           NAPI_THROW_LAST_ERROR
           *res = NULL;
           return;
         }
-        *res = sel_registerName(selector_name_buf);
+
+        std::vector<char> selectorName(length + 1, '\0');
+        NAPI_GUARD(napi_get_value_string_utf8(env, value, selectorName.data(),
+                                              selectorName.size(), &length)) {
+          NAPI_THROW_LAST_ERROR
+          *res = NULL;
+          return;
+        }
+        *res = sel_registerName(selectorName.data());
         break;
+      }
 
       case napi_undefined:
       case napi_null:
@@ -3005,12 +2978,22 @@ class StructTypeConv : public TypeConv {
   StructInfo* info = nullptr;
   bool structInfoSearched = false;
 
-  StructTypeConv(MDSectionOffset structOffset, ffi_type* type) : structOffset(structOffset) {
+  StructTypeConv(MDSectionOffset structOffset, ffi_type* type, bool ownsType,
+                 std::vector<std::shared_ptr<TypeConv>> retainedElementTypes)
+      : structOffset(structOffset),
+        ownsType(ownsType),
+        retainedElementTypes(std::move(retainedElementTypes)) {
     this->type = type;
     kind = mdTypeStruct;
   }
 
-  // ~StructTypeConv() { delete type; }
+  ~StructTypeConv() override {
+    if (ownsType && type != nullptr) {
+      std::free(type->elements);
+      delete type;
+      type = nullptr;
+    }
+  }
 
   inline StructInfo* getInfo(napi_env env) {
     if (!structInfoSearched) {
@@ -3047,7 +3030,7 @@ class StructTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     const size_t structSize = getStructSize(env);
     if (structSize == 0) {
@@ -3096,7 +3079,9 @@ class StructTypeConv : public TypeConv {
       return;
     }
 
-    auto structObject = StructObject::unwrap(env, value);
+    auto structObject = StructObject::isInstance(env, value)
+                            ? StructObject::unwrap(env, value)
+                            : nullptr;
     if (structObject != nullptr) {
       const size_t copySize = std::min(static_cast<size_t>(structObject->info->size), structSize);
       memset(result, 0, structSize);
@@ -3122,6 +3107,10 @@ class StructTypeConv : public TypeConv {
     // Serialize directly to previously allocated memory.
     StructObject(env, info, value, result);
   }
+
+ private:
+  bool ownsType;
+  std::vector<std::shared_ptr<TypeConv>> retainedElementTypes;
 };
 
 class ArrayTypeConv : public TypeConv {
@@ -3143,6 +3132,14 @@ class ArrayTypeConv : public TypeConv {
     arrayType->elements[arraySize] = nullptr;
     type = arrayType;
     kind = mdTypeArray;
+  }
+
+  ~ArrayTypeConv() override {
+    if (type != nullptr) {
+      std::free(type->elements);
+      delete type;
+      type = nullptr;
+    }
   }
 
   ffi_type* ffiTypeForArgument() override {
@@ -3187,7 +3184,7 @@ class ArrayTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     if (decayToPointerForArguments) {
       void** pointerResult = static_cast<void**>(result);
@@ -3386,6 +3383,14 @@ class VectorTypeConv : public TypeConv {
     kind = vectorKind;
   }
 
+  ~VectorTypeConv() override {
+    if (type != nullptr) {
+      std::free(type->elements);
+      delete type;
+      type = nullptr;
+    }
+  }
+
   napi_value toJS(napi_env env, void* value, uint32_t flags) override {
     napi_value result;
     napi_create_array_with_length(env, vectorSize, &result);
@@ -3409,7 +3414,7 @@ class VectorTypeConv : public TypeConv {
 
   void toNative(napi_env env, napi_value value, void* result, bool* shouldFree,
                 bool* shouldFreeAny) override {
-    NAPI_PREAMBLE
+    NS_OBJC_NAPI_PREAMBLE
 
     memset(result, 0, getVectorByteSize());
 
@@ -3598,9 +3603,10 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, const char** encoding) {
         (*encoding)++;
       }  // skip array type
       (*encoding)++;  // skip ']'
-      return std::make_shared<ArrayTypeConv>(ArrayTypeConv(arraySize, elementType));
+      return std::make_shared<ArrayTypeConv>(arraySize, elementType);
     }
     case '{': {
+      auto& encodingStructCache = structTypeCaches(env).encodingStructTypes;
       std::string structname;
       const char* c = *encoding + 1;
       while (*c != '\0' && *c != '=') {
@@ -3631,8 +3637,11 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, const char** encoding) {
           structOffset = structOffsetIt->second;
         }
       }
-      auto type = typeFromStruct(env, encoding);
-      auto structTypeConv = std::make_shared<StructTypeConv>(StructTypeConv(structOffset, type));
+      bool ownsType = false;
+      std::vector<std::shared_ptr<TypeConv>> retainedElementTypes;
+      auto type = typeFromStruct(env, encoding, &ownsType, &retainedElementTypes);
+      auto structTypeConv = std::make_shared<StructTypeConv>(
+          structOffset, type, ownsType, std::move(retainedElementTypes));
 
       // Cache the StructTypeConv
       encodingStructCache[structname] = structTypeConv;
@@ -3806,10 +3815,13 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
       auto arraySize = reader->getArraySize(*offset);
       *offset += sizeof(uint16_t);
       auto elementType = TypeConv::Make(env, reader, offset);
-      return std::make_shared<ArrayTypeConv>(ArrayTypeConv(arraySize, elementType));
+      return std::make_shared<ArrayTypeConv>(arraySize, elementType);
     }
 
     case mdTypeStruct: {
+      auto& caches = structTypeCaches(env);
+      auto& processingStructs = caches.processingStructs;
+      auto& structTypeCache = caches.structTypes;
       auto structOffset = reader->getOffset(*offset);
       *offset += sizeof(MDSectionOffset);
       auto isUnion = (structOffset & mdSectionOffsetNext) != 0;
@@ -3830,11 +3842,15 @@ std::shared_ptr<TypeConv> TypeConv::Make(napi_env env, MDMetadataReader* reader,
       bool isRecursive = processingStructs.find(structOffset) != processingStructs.end();
 
       ffi_type* type = nullptr;
+      bool ownsType = false;
+      std::vector<std::shared_ptr<TypeConv>> retainedElementTypes;
       if (opaquePointers != 2 && !isRecursive) {
-        type = typeFromStruct(env, reader, structOffset, isUnion);
+        type = typeFromStruct(env, reader, structOffset, isUnion, &ownsType,
+                              &retainedElementTypes);
       }
 
-      auto structTypeConv = std::make_shared<StructTypeConv>(structOffset, type);
+      auto structTypeConv = std::make_shared<StructTypeConv>(
+          structOffset, type, ownsType, std::move(retainedElementTypes));
 
       // Cache the StructTypeConv to handle recursion and avoid duplicates
       structTypeCache[structOffset] = structTypeConv;
@@ -4023,6 +4039,11 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value, napi_valuetyp
       };
 
       if (valueType == napi_object) {
+        bool isArray = false;
+        if (napi_is_array(env, value, &isArray) == napi_ok && isArray) {
+          return false;
+        }
+
         if (Pointer::isInstance(env, value)) {
           Pointer* ptr = Pointer::unwrap(env, value);
           void* pointerData = ptr != nullptr ? ptr->data : nullptr;
@@ -4046,48 +4067,9 @@ bool tryFastConvertObjCObjectValue(napi_env env, napi_value value, napi_valuetyp
         }
       }
 
-      if (bridgeState != nullptr) {
-        id bridgedType = nil;
-        if (bridgeState->tryResolveBridgedTypeConstructor(env, value, &bridgedType) &&
-            bridgedType != nil) {
-          *out = bridgedType;
-          return true;
-        }
-      }
-
-      void* wrapped = nullptr;
-      if (napi_unwrap(env, value, &wrapped) == napi_ok) {
-        if (valueType == napi_function || valueType == napi_object) {
-          auto bridgeState = ObjCBridgeState::InstanceData(env);
-          if (bridgeState != nullptr && wrapped != nullptr) {
-            for (const auto& entry : bridgeState->classes) {
-              auto bridgedClass = entry.second;
-              if (bridgedClass == wrapped) {
-                *out = (id)bridgedClass->nativeClass;
-                return true;
-              }
-            }
-
-            for (const auto& entry : bridgeState->protocols) {
-              auto bridgedProtocol = entry.second;
-              if (bridgedProtocol == wrapped) {
-                Protocol* runtimeProtocol = objc_getProtocol(bridgedProtocol->name.c_str());
-                if (runtimeProtocol == nil) {
-                  std::string baseName;
-                  if (stripProtocolSuffix(bridgedProtocol->name.c_str(), &baseName)) {
-                    runtimeProtocol = objc_getProtocol(baseName.c_str());
-                  }
-                }
-                if (runtimeProtocol != nil) {
-                  *out = (id)runtimeProtocol;
-                  return true;
-                }
-              }
-            }
-          }
-        }
-
-        *out = (id)wrapped;
+      void* nativeHandle = nullptr;
+      if (unwrapKnownNativeHandle(env, value, &nativeHandle)) {
+        *out = (id)nativeHandle;
         cacheRoundTrip(*out);
         return true;
       }
@@ -4195,6 +4177,14 @@ bool TryFastConvertNapiArgument(napi_env env, MDTypeKind kind, napi_value value,
   }
 }
 
+bool ConsumeNapiArgumentConversionFailure(napi_env env) {
+  if (failedObjectConversionEnv != env) {
+    return false;
+  }
+  failedObjectConversionEnv = nullptr;
+  return true;
+}
+
 bool TryFastConvertNapiUInt16Argument(napi_env env, napi_value value, uint16_t* result) {
   if (result == nullptr || value == nullptr) {
     return false;
@@ -4240,13 +4230,26 @@ bool TryFastConvertNapiUInt16Argument(napi_env env, napi_value value, uint16_t* 
 }
 
 // Cleanup function to clear thread-local caches
-void clearStructTypeCaches() {
-  processingStructs.clear();
-  processingEncodingStructs.clear();
-  forwardDeclaredStructs.clear();
-  forwardDeclaredEncodingStructs.clear();
-  structTypeCache.clear();
-  encodingStructCache.clear();
+void clearStructTypeCaches(napi_env env) {
+  auto cacheIt = structTypeCachesByEnv.find(env);
+  if (cacheIt == structTypeCachesByEnv.end()) {
+    return;
+  }
+
+  auto& caches = cacheIt->second;
+  caches.structTypes.clear();
+  caches.encodingStructTypes.clear();
+
+  for (const auto& entry : caches.forwardDeclaredStructs) {
+    std::free(entry.second->elements);
+    delete entry.second;
+  }
+  for (const auto& entry : caches.forwardDeclaredEncodingStructs) {
+    std::free(entry.second->elements);
+    delete entry.second;
+  }
+
+  structTypeCachesByEnv.erase(cacheIt);
 }
 
 }  // namespace nativescript

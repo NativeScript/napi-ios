@@ -116,8 +116,6 @@ napi_value jsSymbolFor(napi_env env, const char* string) {
   return symbol;
 }
 
-char name_buf[512];
-
 std::string getEncodedType(napi_env env, napi_value value) {
   napi_valuetype type;
   napi_typeof(env, value, &type);

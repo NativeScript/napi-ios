@@ -3,6 +3,43 @@
 const { runPlainMemoryTest } = require("./_plain_harness");
 
 runPlainMemoryTest("objc-ownership-rules", async (t) => {
+  const initialized = NSObject.alloc().init();
+  t.assert(initialized !== null, "alloc/init returned null");
+  t.assert(
+    typeof initialized.description === "string",
+    "alloc/init produced an invalid native wrapper",
+  );
+
+  const StringHolder = NSObject.extend({
+    x() {
+      return this._x;
+    },
+    "setX:"(value) {
+      this._x = value;
+    },
+  }, {
+    exposedMethods: {
+      x: { returns: NSString },
+      "setX:": { returns: interop.types.void, params: [NSString] },
+    },
+  });
+  const holder = StringHolder.alloc().init();
+  const embeddedNull = `null coming up: ${String.fromCharCode(0)} and extra`;
+  holder.setValueForKey(embeddedNull, "x");
+  t.assert(
+    holder.valueForKey("x") === embeddedNull,
+    "embedded-null NSString callback lost its value",
+  );
+
+  const identityArray = NSMutableArray.alloc().init();
+  const identityObject = new NSObject();
+  const identityHandle = interop.handleof(identityObject);
+  identityArray.addObject(identityHandle);
+  t.assert(
+    identityArray.firstObject === new NSObject(identityHandle),
+    "native object round-trip lost wrapper identity",
+  );
+
   const rounds = 1000;
   let addRetainFailures = 0;
   let releaseFailures = 0;

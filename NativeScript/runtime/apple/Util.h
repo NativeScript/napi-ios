@@ -1,6 +1,7 @@
 
 #include <CoreFoundation/CFRunLoop.h>
 #include <memory>
+#include <mutex>
 #include "runtime/apple/NativeScriptException.h"
 #include "jsr_common.h"
 #include "native_api_util.h"
@@ -8,14 +9,37 @@
 
 namespace nativescript {
 
-static robin_hood::unordered_map<napi_env, napi_ref> envToPersistentSmartJSONStringify =
+inline std::mutex smartJSONStringifyMutex;
+inline robin_hood::unordered_map<napi_env, napi_ref> envToPersistentSmartJSONStringify =
     robin_hood::unordered_map<napi_env, napi_ref>();
 
+inline void CleanupSmartJSONStringify(void* data) {
+  napi_env env = static_cast<napi_env>(data);
+  napi_ref ref = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(smartJSONStringifyMutex);
+    auto it = envToPersistentSmartJSONStringify.find(env);
+    if (it == envToPersistentSmartJSONStringify.end()) {
+      return;
+    }
+    ref = it->second;
+    envToPersistentSmartJSONStringify.erase(it);
+  }
+  napi_delete_reference(env, ref);
+}
+
 inline napi_value GetSmartJSONStringifyFunction(napi_env env) {
-  auto it = envToPersistentSmartJSONStringify.find(env);
-  if (it != envToPersistentSmartJSONStringify.end()) {
+  napi_ref cachedRef = nullptr;
+  {
+    std::lock_guard<std::mutex> lock(smartJSONStringifyMutex);
+    auto it = envToPersistentSmartJSONStringify.find(env);
+    if (it != envToPersistentSmartJSONStringify.end()) {
+      cachedRef = it->second;
+    }
+  }
+  if (cachedRef != nullptr) {
     napi_value smartStringifyFunction;
-    napi_get_reference_value(env, it->second, &smartStringifyFunction);
+    napi_get_reference_value(env, cachedRef, &smartStringifyFunction);
     return smartStringifyFunction;
   }
 
@@ -65,7 +89,25 @@ inline napi_value GetSmartJSONStringifyFunction(napi_env env) {
   napi_ref smartStringifyPersistentFunction;
   napi_create_reference(env, result, 1, &smartStringifyPersistentFunction);
 
-  envToPersistentSmartJSONStringify.emplace(env, smartStringifyPersistentFunction);
+  napi_ref retainedRef = smartStringifyPersistentFunction;
+  bool inserted = false;
+  {
+    std::lock_guard<std::mutex> lock(smartJSONStringifyMutex);
+    auto entry = envToPersistentSmartJSONStringify.emplace(
+        env, smartStringifyPersistentFunction);
+    inserted = entry.second;
+    retainedRef = entry.first->second;
+  }
+  if (!inserted) {
+    napi_delete_reference(env, smartStringifyPersistentFunction);
+    napi_value cachedResult;
+    napi_get_reference_value(env, retainedRef, &cachedResult);
+    return cachedResult;
+  }
+  if (js_add_env_cleanup_hook(env, CleanupSmartJSONStringify, env) != napi_ok) {
+    CleanupSmartJSONStringify(env);
+    return nullptr;
+  }
 
   return result;
 }

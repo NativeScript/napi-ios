@@ -7,6 +7,7 @@
 
 using namespace facebook::jsi;
 std::unordered_map<napi_env, JSR*> JSR::env_to_jsr_cache;
+std::mutex JSR::env_cache_mutex;
 
 namespace {
 thread_local std::unordered_map<JSR*, int> g_runtime_lock_depth;
@@ -53,11 +54,27 @@ int JSR::currentLockDepth() const {
 }
 
 int js_current_env_lock_depth(napi_env env) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end() || itFound->second == nullptr) {
+  JSR* runtime = JSR::ForEnv(env);
+  if (runtime == nullptr) {
     return 0;
   }
-  return itFound->second->currentLockDepth();
+  return runtime->currentLockDepth();
+}
+
+JSR* JSR::ForEnv(napi_env env) {
+  std::lock_guard<std::mutex> lock(env_cache_mutex);
+  auto it = env_to_jsr_cache.find(env);
+  return it == env_to_jsr_cache.end() ? nullptr : it->second;
+}
+
+void JSR::RegisterEnv(napi_env env, JSR* runtime) {
+  std::lock_guard<std::mutex> lock(env_cache_mutex);
+  env_to_jsr_cache[env] = runtime;
+}
+
+void JSR::UnregisterEnv(napi_env env) {
+  std::lock_guard<std::mutex> lock(env_cache_mutex);
+  env_to_jsr_cache.erase(env);
 }
 
 JSR::JSR() {
@@ -78,21 +95,21 @@ napi_status js_create_runtime(napi_runtime* runtime) {
 }
 
 napi_status js_lock_env(napi_env env) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end()) {
+  JSR* runtime = JSR::ForEnv(env);
+  if (runtime == nullptr) {
     return napi_invalid_arg;
   }
-  itFound->second->lock();
+  runtime->lock();
 
   return napi_ok;
 }
 
 napi_status js_unlock_env(napi_env env) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end()) {
+  JSR* runtime = JSR::ForEnv(env);
+  if (runtime == nullptr) {
     return napi_invalid_arg;
   }
-  itFound->second->unlock();
+  runtime->unlock();
 
   return napi_ok;
 }
@@ -102,16 +119,30 @@ napi_status js_create_napi_env(napi_env* env, napi_runtime runtime) {
   RuntimeLockGuard lock(runtime->hermes);
   *env = (napi_env)runtime->hermes->rt->createNodeApiEnv(9);
   if (*env == nullptr) return napi_generic_failure;
-  JSR::env_to_jsr_cache.insert(std::make_pair(*env, runtime->hermes));
+  JSR::RegisterEnv(*env, runtime->hermes);
+
+  napi_value global = nullptr;
+  napi_value gc = nullptr;
+  napi_get_global(*env, &global);
+  napi_create_function(
+      *env, "gc", NAPI_AUTO_LENGTH,
+      [](napi_env callbackEnv, napi_callback_info) -> napi_value {
+        JSR* jsr = JSR::ForEnv(callbackEnv);
+        if (jsr != nullptr && jsr->rt != nullptr) {
+          jsr->rt->instrumentation().collectGarbage("explicit gc()");
+        }
+        napi_value undefined = nullptr;
+        napi_get_undefined(callbackEnv, &undefined);
+        return undefined;
+      },
+      nullptr, &gc);
+  napi_set_named_property(*env, global, "gc", gc);
   return napi_ok;
 }
 
 facebook::jsi::Runtime* js_get_jsi_runtime(napi_env env) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end()) {
-    return nullptr;
-  }
-  return itFound->second->rt;
+  JSR* runtime = JSR::ForEnv(env);
+  return runtime == nullptr ? nullptr : runtime->rt;
 }
 
 napi_status js_set_runtime_flags(const char* flags) { return napi_ok; }
@@ -120,7 +151,7 @@ napi_status js_free_napi_env(napi_env env) {
 #ifndef NS_HERMES_SKIP_ENV_CLEANUP_HOOKS
   js_run_env_cleanup_hooks(env);
 #endif
-  JSR::env_to_jsr_cache.erase(env);
+  JSR::UnregisterEnv(env);
   return napi_ok;
 }
 
@@ -186,12 +217,12 @@ extern "C" napi_status jsr_run_script(napi_env env, napi_value source,
 extern "C" napi_status jsr_drain_microtasks(napi_env env,
                                             int32_t max_count_hint,
                                             bool* result) {
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end() || result == nullptr) {
+  JSR* runtime = JSR::ForEnv(env);
+  if (runtime == nullptr || result == nullptr) {
     return napi_invalid_arg;
   }
 
   NapiScope scope(env, false);
-  *result = itFound->second->rt->drainMicrotasks(max_count_hint);
+  *result = runtime->rt->drainMicrotasks(max_count_hint);
   return napi_ok;
 }

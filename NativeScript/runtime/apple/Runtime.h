@@ -60,9 +60,9 @@ class Runtime {
   double startTime_;
   double realtimeOrigin_;
 
-  napi_runtime runtime_;
+  napi_runtime runtime_ = nullptr;
   napi_env env_ = nullptr;
-  napi_handle_scope globalScope_;
+  napi_handle_scope globalScope_ = nullptr;
   RuntimeModules modules_ = RuntimeModules();
 
   static thread_local Runtime* currentRuntime_;

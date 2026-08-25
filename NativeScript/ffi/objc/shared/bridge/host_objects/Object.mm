@@ -553,6 +553,50 @@ class NativeApiObjectHostObject final
     return makeString(runtime, text);
   }
 
+  void finishInitializer(Runtime& runtime, id receiver, Value& result,
+                         const std::optional<Object>& classWrapper) {
+    id resultObject = nativeObjectFromValue(runtime, result);
+    std::shared_ptr<NativeApiObjectHostObject> resultHost;
+    if (result.isObject()) {
+      Object resultValue = result.asObject(runtime);
+      if (resultValue.isHostObject<NativeApiObjectHostObject>(runtime)) {
+        resultHost = resultValue.getHostObject<NativeApiObjectHostObject>(runtime);
+      }
+    }
+
+    const bool returnedThisWrapper = resultHost.get() == this;
+    disownObject(receiver, resultObject == receiver);
+    if (resultObject == nil) {
+      return;
+    }
+
+    if (returnedThisWrapper) {
+      // disownObject transfers the receiver's existing ownership. Restoring it
+      // here must not add another retain.
+      object_ = resultObject;
+      ownsObject_ = true;
+      wrapperRetainedObject_ = false;
+      if (bridge_ != nullptr) {
+        bridge_->retainObjectExpandoOwner(object_);
+      }
+      if (lifetimeState_ != nullptr) {
+        lifetimeState_->setObject(object_);
+      }
+    }
+
+    if (classWrapper) {
+      bridge_->setObjectExpando(runtime, resultObject,
+                                "__nativeApiClassWrapper",
+                                Value(runtime, *classWrapper));
+      Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
+      if (prototypeValue.isObject()) {
+        Object resultValue = result.asObject(runtime);
+        Object prototype = prototypeValue.asObject(runtime);
+        SetNativeApiObjectPrototype(runtime, resultValue, prototype);
+      }
+    }
+  }
+
   Value callObjectSelector(Runtime& runtime, const std::string& selectorName,
                            const NativeApiMember* member, const Value* args,
                            size_t count, Class dispatchSuperClass = Nil) {
@@ -577,35 +621,7 @@ class NativeApiObjectHostObject final
         callObjCSelector(runtime, bridge_, receiver, false, selectorName, member,
                          args, count, dispatchSuperClass);
     if (initializer) {
-      id resultObject = nativeObjectFromValue(runtime, result);
-      disownObject(receiver, resultObject == receiver);
-      if (resultObject != nil) {
-        // Re-adopt the init result on this host object so that JS overrides
-        // returning `this` still have a valid native object.
-        object_ = resultObject;
-        ownsObject_ = true;
-        wrapperRetainedObject_ = true;
-        if (bridge_ != nullptr) {
-          bridge_->retainObjectExpandoOwner(object_);
-        }
-        if (lifetimeState_ != nullptr) {
-          lifetimeState_->setObject(object_);
-        }
-        [object_ retain];
-        if (classWrapper) {
-          bridge_->setObjectExpando(runtime, resultObject,
-                                    "__nativeApiClassWrapper",
-                                    Value(runtime, *classWrapper));
-          if (result.isObject()) {
-            Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
-            if (prototypeValue.isObject()) {
-              Object resultValue = result.asObject(runtime);
-              Object prototype = prototypeValue.asObject(runtime);
-              SetNativeApiObjectPrototype(runtime, resultValue, prototype);
-            }
-          }
-        }
-      }
+      finishInitializer(runtime, receiver, result, classWrapper);
     }
     return result;
   }
@@ -634,35 +650,7 @@ class NativeApiObjectHostObject final
         runtime, bridge_, receiver, false, prepared, args, count,
         dispatchSuperClass);
     if (initializer) {
-      id resultObject = nativeObjectFromValue(runtime, result);
-      disownObject(receiver, resultObject == receiver);
-      if (resultObject != nil) {
-        // Re-adopt the init result on this host object so that JS overrides
-        // returning `this` still have a valid native object.
-        object_ = resultObject;
-        ownsObject_ = true;
-        wrapperRetainedObject_ = true;
-        if (bridge_ != nullptr) {
-          bridge_->retainObjectExpandoOwner(object_);
-        }
-        if (lifetimeState_ != nullptr) {
-          lifetimeState_->setObject(object_);
-        }
-        [object_ retain];
-        if (classWrapper) {
-          bridge_->setObjectExpando(runtime, resultObject,
-                                    "__nativeApiClassWrapper",
-                                    Value(runtime, *classWrapper));
-          if (result.isObject()) {
-            Value prototypeValue = classWrapper->getProperty(runtime, "prototype");
-            if (prototypeValue.isObject()) {
-              Object resultValue = result.asObject(runtime);
-              Object prototype = prototypeValue.asObject(runtime);
-              SetNativeApiObjectPrototype(runtime, resultValue, prototype);
-            }
-          }
-        }
-      }
+      finishInitializer(runtime, receiver, result, classWrapper);
     }
     return result;
   }

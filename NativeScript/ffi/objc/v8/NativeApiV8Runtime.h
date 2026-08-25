@@ -31,6 +31,7 @@
 #include <utility>
 #include <vector>
 
+#include "../shared/RuntimeCleanupRegistry.h"
 #include "Metadata.h"
 #include "MetadataReader.h"
 #include "ffi.h"
@@ -108,9 +109,8 @@ using HostFunctionType = std::function<Value(Runtime&, const Value&, const Value
 namespace v8engine {
 
 struct RuntimeState {
-  explicit RuntimeState(v8::Isolate* isolate, v8::Local<v8::Context> context) : isolate(isolate) {
-    this->context.Reset(isolate, context);
-  }
+  RuntimeState(v8::Isolate* isolate, v8::Local<v8::Context> context)
+      : isolate(isolate), context(isolate, context) {}
 
   ~RuntimeState() {
     nativeClassArgumentLast.value.Reset();
@@ -129,15 +129,13 @@ struct RuntimeState {
   }
 
   v8::Local<v8::Context> localContext() const {
-    v8::Local<v8::Context> ctx = context.Get(isolate);
-    return ctx.IsEmpty() ? isolate->GetCurrentContext() : ctx;
+    return context.Get(isolate);
   }
 
   v8::Isolate* isolate = nullptr;
   v8::Global<v8::Context> context;
   v8::Global<v8::ObjectTemplate> hostObjectTemplate;
   v8::Global<v8::ObjectTemplate> nativeObjectTemplate;  // kNonMasking for instances
-  std::vector<std::shared_ptr<void>> retainedNativeData;
   struct NativeClassArgumentCacheEntry {
     v8::Global<v8::Value> value;
     Class nativeClass = Nil;
@@ -204,6 +202,36 @@ struct FunctionHolder {
   HostFunctionType callback;
   v8::Global<v8::Function> function;
 };
+
+inline thread_local std::unordered_map<v8::Isolate*, RuntimeCleanupRegistry>
+    runtimeAllocations;
+
+template <typename T>
+void trackRuntimeAllocation(v8::Isolate* isolate, T* allocation) {
+  runtimeAllocations[isolate].track(allocation);
+}
+
+inline void untrackRuntimeAllocation(v8::Isolate* isolate,
+                                     void* allocation) {
+  auto runtime = runtimeAllocations.find(isolate);
+  if (runtime == runtimeAllocations.end()) {
+    return;
+  }
+  runtime->second.untrack(allocation);
+  if (runtime->second.empty()) {
+    runtimeAllocations.erase(runtime);
+  }
+}
+
+inline void cleanupRuntimeAllocations(v8::Isolate* isolate) {
+  auto runtime = runtimeAllocations.find(isolate);
+  if (runtime == runtimeAllocations.end()) {
+    return;
+  }
+
+  runtime->second.cleanup();
+  runtimeAllocations.erase(runtime);
+}
 
 struct ArrayBufferHolder {
   explicit ArrayBufferHolder(std::shared_ptr<MutableBuffer> buffer) : buffer(std::move(buffer)) {}

@@ -86,9 +86,8 @@ id objectFromEngineValueImpl(
     if (object.isHostObject<NativeApiReferenceHostObject>(runtime)) {
       return static_cast<id>(object.getHostObject<NativeApiReferenceHostObject>(runtime)->data());
     }
-    if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-      return static_cast<id>(
-          object.getHostObject<NativeApiStructObjectHostObject>(runtime)->data());
+    if (auto structObject = getNativeStructHostObject(runtime, object)) {
+      return static_cast<id>(structObject->data());
     }
 
     Value getTimeValue = object.getProperty(runtime, "getTime");
@@ -412,8 +411,8 @@ void* pointerFromEngineValue(Runtime& runtime, const std::shared_ptr<NativeApiBr
       }
       return reference->data();
     }
-    if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-      return object.getHostObject<NativeApiStructObjectHostObject>(runtime)->data();
+    if (auto structObject = getNativeStructHostObject(runtime, object)) {
+      return structObject->data();
     }
     void* nativePointer = nullptr;
     if (readNativePointerProperty(runtime, object, &nativePointer)) {
@@ -453,8 +452,8 @@ bool readPointerLikeValue(Runtime& runtime, const Value& value, void** pointer) 
     *pointer = object.getHostObject<NativeApiReferenceHostObject>(runtime)->data();
     return true;
   }
-  if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-    *pointer = object.getHostObject<NativeApiStructObjectHostObject>(runtime)->data();
+  if (auto structObject = getNativeStructHostObject(runtime, object)) {
+    *pointer = structObject->data();
     return true;
   }
   if (object.isHostObject<NativeApiObjectHostObject>(runtime)) {
@@ -580,8 +579,7 @@ void convertAggregateArgument(Runtime& runtime, const std::shared_ptr<NativeApiB
 
   if (value.isObject()) {
     Object object = value.asObject(runtime);
-    if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-      auto structObject = object.getHostObject<NativeApiStructObjectHostObject>(runtime);
+    if (auto structObject = getNativeStructHostObject(runtime, object)) {
       if (structObject->data() != nullptr) {
         std::memcpy(target, structObject->data(),
                     std::min(size, static_cast<size_t>(structObject->info()->size)));
@@ -863,8 +861,8 @@ void convertEngineArgument(Runtime& runtime, const std::shared_ptr<NativeApiBrid
           *static_cast<void**>(target) = pointer;
           break;
         }
-        if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-          void* pointer = object.getHostObject<NativeApiStructObjectHostObject>(runtime)->data();
+        if (auto structObject = getNativeStructHostObject(runtime, object)) {
+          void* pointer = structObject->data();
           frame.rememberRoundTripValue(bridge, runtime, pointer, value);
           *static_cast<void**>(target) = pointer;
           break;
@@ -1158,7 +1156,7 @@ Value convertNativeReturnValue(Runtime& runtime, const std::shared_ptr<NativeApi
         return ArrayBuffer(
             runtime, std::make_shared<NativeApiMutableBuffer>(value, nativeSizeForType(type)));
       }
-      return Object::createFromHostObject(
+      return createNativeStructHostObject(
           runtime, std::make_shared<NativeApiStructObjectHostObject>(bridge, type.aggregateInfo,
                                                                      value, true));
     case metagen::mdTypeArray:
@@ -1314,7 +1312,7 @@ Value NativeApiStructObjectHostObject::get(Runtime& runtime, const PropNameID& n
       }
       void* fieldData = static_cast<uint8_t*>(data_) + field.offset;
       if (field.type.kind == metagen::mdTypeStruct && field.type.aggregateInfo != nullptr) {
-        return Object::createFromHostObject(
+        return createNativeStructHostObject(
             runtime,
             std::make_shared<NativeApiStructObjectHostObject>(
                 bridge_, field.type.aggregateInfo, fieldData, false, ownedData_, backingValue_));
@@ -1434,8 +1432,7 @@ std::optional<NativeApiType> interopTypeFromValue(Runtime& runtime,
     return nativeObjectReturnTypeForClass(descriptorClass);
   }
 
-  if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-    auto structObject = object.getHostObject<NativeApiStructObjectHostObject>(runtime);
+  if (auto structObject = getNativeStructHostObject(runtime, object)) {
     NativeApiType type;
     type.kind = metagen::mdTypeStruct;
     type.aggregateInfo = structObject->info();
@@ -1520,10 +1517,10 @@ Value makeAggregateConstructor(Runtime& runtime, const std::shared_ptr<NativeApi
         if (count > 0 && args[0].isObject()) {
           void* pointer = nullptr;
           if (readPointerLikeValue(runtime, args[0], &pointer) && pointer != nullptr) {
-            return Object::createFromHostObject(runtime,
-                                                std::make_shared<NativeApiStructObjectHostObject>(
-                                                    bridge, info, pointer, false, nullptr,
-                                                    std::make_shared<Value>(runtime, args[0])));
+            return createNativeStructHostObject(
+                runtime, std::make_shared<NativeApiStructObjectHostObject>(
+                             bridge, info, pointer, false, nullptr,
+                             std::make_shared<Value>(runtime, args[0])));
           }
         }
 
@@ -1532,7 +1529,7 @@ Value makeAggregateConstructor(Runtime& runtime, const std::shared_ptr<NativeApi
           NativeApiArgumentFrame frame(1);
           convertAggregateArgument(runtime, bridge, type, args[0], storage.data(), frame);
         }
-        return Object::createFromHostObject(
+        return createNativeStructHostObject(
             runtime,
             std::make_shared<NativeApiStructObjectHostObject>(bridge, info, storage.data(), true));
       });
@@ -1931,6 +1928,9 @@ Object createInteropObject(Runtime& runtime, const std::shared_ptr<NativeApiBrid
             valueToStore = Value(runtime, args[1]);
             if (args[1].isObject()) {
               Object object = args[1].asObject(runtime);
+              auto structObject = type.kind == metagen::mdTypeStruct
+                                      ? getNativeStructHostObject(runtime, object)
+                                      : nullptr;
               if (object.isHostObject<NativeApiPointerHostObject>(runtime)) {
                 data = object.getHostObject<NativeApiPointerHostObject>(runtime)->pointer();
                 usesExternalStorage = true;
@@ -1942,9 +1942,8 @@ Object createInteropObject(Runtime& runtime, const std::shared_ptr<NativeApiBrid
                 } else {
                   valueToStore = object.getProperty(runtime, "value");
                 }
-              } else if (type.kind == metagen::mdTypeStruct &&
-                         object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-                data = object.getHostObject<NativeApiStructObjectHostObject>(runtime)->data();
+              } else if (structObject != nullptr) {
+                data = structObject->data();
                 usesExternalStorage = true;
               } else if (type.kind == metagen::mdTypePointer ||
                          type.kind == metagen::mdTypeOpaquePointer ||
@@ -2086,8 +2085,7 @@ Object createInteropObject(Runtime& runtime, const std::shared_ptr<NativeApiBrid
               }
               return createPointer(runtime, bridge, data, false, std::move(backingValue));
             }
-            if (object.isHostObject<NativeApiStructObjectHostObject>(runtime)) {
-              auto structObject = object.getHostObject<NativeApiStructObjectHostObject>(runtime);
+            if (auto structObject = getNativeStructHostObject(runtime, object)) {
               if (structObject->backingValue() != nullptr) {
                 return Value(runtime, *structObject->backingValue());
               }

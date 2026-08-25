@@ -1714,7 +1714,20 @@ NativeApiType parseObjCEncodedAggregateEngineType(
 
     NSUInteger fieldSize = 0;
     NSUInteger fieldAlignment = 0;
-    NSGetSizeAndAlignment(fieldStart, &fieldSize, &fieldAlignment);
+    @try {
+      NSGetSizeAndAlignment(fieldStart, &fieldSize, &fieldAlignment);
+    } @catch (NSException*) {
+      // Some valid method encodings contain standalone bitfields, which
+      // Foundation refuses to size. Mark the runtime-derived aggregate as
+      // unsupported so metadata remains authoritative instead of leaking an
+      // Objective-C exception through the engine host-object boundary.
+      type.supported = false;
+      type.ffiType = nullptr;
+      if (endEncoding != nullptr) {
+        *endEncoding = fieldEnd;
+      }
+      return type;
+    }
     size_t nativeFieldSize =
         fieldSize > 0 ? static_cast<size_t>(fieldSize)
                       : nativeSizeForType(field.type);

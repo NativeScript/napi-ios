@@ -9,6 +9,7 @@
 #include "jsi/threadsafe.h"
 #include "jsr_common.h"
 
+#include <mutex>
 #include <unordered_map>
 
 class JSR {
@@ -21,6 +22,12 @@ class JSR {
   void unlock();
   int currentLockDepth() const;
 
+  static JSR* ForEnv(napi_env env);
+  static void RegisterEnv(napi_env env, JSR* runtime);
+  static void UnregisterEnv(napi_env env);
+
+ private:
+  static std::mutex env_cache_mutex;
   static std::unordered_map<napi_env, JSR*> env_to_jsr_cache;
 };
 

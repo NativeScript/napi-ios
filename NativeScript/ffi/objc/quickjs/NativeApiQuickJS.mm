@@ -64,6 +64,12 @@ void InstallNativeApi(JSContext* context, const NativeApiConfig& config) {
   InstallNativeApi(runtime, config);
 }
 
+void CleanupNativeApi(JSContext* context) {
+  if (context != nullptr) {
+    engine::quickjsengine::releaseStateForContext(context);
+  }
+}
+
 }  // namespace nativescript
 
 extern "C" void NativeScriptInstallNativeApi(JSContext* context, const char* metadataPath) {

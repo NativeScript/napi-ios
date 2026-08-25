@@ -90,6 +90,9 @@ class ObjCBridgeState {
   ~ObjCBridgeState();
 
   static inline ObjCBridgeState* InstanceData(napi_env env) {
+    if (env == nullptr) {
+      return nullptr;
+    }
     ObjCBridgeState* bridgeState;
     napi_status status = napi_get_instance_data(env, (void**)&bridgeState);
     if (status != napi_ok) {
@@ -97,6 +100,9 @@ class ObjCBridgeState {
     }
     return bridgeState;
   }
+
+  bool enqueueFinalizer(napi_finalize callback, void* data, void* hint);
+  void drainFinalizers(bool stop = false);
 
   static inline uintptr_t NormalizeHandleKey(void* handle) {
     if (handle == nullptr) {
@@ -170,6 +176,11 @@ class ObjCBridgeState {
 
   napi_value proxyNativeObject(napi_env env, napi_value object,
                                id nativeObject);
+#if defined(TARGET_ENGINE_HERMES)
+  bool registerObjectFinalizer(napi_env env, napi_value object,
+                               JSObjectFinalizerContext* context);
+  bool takeObjectFinalizer(JSObjectFinalizerContext* context);
+#endif
 
   napi_value getObject(napi_env env, id object, napi_value constructor,
                        ObjectOwnership ownership = kUnownedObject);
@@ -927,7 +938,21 @@ class ObjCBridgeState {
   uint64_t lifetimeToken = 0;
   std::thread::id jsThreadId = std::this_thread::get_id();
   CFRunLoopRef jsRunLoop = CFRunLoopGetCurrent();
+  struct PendingFinalizer {
+    napi_finalize callback;
+    void* data;
+    void* hint;
+  };
+  std::mutex pendingFinalizersMutex;
+  std::vector<PendingFinalizer> pendingFinalizers;
+  bool finalizerDrainScheduled = false;
+  bool acceptingFinalizers = true;
   std::unordered_map<id, napi_ref> objectRefs;
+  struct PointerCacheEntry {
+    void* owner = nullptr;
+    napi_ref ref = nullptr;
+  };
+  std::unordered_map<uintptr_t, PointerCacheEntry> pointerCache;
   std::unordered_map<uintptr_t, HandleObjectRef> handleObjectRefs;
   std::vector<RecentObjectWrapperRef> recentObjectWrappers;
   size_t nextRecentObjectWrapperSlot = 0;
@@ -938,6 +963,10 @@ class ObjCBridgeState {
   napi_ref createNativeProxy = nullptr;
   napi_ref createFastEnumeratorIterator = nullptr;
   napi_ref transferOwnershipToNative = nullptr;
+#if defined(TARGET_ENGINE_HERMES)
+  napi_ref objectFinalizationRegistry = nullptr;
+  std::unordered_set<JSObjectFinalizerContext*> objectFinalizers;
+#endif
 
   std::unordered_map<MDSectionOffset, ObjCClass*> classes;
   std::unordered_map<MDSectionOffset, ObjCProtocol*> protocols;
@@ -946,6 +975,7 @@ class ObjCBridgeState {
   std::unordered_map<Protocol*, MDSectionOffset> mdProtocolsByPointer;
   std::unordered_map<void*, id> nativeObjectsByBridgeWrapper;
   std::unordered_map<Class, napi_ref> constructorsByPointer;
+  StructInfo* syntheticCGPointInfo = nullptr;
 
   std::unordered_map<std::string, Cif*> cifs;
   std::unordered_map<MDSectionOffset, napi_ref> mdValueCache;

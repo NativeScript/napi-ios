@@ -29,6 +29,11 @@ class NativeScriptException {
          */
         NativeScriptException(napi_env env, napi_value error, const std::string& message = "");
 
+        NativeScriptException(const NativeScriptException&) = delete;
+        NativeScriptException& operator=(const NativeScriptException&) = delete;
+        NativeScriptException(NativeScriptException&& other) noexcept;
+        ~NativeScriptException();
+
         void ReThrowToNapi(napi_env env);
         void ReThrowToJava(napi_env env);
 
@@ -86,6 +91,7 @@ class NativeScriptException {
         std::string GetFullMessage(napi_env env, napi_value error, const std::string& jsExceptionMessage);
 
         napi_ref m_javascriptException;
+        napi_env m_napiEnv;
         JniLocalRef m_javaException;
         std::string m_message;
         std::string m_stackTrace;

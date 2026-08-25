@@ -10,6 +10,7 @@ const {
 
 const semanticsTests = [
   "test_weakref_finalization.js",
+  "test_js_function_finalization.js",
   "test_weakref_plain_script.js",
   "test_objc_ownership_rules.js",
   "test_objc_unmanaged_transfer_semantics.js",
@@ -19,8 +20,10 @@ const semanticsTests = [
   "test_block_completion_safety.js",
   "test_block_callback_finalization.js",
   "test_c_function_pointer_semantics.js",
+  "test_nested_ffi_layout_lifecycle.js",
   "test_circular_native_wrapper_finalization.js",
   "test_circular_js_to_native_conversion.js",
+  "test_selector_group_finalization.js",
 ];
 
 function resolveSemanticsTests(memoryDir, grep) {

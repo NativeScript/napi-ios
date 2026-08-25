@@ -50,7 +50,6 @@ void Timers::Init(napi_env env, napi_value global) {
     napi_util::napi_set_function(env, global, "__ns__clearTimeout", ClearTimer, this);
     napi_util::napi_set_function(env, global, "__ns__clearInterval", ClearTimer, this);
 
-    napi_value object;
     napi_add_finalizer(env, global, this, [](napi_env env, void *finalizeData, void *finalizeHint) {
         auto thiz = reinterpret_cast<Timers *>(finalizeData);
         delete thiz;
@@ -121,7 +120,7 @@ void Timers::removeTask(const int &taskId) {
     auto it = timerMap_.find(taskId);
     if (it != timerMap_.end()) {
         auto wasScheduled = it->second->queued_;
-        it->second->Unschedule();
+        it->second->Dispose();
         timerMap_.erase(it);
         {
             std::lock_guard<std::mutex> lock(mutex);
@@ -132,6 +131,10 @@ void Timers::removeTask(const int &taskId) {
                 // was not scheduled, remove it to reduce memory footprint
                 this->deletedTimers_.erase(taskId);
             }
+        }
+        if (wasScheduled) {
+            bufferFull.notify_one();
+            taskReady.notify_one();
         }
     }
 }
@@ -153,10 +156,15 @@ void Timers::threadLoop() {
                 auto result = write(fd_[1], &timer->id, sizeof(int));
                 if (result == -1 && errno == EAGAIN) {
                     isBufferFull = true;
-                    while (!stopped && deletedTimers_.find(timer->id) != deletedTimers_.end() &&
-                           write(fd_[1], &timer->id, sizeof(int)) == -1 && errno == EAGAIN) {
+                    while (!stopped && deletedTimers_.find(timer->id) == deletedTimers_.end()) {
+                        result = write(fd_[1], &timer->id, sizeof(int));
+                        if (result != -1 || errno != EAGAIN) {
+                            isBufferFull = false;
+                            break;
+                        }
                         bufferFull.wait(lk);
                     }
+                    deletedTimers_.erase(timer->id);
                 } else if (isBufferFull.load() &&
                            (sortedTimers_.empty() || sortedTimers_.at(0)->dueTime > now)) {
                     // we had a successful write and the next timer is not due
@@ -182,11 +190,15 @@ void Timers::Destroy() {
     }
     bufferFull.notify_one();
     taskReady.notify_all();
-    watcher_.join();
-    auto mainLooper = Runtime::GetMainLooper();
-    ALooper_removeFd(mainLooper, fd_[0]);
+    if (watcher_.joinable()) {
+        watcher_.join();
+    }
+    ALooper_removeFd(looper_, fd_[0]);
     close(fd_[0]);
+    close(fd_[1]);
     timerMap_.clear();
+    sortedTimers_.clear();
+    deletedTimers_.clear();
     ALooper_release(looper_);
 }
 
@@ -312,16 +324,13 @@ int Timers::PumpTimerLoopCallback(int fd, int events, void *data) {
         // ensure we remove it
         if (!task->queued_) {
             thiz->removeTask(task);
-            if (argc > 0) {
-                for (size_t i = 0; i < argc; i++) {
-                    napi_delete_reference(env, task->args_->at(i));
-                }
-            }
-            napi_delete_reference(env, task->thisArg);
         }
 
 
         thiz->nesting = 0;
+    } else {
+        std::lock_guard<std::mutex> lock(thiz->mutex);
+        thiz->deletedTimers_.erase(timerId);
     }
     thiz->bufferFull.notify_one();
     return 1;

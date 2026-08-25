@@ -12,6 +12,47 @@ namespace engine {
 
 namespace jscengine {
 
+namespace {
+std::mutex& runtimeStatesMutex() {
+  static auto* mutex = new std::mutex();
+  return *mutex;
+}
+
+std::unordered_map<JSGlobalContextRef, std::shared_ptr<RuntimeState>>&
+runtimeStates() {
+  static auto* states =
+      new std::unordered_map<JSGlobalContextRef, std::shared_ptr<RuntimeState>>();
+  return *states;
+}
+}  // namespace
+
+std::shared_ptr<RuntimeState> stateForContext(JSGlobalContextRef context) {
+  std::lock_guard<std::mutex> lock(runtimeStatesMutex());
+  auto& states = runtimeStates();
+  auto it = states.find(context);
+  if (it != states.end()) {
+    return it->second;
+  }
+  auto state = std::make_shared<RuntimeState>(context);
+  states[context] = state;
+  return state;
+}
+
+void releaseStateForContext(JSGlobalContextRef context) {
+  std::shared_ptr<RuntimeState> state;
+  {
+    std::lock_guard<std::mutex> lock(runtimeStatesMutex());
+    auto& states = runtimeStates();
+    auto it = states.find(context);
+    if (it == states.end()) {
+      return;
+    }
+    state = std::move(it->second);
+    states.erase(it);
+  }
+  state->cleanup();
+}
+
 JSClassRef hostClass(Runtime& runtime);
 JSClassRef functionClass(Runtime& runtime);
 void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function);
@@ -112,7 +153,11 @@ void hostGetPropertyNames(JSContextRef, JSObjectRef object,
 }
 
 void hostFinalize(JSObjectRef object) {
-  delete static_cast<HostObjectHolder*>(JSObjectGetPrivate(object));
+  auto* holder = static_cast<HostObjectHolder*>(JSObjectGetPrivate(object));
+  if (holder != nullptr && holder->state != nullptr) {
+    holder->state->untrack(holder);
+  }
+  delete holder;
 }
 
 JSValueRef functionCall(JSContextRef context, JSObjectRef function, JSObjectRef thisObject,
@@ -139,7 +184,11 @@ JSValueRef functionCall(JSContextRef context, JSObjectRef function, JSObjectRef 
 }
 
 void functionFinalize(JSObjectRef object) {
-  delete static_cast<FunctionHolder*>(JSObjectGetPrivate(object));
+  auto* holder = static_cast<FunctionHolder*>(JSObjectGetPrivate(object));
+  if (holder != nullptr && holder->state != nullptr) {
+    holder->state->untrack(holder);
+  }
+  delete holder;
 }
 
 JSClassRef hostClass(Runtime& runtime) {
@@ -206,6 +255,11 @@ void setFunctionPrototype(JSGlobalContextRef context, JSObjectRef function) {
 Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
                                              const void* typeToken) {
   auto* holder = new jscengine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
+  runtime.state()->track(holder, [](void* pointer) {
+    auto* tracked = static_cast<jscengine::HostObjectHolder*>(pointer);
+    tracked->hostObject.reset();
+    tracked->state.reset();
+  });
   JSObjectRef object = JSObjectMake(runtime.context(), jscengine::hostClass(runtime), holder);
   return Object::fromValueStorage(Value(runtime, object).storage_);
 }
@@ -213,6 +267,11 @@ Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<H
 Function Function::createFromHostFunction(Runtime& runtime, const PropNameID& name, unsigned int,
                                           HostFunctionType callback) {
   auto* holder = new jscengine::FunctionHolder(runtime.state(), std::move(callback));
+  runtime.state()->track(holder, [](void* pointer) {
+    auto* tracked = static_cast<jscengine::FunctionHolder*>(pointer);
+    tracked->callback = {};
+    tracked->state.reset();
+  });
   JSObjectRef function = JSObjectMake(runtime.context(), jscengine::functionClass(runtime), holder);
   jscengine::setFunctionPrototype(runtime.context(), function);
   std::string functionName = name.utf8(runtime);

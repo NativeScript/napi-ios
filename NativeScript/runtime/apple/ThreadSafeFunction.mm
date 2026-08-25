@@ -478,6 +478,11 @@ napi_add_env_cleanup_hook(node_api_basic_env env, napi_cleanup_hook fun,
   return napi_ok;
 }
 
+napi_status js_add_env_cleanup_hook(napi_env env, js_env_cleanup_hook hook,
+                                    void* data) {
+  return napi_add_env_cleanup_hook(env, hook, data);
+}
+
 extern "C" NAPI_EXTERN napi_status NAPI_CDECL
 napi_remove_env_cleanup_hook(node_api_basic_env env, napi_cleanup_hook fun,
                              void* arg) {
@@ -501,6 +506,11 @@ napi_remove_env_cleanup_hook(node_api_basic_env env, napi_cleanup_hook fun,
   }
 
   return napi_invalid_arg;
+}
+
+napi_status js_remove_env_cleanup_hook(napi_env env, js_env_cleanup_hook hook,
+                                       void* data) {
+  return napi_remove_env_cleanup_hook(env, hook, data);
 }
 
 extern "C" NAPI_EXTERN napi_status NAPI_CDECL

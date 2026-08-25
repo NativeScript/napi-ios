@@ -4,6 +4,7 @@
 #include <atomic>
 #include <functional>
 #include <memory>
+#include <thread>
 
 #include "runtime/apple/NativeScriptException.h"
 #include "js_native_api_types.h"
@@ -19,11 +20,10 @@ class WorkerImpl {
   WorkerImpl(napi_env env, std::function<void(napi_env, napi_value jsThis,
                                               std::shared_ptr<worker::Message>)>
                                onMessage);
+  ~WorkerImpl();
 
   void Start(std::shared_ptr<napi_util::PersistentObject> worker,
              std::function<napi_env()> func);
-
-  napi_value GetWorkerObject();
 
   void CallOnErrorHandlers(napi_env env, napi_value error);
   void PassUncaughtExceptionFromWorkerToMain(napi_env env,
@@ -35,38 +35,37 @@ class WorkerImpl {
   void Close();
   void Terminate();
 
-  const int Id();
-  const inline bool isDisposed() { return isDisposed_; }
-  const bool IsRunning();
-  const bool IsClosing();
-  const int WorkerId();
-  const inline napi_env GetMainEnv() { return mainEnv_; }
-  const inline napi_env GetWorkerEnv() { return workerEnv_; }
-  const inline void MakeWeak() { isWeak_ = true; }
-  const inline bool IsWeak() { return isWeak_; }
+  bool IsRunning() const;
+  bool IsClosing() const;
+  int WorkerId() const;
+  inline napi_env GetMainEnv() { return mainEnv_; }
+  inline std::shared_ptr<napi_util::PersistentObject> GetWorkerHandle() {
+    return poWorker_;
+  }
 
   static std::shared_ptr<ConcurrentMap<int, WorkerImpl*>> Workers;
 
  private:
   napi_env mainEnv_;
   napi_env workerEnv_;
-  bool isRunning_;
-  bool isClosing_;
+  std::atomic<bool> isRunning_;
+  std::atomic<bool> isClosing_;
   std::atomic<bool> isTerminating_;
-  bool isDisposed_;
-  bool isWeak_;
+  std::atomic<bool> mainEnvClosing_{false};
+  bool cleanupHookRegistered_ = false;
   std::function<void(napi_env, napi_value jsThis,
                      std::shared_ptr<worker::Message>)>
       onMessage_;
   std::shared_ptr<napi_util::PersistentObject> poWorker_;
   ConcurrentQueue queue_;
+  std::thread workerThread_;
   static std::atomic<int> nextId_;
   int workerId_;
 
   void BackgroundLooper(std::function<napi_env()> func);
   void DrainPendingTasks();
-  napi_value ConstructErrorObject(napi_env env, std::string message,
-                                  std::string stackTrace);
+  static void CleanupMainEnv(void* data);
+  static void FinishOnMainThread(int workerId);
 };
 
 }  // namespace nativescript

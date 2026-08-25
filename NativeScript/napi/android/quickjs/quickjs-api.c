@@ -42,11 +42,11 @@
 
 #ifdef __QJS_NG__
 static void *js_mi_calloc(void *opaque, size_t count, size_t size) {
-    return mi_calloc(count, size);
+    return mi_heap_calloc((mi_heap_t *) opaque, count, size);
 }
 
 static void *js_mi_malloc(void *opaque, size_t size) {
-    return mi_malloc(size);
+    return mi_heap_malloc((mi_heap_t *) opaque, size);
 }
 
 static void js_mi_free(void *opaque, void *ptr) {
@@ -56,7 +56,7 @@ static void js_mi_free(void *opaque, void *ptr) {
 }
 
 static void *js_mi_realloc(void *opaque, void *ptr, size_t size) {
-    return mi_realloc(ptr, size);
+    return mi_heap_realloc((mi_heap_t *) opaque, ptr, size);
 }
 
 static const JSMallocFunctions mi_mf = {
@@ -86,7 +86,7 @@ static void *js_def_malloc(JSMallocState *s, size_t size)
     if (unlikely(s->malloc_size + size > s->malloc_limit))
         return NULL;
 
-    ptr = mi_malloc(size);
+    ptr = mi_heap_malloc((mi_heap_t *) s->opaque, size);
     if (!ptr)
         return NULL;
 
@@ -124,7 +124,7 @@ static void *js_def_realloc(JSMallocState *s, void *ptr, size_t size)
     if (s->malloc_size + size - old_size > s->malloc_limit)
         return NULL;
 
-    ptr = mi_realloc(ptr, size);
+    ptr = mi_heap_realloc((mi_heap_t *) s->opaque, ptr, size);
     if (!ptr)
         return NULL;
 
@@ -272,6 +272,9 @@ typedef struct napi_env__ {
 
 typedef struct napi_runtime__ {
     JSRuntime *runtime;           // size_t
+#ifdef USE_MIMALLOC
+    mi_heap_t *heap;
+#endif
     JSClassID constructorClassId; // uint32_t
     JSClassID functionClassId;    // uint32_t
     JSClassID externalClassId;    // uint32_t
@@ -328,7 +331,10 @@ static void function_finalizer(JSRuntime *rt, JSValue val) {
 static void external_finalizer(JSRuntime *rt, JSValue val) {
     napi_env env = (napi_env) JS_GetRuntimeOpaque(rt);
     ExternalInfo *externalInfo = JS_GetOpaque(val, env->runtime->externalClassId);
-    if (externalInfo->finalizeCallback) {
+    if (externalInfo == NULL) {
+        return;
+    }
+    if (externalInfo->finalizeCallback != NULL) {
         externalInfo->finalizeCallback(env, externalInfo->data, externalInfo->finalizeHint);
     }
     mi_free(externalInfo);
@@ -1040,8 +1046,6 @@ JS_CreateBigIntWords(JSContext *context, int signBit, size_t wordCount, const ui
         if (!(JS_IsException(idxValueHigh)) && !(JS_IsException(idxValueLow))) {
             JS_SetPropertyUint32(context, wordsValue, (i * Two), idxValueHigh);
             JS_SetPropertyUint32(context, wordsValue, (i * Two + 1), idxValueLow);
-            JS_FreeValue(context, idxValueHigh);
-            JS_FreeValue(context, idxValueLow);
         }
     }
 
@@ -2415,7 +2419,7 @@ napi_status napi_is_array(napi_env env, napi_value value, bool *result) {
     int status = JS_IsArray(
 #ifndef __QJS_NG__
             env->context,
-#endif,
+#endif
         jsValue);
     RETURN_STATUS_IF_FALSE(status != -1, napi_pending_exception);
     *result = status;
@@ -3480,7 +3484,6 @@ napi_wrap(napi_env env, napi_value jsObject, void *nativeObject, napi_finalize f
         return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
     }
 
-    JS_SetOpaque(jsValue, externalInfo);
     JS_SetOpaque(external, externalInfo);
 
     JS_SetProperty(env->context, jsValue, env->atoms.napi_external, external);
@@ -3498,6 +3501,7 @@ napi_status napi_unwrap(napi_env env, napi_value jsObject, void **result) {
     CHECK_ARG(env)
     CHECK_ARG(jsObject)
     CHECK_ARG(result)
+    *result = NULL;
 
     JSValue jsValue = *((JSValue *) jsObject);
 
@@ -3505,17 +3509,13 @@ napi_status napi_unwrap(napi_env env, napi_value jsObject, void **result) {
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
 
-    JSClassID classId;
-    void *data = JS_GetAnyOpaque(jsValue, &classId);
-    if (data != NULL) {
-        ExternalInfo *externalInfo = (ExternalInfo *) data;
-        *result = externalInfo->data;
-        return napi_ok;
-    }
-
     JSPropertyDescriptor descriptor;
 
     int isWrapped = JS_GetOwnProperty(env->context, &descriptor, jsValue, env->atoms.napi_external);
+
+    if (isWrapped == -1) {
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
 
     if (!isWrapped) {
         *result = NULL;
@@ -3526,9 +3526,11 @@ napi_status napi_unwrap(napi_env env, napi_value jsObject, void **result) {
 
     ExternalInfo *externalInfo = (ExternalInfo *) JS_GetOpaque(external,
                                                                env->runtime->externalClassId);
-    if (externalInfo) {
-        *result = externalInfo->data;
+    if (externalInfo == NULL) {
+        JS_FreeValue(env->context, descriptor.value);
+        return napi_set_last_error(env, napi_generic_failure, NULL, 0, NULL);
     }
+    *result = externalInfo->data;
 
     JS_FreeValue(env->context, descriptor.value);
 
@@ -3539,6 +3541,7 @@ napi_status napi_remove_wrap(napi_env env, napi_value jsObject, void **result) {
     CHECK_ARG(env)
     CHECK_ARG(jsObject)
     CHECK_ARG(result)
+    *result = NULL;
 
     JSValue jsValue = *((JSValue *) jsObject);
 
@@ -3573,7 +3576,6 @@ napi_status napi_remove_wrap(napi_env env, napi_value jsObject, void **result) {
 
         int status = JS_DeleteProperty(env->context, jsValue, env->atoms.napi_external, 0);
         if (status == -1) {
-            JS_FreeValue(env->context, external);
             JS_FreeValue(env->context, descriptor.value);
             return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
         }
@@ -3598,7 +3600,14 @@ napi_add_finalizer(napi_env env, napi_value jsObject, void *nativeObject, napi_f
     }
 
     JSValue heldValue = JS_NewObjectClass(env->context, env->runtime->externalClassId);
+    if (JS_IsException(heldValue)) {
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
     ExternalInfo *info = (ExternalInfo *) mi_malloc(sizeof(ExternalInfo));
+    if (info == NULL) {
+        JS_FreeValue(env->context, heldValue);
+        return napi_set_last_error(env, napi_memory_error, NULL, 0, NULL);
+    }
 
     info->data = nativeObject;
     info->finalizeCallback = finalize_cb;
@@ -3611,6 +3620,15 @@ napi_add_finalizer(napi_env env, napi_value jsObject, void *nativeObject, napi_f
 
     JSValue res = JS_Invoke(env->context, env->finalizationRegistry, env->atoms.registerFinalizer,
                             2, params);
+    bool failed = JS_IsException(res);
+
+    if (failed) {
+        JS_SetOpaque(heldValue, NULL);
+        mi_free(info);
+        JS_FreeValue(env->context, heldValue);
+        JS_FreeValue(env->context, res);
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
     JS_FreeValue(env->context, res);
     JS_FreeValue(env->context, heldValue);
 
@@ -3633,10 +3651,20 @@ napi_status
 napi_set_instance_data(napi_env env, void *data, napi_finalize finalize_cb, void *finalize_hint) {
 
     CHECK_ARG(env)
-    env->instanceData = (ExternalInfo *) mi_malloc(sizeof(ExternalInfo));
-    env->instanceData->data = data;
-    env->instanceData->finalizeCallback = finalize_cb;
-    env->instanceData->finalizeHint = finalize_hint;
+
+    // Match the Node-API contract used by the V8 backend: replacing instance
+    // data releases the old holder without invoking its finalizer.
+    ExternalInfo *instanceData = (ExternalInfo *) mi_malloc(sizeof(ExternalInfo));
+    if (instanceData == NULL) {
+        return napi_set_last_error(env, napi_memory_error, NULL, 0, NULL);
+    }
+
+    instanceData->data = data;
+    instanceData->finalizeCallback = finalize_cb;
+    instanceData->finalizeHint = finalize_hint;
+
+    mi_free(env->instanceData);
+    env->instanceData = instanceData;
 
     return napi_clear_last_error(env);
 }
@@ -3665,6 +3693,9 @@ void deferred_finalize(napi_env env, void *finalizeData, void *finalizeHint) {
     napi_deferred__ *deferred = (napi_deferred__ *) finalizeData;
     JS_FreeValue(env->context, *(JSValue *) deferred->resolve);
     JS_FreeValue(env->context, *(JSValue *) deferred->reject);
+    mi_free(deferred->resolve);
+    mi_free(deferred->reject);
+    mi_free(deferred);
 };
 
 napi_status napi_create_promise(napi_env env, napi_deferred *deferred, napi_value *result) {
@@ -3674,16 +3705,50 @@ napi_status napi_create_promise(napi_env env, napi_deferred *deferred, napi_valu
 
     JSValue resolving_funcs[2];
     JSValue promise = JS_NewPromiseCapability(env->context, resolving_funcs);
+    if (JS_IsException(promise)) {
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
 
     *deferred = (napi_deferred__ *) mi_malloc(sizeof(napi_deferred__));
+    JSValue *resolve = (JSValue *) mi_malloc(sizeof(JSValue));
+    JSValue *reject = (JSValue *) mi_malloc(sizeof(JSValue));
+    if (*deferred == NULL || resolve == NULL || reject == NULL) {
+        mi_free(*deferred);
+        mi_free(resolve);
+        mi_free(reject);
+        JS_FreeValue(env->context, resolving_funcs[0]);
+        JS_FreeValue(env->context, resolving_funcs[1]);
+        JS_FreeValue(env->context, promise);
+        return napi_set_last_error(env, napi_memory_error, NULL, 0, NULL);
+    }
 
-    (*deferred)->resolve = (napi_value) &resolving_funcs[0];
-    (*deferred)->reject = (napi_value) &resolving_funcs[1];
+    *resolve = JS_DupValue(env->context, resolving_funcs[0]);
+    *reject = JS_DupValue(env->context, resolving_funcs[1]);
+    (*deferred)->resolve = (napi_value) resolve;
+    (*deferred)->reject = (napi_value) reject;
 
     JSValue heldValue = JS_NewObjectClass(env->context, env->runtime->externalClassId);
+    if (JS_IsException(heldValue)) {
+        deferred_finalize(env, *deferred, NULL);
+        *deferred = NULL;
+        JS_FreeValue(env->context, resolving_funcs[0]);
+        JS_FreeValue(env->context, resolving_funcs[1]);
+        JS_FreeValue(env->context, promise);
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
     ExternalInfo *info = (ExternalInfo *) mi_malloc(sizeof(ExternalInfo));
-    info->data = deferred;
+    if (info == NULL) {
+        JS_FreeValue(env->context, heldValue);
+        deferred_finalize(env, *deferred, NULL);
+        *deferred = NULL;
+        JS_FreeValue(env->context, resolving_funcs[0]);
+        JS_FreeValue(env->context, resolving_funcs[1]);
+        JS_FreeValue(env->context, promise);
+        return napi_set_last_error(env, napi_memory_error, NULL, 0, NULL);
+    }
+    info->data = *deferred;
     info->finalizeCallback = deferred_finalize;
+    info->finalizeHint = NULL;
     JS_SetOpaque(heldValue, info);
 
     JSValue params[] = {
@@ -3692,6 +3757,21 @@ napi_status napi_create_promise(napi_env env, napi_deferred *deferred, napi_valu
 
     JSValue res = JS_Invoke(env->context, env->finalizationRegistry, env->atoms.registerFinalizer,
                             2, params);
+    bool registrationFailed = JS_IsException(res);
+    JS_FreeValue(env->context, resolving_funcs[0]);
+    JS_FreeValue(env->context, resolving_funcs[1]);
+
+    if (registrationFailed) {
+        JS_SetOpaque(heldValue, NULL);
+        mi_free(info);
+        JS_FreeValue(env->context, heldValue);
+        JS_FreeValue(env->context, res);
+        deferred_finalize(env, *deferred, NULL);
+        *deferred = NULL;
+        JS_FreeValue(env->context, promise);
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
+    JS_FreeValue(env->context, heldValue);
     JS_FreeValue(env->context, res);
 
     return CreateScopedResult(env, promise, result);
@@ -3772,6 +3852,7 @@ NAPI_EXTERN napi_status NAPI_CDECL napi_adjust_external_memory(
 napi_status napi_type_tag_object(napi_env env, napi_value object, const napi_type_tag *tag) {
     CHECK_ARG(env);
     CHECK_ARG(object);
+    CHECK_ARG(tag);
 
     JSValue jsValue = *((JSValue *) object);
 
@@ -3779,17 +3860,22 @@ napi_status napi_type_tag_object(napi_env env, napi_value object, const napi_typ
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
 
-    const
-    uint32_t size = 2;
+    int hasTag = JS_GetOwnProperty(env->context, NULL, jsValue,
+                                   env->atoms.napi_typetag);
+    if (hasTag < 0) {
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
+    RETURN_STATUS_IF_FALSE(!hasTag, napi_invalid_arg);
 
-    bool isTypeTagged = false;
-
-    uint64_t words[size] = {tag->lower, tag->upper};
-    isTypeTagged = JS_HasProperty(env->context, jsValue, env->atoms.napi_typetag);
-    if (!isTypeTagged) {
-        JSValue value = JS_CreateBigIntWords(env->context, 0, size, words);
-        JS_SetProperty(env->context, jsValue, env->atoms.napi_typetag,
-                       JS_DupValue(env->context, value));
+    const uint32_t size = 2;
+    uint64_t words[2] = {tag->lower, tag->upper};
+    JSValue value = JS_CreateBigIntWords(env->context, 0, size, words);
+    if (JS_IsException(value)) {
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
+    int status = JS_SetProperty(env->context, jsValue, env->atoms.napi_typetag, value);
+    if (status < 0) {
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
     }
 
     return napi_clear_last_error(env);
@@ -3800,6 +3886,7 @@ napi_check_object_type_tag(napi_env env, napi_value object, const napi_type_tag 
                            bool *result) {
     CHECK_ARG(env);
     CHECK_ARG(object);
+    CHECK_ARG(tag);
     CHECK_ARG(result);
 
     JSValue jsValue = *((JSValue *) object);
@@ -3808,25 +3895,25 @@ napi_check_object_type_tag(napi_env env, napi_value object, const napi_type_tag 
         return napi_set_last_error(env, napi_object_expected, NULL, 0, NULL);
     }
 
-    const
-    uint32_t size = 2;
-    bool isTypeTagged = false;
-
-    isTypeTagged = JS_HasProperty(env->context, jsValue, env->atoms.napi_typetag);
-    if (!isTypeTagged) {
+    JSPropertyDescriptor descriptor;
+    int hasTag = JS_GetOwnProperty(env->context, &descriptor, jsValue,
+                                   env->atoms.napi_typetag);
+    if (hasTag < 0) {
+        return napi_set_last_error(env, napi_pending_exception, NULL, 0, NULL);
+    }
+    if (!hasTag) {
         *result = false;
+        return napi_clear_last_error(env);
     }
 
-    JSValue value = JS_GetProperty(env->context, jsValue, env->atoms.napi_typetag);
+    JSValue value = descriptor.value;
     int sign = 0;
-    size_t wordCount = size;
-    uint64_t words[size] = {0};
-    *result = JS_GetBigIntWords(env->context, value, &sign, &wordCount, words);
-    if (result && wordCount >= size) {
-        if ((words[0] == tag->lower) && (words[1] == tag->upper)) {
-            *result = true;
-        }
-    }
+    size_t wordCount = 2;
+    uint64_t words[2] = {0};
+    bool converted = JS_GetBigIntWords(env->context, value, &sign, &wordCount, words);
+    JS_FreeValue(env->context, value);
+    *result = converted && sign == 0 && wordCount == 2 &&
+              words[0] == tag->lower && words[1] == tag->upper;
 
     return napi_clear_last_error(env);
 }
@@ -4064,12 +4151,29 @@ napi_status qjs_create_runtime(napi_runtime *runtime) {
     assert(runtime);
 
     *runtime = mi_malloc(sizeof(napi_runtime__));
+    if (*runtime == NULL) {
+        return napi_memory_error;
+    }
 
 #ifdef USE_MIMALLOC
-    (*runtime)->runtime = JS_NewRuntime2(&mi_mf, NULL);
+    (*runtime)->heap = mi_heap_new();
+    if ((*runtime)->heap == NULL) {
+        mi_free(*runtime);
+        *runtime = NULL;
+        return napi_memory_error;
+    }
+    (*runtime)->runtime = JS_NewRuntime2(&mi_mf, (*runtime)->heap);
 #else
     (*runtime)->runtime = JS_NewRuntime();
 #endif
+    if ((*runtime)->runtime == NULL) {
+#ifdef USE_MIMALLOC
+        mi_heap_destroy((*runtime)->heap);
+#endif
+        mi_free(*runtime);
+        *runtime = NULL;
+        return napi_memory_error;
+    }
 
 #ifdef __QJS_NG__
     #ifndef NDEBUG
@@ -4116,6 +4220,12 @@ this_val,
     JSRuntime *rt = JS_GetRuntime(ctx);
     JS_ClearWeakRefKeepAlives(rt);
     JS_RunGC(rt);
+#ifdef USE_MIMALLOC
+    napi_env env = (napi_env) JS_GetContextOpaque(ctx);
+    if (env != NULL && env->runtime != NULL && env->runtime->heap != NULL) {
+        mi_heap_collect(env->runtime->heap, true);
+    }
+#endif
     return JS_TRUE;
 }
 
@@ -4128,8 +4238,14 @@ JSFinalizeValueCallback(JSContext *ctx, JSValueConst this_val, int argc, JSValue
         ExternalInfo *info = (ExternalInfo *) JS_GetOpaque(heldValue,
                                                            env->runtime->externalClassId);
         if (info != NULL) {
-            info->finalizeCallback(env, info->data,
-                                   info->finalizeHint);
+            JS_SetOpaque(heldValue, NULL);
+            napi_finalize callback = info->finalizeCallback;
+            void *data = info->data;
+            void *hint = info->finalizeHint;
+            mi_free(info);
+            if (callback != NULL) {
+                callback(env, data, hint);
+            }
         }
     }
     return JS_UNDEFINED;
@@ -4166,11 +4282,19 @@ napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
     assert(env && runtime);
 
     *env = (napi_env__ *) mi_malloc(sizeof(struct napi_env__));
+    if (*env == NULL) {
+        return napi_memory_error;
+    }
 
     (*env)->runtime = runtime;
 
 
     JSContext *context = JS_NewContext(runtime->runtime);
+    if (context == NULL) {
+        mi_free(*env);
+        *env = NULL;
+        return napi_memory_error;
+    }
     JS_SetContextOpaque(context, *env);
 
     (*env)->context = context;
@@ -4223,6 +4347,7 @@ napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
     (*env)->isThrowNull = false;
     (*env)->gcBefore = NULL;
     (*env)->gcAfter = NULL;
+    (*env)->referenceSymbolValue = JS_UNDEFINED;
 
 
     LIST_INIT(&(*env)->handleScopeList);
@@ -4274,6 +4399,18 @@ napi_status qjs_create_napi_env(napi_env *env, napi_runtime runtime) {
 napi_status qjs_free_napi_env(napi_env env) {
     CHECK_ARG(env)
 
+    // Instance data owns bridge state whose finalizer deletes N-API references.
+    // Run it while the reference and handle lists are still intact.
+    ExternalInfo *instanceData = env->instanceData;
+    env->instanceData = NULL;
+    if (instanceData != NULL) {
+        if (instanceData->finalizeCallback != NULL) {
+            instanceData->finalizeCallback(env, instanceData->data,
+                                           instanceData->finalizeHint);
+        }
+        mi_free(instanceData);
+    }
+
     // Free all handle scopes
     napi_handle_scope handleScope, tempHandleScope;
     LIST_FOREACH_SAFE(handleScope, &env->handleScopeList, node, tempHandleScope) {
@@ -4303,13 +4440,6 @@ napi_status qjs_free_napi_env(napi_env env) {
 
     // Free Finalization Registry
     JS_FreeValue(env->context, env->finalizationRegistry);
-
-    // Free Instance Data
-    if (env->instanceData && env->instanceData->finalizeCallback) {
-        env->instanceData->finalizeCallback(env, env->instanceData->data,
-                                            env->instanceData->finalizeHint);
-        mi_free(env->instanceData);
-    };
 
     if (env->gcAfter != NULL) {
         mi_free(env->gcAfter);
@@ -4354,8 +4484,12 @@ napi_status qjs_free_runtime(napi_runtime runtime) {
     JS_FreeRuntime(runtime->runtime);
 
     mi_free(env);
+#ifdef USE_MIMALLOC
+    mi_heap_destroy(runtime->heap);
+#endif
+    mi_free(runtime);
 
-    return napi_clear_last_error(env);
+    return napi_ok;
 }
 
 

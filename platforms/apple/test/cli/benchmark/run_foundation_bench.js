@@ -9,17 +9,35 @@ function parseArgs(argv) {
   const args = argv.slice(2);
   const parsed = {
     repeat: 5,
+    scale: 1,
+    label: "runtime",
+    output: null,
   };
 
   for (let i = 0; i < args.length; i++) {
     const arg = args[i];
     if (arg === "--repeat" && args[i + 1]) {
       parsed.repeat = Number(args[++i]);
+      continue;
+    }
+    if (arg === "--label" && args[i + 1]) {
+      parsed.label = String(args[++i]);
+      continue;
+    }
+    if (arg === "--scale" && args[i + 1]) {
+      parsed.scale = Number(args[++i]);
+      continue;
+    }
+    if (arg === "--output" && args[i + 1]) {
+      parsed.output = String(args[++i]);
     }
   }
 
   if (!Number.isFinite(parsed.repeat) || parsed.repeat <= 0) {
     parsed.repeat = 5;
+  }
+  if (!Number.isFinite(parsed.scale) || parsed.scale <= 0) {
+    parsed.scale = 1;
   }
 
   return parsed;
@@ -178,24 +196,31 @@ async function main() {
 
   const gsdRuns = [];
   const nonGsdRuns = [];
+  const benchmarkEnv = { NS_BENCH_SCALE: String(opts.scale) };
 
   for (let i = 0; i < opts.repeat; i++) {
     const iteration = i + 1;
     const runGsdFirst = (i & 1) === 0;
     if (runGsdFirst) {
       console.log(`Running iteration ${iteration}/${opts.repeat} with GSD runtime...`);
-      gsdRuns.push(await runOnce(runtimePath, benchScriptPath, repoRoot));
+      gsdRuns.push(await runOnce(runtimePath, benchScriptPath, repoRoot, benchmarkEnv));
       console.log(`Running iteration ${iteration}/${opts.repeat} with non-GSD runtime...`);
       nonGsdRuns.push(
-        await runOnce(runtimePath, benchScriptPath, repoRoot, { NS_DISABLE_GSD: "1" }),
+        await runOnce(runtimePath, benchScriptPath, repoRoot, {
+          ...benchmarkEnv,
+          NS_DISABLE_GSD: "1",
+        }),
       );
     } else {
       console.log(`Running iteration ${iteration}/${opts.repeat} with non-GSD runtime...`);
       nonGsdRuns.push(
-        await runOnce(runtimePath, benchScriptPath, repoRoot, { NS_DISABLE_GSD: "1" }),
+        await runOnce(runtimePath, benchScriptPath, repoRoot, {
+          ...benchmarkEnv,
+          NS_DISABLE_GSD: "1",
+        }),
       );
       console.log(`Running iteration ${iteration}/${opts.repeat} with GSD runtime...`);
-      gsdRuns.push(await runOnce(runtimePath, benchScriptPath, repoRoot));
+      gsdRuns.push(await runOnce(runtimePath, benchScriptPath, repoRoot, benchmarkEnv));
     }
   }
 
@@ -203,6 +228,22 @@ async function main() {
   const nonGsdAgg = aggregateRuns(nonGsdRuns);
 
   printComparison("GSD", gsdAgg, "NO_GSD", nonGsdAgg);
+
+  const report = {
+    generatedAt: new Date().toISOString(),
+    label: opts.label,
+    repeat: opts.repeat,
+    scale: opts.scale,
+    gsd: gsdAgg,
+    noGsd: nonGsdAgg,
+  };
+  console.log(`BENCH_SUMMARY:${JSON.stringify(report)}`);
+  if (opts.output) {
+    const outputPath = path.resolve(repoRoot, opts.output);
+    fs.mkdirSync(path.dirname(outputPath), { recursive: true });
+    fs.writeFileSync(outputPath, JSON.stringify(report, null, 2));
+    console.log(`Report: ${outputPath}`);
+  }
 }
 
 main().catch((error) => {
