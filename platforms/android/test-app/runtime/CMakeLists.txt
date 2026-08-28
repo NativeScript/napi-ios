@@ -216,10 +216,13 @@ if (QUICKJS OR QUICKJS_NG)
             ${QJS_SOURCE_DIR}/libunicode.c
             ${QJS_SOURCE_DIR}/quickjs.c
             ${QJS_SOURCE_DIR}/dtoa.c
-            # napi
-            ${VENDOR_DIR}/quickjs/quickjs-api.c
-            ${NS_NAPI_DIR}/quickjs/jsr.cpp
     )
+
+    if (NS_BINDING STREQUAL "napi")
+        set(SOURCES ${SOURCES}
+                ${VENDOR_DIR}/quickjs/quickjs-api.c
+                ${NS_NAPI_DIR}/quickjs/jsr.cpp)
+    endif ()
 
     include_directories(
             ${NS_NAPI_DIR}/quickjs
@@ -269,9 +272,9 @@ if (HERMES OR SHERMES)
             ${NS_NAPI_DIR}/hermes
             ${NS_NAPI_DIR}/common
     )
-    set(SOURCES ${SOURCES}
-            ${NS_NAPI_DIR}/hermes/jsr.cpp
-    )
+    if (NS_BINDING STREQUAL "napi")
+        set(SOURCES ${SOURCES} ${NS_NAPI_DIR}/hermes/jsr.cpp)
+    endif ()
 endif ()
 
 if (JSC)
@@ -284,10 +287,11 @@ if (JSC)
             # framework, whose JSC is a different build with a different ABI.
             ${VENDOR_DIR}/jsc/include
     )
-    set(SOURCES ${SOURCES}
-            ${VENDOR_DIR}/jsc/jsc-api.cpp
-            ${NS_NAPI_DIR}/jsc/jsr.cpp
-    )
+    if (NS_BINDING STREQUAL "napi")
+        set(SOURCES ${SOURCES}
+                ${VENDOR_DIR}/jsc/jsc-api.cpp
+                ${NS_NAPI_DIR}/jsc/jsr.cpp)
+    endif ()
 endif ()
 
 if (V8)
@@ -329,11 +333,12 @@ if (V8)
         endif ()
     endif ()
 
-    set(SOURCES ${SOURCES}
-            ${VENDOR_DIR}/v8/v8-api.cpp
-            ${NS_NAPI_DIR}/v8/jsr.cpp
-            ${VENDOR_DIR}/v8/SimpleAllocator.cpp
-    )
+    if (NS_BINDING STREQUAL "napi")
+        set(SOURCES ${SOURCES}
+                ${VENDOR_DIR}/v8/v8-api.cpp
+                ${NS_NAPI_DIR}/v8/jsr.cpp
+                ${VENDOR_DIR}/v8/SimpleAllocator.cpp)
+    endif ()
 
 
     set(COMMON_CMAKE_ARGUMENTS "${COMMON_CMAKE_ARGUMENTS} -DV8_ENABLE_REGEXP_INTERPRETER_THREADED_DISPATCH -DV8_EMBEDDED_BUILTINS")

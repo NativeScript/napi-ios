@@ -487,8 +487,6 @@ Function Function::createFromHostConstructor(Runtime& runtime, const PropNameID&
               info.GetReturnValue().Set(result.local(runtime));
             } catch (const JSError& error) {
               v8engine::throwV8Exception(info.GetIsolate(), error);
-            } catch (const JSError& error) {
-              v8engine::throwV8Exception(info.GetIsolate(), error);
             } catch (const std::exception& exception) {
               v8engine::throwV8Exception(info.GetIsolate(), exception);
             }

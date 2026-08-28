@@ -533,7 +533,6 @@ class Runtime {
     return state_->nativeStateKey.Get(state_->isolate);
   }
   std::shared_ptr<v8engine::RuntimeState> state() const { return state_; }
-  const void* identity() const { return state_.get(); }
 
   Object global();
 
