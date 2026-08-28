@@ -81,7 +81,7 @@ namespace tns {
 
     bool Util::Contains(const string &str, const string &sequence) {
         return str.find(sequence) != string::npos;
-    }    
+    }
 
     string Util::ConvertFromJniToCanonicalName(const string &name) {
         string converted = name;

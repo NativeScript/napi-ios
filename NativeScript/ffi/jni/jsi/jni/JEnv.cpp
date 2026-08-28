@@ -897,5 +897,3 @@ JEnv::GetInterfaceStaticMethodIDAndJClass(const std::string &interfaceName,
             sig + " for interface: " + interfaceName);
 
 }
-
-

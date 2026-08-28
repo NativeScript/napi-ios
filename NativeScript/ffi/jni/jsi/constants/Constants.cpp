@@ -9,4 +9,3 @@
 
 std::string Constants::APP_ROOT_FOLDER_PATH = "";
 bool Constants::CACHE_COMPILED_CODE = false;
-

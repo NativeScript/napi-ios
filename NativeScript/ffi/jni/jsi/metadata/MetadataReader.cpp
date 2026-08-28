@@ -361,4 +361,3 @@ MetadataTreeNode *MetadataReader::GetBaseClassNode(MetadataTreeNode *treeNode) {
 
     return baseClassNode;
 }
-

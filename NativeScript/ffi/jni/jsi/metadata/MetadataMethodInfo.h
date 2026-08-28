@@ -16,7 +16,7 @@ namespace tns {
                   sizeMeasured(false), nameOffset(0), resolvedData(0),
                   declaringNodeId(0){
         }
-        
+
         MethodInfo(const MethodInfo& other) = default;
 
         MethodInfo& operator=(const MethodInfo& other) {

@@ -23,4 +23,3 @@ MetadataTreeNode* MetadataTreeNode::GetChild(const string& childName) {
 
     return child;
 }
-
