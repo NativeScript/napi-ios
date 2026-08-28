@@ -52,9 +52,10 @@
     "build:macos-cli": "./scripts/build_nativescript.sh --no-iphone --no-simulator --no-macos --macos-cli --v8",
     "build:macos-napi": "./scripts/build_nativescript.sh --no-iphone --no-simulator --macos-napi",
     "nsr": "./dist/nsr",
-    "test:macos": "node ./scripts/run-tests-macos.js ./build/test-results/macos-junit.xml",
+    "test:macos": "node ./scripts/run-tests-macos.js",
     "test:ios": "node ./scripts/run-tests-ios.js",
     "benchmark:objc-dispatch": "node ./platforms/apple/benchmarks/objc-dispatch/run.js",
+    "benchmark:objc-dispatch:cli:compare": "node ./platforms/apple/benchmarks/objc-dispatch/compare-cli.js",
     "test:react-native": "node ./packages/react-native/test/run-all.js"
   },
   "license": "Apache-2.0",
