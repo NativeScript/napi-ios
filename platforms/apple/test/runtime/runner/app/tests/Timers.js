@@ -212,7 +212,7 @@ describe("native timer", () => {
           pending("Timer cleanup introspection is unavailable in this JSC runtime configuration.");
           done();
         } else {
-          expectWeakRefCleared(weakRef, done, isIOS && isJSC ? 10000 : 1500);
+          expectWeakRefCleared(weakRef, done, isJSC ? 10000 : 1500);
         }
       });
     }, 200);

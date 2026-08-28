@@ -19,7 +19,7 @@ HERMES_ANDROID_ASSET="hermes-android.tar.gz"
 HERMES_RELEASE_URL="https://github.com/ammarahm-ed/build-hermes/releases/download/$HERMES_VERSION"
 
 REPO_ROOT="$(cd "$(dirname "$0")/.." && pwd -P)"
-DL_DIR="${HERMES_DOWNLOAD_DIR:-/tmp/hermes-dl}"
+DL_DIR="${HERMES_DOWNLOAD_DIR:-/tmp/hermes-dl/$HERMES_VERSION}"
 
 # Shared headers, used by both platforms.
 HERMES_HEADERS_DIR="$REPO_ROOT/vendor/hermes/include"
