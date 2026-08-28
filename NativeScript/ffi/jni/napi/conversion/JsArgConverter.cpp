@@ -898,9 +898,10 @@ JniLocalRef JsArgConverter::GetByteBuffer(napi_env env, napi_value object, bool 
     ObjectManager *objectManager = Runtime::GetRuntime(env)->GetObjectManager();
 
     int id = objectManager->GetOrCreateObjectId(buffer);
+    JniLocalRef clazz(jEnv.GetObjectClass(buffer));
     ObjectManager::MarkObject(env, object);
 
-    objectManager->Link(object, id);
+    objectManager->Link(object, id, clazz);
 
     return objectManager->GetJavaObjectByJsObject(object);
 }

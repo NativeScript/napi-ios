@@ -261,7 +261,7 @@ JniLocalRef ObjectManager::GetJavaObjectByJsObject(napi_value object, int *objec
 
     if (javaObjectId != -1) {
         try {
-            return {GetJavaObjectByID(javaObjectId), true};
+            return GetJavaObjectByID(javaObjectId);
         } catch (NativeScriptException &e) {
             // Surface which object failed instead of a bare error — this usually
             // means the id belongs to a different runtime/thread.
@@ -282,7 +282,7 @@ JniLocalRef ObjectManager::GetJavaObjectByJsObjectFast(napi_value object) {
     if (hostData) {
         auto proxy = reinterpret_cast<HostObjectProxy *>(hostData);
         if (proxy->instanceInfo) {
-            return {GetJavaObjectByID(proxy->instanceInfo->JavaObjectID), true};
+            return GetJavaObjectByID(proxy->instanceInfo->JavaObjectID);
         }
     }
 #endif
@@ -763,6 +763,18 @@ jobject ObjectManager::GetJavaObjectByIDImpl(uint32_t javaObjectID) {
 
 void ObjectManager::UpdateCache(int objectID, jobject obj) {
     m_cache.update(objectID, obj);
+}
+
+jclass ObjectManager::GetJavaClass(napi_value value) {
+    JSInstanceInfo *jsInfo = GetJSInstanceInfo(value);
+    return jsInfo != nullptr ? jsInfo->ObjectClazz : nullptr;
+}
+
+void ObjectManager::SetJavaClass(napi_value value, jclass clazz) {
+    JSInstanceInfo *jsInfo = GetJSInstanceInfo(value);
+    if (jsInfo != nullptr) {
+        jsInfo->ObjectClazz = clazz;
+    }
 }
 
 int ObjectManager::GetOrCreateObjectId(jobject object) {
