@@ -87,7 +87,7 @@ function buildGradleArgs(opts) {
   if (opts.engine) props.push(`-Pengine=${opts.engine}`);
   if (hostObjectsEnabled(opts)) props.push('-PuseHostObjects');
   if (opts['as-napi-module']) props.push('-PasNapiModule');
-  
+
   return props;
 }
 

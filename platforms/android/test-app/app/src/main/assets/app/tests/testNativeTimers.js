@@ -1,7 +1,7 @@
 describe('native timer', () => {
-    
+
     /** @type {global.setTimeout} */
-    let setTimeout = global.__ns__setTimeout; 
+    let setTimeout = global.__ns__setTimeout;
     /** @type {global.setInterval} */
     let setInterval = global.__ns__setInterval; /** @type global.setTimeout */
     /** @type {global.clearTimeout} */
