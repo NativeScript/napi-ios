@@ -2379,7 +2379,7 @@ napi_status napi_is_array(napi_env env, napi_value value, bool* result) {
   int status = JS_IsArray(
 #ifndef __QJS_NG__
       env->context,
-#endif,
+#endif
       jsValue);
   RETURN_STATUS_IF_FALSE(status != -1, napi_pending_exception);
   *result = status;
@@ -3599,7 +3599,7 @@ napi_status napi_add_finalizer(napi_env env, napi_value jsObject,
   ExternalInfo* info = (ExternalInfo*)mi_malloc(sizeof(ExternalInfo));
   if (info == NULL) {
     JS_FreeValue(env->context, heldValue);
-    return napi_set_last_error(env, napi_memory_error, NULL, 0, NULL);
+    return napi_set_last_error(env, napi_generic_failure, NULL, 0, NULL);
   }
 
   info->data = nativeObject;
@@ -3647,7 +3647,7 @@ napi_status napi_set_instance_data(napi_env env, void* data,
   // data releases the old holder without invoking its finalizer.
   ExternalInfo* instanceData = (ExternalInfo*)mi_malloc(sizeof(ExternalInfo));
   if (instanceData == NULL) {
-    return napi_set_last_error(env, napi_memory_error, NULL, 0, NULL);
+    return napi_set_last_error(env, napi_generic_failure, NULL, 0, NULL);
   }
 
   instanceData->data = data;
@@ -3715,7 +3715,7 @@ napi_status napi_create_promise(napi_env env, napi_deferred* deferred,
     JS_FreeValue(env->context, resolving_funcs[0]);
     JS_FreeValue(env->context, resolving_funcs[1]);
     JS_FreeValue(env->context, promise);
-    return napi_set_last_error(env, napi_memory_error, NULL, 0, NULL);
+    return napi_set_last_error(env, napi_generic_failure, NULL, 0, NULL);
   }
 
   *resolve = JS_DupValue(env->context, resolving_funcs[0]);
@@ -3742,7 +3742,7 @@ napi_status napi_create_promise(napi_env env, napi_deferred* deferred,
     JS_FreeValue(env->context, resolving_funcs[0]);
     JS_FreeValue(env->context, resolving_funcs[1]);
     JS_FreeValue(env->context, promise);
-    return napi_set_last_error(env, napi_memory_error, NULL, 0, NULL);
+    return napi_set_last_error(env, napi_generic_failure, NULL, 0, NULL);
   }
   info->data = *deferred;
   info->finalizeCallback = deferred_finalize;
@@ -4285,7 +4285,7 @@ napi_status qjs_create_runtime(napi_runtime* runtime) {
 
   *runtime = mi_malloc(sizeof(napi_runtime__));
   if (*runtime == NULL) {
-    return napi_memory_error;
+    return napi_generic_failure;
   }
 
 #ifdef USE_MIMALLOC
@@ -4296,7 +4296,7 @@ napi_status qjs_create_runtime(napi_runtime* runtime) {
   if ((*runtime)->runtime == NULL) {
     mi_free(*runtime);
     *runtime = NULL;
-    return napi_memory_error;
+    return napi_generic_failure;
   }
 
   JSSharedArrayBufferFunctions sharedArrayBufferFunctions = {0};
@@ -4424,7 +4424,7 @@ napi_status qjs_create_napi_env(napi_env* env, napi_runtime runtime) {
 
   *env = (napi_env__*)mi_zalloc(sizeof(struct napi_env__));
   if (*env == NULL) {
-    return napi_memory_error;
+    return napi_generic_failure;
   }
 
   (*env)->runtime = runtime;
@@ -4433,7 +4433,7 @@ napi_status qjs_create_napi_env(napi_env* env, napi_runtime runtime) {
   if (context == NULL) {
     mi_free(*env);
     *env = NULL;
-    return napi_memory_error;
+    return napi_generic_failure;
   }
   JS_SetContextOpaque(context, *env);
 
