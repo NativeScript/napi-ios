@@ -32,6 +32,10 @@ namespace tns {
 
         void UpdateCache(int objectID, jobject obj);
 
+        jclass GetJavaClass(napi_value value);
+
+        void SetJavaClass(napi_value value, jclass clazz);
+
         int GetOrCreateObjectId(jobject object);
 
         napi_value GetJsObjectByJavaObject(int javaObjectID);
@@ -91,8 +95,8 @@ namespace tns {
 
         struct JSInstanceInfo {
         public:
-            explicit JSInstanceInfo(uint32_t javaObjectID)
-                    : JavaObjectID(javaObjectID) {
+            explicit JSInstanceInfo(uint32_t javaObjectID, jclass clazz = nullptr)
+                    : JavaObjectID(javaObjectID), ObjectClazz(clazz) {
             }
 
             uint32_t JavaObjectID;
