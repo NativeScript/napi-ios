@@ -77,9 +77,6 @@ const macosBuildInputs = [
     path.join(__dirname, "../platforms/apple/test/runtime/fixtures"),
     path.join(__dirname, "../platforms/apple/TKLiveSync"),
     ...metadataGeneratorSourceInputs,
-    metadataGeneratorBinary,
-    metadataGeneratorBuildStepScript,
-    metadataGeneratorSymbolAnalyzer,
     nativeScriptXCFramework,
     tkLiveSyncXCFramework
 ];
@@ -510,9 +507,6 @@ function ensureMacOSRuntimeArtifactsBuilt() {
     const sourceInputs = [
         nativeScriptSourceRoot,
         ...metadataGeneratorSourceInputs,
-        metadataGeneratorBinary,
-        metadataGeneratorBuildStepScript,
-        metadataGeneratorSymbolAnalyzer,
         path.join(__dirname, "build_nativescript.sh")
     ];
 

@@ -85,9 +85,6 @@ const iosBuildInputs = [
     path.join(__dirname, "../platforms/apple/test/runtime/fixtures"),
     path.join(__dirname, "../platforms/apple/TKLiveSync"),
     ...metadataGeneratorSourceInputs,
-    metadataGeneratorBinary,
-    metadataGeneratorBuildStepScript,
-    metadataGeneratorSymbolAnalyzer,
     nativeScriptXCFramework,
     tkLiveSyncXCFramework
 ];
