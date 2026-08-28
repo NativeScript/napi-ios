@@ -3,16 +3,16 @@ package com.tns.tests;
 import java.util.ArrayList;
 
 public class ConcurrentAccessTest {
-    
+
     public interface Callback {
         void invoke(ArrayList list1, ArrayList list2, ArrayList list3, ArrayList list4, ArrayList list5,
                    ArrayList list6, ArrayList list7, ArrayList list8, ArrayList list9, ArrayList list10);
     }
-    
+
     public interface ErrorCallback {
         void onError(Throwable error);
     }
-    
+
     /**
      * Calls the callback from a background thread multiple times.
      * @param callback The callback to invoke
@@ -29,7 +29,7 @@ public class ConcurrentAccessTest {
         });
         thread.start();
     }
-    
+
     /**
      * Calls the callback synchronously from the current thread.
      * @param callback The callback to invoke
@@ -40,7 +40,7 @@ public class ConcurrentAccessTest {
             invokeCallbackWithArrayLists(callback, i);
         }
     }
-    
+
     /**
      * Helper method that creates 10 ArrayLists and invokes the callback with them.
      * Each ArrayList contains some data based on the iteration number.
@@ -56,7 +56,7 @@ public class ConcurrentAccessTest {
         ArrayList<Integer> list8 = new ArrayList<>();
         ArrayList<Integer> list9 = new ArrayList<>();
         ArrayList<Integer> list10 = new ArrayList<>();
-        
+
         // Add some data to each list
         for (int i = 0; i < 5; i++) {
             list1.add(iteration * 10 + i);
@@ -70,7 +70,7 @@ public class ConcurrentAccessTest {
             list9.add(iteration * 10 + i + 8);
             list10.add(iteration * 10 + i + 9);
         }
-        
+
         callback.invoke(list1, list2, list3, list4, list5, list6, list7, list8, list9, list10);
     }
 }

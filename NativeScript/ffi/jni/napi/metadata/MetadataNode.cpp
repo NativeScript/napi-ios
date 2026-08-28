@@ -105,7 +105,7 @@ napi_value MetadataNode::CreateExtendedJSWrapper(napi_env env, ObjectManager *ob
     auto cacheData = GetCachedExtendedClassData(env, proxyClassName);
 
     if (cacheData.node != nullptr) {
-        
+
         extInstance = objectManager->GetEmptyObject();
         if (napi_util::is_null_or_undefined(env, extInstance)) {
             return nullptr;
@@ -1048,7 +1048,7 @@ string MetadataNode::GetName() {
 
 MetadataNode *MetadataNode::GetOrCreate(const string &className) {
     MetadataNode *node = nullptr;
-    
+
     auto it = s_name2NodeCache.find(className);
 
     if (it == s_name2NodeCache.end()) {

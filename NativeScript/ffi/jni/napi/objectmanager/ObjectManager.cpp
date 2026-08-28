@@ -312,7 +312,7 @@ ObjectManager::JSInstanceInfo *ObjectManager::GetJSInstanceInfo(napi_value objec
         }
     }
     #endif
-    
+
     if (!IsRuntimeJsObject(object)) return nullptr;
     return GetJSInstanceInfoFromRuntimeObject(object);
 }

@@ -345,11 +345,17 @@ napi_status js_run_bytecode_file(napi_env env, const char* file,
 
 napi_status js_execute_pending_jobs(napi_env env) {
 #ifdef __ANDROID__
-  auto itFound = JSR::env_to_jsr_cache.find(env);
-  if (itFound == JSR::env_to_jsr_cache.end()) {
+  JSR* runtime = JSR::ForEnv(env);
+  if (runtime == nullptr) {
     return napi_invalid_arg;
   }
-  itFound->second->rt->drainMicrotasks();
+  try {
+    runtime->rt->drainMicrotasks();
+  } catch (const facebook::jsi::JSError&) {
+    return napi_pending_exception;
+  } catch (const facebook::jsi::JSIException&) {
+    return napi_generic_failure;
+  }
   return napi_ok;
 #else
   bool result;
