@@ -234,10 +234,10 @@ jobs:
           npm install
           python3 -m pip install --upgrade pip six
           if ! command -v ld64.lld >/dev/null; then
-            brew list lld || brew install lld
+            brew list lld &>/dev/null || brew install lld
           fi
           if ! command -v cmake >/dev/null; then
-            brew list cmake || brew install cmake
+            brew list cmake &>/dev/null || brew install cmake
           fi
           if [ ! -x /usr/local/bin/cmake ]; then
             sudo mkdir -p /usr/local/bin
@@ -310,6 +310,19 @@ jobs:
             echo "TARBALL_BASENAME=$tarball_basename"
           } >> "$GITHUB_OUTPUT"
           echo "Resolved $package_name@$NPM_VERSION (tag: $NPM_TAG)"
+      - name: Apply QuickJS patches
+        # A build-ref that vendors QuickJS needs the NativeScript engine changes
+        # from vendor/quickjs/patches (e.g. JS_WeakRef_Deref / JS_NewString16
+        # used by vendor/quickjs/quickjs-api.c) applied onto the pristine
+        # submodule checkout before the iOS quickjs build. Refs without the
+        # vendored engine have nothing to patch.
+        if: ${{ matrix.target != 'react-native' }}
+        run: |
+          if [ -f scripts/apply_quickjs_patches.js ]; then
+            npm run patch-quickjs
+          else
+            echo "No vendored QuickJS in this ref; nothing to patch."
+          fi
       - name: Build iOS engine (${{ matrix.target }})
         if: ${{ matrix.target != 'react-native' }}
         env:
