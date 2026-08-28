@@ -198,6 +198,9 @@ class NativeApiReferenceHostObject final : public HostObject {
   void* data() const { return data_; }
   const NativeApiType& type() const { return type_; }
   std::shared_ptr<Value> backingValue() const { return backingValue_; }
+  void setBackingValue(std::shared_ptr<Value> backingValue) {
+    backingValue_ = std::move(backingValue);
+  }
   void ensureStorage(Runtime& runtime, NativeApiType type,
                      NativeApiArgumentFrame& frame, size_t elements = 1);
   void retainObjectSlot(size_t index, id object);

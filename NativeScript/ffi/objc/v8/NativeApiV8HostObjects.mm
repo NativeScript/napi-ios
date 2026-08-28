@@ -10,106 +10,6 @@ namespace v8engine {
 
 Value valueFromLocal(Runtime& runtime, v8::Local<v8::Value> value) { return Value(runtime, value); }
 
-// V8's named-property interceptors run BEFORE prototype-chain lookup, so a
-// JS-subclass accessor defined on the prototype (not the host object itself)
-// would otherwise be shadowed by the interceptor. These let the get/set
-// interceptors below check the prototype chain first and defer to it when a
-// descriptor is found there.
-bool findPrototypeDescriptor(Runtime& runtime, v8::Local<v8::Object> object,
-                             v8::Local<v8::Name> property,
-                             v8::Local<v8::Object>* descriptorOut) {
-  v8::TryCatch tryCatch(runtime.isolate());
-  v8::Local<v8::Value> currentValue = object->GetPrototypeV2();
-  for (size_t depth = 0; depth < 64 && currentValue->IsObject(); depth++) {
-    v8::Local<v8::Object> current = currentValue.As<v8::Object>();
-    v8::Local<v8::Value> descriptorValue;
-    if (!current->GetOwnPropertyDescriptor(runtime.context(), property)
-             .ToLocal(&descriptorValue)) {
-      throw JSError(runtime,
-                    currentExceptionMessage(runtime.isolate(), tryCatch));
-    }
-    if (descriptorValue->IsObject()) {
-      *descriptorOut = descriptorValue.As<v8::Object>();
-      return true;
-    }
-    currentValue = current->GetPrototypeV2();
-  }
-  return false;
-}
-
-bool tryResolvePrototypeGet(Runtime& runtime, v8::Local<v8::Object> object,
-                            v8::Local<v8::Object> receiver,
-                            v8::Local<v8::Name> property,
-                            v8::Local<v8::Value>* resultOut) {
-  v8::Local<v8::Object> descriptor;
-  if (!findPrototypeDescriptor(runtime, object, property, &descriptor)) {
-    return false;
-  }
-
-  v8::TryCatch tryCatch(runtime.isolate());
-  v8::Local<v8::String> getKey = makeV8String(runtime.isolate(), "get");
-  v8::Local<v8::Value> getterValue;
-  if (!descriptor->Get(runtime.context(), getKey).ToLocal(&getterValue)) {
-    throw JSError(runtime, currentExceptionMessage(runtime.isolate(), tryCatch));
-  }
-  if (getterValue->IsFunction()) {
-    v8::Local<v8::Value> result;
-    if (!getterValue.As<v8::Function>()
-             ->Call(runtime.context(), receiver, 0, nullptr)
-             .ToLocal(&result)) {
-      throw JSError(runtime,
-                    currentExceptionMessage(runtime.isolate(), tryCatch));
-    }
-    *resultOut = result;
-    return true;
-  }
-
-  v8::Local<v8::String> valueKey = makeV8String(runtime.isolate(), "value");
-  bool hasValue =
-      descriptor->HasOwnProperty(runtime.context(), valueKey).FromMaybe(false);
-  if (hasValue) {
-    v8::Local<v8::Value> value;
-    if (!descriptor->Get(runtime.context(), valueKey).ToLocal(&value)) {
-      throw JSError(runtime,
-                    currentExceptionMessage(runtime.isolate(), tryCatch));
-    }
-    *resultOut = value;
-    return true;
-  }
-
-  *resultOut = v8::Undefined(runtime.isolate());
-  return true;
-}
-
-bool tryInvokePrototypeSetter(Runtime& runtime, v8::Local<v8::Object> object,
-                              v8::Local<v8::Object> receiver,
-                              v8::Local<v8::Name> property,
-                              v8::Local<v8::Value> value) {
-  v8::Local<v8::Object> descriptor;
-  if (!findPrototypeDescriptor(runtime, object, property, &descriptor)) {
-    return false;
-  }
-
-  v8::TryCatch tryCatch(runtime.isolate());
-  v8::Local<v8::String> setKey = makeV8String(runtime.isolate(), "set");
-  v8::Local<v8::Value> setterValue;
-  if (!descriptor->Get(runtime.context(), setKey).ToLocal(&setterValue)) {
-    throw JSError(runtime, currentExceptionMessage(runtime.isolate(), tryCatch));
-  }
-  if (!setterValue->IsFunction()) {
-    return false;
-  }
-
-  v8::Local<v8::Value> args[] = {value};
-  v8::Local<v8::Value> ignored;
-  if (!setterValue.As<v8::Function>()
-           ->Call(runtime.context(), receiver, 1, args)
-           .ToLocal(&ignored)) {
-    throw JSError(runtime, currentExceptionMessage(runtime.isolate(), tryCatch));
-  }
-  return true;
-}
-
 v8::Local<v8::ObjectTemplate> hostObjectTemplate(Runtime& runtime) {
   auto state = runtime.state();
   if (state->hostObjectTemplate.IsEmpty()) {
@@ -314,15 +214,6 @@ v8::Local<v8::ObjectTemplate> nativeObjectTemplate(Runtime& runtime) {
             if (*utf8 == nullptr) {
               return v8::Intercepted::kNo;
             }
-            v8::Local<v8::Object> holderObject = info.Holder();
-            v8::Local<v8::Object> receiver =
-                info.This()->IsObject() ? info.This().As<v8::Object>() : holderObject;
-            v8::Local<v8::Value> prototypeResult;
-            if (tryResolvePrototypeGet(runtime, holderObject, receiver,
-                                       property, &prototypeResult)) {
-              info.GetReturnValue().Set(prototypeResult);
-              return v8::Intercepted::kYes;
-            }
             Value result = holder->hostObject->get(
                 runtime, PropNameID(std::string(*utf8, utf8.length())));
             if (!result.isUndefined()) {
@@ -351,13 +242,6 @@ v8::Local<v8::ObjectTemplate> nativeObjectTemplate(Runtime& runtime) {
             v8::String::Utf8Value utf8(isolate, property);
             if (*utf8 == nullptr) {
               return v8::Intercepted::kNo;
-            }
-            v8::Local<v8::Object> holderObject = info.Holder();
-            v8::Local<v8::Object> receiver =
-                info.This()->IsObject() ? info.This().As<v8::Object>() : holderObject;
-            if (tryInvokePrototypeSetter(runtime, holderObject, receiver,
-                                         property, value)) {
-              return v8::Intercepted::kYes;
             }
             bool handled = holder->hostObject->set(
                 runtime, PropNameID(std::string(*utf8, utf8.length())),
@@ -442,7 +326,9 @@ Object Object::createFromHostObjectWithToken(Runtime& runtime, std::shared_ptr<H
 Object Object::createNativeInstanceWithToken(Runtime& runtime, std::shared_ptr<HostObject> host,
                                              const void* typeToken) {
   v8::Local<v8::Object> object =
-      v8engine::nativeObjectTemplate(runtime)->NewInstance(runtime.context()).ToLocalChecked();
+      v8engine::nativeObjectTemplate(runtime)
+          ->NewInstance(runtime.context())
+          .ToLocalChecked();
   auto* holder = new v8engine::HostObjectHolder(runtime.state(), std::move(host), typeToken);
   v8engine::trackRuntimeAllocation(runtime.isolate(), holder);
   object->SetAlignedPointerInInternalField(0, holder);

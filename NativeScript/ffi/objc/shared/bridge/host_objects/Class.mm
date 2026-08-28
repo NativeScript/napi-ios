@@ -414,6 +414,9 @@ Value makeNativeObjectValue(Runtime& runtime,
   bridge->rememberScopedRoundTripValue(
       runtime, object, Value(runtime, result),
       nativeObjectIsStringLike(object));
+  bridge->rememberWeakNativeObjectRoundTripValue(
+      runtime, object, Value(runtime, result),
+      nativeObjectIsStringLike(object));
   return result;
 }
 

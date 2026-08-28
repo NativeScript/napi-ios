@@ -521,22 +521,22 @@ struct NativeApiPreparedObjCInvocation {
   SEL selector = nullptr;
   Class receiverClass = Nil;
   std::string selectorName;
-  // Set when this prepared invocation IS a metadata property's setter
-  // selector (one arg, matches member->setterSelectorName): lets a
-  // successful call cache the value into the UIAppearance proxy cache
-  // without re-deriving the property name from the selector.
-  std::string propertySetterName;
   NativeApiSignature signature;
   ObjCPreparedInvoker preparedInvoker = nullptr;
   void* engineInvoker = nullptr;  // Engine-neutral GSD invoker (ObjCGsdInvoker)
   bool isNSErrorOutMethod = false;  // Cached: avoids per-call selector scan.
   bool isInitMethod = false;        // Cached: avoids per-call "init" rfind.
+  bool isStaticAppearanceSelector = false;
+  bool hasAppearanceSideEffects = false;
   bool gsdEngineCallable = false;
   uint8_t gsdEngineArgumentCount = 0;
   bool fastEngineCallable = false;
   uint8_t fastEngineArgumentCount = 0;
   uint8_t fastEngineFirstArgKind = 0;
   uint8_t fastEngineSecondArgKind = 0;
+  // Cold UIAppearance metadata stays after the hot signature/invoker fields
+  // so ordinary prepared dispatch retains its compact cache layout.
+  std::string propertySetterName;
 };
 
 bool preparedObjCInvocationIsInit(
@@ -1504,6 +1504,12 @@ prepareNativeApiObjCInvocation(
   prepared->isNSErrorOutMethod =
       isNSErrorOutEngineMethodSignature(prepared->signature);
   prepared->isInitMethod = prepared->selectorName.rfind("init", 0) == 0;
+  prepared->isStaticAppearanceSelector =
+      prepared->receiverClass != Nil &&
+      prepared->selectorName.rfind("appearance", 0) == 0;
+  prepared->hasAppearanceSideEffects =
+      prepared->isStaticAppearanceSelector ||
+      !prepared->propertySetterName.empty();
   configureGeneratedEngineObjCInvocation(*prepared);
   configureFastEngineObjCInvocation(*prepared);
   return prepared;
@@ -1511,8 +1517,12 @@ prepareNativeApiObjCInvocation(
 
 bool isPreparedStaticAppearanceSelector(
     const NativeApiPreparedObjCInvocation& prepared) {
-  return prepared.receiverClass != Nil &&
-         prepared.selectorName.rfind("appearance", 0) == 0;
+  return prepared.isStaticAppearanceSelector;
+}
+
+bool preparedInvocationHasAppearanceSideEffects(
+    const NativeApiPreparedObjCInvocation& prepared) {
+  return prepared.hasAppearanceSideEffects;
 }
 
 Value tagPreparedStaticAppearanceSelectorResult(
@@ -1553,6 +1563,9 @@ Value callPreparedObjCSelector(
   if (tryCallGeneratedEngineObjCSelector(runtime, bridge, receiver, prepared,
                                          args, count, dispatchSuperClass,
                                          &fastResult)) {
+    if (!preparedInvocationHasAppearanceSideEffects(prepared)) {
+      return fastResult;
+    }
     cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver,
                                             prepared, args, count);
     return tagPreparedStaticAppearanceSelectorResult(
@@ -1560,6 +1573,9 @@ Value callPreparedObjCSelector(
   }
   if (tryCallFastEngineObjCSelector(runtime, bridge, receiver, prepared, args,
                                     count, dispatchSuperClass, &fastResult)) {
+    if (!preparedInvocationHasAppearanceSideEffects(prepared)) {
+      return fastResult;
+    }
     cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver,
                                             prepared, args, count);
     return tagPreparedStaticAppearanceSelectorResult(
@@ -1650,10 +1666,13 @@ Value callPreparedObjCSelector(
     throw JSError(
         runtime, errorMessage != nullptr ? errorMessage : "Unknown NSError");
   }
-  cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver, prepared,
-                                          args, count);
   Value result = convertNativeReturnValue(runtime, bridge, returnType,
                                           returnStorage.data());
+  if (!preparedInvocationHasAppearanceSideEffects(prepared)) {
+    return result;
+  }
+  cachePreparedAppearanceProxySetterValue(runtime, bridge, receiver, prepared,
+                                          args, count);
   return tagPreparedStaticAppearanceSelectorResult(
       runtime, bridge, receiver, prepared, std::move(result));
 }

@@ -661,7 +661,15 @@ class NativeApiObjectHostObject final
     }
 
     const bool returnedThisWrapper = resultHost.get() == this;
-    disownObject(receiver, resultObject == receiver);
+    const bool returnedSameReceiver = resultObject == receiver;
+    // Keep the original wrapper attached when an initializer returns the same
+    // native receiver through a newly-created engine wrapper. The outer
+    // selector path can then preserve the caller's exact JS `this` and detach
+    // the duplicate. Disowning here made that preservation impossible because
+    // the original host object had already been cleared before it was checked.
+    if (!returnedSameReceiver || returnedThisWrapper) {
+      disownObject(receiver, returnedSameReceiver);
+    }
     if (resultObject == nil) {
       return;
     }
@@ -946,14 +954,6 @@ class NativeApiObjectHostObject final
     if (!expando.isUndefined()) {
       return expando;
     }
-    // If this receiver is a UIAppearance proxy, its properties live in the
-    // class-keyed appearance cache, not on the object itself.
-    Value appearanceExpando =
-        cachedAppearanceProxyPropertyValue(runtime, bridge_, object_, property);
-    if (!appearanceExpando.isUndefined()) {
-      return appearanceExpando;
-    }
-
     // Fast path: cached metadata property-getter resolution. Skips the
     // special-name chain + per-access metadata discovery for hot getters
     // (hash/length/count/...). Only populated for genuine non-extended
@@ -1375,13 +1375,29 @@ class NativeApiObjectHostObject final
     // methods); defer so the engine resolves them instead of the bridge
     // returning a registered getter IMP as a raw callable.
     if (isEngineExtendedInstance) {
-      // Prefer JS prototype accessors before falling back to runtime ObjC
-      // getters; otherwise an ObjC getter implemented by the JS subclass can
-      // re-enter the same JS accessor recursively.
-      bool found = false;
-      Value resolved = resolveEnginePrototypeGetter(runtime, property, &found);
-      if (found) {
-        return resolved;
+      bool resolvePrototypeGetterExplicitly = false;
+#ifdef NATIVESCRIPT_NATIVE_API_HOST_EXPLICIT_OVERRIDE
+      resolvePrototypeGetterExplicitly = true;
+#else
+      // JSC normally resolves the prototype after its host getter declines a
+      // property. A nested accessor read cannot take that path while the
+      // outer native accessor callback is guarded, so resolve that one case
+      // explicitly without making ordinary JSC reads invoke a getter twice.
+      resolvePrototypeGetterExplicitly =
+          objc_getAssociatedObject(
+              object_,
+              sel_registerName("__nativeApiAccessorCallbackState")) != nil;
+#endif
+      if (resolvePrototypeGetterExplicitly) {
+        // Prefer JS prototype accessors before falling back to runtime ObjC
+        // getters; otherwise an ObjC getter implemented by the JS subclass
+        // can re-enter the same JS accessor recursively.
+        bool found = false;
+        Value resolved =
+            resolveEnginePrototypeGetter(runtime, property, &found);
+        if (found) {
+          return resolved;
+        }
       }
       if (auto selector =
               runtimeReadablePropertyGetter(object_, property)) {

@@ -774,6 +774,7 @@ void Runtime::Init(bool isWorker) {
     nativeApiJsiConfig.metadataPath = metadata_path;
     nativeApiJsiConfig.metadataPtr = RuntimeConfig.MetadataPtr;
     nativeApiJsiConfig.installGlobalSymbols = true;
+    nativeApiJsiConfig.invokeCallbacksOnNativeCallerThread = true;
     nativeApiJsiConfig.nativeInvocationInvoker =
         [env = env_](std::function<void()> task) {
           InvokeWithUnlockedHermesRuntime(env, task);

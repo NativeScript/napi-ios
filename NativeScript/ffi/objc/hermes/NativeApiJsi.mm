@@ -34,6 +34,9 @@
 #include "ffi.h"
 #include "NativeApiJsiSignatureDispatch.h"
 
+extern "C" void* js_lock_unsafe_jsi_runtime(facebook::jsi::Runtime* runtime);
+extern "C" void js_unlock_unsafe_jsi_runtime(void* lockToken);
+
 @protocol NativeApiClassBuilderProtocol
 @end
 
@@ -58,6 +61,7 @@ using facebook::jsi::String;
 using facebook::jsi::StringBuffer;
 using facebook::jsi::Value;
 using facebook::jsi::JSError;
+using facebook::jsi::WeakObject;
 
 using NativeApiConfig = NativeApiJsiConfig;
 using NativeApiScheduler = NativeApiJsiScheduler;
@@ -74,6 +78,30 @@ void SetNativeApiObjectPrototype(Runtime& runtime, Object& object,
       objectConstructor.getPropertyAsFunction(runtime, "setPrototypeOf");
   setPrototypeOf.call(runtime, Value(runtime, object), Value(runtime, prototype));
 }
+
+// Native callbacks can arrive on arbitrary platform threads. Entering Hermes
+// through the unsafe JSI runtime without the ThreadSafeRuntime lock permits two
+// threads to mutate the VM concurrently. This recursive scope is also safe for
+// host operations that are already running on the JS thread.
+#define NATIVESCRIPT_NATIVE_API_RUNTIME_SCOPE 1
+
+class NativeApiRuntimeScope final {
+ public:
+  explicit NativeApiRuntimeScope(Runtime& runtime)
+      : lockToken_(js_lock_unsafe_jsi_runtime(&runtime)) {}
+
+  ~NativeApiRuntimeScope() {
+    if (lockToken_ != nullptr) {
+      js_unlock_unsafe_jsi_runtime(lockToken_);
+    }
+  }
+
+  NativeApiRuntimeScope(const NativeApiRuntimeScope&) = delete;
+  NativeApiRuntimeScope& operator=(const NativeApiRuntimeScope&) = delete;
+
+ private:
+  void* lockToken_;
+};
 
 // clang-format off
 #define NATIVESCRIPT_NATIVE_API_RUNTIME_NAME "jsi"
@@ -145,9 +173,10 @@ Function CreateNativeApiSelectorGroupFunctionImpl(
           }
           if (state.boundReceiverState != nullptr) {
             receiverHostObject = state.boundReceiver.lock();
-            if (receiverHostObject) {
+            if (receiverHostObject && receiverHostObject->object() != nil) {
               return receiverHostObject;
             }
+            receiverHostObject.reset();
             // The bound receiver's wrapper has already been torn down (its
             // owning JS proxy was collected) since this selector-group
             // function was minted and cached as a native-object expando

@@ -272,6 +272,7 @@ class Runtime {
 
   JSGlobalContextRef context() const { return state_->context; }
   std::shared_ptr<jscengine::RuntimeState> state() const { return state_; }
+  const void* identity() const { return state_.get(); }
   void detachState() { state_.reset(); }
 
   Object global();

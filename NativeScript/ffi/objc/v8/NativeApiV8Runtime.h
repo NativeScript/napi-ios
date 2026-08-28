@@ -286,6 +286,7 @@ class Runtime {
   v8::Local<v8::Context> context() const { return state_->localContext(); }
   v8engine::RuntimeState* rawState() const { return state_.get(); }
   std::shared_ptr<v8engine::RuntimeState> state() const { return state_; }
+  const void* identity() const { return state_.get(); }
 
   Object global();
 

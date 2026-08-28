@@ -140,7 +140,7 @@ inline NativeApiResolvedSelectorGroupCall resolveNativeApiSelectorGroupCall(
     }
   }
   result.prepared = prepared.get();
-  result.gsdAllowed = !isPreparedStaticAppearanceSelector(*prepared);
+  result.gsdAllowed = !prepared->isStaticAppearanceSelector;
 
   if constexpr (PrepareInitializer) {
     if (!data.receiverIsClass && prepared->isInitMethod) {

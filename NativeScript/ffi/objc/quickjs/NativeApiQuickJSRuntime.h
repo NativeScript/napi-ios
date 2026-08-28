@@ -213,6 +213,7 @@ class Runtime {
   explicit Runtime(std::shared_ptr<quickjsengine::RuntimeState> state) : state_(std::move(state)) {}
   JSContext* context() const { return state_->context; }
   std::shared_ptr<quickjsengine::RuntimeState> state() const { return state_; }
+  const void* identity() const { return state_.get(); }
   void detachState() { state_.reset(); }
   Object global();
   Value evaluateJavaScript(std::shared_ptr<StringBuffer> buffer, const std::string& sourceURL);

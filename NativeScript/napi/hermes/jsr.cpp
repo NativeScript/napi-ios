@@ -10,7 +10,24 @@ std::unordered_map<napi_env, JSR*> JSR::env_to_jsr_cache;
 std::mutex JSR::env_cache_mutex;
 
 namespace {
-thread_local std::unordered_map<JSR*, int> g_runtime_lock_depth;
+std::mutex& UnsafeRuntimeMapMutex() {
+  static auto* mutex = new std::mutex();
+  return *mutex;
+}
+
+std::unordered_map<facebook::jsi::Runtime*, JSR*>& UnsafeRuntimeMap() {
+  static auto* runtimes =
+      new std::unordered_map<facebook::jsi::Runtime*, JSR*>();
+  return *runtimes;
+}
+
+// Runtime teardown can happen from a process-exit destructor after ordinary
+// thread-local objects have already been destroyed. Keep this state alive for
+// the lifetime of the process so teardown can safely query the lock depth.
+std::unordered_map<JSR*, int>& RuntimeLockDepths() {
+  static thread_local auto* depths = new std::unordered_map<JSR*, int>();
+  return *depths;
+}
 
 class RuntimeLockGuard {
  public:
@@ -30,15 +47,15 @@ class RuntimeLockGuard {
 void JSR::lock() {
   runtime->lock();
   js_mutex.lock();
-  g_runtime_lock_depth[this] += 1;
+  RuntimeLockDepths()[this] += 1;
 }
 
 void JSR::unlock() {
-  auto depth = g_runtime_lock_depth.find(this);
-  if (depth != g_runtime_lock_depth.end()) {
+  auto depth = RuntimeLockDepths().find(this);
+  if (depth != RuntimeLockDepths().end()) {
     depth->second -= 1;
     if (depth->second <= 0) {
-      g_runtime_lock_depth.erase(depth);
+      RuntimeLockDepths().erase(depth);
     }
   }
   js_mutex.unlock();
@@ -46,8 +63,8 @@ void JSR::unlock() {
 }
 
 int JSR::currentLockDepth() const {
-  auto depth = g_runtime_lock_depth.find(const_cast<JSR*>(this));
-  if (depth == g_runtime_lock_depth.end()) {
+  auto depth = RuntimeLockDepths().find(const_cast<JSR*>(this));
+  if (depth == RuntimeLockDepths().end()) {
     return 0;
   }
   return depth->second;
@@ -84,6 +101,31 @@ JSR::JSR() {
                                          .build();
   runtime = facebook::hermes::makeThreadSafeHermesRuntime(config);
   rt = &runtime->getUnsafeRuntime();
+  std::lock_guard<std::mutex> guard(UnsafeRuntimeMapMutex());
+  UnsafeRuntimeMap()[rt] = this;
+}
+
+extern "C" void* js_lock_unsafe_jsi_runtime(
+    facebook::jsi::Runtime* runtime) {
+  if (runtime == nullptr) {
+    return nullptr;
+  }
+  JSR* jsr = nullptr;
+  {
+    std::lock_guard<std::mutex> guard(UnsafeRuntimeMapMutex());
+    auto it = UnsafeRuntimeMap().find(runtime);
+    jsr = it == UnsafeRuntimeMap().end() ? nullptr : it->second;
+  }
+  if (jsr != nullptr) {
+    jsr->lock();
+  }
+  return jsr;
+}
+
+extern "C" void js_unlock_unsafe_jsi_runtime(void* lockToken) {
+  if (lockToken != nullptr) {
+    static_cast<JSR*>(lockToken)->unlock();
+  }
 }
 
 napi_status js_create_runtime(napi_runtime* runtime) {
@@ -157,6 +199,10 @@ napi_status js_free_napi_env(napi_env env) {
 
 napi_status js_free_runtime(napi_runtime runtime) {
   if (runtime == nullptr) return napi_invalid_arg;
+  {
+    std::lock_guard<std::mutex> guard(UnsafeRuntimeMapMutex());
+    UnsafeRuntimeMap().erase(runtime->hermes->rt);
+  }
   runtime->hermes->runtime.reset();
   runtime->hermes->rt = nullptr;
   delete runtime->hermes;

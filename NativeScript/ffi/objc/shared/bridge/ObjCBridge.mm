@@ -518,7 +518,7 @@ uintptr_t runtimeObjectExpandoKey(Runtime& runtime) {
 #if defined(TARGET_ENGINE_V8) || defined(TARGET_ENGINE_JSC) || \
     defined(TARGET_ENGINE_QUICKJS)
   return normalizeRuntimePointer(
-      reinterpret_cast<uintptr_t>(runtime.state().get()));
+      reinterpret_cast<uintptr_t>(runtime.identity()));
 #else
   return normalizeRuntimePointer(reinterpret_cast<uintptr_t>(&runtime));
 #endif
@@ -531,6 +531,13 @@ class NativeApiBridge {
     bool persistBeyondFrame = true;
     uintptr_t validationKey = 0;
   };
+#ifdef TARGET_ENGINE_HERMES
+  struct NativeApiWeakRoundTripValue {
+    std::shared_ptr<WeakObject> value;
+    bool stringLikeNative = false;
+    uintptr_t validationKey = 0;
+  };
+#endif
   using NativeApiRoundTripReleaseList =
       std::vector<NativeApiRoundTripValue>;
   using NativeApiRoundTripFrame =
@@ -820,8 +827,44 @@ class NativeApiBridge {
   void rememberNativeObjectRoundTripValue(Runtime& runtime, id object,
                                           const Value& value,
                                           bool stringLikeNative = false) {
+#ifdef TARGET_ENGINE_HERMES
+    rememberScopedRoundTripValue(runtime, object, value, stringLikeNative,
+                                 true);
+    rememberWeakNativeObjectRoundTripValue(runtime, object, value,
+                                           stringLikeNative);
+#else
     rememberRoundTripValue(runtime, object, value, stringLikeNative,
                            nativeObjectClassKey(object));
+#endif
+  }
+
+  // Hermes has no engine-side wrapper cache. Keep a weak identity entry for
+  // native object host wrappers so a callback can recover the exact existing
+  // JS object without rooting the wrapper (and therefore its retained native
+  // object) forever. The wrapper destructor removes this entry.
+  void rememberWeakNativeObjectRoundTripValue(
+      Runtime& runtime, id object, const Value& value,
+      bool stringLikeNative = false) {
+#ifdef TARGET_ENGINE_HERMES
+    if (object == nil || !value.isObject()) {
+      return;
+    }
+    auto weak =
+        std::make_shared<WeakObject>(runtime, value.asObject(runtime));
+    uintptr_t key =
+        normalizeRuntimePointer(reinterpret_cast<uintptr_t>(object));
+    {
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      weakRoundTripValues_[key] = NativeApiWeakRoundTripValue{
+          std::move(weak), stringLikeNative, nativeObjectClassKey(object)};
+      roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
+    }
+#else
+    (void)runtime;
+    (void)object;
+    (void)value;
+    (void)stringLikeNative;
+#endif
   }
 
   void rememberScopedRoundTripValue(Runtime& runtime, const void* native,
@@ -926,6 +969,9 @@ class NativeApiBridge {
     }
 
     std::shared_ptr<Value> storedValue;
+#ifdef TARGET_ENGINE_HERMES
+    std::shared_ptr<WeakObject> weakValue;
+#endif
     bool cachedStringLike = false;
     {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
@@ -958,16 +1004,52 @@ class NativeApiBridge {
         entry = findEntry(recentRoundTripValues_);
       }
       if (entry == nullptr) {
+#ifdef TARGET_ENGINE_HERMES
+        if (nativeIsObject) {
+          auto weakIt = weakRoundTripValues_.find(key);
+          if (weakIt != weakRoundTripValues_.end() &&
+              weakIt->second.validationKey == expectedValidationKey) {
+            weakValue = weakIt->second.value;
+            cachedStringLike = weakIt->second.stringLikeNative;
+          }
+        }
+        if (weakValue == nullptr) {
+          cache[firstSlot] = RoundTripCacheEntry{
+              this, key, generation, {}, true, false, expectedValidationKey};
+          return Value::undefined();
+        }
+#else
         cache[firstSlot] = RoundTripCacheEntry{
             this, key, generation, {}, true, false, expectedValidationKey};
         return Value::undefined();
+#endif
+      } else {
+        storedValue = entry->value;
+        cachedStringLike = entry->stringLikeNative;
+        cache[firstSlot] = RoundTripCacheEntry{
+            this, key, generation, storedValue, false, cachedStringLike,
+            entry->validationKey};
       }
-      storedValue = entry->value;
-      cachedStringLike = entry->stringLikeNative;
-      cache[firstSlot] = RoundTripCacheEntry{
-          this, key, generation, storedValue, false, cachedStringLike,
-          entry->validationKey};
     }
+#ifdef TARGET_ENGINE_HERMES
+    if (weakValue != nullptr) {
+      Value locked = weakValue->lock(runtime);
+      if (!locked.isUndefined()) {
+        if (stringLikeNative != nullptr) {
+          *stringLikeNative = cachedStringLike;
+        }
+        return locked;
+      }
+      std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
+      auto weakIt = weakRoundTripValues_.find(key);
+      if (weakIt != weakRoundTripValues_.end() &&
+          weakIt->second.value == weakValue) {
+        weakRoundTripValues_.erase(weakIt);
+        roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
+      }
+      return Value::undefined();
+    }
+#endif
     if (stringLikeNative != nullptr) {
       *stringLikeNative = cachedStringLike;
     }
@@ -987,6 +1069,7 @@ class NativeApiBridge {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
       eraseRoundTripMapKey(roundTripValues_, key, releaseAfterUnlock);
       eraseRoundTripKeyFromScopedCaches(key, releaseAfterUnlock);
+      weakRoundTripValues_.erase(key);
       rooted = rootedRoundTripValues_.erase(key) > 0;
       roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
@@ -1007,6 +1090,9 @@ class NativeApiBridge {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
       eraseRoundTripMapKey(roundTripValues_, key, releaseAfterUnlock);
       eraseRoundTripKeyFromScopedCaches(key, releaseAfterUnlock);
+#ifdef TARGET_ENGINE_HERMES
+      weakRoundTripValues_.erase(key);
+#endif
       roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
   }
@@ -1022,6 +1108,9 @@ class NativeApiBridge {
       std::lock_guard<std::mutex> lock(roundTripValuesMutex_);
       eraseRoundTripMapKey(roundTripValues_, key, releaseAfterUnlock);
       eraseRoundTripKeyFromScopedCaches(key, releaseAfterUnlock);
+#ifdef TARGET_ENGINE_HERMES
+      weakRoundTripValues_.erase(key);
+#endif
       roundTripValuesGeneration_.fetch_add(1, std::memory_order_release);
     }
   }
@@ -2363,6 +2452,8 @@ class NativeApiBridge {
       recentRoundTripValues_;
   std::vector<uintptr_t> recentRoundTripValueOrder_;
 #ifdef TARGET_ENGINE_HERMES
+  std::unordered_map<uintptr_t, NativeApiWeakRoundTripValue>
+      weakRoundTripValues_;
   std::unordered_set<uintptr_t> rootedRoundTripValues_;
   std::shared_ptr<Value> roundTripRootCache_;
 #endif

@@ -1411,9 +1411,25 @@ Value NativeApiStructObjectHostObject::get(Runtime& runtime, const PropNameID& n
         return createNativeStructHostObject(
             runtime,
             std::make_shared<NativeApiStructObjectHostObject>(
-                bridge_, field.type.aggregateInfo, fieldData, false, ownedData_, backingValue_));
+                bridge_, field.type.aggregateInfo, fieldData, false, ownedData_,
+                backingValue_, pointerBackingValues_));
       }
-      return convertNativeReturnValue(runtime, bridge_, field.type, fieldData);
+      Value result =
+          convertNativeReturnValue(runtime, bridge_, field.type, fieldData);
+      if ((field.type.kind == metagen::mdTypePointer ||
+           field.type.kind == metagen::mdTypeOpaquePointer) &&
+          result.isObject() && pointerBackingValues_ != nullptr) {
+        auto backing = pointerBackingValues_->find(fieldData);
+        if (backing != pointerBackingValues_->end()) {
+          Object resultObject = result.asObject(runtime);
+          if (resultObject.isHostObject<NativeApiReferenceHostObject>(runtime)) {
+            resultObject
+                .getHostObject<NativeApiReferenceHostObject>(runtime)
+                ->setBackingValue(backing->second);
+          }
+        }
+      }
+      return result;
     }
   }
   return Value::undefined();
@@ -1431,8 +1447,19 @@ NativeApiHostSetResult NativeApiStructObjectHostObject::set(Runtime& runtime,
       continue;
     }
     NativeApiArgumentFrame frame(1);
-    convertEngineArgument(runtime, bridge_, field.type, value,
-                          static_cast<uint8_t*>(data_) + field.offset, frame);
+    void* fieldData = static_cast<uint8_t*>(data_) + field.offset;
+    convertEngineArgument(runtime, bridge_, field.type, value, fieldData,
+                          frame);
+    if (pointerBackingValues_ != nullptr &&
+        (field.type.kind == metagen::mdTypePointer ||
+         field.type.kind == metagen::mdTypeOpaquePointer)) {
+      if (value.isObject()) {
+        (*pointerBackingValues_)[fieldData] =
+            std::make_shared<Value>(runtime, value);
+      } else {
+        pointerBackingValues_->erase(fieldData);
+      }
+    }
     NATIVE_API_SET_RETURN(true);
   }
   throw JSError(runtime, "No native struct field: " + property);

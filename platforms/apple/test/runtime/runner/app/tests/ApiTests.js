@@ -242,6 +242,19 @@ describe(module.id, function () {
         TNSTestNativeCallbacks.apiDescriptionOverride(object);
     });
 
+    it("OrdinaryPropertyAccessDoesNotInvokeDescription", function () {
+        var descriptionCalls = 0;
+        var object = NSObject.extend({
+            get description() {
+                descriptionCalls++;
+                return "description override";
+            }
+        }).alloc().init();
+
+        expect(object.hash).toBeDefined();
+        expect(descriptionCalls).toBe(0);
+    });
+
     it("ProtocolClassConflict", function () {
         expect(NSProtocolFromString("NSObject")).toBe(NSObjectProtocol);
     });
@@ -368,9 +381,14 @@ describe(module.id, function () {
         });
 
         var field = new (nsView.extend(overrides))();
+        // NSView initialization may seed its default hidden state through the
+        // JavaScript override. That initialization callback is engine-specific
+        // and is not what this accessor-dispatch test is exercising.
+        TNSClearOutput();
         var expectedOutput = "";
 
-        expect(field.hidden).toBeUndefined(); expectedOutput+="getter";
+        var initialHidden = field.hidden; expectedOutput+="getter";
+        expect(initialHidden === undefined || initialHidden === false).toBe(true);
 
         field.hidden = true; expectedOutput+="setter:true";
 

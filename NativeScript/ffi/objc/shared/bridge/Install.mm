@@ -771,21 +771,23 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
     if (markConstructing) {
       setObjectConstructionState(instance, true);
     }
+    var initializedInstance;
     try {
       if (initializer.selectorName === 'init') {
         if (typeof instance.init !== 'function') {
           throw new Error('No initializer found that matches constructor invocation.');
         }
-        return instance.init();
+        initializedInstance = instance.init();
+      } else if (initializer.name && typeof instance[initializer.name] === 'function') {
+        initializedInstance = instance[initializer.name](...actualArgs);
+      } else {
+        var invokeArgs = [initializer.selectorName];
+        for (var invokeArgIndex = 0; invokeArgIndex < actualArgs.length; invokeArgIndex++) {
+          invokeArgs.push(actualArgs[invokeArgIndex]);
+        }
+        initializedInstance = instance.invoke(...invokeArgs);
       }
-      if (initializer.name && typeof instance[initializer.name] === 'function') {
-        return instance[initializer.name](...actualArgs);
-      }
-      var invokeArgs = [initializer.selectorName];
-      for (var invokeArgIndex = 0; invokeArgIndex < actualArgs.length; invokeArgIndex++) {
-        invokeArgs.push(actualArgs[invokeArgIndex]);
-      }
-      return instance.invoke(...invokeArgs);
+      return initializedInstance;
     } catch (error) {
       if (unavailableInitializerError(error)) {
         throw new Error('No initializer found that matches constructor invocation.');
@@ -793,6 +795,9 @@ void InstallNativeApiGlobalSymbols(Runtime& runtime, const char* globalName) {
       throw error;
     } finally {
       if (markConstructing) {
+        if (initializedInstance && initializedInstance !== instance) {
+          setObjectConstructionState(initializedInstance, false);
+        }
         setObjectConstructionState(instance, false);
       }
     }

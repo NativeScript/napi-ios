@@ -1,15 +1,23 @@
 class NativeApiStructObjectHostObject final : public HostObject {
  public:
+  using PointerBackingValues =
+      std::unordered_map<const void*, std::shared_ptr<Value>>;
+
   NativeApiStructObjectHostObject(
       std::shared_ptr<NativeApiBridge> bridge,
       std::shared_ptr<NativeApiAggregateInfo> info,
       const void* data = nullptr, bool ownsData = true,
       std::shared_ptr<std::vector<unsigned char>> storageOwner = nullptr,
-      std::shared_ptr<Value> backingValue = nullptr)
+      std::shared_ptr<Value> backingValue = nullptr,
+      std::shared_ptr<PointerBackingValues> pointerBackingValues = nullptr)
       : bridge_(std::move(bridge)),
         info_(std::move(info)),
         ownedData_(std::move(storageOwner)),
         backingValue_(std::move(backingValue)),
+        pointerBackingValues_(
+            pointerBackingValues != nullptr
+                ? std::move(pointerBackingValues)
+                : std::make_shared<PointerBackingValues>()),
         ownsData_(ownsData) {
     size_t size = info_ != nullptr ? info_->size : 0;
     if (ownedData_ != nullptr) {
@@ -32,6 +40,9 @@ class NativeApiStructObjectHostObject final : public HostObject {
     return ownedData_;
   }
   std::shared_ptr<Value> backingValue() const { return backingValue_; }
+  std::shared_ptr<PointerBackingValues> pointerBackingValues() const {
+    return pointerBackingValues_;
+  }
 
   Value get(Runtime& runtime, const PropNameID& name) override;
   NativeApiHostSetResult set(Runtime& runtime, const PropNameID& name, const Value& value) override;
@@ -42,6 +53,7 @@ class NativeApiStructObjectHostObject final : public HostObject {
   std::shared_ptr<NativeApiAggregateInfo> info_;
   std::shared_ptr<std::vector<unsigned char>> ownedData_;
   std::shared_ptr<Value> backingValue_;
+  std::shared_ptr<PointerBackingValues> pointerBackingValues_;
   void* data_ = nullptr;
   bool ownsData_ = true;
 };
