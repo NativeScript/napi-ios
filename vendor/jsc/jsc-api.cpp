@@ -44,6 +44,15 @@ struct napi_callback_info__ {
 };
 
 namespace {
+
+// libc++ 19+ (NDK r29) has no std::char_traits for non-character types like
+// JSChar (unsigned short); measure through the layout-identical char16_t.
+size_t StringLength(const JSChar* string) {
+  static_assert(sizeof(char16_t) == sizeof(JSChar));
+  return std::char_traits<char16_t>::length(
+      reinterpret_cast<const char16_t*>(string));
+}
+
 class JSString {
  public:
   JSString(const JSString&) = delete;
@@ -58,9 +67,8 @@ class JSString {
 
   JSString(const JSChar* string, size_t length = NAPI_AUTO_LENGTH)
       : _string{JSStringCreateWithCharacters(
-            string, length == NAPI_AUTO_LENGTH
-                        ? std::char_traits<JSChar>::length(string)
-                        : length)} {}
+            string, length == NAPI_AUTO_LENGTH ? StringLength(string)
+                                               : length)} {}
 
   ~JSString() {
     if (_string != nullptr) {
